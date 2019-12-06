@@ -1,0 +1,32 @@
+$vagus: #1a1489;
+$optic: #1906cc;
+$median: #8300bf;
+$facial: #F80045;
+$trigeminal: #fe7820;
+$abducens: #fce644;
+$sciatic: #e8edfb;
+$pudendal: lightgrey;
+$primary-link: #5D6478;
+$vestibular: #2c3e50;
+$tibial: #FBFBFD;
+$cochlear: #FFFFFF;
+
+
+$app-primary-color: $vagus;
+$app-secondary-color: black;
+$text-color: $vestibular;
+$input-text: #000;
+
+$system-font:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+
+// Hide only visually, but have it available for screenreaders: h5bp.com
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}

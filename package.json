@@ -1,0 +1,29 @@
+{
+  "name": "sparc_nuxt",
+  "version": "1.0.0",
+  "description": "My cat&#39;s meow Nuxt.js project",
+  "author": "Joost Wagenaar",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.8.0",
+    "element-ui": "^2.4.11",
+    "marked": "^0.7.0",
+    "moment": "^2.24.0",
+    "nuxt": "^2.0.0",
+    "ramda": "^0.26.1",
+    "striptags": "^3.1.1",
+    "vue-infinite-loading": "^2.4.4",
+    "vue-meta": "^2.0.3",
+    "vue-svgicon": "^3.2.6"
+  },
+  "devDependencies": {
+    "sass": "^1.18.0",
+    "sass-loader": "^7.1.0"
+  }
+}
