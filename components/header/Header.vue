@@ -70,6 +70,11 @@
             active: pathOrHashContainsString("/map")
         },
         {
+            title: "SPARC Events",
+            href: "/events",
+            active: pathOrHashContainsString("/events")
+        },
+        {
             title: "About",
             href: "/about",
             active: pathOrHashContainsString("/about")

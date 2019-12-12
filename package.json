@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.8.0",
+    "contentful": "^7.10.0",
+    "date-fns": "^2.8.1",
     "element-ui": "^2.4.11",
     "marked": "^0.7.0",
     "moment": "^2.24.0",

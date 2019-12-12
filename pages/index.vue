@@ -12,23 +12,23 @@
         </el-row>
       </div>
       <div class="content">
-
         <div class="hero section">
-          <el-row type="flex" justify="center">
-            <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-              <el-row>
-                <el-col :xs="22" :sm="22" :md="12" :lg="12">
-                  <h1 class="hero-header">Advancing bioelectronic medicine through open science.</h1>
-                  <a href=/browse><el-button type="primary" class="explore-the-data">Explore the data</el-button></a>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+          <div>
+            <el-row type="flex" justify="center">
+              <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
+                <el-row>
+                  <el-col :xs="22" :sm="22" :md="12" :lg="12">
+                    <h1 class="hero-header">Advancing bioelectronic medicine through open science.</h1>
+                    <a href=/browse><el-button type="primary" class="explore-the-data">Explore the data</el-button></a>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+          </div>
         </div>
-        <a class="twitter-timeline" data-height="760" data-link-color="#8300bf" href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw">Tweets by sparc_science</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
       </div>
     </div>
+      
     <div class="about">
       <div class="texture">
         <el-row class="blob-row" type="flex" justify="space-between">
@@ -40,6 +40,7 @@
           </el-col>
         </el-row>
       </div>
+
       <div class="section content">
         <el-row type="flex" justify="center">
           <el-col :xs="22" :sm="22" :md="14" :lg="14">
@@ -114,6 +115,8 @@ import mapCore from "../static/images/map-core-image.jpg";
 import simulationCore from "../static/images/osparc-human.png";
 import dataCore from "../static/images/datcore-card-image.svg";
 import datasetAbstractImage from "../static/images/dataset-abstract-image.png";
+import eventCard from "@/components/EventCard/EventCard.vue";
+
 // import FeaturedDatasets from "../featured-datasets-carousel/FeaturedDatasetsCarousel.vue";
 import SearchControls from "@/components/search-controls/SearchControls.vue";
 
@@ -144,7 +147,8 @@ const cores = [
 export default {
   name: "index",
   components: {
-    SearchControls
+    SearchControls,
+    eventCard
   },
 
   data: () => ({

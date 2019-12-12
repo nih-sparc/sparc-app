@@ -1,5 +1,4 @@
-
-export default {
+ export default {
   mode: 'universal',
   /*
   ** Headers of the page
@@ -18,7 +17,10 @@ export default {
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:4000',
     crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://crosscite.org',
-    discover_api_host: process.env.BLACKFYNN_DISCOVER_API_HOST || 'https://api.blackfynn.io/discover'
+    discover_api_host: process.env.BLACKFYNN_DISCOVER_API_HOST || 'https://api.blackfynn.io/discover',
+    ctf_event_id: "event",
+    CTF_SPACE_ID: process.env.CTF_SPACE_ID,
+    CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN
   },
 
   /*
@@ -36,6 +38,7 @@ export default {
   */
   plugins: [
     '@/plugins/bootstrap',
+    '@/plugins/contentful'
   ],
   /*
   ** Nuxt.js dev-modules

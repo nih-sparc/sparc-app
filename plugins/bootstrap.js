@@ -3,7 +3,6 @@ import Element from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
 
 Vue.use(Element, { locale })
-
 Vue.config.devtools = true
 
 import { Dialog, Spinner, Message, Loading, Tooltip } from 'element-ui'
@@ -23,7 +22,7 @@ Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>
 // // configure language
 // locale.use(lang)
 
-// Vue.config.productionTip = false
+Vue.config.productionTip = false
 
 // // Vue.use(VueClipboard)
 // Vue.use(Dialog)
