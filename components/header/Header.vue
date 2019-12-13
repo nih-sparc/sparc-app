@@ -78,6 +78,11 @@
             title: "About",
             href: "/about",
             active: pathOrHashContainsString("/about")
+        },
+        {
+            title: "Help",
+            href: "/help",
+            active: pathOrHashContainsString("/help")
         }
     ];
 

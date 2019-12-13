@@ -1,29 +1,14 @@
 <template>
   <div class="event-card">
     <div class="event-content">
-        <div class="image">
-            <event-banner-image :src="bannerUrl" />
-        </div>
         <div class="event-content-wrap">
             <h3>
                 <nuxt-link
-                    :to="{name: 'events-eventId', params: { eventId: event.sys.id } }"
-                >
-                {{ event.fields.title }}
+                    :to="{name: 'help-helpId', params: { helpId: item.sys.id } }"
+                > 
+                {{ item.fields.title }}
                 </nuxt-link>
             </h3>
-        <div class="subtitle">
-            <div>{{ event.fields.location}}</div>
-            <div>{{ startDate }} - {{ endDate}}</div>
-        </div>
-        <div class="details">
-            <div class="detail">
-                {{ event.fields.summary }}
-            </div>
-            <div class="detail eventinfo">
-                {{event.fields.eventType}} - SPARC Attendees: {{event.fields.sparcAttendees}}
-            </div>
-        </div>
       </div>
     </div>
   </div>
@@ -34,51 +19,23 @@ import {
   propOr,
   take
 } from 'ramda'
-import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
-import FormatDate from '@/mixins/format-date'
-import { format, formatDistance, formatRelative, subDays, parseISO } from 'date-fns'
 
 export default {
-  name: 'eventCard',
+  name: 'helpCard',
   components: {
-    eventBannerImage
   },
   mixins: [
-    FormatDate
   ],
   computed: {
-      bannerUrl: function () {
-          try {
-              return this.event.fields.image.fields.file.url
-          }
-          catch {
-              console.log(this.event.fields)
-          }
-        
-      },
-        startDate: function() {
-            return format(parseISO(this.event.fields.startDate),'MM/dd/yyyy')
-        },
-        endDate: function() {
-            return format(parseISO(this.event.fields.endDate),'MM/dd/yyyy')
-        }
     
   },
   props: {
-    event: {
+    item: {
       type: Object,
       default: () => {
         return {
-          banner: '',
-          description: '',
-          name: '',
-          image: {
-              fields: {
-                  file: {
-                      url: ''
-                  }
-              }
-          }
+          title: '',
+          
         }
       }
     }

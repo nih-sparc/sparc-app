@@ -32,6 +32,7 @@
     import createClient from '@/plugins/contentful.js'
     import { format, formatDistance, formatRelative, subDays, parseISO } from 'date-fns'
     import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
+    import {pathOr} from 'ramda'
 
 
     const client = createClient()
@@ -45,12 +46,8 @@
 
         computed: {
             bannerUrl: function () {
-                try {
-                    return this.event.fields.image.fields.file.url
-                }
-                catch {
-                    console.log(this.event.fields)
-                }
+                return pathOr('', ['fields','image','fields','file','url'], this.event)
+
             },
             startDate: function() {
                 return format(parseISO(this.event.fields.startDate),'MM/dd/yyyy')
