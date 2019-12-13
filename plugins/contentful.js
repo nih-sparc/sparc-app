@@ -11,5 +11,6 @@ const ctf_config = {
 
 // export `createClient` to use it in page components
 export default function createClient () {
-    return contentful.createClient(ctf_config)
+    const client = contentful.createClient(ctf_config)
+    return client
 }

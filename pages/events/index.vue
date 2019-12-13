@@ -48,7 +48,7 @@ export default {
             // in the template
             console.log('returning entries ' + events)
             return {
-            events: events.items
+                events: events.items
             }
         }).catch(console.error)
     },
