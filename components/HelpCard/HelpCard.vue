@@ -4,9 +4,9 @@
         <div class="event-content-wrap">
             <h3>
                 <nuxt-link
-                    :to="{name: 'help-helpId', params: { helpId: item.sys.id } }"
+                    :to="{name: 'help-helpId', params: { helpId: helpItem.sys.id } }"
                 > 
-                {{ item.fields.title }}
+                {{ helpItem.fields.title }}
                 </nuxt-link>
             </h3>
       </div>
@@ -30,7 +30,7 @@ export default {
     
   },
   props: {
-    item: {
+    helpItem: {
       type: Object,
       default: () => {
         return {

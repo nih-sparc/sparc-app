@@ -15,9 +15,9 @@
         
         <div class="section events">
 
-            <div v-for="(event, index) in items"  
-                :key="`${event}-${index}`">
-                <help-card :item=event />
+            <div v-for="(item, index) in helpItems"  
+                :key="`${item}-${index}`">
+                <help-card :helpItem=item />
             </div> 
         </div>
 
@@ -57,7 +57,7 @@ export default {
             // in the template
             console.log('returning entries ' + items)
             return {
-                items: items.items
+                helpItems: items.items
             }
         }).catch(console.error)
     },

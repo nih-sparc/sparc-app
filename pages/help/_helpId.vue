@@ -3,22 +3,14 @@
         <div class="header">
             <div class="gradient">
                 <el-row type="flex" justify="center">
-                <div class="search">
-                    <el-row type="flex" justify="center">
-                        <!-- <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18"> -->
+                    <div class="search-controls">    
                         <HelpSearchControls
                             :search-on-load="true"
                             submit-text="Go"
                             @query="onSearchQuery"
                         />
-                        <!-- </el-col> -->
-                    </el-row>
-                </div>    
-                <!-- <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
-                    <div class="breadcrumb">
-                        <h3>{{ event.fields.title  }}</h3> <p>{{ event.fields.summary }}</p>
                     </div>
-                </el-col> -->
+
                 </el-row>
             </div>
         </div>
@@ -26,8 +18,8 @@
 
         <div class="help-section"> 
             <div class="header">
-                <h2>{{ event.fields.title  }}</h2> 
-                <div class="summary">{{ event.fields.summary }}</div>
+                <h2>{{ helpItem.fields.title  }}</h2> 
+                <div class="summary">{{ helpItem.fields.summary }}</div>
                 <div class="updated"><i>Updated at: {{ updateDate }} </i></div>
             </div>
             <div class="content" v-html="outputHtml"></div>
@@ -65,14 +57,14 @@ export default {
         },
 
         htmlContent () {
-            return pathOr('',['fields','helpContent'], this.event)
+            return pathOr('',['fields','helpContent'], this.helpItem)
         },
 
         outputHtml () {
             return this.converter ? this.converter.makeHtml(this.htmlContent) : ''
         },
         updateDate: function() {
-            return format(parseISO(this.event.sys.updatedAt),'MM/dd/yyyy')
+            return format(parseISO(this.helpItem.sys.updatedAt),'MM/dd/yyyy')
         },
         
     },
@@ -81,10 +73,10 @@ export default {
     asyncData (env) {
         console.log('fetching data: ' + process.env.ctf_help_id)
         return Promise.all([
-            client.getEntry(env.params.eventId)
-        ]).then(([events]) => {
+            client.getEntry(env.params.helpId)
+        ]).then(([helpItem]) => {
             return {
-                event: events
+                helpItem: helpItem
             }
         }).catch(console.error)
     },
@@ -113,7 +105,7 @@ export default {
             }
         }
 
-        .search {
+        .search-controls{
             width:80%
         }
 
@@ -128,6 +120,10 @@ export default {
         padding: 16px 120px;
         border-radius: 16px;
         max-width: 900px;
+
+        @media screen and (max-width: 800px) {
+            padding: 8px;
+        }
         
         .content {
             & ::v-deep {
