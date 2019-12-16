@@ -85,6 +85,9 @@ export default {
         onSearchQuery: function(terms) {
             return 0
         },
+        goBack() {
+            console.log('go back');
+        }
     }
 
     

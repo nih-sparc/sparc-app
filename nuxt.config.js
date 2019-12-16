@@ -20,6 +20,8 @@
     discover_api_host: process.env.BLACKFYNN_DISCOVER_API_HOST || 'https://api.blackfynn.io/discover',
     ctf_event_id: "event",
     ctf_help_id: "helpDocument",
+    ctf_help_list_id: "helpSection",
+    ctf_support_page_id: "59F0dM5goobqjw3TsqINRw",
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST

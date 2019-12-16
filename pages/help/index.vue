@@ -5,7 +5,7 @@
                 <el-row type="flex" justify="center">
                 <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
                     <div class="breadcrumb">
-                        <h3>Support Center:</h3> <p>SPARC Portal Support center with help documents, tutorials, and or relevant information</p>
+                        <!-- <h3>{{ topics.fields.title }}</h3> <p>{{ topics.fields.summary }}</p> -->
                     </div>
                 </el-col>
                 </el-row>
@@ -14,10 +14,9 @@
 
         
         <div class="section events">
-
-            <div v-for="(item, index) in helpItems"  
+            <div v-for="(item, index) in topics.fields.sections"
                 :key="`${item}-${index}`">
-                <help-card :helpItem=item />
+                 <help-section :section=item />
             </div> 
         </div>
 
@@ -26,7 +25,7 @@
 </template>
 
 <script>
-import helpCard from "@/components/HelpCard/HelpCard.vue";
+import helpSection from "@/components/HelpSection/HelpSection.vue"
 import createClient from '@/plugins/contentful.js'
 import showdown from 'showdown'
 import {pathOr} from 'ramda'
@@ -37,30 +36,39 @@ const client = createClient()
 export default {
     name: "help-page",
     components: {
-        helpCard
+        helpSection
     },
 
     computed: {
    
     },
-
     asyncData (env) {
-        console.log('fetching data: ' + process.env.ctf_help_id)
         return Promise.all([
             // fetch all blog posts sorted by creation date
-            client.getEntries({
-            'content_type': process.env.ctf_help_id,
-            'fields': ['title']
-            })
-        ]).then(([items]) => {
-            // return data that should be available
-            // in the template
-            console.log('returning entries ' + items)
+            client.getEntry(process.env.ctf_support_page_id,
+            {'include': 1}),
+            client.getEntries( {
+                content_type: 'helpDocument',
+                select: 'fields.title,fields.summary'})
+        ]).then(([resp, docs]) => {
+            let docDict = {}
+            for (let i=0 ; i<docs.items.length;i++) {
+                docDict[docs.items[i].sys.id] = docs.items[i].fields
+            }
+
+            for (let i=0 ; i<resp.fields.sections.length;i++) {
+                var curSection = resp.fields.sections[i]
+                for (let j=0 ; j<curSection.fields.helpDocuments.length; j++) {
+                    let curDoc = curSection.fields.helpDocuments[j]
+                    curDoc['title'] = docDict[curDoc.sys.id]['title']
+                    curDoc['summary'] = docDict[curDoc.sys.id]['summary']
+                }
+            }
             return {
-                helpItems: items.items
+            topics: resp,
             }
         }).catch(console.error)
-    },
+    }
 }
 
 </script>
