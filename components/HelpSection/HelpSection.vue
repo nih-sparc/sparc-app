@@ -22,7 +22,7 @@ import {
   take
 } from 'ramda'
 
-import HelpCard from "@/components/helpCard/HelpCard.vue";
+import HelpCard from "@/components/HelpCard/HelpCard.vue";
 
 export default {
     name: 'help-section',
