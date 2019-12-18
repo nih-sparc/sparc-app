@@ -1,29 +1,19 @@
 <template>
-  <div class="event-card">
-    <div class="event-content">
+  <!-- <div class="event-card"> -->
+    <!-- <div class="event-content"> -->
         <div class="event-content-wrap">
             <h3>
-                <!-- {{ section.fields.title }} -->
-                <!-- <nuxt-link
-                    :to="{name: 'help-helpId', params: { helpId: helpItem.sys.id } }"
-                > 
-                {{ helpItem.fields.title }}
-                </nuxt-link> -->
                 {{ section.fields.title }} 
             </h3>
             <div class="section events">
             <div v-for="(item, index) in section.fields.helpDocuments"
                 :key="`${item}-${index}`">
-                <nuxt-link
-                    :to="{name: 'help-helpId', params: { helpId: item.sys.id } }"
-                > 
-                 {{ item.title }}
-                 </nuxt-link>
+                <help-card :helpItem=item />
             </div> 
         </div>
       </div>
-    </div>
-  </div>
+    <!-- </div> -->
+  <!-- </div> -->
 </template>
 
 <script>
@@ -32,14 +22,12 @@ import {
   take
 } from 'ramda'
 
+import HelpCard from "@/components/helpCard/HelpCard.vue";
+
 export default {
-    name: 'helpSection',
+    name: 'help-section',
     components: {
-    },
-    mixins: [
-    ],
-    computed: {
-        
+        HelpCard
     },
     props: {
         section: {
@@ -70,7 +58,7 @@ h3 {
   font-size: 18px;
   font-weight: 600;
   line-height: 1.2;
-//   margin: 0 0 8px;
+  margin: 0 0 8px;
   word-break: break-word;
 }
 .subtitle {
@@ -106,7 +94,7 @@ h3 {
 .event-content {
   display: flex;
   flex-direction: row;
-  padding: 24px 16px;
+//   padding: 24px 16px;
   img {
     display: block;
     width: 86px;

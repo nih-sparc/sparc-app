@@ -15,7 +15,6 @@
             </div>
         </div>
 
-
         <div class="help-section"> 
             <div class="header">
                 <h2>{{ helpItem.fields.title  }}</h2> 

@@ -5,38 +5,37 @@
                 <el-row type="flex" justify="center">
                 <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
                     <div class="breadcrumb">
+                        <h3>SPARC Support Center</h3><p>Documentation about SPARC, Data, Maps, and Simulation resources</p>
                         <!-- <h3>{{ topics.fields.title }}</h3> <p>{{ topics.fields.summary }}</p> -->
                     </div>
                 </el-col>
                 </el-row>
             </div>
         </div>
-
         
         <div class="section events">
             <div v-for="(item, index) in topics.fields.sections"
                 :key="`${item}-${index}`">
-                 <help-section :section=item />
+                <div class="help-section">
+                    <help-section :section=item />
+                </div>
             </div> 
         </div>
-
-
     </div>
 </template>
 
 <script>
-import helpSection from "@/components/HelpSection/HelpSection.vue"
+import HelpSection from "@/components/HelpSection/HelpSection.vue"
 import createClient from '@/plugins/contentful.js'
 import showdown from 'showdown'
 import {pathOr} from 'ramda'
-
 
 const client = createClient()
 
 export default {
     name: "help-page",
     components: {
-        helpSection
+        HelpSection
     },
 
     computed: {
@@ -87,10 +86,56 @@ export default {
         }
     }
 
+    // .help-section  {
+    //     margin-left: 32px;
+    //     & ::v-deep p {
+    //         margin-bottom: 8px;
+    //     }
+
+        
+    // }
+
     .help-section  {
-        margin-left: 32px;
-        & ::v-deep p {
-            margin-bottom: 8px;
+        color: $vestibular;
+        margin-top: 32px;
+        margin: 24px auto;
+        width: 80%;
+        // background-color: #FFF;
+        padding: 16px 120px;
+        border-radius: 16px;
+        max-width: 900px;
+
+        @media screen and (max-width: 800px) {
+            padding: 8px;
+        }
+        
+        .content {
+            & ::v-deep {
+                color: $vestibular
+            }
+            & ::v-deep p {
+                margin-bottom: 8px;
+            }
+            & ::v-deep img {
+                width:100%;
+                margin: 5px 0
+            }
+        }
+
+        .header {
+            margin-bottom: 48px;
+            h2 {
+                color:$vagus;
+            }
+            .summary {
+                font-size: 1.1em;
+                color: grey;
+                margin-bottom: 8px;
+            }
+
+            .updated {
+                color: #AAA
+            }
         }
 
         
