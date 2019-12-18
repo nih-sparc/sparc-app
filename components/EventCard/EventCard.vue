@@ -94,6 +94,8 @@ export default {
     //   border: solid 1px $pudendal;
   border-radius: 3px 3px 0 0;
   max-width: 800px;
+  background-color: white;
+  margin-bottom:5px;
 }
 h3 {
   color: $vagus;

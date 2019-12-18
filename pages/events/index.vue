@@ -13,7 +13,6 @@
         </div>
 
         <div class="section events">
-
             <div v-for="(event, index) in events"  
                 :key="`${event}-${index}`">
                 <event-card :event=event />
@@ -23,7 +22,7 @@
 </template>
 
 <script>
-import eventCard from "@/components/EventCard/EventCard.vue";
+import EventCard from "@/components/EventCard/EventCard.vue";
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
@@ -31,7 +30,7 @@ const client = createClient()
 export default {
     name: "event-page",
     components: {
-        eventCard
+        EventCard
     },
     
 
@@ -73,5 +72,7 @@ export default {
 
 .events {
     margin-left: 32px;
+    margin: 24px auto;
+    width: 80%;
 }
 </style>

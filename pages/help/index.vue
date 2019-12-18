@@ -102,6 +102,7 @@ export default {
         width: 80%;
         // background-color: #FFF;
         padding: 16px 120px;
+        // padding-right: 120px;
         border-radius: 16px;
         max-width: 900px;
 
