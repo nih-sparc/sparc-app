@@ -1,165 +1,59 @@
 <template>
-  <div class="section footer">
-    <el-row type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <div class="footer-content">
-          <el-row>
-            <el-col class="contact" :md="4">
-              <sparc-logo class="logo"></sparc-logo>
+    <div class="section footer">
+        <el-row type="flex" justify="center">
+            <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
+                <div class="footer-content">
+                    <el-row>
+                        <el-col class="contact" :md="9">
+                            <sparc-logo class="logo"></sparc-logo>
+                            <p> The Common Fund’s Stimulating Peripheral Activity to Relieve Conditions (SPARC) program seeks to accelerate development of therapeutic devices that modulate electrical activity in nerves to improve organ function.</p>
+                        </el-col>
+                        <el-col class="contact" :md="4">
+                            <h4>Contact</h4>
+                            <a href="https://commonfund.nih.gov/Sparc/">
+                                <p>SPARC NIH</p>
+                            </a>
+                            <a href="#" @click.prevent="isContactModalVisible = true">Contact SPARC</a>
+                            <a href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1">
+                                <p>Subscribe</p>
+                            </a>
+                        </el-col>
+                        <el-col class="contact" :md="4">
+                            <h4>Connect</h4>
+                            <a href="https://twitter.com/sparc_science">
+                                <p>Twitter</p>
+                            </a>
+                            <a href="https://www.youtube.com/results?search_query=sparc+nih">
+                                <p>Youtube</p>
+                            </a>
+                        </el-col>
+                        <el-col class="contact" :md="5">
+                            <h4>Help Us Improve</h4>
+                            <a href="https://www.sparc-science.org/feedback/">
+                                <p>Send Us Feedback</p>
+                            </a>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>
+                            <div class="copyright">
+                                <p>Copyright © 2019. SPARC Data Resource Center. All Rights Reserved.</p>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </div>
             </el-col>
-            <el-col class="contact" :md="5">
-              <h4>Contact</h4>
-              <a href="mailto:info@sparc.science">
-                <p>info@sparc.science</p>
-              </a>
-              <a href="#" @click.prevent="isContactModalVisible = true">Contact Us</a>
-            </el-col>
-            <el-col class="contact" :md="5">
-              <h4>learn More</h4>
-              <a href="https://sparc.science">
-                <p>SPARC Portal</p>
-              </a>
-              <a href="https://commonfund.nih.gov/Sparc/">
-                <p>SPARC NIH</p>
-              </a>
-              <a href="https://twitter.com/sparc_science">
-                <p>Twitter</p>
-              </a>
-              <a href="https://www.youtube.com/results?search_query=sparc+nih">
-                <p>Youtube</p>
-              </a>
-              <a href="https://www.sparc-science.org/Privacy_policy/">
-                <p>Privacy Policy</p>
-              </a>
-            </el-col>
-            <el-col class="contact" :md="5">
-              <h4>Help Us Improve</h4>
-              <a href="https://www.sparc-science.org/feedback/">Website feedback</a>
-            </el-col>
-            <el-col class="contact" :md="5">
-              <h4>Stay Up-To-Date: Subscribe</h4>
-              <a
-                href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1"
-              >SPARC mailing list</a>
-            </el-col>
-          </el-row>
-        </div>
-      </el-col>
-    </el-row>
-    <contact-us-modal :visible.sync="isContactModalVisible" />
-  </div>
+        </el-row>
+        
+        
+
+        <contact-us-modal :visible.sync="isContactModalVisible" />
+    </div>
 </template>
 
 <script>
 import SparcLogo from "@/components/logo/SparcLogo.vue"
 import ContactUsModal from "@/components/footer/ContactUsModal"
-
-const footerAddress = {
-  name: "National Institutes of Health",
-  street: "990 Rockville Pike",
-  city: "Bethesda",
-  state: "Maryland"
-}
-
-const footerEmailAddress = "gene.civillico@nih.gov"
-
-const footerPhoneNumber = ["301", "451", "3180"]
-
-const footerTwitterHandle = "/"
-
-const footerFacebookHandle = "/"
-
-const footerLinks = [
-  {
-    title: "Overview",
-    items: [
-      {
-        title: "Program components",
-        href: "/"
-      },
-      {
-        title: "SPARC OTs",
-        href: "/"
-      },
-      {
-        title: "Working group",
-        href: "/"
-      }
-    ]
-  },
-  {
-    title: "Research",
-    items: [
-      {
-        title: "Funded research",
-        href: "/"
-      },
-      {
-        title: "Translational partnerships",
-        href: "/"
-      },
-      {
-        title: "Opportunities",
-        href: "/"
-      },
-      {
-        title: "Devices",
-        href: "/"
-      },
-      {
-        title: "Publications",
-        href: "/"
-      }
-    ]
-  },
-  {
-    title: "Resources",
-    items: [
-      {
-        title: "Cores",
-        href: "/"
-      },
-      {
-        title: "Templates and references",
-        href: "/"
-      },
-      {
-        title: "Materials",
-        href: "/"
-      }
-    ]
-  },
-  {
-    title: "News",
-    items: [
-      {
-        title: "Events",
-        href: "/"
-      },
-      {
-        title: "Announcements",
-        href: "/"
-      }
-    ]
-  },
-  {
-    title: "Support",
-    items: [
-      {
-        title: "Documentation",
-        href: "/"
-      },
-      {
-        title: "Tutorials",
-        href: "/"
-      },
-      {
-        title: "Feedback",
-        href: "/"
-      }
-    ]
-  }
-]
 
 export default {
   name: "sparc-footer",
@@ -168,12 +62,6 @@ export default {
     ContactUsModal
   },
   data: () => ({
-    footerLinks,
-    footerAddress,
-    footerPhoneNumber,
-    footerEmailAddress,
-    footerTwitterHandle,
-    footerFacebookHandle,
     isContactModalVisible: false
   })
 };
@@ -187,7 +75,8 @@ export default {
 }
 
 .footer {
-  padding: 6em 0;
+  padding-top: 4em;
+  padding-bottom: 1em;
   background: #edf1fc;
 
   color: #5d6478;
@@ -198,8 +87,10 @@ export default {
   }
 
   .footer-content {
+      
     .contact {
-      margin-bottom: 2em;
+        padding-right: 32px;
+    //   margin-bottom: 2em;
 
       a {
         color: #5d6478;
@@ -218,6 +109,7 @@ export default {
         font-weight: lighter;
         text-transform: none;
         font-size: 15px;
+        margin:0
       }
 
       h4 {
@@ -230,9 +122,8 @@ export default {
     }
 
     .logo {
-      height: 74px;
+      height: 50px;
       width: 120px;
-      margin-bottom: 3em;
       margin-top: -9px;
     }
   }
@@ -241,6 +132,18 @@ export default {
 .link-sections {
   display: flex;
   flex-wrap: wrap;
+}
+
+.copyright {
+    margin-top: 80px;
+    // margin-left: 32px;
+    p {
+        font-weight: lighter;
+        text-transform: none;
+        font-size: 15px;
+        margin:0
+      }
+
 }
 
 .link-section {
