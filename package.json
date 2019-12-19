@@ -1,8 +1,8 @@
 {
-  "name": "sparc_nuxt",
+  "name": "sparc-portal",
   "version": "1.0.0",
-  "description": "My cat&#39;s meow Nuxt.js project",
-  "author": "Joost Wagenaar",
+  "description": "SPARC Portal Web Application",
+  "author": "The SPARC Data Resource Center",
   "private": true,
   "scripts": {
     "dev": "nuxt",
