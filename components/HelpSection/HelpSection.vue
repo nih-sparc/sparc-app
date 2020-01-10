@@ -1,55 +1,53 @@
 <template>
   <!-- <div class="event-card"> -->
-    <!-- <div class="event-content"> -->
-        <div class="event-content-wrap">
-            <h3>
-                {{ section.fields.title }} 
-            </h3>
-            <div class="section events">
-            <div v-for="(item, index) in section.fields.helpDocuments"
-                :key="`${item}-${index}`">
-                <help-card :helpItem=item />
-            </div> 
-        </div>
+  <!-- <div class="event-content"> -->
+  <div class="event-content-wrap">
+    <h3>
+      {{ section.fields.title }}
+    </h3>
+    <div class="section events">
+      <div
+        v-for="(item, index) in section.fields.helpDocuments"
+        :key="`${item}-${index}`"
+      >
+        <help-card :help-item="item" />
       </div>
-    <!-- </div> -->
+    </div>
+  </div>
+  <!-- </div> -->
   <!-- </div> -->
 </template>
 
 <script>
-import {
-  propOr,
-  take
-} from 'ramda'
+import { propOr, take } from 'ramda'
 
-import HelpCard from "@/components/HelpCard/HelpCard.vue";
+import HelpCard from '@/components/HelpCard/HelpCard.vue'
 
 export default {
-    name: 'help-section',
-    components: {
-        HelpCard
-    },
-    props: {
-        section: {
-            type: Object,
-            default: () => {
-                return {
-                    title: '',
-                    sys: {},
-                    summary: ''
-                }
-            }
+  name: 'HelpSection',
+  components: {
+    HelpCard
+  },
+  props: {
+    section: {
+      type: Object,
+      default: () => {
+        return {
+          title: '',
+          sys: {},
+          summary: ''
         }
-    },
-    methods: {
+      }
     }
+  },
+  methods: {}
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .event-card {
-    //   border: solid 1px $pudendal;
+  //   border: solid 1px $pudendal;
   border-radius: 3px 3px 0 0;
   max-width: 800px;
 }
@@ -82,19 +80,19 @@ h3 {
     font-weight: 400;
     letter-spacing: 0px;
     line-height: 16px;
-    margin-bottom:8px;
+    margin-bottom: 8px;
     .svg-icon {
       margin-right: 8px;
     }
     .eventinfo {
-        margin-top:8px;
+      margin-top: 8px;
     }
   }
 }
 .event-content {
   display: flex;
   flex-direction: row;
-//   padding: 24px 16px;
+  //   padding: 24px 16px;
   img {
     display: block;
     width: 86px;
@@ -102,11 +100,11 @@ h3 {
   }
 
   .image {
-      margin: 2px;
+    margin: 2px;
   }
-  
+
   .event-content-wrap {
-      margin-left: 16px;
+    margin-left: 16px;
   }
 }
 .meta {

@@ -1,13 +1,7 @@
 <template>
   <div class="dataset-header">
     <el-row type="flex" justify="center">
-      <el-col
-        :xs="22"
-        :sm="22"
-        :md="22"
-        :lg="18"
-        :xl="16"
-      >
+      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
         <!-- <el-row class="breadcrumb">
           <el-col
             :xs="24"
@@ -22,52 +16,48 @@
           </el-col>
         </el-row> -->
         <el-row>
-          <el-col
-            :xs="24"
-            :sm="12"
-          >
+          <el-col :xs="24" :sm="12">
             <h1 class="dataset-title">
               {{ datasetTitle }}
             </h1>
             <div class="dataset-owners">
-                <template v-if="!isContributorListVisible">
-                  <contributor-item :contributor="firstContributor" />
-                  <button
-                    class="contributors-button"
-                    href="#"
-                    @click.prevent="isContributorListVisible = true"
-                  >
-                    <span class="button-text">...</span>
-                  </button>
-                </template>
-
-                <div
-                  v-for="(contributor, idx) in datasetContributorsList"
-                  :key="contributor.id"
-                  class="contributor-item-wrap"
+              <template v-if="!isContributorListVisible">
+                <contributor-item :contributor="firstContributor" />
+                <button
+                  class="contributors-button"
+                  href="#"
+                  @click.prevent="isContributorListVisible = true"
                 >
-                  <contributor-item
-                    :contributor="contributor"
-                  />
-                  <template v-if="idx < datasetContributorsList.length - 1">
-                    ,
-                  </template>
-                </div>
+                  <span class="button-text">...</span>
+                </button>
+              </template>
+
+              <div
+                v-for="(contributor, idx) in datasetContributorsList"
+                :key="contributor.id"
+                class="contributor-item-wrap"
+              >
+                <contributor-item :contributor="contributor" />
+                <template v-if="idx < datasetContributorsList.length - 1">
+                  ,
+                </template>
               </div>
+            </div>
             <p class="dataset-description">
               {{ datasetDescription }}
             </p>
             <div class="dataset-doi">
-                <p class="info-text">{{ datasetDOI }}</p>
+              <p class="info-text">
+                {{ datasetDOI }}
+              </p>
             </div>
 
             <div class="dataset-meta">
               <div class="dataset-updated-date">
                 Updated on {{ updatedDate }}
               </div>
-              
             </div>
-            
+
             <div class="dataset-actions">
               <bf-button
                 class="get-dataset-button"
@@ -89,7 +79,8 @@
                   <template v-if="datasetFiles > 0">
                     <strong>
                       {{ datasetFiles }}
-                    </strong> Files
+                    </strong>
+                    Files
                   </template>
 
                   <template v-else>
@@ -105,7 +96,8 @@
                   width="20"
                 />
                 <div>
-                  <strong>{{ datasetStorage.number }}</strong> {{ datasetStorage.unit }}
+                  <strong>{{ datasetStorage.number }}</strong>
+                  {{ datasetStorage.unit }}
                 </div>
               </div>
               <div class="header-stats-block">
@@ -124,10 +116,7 @@
                       placement="top"
                       :visible-arrow="false"
                     >
-                      <a
-                        :href="licenseLink"
-                        target="_blank"
-                      >
+                      <a :href="licenseLink" target="_blank">
                         {{ datasetLicense }}
                       </a>
                     </el-tooltip>
@@ -140,10 +129,7 @@
               </div>
             </div>
           </el-col>
-          <el-col
-            :xs="24"
-            :sm="12"
-          >
+          <el-col :xs="24" :sm="12">
             <div class="header-image-section">
               <dataset-banner-image
                 class="dataset-image"
@@ -174,13 +160,7 @@ import FormatDate from '@/mixins/format-date'
 
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
-import {
-  compose,
-  head,
-  split,
-  last,
-  propOr
-} from 'ramda'
+import { compose, head, split, last, propOr } from 'ramda'
 export default {
   name: 'DatasetHeader',
 
@@ -200,7 +180,7 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       isDownloadModalVisible: false,
       isVersionModalVisible: false,
@@ -214,7 +194,7 @@ export default {
      * on expanded list being show
      * @returns {Array}
      */
-    datasetContributorsList: function () {
+    datasetContributorsList: function() {
       return this.isContributorListVisible
         ? this.datasetContributors
         : [last(this.datasetContributors)]
@@ -224,7 +204,7 @@ export default {
      * Compute URL for dataset on Blackfynn Discover
      * @returns {String}
      */
-    discoverLink: function () {
+    discoverLink: function() {
       return `https://discover.blackfynn.com/datasets/${this.datasetId}`
     },
 
@@ -233,7 +213,7 @@ export default {
      * to show the hide contributor button in the header
      * @returns {Boolean}
      */
-    shouldTruncateList: function () {
+    shouldTruncateList: function() {
       return this.datasetContributors.length >= 2
     },
 
@@ -241,7 +221,7 @@ export default {
      * Gets dataset size for download
      * @returns {Number}
      */
-    getDownloadSize: function () {
+    getDownloadSize: function() {
       return propOr(0, 'size', this.datasetDetails)
     },
 
@@ -249,7 +229,7 @@ export default {
      * Gets dataset ID
      * @returns {Number}
      */
-    datasetId: function () {
+    datasetId: function() {
       return propOr(0, 'id', this.datasetDetails)
     },
 
@@ -257,7 +237,7 @@ export default {
      * Gets latest version number of dataset
      * @returns {Number}
      */
-    latestVersion: function () {
+    latestVersion: function() {
       return propOr(1, 'version', this.datasetDetails)
     },
 
@@ -265,7 +245,7 @@ export default {
      * Gets license link
      * @returns {String}
      */
-    licenseLink: function () {
+    licenseLink: function() {
       return getLicenseLink(this.datasetLicense)
     },
 
@@ -273,7 +253,7 @@ export default {
      * Returns the dataset title
      * @returns {String}
      */
-    datasetTitle: function () {
+    datasetTitle: function() {
       return propOr('', 'name', this.datasetDetails)
     },
 
@@ -281,7 +261,7 @@ export default {
      * Returns the dataset description
      * @returns {String}
      */
-    datasetDescription: function () {
+    datasetDescription: function() {
       return propOr('', 'description', this.datasetDetails)
     },
 
@@ -289,7 +269,7 @@ export default {
      * Returns the last updated date
      * @returns {String}
      */
-    updatedDate: function () {
+    updatedDate: function() {
       return this.formatDate(propOr('', 'updatedAt', this.datasetDetails))
     },
 
@@ -297,7 +277,7 @@ export default {
      * Checks if a banner image exists or not
      * @returns {Boolean}
      */
-    datasetImage: function () {
+    datasetImage: function() {
       const banner = propOr('', 'banner', this.datasetDetails)
       if (banner.indexOf('banner.jpg') === -1 || banner === '') {
         return true
@@ -309,7 +289,7 @@ export default {
      * Returns dataset banner
      * @returns {String}
      */
-    getDatasetImage: function () {
+    getDatasetImage: function() {
       return propOr('', 'banner', this.datasetDetails)
     },
 
@@ -317,7 +297,7 @@ export default {
      * Returns the files associated with the dataset
      * @returns {String}
      */
-    datasetFiles: function () {
+    datasetFiles: function() {
       return propOr('', 'fileCount', this.datasetDetails)
     },
 
@@ -325,7 +305,7 @@ export default {
      * Returns the dataset storage count
      * @returns {Object}
      */
-    datasetStorage: function () {
+    datasetStorage: function() {
       const storage = compose(
         split(' '),
         this.formatMetric,
@@ -344,7 +324,7 @@ export default {
      * Returns the dataset record count
      * @returns {String}
      */
-    datasetRecords: function () {
+    datasetRecords: function() {
       return propOr('', 'recordCount', this.datasetDetails)
     },
 
@@ -352,7 +332,7 @@ export default {
      * Returns the license abbr associated with the dataset
      * @returns {String}
      */
-    datasetLicense: function () {
+    datasetLicense: function() {
       const licenseKey = propOr('', 'license', this.datasetDetails)
       return getLicenseAbbr(licenseKey)
     },
@@ -361,7 +341,7 @@ export default {
      * Returns the license name associated with the dataset
      * @returns {String}
      */
-    datasetLicenseName: function () {
+    datasetLicenseName: function() {
       return propOr('', 'license', this.datasetDetails)
     },
 
@@ -369,7 +349,7 @@ export default {
      * Returns the list of contributors who contributed to the dataset
      * @returns {String}
      */
-    datasetContributors: function () {
+    datasetContributors: function() {
       return propOr([], 'contributors', this.datasetDetails)
     },
 
@@ -377,7 +357,7 @@ export default {
      * Gets the first contributor from the list
      * @returns {String}
      */
-    firstContributor: function () {
+    firstContributor: function() {
       return head(this.datasetContributors)
     },
 
@@ -385,7 +365,7 @@ export default {
      * Gets the last contributor from the list
      * @returns {String}
      */
-    lastContributor: function () {
+    lastContributor: function() {
       return this.datasetContributors[this.datasetContributors.length - 1]
     },
 
@@ -393,7 +373,7 @@ export default {
      * Compute dataset owner
      * @returns {String}
      */
-    datasetOwner: function () {
+    datasetOwner: function() {
       return propOr('', 'ownerName', this.datasetDetails)
     },
 
@@ -401,14 +381,14 @@ export default {
      * Get the dataset DOI and return the url
      * @returns {String}
      */
-    datasetDOI: function () {
+    datasetDOI: function() {
       const doi = propOr('', 'doi', this.datasetDetails)
       return `https://doi.org/${doi}`
-    },
+    }
   },
 
   watch: {
-    datasetContributors: function (val) {
+    datasetContributors: function(val) {
       if (val.length > 5) {
         this.isContributorListVisible = false
       }
@@ -419,26 +399,26 @@ export default {
     /**
      * Opens the Get Dataset modal
      */
-    getDataset: function () {
+    getDataset: function() {
       this.isDownloadModalVisible = true
     },
 
     /**
      * Opens the version history modal
      */
-    getVersionHistory: function () {
+    getVersionHistory: function() {
       this.isVersionModalVisible = true
     },
 
     /**
      * Closes the version history modal
      */
-    closeVersionModal: function () {
+    closeVersionModal: function() {
       this.isVersionModalVisible = false
     }
   },
 
-  metaInfo () {
+  metaInfo() {
     return {
       title: this.datasetTitle,
       meta: [
@@ -556,7 +536,7 @@ export default {
   }
   a {
     &:focus {
-      color: #1C46BD;
+      color: #1c46bd;
     }
   }
 }
@@ -596,7 +576,7 @@ export default {
     &:focus {
       color: black;
     }
-  }  
+  }
 }
 .dataset-actions {
   padding: 8px 0;

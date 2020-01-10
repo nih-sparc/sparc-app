@@ -1,59 +1,61 @@
 <template>
-    <div class="events-page">
-        <div class="header">
-            <div class="gradient">
-                <el-row type="flex" justify="center">
-                <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
-                    <div class="breadcrumb">
-                        <h3>SPARC Events:</h3> <p>Join the SPARC teams at the following events, conferences and workshops</p>
-                    </div>
-                </el-col>
-                </el-row>
+  <div class="events-page">
+    <div class="header">
+      <div class="gradient">
+        <el-row type="flex" justify="center">
+          <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
+            <div class="breadcrumb">
+              <h3>SPARC Events:</h3>
+              <p>
+                Join the SPARC teams at the following events, conferences and
+                workshops
+              </p>
             </div>
-        </div>
-
-        <div class="section events">
-            <div v-for="(event, index) in events"  
-                :key="`${event}-${index}`">
-                <event-card :event=event />
-            </div> 
-        </div>
+          </el-col>
+        </el-row>
+      </div>
     </div>
+
+    <div class="section events">
+      <div v-for="(event, index) in events" :key="`${event}-${index}`">
+        <event-card :event="event" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import EventCard from "@/components/EventCard/EventCard.vue";
+import EventCard from '@/components/EventCard/EventCard.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
 
 export default {
-    name: "event-page",
-    components: {
-        EventCard
-    },
-    
+  name: 'EventPage',
+  components: {
+    EventCard
+  },
 
-    asyncData (env) {
-        console.log('fetching data ' + process.env.ctf_event_id)
-        return Promise.all([
-            // fetch all blog posts sorted by creation date
-            client.getEntries({
-            'content_type': process.env.ctf_event_id,
-            order: 'fields.startDate'
-            })
-        ]).then(([events]) => {
-            // return data that should be available
-            // in the template
-            console.log('returning entries ' + events)
-            return {
-                events: events.items
-            }
-        }).catch(console.error)
-    },
-
+  asyncData(env) {
+    console.log('fetching data ' + process.env.ctf_event_id)
+    return Promise.all([
+      // fetch all blog posts sorted by creation date
+      client.getEntries({
+        content_type: process.env.ctf_event_id,
+        order: 'fields.startDate'
+      })
+    ])
+      .then(([events]) => {
+        // return data that should be available
+        // in the template
+        console.log('returning entries ' + events)
+        return {
+          events: events.items
+        }
+      })
+      .catch(console.error)
+  }
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -71,8 +73,8 @@ export default {
 }
 
 .events {
-    margin-left: 32px;
-    margin: 24px auto;
-    width: 80%;
+  margin-left: 32px;
+  margin: 24px auto;
+  width: 80%;
 }
 </style>

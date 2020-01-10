@@ -6,13 +6,13 @@
       layout="prev, pager, next"
       :total="totalCount"
       @current-change="selectPage"
-    ></el-pagination>
+    />
   </div>
 </template>
 
 <script>
 export default {
-  name: "pagination",
+  name: 'Pagination',
   props: {
     selected: {
       type: Number,
@@ -27,19 +27,19 @@ export default {
     }
   },
   computed: {
-      pageCount: function() {
-        return Math.ceil(this.totalCount / this.pageSize);
-      }
+    pageCount: function() {
+      return Math.ceil(this.totalCount / this.pageSize)
+    }
   },
   methods: {
     /**
      * Emit select-page event
      */
-    selectPage: function (page) {
-      this.$emit('select-page', page);
+    selectPage: function(page) {
+      this.$emit('select-page', page)
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

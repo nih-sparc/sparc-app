@@ -13,8 +13,6 @@ import * as svgicon from 'vue-svgicon'
 // // import VueClipboard from 'vue-clipboard2'
 // // import VueMeta from 'vue-meta'
 
-
-
 import striptags from 'striptags'
 Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>
   striptags(html, allowedTags)

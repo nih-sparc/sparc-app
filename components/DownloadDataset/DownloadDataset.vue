@@ -8,12 +8,12 @@
     @close="closeDialog"
   >
     <div class="download-dataset-container">
-      <div
-        v-if="!isDatasetSizeLarge"
-        class="download-block"
-      >
+      <div v-if="!isDatasetSizeLarge" class="download-block">
         <h1>Direct Download</h1>
-        <p>You can download the raw files and metadata directly to your computer as a zip archive free of charge.</p>
+        <p>
+          You can download the raw files and metadata directly to your computer
+          as a zip archive free of charge.
+        </p>
         <a :href="downloadUrl">
           <bf-button class="download-button">Download Dataset</bf-button>
         </a>
@@ -23,10 +23,7 @@
         </div>
       </div>
       <div :class="[isDatasetSizeLarge ? 'aws-container' : 'aws-block']">
-        <button
-          class="close-dialog"
-          @click="closeDialog"
-        >
+        <button class="close-dialog" @click="closeDialog">
           <svg-icon
             name="icon-remove"
             width="16"
@@ -37,7 +34,8 @@
         </button>
         <h1>Download from AWS</h1>
         <p>
-          Raw files and metadata are stored in an AWS S3 Requester Pays bucket. You can learn more about
+          Raw files and metadata are stored in an AWS S3 Requester Pays bucket.
+          You can learn more about
           <a
             href="https://docs.sparc.science/public_dataset_access.html"
             target="_blank"
@@ -49,9 +47,7 @@
         <h2>Resource Type</h2>
         <p>Amazon S3 Bucket (Requester Pays)</p>
         <h2>Amazon S3 Bucket</h2>
-        <div
-          class="text-block"
-        >
+        <div class="text-block">
           {{ datasetArn }}
         </div>
         <h2>AWS Region</h2>
@@ -61,7 +57,6 @@
       </div>
     </div>
     <div class="discover-banner">
-      
       For more information, visit:
       <a
         href="https://docs.sparc.science/public_dataset_access.html"
@@ -74,9 +69,7 @@
 </template>
 
 <script>
-import {
-  propOr
-} from 'ramda'
+import { propOr } from 'ramda'
 
 import BfButton from '../shared/BfButton/BfButton.vue'
 
@@ -89,9 +82,7 @@ export default {
     BfButton
   },
 
-  mixins: [
-    FormatMetric
-  ],
+  mixins: [FormatMetric],
 
   props: {
     visible: {
@@ -109,8 +100,8 @@ export default {
      * Checks whether the dataset download size is larger or smaller than 1GB
      * @returns {Boolean}
      */
-    isDatasetSizeLarge: function () {
-      const datasetSize = propOr(0, 'size', this.datasetDetails);
+    isDatasetSizeLarge: function() {
+      const datasetSize = propOr(0, 'size', this.datasetDetails)
       return datasetSize > 5000000000
     },
 
@@ -118,17 +109,15 @@ export default {
      * Compute width based on isDatasetSizeLarge
      * @returns {String}
      */
-    width: function () {
-      return this.isDatasetSizeLarge
-        ? '490px'
-        : '772px'
+    width: function() {
+      return this.isDatasetSizeLarge ? '490px' : '772px'
     },
 
     /**
      * Gets dataset id
      * @returns {Number}
      */
-    datasetId: function () {
+    datasetId: function() {
       return propOr(0, 'id', this.datasetDetails)
     },
 
@@ -136,7 +125,7 @@ export default {
      * Gets dataset version
      * @returns {Number}
      */
-    versionId: function () {
+    versionId: function() {
       return propOr(0, 'version', this.datasetDetails)
     },
 
@@ -144,7 +133,7 @@ export default {
      * Gets dataset ARN
      * @returns {String}
      */
-    datasetArn: function () {
+    datasetArn: function() {
       return propOr('', 'uri', this.datasetDetails)
     },
 
@@ -152,7 +141,7 @@ export default {
      * Computes the API url for downloading a dataset
      * @returns {String}
      */
-    downloadUrl: function () {
+    downloadUrl: function() {
       return `https://api.blackfynn.io/discover/datasets/${this.datasetId}/versions/${this.versionId}/download`
     }
   },
@@ -161,7 +150,7 @@ export default {
     /**
      * Closes dialog
      */
-    closeDialog: function () {
+    closeDialog: function() {
       this.$emit('close-download-dialog')
     }
   }
@@ -169,17 +158,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-  .el-dialog__body {
-    padding: 0;
-  }
-  .el-dialog__header {
-    display: none;
-  }
-
+.el-dialog__body {
+  padding: 0;
+}
+.el-dialog__header {
+  display: none;
+}
 
 .discover-banner {
-  background: #EDF1FC;
+  background: #edf1fc;
   padding: 8px;
   text-align: center;
 }
@@ -242,7 +229,6 @@ export default {
       font-weight: 500;
       line-height: 24px;
       margin-top: 5px;
-
     }
   }
 
@@ -324,9 +310,9 @@ export default {
   }
 
   ::v-deep .bf-button {
-       &:focus {
-        background-color: #11369C;
-      }
+    &:focus {
+      background-color: #11369c;
+    }
   }
 }
 </style>
