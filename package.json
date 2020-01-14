@@ -17,7 +17,7 @@
     "element-ui": "^2.4.11",
     "marked": "^0.7.0",
     "moment": "^2.24.0",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.11.0",
     "ramda": "^0.26.1",
     "showdown": "^1.9.1",
     "striptags": "^3.1.1",
