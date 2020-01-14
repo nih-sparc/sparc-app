@@ -31,16 +31,10 @@
 </template>
 
 <script>
-import { propOr, take } from 'ramda'
+import { format, parseISO } from 'date-fns'
+import { pathOr } from 'ramda'
 import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
 import FormatDate from '@/mixins/format-date'
-import {
-  format,
-  formatDistance,
-  formatRelative,
-  subDays,
-  parseISO
-} from 'date-fns'
 
 export default {
   name: 'EventCard',
@@ -69,11 +63,11 @@ export default {
   },
   computed: {
     bannerUrl: function() {
-      try {
-        return this.event.fields.image.fields.file.url
-      } catch {
-        console.log(this.event.fields)
-      }
+      return pathOr(
+        '',
+        ['fields', 'image', 'fields', 'file', 'url'],
+        this.event
+      )
     },
     startDate: function() {
       return format(parseISO(this.event.fields.startDate), 'MM/dd/yyyy')

@@ -31,8 +31,6 @@
 <script>
 import HelpSection from '@/components/HelpSection/HelpSection.vue'
 import createClient from '@/plugins/contentful.js'
-import showdown from 'showdown'
-import { pathOr } from 'ramda'
 
 const client = createClient()
 
@@ -41,7 +39,7 @@ export default {
   components: {
     HelpSection
   },
-  asyncData(env) {
+  asyncData() {
     return Promise.all([
       // fetch all blog posts sorted by creation date
       client.getEntry(process.env.ctf_support_page_id, { include: 1 }),

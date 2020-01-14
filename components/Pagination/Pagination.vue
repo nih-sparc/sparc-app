@@ -23,7 +23,8 @@ export default {
       default: 20
     },
     totalCount: {
-      type: Number
+      type: Number,
+      default: 0
     }
   },
   computed: {

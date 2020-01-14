@@ -27,7 +27,7 @@ export default {
   },
   computed: {},
   watch: {
-    $route(to, from) {
+    $route() {
       this.id = this.$route.params.id
     }
   },

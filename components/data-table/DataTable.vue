@@ -9,7 +9,7 @@
         <el-table-column prop="address" label="Address" width="300" />
         <el-table-column prop="zip" label="Zip" width="120" />
         <el-table-column fixed="right" label="Operations" width="120">
-          <template slot-scope="scope">
+          <template>
             <el-button type="text" size="small" @click="handleClick">
               Detail
             </el-button>
@@ -36,10 +36,12 @@ export default {
   },
   props: {
     tableClass: {
-      type: String
+      type: String,
+      default: ''
     },
     totalCount: {
-      type: Number
+      type: Number,
+      default: 0
     }
   }
 }

@@ -36,7 +36,7 @@ export default {
     EventCard
   },
 
-  asyncData(env) {
+  asyncData() {
     console.log('fetching data ' + process.env.ctf_event_id)
     return Promise.all([
       // fetch all blog posts sorted by creation date

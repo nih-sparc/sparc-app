@@ -28,8 +28,6 @@
 </template>
 
 <script>
-import { pathOr } from 'ramda'
-
 export default {
   props: {
     searchOnLoad: {

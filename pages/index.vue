@@ -21,11 +21,11 @@
                     <h1 class="hero-header">
                       Advancing bioelectronic medicine through open science.
                     </h1>
-                    <a href="/browse"
-                      ><el-button type="primary" class="explore-the-data"
-                        >Explore the data</el-button
-                      ></a
-                    >
+                    <a href="/browse">
+                      <el-button type="primary" class="explore-the-data">
+                        Explore the data
+                      </el-button>
+                    </a>
                   </el-col>
                 </el-row>
               </el-col>
@@ -56,8 +56,9 @@
                   :class="{ active: activeTextBlock === 'goal' }"
                   href="#"
                   @click.prevent="toggleText('goal')"
-                  >Goal</a
                 >
+                  Goal
+                </a>
               </span>
               <span>•</span>
               <span class="option">
@@ -65,8 +66,9 @@
                   :class="{ active: activeTextBlock === 'current' }"
                   href="#"
                   @click.prevent="toggleText('current')"
-                  >Current</a
                 >
+                  Current
+                </a>
               </span>
               <span>•</span>
               <span class="option">
@@ -74,8 +76,9 @@
                   :class="{ active: activeTextBlock === 'future' }"
                   href="#"
                   @click.prevent="toggleText('future')"
-                  >Future</a
                 >
+                  Future
+                </a>
               </span>
             </div>
             <p>
@@ -100,10 +103,11 @@
                   <p>{{ core.name }}</p>
                   <p v-html="core.description" />
                   <div class="bottom clearfix">
-                    <a :href="core.link"
-                      ><el-button type="text" class="button">{{
+                    <a :href="core.link">
+                      <el-button type="text" class="button">{{
                         core.linkText
-                      }}</el-button></a>
+                      }}</el-button>
+                    </a>
                   </div>
                 </div>
               </el-card>
@@ -142,7 +146,6 @@ import mapCore from '../static/images/map-core-image.jpg'
 import simulationCore from '../static/images/osparc-human.png'
 import dataCore from '../static/images/datcore-card-image.svg'
 import datasetAbstractImage from '../static/images/dataset-abstract-image.png'
-import eventCard from '@/components/EventCard/EventCard.vue'
 
 // import FeaturedDatasets from "../featured-datasets-carousel/FeaturedDatasetsCarousel.vue";
 import SearchControls from '@/components/search-controls/SearchControls.vue'
@@ -177,8 +180,7 @@ const cores = [
 export default {
   name: 'Index',
   components: {
-    SearchControls,
-    eventCard
+    SearchControls
   },
 
   data: () => ({
@@ -284,7 +286,6 @@ export default {
 
     .view-search-results {
       background: #24245b;
-      text: #fff;
       border: 0;
     }
   }

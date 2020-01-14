@@ -50,18 +50,23 @@
 </template>
 
 <script>
-import DatasetBannerImage from '../DatasetBannerImage/DatasetBannerImage.vue'
+// import DatasetBannerImage from '../DatasetBannerImage/DatasetBannerImage.vue'
 // import embargoImage from '../../../public/images/illustrations/datcore-card-image.svg'
 
 export default {
   name: 'GridEmbargo',
 
   components: {
-    DatasetBannerImage
+    // DatasetBannerImage
     // embargoImage
   },
 
-  props: ['cards']
+  props: {
+    cards: {
+      type: Array,
+      default: () => []
+    }
+  }
 }
 </script>
 

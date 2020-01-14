@@ -287,8 +287,6 @@ export default {
         pathOr('', ['row', 'uri'])
       )(scope)
 
-      const fileName = pathOr('', ['row', 'name'], scope)
-
       const requestUrl = `/api/download?key=${filePath}`
 
       this.$axios.$get(requestUrl).then(response => {

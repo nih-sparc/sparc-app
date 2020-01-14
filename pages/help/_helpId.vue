@@ -30,15 +30,8 @@
 </template>
 
 <script>
-import eventCard from '@/components/EventCard/EventCard.vue'
 import createClient from '@/plugins/contentful.js'
-import {
-  format,
-  formatDistance,
-  formatRelative,
-  subDays,
-  parseISO
-} from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import showdown from 'showdown'
 import { pathOr } from 'ramda'
 import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
@@ -48,7 +41,6 @@ const client = createClient()
 export default {
   name: 'EventPage',
   components: {
-    eventCard,
     HelpSearchControls
   },
 
@@ -84,7 +76,7 @@ export default {
   },
 
   methods: {
-    onSearchQuery: function(terms) {
+    onSearchQuery: function() {
       return 0
     },
     goBack() {

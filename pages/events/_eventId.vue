@@ -31,13 +31,7 @@
 
 <script>
 import createClient from '@/plugins/contentful.js'
-import {
-  format,
-  formatDistance,
-  formatRelative,
-  subDays,
-  parseISO
-} from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
 import { pathOr } from 'ramda'
 

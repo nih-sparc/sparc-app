@@ -140,7 +140,6 @@ import GridEmbargo from '@/components/gridEmbargo/GridEmbargo.vue'
 
 import SearchControls from '@/components/search-controls/SearchControls.vue'
 import Pagination from '@/components/Pagination/Pagination.vue'
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 
@@ -150,7 +149,6 @@ export default {
   name: 'Browse',
 
   components: {
-    BfButton,
     Grid,
     SearchControls,
     Pagination,
@@ -336,8 +334,6 @@ export default {
         split('s3://blackfynn-discover-use1/'),
         pathOr('', ['row', 'uri'])
       )(scope)
-
-      const fileName = pathOr('', ['row', 'name'], scope)
 
       const requestUrl = `/api/download?key=${filePath}`
 

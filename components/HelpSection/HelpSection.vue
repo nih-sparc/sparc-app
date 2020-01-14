@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import { propOr, take } from 'ramda'
-
 import HelpCard from '@/components/HelpCard/HelpCard.vue'
 
 export default {

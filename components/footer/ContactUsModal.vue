@@ -42,12 +42,6 @@
 </template>
 
 <script>
-const contactForm = {
-  name: null,
-  email: null,
-  message: null
-}
-
 export default {
   name: 'ContactUsModal',
   props: {

@@ -5,7 +5,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(Element, { locale })
 Vue.config.devtools = true
 
-import { Dialog, Spinner, Message, Loading, Tooltip } from 'element-ui'
+import { Message } from 'element-ui'
 import '@/assets/element-variables.scss'
 import * as svgicon from 'vue-svgicon'
 // // import '@/assets/icons'

@@ -60,13 +60,22 @@ export default {
     DatasetBannerImage
   },
 
-  props: ['cards', 'card_type'],
+  props: {
+    cards: {
+      type: Array,
+      default: () => []
+    },
+    cardType: {
+      type: String,
+      default: ''
+    }
+  },
 
   computed: {
     onClickRoute: function() {
-      if (this.card_type == 'datasets') {
+      if (this.cardType == 'datasets') {
         return 'datasets-datasetId'
-      } else if (this.card_type == 'sim_models') {
+      } else if (this.cardType == 'sim_models') {
         return 'workflows-datasetId'
       } else {
         return 'datasets-datasetId'

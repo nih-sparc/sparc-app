@@ -5,7 +5,9 @@
       data-width="300"
       data-height="800"
       href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw"
-    >SPARC Tweets</a>
+    >
+      SPARC Tweets
+    </a>
     <script
       async
       src="https://platform.twitter.com/widgets.js"
@@ -34,8 +36,10 @@
             for our
             <a
               href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1"
-              >mailing list</a
-            >.
+            >
+              mailing list
+            </a>
+            .
           </p>
           <p>
             Data submission is currently limited to SPARC-funded investigators,
@@ -44,7 +48,7 @@
             any thoughts or suggestions you have for the Portal, so please click
             on the Contact Us link in the footer below to share feedback.
           </p>
-          <hr>
+          <hr />
           <p class="subtext">
             Development of the SPARC Portal is a collaborative effort between
             groups based in the United States, Switzerland, and New Zealand.

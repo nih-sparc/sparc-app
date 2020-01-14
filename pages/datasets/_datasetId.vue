@@ -165,7 +165,7 @@
 
 <script>
 import marked from 'marked'
-import { compose, head, propOr, pathOr } from 'ramda'
+import { propOr, pathOr } from 'ramda'
 // import { mapState } from 'vuex'
 
 import DatasetHeader from '@/components/DatasetHeader/DatasetHeader.vue'
@@ -273,7 +273,6 @@ export default {
     thisUrl: function() {
       // return ""
       return this.$route.fullPath
-      return window.location.origin + this.$route.fullPath
     },
     /**
      * Return DOI link
@@ -373,7 +372,7 @@ export default {
             this.datasetRecords = records
           }
         })
-        .catch(error => {
+        .catch(() => {
           // handle error
           this.errorLoading = true
         })
@@ -387,7 +386,7 @@ export default {
         .then(response => {
           this.datasetDetails = response
         })
-        .catch(error => {
+        .catch(() => {
           // handle error
           this.errorLoading = true
         })

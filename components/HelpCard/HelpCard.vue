@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import { propOr, take } from 'ramda'
-
 export default {
   name: 'HelpCard',
   props: {
