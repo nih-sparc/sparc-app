@@ -1,5 +1,35 @@
 <template>
-  <div class="nav">
+  <div class="header">
+    <div class="header__nav">
+      <div class="header__nav--parent-links">
+        <a href="#">About SPARC</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Need Help?</a>
+      </div>
+      <div class="header__nav--main-links">
+        <div class="logo">
+          <sparc-logo />
+        </div>
+        <a href="#">Home</a>
+        <a href="#">Find Data</a>
+        <a href="#">Resources</a>
+        <a href="#">News & Events</a>
+        <input type="text" placeholder="Search" />
+      </div>
+      <div class="header__content">
+        <h3 class="header__content--text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce imperdiet est eget purus aliquam viverra.
+          Nunc non elit massa. Donec suscipit felis ut tellus dignissim, vel commodo ex dapibus.
+          Donec dictum molestie ex, malesuada aliquam magna blandit at. Quisque auctor vehicula purus a eleifend.
+          Praesent vehicula mauris ac mollis suscipit. Etiam ultricies at neque eget pulvinar.
+        </h3>
+        <button class="header__content--button" @click="browseData">
+          Browse All Data
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="nav">
     <el-row type="flex" justify="center">
       <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
         <div class="header">
@@ -27,7 +57,7 @@
         </div>
       </el-col>
     </el-row>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -103,8 +133,8 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-end;
+  // justify-content: space-between;
+  // align-items: flex-end;
   @media screen and (max-width: 767px) {
     align-items: center;
   }
@@ -113,6 +143,11 @@ export default {
     height: 40px;
     white-space: nowrap;
   }
+}
+
+.header__nav {
+  background-color: $navy;
+  height: 40px;
 }
 
 .btn-menu {
