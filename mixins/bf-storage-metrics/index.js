@@ -6,15 +6,15 @@ export default {
      * @param {Number} divisor
      * @returns {Number|Float}
      */
-    _round2: function (dividend, divisor) {
-      return Math.round(dividend / divisor * 100) / 100
+    _round2: function(dividend, divisor) {
+      return Math.round((dividend / divisor) * 100) / 100
     },
 
     /**
      * @param {Number} storage
      * @returns {String}
      */
-    _format: function (storage) {
+    _format: function(storage) {
       const kb = 1e3
       const mb = 1e6
       const gb = 1e9
@@ -39,7 +39,7 @@ export default {
      * @param {Number} storage
      * @returns {String}
      */
-    formatMetric: function (storage) {
+    formatMetric: function(storage) {
       if (!storage || storage <= 0) {
         return String.fromCharCode(8212)
       }

@@ -7,7 +7,7 @@ export default {
      * @param {Boolean} disabled turns logging off completely
      * @returns {Object} console function or no-op
      */
-    logger: function (fnArgs, fnName = 'log', disabled = false) {
+    logger: function(fnArgs, fnName = 'log', disabled = false) {
       if (disabled) {
         return
       }

@@ -5,7 +5,11 @@
         <el-row type="flex" justify="center">
           <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
             <div class="breadcrumb">
-                  <h3>Explore data:</h3> <p>Explore the SPARC Data Resources such as Datasets, Protocols, and Metadata records</p>
+              <h3>Explore data:</h3>
+              <p>
+                Explore the SPARC Data Resources such as Datasets, Protocols,
+                and Metadata records
+              </p>
             </div>
           </el-col>
         </el-row>
@@ -28,7 +32,9 @@
       <el-row type="flex" justify="center">
         <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
           <div class="tableMetadata">
-            <div class="number-of-records">Showing {{ totalCount }} datasets</div>
+            <div class="number-of-records">
+              Showing {{ totalCount }} datasets
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -57,29 +63,21 @@
             :card_type="searchType"
           />
 
-          <div
-            v-if="searchType === 'files'"
-            class="files-table">
+          <div v-if="searchType === 'files'" class="files-table">
             <el-table :data="results">
-              <el-table-column
-                fixed
-                label="Name"
-                min-width="300"
-              >
+              <el-table-column fixed label="Name" min-width="300">
                 <template slot-scope="scope">
                   <div v-if="isMicrosoftFileType(scope)">
-                    <a href="#" @click.prevent="openFile(scope)">  {{ scope.row.name }} </a>
+                    <a href="#" @click.prevent="openFile(scope)">
+                      {{ scope.row.name }}
+                    </a>
                   </div>
                   <div v-else>
                     {{ scope.row.name }}
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="fileType"
-                label="File type"
-                width="120"
-              />
+              <el-table-column prop="fileType" label="File type" width="120" />
               <el-table-column
                 prop="size"
                 label="Size"
@@ -94,14 +92,8 @@
                 width="100"
               >
                 <template slot-scope="scope">
-                  <el-dropdown
-                    trigger="click"
-                    @command="onCommandClick"
-                  >
-                    <el-button
-                      icon="el-icon-more"
-                      size="small"
-                    />
+                  <el-dropdown trigger="click" @command="onCommandClick">
+                    <el-button icon="el-icon-more" size="small" />
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
                         :command="{
@@ -128,11 +120,7 @@
           </div>
         </el-col>
       </el-row>
-      <el-row
-        v-if="totalCount > 0"
-        type="flex"
-        justify="center"
-      >
+      <el-row v-if="totalCount > 0" type="flex" justify="center">
         <el-col :xs="22" :sm="22" :md="12" :lg="8">
           <pagination
             :selected="page"
@@ -146,39 +134,28 @@
   </div>
 </template>
 <script>
-import {
-  compose,
-  last,
-  defaultTo,
-  split,
-  pathOr,
-  propOr
-} from 'ramda'
-import Grid from "@/components/grid/Grid.vue";
-import GridEmbargo from "@/components/gridEmbargo/GridEmbargo.vue";
+import { compose, last, defaultTo, split, pathOr, propOr } from 'ramda'
+import Grid from '@/components/grid/Grid.vue'
+import GridEmbargo from '@/components/gridEmbargo/GridEmbargo.vue'
 
-import SearchControls from "@/components/search-controls/SearchControls.vue";
-import Pagination from "@/components/Pagination/Pagination.vue";
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import SearchControls from '@/components/search-controls/SearchControls.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 
-import "regenerator-runtime/runtime";
+import 'regenerator-runtime/runtime'
 
 export default {
-  name: "browse",
+  name: 'Browse',
 
   components: {
-    BfButton,
     Grid,
     SearchControls,
     Pagination,
     GridEmbargo
   },
 
-  mixins: [
-    FormatStorage
-  ],
+  mixins: [FormatStorage],
 
   data() {
     return {
@@ -190,7 +167,7 @@ export default {
       results: [],
       searchType: '',
       searchTerms: ''
-    };
+    }
   },
 
   computed: {
@@ -201,10 +178,10 @@ export default {
      */
     isClearSearchVisible: function() {
       return this.searchTerms !== ''
-    },
+    }
   },
 
-  created: function () {
+  created: function() {
     // if (window.gtag) {
     //   const routerBase = pathOr('', ['options', 'base'], this.$router)
     //   window.gtag('config', 'UA-143804703-1', {
@@ -215,14 +192,17 @@ export default {
   },
 
   methods: {
-
     /**
-       * Checks if file is MS Word, MS Excel, or MS Powerpoint
-       * @param {Object} scope
-       */
-      isMicrosoftFileType: function(scope) {
-        return scope.row.fileType === 'MSWord' || scope.row.fileType === 'MSExcel' || scope.row.fileType === 'PowerPoint'
-      },
+     * Checks if file is MS Word, MS Excel, or MS Powerpoint
+     * @param {Object} scope
+     */
+    isMicrosoftFileType: function(scope) {
+      return (
+        scope.row.fileType === 'MSWord' ||
+        scope.row.fileType === 'MSExcel' ||
+        scope.row.fileType === 'PowerPoint'
+      )
+    },
     /**
      * Format storage column
      * @param {Object} row
@@ -230,7 +210,7 @@ export default {
      * @param {Number} cellValue
      * @returns {String}
      */
-    formatStorage: function (row, column, cellValue) {
+    formatStorage: function(row, column, cellValue) {
       return this.formatMetric(cellValue)
     },
 
@@ -254,33 +234,33 @@ export default {
       }
     },
     selectPage(index) {
-      this.page = index;
-      this.fetchResults(this.searchType, this.searchTerms);
+      this.page = index
+      this.fetchResults(this.searchType, this.searchTerms)
     },
     async fetchResults(type, terms) {
-      this.results = [];
-      this.loading = true;
-      this.searchType = type;
-      this.searchTerms = terms;
+      this.results = []
+      this.loading = true
+      this.searchType = type
+      this.searchTerms = terms
 
       const offset = (this.page - 1) * this.limit
       let requestUrl = ''
 
       switch (type) {
-        case "datasets":
-        case "files":
-          requestUrl = `https://api.blackfynn.io/discover/search/${type}?limit=${this.limit}&offset=${offset}&organization=SPARC%20Consortium`;
+        case 'datasets':
+        case 'files':
+          requestUrl = `https://api.blackfynn.io/discover/search/${type}?limit=${this.limit}&offset=${offset}&organization=SPARC%20Consortium`
 
-            if (terms) {
-              requestUrl += `&query=${terms}`
-            }
-            break;
-        case "sim_models":
-          requestUrl = `https://api.blackfynn.io/discover/search/datasets?limit=${this.limit}&offset=${offset}&query=simcore`;
-          break;
-        case "embargo":
-          requestUrl = `/api/datasets/embargo`;
-          break;
+          if (terms) {
+            requestUrl += `&query=${terms}`
+          }
+          break
+        case 'sim_models':
+          requestUrl = `https://api.blackfynn.io/discover/search/datasets?limit=${this.limit}&offset=${offset}&query=simcore`
+          break
+        case 'embargo':
+          requestUrl = `/api/datasets/embargo`
+          break
       }
 
       // Update URL to reflect the search
@@ -293,32 +273,32 @@ export default {
 
       this.$axios.$get(requestUrl).then(
         function(response) {
-          this.totalCount = response.totalCount;
-          this.limit = response.limit;
-          this.offset = response.offset;
+          this.totalCount = response.totalCount
+          this.limit = response.limit
+          this.offset = response.offset
 
           switch (type) {
-            case "datasets":
-            case "sim_models":
+            case 'datasets':
+            case 'sim_models':
               this.results = response.datasets
-              break;
-            case "files":
+              break
+            case 'files':
               this.results = response.files.map(response => ({
                 uri: response.uri,
                 name: response.name,
                 size: response.size,
                 fileType: response.fileType
-              }));
-              break;
-            case "embargo":
+              }))
+              break
+            case 'embargo':
               this.results = response
-              this.limit = response.length;
-              this.offset = 0;
+              this.limit = response.length
+              this.offset = 0
           }
 
-          this.loading = false;
+          this.loading = false
         }.bind(this)
-      );
+      )
     },
 
     /**
@@ -330,18 +310,16 @@ export default {
         last,
         defaultTo([]),
         split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['row', 'uri']),
+        pathOr('', ['row', 'uri'])
       )(scope)
 
       const fileName = pathOr('', ['row', 'name'], scope)
 
       const requestUrl = `/api/download?key=${filePath}`
 
-      this.$axios.get(requestUrl).then(
-        response => {
-          this.downloadFile(fileName, response)
-        }
-      )
+      this.$axios.get(requestUrl).then(response => {
+        this.downloadFile(fileName, response)
+      })
     },
 
     /**
@@ -354,22 +332,17 @@ export default {
         last,
         defaultTo([]),
         split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['row', 'uri']),
+        pathOr('', ['row', 'uri'])
       )(scope)
-
-      const fileName = pathOr('', ['row', 'name'], scope)
 
       const requestUrl = `/api/download?key=${filePath}`
 
-      this.$axios.get(requestUrl).then(
-        response => {
-          const url = response.data
-          const encodedUrl = encodeURIComponent(url)
-          const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
-          window.open(finalURL, '_blank')
-        }
-      )
-
+      this.$axios.get(requestUrl).then(response => {
+        const url = response.data
+        const encodedUrl = encodeURIComponent(url)
+        const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
+        window.open(finalURL, '_blank')
+      })
     },
 
     /**
@@ -390,7 +363,7 @@ export default {
       document.body.removeChild(el)
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

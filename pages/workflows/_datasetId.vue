@@ -7,9 +7,7 @@
             <div class="breadcrumb">
               <el-row>
                 <el-col :span="24">
-                  <router-link
-                    :to="{ name: 'data' }"
-                  >
+                  <router-link :to="{ name: 'data' }">
                     <i class="el-icon-arrow-left" />Back to all results
                   </router-link>
                 </el-col>
@@ -45,9 +43,7 @@
               </el-col>
             </el-row>
             <el-row class="mb-16">
-              <el-col
-                :span="24"
-              >
+              <el-col :span="24">
                 <h3>
                   Last Updated
                 </h3>
@@ -56,11 +52,7 @@
                 </div>
               </el-col>
             </el-row>
-            <el-row
-              type="flex"
-              justify="center"
-              class="doi-block"
-            >
+            <el-row type="flex" justify="center" class="doi-block">
               <el-col :span="24">
                 <h3>
                   Dataset DOI
@@ -74,7 +66,7 @@
               justify="center"
               class="protocol-block"
             >
-               <el-col :span="24">
+              <el-col :span="24">
                 <h3>
                   Protocol DOIs
                 </h3>
@@ -97,28 +89,30 @@
                   v-loading="citationLoading"
                   class="info-citation"
                   aria-live="polite"
-                  v-html=citationText  
+                  v-html="citationText"
                 />
                 <!-- "$sanitize(citationText, ['i'])" -->
                 <div class="info-citation-links mb-24">
                   Formatted as:
                   <button
                     title="Format citation apa"
-                    :class="{active: activeCitation === 'apa'}"
+                    :class="{ active: activeCitation === 'apa' }"
                     @click="handleCitationChanged('apa')"
                   >
                     APA
                   </button>
                   <button
                     title="Format citation chicago"
-                    :class="{active: activeCitation === 'chicago-note-bibliography'}"
+                    :class="{
+                      active: activeCitation === 'chicago-note-bibliography'
+                    }"
                     @click="handleCitationChanged('chicago-note-bibliography')"
                   >
                     Chicago
                   </button>
                   <button
                     title="Format citation ieee"
-                    :class="{active: activeCitation === 'ieee'}"
+                    :class="{ active: activeCitation === 'ieee' }"
                     @click="handleCitationChanged('ieee')"
                   >
                     IEEE
@@ -147,18 +141,11 @@
 
 <script>
 import marked from 'marked'
-import {
-  compose,
-  head,
-  propOr,
-  pathOr
-} from 'ramda'
+import { propOr, pathOr } from 'ramda'
 // import { mapState } from 'vuex'
 
 import DatasetHeader from '@/components/DatasetHeader/DatasetHeader.vue'
 import TagList from '@/components/TagList/TagList.vue'
-import FilesTable from '@/components/FilesTable/FilesTable.vue'
-import MetadataTable from '@/components/MetadataTable/MetadataTable.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -172,15 +159,10 @@ export default {
 
   components: {
     DatasetHeader,
-    FilesTable,
-    MetadataTable,
     TagList
   },
 
-  mixins: [
-    Request,
-    DateUtils
-  ],
+  mixins: [Request, DateUtils],
 
   props: {
     showSignupFooter: {
@@ -189,7 +171,7 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       citationText: '',
       activeCitation: '',
@@ -210,18 +192,17 @@ export default {
   },
 
   computed: {
-
     /**
      * Returns the records in the protocol model for this dataset
      * @returns {String}
      */
-    getSearchRecordsUrl: function () {
+    getSearchRecordsUrl: function() {
       return `${this.discover_host}/search/records?datasetId=${this.datasetId}&model=protocol`
     },
-     /**
+    /**
      * Parses the markdown text
      */
-    parsedMarkdown: function () {
+    parsedMarkdown: function() {
       return marked(this.markdown)
     },
 
@@ -229,7 +210,7 @@ export default {
      * Get the dataset DOI and return the url
      * @returns {String}
      */
-    datasetDOI: function () {
+    datasetDOI: function() {
       const doi = propOr('', 'doi', this.datasetDetails)
       return `https://doi.org/${doi}`
     },
@@ -238,7 +219,7 @@ export default {
      * Get formatted originally published date
      * @return {String}
      */
-    originallyPublishedDate: function () {
+    originallyPublishedDate: function() {
       const date = propOr('', 'createdAt', this.datasetDetails)
       return this.formatDate(date)
     },
@@ -246,7 +227,7 @@ export default {
      * Get formatted last updated date
      * @return {String}
      */
-    lastUpdatedDate: function () {
+    lastUpdatedDate: function() {
       const date = propOr('', 'updatedAt', this.datasetDetails)
       return this.formatDate(date)
     },
@@ -254,34 +235,31 @@ export default {
      * Returns list of tags for dataset
      * @returns {Array}
      */
-    datasetTags: function () {
+    datasetTags: function() {
       return propOr([], 'tags', this.datasetDetails)
     },
     /**
      * Returns the current location href from the window object
      * @returns {String}
      */
-    thisUrl: function () {
+    thisUrl: function() {
       // return ""
       return this.$route.fullPath
-      return window.location.origin + this.$route.fullPath
     },
     /**
      * Return DOI link
      * @returns {String}
      */
-    DOIlink: function () {
+    DOIlink: function() {
       const doi = propOr('', 'doi', this.datasetDetails)
-      return doi
-        ? `https://doi.org/${doi}`
-        : ''
+      return doi ? `https://doi.org/${doi}` : ''
     },
 
     /**
      * Compute description
      * @returns {String}
      */
-    datasetDescription: function () {
+    datasetDescription: function() {
       return propOr('', 'description', this.datasetDetails)
     },
 
@@ -289,7 +267,7 @@ export default {
      * Compute name
      * @returns {String}
      */
-    datasetName: function () {
+    datasetName: function() {
       return propOr('', 'name', this.datasetDetails)
     },
 
@@ -297,7 +275,7 @@ export default {
      * Compute organization name
      * @returns {String}
      */
-    organizationName: function () {
+    organizationName: function() {
       return propOr('', 'organizationName', this.datasetDetails)
     },
 
@@ -305,7 +283,7 @@ export default {
      * Compute endpoint URL to get dataset
      * @returns {String}
      */
-    getDatasetUrl: function () {
+    getDatasetUrl: function() {
       return `${this.discover_host}/datasets/${this.datasetId}`
     },
 
@@ -316,7 +294,7 @@ export default {
 
   watch: {
     DOIlink: {
-      handler: function (val) {
+      handler: function(val) {
         if (val) {
           this.handleCitationChanged('apa')
         }
@@ -324,7 +302,7 @@ export default {
       immediate: true
     },
     getDatasetUrl: {
-      handler: function (val) {
+      handler: function(val) {
         if (val) {
           this.getDataset()
         }
@@ -335,8 +313,8 @@ export default {
     /**
      * Watcher for getSearchRecordsUrl
      */
-    getSearchRecordsUrl : {
-      handler: function (val) {
+    getSearchRecordsUrl: {
+      handler: function(val) {
         if (val) {
           this.getProtocolRecords()
         }
@@ -345,7 +323,7 @@ export default {
     },
 
     datasetDetails: {
-      handler: function () {
+      handler: function() {
         this.getMarkdown()
       },
       immediate: true
@@ -353,54 +331,54 @@ export default {
   },
 
   methods: {
-
     /**
      * Returns protocol records in a dataset's model if they exist
      */
-    getProtocolRecords: function () {
-      this.$axios.$get(this.getSearchRecordsUrl)
+    getProtocolRecords: function() {
+      this.$axios
+        .$get(this.getSearchRecordsUrl)
         .then(response => {
           const records = propOr([], 'records', response)
-          if (records.length !== 0){
+          if (records.length !== 0) {
             // that means protocol records exist
             this.datasetRecords = records
           }
-
         })
-        .catch(error => {
+        .catch(() => {
           // handle error
           this.errorLoading = true
         })
     },
 
-    getDataset: function () {
+    getDataset: function() {
       this.isLoadingDataset = true
 
-      this.$axios.$get(this.getDatasetUrl)
+      this.$axios
+        .$get(this.getDatasetUrl)
         .then(response => {
           this.datasetDetails = response
         })
-        .catch(error => {
+        .catch(() => {
           // handle error
           this.errorLoading = true
         })
         .finally(() => {
           this.isLoadingDataset = false
-        });
+        })
     },
 
     /**
      * Confirms that url of dataset was copied successfully
      * and sets boolean to true
      */
-    onCopySuccess: function () {
+    onCopySuccess: function() {
       this.showCopySuccess = true
     },
     /**
      * gets bibiolography based on citation type for current DOI
      * @param {String} citationType
      */
-    handleCitationChanged: function (citationType) {
+    handleCitationChanged: function(citationType) {
       if (citationType === this.activeCitation) {
         return
       }
@@ -424,7 +402,7 @@ export default {
     /**
      * Get markdown logic from details response
      */
-    getMarkdown: function () {
+    getMarkdown: function() {
       this.loadingMarkdown = true
       const readme = propOr('', 'readme', this.datasetDetails)
       if (readme !== '') {
@@ -435,13 +413,13 @@ export default {
             this.markdown = response
           })
           .catch(error => {
-            throw (error)
+            throw error
           })
       }
     }
   },
 
-  metaInfo () {
+  metaInfo() {
     return {
       meta: [
         {
@@ -466,7 +444,7 @@ export default {
         {
           property: 'og:url',
           content: this.thisUrl
-        },
+        }
       ],
       script: [
         {
@@ -487,7 +465,6 @@ export default {
 @import '@/assets/_spacing.scss';
 
 .breadcrumb {
-
   a {
     color: white;
     font-weight: 600;
@@ -508,25 +485,25 @@ export default {
 
 .copy-success-notification {
   color: #fff;
-  margin-left: 5px
+  margin-left: 5px;
 }
 
 .meta_switch {
   padding: 8px 0;
   color: #f0f2f5;
-  border-bottom: 1px solid #0026ff
+  border-bottom: 1px solid #0026ff;
 }
 
 .fade-leave-active {
-  transition: opacity .5s ease-out 2s;
+  transition: opacity 0.5s ease-out 2s;
 }
 
 .fade-enter {
-  opacity: 1
+  opacity: 1;
 }
 
 .fade-leave-to {
-  opacity: 0
+  opacity: 0;
 }
 
 .dataset-details {
@@ -608,7 +585,8 @@ export default {
   font-size: 14px;
   line-height: 16px;
   color: #c0c4cc;
-  button, a {
+  button,
+  a {
     background: none;
     border: none;
     color: #c0c4cc;
@@ -633,90 +611,88 @@ export default {
   line-height: 24px;
   padding-bottom: 92px;
 
+  h1,
+  p,
+  h2,
+  h3,
+  blockquote,
+  h4,
+  pre {
+    max-width: 616px;
+  }
 
-    h1,
-    p,
-    h2,
-    h3,
-    blockquote,
-    h4,
-    pre {
-        max-width: 616px;
-    }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    margin: 0 0 8px;
+  }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-        margin: 0 0 8px;
-    }
+  h1 {
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 40px;
+  }
 
-    h1 {
-        font-size: 32px;
-        font-weight: bold;
-        line-height: 40px;
-    }
+  p {
+    margin-bottom: 16px;
+  }
+
+  img {
+    height: auto;
+    max-width: 170%;
+    margin-bottom: 20px;
+    flex-basis: 50%;
+    margin-top: 24px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 32px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+    letter-spacing: 0px;
+  }
+
+  h4 {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+  }
+
+  ul {
+    margin: 0 0 16px;
+    padding: 0 0 0 18px;
+  }
+
+  blockquote {
+    font-weight: normal;
+    line-height: 24px;
+    font-size: 16px;
+    border-left: 8px solid #2760ff;
+    margin-left: 0;
 
     p {
-        margin-bottom: 16px;
+      margin-left: 16px;
     }
+  }
+  pre {
+    background-color: #f1f1f3;
+    line-height: 24px;
+    padding: 16px;
 
-    img {
-        height: auto;
-        max-width: 170%;
-        margin-bottom: 20px;
-        flex-basis: 50%;
-        margin-top: 24px;
+    code {
+      font-weight: normal;
+      font-size: 14px;
     }
-
-    h2 {
-        font-size: 24px;
-        font-weight: bold;
-        line-height: 32px;
-    }
-
-    h3 {
-        font-size: 20px;
-        font-weight: bold;
-        line-height: 24px;
-        letter-spacing: 0px;
-    }
-
-    h4 {
-        font-size: 16px;
-        font-weight: bold;
-        line-height: 24px;
-        text-transform: uppercase;
-        letter-spacing: 0px;
-    }
-
-    ul {
-        margin: 0 0 16px;
-        padding: 0 0 0 18px;
-    }
-
-    blockquote {
-        font-weight: normal;
-        line-height: 24px;
-        font-size: 16px;
-        border-left: 8px solid #2760ff;
-        margin-left: 0;
-
-        p {
-        margin-left: 16px;
-        }
-    }
-    pre {
-        background-color: #f1f1f3;
-        line-height: 24px;
-        padding: 16px;
-
-        code {
-        font-weight: normal;
-        font-size: 14px;
-        }
-
   }
 }
 .files-table {

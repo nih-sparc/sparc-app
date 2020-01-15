@@ -1,9 +1,6 @@
 <template>
   <ul class="tag-list unstyled">
-    <li
-      v-for="tag in tags"
-      :key="tag"
-    >
+    <li v-for="tag in tags" :key="tag">
       <span class="tag-list-tag">
         {{ tag }}
       </span>

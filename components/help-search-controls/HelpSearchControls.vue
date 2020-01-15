@@ -1,6 +1,6 @@
 <template>
   <div class="controls">
-    <div class="control control-search-input" v-if="isSearchVisible">
+    <div v-if="isSearchVisible" class="control control-search-input">
       <el-input
         v-model="terms"
         placeholder="Search Documentation..."
@@ -8,7 +8,7 @@
         @keyup.native.enter="submit"
       />
     </div>
-    <div class="search-button" v-if="isSearchVisible">
+    <div v-if="isSearchVisible" class="search-button">
       <el-button
         type="primary"
         class="view-search-results"
@@ -28,10 +28,6 @@
 </template>
 
 <script>
-import {
-  pathOr
-} from 'ramda'
-
 export default {
   props: {
     searchOnLoad: {
@@ -55,12 +51,10 @@ export default {
   data() {
     return {
       loading: false,
-      terms: null,
-    };
+      terms: null
+    }
   },
-  watch: {
-    
-  },
+  watch: {},
 
   mounted: function() {
     if (this.searchOnLoad) {
@@ -89,17 +83,17 @@ export default {
     },
 
     submit() {
-      this.$emit('query', this.terms);
+      this.$emit('query', this.terms)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
 .controls {
   align-items: center;
   display: flex;
-  width:100%;
+  width: 100%;
   display: flex;
   max-width: 900px;
 }
@@ -108,7 +102,7 @@ export default {
   display: inline-block;
 
   :selected {
-    color:red
+    color: red;
   }
 }
 
@@ -126,11 +120,10 @@ export default {
 .control-search-input {
   flex: 1;
   margin-right: 16px;
-  width: 100%
+  width: 100%;
 }
 
 .search-button {
-
   .view-search-results {
     background: #24245b;
     border: 0;

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="contributor-item"
-    :class="{ 'has-orcid': hasOrcid }"
-  >
+  <div class="contributor-item" :class="{ 'has-orcid': hasOrcid }">
     <el-popover
       ref="popper"
       placement="top-start"
@@ -12,25 +9,21 @@
       :disabled="!hasOrcid"
       @show="getOrcidData"
     >
-      <div
-        v-loading="isLoadingOrcid"
-        element-loading-background="#fff"
-      >
+      <div v-loading="isLoadingOrcid" element-loading-background="#fff">
         <template v-if="isOrcidDataNotFound">
           ORCID iD Not Found
         </template>
         <template v-if="hasOrcidDataError">
           Sorry, an error has occurred.
         </template>
-        <template v-if="isOrcidDataNotFound === false && hasOrcidDataError === false">
+        <template
+          v-if="isOrcidDataNotFound === false && hasOrcidDataError === false"
+        >
           <h2>{{ orcidName }}</h2>
           <p>
             <strong>ORCID iD</strong>:
             <template v-if="orcidUri">
-              <a
-                :href="orcidUri"
-                target="_blank"
-              >
+              <a :href="orcidUri" target="_blank">
                 {{ orcidId }}
               </a>
             </template>
@@ -54,13 +47,7 @@
 </template>
 
 <script>
-import {
-  compose,
-  defaultTo,
-  head,
-  pathOr,
-  propOr
-} from 'ramda'
+import { compose, defaultTo, head, pathOr, propOr } from 'ramda'
 
 export default {
   name: 'ContributorItem',
@@ -72,7 +59,7 @@ export default {
     }
   },
 
-  data: function () {
+  data: function() {
     return {
       isLoadingOrcid: true,
       isOrcidDataNotFound: false,
@@ -86,7 +73,7 @@ export default {
      * Compute contributors full name
      * @return {String}
      */
-    fullName: function () {
+    fullName: function() {
       const firstName = propOr('', 'firstName', this.contributor)
       const lastName = propOr('', 'lastName', this.contributor)
       return `${firstName} ${lastName}`
@@ -96,7 +83,7 @@ export default {
      * Compute name from ORCID profile
      * @returns {String}
      */
-    orcidName: function () {
+    orcidName: function() {
       const name = pathOr({}, ['person', 'name'], this.orcidData)
       const givenName = pathOr('', ['given-names', 'value'], name)
       const familyName = pathOr('', ['family-name', 'value'], name)
@@ -108,7 +95,7 @@ export default {
      * Compute last employment
      * @return {Object}
      */
-    lastEmployment: function () {
+    lastEmployment: function() {
       return compose(
         defaultTo({}),
         head,
@@ -120,7 +107,7 @@ export default {
      * Compute the name of last employment
      * @returns {String}
      */
-    lastEmploymentOrganizationName: function () {
+    lastEmploymentOrganizationName: function() {
       return pathOr('', ['organization', 'name'], this.lastEmployment)
     },
 
@@ -128,7 +115,7 @@ export default {
      * Compute the role of last employment
      * @returns {String}
      */
-    lastEmploymentRole: function () {
+    lastEmploymentRole: function() {
       return propOr('', 'role-title', this.lastEmployment)
     },
 
@@ -136,7 +123,7 @@ export default {
      * Compute ORCID iD
      * @returns {String}
      */
-    orcidId: function () {
+    orcidId: function() {
       return propOr('', 'orcid', this.contributor)
     },
 
@@ -144,7 +131,7 @@ export default {
      * Compute ORCID profile uri
      * @returns {String}
      */
-    orcidUri: function () {
+    orcidUri: function() {
       return pathOr('', ['orcid-identifier', 'uri'], this.orcidData)
     },
 
@@ -152,7 +139,7 @@ export default {
      * Compute if the contribut has an ORCID iD
      * @returns {Boolean}
      */
-    hasOrcid: function () {
+    hasOrcid: function() {
       return Boolean(this.orcidId)
     }
   },
@@ -161,7 +148,7 @@ export default {
     /**
      * Send a request for ORCID data
      */
-    getOrcidData: function () {
+    getOrcidData: function() {
       this.isOrcidDataNotFound = false
       this.hasOrcidDataError = false
       this.$nextTick(() => {
@@ -169,9 +156,10 @@ export default {
       })
 
       if (this.hasOrcid && Object.keys(this.orcidData).length === 0) {
-        this.$http.get(`https://pub.orcid.org/v2.1/${this.orcidId}`, {
-          headers: { 'Accept': 'application/json' }
-        })
+        this.$http
+          .get(`https://pub.orcid.org/v2.1/${this.orcidId}`, {
+            headers: { Accept: 'application/json' }
+          })
           .then(response => {
             this.orcidData = response.data
           })

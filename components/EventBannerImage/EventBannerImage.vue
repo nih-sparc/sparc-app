@@ -4,7 +4,7 @@
     :src="bannerSrc"
     class="event-image"
     alt="Event Banner Image"
-  >
+  />
 </template>
 
 <script>
@@ -17,10 +17,10 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
-      bannerSrc: '',
-    //   publicPath: process.env.BASE_URL || '/'
+      bannerSrc: ''
+      //   publicPath: process.env.BASE_URL || '/'
     }
   },
 
@@ -29,21 +29,21 @@ export default {
      * Compute broken image path
      * @return {String}
      */
-    brokenImage: function () {
+    brokenImage: function() {
       return `@/static/images/icon-broken-image.svg`
     }
   },
 
   watch: {
     src: {
-      handler: function (val) {
+      handler: function(val) {
         this.bannerSrc = val
       },
       immediate: true
     }
   },
 
-  mounted: function () {
+  mounted: function() {
     // Add listener for onerror
     this.$refs.img.onerror = this.onError
   },
@@ -52,7 +52,7 @@ export default {
     /**
      * Set the source as the brokenImage URL
      */
-    onError: function () {
+    onError: function() {
       this.bannerSrc = this.brokenImage
     }
   }

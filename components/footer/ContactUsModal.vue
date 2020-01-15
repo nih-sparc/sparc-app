@@ -4,22 +4,37 @@
       <div class="header">
         <h2>Send Us a Message</h2>
       </div>
-      <el-form ref="contactForm" :label-position="labelPosition" label-width="100px" :model="contactUsForm" :rules="contactUsFormRules">
+      <el-form
+        ref="contactForm"
+        :label-position="labelPosition"
+        label-width="100px"
+        :model="contactUsForm"
+        :rules="contactUsFormRules"
+      >
         <el-form-item prop="name" label="Your Name">
-          <el-input aria-placeholder="Enter your name" v-model="contactUsForm.name"></el-input>
+          <el-input
+            v-model="contactUsForm.name"
+            aria-placeholder="Enter your name"
+          />
         </el-form-item>
         <el-form-item prop="email" label="Your Email">
-          <el-input aria-placeholder="Enter your email" type="email" v-model="contactUsForm.email"></el-input>
+          <el-input
+            v-model="contactUsForm.email"
+            aria-placeholder="Enter your email"
+            type="email"
+          />
         </el-form-item>
         <el-form-item prop="message" label="Your Message">
           <el-input
+            v-model="contactUsForm.message"
             aria-placeholder="Your message"
             type="textarea"
-            v-model="contactUsForm.message"
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item>
-          <el-button class="send-button" @click="submitContactForm">Send</el-button>
+          <el-button class="send-button" @click="submitContactForm">
+            Send
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -27,22 +42,21 @@
 </template>
 
 <script>
-
-const contactForm = {
-  name: null,
-  email: null,
-  message: null,
-}
-
 export default {
-  name: "ContactUsModal",
+  name: 'ContactUsModal',
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      labelPosition: "top",
+      labelPosition: 'top',
       contactUsForm: {
-        name: "",
-        email: "",
-        message: ""
+        name: '',
+        email: '',
+        message: ''
       },
       contactUsFormRules: {
         name: [
@@ -50,33 +64,25 @@ export default {
             required: true,
             message: 'Please enter your name',
             trigger: 'change'
-
           }
         ],
 
         email: [
           {
-          required: true,
-          message: 'Please enter your email',
-          trigger: 'change'
-        }
+            required: true,
+            message: 'Please enter your email',
+            trigger: 'change'
+          }
         ],
 
         message: [
           {
-          required: true,
-          message: 'Please enter a message',
-          trigger: 'change'
-        }
+            required: true,
+            message: 'Please enter a message',
+            trigger: 'change'
+          }
         ]
-
-      },
-    }
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      default: false
+      }
     }
   },
 
@@ -84,15 +90,15 @@ export default {
     submitContactForm: function() {
       this.$refs.contactForm.validate(valid => {
         if (!valid) {
-          return;
+          return
         }
-        this.sendRequest();
-      });
+        this.sendRequest()
+      })
     },
 
     sendRequest: function() {
       // send request logic goes here
-      this.$http.post("/api/contact", {
+      this.$http.post('/api/contact', {
         name: this.contactUsForm.name,
         email: this.contactUsForm.email,
         message: this.contactUsForm.message
@@ -100,13 +106,12 @@ export default {
       this.onClose()
     },
 
-    onClose: function(){
+    onClose: function() {
       this.$emit('update:visible', false)
-      this.$refs.contactForm.resetFields();
-    },
-
+      this.$refs.contactForm.resetFields()
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -150,7 +155,7 @@ h2 {
 
   .el-dialog__body {
     align-items: center;
-    background-color: rgba(237, 241, 252, 0.9);;
+    background-color: rgba(237, 241, 252, 0.9);
     display: flex;
     flex: 1;
     justify-content: center;
@@ -174,7 +179,7 @@ h2 {
 }
 
 .el-form-item__label {
-  line-height: 1.2
+  line-height: 1.2;
 }
 
 .el-input {
