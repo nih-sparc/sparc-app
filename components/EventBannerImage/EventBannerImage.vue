@@ -4,7 +4,7 @@
     :src="bannerSrc"
     class="event-image"
     alt="Event Banner Image"
-  >
+  />
 </template>
 
 <script>

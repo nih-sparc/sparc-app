@@ -4,7 +4,7 @@
     :src="bannerSrc"
     class="dataset-image"
     alt="Dataset Banner Image"
-  >
+  />
 </template>
 
 <script>
