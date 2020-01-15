@@ -7,9 +7,8 @@
 </template>
 
 <script>
-
-  import sparcHeader from "@/components/header/Header.vue"
-  import sparcFooter from "@/components/footer/Footer.vue";
+import sparcHeader from '@/components/header/Header.vue'
+import sparcFooter from '@/components/footer/Footer.vue'
 
 export default {
   components: {
@@ -21,5 +20,4 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-
 </style>

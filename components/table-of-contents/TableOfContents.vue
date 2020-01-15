@@ -1,7 +1,7 @@
 <template>
   <div class="table-of-contents">
     <ul>
-      <li v-for="element in elements" v-bind:key="element.href">
+      <li v-for="element in elements" :key="element.href">
         <a href="element.anchor">{{ element.title }}</a>
       </li>
     </ul>
@@ -10,24 +10,24 @@
 
 <script>
 export default {
-  name: "table-of-contents",
+  name: 'TableOfContents',
   data: () => ({
     elements: [
       {
-        title: "Properties",
-        href: "#properties"
+        title: 'Properties',
+        href: '#properties'
       },
       {
-        title: "Section 1",
-        href: "#section1"
+        title: 'Section 1',
+        href: '#section1'
       },
       {
-        title: "Section 2",
-        href: "#section2"
+        title: 'Section 2',
+        href: '#section2'
       }
     ]
   })
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -57,7 +57,7 @@ export default {
 
     li:after {
       padding: 0 1em;
-      content: "\00b7";
+      content: '\00b7';
       font-weight: bold;
     }
 

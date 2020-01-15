@@ -18,8 +18,14 @@
               <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
                 <el-row>
                   <el-col :xs="22" :sm="22" :md="12" :lg="12">
-                    <h1 class="hero-header">Advancing bioelectronic medicine through open science.</h1>
-                    <a href=/browse><el-button type="primary" class="explore-the-data">Explore the data</el-button></a>
+                    <h1 class="hero-header">
+                      Advancing bioelectronic medicine through open science.
+                    </h1>
+                    <a href="/browse">
+                      <el-button type="primary" class="explore-the-data">
+                        Explore the data
+                      </el-button>
+                    </a>
                   </el-col>
                 </el-row>
               </el-col>
@@ -28,7 +34,7 @@
         </div>
       </div>
     </div>
-      
+
     <div class="about">
       <div class="texture">
         <el-row class="blob-row" type="flex" justify="space-between">
@@ -46,15 +52,33 @@
           <el-col :xs="22" :sm="22" :md="14" :lg="14">
             <div class="options">
               <span class="option">
-                <a :class="{ active: activeTextBlock === 'goal' }" href="#" @click.prevent="toggleText('goal')">Goal</a>
+                <a
+                  :class="{ active: activeTextBlock === 'goal' }"
+                  href="#"
+                  @click.prevent="toggleText('goal')"
+                >
+                  Goal
+                </a>
               </span>
               <span>•</span>
               <span class="option">
-                <a :class="{ active: activeTextBlock === 'current' }" href="#" @click.prevent="toggleText('current')">Current</a>
+                <a
+                  :class="{ active: activeTextBlock === 'current' }"
+                  href="#"
+                  @click.prevent="toggleText('current')"
+                >
+                  Current
+                </a>
               </span>
               <span>•</span>
               <span class="option">
-                <a :class="{ active: activeTextBlock === 'future' }" href="#" @click.prevent="toggleText('future')">Future</a>
+                <a
+                  :class="{ active: activeTextBlock === 'future' }"
+                  href="#"
+                  @click.prevent="toggleText('future')"
+                >
+                  Future
+                </a>
               </span>
             </div>
             <p>
@@ -68,14 +92,22 @@
       <el-row type="flex" justify="center">
         <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
           <el-row class="cards" type="flex" justify="center" :gutter="20">
-            <el-col :xs="20" :sm="8" v-for="core in cores" v-bind:key="core.name">
-              <el-card class="core-card" shadow="never" :body-style="{ padding: '0px' }">
-                <img v-bind:src="core.image" class="image" />
+            <el-col v-for="core in cores" :key="core.name" :xs="20" :sm="8">
+              <el-card
+                class="core-card"
+                shadow="never"
+                :body-style="{ padding: '0px' }"
+              >
+                <img :src="core.image" class="image" />
                 <div class="content">
-                  <p>{{core.name}}</p>
-                  <p v-html="core.description"></p>
+                  <p>{{ core.name }}</p>
+                  <p v-html="core.description" />
                   <div class="bottom clearfix">
-                    <a :href="core.link"><el-button type="text" class="button">{{core.linkText}}</el-button></a>
+                    <a :href="core.link">
+                      <el-button type="text" class="button">{{
+                        core.linkText
+                      }}</el-button>
+                    </a>
                   </div>
                 </div>
               </el-card>
@@ -104,58 +136,61 @@
       </el-row>
     </div>
   </div>
-  
 </template>
 
 <script>
-import irregularBlob1 from "@/static/images/irregular-blob-1.svg";
-import irregularBlob2 from "@/static/images/irregular-blob-2.svg";
-import transparentBlob3 from "@/static/images/transparent-blob-3.svg";
-import mapCore from "../static/images/map-core-image.jpg";
-import simulationCore from "../static/images/osparc-human.png";
-import dataCore from "../static/images/datcore-card-image.svg";
-import datasetAbstractImage from "../static/images/dataset-abstract-image.png";
-import eventCard from "@/components/EventCard/EventCard.vue";
+import irregularBlob1 from '@/static/images/irregular-blob-1.svg'
+import irregularBlob2 from '@/static/images/irregular-blob-2.svg'
+import transparentBlob3 from '@/static/images/transparent-blob-3.svg'
+import mapCore from '../static/images/map-core-image.jpg'
+import simulationCore from '../static/images/osparc-human.png'
+import dataCore from '../static/images/datcore-card-image.svg'
+import datasetAbstractImage from '../static/images/dataset-abstract-image.png'
 
 // import FeaturedDatasets from "../featured-datasets-carousel/FeaturedDatasetsCarousel.vue";
-import SearchControls from "@/components/search-controls/SearchControls.vue";
+import SearchControls from '@/components/search-controls/SearchControls.vue'
 
 const cores = [
   {
-    name: "Data",
-    description:"A collection of curated data provides new insights into the autonomic nervous system. ",
-    link: "/browse",
-    linkText: "Dive into the data",
+    name: 'Data',
+    description:
+      'A collection of curated data provides new insights into the autonomic nervous system. ',
+    link: '/browse',
+    linkText: 'Dive into the data',
     image: dataCore
   },
   {
-    name: "Maps",
-    description:"Interactive visualizations facilitate exploration of nerve-organ anatomy and function.",
-    link: "/map",
-    linkText: "View the maps",
+    name: 'Maps',
+    description:
+      'Interactive visualizations facilitate exploration of nerve-organ anatomy and function.',
+    link: '/map',
+    linkText: 'View the maps',
     image: mapCore
   },
   {
-    name: "Virtual studies",
-    description:"An online platform called o<sup>2</sup>S<sup>2</sup>PARC enables data analyses and predictive simulations.",
-    link: "/sim",
-    linkText: "Run computations",
+    name: 'Virtual studies',
+    description:
+      'An online platform called o<sup>2</sup>S<sup>2</sup>PARC enables data analyses and predictive simulations.',
+    link: '/sim',
+    linkText: 'Run computations',
     image: simulationCore
   }
-];
+]
 
 export default {
-  name: "index",
+  name: 'Index',
   components: {
-    SearchControls,
-    eventCard
+    SearchControls
   },
 
   data: () => ({
     textBlocks: {
-      goal: 'Catalyze the development of next-generation bioelectronic medicines by providing access to high-value datasets, maps, and predictive simulations.',
-      current: 'Launched in July 2019, the SPARC Portal is an open-source web application that provides access to a growing collection of interactive autonomic neuroscience resources.',
-      future: 'The SPARC Portal will enable users to run advanced analytics and computational studies to predict the effects of neuromodulation on organ function.'
+      goal:
+        'Catalyze the development of next-generation bioelectronic medicines by providing access to high-value datasets, maps, and predictive simulations.',
+      current:
+        'Launched in July 2019, the SPARC Portal is an open-source web application that provides access to a growing collection of interactive autonomic neuroscience resources.',
+      future:
+        'The SPARC Portal will enable users to run advanced analytics and computational studies to predict the effects of neuromodulation on organ function.'
     },
     activeTextBlock: 'goal',
     irregularBlob1,
@@ -175,7 +210,7 @@ export default {
      * Compute active text to show
      * @returns {String}
      */
-    activeText: function () {
+    activeText: function() {
       return this.textBlocks[this.activeTextBlock]
     }
   },
@@ -195,21 +230,20 @@ export default {
      * @param {String} terms
      */
     onSearchQuery: function(selectedType, terms) {
-      const url = terms === null
-        ? `/data/?searchType=${selectedType}`
-        : `/data/?searchType=${selectedType}&searchTerms=${terms}`
+      const url =
+        terms === null
+          ? `/data/?searchType=${selectedType}`
+          : `/data/?searchType=${selectedType}&searchTerms=${terms}`
 
       window.location.href = url
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
-
 .twitter-timeline {
-  max-width:300px;
-
+  max-width: 300px;
 }
 .page-container {
   margin-top: -5em;
@@ -252,7 +286,6 @@ export default {
 
     .view-search-results {
       background: #24245b;
-      text: #fff;
       border: 0;
     }
   }
@@ -360,8 +393,7 @@ export default {
 .content {
   z-index: 1;
   position: relative;
-  display:flex;
-
+  display: flex;
 }
 
 .hero-header {
@@ -384,7 +416,7 @@ export default {
   background: #24245b;
   color: #f9f2fc;
   text-align: center;
-  font-family: "Asap", sans-serif;
+  font-family: 'Asap', sans-serif;
   font-size: 22px;
   position: relative;
 
