@@ -1,5 +1,6 @@
 <template>
-  <div>
+<div></div>
+  <!-- <div>
     <div class="head">
       <div class="texture">
         <el-row class="blob-row" type="flex" justify="center">
@@ -132,10 +133,10 @@
       <el-row type="flex" justify="center">
         <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
           <!-- <featured-datasets /> -->
-        </el-col>
+        <!-- </el-col>
       </el-row>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
