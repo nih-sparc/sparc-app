@@ -25,7 +25,7 @@
         <a href="#">News & Events</a>
         <input type="text" class="search" placeholder="Search" />
         <button class="search-button" @click="executeSearch">
-          <svg-icon color="white" name="icon-magnifying-glass" height="20" width="20" />
+          <svg-icon color="white" icon="icon-magnifying-glass" height="20" width="20" />
         </button>
       </div>
       <div class="header__content">
@@ -168,7 +168,8 @@ export default {
   }
   a {
     font-size: 13px;
-    font-weight: 500;
+    font-family: $system-font;
+    font-weight: 400;
     line-height: 24px;
     color: $cochlear;
     padding-right: 18px;
@@ -183,6 +184,7 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
 
   a {
     color: $app-secondary-color;
@@ -191,6 +193,11 @@ export default {
     font-weight: 500;
     padding-top: 5px;
     padding-right: 91px;
+    text-decoration: none;
+
+    &:active {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -244,6 +251,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 100%;
 }
 
 .header__content--container-text {
