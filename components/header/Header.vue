@@ -28,17 +28,6 @@
           <svg-icon color="white" icon="icon-magnifying-glass" height="20" width="20" />
         </button>
       </div>
-      <div class="header__content">
-        <div class="header__content--container">
-          <h3 class="header__content--container-text">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </h3>
-        <button class="header__content--container-button" @click="browseData">
-          Browse All Data
-        </button>
-        </div>
-      </div>
     </div>
   </div>
   <!-- <div class="nav">
@@ -141,12 +130,9 @@ export default {
 }
 
 .header {
-  height: 50%;
   width: 100%;
   display: flex;
   flex-direction: row;
-  // justify-content: space-between;
-  // align-items: flex-end;
   @media screen and (max-width: 767px) {
     align-items: center;
   }
@@ -155,6 +141,7 @@ export default {
 .header__nav {
   background-color: $navy;
   height: 40px;
+  width: 100%;
 }
 
 .header__nav--parent-links {
@@ -174,6 +161,11 @@ export default {
     color: $cochlear;
     padding-right: 18px;
     text-decoration: none;
+  }
+  @media screen and (max-width: 767px) {
+    & {
+      display: none;
+    }
   }
 }
 
@@ -240,43 +232,6 @@ export default {
   font-weight: 300;
   line-height: 32px;
   padding-left: 7px;
-}
-
-.header__content {
-  height: 278px;
-  background-image: linear-gradient(90deg, #0c00bf, #bc00fc);
-}
-
-.header__content--container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 100%;
-}
-
-.header__content--container-text {
-  color: $cochlear;
-  font-size: 26px;
-  font-weight: 500;
-  line-height: 38px;
-  text-align: center;
-  padding-top: 48px;
-  padding-right: 192px;
-  padding-left: 192px;
-  padding-bottom: 32px;
-}
-
-.header__content--container-button {
-  border-radius: 4px;
-  background-color: $cochlear;
-  color: black;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 14px;
-  text-align: center;
-  width: 155px;
-  height: 40px;
-  padding: 8px 10px 8px 13px;
 }
 
 .btn-menu {
