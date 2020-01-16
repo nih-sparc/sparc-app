@@ -142,6 +142,14 @@ export default {
       }
     }
   }
+  &.white {
+    background: #fff;
+    color: #000;
+    &:hover,
+    &:focus {
+      background: #fff;
+    }
+  }
   & iron-icon {
     margin-right: 5px;
   }
