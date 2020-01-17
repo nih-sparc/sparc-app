@@ -19,14 +19,42 @@
         <div class="logo">
           <sparc-logo />
         </div>
-        <a href="#">Home</a>
-        <a href="#">Find Data</a>
-        <a href="#">Resources</a>
-        <a href="#">News & Events</a>
-        <input type="text" class="search" placeholder="Search" />
-        <button class="search-button" @click="executeSearch">
-          <svg-icon color="white" icon="icon-magnifying-glass" height="20" width="20" />
+        <div class="main-links-container">
+           <button class="header__nav--btn-menu" @click="menuOpen = true">
+          <!-- <i class="el-icon-s-fold" /> -->
+          <img
+            src="../../static/images/hamburger-icon.svg"
+            width="20"
+            height="20"
+          />
         </button>
+        <div class="navigation" :class="{ open: menuOpen }">
+          <div class="mobile-navigation-header">
+            <sparc-logo aria-hidden="”true”" role="presentation" />
+            <button class="header__nav--btn-menu" @click="menuOpen = false">
+              <i class="el-icon-close" />
+            </button>
+          </div>
+          <ul>
+            <li v-for="link in links" :key="link.href">
+              <a :class="{ active: link.active }" href="#">{{ link.title }}</a>
+            </li>
+          </ul>
+        </div>
+         <div class="search-test">
+            <input type="text" class="search" placeholder="Search" />
+            <button class="search-button" @click="executeSearch">
+              <!-- <svg-icon color="white" icon="icon-magnifying-glass" height="40" width="40" /> -->
+              <img
+                src="../../static/images/icon-magnifying-glass.svg"
+                class="search__icon"
+                width="16"
+                height="18"
+                color="#FFFFFF"
+              />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -82,29 +110,19 @@ const links = [
       !pathOrHashContainsString('/sim')
   },
   {
-    title: 'Explore Data',
+    title: 'Find Data',
     href: '/data',
     active: pathOrHashContainsString('/data')
   },
   {
-    title: 'SPARC Resources',
+    title: 'Resources',
     href: '/map',
     active: pathOrHashContainsString('/map')
   },
   {
-    title: 'SPARC Events',
+    title: 'News & Events',
     href: '/events',
     active: pathOrHashContainsString('/events')
-  },
-  {
-    title: 'About',
-    href: '/about',
-    active: pathOrHashContainsString('/about')
-  },
-  {
-    title: 'Help',
-    href: '/help',
-    active: pathOrHashContainsString('/help')
   }
 ]
 
@@ -176,7 +194,6 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
 
   a {
     color: $app-secondary-color;
@@ -184,7 +201,7 @@ export default {
     line-height: 32px;
     font-weight: 500;
     padding-top: 5px;
-    padding-right: 91px;
+    // padding-right: 91px;
     text-decoration: none;
 
     &:active {
@@ -193,11 +210,25 @@ export default {
   }
 }
 
+.main-links-container {
+  display: flex;
+  flex-direction: row;
+}
+
 .logo {
   height: 62px;
   width: 127px;
   white-space: nowrap;
-  margin-right: 78px;
+  margin-right: 48px;
+  @media (min-width: 768px) {
+    // width: 29px;
+    // width: 60px;
+  }
+}
+
+.search-test {
+  display: flex;
+  flex-direction: row;
 }
 
 .search {
@@ -207,6 +238,11 @@ export default {
   border: solid 1px $dark-gray;
   margin-top: 2px;
   margin-left: 60px;
+
+  &__icon {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
 }
 
 .search-button {
@@ -234,7 +270,7 @@ export default {
   padding-left: 7px;
 }
 
-.btn-menu {
+.header__nav--btn-menu {
   background: none;
   border: none;
   display: none;
@@ -259,9 +295,12 @@ export default {
   height: 100%;
 
   ul {
+    padding-left: 0;
+    margin-top: 0.5rem;
     li {
       display: inline;
       margin: 0px 10px;
+      padding-right: 55px;
 
       a {
         text-decoration: none;

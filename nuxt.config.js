@@ -46,7 +46,7 @@ export default {
   plugins: [
     '@/plugins/bootstrap',
     '@/plugins/contentful',
-    '@/plugins/vue-svgicon'
+    '~/plugins/vue-svgicon.js'
   ],
   /*
    ** Nuxt.js dev-modules
@@ -61,6 +61,7 @@ export default {
    */
   build: {
     transpile: [/^element-ui/],
+
     /*
      ** You can extend webpack config here
      */

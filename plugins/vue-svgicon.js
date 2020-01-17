@@ -1,4 +1,8 @@
 import Vue from 'vue'
-import VueSVGIcon from 'vue-svgicon'
+import VueSvgIcon from 'vue-svgicon'
 
-Vue.use(VueSVGIcon)
+Vue.use(VueSvgIcon, {
+    tagName: 'svg-icon'
+  })
+
+console.log("loaded library!")
