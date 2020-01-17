@@ -14,9 +14,9 @@
 
     <featured-datasets />
 
-    <homepage-news :news="news" />
+    <homepage-news :news="newsAndEvents" />
 
-    <homepage-testimonials />
+    <homepage-testimonials :testimonials="testimonials" />
 
     <homepage-twitter />
   </div>
@@ -47,21 +47,21 @@ export default {
 
   asyncData() {
     return Promise.all([
-      // Get new and events entries
-      client.getEntries({
-        content_type: process.env.ctf_event_id,
-        order: 'fields.startDate',
-        limit: 2
-      })
+      // Get homepage content
+      client.getEntry( process.env.ctf_home_page_id)
     ])
-      .then(([events]) => {
-        return {
-          news: events.items
-        }
+      .then(([homepage]) => {
+        return { ...homepage.fields }
       })
       .catch(console.error)
-  }
+  },
 
+  data: () => {
+    return {
+      newsAndEvents: [],
+      testimonials: []
+    }
+  }
 }
 </script>
 

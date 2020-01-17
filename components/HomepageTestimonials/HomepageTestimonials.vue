@@ -12,8 +12,14 @@
               activeTestimonial === idx
           }"
         >
-          <p>{{ testimonial.copy }}</p>
-          <span>&mdash; {{ testimonial.author }}</span>
+          <p>{{ testimonial.fields.testimonial }}</p>
+          <span>
+            &mdash;
+            {{ testimonial.fields.author }}
+            <template v-if="testimonial.fields.organization">
+              , {{ testimonial.fields.organization }}
+            </template>
+          </span>
         </div>
       </div>
 
@@ -43,26 +49,16 @@
 export default {
   name: 'HomepageTestimonials',
 
+  props: {
+    testimonials: {
+      type: Array,
+      default: () => []
+    }
+  },
+
   data: function() {
     return {
-      activeTestimonial: 0,
-      testimonials: [
-        {
-          copy:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor as en incididunt ut labore et dolore magna  aliqua. Ut enim ad minim veniam, quis nostrud delo exercitation ullamco laboris nisi ut aliquip ex consequat.',
-          author: 'Jeffery Ardell1, UCLA'
-        },
-        {
-          copy:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor as en incididunt ut labore et dolore magna ',
-          author: 'Jeffery Ardell2, UCLA'
-        },
-        {
-          copy:
-            'Aliqua. Ut enim ad minim veniam, quis nostrud delo exercitation ullamco laboris nisi ut aliquip ex consequat.',
-          author: 'Jeffery Ardell3, UCLA'
-        }
-      ]
+      activeTestimonial: 0
     }
   }
 }
