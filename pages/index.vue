@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-hero>
+    <page-hero class="large">
       <p>
         {{ heroCopy }}
       </p>
