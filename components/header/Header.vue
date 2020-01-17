@@ -29,16 +29,12 @@
 
 
         <div class="navigation" :class="{ open: menuOpen }">
-          <div class="mobile-navigation-header">
-            <button class="header__nav--btn-menu" @click="menuOpen = false">
-              <i class="el-icon-close" />
-            </button>
-          </div>
           <ul>
             <li v-for="link in links" :key="link.href">
               <a :class="{ active: link.active }" href="#">{{ link.title }}</a>
             </li>
           </ul>
+            <hr />
         </div>
          <div class="search-test">
             <input type="text" class="search" placeholder="Search" />
@@ -235,7 +231,7 @@ export default {
   @media screen and (max-width: 767px) {
     height: 2rem;
     width: 4rem;
-    padding-left: 4.5rem;
+    padding-left: 4.3rem;
     padding-top: 0.1rem;
   }
 }
@@ -330,21 +326,18 @@ export default {
       }
     }
   }
-  .mobile-navigation-header {
-    display: none;
-  }
 
   @media screen and (max-width: 767px) {
     & {
-      background: #f7faff;
+      background: $seafoam;
       bottom: 0;
       display: none;
       flex-direction: column;
       left: 0;
       padding: 1em;
       position: fixed;
-      right: 0;
-      top: 0;
+      right: 6rem;
+      top: 3.5rem;
       z-index: 9999;
       &.open {
         display: flex;
@@ -357,14 +350,8 @@ export default {
       margin: 0;
       padding: 0;
       li {
-        margin: 1.25em 0;
+        margin: 0.25rem 0;
       }
-    }
-    .mobile-navigation-header {
-      align-items: center;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1em;
     }
   }
 }
