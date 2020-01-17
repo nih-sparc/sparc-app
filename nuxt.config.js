@@ -26,6 +26,7 @@ export default {
     ctf_event_id: 'event',
     ctf_help_id: 'helpDocument',
     ctf_help_list_id: 'helpSection',
+    ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
