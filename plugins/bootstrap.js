@@ -8,6 +8,7 @@ Vue.config.devtools = true
 import { Message } from 'element-ui'
 import '@/assets/element-variables.scss'
 import * as svgicon from 'vue-svgicon'
+import '@/static/icons-js'
 // // import '@/assets/icons'
 // // import SocialSharing from 'vue-social-sharing'
 // // import VueClipboard from 'vue-clipboard2'

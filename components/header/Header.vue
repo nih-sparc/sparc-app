@@ -21,13 +21,13 @@
         </div>
         <div class="main-links-container">
            <button class="header__nav--btn-menu" @click="menuOpen = true">
-          <!-- <i class="el-icon-s-fold" /> -->
-          <img
-            src="../../static/images/hamburger-icon.svg"
-            width="20"
-            height="20"
-          />
+          <svg-icon color="black" icon="icon-hamburger" height="25" width="25" />
         </button>
+        <button class="header__nav--btn-search" @click="searchInputOpen = true">
+              <svg-icon color="black" icon="icon-magnifying-glass" height="25" width="25" />
+            </button>
+
+            
         <div class="navigation" :class="{ open: menuOpen }">
           <div class="mobile-navigation-header">
             <sparc-logo aria-hidden="”true”" role="presentation" />
@@ -44,14 +44,7 @@
          <div class="search-test">
             <input type="text" class="search" placeholder="Search" />
             <button class="search-button" @click="executeSearch">
-              <!-- <svg-icon color="white" icon="icon-magnifying-glass" height="40" width="40" /> -->
-              <img
-                src="../../static/images/icon-magnifying-glass.svg"
-                class="search__icon"
-                width="16"
-                height="18"
-                color="#FFFFFF"
-              />
+              <svg-icon color="white" icon="icon-magnifying-glass" height="25" width="25" />
             </button>
           </div>
         </div>
@@ -194,6 +187,9 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
+  @media screen and (max-width: 767px) {
+    height: 50px;
+  }
 
   a {
     color: $app-secondary-color;
@@ -220,9 +216,9 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media (min-width: 768px) {
-    // width: 29px;
-    // width: 60px;
+  @media screen and (max-width: 767px) {
+    height: 2rem;
+    width: 4rem;
   }
 }
 
@@ -238,10 +234,8 @@ export default {
   border: solid 1px $dark-gray;
   margin-top: 2px;
   margin-left: 60px;
-
-  &__icon {
-    height: 1.5rem;
-    width: 1.5rem;
+  @media screen and (max-width: 767px) {
+    display: none;
   }
 }
 
@@ -251,6 +245,10 @@ export default {
   height: 40px;
   border-radius: 4px;
   margin-left: 9px;
+  @media screen and (max-width: 767px) {
+    background: none;
+    border: none;
+  }
 }
 
 ::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */

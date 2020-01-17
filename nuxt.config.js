@@ -43,11 +43,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [
-    '@/plugins/bootstrap',
-    '@/plugins/contentful',
-    '~/plugins/vue-svgicon.js'
-  ],
+  plugins: ['@/plugins/bootstrap', '@/plugins/contentful'],
   /*
    ** Nuxt.js dev-modules
    */

@@ -11,7 +11,7 @@
     "heroku-postbuild": "npm run build",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
-    "generate-icons": "vsvg -s ./static/images -t ./static/icons"
+    "generate-icons": "vsvg -s ./static/icons-svg -t ./static/icons-js"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.8.0",
