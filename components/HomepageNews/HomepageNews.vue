@@ -3,32 +3,29 @@
     <div class="home-container">
       <h2>News &amp; Upcoming Events</h2>
       <sparc-card
-        image="https://placeholder.pics/svg/544x394"
-        image-alt="2020 SPARC Ideas Lab"
+        v-for="(item, idx) in news"
+        :key="item.sys.id"
+        :image="item.fields.image.fields.file.url"
+        :image-alt="item.fields.image.fields.title"
+        :image-align="idx % 2 ? 'right' : ''"
       >
-        <h3>2020 SPARC Ideas Lab</h3>
+        <h3>
+          <nuxt-link
+            :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
+          >
+            {{ item.fields.title }}
+          </nuxt-link>
+        </h3>
+        <!-- eslint-disable vue/no-v-html -->
+        <!-- marked will sanitize the HTML injected -->
+        <div v-html="parseMarkdown(item.fields.summary)" />
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo commodo consequat.
+          <nuxt-link
+            :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
+          >
+            Learn More
+          </nuxt-link>
         </p>
-        <p><a href="#">Learn More</a></p>
-      </sparc-card>
-
-      <sparc-card
-        image="https://placeholder.pics/svg/544x394"
-        image-alt="2020 SPARC Ideas Lab"
-        image-align="right"
-      >
-        <h3>2020 SPARC Ideas Lab</h3>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo commodo consequat.
-        </p>
-        <p><a href="#">Learn More</a></p>
       </sparc-card>
     </div>
   </div>
@@ -37,6 +34,8 @@
 <script>
 import SparcCard from '@/components/SparcCard/SparcCard.vue'
 
+import MarkedMixin from '@/mixins/marked'
+
 export default {
   name: 'HomepageNews',
 
@@ -44,8 +43,13 @@ export default {
     SparcCard
   },
 
-  data: function() {
-    return {}
+  mixins: [MarkedMixin],
+
+  props: {
+    news: {
+      type: Array,
+      default: () => []
+    }
   }
 }
 </script>

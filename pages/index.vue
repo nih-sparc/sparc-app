@@ -14,7 +14,7 @@
 
     <featured-datasets />
 
-    <homepage-news />
+    <homepage-news :news="news" />
 
     <homepage-testimonials />
 
@@ -30,6 +30,9 @@ import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTestimonials.vue'
 import HomepageTwitter from '@/components/HomepageTwitter/HomepageTwitter.vue'
 
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
 export default {
   name: 'SparcHomepage',
 
@@ -40,7 +43,25 @@ export default {
     HomepageNews,
     HomepageTestimonials,
     HomepageTwitter
+  },
+
+  asyncData() {
+    return Promise.all([
+      // Get new and events entries
+      client.getEntries({
+        content_type: process.env.ctf_event_id,
+        order: 'fields.startDate',
+        limit: 2
+      })
+    ])
+      .then(([events]) => {
+        return {
+          news: events.items
+        }
+      })
+      .catch(console.error)
   }
+
 }
 </script>
 
