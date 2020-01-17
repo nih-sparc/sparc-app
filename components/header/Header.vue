@@ -24,10 +24,10 @@
           <svg-icon color="black" icon="icon-hamburger" height="25" width="25" />
         </button>
         <button class="header__nav--btn-search" @click="searchInputOpen = true">
-              <svg-icon color="black" icon="icon-magnifying-glass" height="25" width="25" />
+              <svg-icon dir="right" color="black" icon="icon-magnifying-glass" height="25" width="25" />
             </button>
 
-            
+
         <div class="navigation" :class="{ open: menuOpen }">
           <div class="mobile-navigation-header">
             <sparc-logo aria-hidden="”true”" role="presentation" />
@@ -188,7 +188,7 @@ export default {
   display: flex;
   flex-direction: row;
   @media screen and (max-width: 767px) {
-    height: 50px;
+    height: 29px;
   }
 
   a {
@@ -203,6 +203,13 @@ export default {
     &:active {
       text-decoration: underline;
     }
+  }
+}
+
+.header__nav--btn-search {
+  display: none;
+  @media screen and (max-width: 767px) {
+    display: block;
   }
 }
 
