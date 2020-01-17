@@ -16,13 +16,13 @@
         </a>
       </div>
       <div class="header__nav--main-links">
-        <div class="logo">
-          <sparc-logo />
-        </div>
         <div class="main-links-container">
            <button class="header__nav--btn-menu" @click="menuOpen = true">
           <svg-icon color="black" icon="icon-hamburger" height="25" width="25" />
         </button>
+        <div class="logo">
+          <sparc-logo />
+        </div>
         <button class="header__nav--btn-search" @click="searchInputOpen = true">
               <svg-icon dir="right" color="black" icon="icon-magnifying-glass" height="25" width="25" />
             </button>
@@ -30,7 +30,6 @@
 
         <div class="navigation" :class="{ open: menuOpen }">
           <div class="mobile-navigation-header">
-            <sparc-logo aria-hidden="”true”" role="presentation" />
             <button class="header__nav--btn-menu" @click="menuOpen = false">
               <i class="el-icon-close" />
             </button>
@@ -188,7 +187,13 @@ export default {
   display: flex;
   flex-direction: row;
   @media screen and (max-width: 767px) {
-    height: 29px;
+    height: 41px;
+    padding-left: 0;
+    padding-top: 13px;
+    .header__nav--btn-menu {
+      padding-left: 2px;
+      padding-top: 13px;
+    }
   }
 
   a {
@@ -210,12 +215,16 @@ export default {
   display: none;
   @media screen and (max-width: 767px) {
     display: block;
+    padding-bottom: 0.5rem;
+    padding-left: 9.7rem;
   }
 }
 
 .main-links-container {
   display: flex;
   flex-direction: row;
+  @media screen and (max-width: 767px) {
+  }
 }
 
 .logo {
@@ -226,6 +235,8 @@ export default {
   @media screen and (max-width: 767px) {
     height: 2rem;
     width: 4rem;
+    padding-left: 4.5rem;
+    padding-top: 0.1rem;
   }
 }
 
@@ -253,8 +264,7 @@ export default {
   border-radius: 4px;
   margin-left: 9px;
   @media screen and (max-width: 767px) {
-    background: none;
-    border: none;
+    display: none;
   }
 }
 
@@ -289,9 +299,6 @@ export default {
     & {
       display: block;
     }
-  }
-  i {
-    display: block;
   }
 }
 
