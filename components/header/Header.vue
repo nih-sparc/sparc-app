@@ -33,8 +33,27 @@
             <li v-for="link in links" :key="link.href">
               <a :class="{ active: link.active }" href="#">{{ link.title }}</a>
             </li>
+            <hr class="divider" />
           </ul>
-            <hr />
+            <ul class="navigation__links">
+              <li>
+                <img src="https://placeholder.pics/svg/20x20" />
+                <a href="#">About SPARC</a>
+              </li>
+              <li>
+                <img src="https://placeholder.pics/svg/20x20" />
+                <a href="#">Contact Us</a>
+              </li>
+              <li>
+                <img src="https://placeholder.pics/svg/20x20" />
+                <a href="#">Need Help?</a>
+              </li>
+            </ul>
+            <div class="navigation__links--social">
+              <img src="https://placeholder.pics/svg/50x50" />
+              <img src="https://placeholder.pics/svg/50x50" />
+              <img src="https://placeholder.pics/svg/50x50" />
+            </div>
         </div>
          <div class="search-test">
             <input type="text" class="search" placeholder="Search" />
@@ -144,6 +163,20 @@ export default {
   }
 }
 
+.divider {
+  display: none;
+  @media screen and (max-width: 767px) {
+    border: 0;
+    clear: both;
+    display: block;
+    width: 89%;
+    background-color: $pudendal;
+    height: 1px;
+    margin-left: 0;
+    margin-top: 11px;
+  }
+}
+
 .header__nav {
   background-color: $navy;
   height: 40px;
@@ -189,6 +222,22 @@ export default {
     .header__nav--btn-menu {
       padding-left: 2px;
       padding-top: 13px;
+    }
+  }
+
+  .navigation__links {
+    a {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 32px;
+      margin-left: 0.5rem;
+    }
+
+    &--social {
+      margin-top: 18rem;
+      img {
+        margin-right: 0.5rem;
+      }
     }
   }
 
@@ -345,7 +394,6 @@ export default {
     }
     ul {
       display: flex;
-      flex: 1;
       flex-direction: column;
       margin: 0;
       padding: 0;
