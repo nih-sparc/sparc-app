@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="header__nav">
-      <div class="header__nav--parent-links">
+      <div class="header__nav--parent">
         <img src="https://placeholder.pics/svg/18x18" />
         <a href="#">
           About SPARC
@@ -15,27 +15,44 @@
           Need Help?
         </a>
       </div>
-      <div class="header__nav--main-links">
-        <div class="main-links-container">
-           <button class="header__nav--btn-menu" @click="menuOpen = true">
-          <svg-icon color="black" icon="icon-hamburger" height="25" width="25" />
-        </button>
-        <div class="logo">
-          <sparc-logo />
-        </div>
-        <button class="header__nav--btn-search" @click="searchInputOpen = true">
-              <svg-icon dir="right" color="black" icon="icon-magnifying-glass" height="25" width="25" />
-            </button>
-
-
-        <div class="navigation" :class="{ open: menuOpen }">
-          <ul>
-            <li v-for="link in links" :key="link.href">
-              <a :class="{ active: link.active }" href="#">{{ link.title }}</a>
-            </li>
-            <hr class="divider" />
-          </ul>
-            <ul class="navigation__links">
+      <div class="header__nav--main">
+        <div class="nav-main-container">
+          <button
+            class="nav-main-container__mobile-menu"
+            @click="menuOpen = true"
+          >
+            <svg-icon
+              color="black"
+              icon="icon-hamburger"
+              height="25"
+              width="25"
+            />
+          </button>
+          <div class="logo">
+            <sparc-logo />
+          </div>
+          <button
+            class="nav-main-container__mobile-search"
+            @click="searchOpen = !searchOpen"
+          >
+            <svg-icon
+              dir="right"
+              color="black"
+              icon="icon-magnifying-glass"
+              height="25"
+              width="25"
+            />
+          </button>
+          <div class="mobile-navigation" :class="{ open: menuOpen }">
+            <ul>
+              <li v-for="link in links" :key="link.href">
+                <a :class="{ active: link.active }" href="#">
+                  {{ link.title }}
+                </a>
+              </li>
+              <hr class="divider" />
+            </ul>
+            <ul class="mobile-navigation__links">
               <li>
                 <img src="https://placeholder.pics/svg/20x20" />
                 <a href="#">About SPARC</a>
@@ -49,51 +66,30 @@
                 <a href="#">Need Help?</a>
               </li>
             </ul>
-            <div class="navigation__links--social">
+            <div class="mobile-navigation__links--social">
               <img src="https://placeholder.pics/svg/50x50" />
               <img src="https://placeholder.pics/svg/50x50" />
               <img src="https://placeholder.pics/svg/50x50" />
             </div>
-        </div>
-         <div class="search-test">
-            <input type="text" class="search" placeholder="Search" />
-            <button class="search-button" @click="executeSearch">
-              <svg-icon color="white" icon="icon-magnifying-glass" height="25" width="25" />
+          </div>
+          <div :class="{ 'search-mobile': searchOpen }">
+            <input type="text" placeholder="Search" />
+          </div>
+          <div class="nav-main-container__search">
+            <input type="text" class="nav-main-container__search-input" placeholder="Search" />
+            <button class="nav-main-container__search-button" @click="executeSearch">
+              <svg-icon
+                color="white"
+                icon="icon-magnifying-glass"
+                height="25"
+                width="25"
+              />
             </button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- <div class="nav">
-    <el-row type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <div class="header">
-          <div class="logo">
-            <sparc-logo />
-          </div>
-          <button class="btn-menu" @click="menuOpen = true">
-            <i class="el-icon-s-fold" />
-          </button>
-          <div class="navigation" :class="{ open: menuOpen }">
-            <div class="mobile-navigation-header">
-              <sparc-logo aria-hidden="”true”" role="presentation" />
-              <button class="btn-menu" @click="menuOpen = false">
-                <i class="el-icon-close" />
-              </button>
-            </div>
-            <ul>
-              <li v-for="link in links" :key="link.href">
-                <a :class="{ active: link.active }" :href="link.href">{{
-                  link.title
-                }}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </el-col>
-    </el-row>
-  </div> -->
 </template>
 
 <script>
@@ -140,7 +136,8 @@ export default {
   },
   data: () => ({
     links,
-    menuOpen: false
+    menuOpen: false,
+    searchOpen: false
   })
 }
 </script>
@@ -183,7 +180,7 @@ export default {
   width: 100%;
 }
 
-.header__nav--parent-links {
+.header__nav--parent {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -208,7 +205,7 @@ export default {
   }
 }
 
-.header__nav--main-links {
+.header__nav--main {
   height: 82px;
   background-color: $cochlear;
   padding-top: 30px;
@@ -219,24 +216,34 @@ export default {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
-    .header__nav--btn-menu {
+    .nav-main-container__mobile-menu {
       padding-left: 2px;
       padding-top: 13px;
     }
   }
 
-  .navigation__links {
-    a {
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 32px;
-      margin-left: 0.5rem;
-    }
-
+  .mobile-navigation__links {
+    display: none;
     &--social {
-      margin-top: 18rem;
-      img {
-        margin-right: 0.5rem;
+      display: none;
+    }
+    @media screen and (max-width: 767px) {
+      display: flex;
+      flex-direction: column;
+       a {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 32px;
+        margin-left: 0.5rem;
+      }
+
+      &--social {
+        display: flex;
+        flex-direction: row;
+        margin-top: 18rem;
+        img {
+          margin-right: 0.5rem;
+        }
       }
     }
   }
@@ -256,7 +263,7 @@ export default {
   }
 }
 
-.header__nav--btn-search {
+.nav-main-container__mobile-search {
   display: none;
   @media screen and (max-width: 767px) {
     display: block;
@@ -265,7 +272,7 @@ export default {
   }
 }
 
-.main-links-container {
+.nav-main-container {
   display: flex;
   flex-direction: row;
   @media screen and (max-width: 767px) {
@@ -285,12 +292,12 @@ export default {
   }
 }
 
-.search-test {
+.nav-main-container__search {
   display: flex;
   flex-direction: row;
 }
 
-.search {
+.nav-main-container__search-input {
   width: 400px;
   height: 34px;
   border-radius: 4px;
@@ -302,7 +309,7 @@ export default {
   }
 }
 
-.search-button {
+.nav-main-container__search-button {
   background-color: $dark-median;
   width: 40px;
   height: 40px;
@@ -330,7 +337,7 @@ export default {
   padding-left: 7px;
 }
 
-.header__nav--btn-menu {
+.nav-main-container__mobile-menu {
   background: none;
   border: none;
   display: none;
@@ -347,7 +354,7 @@ export default {
   }
 }
 
-.navigation {
+.mobile-navigation {
   padding: 0px;
   height: 100%;
 
@@ -363,6 +370,7 @@ export default {
         text-decoration: none;
         color: black;
         padding-bottom: 10px;
+        font-weight: 500;
 
         &.active {
           border-bottom: 2px solid #8300bf;
@@ -402,6 +410,46 @@ export default {
       }
     }
   }
+}
+
+@media screen and (max-width: 767px) {
+  .search-mobile {
+    background-color: $cochlear;
+    flex-direction: column;
+    left: 0;
+    padding: 1em;
+    padding-top: 12px;
+    padding-bottom: 14px;
+    position: fixed;
+    right: 6rem;
+    top: 3.5rem;
+    z-index: 9999;
+    display: flex;
+    width: 24rem;
+    height: 1.5rem;
+  }
+
+  input {
+    height: 2rem;
+    font-size: 16px;
+  }
+
+  ::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightgrey;
+  opacity: 1; /* Firefox */
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 32px;
+  padding-left: 7px;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: lightgrey;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 32px;
+  padding-left: 7px;
+}
 }
 
 .data-portal-title {
