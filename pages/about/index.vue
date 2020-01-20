@@ -85,6 +85,7 @@ export default {
 .about {
   text-align: center;
   min-height: 50vh;
+  margin-top: 9rem;
 }
 
 .rule-container {

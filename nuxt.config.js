@@ -36,6 +36,13 @@ export default {
    ** Customize the progress-bar color
    */
   loading: { color: '#fff' },
+
+  /*
+   ** Customize router classes globally
+   */
+  // router : {
+  //   linkActiveClass: 'active-link'
+  // }
   /*
    ** Global CSS
    */

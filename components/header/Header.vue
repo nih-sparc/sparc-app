@@ -3,17 +3,17 @@
     <div class="header__nav">
       <div class="header__nav--parent">
         <img src="https://placeholder.pics/svg/18x18" />
-        <a href="#">
+        <nuxt-link :to="{ name: 'about' }">
           About SPARC
-        </a>
+        </nuxt-link>
         <img src="https://placeholder.pics/svg/18x18" />
         <a href="#">
           Contact Us
         </a>
         <img src="https://placeholder.pics/svg/18x18" />
-        <a href="#">
+        <nuxt-link :to="{ name: 'help' }">
           Need Help?
-        </a>
+        </nuxt-link>
       </div>
       <div class="header__nav--main">
         <div class="nav-main-container">
@@ -33,7 +33,7 @@
           </div>
           <button
             class="nav-main-container__mobile-search"
-            @click="openSearch"
+            @click="openMobileSearch"
           >
             <svg-icon
               dir="right"
@@ -45,23 +45,25 @@
           </button>
           <div v-if="searchOpen" class="search-mobile">
             <input type="text" placeholder="Search" />
-            <button @click="closeSearch" class="search-mobile__close">
+            <button @click="closeMobileSearch" class="search-mobile__close">
               <svg-icon icon="icon-remove" class="search-mobile__close--icon" />
             </button>
           </div>
-          <div v-if="menuOpen" class="mobile-navigation menuOpen">
+          <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
             <ul>
               <li v-for="link in links" :key="link.href">
-                <a :class="{ active: link.active }" href="#">
-                  {{ link.title }}
-                </a>
+                <nuxt-link :to="{ name: link.title }" :class="{active: activeLink(link.href) }" exact-active-class="active" >
+                  {{ link.displayTitle }}
+                </nuxt-link>
               </li>
               <hr class="divider" />
             </ul>
             <ul class="mobile-navigation__links">
               <li>
                 <img src="https://placeholder.pics/svg/20x20" />
-                <a href="#">About SPARC</a>
+                <nuxt-link :to="{ name: 'about' }">
+                  About SPARC
+                </nuxt-link>
               </li>
               <li>
                 <img src="https://placeholder.pics/svg/20x20" />
@@ -69,13 +71,14 @@
               </li>
               <li>
                 <img src="https://placeholder.pics/svg/20x20" />
-                <a href="#">Need Help?</a>
+                <nuxt-link :to="{ name: 'help' }">
+                  Need Help?
+                </nuxt-link>
               </li>
             </ul>
             <div class="mobile-navigation__links--social">
-              <img src="https://placeholder.pics/svg/50x50" />
-              <img src="https://placeholder.pics/svg/50x50" />
-              <img src="https://placeholder.pics/svg/50x50" />
+              <svg-icon icon="icon-twitter" width="30" height="30" />
+              <svg-icon icon="icon-youtube" width="30" height="30" />
             </div>
           </div>
           <div class="nav-main-container__search">
@@ -98,37 +101,26 @@
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
 
-const path = () => ''
-const hash = () => ''
-
-const pathOrHashContainsString = query =>
-  path().indexOf(query) > -1 || hash().indexOf(query) > -1
-
 const links = [
   {
-    title: 'Home',
-    href: '/',
-    active:
-      pathOrHashContainsString('/') &&
-      !pathOrHashContainsString('/about') &&
-      !pathOrHashContainsString('/browse') &&
-      !pathOrHashContainsString('/map') &&
-      !pathOrHashContainsString('/sim')
+    title: 'index',
+    displayTitle: 'Home',
+    href: '/'
   },
   {
-    title: 'Find Data',
-    href: '/data',
-    active: pathOrHashContainsString('/data')
+    title: 'data',
+    displayTitle: 'Find Data',
+    href: '/data'
   },
   {
-    title: 'Resources',
-    href: '/map',
-    active: pathOrHashContainsString('/map')
+    title: 'resources',
+    displayTitle: 'Resources',
+    href: '/resources'
   },
   {
-    title: 'News & Events',
-    href: '/events',
-    active: pathOrHashContainsString('/events')
+    title: 'events',
+    displayTitle: 'News & Events',
+    href: '/events'
   }
 ]
 
@@ -143,13 +135,42 @@ export default {
     searchOpen: false
   }),
 
+    watch: {
+    '$nuxt.$route.path' : {
+      handler: function(val) {
+        if (val){
+          this.menuOpen = false
+        }
+    },
+    immediate: true
+  },
+},
+
+
   methods: {
-    
-    openSearch: function() {
-      this.searchOpen = true
+     activeLink: function(query) {
+  if (this.$nuxt.$route.path === query) {
+    console.log("gimmie dis ", this.$nuxt.$route)
+    return true;
+  } else {
+    return false;
+  }
+},
+    openMobileNav: function() {
+      if (!this.menuOpen) {
+        this.searchOpen = false // just in case the search menu is open also
+        this.menuOpen = true
+      } else {
+        this.menuOpen = false
+      }
     },
 
-    closeSearch: function() {
+    openMobileSearch: function() {
+      this.searchOpen = true
+      this.menuOpen = false
+    },
+
+    closeMobileSearch: function() {
       this.searchOpen = false
     },
 
@@ -259,7 +280,7 @@ export default {
         display: flex;
         flex-direction: row;
         margin-top: 18rem;
-        img {
+        .svg-icon {
           margin-right: 0.5rem;
         }
       }
@@ -391,12 +412,12 @@ export default {
         font-weight: 500;
 
         &.active {
-          border-bottom: 2px solid #8300bf;
-          color: #8300bf;
+          border-bottom: 1px solid $median;
+          color: $median;
         }
 
         &:hover {
-          color: #8300bf;
+          color: $median;
         }
       }
     }

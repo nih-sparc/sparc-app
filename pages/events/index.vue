@@ -72,6 +72,10 @@ export default {
   }
 }
 
+.events-page {
+  margin-top: 7rem;
+}
+
 .events {
   margin-left: 32px;
   margin: 24px auto;

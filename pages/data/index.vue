@@ -373,8 +373,14 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+@import '../../assets/_variables.scss';
+
+#sparc-dat-core-browse {
+  margin-top: 7rem;
+}
+
 button.clear-all {
-  color: #8300bf;
+  color: $median;
   background: none;
 }
 

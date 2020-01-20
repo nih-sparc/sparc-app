@@ -14,7 +14,7 @@
         </h3>
         <div class="subtitle">
           <div>{{ event.fields.location }}</div>
-          <div>{{ startDate }} - {{ endDate }}</div>
+          <!-- <div>{{ startDate }} - {{ endDate }}</div> -->
         </div>
         <div class="details">
           <div class="detail">
