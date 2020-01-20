@@ -19,7 +19,7 @@
         <div class="nav-main-container">
           <button
             class="nav-main-container__mobile-menu"
-            @click="menuOpen = true"
+            @click="openMobileNav"
           >
             <svg-icon
               color="black"
@@ -33,7 +33,7 @@
           </div>
           <button
             class="nav-main-container__mobile-search"
-            @click="searchOpen = !searchOpen"
+            @click="openSearch"
           >
             <svg-icon
               dir="right"
@@ -43,7 +43,13 @@
               width="25"
             />
           </button>
-          <div class="mobile-navigation" :class="{ open: menuOpen }">
+          <div v-if="searchOpen" class="search-mobile">
+            <input type="text" placeholder="Search" />
+            <button @click="closeSearch" class="search-mobile__close">
+              <svg-icon icon="icon-remove" class="search-mobile__close--icon" />
+            </button>
+          </div>
+          <div v-if="menuOpen" class="mobile-navigation menuOpen">
             <ul>
               <li v-for="link in links" :key="link.href">
                 <a :class="{ active: link.active }" href="#">
@@ -71,9 +77,6 @@
               <img src="https://placeholder.pics/svg/50x50" />
               <img src="https://placeholder.pics/svg/50x50" />
             </div>
-          </div>
-          <div :class="{ 'search-mobile': searchOpen }">
-            <input type="text" placeholder="Search" />
           </div>
           <div class="nav-main-container__search">
             <input type="text" class="nav-main-container__search-input" placeholder="Search" />
@@ -138,7 +141,22 @@ export default {
     links,
     menuOpen: false,
     searchOpen: false
-  })
+  }),
+
+  methods: {
+    
+    openSearch: function() {
+      this.searchOpen = true
+    },
+
+    closeSearch: function() {
+      this.searchOpen = false
+    },
+
+    executeSearch: function() {
+      // logic goes here
+    }
+  }
 }
 </script>
 
@@ -412,6 +430,10 @@ export default {
   }
 }
 
+.search-mobile {
+  display: none;
+}
+
 @media screen and (max-width: 767px) {
   .search-mobile {
     background-color: $cochlear;
@@ -426,12 +448,26 @@ export default {
     z-index: 9999;
     display: flex;
     width: 24rem;
-    height: 1.5rem;
+    height: 1.8rem;
+
+    &__close {
+      width: 27px;
+      height: 30px;
+      position: inherit;
+      right: 17px;
+    }
+
+    &--icon {
+      color: $neutral-gray;
+      width: 20px;
+      height: 20px;
+    }
   }
 
   input {
     height: 2rem;
     font-size: 16px;
+    width: 21rem;
   }
 
   ::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
