@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-hero>
+    <page-hero class="large">
       <h2 v-if="heroHeading">{{ heroHeading }}</h2>
       <p>
         {{ heroCopy }}
