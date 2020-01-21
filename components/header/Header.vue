@@ -44,14 +44,18 @@
           </button>
           <div v-if="searchOpen" class="search-mobile">
             <input type="text" placeholder="Search" />
-            <button @click="closeMobileSearch" class="search-mobile__close">
+            <button class="search-mobile__close" @click="closeMobileSearch">
               <svg-icon icon="icon-remove" class="search-mobile__close--icon" />
             </button>
           </div>
           <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
             <ul>
               <li v-for="link in links" :key="link.href">
-                <nuxt-link :to="{ name: link.title }" :class="{active: activeLink(link.href) }" exact-active-class="active" >
+                <nuxt-link
+                  :to="{ name: link.title }"
+                  :class="{ active: activeLink(link.href) }"
+                  exact-active-class="active"
+                >
                   {{ link.displayTitle }}
                 </nuxt-link>
               </li>
@@ -77,16 +81,33 @@
             </ul>
             <div class="mobile-navigation__links--social">
               <a href="#">
-                <svg-icon icon="icon-twitter" width="30" height="26" color="#606266" />
+                <svg-icon
+                  icon="icon-twitter"
+                  width="30"
+                  height="26"
+                  color="#606266"
+                />
               </a>
               <a href="https://www.youtube.com/results?search_query=sparc+nih">
-                <svg-icon icon="icon-youtube" width="30" height="26" color="#606266" />
+                <svg-icon
+                  icon="icon-youtube"
+                  width="30"
+                  height="26"
+                  color="#606266"
+                />
               </a>
             </div>
           </div>
           <div class="nav-main-container__search">
-            <input type="text" class="nav-main-container__search-input" placeholder="Search" />
-            <button class="nav-main-container__search-button" @click="executeSearch">
+            <input
+              type="text"
+              class="nav-main-container__search-input"
+              placeholder="Search"
+            />
+            <button
+              class="nav-main-container__search-button"
+              @click="executeSearch"
+            >
               <svg-icon
                 color="white"
                 icon="icon-magnifying-glass"
@@ -138,26 +159,36 @@ export default {
     searchOpen: false
   }),
 
-    watch: {
-    '$nuxt.$route.path' : {
+  watch: {
+   /**
+    * Watches for the route path to hide
+    * mobile nav on menu click
+   **/
+    '$nuxt.$route.path': {
       handler: function(val) {
-        if (val){
+        if (val) {
           this.menuOpen = false
         }
-    },
-    immediate: true
+      },
+      immediate: true
+    }
   },
-},
-
 
   methods: {
-     activeLink: function(query) {
-  if (this.$nuxt.$route.path === query) {
-    return true;
-  } else {
-    return false;
-  }
-},
+    /**
+     * Sets a link to active based on current page
+     * @param {String} query
+     */
+    activeLink: function(query) {
+      if (this.$nuxt.$route.path === query) {
+        return true
+      } else {
+        return false
+      }
+    },
+    /**
+     * Opens the mobile version of the navigation
+     */
     openMobileNav: function() {
       if (!this.menuOpen) {
         this.searchOpen = false // just in case the search menu is open also
@@ -167,15 +198,24 @@ export default {
       }
     },
 
+    /**
+     * Opens the mobile version of the search bar
+     */
     openMobileSearch: function() {
       this.searchOpen = true
       this.menuOpen = false
     },
 
+    /**
+     * Closes the mobile version of the search bar
+     */
     closeMobileSearch: function() {
       this.searchOpen = false
     },
 
+    /**
+     * Executes a search query
+     */
     executeSearch: function() {
       // logic goes here
     }
@@ -271,7 +311,7 @@ export default {
     @media (min-width: 320px) and (max-width: 767px) {
       display: flex;
       flex-direction: column;
-       a {
+      a {
         font-size: 14px;
         font-weight: 300;
         line-height: 32px;
@@ -295,12 +335,7 @@ export default {
     line-height: 32px;
     font-weight: 500;
     padding-top: 5px;
-    // padding-right: 91px;
     text-decoration: none;
-
-    &:active {
-      text-decoration: underline;
-    }
   }
 }
 
@@ -309,7 +344,6 @@ export default {
   @media (min-width: 320px) and (max-width: 767px) {
     display: flex;
     padding-bottom: 0.5rem;
-    // padding-left: 8.7rem;
   }
 }
 
@@ -385,7 +419,7 @@ export default {
   padding-left: 7px;
 }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
+:-ms-input-placeholder {   /* Internet Explorer 10-11 */
   color: lightgray;
   font-size: 14px;
   font-weight: 300;
@@ -421,7 +455,6 @@ export default {
     margin-top: 0.5rem;
     li {
       display: inline;
-      // margin: 0px 10px;
       padding-right: 5rem;
       @media (min-width: 320px) and (max-width: 767px) {
         padding-right: 2rem;
@@ -517,21 +550,21 @@ export default {
   }
 
   ::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: lightgrey;
-  opacity: 1; /* Firefox */
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 32px;
-  padding-left: 7px;
-}
+    color: lightgrey;
+    opacity: 1; /* Firefox */
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 32px;
+    padding-left: 7px;
+  }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: lightgrey;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 32px;
-  padding-left: 7px;
-}
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: lightgrey;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 32px;
+    padding-left: 7px;
+  }
 }
 
 .data-portal-title {

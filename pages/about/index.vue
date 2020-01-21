@@ -76,6 +76,7 @@ export default {
 <style scoped lang="scss">
 .page {
   display: flex;
+  margin-top: 7rem;
 
   p {
     color: #606266;
