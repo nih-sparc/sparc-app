@@ -1,30 +1,25 @@
 <template>
   <div class="events-page">
-    <div class="header">
-      <div class="gradient">
-        <el-row type="flex" justify="center">
-          <div class="search-controls">
-            <HelpSearchControls
-              :search-on-load="true"
-              submit-text="Go"
-              @query="onSearchQuery"
-            />
+    <page-hero class="subpage">
+      <HelpSearchControls
+        :search-on-load="true"
+        submit-text="Go"
+        @query="onSearchQuery"
+      />
+    </page-hero>
+    <div class="page-wrap container">
+      <div class="help-section">
+        <div class="header">
+          <h2>{{ helpItem.fields.title }}</h2>
+          <div class="summary">
+            {{ helpItem.fields.summary }}
           </div>
-        </el-row>
-      </div>
-    </div>
-
-    <div class="help-section">
-      <div class="header">
-        <h2>{{ helpItem.fields.title }}</h2>
-        <div class="summary">
-          {{ helpItem.fields.summary }}
+          <div class="updated">
+            <i>Updated at: {{ updateDate }} </i>
+          </div>
         </div>
-        <div class="updated">
-          <i>Updated at: {{ updateDate }} </i>
-        </div>
+        <div class="content" v-html="outputHtml" />
       </div>
-      <div class="content" v-html="outputHtml" />
     </div>
   </div>
 </template>
@@ -35,13 +30,15 @@ import { format, parseISO } from 'date-fns'
 import showdown from 'showdown'
 import { pathOr } from 'ramda'
 import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
 
 const client = createClient()
 
 export default {
   name: 'EventPage',
   components: {
-    HelpSearchControls
+    HelpSearchControls,
+    PageHero
   },
 
   asyncData(env) {

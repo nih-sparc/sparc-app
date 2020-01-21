@@ -1,44 +1,56 @@
 <template>
   <div class="events-page">
-    <div class="header">
-      <div class="gradient">
-        <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
-            <div class="breadcrumb">
-              <h3>SPARC Support Center</h3>
-              <p>
-                Documentation about SPARC, Data, Maps, and Simulation resources
-              </p>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
+    <page-hero class="subpage">
+      <h3>SPARC Support Center</h3>
+      <p>
+        Documentation about SPARC, Data, Maps, and Simulation resources
+      </p>
+      <p>
+        <!-- {{ heroCopy }} -->
+      </p>
+    </page-hero>
 
-    <div class="section events">
-      <div
-        v-for="(item, index) in topics.fields.sections"
-        :key="`${item}-${index}`"
-      >
-        <div class="help-section">
-          <help-section :section="item" />
-        </div>
-      </div>
+    <div class="page-wrap container">
+      <el-row type="flex" justify="center">
+        <el-col :xs="24" :md="22" :lg="6">
+          <h2>Menu</h2>
+          <ul>
+            <li><a href="#">Lorem Ipsum</a></li>
+            <li><a href="#">Lorem Ipsum</a></li>
+            <li><a href="#">Lorem Ipsum</a></li>
+            <li><a href="#">Lorem Ipsum</a></li>
+          </ul>
+        </el-col>
+        <el-col :xs="24" :md="22" :lg="18">
+          <div
+            v-for="(item, index) in topics.fields.sections"
+            :key="`${item}-${index}`"
+          >
+            <div class="help-section">
+              <help-section :section="item" />
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
 
 <script>
 import HelpSection from '@/components/HelpSection/HelpSection.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
 
 export default {
   name: 'HelpPage',
+
   components: {
-    HelpSection
+    HelpSection,
+    PageHero
   },
+
   asyncData() {
     return Promise.all([
       // fetch all blog posts sorted by creation date
