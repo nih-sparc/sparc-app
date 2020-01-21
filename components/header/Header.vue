@@ -332,8 +332,13 @@ export default {
 }
 
 .nav-main-container__search {
+  position: relative;
+  left: 6rem;
   display: flex;
   flex-direction: row;
+  @media screen and (max-width: 1024px) {
+    left: 3rem;
+  }
 }
 
 .nav-main-container__search-input {
@@ -342,9 +347,12 @@ export default {
   border-radius: 4px;
   border: solid 1px $dark-gray;
   margin-top: 2px;
-  margin-left: 60px;
+  padding-left: 1rem;
   @media screen and (max-width: 767px) {
     display: none;
+  }
+  @media screen and (max-width: 1024px) {
+    width: 14rem;
   }
 }
 
@@ -396,23 +404,27 @@ export default {
 .mobile-navigation {
   padding: 0px;
   height: 100%;
+  margin-left: 1rem;
 
   ul {
     padding-left: 0;
     margin-top: 0.5rem;
     li {
       display: inline;
-      margin: 0px 10px;
-      padding-right: 55px;
+      // margin: 0px 10px;
+      padding-right: 5rem;
+      @media screen and (max-width: 1024px) {
+        padding-right: 2rem;
+      }
 
       a {
         text-decoration: none;
-        color: black;
+        color: $navy;
         padding-bottom: 10px;
         font-weight: 500;
 
         &.active {
-          border-bottom: 1px solid $median;
+          border-bottom: 2px solid $median;
           color: $median;
         }
 
