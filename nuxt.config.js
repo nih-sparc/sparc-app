@@ -14,7 +14,18 @@ export default {
         content: process.env.npm_package_description || ''
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon.ico' }]
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon/favicon.ico'
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css?family=Asap:400,400i,500,600,700&display=swap'
+      }
+    ]
   },
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:4000',
@@ -27,6 +38,7 @@ export default {
     ctf_help_id: 'helpDocument',
     ctf_help_list_id: 'helpSection',
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
+    ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST

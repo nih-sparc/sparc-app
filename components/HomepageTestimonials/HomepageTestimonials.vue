@@ -12,8 +12,14 @@
               activeTestimonial === idx
           }"
         >
-          <p>{{ testimonial.copy }}</p>
-          <span>&mdash; {{ testimonial.author }}</span>
+          <p>{{ testimonial.fields.testimonial }}</p>
+          <span class="homepage-testimonial__author">
+            &mdash;
+            {{ testimonial.fields.author }}
+            <template v-if="testimonial.fields.organization">
+              , {{ testimonial.fields.organization }}
+            </template>
+          </span>
         </div>
       </div>
 
@@ -43,32 +49,23 @@
 export default {
   name: 'HomepageTestimonials',
 
+  props: {
+    testimonials: {
+      type: Array,
+      default: () => []
+    }
+  },
+
   data: function() {
     return {
-      activeTestimonial: 0,
-      testimonials: [
-        {
-          copy:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor as en incididunt ut labore et dolore magna  aliqua. Ut enim ad minim veniam, quis nostrud delo exercitation ullamco laboris nisi ut aliquip ex consequat.',
-          author: 'Jeffery Ardell1, UCLA'
-        },
-        {
-          copy:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor as en incididunt ut labore et dolore magna ',
-          author: 'Jeffery Ardell2, UCLA'
-        },
-        {
-          copy:
-            'Aliqua. Ut enim ad minim veniam, quis nostrud delo exercitation ullamco laboris nisi ut aliquip ex consequat.',
-          author: 'Jeffery Ardell3, UCLA'
-        }
-      ]
+      activeTestimonial: 0
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/_variables.scss';
 
 .home-container {
   box-sizing: border-box;
@@ -80,8 +77,6 @@ export default {
   }
 }
 .homepage-testimonials {
-  background: #24245b;
-  color: #fff;
   padding: 1.75em 0;
   @media (min-width: 768px) {
     padding: 2em 0 4em;
@@ -155,5 +150,9 @@ p {
       background: #fff;
     }
   }
+}
+.homepage-testimonial__author {
+  color: $median;
+  font-size: 0.875em;
 }
 </style>
