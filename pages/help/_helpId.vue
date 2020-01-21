@@ -18,28 +18,35 @@
             <i>Updated at: {{ updateDate }} </i>
           </div>
         </div>
-        <div class="content" v-html="outputHtml" />
+        <!-- eslint-disable vue/no-v-html -->
+        <!-- marked will sanitize the HTML injected -->
+        <div class="content" v-html="parseMarkdown(htmlContent)" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import createClient from '@/plugins/contentful.js'
 import { format, parseISO } from 'date-fns'
-import showdown from 'showdown'
 import { pathOr } from 'ramda'
+
 import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import MarkedMixin from '@/mixins/marked'
+
+import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
 
 export default {
   name: 'EventPage',
+
   components: {
     HelpSearchControls,
     PageHero
   },
+
+  mixins: [MarkedMixin],
 
   asyncData(env) {
     console.log('fetching data: ' + process.env.ctf_help_id)
@@ -53,20 +60,18 @@ export default {
   },
 
   computed: {
-    converter() {
-      // converter instance of showdown
-      const converter = new showdown.Converter()
-      converter.setFlavor('github')
-      return converter
-    },
-
+    /**
+     * Compute HTML Content for the page
+     * @returns {String}
+     */
     htmlContent() {
       return pathOr('', ['fields', 'helpContent'], this.helpItem)
     },
 
-    outputHtml() {
-      return this.converter ? this.converter.makeHtml(this.htmlContent) : ''
-    },
+    /**
+     * Compute and convert the date the article was created
+     * @returns {String}
+     */
     updateDate: function() {
       return format(parseISO(this.helpItem.sys.updatedAt), 'MM/dd/yyyy')
     }
@@ -75,9 +80,6 @@ export default {
   methods: {
     onSearchQuery: function() {
       return 0
-    },
-    goBack() {
-      console.log('go back')
     }
   }
 }
@@ -85,34 +87,18 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.header {
-  .gradient {
-    padding: 1.5em 0;
-    color: #f0f2f5;
-    background-image: linear-gradient(90deg, #0026ff 0%, #00ffb9 100%);
-
-    .breadcrumb {
-      width: 75%;
-    }
-  }
-
-  .search-controls {
-    width: 80%;
-  }
-}
-
 .help-section {
   color: $vestibular;
   margin-top: 32px;
   margin: 24px auto;
   width: 80%;
   background-color: #fff;
-  padding: 16px 120px;
+  padding: 8px;
   border-radius: 16px;
   max-width: 900px;
 
-  @media screen and (max-width: 800px) {
-    padding: 8px;
+  @media screen and (min-width: 48em) {
+    padding: 16px 120px;
   }
 
   .content {
