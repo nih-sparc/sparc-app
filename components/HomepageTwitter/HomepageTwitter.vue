@@ -29,6 +29,7 @@ export default {
 
 <style lang="scss" scoped>
 .homepage-twitter {
+  background: #fff;
   padding: 2rem 0;
   @media (min-width: 768px) {
     padding: 4rem 0;

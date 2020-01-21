@@ -18,11 +18,7 @@ export default {
 
 <style lang="scss">
 .page-hero {
-  background-image: linear-gradient(
-    90deg,
-    rgb(12, 0, 191) 0%,
-    rgb(188, 0, 252) 100%
-  );
+  background-image: linear-gradient(90deg, #0026ff 0%, #00ffb9 100%);
   color: #f0f2f5;
   font-size: 1em;
   line-height: 1.5rem;
@@ -32,14 +28,28 @@ export default {
   @media (min-width: 768px) {
     font-size: 1.625em;
     line-height: 2.375rem;
-    padding: 3rem 0;
+    padding: 1.5rem 0;
     margin-top: 7rem;
-  }
-  p {
-    margin: 0 auto 1rem;
-    max-width: 58rem;
+
+  &.large {
+    background-image: linear-gradient(
+      90deg,
+      rgb(12, 0, 191) 0%,
+      rgb(188, 0, 252) 100%
+    );
+    text-align: center;
+
     @media (min-width: 768px) {
-      margin-bottom: 2rem;
+      font-size: 1.625em;
+      line-height: 2.375rem;
+      padding: 3rem 0;
+    }
+    p {
+      margin: 0 auto 1rem;
+      max-width: 58rem;
+      @media (min-width: 768px) {
+        margin-bottom: 2rem;
+      }
     }
   }
 }
