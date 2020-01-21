@@ -23,7 +23,7 @@ export default {
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css?family=Asap:300,500,600|Nunito+Sans:400,600,700'
+          'https://fonts.googleapis.com/css?family=Asap:400,400i,500,600,700&display=swap'
       }
     ]
   },
