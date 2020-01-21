@@ -1,17 +1,18 @@
 <template>
   <div>
     <page-hero class="large">
+      <h2 v-if="heroHeading">{{ heroHeading }}</h2>
       <p>
         {{ heroCopy }}
       </p>
       <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
-        <bf-button class="white">
+        <el-button class="uppercase">
           {{ heroButtonLabel }}
-        </bf-button>
+        </el-button>
       </a>
     </page-hero>
 
-    <featured-datasets />
+    <featured-data />
 
     <homepage-news :news="newsAndEvents" />
 
@@ -22,9 +23,8 @@
 </template>
 
 <script>
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import FeaturedDatasets from '@/components/FeaturedDatasets/FeaturedDatasets.vue'
+import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTestimonials.vue'
 import HomepageTwitter from '@/components/HomepageTwitter/HomepageTwitter.vue'
@@ -36,9 +36,8 @@ export default {
   name: 'SparcHomepage',
 
   components: {
-    BfButton,
     PageHero,
-    FeaturedDatasets,
+    FeaturedData,
     HomepageNews,
     HomepageTestimonials,
     HomepageTwitter
@@ -60,6 +59,7 @@ export default {
       newsAndEvents: [],
       testimonials: [],
       heroCopy: '',
+      heroHeading: '',
       heroButtonLink: '',
       heroButtonLabel: ''
     }
@@ -68,11 +68,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.page-hero  {
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+}
 ::v-deep h2 {
-  font-size: 1em;
-  font-weight: 700;
+  font-size: 1.5em;
+  font-weight: 500;
   line-height: 2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   text-align: center;
   @media (min-width: 768px) {
     font-size: 1.5em;

@@ -13,7 +13,7 @@
           }"
         >
           <p>{{ testimonial.fields.testimonial }}</p>
-          <span>
+          <span class="homepage-testimonial__author">
             &mdash;
             {{ testimonial.fields.author }}
             <template v-if="testimonial.fields.organization">
@@ -65,6 +65,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/_variables.scss';
 
 .home-container {
   box-sizing: border-box;
@@ -76,8 +77,6 @@ export default {
   }
 }
 .homepage-testimonials {
-  background: #24245b;
-  color: #fff;
   padding: 1.75em 0;
   @media (min-width: 768px) {
     padding: 2em 0 4em;
@@ -151,5 +150,9 @@ p {
       background: #fff;
     }
   }
+}
+.homepage-testimonial__author {
+  color: $median;
+  font-size: 0.875em;
 }
 </style>

@@ -1,19 +1,19 @@
 <template>
-  <div class="featured-datasets container">
-    <h2>Browse Datasets by Categories</h2>
-    <div class="datasets-wrap">
+  <div class="featured-data container">
+    <h2>Browse Data by Category</h2>
+    <div class="data-wrap">
       <nuxt-link
-        v-for="dataset in datasets"
-        :key="dataset.id"
-        class="dataset"
+        v-for="item in featuredData"
+        :key="item.id"
+        class="featured-data__item"
         :to="{
           name: 'datasets-datasetId',
-          params: { datasetId: dataset.id }
+          params: { datasetId: item.id }
         }"
       >
-        <img :src="dataset.image" :alt="`Icon for ${dataset.type} dataset`" />
+        <img :src="item.image" :alt="`Icon for ${item.type} category`" />
         <p class="mb-0 mt-8">
-          {{ dataset.type }}
+          {{ item.type }}
         </p>
       </nuxt-link>
     </div>
@@ -22,7 +22,7 @@
 
 <script>
 // @TODO remove
-const mockDatasets = [
+const mockFeaturedData = [
   {
     id: 0,
     name: '123',
@@ -52,44 +52,14 @@ const mockDatasets = [
     name: '123',
     type: 'Category 4',
     image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 5,
-    name: '123',
-    type: 'Category 5',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 6,
-    name: '123',
-    type: 'Category 6',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 7,
-    name: '123',
-    type: 'Category 7',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 8,
-    name: '123',
-    type: 'Category 8',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 9,
-    name: '123',
-    type: 'Category 9',
-    image: 'https://placeholder.pics/svg/252x252'
   }
 ]
 export default {
-  name: 'FeaturedDatasets',
+  name: 'FeaturedData',
 
   data: function() {
     return {
-      datasets: mockDatasets
+      featuredData: mockFeaturedData
     }
   }
 }
@@ -98,14 +68,14 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
 
-.featured-datasets {
+.featured-data {
   text-align: center;
-  padding: 4.0625em 0 2.5em;
+  padding: 3em 0 4em;
 }
 h2 {
   margin-bottom: 1.5625em;
 }
-.datasets-wrap {
+.data-wrap {
   align-items: center;
   flex-wrap: wrap;
   display: flex;
@@ -115,14 +85,13 @@ h2 {
     padding-right: 0.4375rem;
   }
 }
-.dataset {
+.featured-data__item {
   color: #000;
   margin: 19px;
   text-decoration: none;
   width: 70px;
   @media (min-width: 768px) {
-    height: 126px;
-    width: 126px;
+    width: 128px;
     margin: 1.5625em 3.5625rem;
   }
   &:hover,
@@ -130,25 +99,19 @@ h2 {
     opacity: 0.9;
   }
   img {
+    background: #fff;
+    border-radius: 50%;
     display: block;
     height: 70px;
+    margin-bottom: 8px;
     width: 100%;
     @media (min-width: 768px) {
       height: 100%;
     }
   }
   p {
-    font-size: 0.75em;
-    @media (min-width: 769px) {
-      border: 0;
-      clip: rect(0 0 0 0);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
-    }
+    font-size: 0.8125em;
+    font-weight: 700;
   }
 }
 </style>
