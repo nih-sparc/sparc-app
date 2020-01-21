@@ -23,7 +23,9 @@
           <nuxt-link
             :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
           >
-            Learn More
+            <el-button>
+              Learn More
+            </el-button>
           </nuxt-link>
         </p>
       </sparc-card>
@@ -68,6 +70,9 @@ export default {
   margin-bottom: 24px;
   @media (min-width: 768px) {
     margin-bottom: 40px;
+  }
+  h3 {
+    font-size: 1.333333333em;
   }
 }
 </style>

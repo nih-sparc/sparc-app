@@ -6,7 +6,7 @@
         {{ heroCopy }}
       </p>
       <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
-        <el-button>
+        <el-button class="uppercase">
           {{ heroButtonLabel }}
         </el-button>
       </a>
@@ -73,11 +73,6 @@ export default {
     font-size: 2rem;
     font-weight: 500;
     margin-bottom: 1rem;
-  }
-  .el-button {
-    color: #8300bf;
-    font-weight: 500;
-    text-transform: uppercase;
   }
 }
 ::v-deep h2 {
