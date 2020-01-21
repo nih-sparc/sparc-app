@@ -4,7 +4,7 @@
     <div class="data-wrap">
       <nuxt-link
         v-for="item in featuredData"
-        :key="item.id"
+        :key="item.sys.id"
         class="featured-data__item"
         :to="item.fields.link"
       >
