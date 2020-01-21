@@ -338,12 +338,11 @@ export default {
 }
 
 .nav-main-container__search {
-  width: 54%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   @media (min-width: 768px) and (max-width: 1024px) {
-    width: 24%;
+    width: 28%;
   }
   @media (min-width: 320px) and (max-width: 767px) {
     width: 0;
@@ -351,7 +350,7 @@ export default {
 }
 
 .nav-main-container__search-input {
-  width: 43%;
+  width: 22vw;
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
@@ -361,7 +360,7 @@ export default {
     display: none;
   }
   @media (min-width: 768px) and (max-width: 1024px) {
-    width: 40%;
+    width: 100%;
   }
 }
 
@@ -414,6 +413,7 @@ export default {
 .mobile-navigation {
   padding: 0px;
   height: 100%;
+  width: 62%;
   margin-left: 1rem;
 
   ul {
