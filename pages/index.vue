@@ -12,7 +12,7 @@
       </a>
     </page-hero>
 
-    <featured-data />
+    <featured-data :featured-data="featuredData" />
 
     <homepage-news :news="newsAndEvents" />
 
@@ -56,6 +56,7 @@ export default {
 
   data: () => {
     return {
+      featuredData: [],
       newsAndEvents: [],
       testimonials: [],
       heroCopy: '',
