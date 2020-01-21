@@ -196,7 +196,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  @media screen and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 767px) {
     align-items: center;
   }
 }
@@ -239,7 +239,7 @@ export default {
     padding-right: 18px;
     text-decoration: none;
   }
-  @media screen and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 767px) {
     & {
       display: none;
     }
@@ -253,7 +253,7 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  @media screen and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 767px) {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
@@ -268,7 +268,7 @@ export default {
     &--social {
       display: none;
     }
-    @media screen and (max-width: 767px) {
+    @media (min-width: 320px) and (max-width: 767px) {
       display: flex;
       flex-direction: column;
        a {
@@ -281,7 +281,7 @@ export default {
       &--social {
         display: flex;
         flex-direction: row;
-        margin-top: 19rem;
+        margin-top: 15rem;
         .svg-icon {
           margin-right: 1rem;
         }
@@ -306,17 +306,21 @@ export default {
 
 .nav-main-container__mobile-search {
   display: none;
-  @media screen and (max-width: 767px) {
-    display: block;
+  @media (min-width: 320px) and (max-width: 767px) {
+    display: flex;
     padding-bottom: 0.5rem;
-    padding-left: 8.7rem;
+    // padding-left: 8.7rem;
   }
 }
 
 .nav-main-container {
   display: flex;
   flex-direction: row;
-  @media screen and (max-width: 767px) {
+  width: 100%;
+  @media (min-width: 320px) and (max-width: 767px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 }
 
@@ -325,10 +329,10 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media screen and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 767px) {
     height: 2rem;
-    width: 4rem;
-    padding-left: 4.3rem;
+    width: 100%;
+    margin-right: 0;
     padding-top: 0.1rem;
   }
 }
@@ -415,7 +419,7 @@ export default {
       display: inline;
       // margin: 0px 10px;
       padding-right: 5rem;
-      @media screen and (max-width: 1024px) {
+      @media (min-width: 320px) and (max-width: 767px) {
         padding-right: 2rem;
       }
 
@@ -437,7 +441,7 @@ export default {
     }
   }
 
-  @media screen and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 767px) {
     & {
       background: $seafoam;
       bottom: 0;
@@ -447,7 +451,7 @@ export default {
       padding: 1em;
       position: fixed;
       right: 6rem;
-      top: 3.5rem;
+      top: 3.4rem;
       z-index: 9999;
       &.open {
         display: flex;
@@ -471,7 +475,7 @@ export default {
   display: none;
 }
 
-@media screen and (max-width: 767px) {
+@media (min-width: 320px) and (max-width: 767px) {
   .search-mobile {
     background-color: $cochlear;
     flex-direction: column;
@@ -484,7 +488,7 @@ export default {
     top: 3.4rem;
     z-index: 9999;
     display: flex;
-    width: 24rem;
+    width: 100%;
     height: 1.4rem;
     border-top: solid 1px lightgray;
 
