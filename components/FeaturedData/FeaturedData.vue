@@ -70,7 +70,7 @@ export default {
 
 .featured-data {
   text-align: center;
-  padding: 4.0625em 0 2.5em;
+  padding: 3em 0 4em;
 }
 h2 {
   margin-bottom: 1.5625em;
