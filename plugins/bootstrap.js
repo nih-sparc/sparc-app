@@ -5,15 +5,13 @@ import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(Element, { locale })
 Vue.config.devtools = true
 
-import { Dialog, Spinner, Message, Loading, Tooltip } from 'element-ui'
+import { Message } from 'element-ui'
 import '@/assets/element-variables.scss'
 import * as svgicon from 'vue-svgicon'
 // // import '@/assets/icons'
 // // import SocialSharing from 'vue-social-sharing'
 // // import VueClipboard from 'vue-clipboard2'
 // // import VueMeta from 'vue-meta'
-
-
 
 import striptags from 'striptags'
 Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>

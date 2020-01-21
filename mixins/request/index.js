@@ -2,9 +2,9 @@ import EventBus from '@/static/js/event-bus'
 import Logger from '@/mixins/logger'
 import { prop, propOr } from 'ramda'
 
-const _isString = (x) => Object.prototype.toString.call(x) === '[object String]'
+const _isString = x => Object.prototype.toString.call(x) === '[object String]'
 
-const _trimValues = (obj) => {
+const _trimValues = obj => {
   Object.keys(obj).forEach(key => {
     if (_isString(obj[key])) {
       obj[key] = obj[key].trim()
@@ -13,10 +13,8 @@ const _trimValues = (obj) => {
 }
 
 export default {
-  mixins: [
-    Logger
-  ],
-  data () {
+  mixins: [Logger],
+  data() {
     return {
       method: 'GET',
       body: null,
@@ -29,7 +27,7 @@ export default {
      * @param {Object} opts
      * @returns {Promise}
      */
-    sendXhr: function (url, opts, returnRawResponse = false) {
+    sendXhr: function(url, opts, returnRawResponse = false) {
       if (!url) {
         return Promise.reject(new Error('Url is missing!'))
       }
@@ -54,29 +52,29 @@ export default {
         }
       }
 
-      return fetch(url, requestOpts)
-        .then(resp => {
-          if (resp.status >= 400) {
-            return Promise.reject(resp)
-          }
+      return fetch(url, requestOpts).then(resp => {
+        if (resp.status >= 400) {
+          return Promise.reject(resp)
+        }
 
-          // most common cases work processing the response as json, otherwise we have the option to parse per usecase
-          if (returnRawResponse) {
-            return this.finishLoading(resp)
-          }
+        // most common cases work processing the response as json, otherwise we have the option to parse per usecase
+        if (returnRawResponse) {
+          return this.finishLoading(resp)
+        }
 
-          // if the payload cannot be converted to json, return a clone of the original response
-          return resp.json()
-            .then(this.finishLoading.bind(this))
-            .catch(() => this.finishLoading(resp))
-        })
+        // if the payload cannot be converted to json, return a clone of the original response
+        return resp
+          .json()
+          .then(this.finishLoading.bind(this))
+          .catch(() => this.finishLoading(resp))
+      })
     },
     /**
      * Update isLoading on $nextTick
      * @param {Object} json
      * @returns {Object}
      */
-    finishLoading: function (json) {
+    finishLoading: function(json) {
       this.$nextTick(() => {
         this.isLoading = false
       })
@@ -86,7 +84,7 @@ export default {
      * Handles ajax errors
      * @param {Object} err
      */
-    handleXhrError: function (err) {
+    handleXhrError: function(err) {
       this.isLoading = false
       const status = prop('status', err)
       // logout

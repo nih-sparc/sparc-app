@@ -1,6 +1,14 @@
 <template>
-  <el-row :gutter=20 type="flex" class="cards">
-    <el-col class="cards-col" :xs="24" :sm="12" :md="8" :lg="6" v-for="card in cards" v-bind:key="card.key">
+  <el-row :gutter="20" type="flex" class="cards">
+    <el-col
+      v-for="card in cards"
+      :key="card.key"
+      class="cards-col"
+      :xs="24"
+      :sm="12"
+      :md="8"
+      :lg="6"
+    >
       <div class="card">
         <div class="card-top">
           <nuxt-link
@@ -11,13 +19,17 @@
               }
             }"
           >
-          <dataset-banner-image :src="card.banner" />
+            <dataset-banner-image :src="card.banner" />
           </nuxt-link>
-        
-          <h3 class="title">{{ card.name }}</h3>
-          <p class="description">{{ card.description }}</p>
+
+          <h3 class="title">
+            {{ card.name }}
+          </h3>
+          <p class="description">
+            {{ card.description }}
+          </p>
         </div>
-        <div class=card-bottom>
+        <div class="card-bottom">
           <div class="link">
             <nuxt-link
               no-prefetch
@@ -30,7 +42,7 @@
             >
               Explore Dataset
             </nuxt-link>
-            <a v-bind:href="card.href">{{ card.cta }}</a>
+            <a :href="card.href">{{ card.cta }}</a>
           </div>
         </div>
       </div>
@@ -42,30 +54,38 @@
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 
 export default {
-  name: "grid",
+  name: 'Grid',
 
   components: {
     DatasetBannerImage
   },
 
-  props: ["cards", "card_type"],
+  props: {
+    cards: {
+      type: Array,
+      default: () => []
+    },
+    cardType: {
+      type: String,
+      default: ''
+    }
+  },
 
   computed: {
     onClickRoute: function() {
-      if (this.card_type == 'datasets') {
-        return 'datasets-datasetId'}
-      else if (this.card_type == 'sim_models') {
-        return 'workflows-datasetId'}
-      else {
+      if (this.cardType == 'datasets') {
+        return 'datasets-datasetId'
+      } else if (this.cardType == 'sim_models') {
+        return 'workflows-datasetId'
+      } else {
         return 'datasets-datasetId'
       }
     }
   }
-};
+}
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
 
 <style lang="scss" scoped>
 .cards {
@@ -74,7 +94,7 @@ export default {
 }
 
 .cards-col {
-  display:flex;
+  display: flex;
 }
 
 .card {

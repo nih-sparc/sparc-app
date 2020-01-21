@@ -15,7 +15,7 @@
         />
       </el-select>
     </div>
-    <div class="control control-search-input" v-if="isSearchVisible">
+    <div v-if="isSearchVisible" class="control control-search-input">
       <el-input
         v-model="terms"
         placeholder="Search..."
@@ -23,7 +23,7 @@
         @keyup.native.enter="submit"
       />
     </div>
-    <div class="search-button" v-if="isSearchVisible">
+    <div v-if="isSearchVisible" class="search-button">
       <el-button
         type="primary"
         class="view-search-results"
@@ -43,9 +43,7 @@
 </template>
 
 <script>
-import {
-  pathOr
-} from 'ramda'
+import { pathOr } from 'ramda'
 
 export default {
   props: {
@@ -69,32 +67,32 @@ export default {
 
   data() {
     return {
-      selectedType: "datasets",
+      selectedType: 'datasets',
       loading: false,
       terms: null,
       types: [
         {
-          label: "SPARC Datasets",
-          key: "datasets"
+          label: 'SPARC Datasets',
+          key: 'datasets'
         },
         {
-          label: "Simulation Models",
-          key: "sim_models"
+          label: 'Simulation Models',
+          key: 'sim_models'
         },
         {
-          label: "SPARC Protocols",
-          key: "protocols"
+          label: 'SPARC Protocols',
+          key: 'protocols'
         },
         {
-          label: "Files",
-          key: "files"
+          label: 'Files',
+          key: 'files'
         }
       ]
-    };
+    }
   },
   watch: {
     selectedType: function(value) {
-      if (value === "embargo"){
+      if (value === 'embargo') {
         this.isSearchVisible = false
         this.submit()
       } else {
@@ -131,10 +129,10 @@ export default {
     },
 
     submit() {
-      this.$emit('query', this.selectedType, this.terms);
+      this.$emit('query', this.selectedType, this.terms)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -164,7 +162,6 @@ export default {
 }
 
 .search-button {
-
   .view-search-results {
     background: #24245b;
     border: 0;

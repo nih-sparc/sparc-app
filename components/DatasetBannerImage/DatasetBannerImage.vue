@@ -4,7 +4,7 @@
     :src="bannerSrc"
     class="dataset-image"
     alt="Dataset Banner Image"
-  >
+  />
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       bannerSrc: '',
       brokenImage
@@ -28,14 +28,14 @@ export default {
 
   watch: {
     src: {
-      handler: function (val) {
+      handler: function(val) {
         this.bannerSrc = val
       },
       immediate: true
     }
   },
 
-  mounted: function () {
+  mounted: function() {
     // Add listener for onerror
     this.$refs.img.onerror = this.onError
   },
@@ -44,7 +44,7 @@ export default {
     /**
      * Set the source as the brokenImage URL
      */
-    onError: function () {
+    onError: function() {
       this.bannerSrc = this.brokenImage
     }
   }

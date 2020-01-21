@@ -1,6 +1,14 @@
 <template>
   <el-row gutter="20" type="flex" class="cards">
-    <el-col class="cards-col" :xs="24" :sm="12" :md="8" :lg="6" v-for="card in cards" v-bind:key="card.key">
+    <el-col
+      v-for="card in cards"
+      :key="card.key"
+      class="cards-col"
+      :xs="24"
+      :sm="12"
+      :md="8"
+      :lg="6"
+    >
       <div class="card">
         <div class="card-top">
           <router-link
@@ -11,13 +19,17 @@
               }
             }"
           >
-          <!-- <dataset-banner-image :src="embargoImage" /> -->
+            <!-- <dataset-banner-image :src="embargoImage" /> -->
           </router-link>
-        
-          <h3 class="title">{{ card.name }}</h3>
-          <p class="description">{{ card.description }}</p>
+
+          <h3 class="title">
+            {{ card.name }}
+          </h3>
+          <p class="description">
+            {{ card.description }}
+          </p>
         </div>
-        <div class=card-bottom>
+        <div class="card-bottom">
           <div class="link">
             <!-- <router-link
               :to="{
@@ -27,34 +39,38 @@
                 }
               }"
             > -->
-              Available 01/20
+            Available 01/20
             <!-- </router-link>
             <a v-bind:href="card.href">{{ card.cta }}</a> -->
           </div>
-        </div> 
+        </div>
       </div>
     </el-col>
   </el-row>
 </template>
 
 <script>
-import DatasetBannerImage from '../DatasetBannerImage/DatasetBannerImage.vue'
+// import DatasetBannerImage from '../DatasetBannerImage/DatasetBannerImage.vue'
 // import embargoImage from '../../../public/images/illustrations/datcore-card-image.svg'
 
 export default {
-  name: "grid-embargo",
+  name: 'GridEmbargo',
 
   components: {
-    DatasetBannerImage,
+    // DatasetBannerImage
     // embargoImage
   },
 
-  props: ["cards"]
-};
+  props: {
+    cards: {
+      type: Array,
+      default: () => []
+    }
+  }
+}
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
 
 <style lang="scss" scoped>
 .cards {
@@ -63,7 +79,7 @@ export default {
 }
 
 .cards-col {
-  display:flex;
+  display: flex;
 }
 
 .card {

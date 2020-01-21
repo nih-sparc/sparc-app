@@ -29,13 +29,13 @@
           <div class="section properties">
             <h3>Properties</h3>
             <el-table :show-header="false" :data="properties">
-              <el-table-column prop="key" width="120"></el-table-column>
-              <el-table-column prop="value" width="120"></el-table-column>
+              <el-table-column prop="key" width="120" />
+              <el-table-column prop="value" width="120" />
             </el-table>
           </div>
-          <div class="section" v-for="section in sections" v-bind:key="section.key">
+          <div v-for="section in sections" :key="section.key" class="section">
             <h3>{{ section.title }}</h3>
-            <data-table tableClass="record-section-table" />
+            <data-table table-class="record-section-table" />
           </div>
         </el-col>
       </el-row>
@@ -44,41 +44,41 @@
 </template>
 
 <script>
-import DataTable from "../data-table/DataTable.vue";
-import TableOfContents from "../table-of-contents/TableOfContents.vue";
+import DataTable from '../data-table/DataTable.vue'
+import TableOfContents from '../table-of-contents/TableOfContents.vue'
 
 export default {
-  name: "sparc-record",
+  name: 'SparcRecord',
   components: {
     DataTable,
     TableOfContents
   },
   data: () => ({
-    title: "Record Title",
+    title: 'Record Title',
     properties: [
       {
-        key: "Key 1",
-        value: "Value 1"
+        key: 'Key 1',
+        value: 'Value 1'
       },
       {
-        key: "Key 2",
-        value: "Value 2"
+        key: 'Key 2',
+        value: 'Value 2'
       }
     ],
     sections: [
       {
-        key: "section1",
-        title: "Section 1",
+        key: 'section1',
+        title: 'Section 1',
         data: []
       },
       {
-        key: "section2",
-        title: "Section 2",
+        key: 'section2',
+        title: 'Section 2',
         data: []
       }
     ]
   })
-};
+}
 </script>
 
 <style lang="scss">
