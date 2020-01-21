@@ -88,6 +88,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .header {
+  margin-top: 7rem;
   .gradient {
     padding: 1.5em 0;
     color: #f0f2f5;

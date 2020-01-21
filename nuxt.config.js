@@ -49,6 +49,13 @@ export default {
    ** Customize the progress-bar color
    */
   loading: { color: '#fff' },
+
+  /*
+   ** Customize router classes globally
+   */
+  // router : {
+  //   linkActiveClass: 'active-link'
+  // }
   /*
    ** Global CSS
    */
@@ -70,6 +77,7 @@ export default {
    */
   build: {
     transpile: [/^element-ui/],
+
     /*
      ** You can extend webpack config here
      */

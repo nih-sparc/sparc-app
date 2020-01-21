@@ -53,3 +53,20 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.page {
+  display: flex;
+  margin-top: 7rem;
+
+  p {
+    color: #606266;
+  }
+}
+
+.about {
+  text-align: center;
+  min-height: 50vh;
+  margin-top: 9rem;
+}
+</style>
