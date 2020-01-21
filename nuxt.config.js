@@ -14,7 +14,18 @@ export default {
         content: process.env.npm_package_description || ''
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon.ico' }]
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon/favicon.ico'
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css?family=Asap:300,500,600|Nunito+Sans:400,600,700'
+      }
+    ]
   },
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:4000',
