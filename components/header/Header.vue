@@ -34,6 +34,7 @@
           <button
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
+            @enter="executeSearch"
           >
             <svg-icon
               color="black"
@@ -80,7 +81,7 @@
               </li>
             </ul>
             <div class="mobile-navigation__links--social">
-              <a href="#">
+              <a href="https://twitter.com/sparc_science">
                 <svg-icon
                   icon="icon-twitter"
                   width="30"
