@@ -76,10 +76,10 @@ export default {
   }
 }
 ::v-deep h2 {
-  font-size: 1em;
-  font-weight: 700;
+  font-size: 1.5em;
+  font-weight: 500;
   line-height: 2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   text-align: center;
   @media (min-width: 768px) {
     font-size: 1.5em;

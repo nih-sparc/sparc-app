@@ -1,7 +1,7 @@
 <template>
   <div class="featured-datasets container">
     <div class="home-container">
-      <h2>News &amp; Upcoming Events</h2>
+      <h2><a href="#">News &amp; Upcoming Events</a></h2>
       <sparc-card
         v-for="(item, idx) in news"
         :key="item.sys.id"
@@ -65,6 +65,10 @@ export default {
     padding-left: 6rem;
     padding-right: 6rem;
   }
+}
+h2 a:not(:hover) {
+  color: #000;
+  text-decoration: none;
 }
 .sparc-card {
   margin-bottom: 24px;
