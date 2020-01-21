@@ -1,13 +1,14 @@
 <template>
   <div>
     <page-hero>
+      <h2 v-if="heroHeading">{{ heroHeading }}</h2>
       <p>
         {{ heroCopy }}
       </p>
       <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
-        <bf-button class="white">
+        <el-button>
           {{ heroButtonLabel }}
-        </bf-button>
+        </el-button>
       </a>
     </page-hero>
 
@@ -22,7 +23,6 @@
 </template>
 
 <script>
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import FeaturedDatasets from '@/components/FeaturedDatasets/FeaturedDatasets.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
@@ -36,7 +36,6 @@ export default {
   name: 'SparcHomepage',
 
   components: {
-    BfButton,
     PageHero,
     FeaturedDatasets,
     HomepageNews,
@@ -60,6 +59,7 @@ export default {
       newsAndEvents: [],
       testimonials: [],
       heroCopy: '',
+      heroHeading: '',
       heroButtonLink: '',
       heroButtonLabel: ''
     }
@@ -68,6 +68,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.page-hero  {
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .el-button {
+    color: #8300bf;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+}
 ::v-deep h2 {
   font-size: 1em;
   font-weight: 700;
