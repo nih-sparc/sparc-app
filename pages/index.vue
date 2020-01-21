@@ -12,7 +12,7 @@
       </a>
     </page-hero>
 
-    <featured-datasets />
+    <featured-data />
 
     <homepage-news :news="newsAndEvents" />
 
@@ -24,7 +24,7 @@
 
 <script>
 import PageHero from '@/components/PageHero/PageHero.vue'
-import FeaturedDatasets from '@/components/FeaturedDatasets/FeaturedDatasets.vue'
+import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTestimonials.vue'
 import HomepageTwitter from '@/components/HomepageTwitter/HomepageTwitter.vue'
@@ -37,7 +37,7 @@ export default {
 
   components: {
     PageHero,
-    FeaturedDatasets,
+    FeaturedData,
     HomepageNews,
     HomepageTestimonials,
     HomepageTwitter
