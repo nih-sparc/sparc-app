@@ -36,7 +36,6 @@
             @click="openMobileSearch"
           >
             <svg-icon
-              dir="right"
               color="black"
               icon="icon-magnifying-glass"
               height="25"
@@ -77,8 +76,12 @@
               </li>
             </ul>
             <div class="mobile-navigation__links--social">
-              <svg-icon icon="icon-twitter" width="30" height="30" />
-              <svg-icon icon="icon-youtube" width="30" height="30" />
+              <a href="#">
+                <svg-icon icon="icon-twitter" width="30" height="26" color="#606266" />
+              </a>
+              <a href="https://www.youtube.com/results?search_query=sparc+nih">
+                <svg-icon icon="icon-youtube" width="30" height="26" color="#606266" />
+              </a>
             </div>
           </div>
           <div class="nav-main-container__search">
@@ -150,7 +153,6 @@ export default {
   methods: {
      activeLink: function(query) {
   if (this.$nuxt.$route.path === query) {
-    console.log("gimmie dis ", this.$nuxt.$route)
     return true;
   } else {
     return false;
@@ -279,9 +281,9 @@ export default {
       &--social {
         display: flex;
         flex-direction: row;
-        margin-top: 18rem;
+        margin-top: 19rem;
         .svg-icon {
-          margin-right: 0.5rem;
+          margin-right: 1rem;
         }
       }
     }
@@ -307,7 +309,7 @@ export default {
   @media screen and (max-width: 767px) {
     display: block;
     padding-bottom: 0.5rem;
-    padding-left: 9.7rem;
+    padding-left: 8.7rem;
   }
 }
 
@@ -449,6 +451,8 @@ export default {
       z-index: 9999;
       &.open {
         display: flex;
+        margin-left: 0;
+        margin-right: 1rem;
       }
     }
     ul {
@@ -477,17 +481,18 @@ export default {
     padding-bottom: 14px;
     position: fixed;
     right: 6rem;
-    top: 3.5rem;
+    top: 3.4rem;
     z-index: 9999;
     display: flex;
     width: 24rem;
-    height: 1.8rem;
+    height: 1.4rem;
+    border-top: solid 1px lightgray;
 
     &__close {
       width: 27px;
       height: 30px;
       position: inherit;
-      right: 17px;
+      right: 1.8rem;
     }
 
     &--icon {
