@@ -30,7 +30,7 @@ export default {
     line-height: 2.375rem;
     padding: 1.5rem 0;
     margin-top: 7rem;
-
+  }
   &.large {
     background-image: linear-gradient(
       90deg,
