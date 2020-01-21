@@ -338,17 +338,20 @@ export default {
 }
 
 .nav-main-container__search {
-  position: relative;
-  left: 6rem;
+  width: 54%;
   display: flex;
   flex-direction: row;
-  @media screen and (max-width: 1024px) {
-    left: 3rem;
+  justify-content: flex-end;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    width: 24%;
+  }
+  @media (min-width: 320px) and (max-width: 767px) {
+    width: 0;
   }
 }
 
 .nav-main-container__search-input {
-  width: 400px;
+  width: 43%;
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
@@ -357,17 +360,18 @@ export default {
   @media screen and (max-width: 767px) {
     display: none;
   }
-  @media screen and (max-width: 1024px) {
-    width: 14rem;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    width: 40%;
   }
 }
 
 .nav-main-container__search-button {
-  background-color: $dark-median;
+  background-color: $median;
   width: 40px;
   height: 40px;
   border-radius: 4px;
   margin-left: 9px;
+  border: none;
   @media screen and (max-width: 767px) {
     display: none;
   }
@@ -496,7 +500,7 @@ export default {
       width: 27px;
       height: 30px;
       position: inherit;
-      right: 1.8rem;
+      right: 0.8rem;
     }
 
     &--icon {
