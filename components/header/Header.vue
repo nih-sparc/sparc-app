@@ -547,7 +547,7 @@ export default {
   input {
     height: 2rem;
     font-size: 16px;
-    width: 21rem;
+    width: 90%;
   }
 
   ::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
