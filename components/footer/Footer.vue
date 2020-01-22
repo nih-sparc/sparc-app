@@ -25,7 +25,12 @@
       <div class="footer__info--copyright">
         <p>
           Data Resource Center &copy; 2020 All rights reserved.
-          <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a>
+          <nuxt-link :to="{ name: 'tos' }">
+            Terms of Service
+          </nuxt-link> |
+          <nuxt-link :to="{ name: 'privacy' }">
+            Privacy Policy
+          </nuxt-link>
         </p>
       </div>
     </div>
