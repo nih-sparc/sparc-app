@@ -46,7 +46,7 @@
           <li>
             <a href="https://commonfund.nih.gov/sparc/awards">
               Funding Opportunities
-          </a>
+            </a>
           </li>
           <li>
             <a href="https://commonfund.nih.gov/Sparc/">NIH SPARC</a>
