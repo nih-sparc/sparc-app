@@ -53,9 +53,9 @@ export default {
   /*
    ** Customize router classes globally
    */
-  // router : {
-  //   linkActiveClass: 'active-link'
-  // }
+  router: {
+    linkActiveClass: 'active-link'
+  },
   /*
    ** Global CSS
    */
