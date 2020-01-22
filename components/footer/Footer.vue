@@ -2,7 +2,9 @@
   <div class="footer container">
     <div class="footer__info">
       <div class="footer__info--logo">
-        <sparc-logo />
+        <nuxt-link :to="{ name: 'index' }">
+          <sparc-logo />
+        </nuxt-link>
       </div>
       <div class="footer__info--blurb">
         <p>
@@ -21,7 +23,10 @@
         </a>
       </div>
       <div class="footer__info--copyright">
-        <p>Data Resource Center &copy; 2020 All rights reserved. <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
+        <p>
+          Data Resource Center &copy; 2020 All rights reserved.
+          <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a>
+        </p>
       </div>
     </div>
     <div class="footer__links">
@@ -29,19 +34,24 @@
         <h3>Learn More</h3>
         <ul>
           <li>
-            <a href="#">About SPARC</a>
+            <nuxt-link :to="{ name: 'about' }">
+              About SPARC
+            </nuxt-link>
           </li>
           <li>
             <a href="#">Funding Opportunities</a>
           </li>
           <li>
-            <a href="#">NIH SPARC</a>
+            <a href="https://commonfund.nih.gov/Sparc/">NIH SPARC</a>
           </li>
         </ul>
         <h3>Help us Improve</h3>
         <ul>
           <li>
-            <a href="#">Site Feedback</a>
+            <a
+              href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji">
+              Site Feedback
+            </a>
           </li>
           <li>
             <a href="#">Report a Bug</a>
@@ -50,9 +60,32 @@
         <h3>Stay Up-to-Date</h3>
         <ul>
           <li>
-            <a href="#">Join our E-mail list</a>
+            <a
+              href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1"
+            >
+              Join our E-mail list
+            </a>
           </li>
         </ul>
+      </div>
+      <div class="footer__links--social-mobile">
+        <a href="https://twitter.com/sparc_science">
+          <svg-icon icon="icon-twitter" color="#606266" />
+        </a>
+        <a href="https://www.youtube.com/results?search_query=sparc+nih">
+          <svg-icon icon="icon-youtube" color="#606266" />
+        </a>
+      </div>
+      <div class="footer__links--copyright-mobile">
+        <p>
+          Data Resource Center &copy; 2020 All rights reserved.
+          <nuxt-link :to="{ name: 'tos' }">
+            Terms of Service
+          </nuxt-link> |
+          <nuxt-link :to="{ name: 'privacy' }">
+            Privacy Policy
+          </nuxt-link>
+        </p>
       </div>
     </div>
   </div>
@@ -140,6 +173,80 @@ export default {
         a {
           color: $dark-gray;
           text-decoration: none;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    &--social-mobile {
+      display: none;
+    }
+
+    &--copyright-mobile {
+      display: none;
+    }
+  }
+}
+
+@media (min-width: 320px) and (max-width: 1023px) {
+  .footer {
+    display: flex;
+    flex-direction: column;
+    padding-top: 3rem;
+
+    &__info {
+      width: 100%;
+      &--logo {
+        height: 2rem;
+        padding-left: 2rem;
+      }
+
+      &--blurb {
+        padding-left: 2rem;
+        padding-right: 1rem;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 20px;
+
+        p {
+          padding-bottom: 1rem;
+        }
+      }
+
+      &--social {
+        display: none;
+      }
+
+      &--copyright {
+        display: none;
+      }
+    }
+
+    &__links {
+      padding-left: 2rem;
+      width: 65%;
+
+      &--social-mobile {
+        display: block;
+        padding-bottom: 1rem;
+        .svg-icon {
+          width: 2.2rem;
+          margin-right: 1rem;
+        }
+      }
+
+      &--copyright-mobile {
+        display: block;
+        p {
+          font-size: 12px;
+          font-weight: 500;
+          color: $dark-gray;
+        }
+
+        a {
+          color: $dark-gray;
         }
       }
     }
