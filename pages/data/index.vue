@@ -29,7 +29,7 @@
         </el-col>
       </el-row>
 
-      <el-row type="flex">
+      <el-row :gutter="32" type="flex">
         <el-col :span="6">
           <search-filters v-model="yo" />
         </el-col>
