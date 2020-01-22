@@ -11,5 +11,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.terms-of-service {
+  margin-top: 9rem;
+}
 </style>
