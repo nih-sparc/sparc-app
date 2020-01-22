@@ -2,18 +2,20 @@
   <div>
     <h2>Filters</h2>
     <template v-for="filter in value">
-      <h3 :key="filter.category">
-        {{ filter.category }}
-      </h3>
-      <div class="filter__checkbox__wrap">
-        <el-checkbox
-          v-for="item in filter.items"
-          :key="`${filter.category}_${item.key}`"
-          v-model="item.value"
-          @change="$emit('input', value)"
-        >
-          {{ item.label }}
-        </el-checkbox>
+      <div :key="filter.category">
+        <h3>
+          {{ filter.category }}
+        </h3>
+        <div class="filter__checkbox__wrap">
+          <el-checkbox
+            v-for="item in filter.items"
+            :key="`${filter.category}_${item.key}`"
+            v-model="item.value"
+            @change="$emit('input', value)"
+          >
+            {{ item.label }}
+          </el-checkbox>
+        </div>
       </div>
     </template>
   </div>
