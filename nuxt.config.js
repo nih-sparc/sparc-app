@@ -71,7 +71,19 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/robots'],
+  /*
+   ** robots.txt
+   */
+  robots: [
+    {
+      // all environment
+      UserAgent: '*',
+
+      // disallow all in all environments except production
+      Disallow: () => (process.env.NODE_ENV !== 'production' ? '*' : [])
+    }
+  ],
   /*
    ** Build configuration
    */
