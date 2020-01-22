@@ -1,177 +1,145 @@
 <template>
-  <div class="section footer">
-    <el-row type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <div class="footer-content">
-          <el-row>
-            <el-col class="contact" :md="9">
-              <sparc-logo class="logo" />
-              <p>
-                The Common Fund’s Stimulating Peripheral Activity to Relieve
-                Conditions (SPARC) program seeks to accelerate development of
-                therapeutic devices that modulate electrical activity in nerves
-                to improve organ function.
-              </p>
-            </el-col>
-            <el-col class="contact" :md="4">
-              <h4>Contact</h4>
-              <a href="https://commonfund.nih.gov/Sparc/">
-                <p>SPARC NIH</p>
-              </a>
-              <a href="#" @click.prevent="isContactModalVisible = true">
-                Contact SPARC
-              </a>
-              <a
-                href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1"
-              >
-                <p>Subscribe</p>
-              </a>
-            </el-col>
-            <el-col class="contact" :md="4">
-              <h4>Connect</h4>
-              <a href="https://twitter.com/sparc_science">
-                <p>Twitter</p>
-              </a>
-              <a href="https://www.youtube.com/results?search_query=sparc+nih">
-                <p>Youtube</p>
-              </a>
-            </el-col>
-            <el-col class="contact" :md="5">
-              <h4>Help Us Improve</h4>
-              <a href="https://www.sparc-science.org/feedback/">
-                <p>Send Us Feedback</p>
-              </a>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col>
-              <div class="copyright">
-                <p>
-                  Copyright © 2019. SPARC Data Resource Center. All Rights
-                  Reserved.
-                </p>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-      </el-col>
-    </el-row>
-
-    <contact-us-modal :visible.sync="isContactModalVisible" />
+  <div class="footer container">
+    <div class="footer__info">
+      <div class="footer__info--logo">
+        <sparc-logo />
+      </div>
+      <div class="footer__info--blurb">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore eiusmod magna aliqua.
+          Ut enim minim veniam, quis anim exercitation ullamco laboris nis ut aliquip ex commodo consequat.
+          Dus aute irure dolor in consectetur reprehenderit in voluptate velit esse cillum dolore fugiat nulla pariatur.
+          Excepteur sint occaecat cupidatat proident.
+        </p>
+      </div>
+      <div class="footer__info--social">
+        <a href="https://twitter.com/sparc_science">
+          <svg-icon icon="icon-twitter" color="#606266" />
+        </a>
+        <a href="https://www.youtube.com/results?search_query=sparc+nih">
+          <svg-icon icon="icon-youtube" color="#606266" />
+        </a>
+      </div>
+      <div class="footer__info--copyright">
+        <p>Data Resource Center &copy; 2020 All rights reserved. <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
+      </div>
+    </div>
+    <div class="footer__links">
+      <div class="footer__links--learn">
+        <h3>Learn More</h3>
+        <ul>
+          <li>
+            <a href="#">About SPARC</a>
+          </li>
+          <li>
+            <a href="#">Funding Opportunities</a>
+          </li>
+          <li>
+            <a href="#">NIH SPARC</a>
+          </li>
+        </ul>
+        <h3>Help us Improve</h3>
+        <ul>
+          <li>
+            <a href="#">Site Feedback</a>
+          </li>
+          <li>
+            <a href="#">Report a Bug</a>
+          </li>
+        </ul>
+        <h3>Stay Up-to-Date</h3>
+        <ul>
+          <li>
+            <a href="#">Join our E-mail list</a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import SparcLogo from '@/components/logo/SparcLogo.vue'
-import ContactUsModal from '@/components/footer/ContactUsModal'
 
 export default {
   name: 'SparcFooter',
   components: {
-    SparcLogo,
-    ContactUsModal
-  },
-  data: () => ({
-    isContactModalVisible: false
-  })
+    SparcLogo
+  }
 }
 </script>
 
 <style scoped lang="scss">
 @import '@/assets/_variables.scss';
 
-.footer-content {
-  size: 10pt;
-}
-
 .footer {
-  padding-top: 4em;
-  padding-bottom: 1em;
-  background: #edf1fc;
-
-  color: #5d6478;
-  text-transform: uppercase;
-
-  .link-header {
-    color: #000;
-  }
-
-  .footer-content {
-    .contact {
-      padding-right: 32px;
-      //   margin-bottom: 2em;
-
-      a {
-        color: #5d6478;
-        font-weight: lighter;
-        font-size: 15px;
-        text-decoration: none;
-        text-transform: none;
-        &:hover {
-          text-decoration: none;
-          font-size: 15px;
-          color: #5d6478;
-        }
-      }
-
-      p {
-        font-weight: lighter;
-        text-transform: none;
-        font-size: 15px;
-        margin: 0;
-      }
-
-      h4 {
-        margin-top: 0;
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 15px;
-        color: #5d6478;
-      }
-    }
-
-    .logo {
-      height: 50px;
-      width: 120px;
-      margin-top: -9px;
-    }
-  }
-}
-
-.link-sections {
   display: flex;
-  flex-wrap: wrap;
-}
+  flex-direction: row;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
 
-.copyright {
-  margin-top: 80px;
-  // margin-left: 32px;
-  p {
-    font-weight: lighter;
-    text-transform: none;
-    font-size: 15px;
-    margin: 0;
-  }
-}
+  &__info {
+    width: 80%;
+    padding-right: 12rem;
 
-.link-section {
-  padding-bottom: 3em;
+    &--logo {
+      height: 4rem;
+      padding-bottom: 1rem;
+    }
 
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+    &--blurb {
+      p {
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 32px;
+        color: $dark-gray;
+        padding-bottom: 2rem;
+      }
+    }
 
-    li {
-      padding: 0.5em 0;
-      margin: 0;
+    &--social {
+      .svg-icon {
+        width: 2.2rem;
+        margin-right: 1rem;
+      }
+      padding-bottom: 2rem;
+    }
+
+    &--copyright {
+      p {
+        color: $dark-gray;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 24px;
+      }
 
       a {
-        color: #606266;
-        text-decoration: none;
+        color: $dark-gray;
+      }
+    }
+  }
 
-        &:hover {
-          color: #909399;
+  &__links {
+    width: 50%;
+
+    &--learn {
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 32px;
+        color: $dark-gray;
+      }
+      ul {
+        list-style: none;
+        padding-left: 0;
+
+        li {
+          padding-bottom: 1rem;
+        }
+
+        a {
+          color: $dark-gray;
+          text-decoration: none;
         }
       }
     }

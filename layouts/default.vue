@@ -2,7 +2,7 @@
   <div>
     <sparc-header />
     <nuxt />
-    <!-- <sparc-footer /> -->
+    <sparc-footer />
   </div>
 </template>
 
