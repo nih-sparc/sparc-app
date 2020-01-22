@@ -44,7 +44,9 @@
             </nuxt-link>
           </li>
           <li>
-            <a href="#">Funding Opportunities</a>
+            <a href="https://commonfund.nih.gov/sparc/awards">
+              Funding Opportunities
+          </a>
           </li>
           <li>
             <a href="https://commonfund.nih.gov/Sparc/">NIH SPARC</a>
