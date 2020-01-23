@@ -39,8 +39,16 @@
           <search-filters v-model="filters" />
         </el-col>
         <el-col :span="18">
-          <div class="table-wrap">
+          <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
+            <el-pagination
+              :page-size="searchData.limit"
+              :pager-count="5"
+              :current-page="curSearchPage"
+              layout="prev, pager, next"
+              :total="searchData.total"
+              @current-change="onPaginationPageChange"
+            />
           </div>
         </el-col>
       </el-row>
@@ -55,18 +63,18 @@ import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 
 const ProjectSearchResults = () =>
   import('@/components/Searchresults/ProjectSearchResults.vue')
-const HelpSearchResults = () =>
-  import('@/components/Searchresults/HelpSearchResults.vue')
+const EventsearchResults = () =>
+  import('@/components/Searchresults/EventsearchResults.vue')
 
 const searchResultsComponents = {
   sparcAward: ProjectSearchResults,
-  helpDocument: HelpSearchResults
+  event: EventsearchResults
 }
 
 const searchTypes = [
   {
-    label: 'Help',
-    type: 'helpDocument'
+    label: 'Events',
+    type: process.env.ctf_event_id
   },
   {
     label: 'Datasets',
@@ -82,7 +90,7 @@ const searchTypes = [
   },
   {
     label: 'Projects',
-    type: 'sparcAward'
+    type: process.env.ctf_project_id
   },
   {
     label: 'Simulations',
@@ -103,26 +111,6 @@ export default {
   },
 
   mixins: [],
-
-  watchQuery: ['type', 'q'],
-
-  asyncData(ctx) {
-    if (!ctx.route.query.type) {
-      return { searchData: [] }
-    }
-
-    return Promise.all([
-      // Get page content
-      client.getEntries({
-        content_type: ctx.route.query.type,
-        query: ctx.route.query.q
-      })
-    ])
-      .then(([searchData]) => {
-        return { searchData }
-      })
-      .catch(console.error)
-  },
 
   data: () => {
     return {
@@ -150,7 +138,13 @@ export default {
           ]
         }
       ],
-      searchTypes
+      searchTypes,
+      searchData: {
+        limit: 5,
+        skip: 0,
+        items: []
+      },
+      isLoadingSearch: false
     }
   },
 
@@ -165,7 +159,8 @@ export default {
     },
 
     tableData: function() {
-      return compose(pluck('fields'), propOr('', 'items'))(this.searchData)
+      return propOr([], 'items', this.searchData)
+      // return compose(pluck('fields'), propOr('', 'items'))(this.searchData)
     },
 
     /**
@@ -174,27 +169,81 @@ export default {
      */
     searchResultsComponent: function() {
       return searchResultsComponents[this.$route.query.type]
+    },
+
+    /**
+     * Compute the current search page based off the limit and the offset
+     */
+    curSearchPage: function() {
+      return this.searchData.skip / this.searchData.limit + 1
+    }
+  },
+
+  watch: {
+    '$route.query.type': function() {
+      this.searchData.skip = 0
+      this.fetchResults()
     }
   },
 
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    */
-  beforeCreate: function() {
+  mounted: function() {
     if (!this.$route.query.type) {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
-      this.$router.replace({ query: { type: firstTabType } })
+      this.$router.replace({ query: { type: firstTabType } }).then(() => {
+        this.fetchResults()
+      })
+    } else {
+      this.fetchResults()
     }
   },
 
   methods: {
     /**
+     * Get search results
+     * This is using the contentful.js client
+     */
+    fetchResults: function() {
+      this.isLoadingSearch = true
+
+      client
+        .getEntries({
+          content_type: this.$route.query.type,
+          query: this.$route.query.q,
+          limit: this.searchData.limit,
+          skip: this.searchData.skip
+        })
+        .then(response => {
+          this.searchData = response
+        })
+        .catch(console.error)
+        .finally(() => {
+          this.isLoadingSearch = false
+        })
+    },
+
+    /**
+     * Update offset
+     */
+    onPaginationPageChange: function(page) {
+      const offset = (page - 1) * this.searchData.limit
+      this.searchData.skip = offset
+
+      this.fetchResults()
+    },
+
+    /**
      * Submit search
      */
     submitSearch: function() {
+      this.searchData.skip = 0
+
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
       this.$router.push({ query })
+      this.fetchResults()
     }
   }
 }
@@ -236,7 +285,7 @@ export default {
   }
 }
 
-.page-hero  {
+.page-hero {
   h2 {
     font-size: 2rem;
     font-weight: 500;
@@ -247,5 +296,9 @@ export default {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
   padding: 16px;
+}
+.el-pagination {
+  margin-top: 1.5em;
+  text-align: center;
 }
 </style>
