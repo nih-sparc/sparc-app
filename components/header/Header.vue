@@ -43,62 +43,68 @@
               width="25"
             />
           </button>
-          <div v-if="searchOpen" class="search-mobile">
-            <input type="text" placeholder="Search" />
-            <button class="search-mobile__close" @click="closeMobileSearch">
-              <svg-icon icon="icon-remove" class="search-mobile__close--icon" />
-            </button>
-          </div>
-          <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
-            <ul>
-              <li v-for="link in links" :key="link.href">
-                <nuxt-link
-                  :to="{ name: link.title }"
-                  :class="{ active: activeLink(link.href) }"
-                  exact-active-class="active"
-                >
-                  {{ link.displayTitle }}
-                </nuxt-link>
-              </li>
-              <hr class="divider" />
-            </ul>
-            <ul class="mobile-navigation__links">
-              <li>
-                <img src="https://placeholder.pics/svg/20x20" />
-                <nuxt-link :to="{ name: 'about' }">
-                  About SPARC
-                </nuxt-link>
-              </li>
-              <li>
-                <img src="https://placeholder.pics/svg/20x20" />
-                <a href="#">Contact Us</a>
-              </li>
-              <li>
-                <img src="https://placeholder.pics/svg/20x20" />
-                <nuxt-link :to="{ name: 'help' }">
-                  Need Help?
-                </nuxt-link>
-              </li>
-            </ul>
-            <div class="mobile-navigation__links--social">
-              <a href="https://twitter.com/sparc_science">
-                <svg-icon
-                  icon="icon-twitter"
-                  width="30"
-                  height="26"
-                  color="#606266"
-                />
-              </a>
-              <a href="https://www.youtube.com/results?search_query=sparc+nih">
-                <svg-icon
-                  icon="icon-youtube"
-                  width="30"
-                  height="26"
-                  color="#606266"
-                />
-              </a>
+          <div :class="[searchOpen ? 'search-overlay' : '']">
+            <div v-if="searchOpen" class="search-mobile">
+              <input type="text" placeholder="Search" />
+              <button class="search-mobile__close" @click="closeMobileSearch">
+                <svg-icon icon="icon-remove" class="search-mobile__close--icon" />
+              </button>
             </div>
           </div>
+
+          <div :class="[menuOpen ? 'overlay' : '']">
+            <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
+              <ul>
+                <li v-for="link in links" :key="link.href">
+                  <nuxt-link
+                    :to="{ name: link.title }"
+                    :class="{ active: activeLink(link.href) }"
+                    exact-active-class="active"
+                  >
+                    {{ link.displayTitle }}
+                  </nuxt-link>
+                </li>
+                <hr class="divider" />
+              </ul>
+              <ul class="mobile-navigation__links">
+                <li>
+                  <img src="https://placeholder.pics/svg/20x20" />
+                  <nuxt-link :to="{ name: 'about' }">
+                    About SPARC
+                  </nuxt-link>
+                </li>
+                <li>
+                  <img src="https://placeholder.pics/svg/20x20" />
+                  <a href="#">Contact Us</a>
+                </li>
+                <li>
+                  <img src="https://placeholder.pics/svg/20x20" />
+                  <nuxt-link :to="{ name: 'help' }">
+                    Need Help?
+                  </nuxt-link>
+                </li>
+              </ul>
+              <div class="mobile-navigation__links--social">
+                <a href="https://twitter.com/sparc_science">
+                  <svg-icon
+                    icon="icon-twitter"
+                    width="30"
+                    height="26"
+                    color="#606266"
+                  />
+                </a>
+                <a href="https://www.youtube.com/results?search_query=sparc+nih">
+                  <svg-icon
+                    icon="icon-youtube"
+                    width="30"
+                    height="26"
+                    color="#606266"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+
           <div class="nav-main-container__search">
             <input
               type="text"
@@ -125,6 +131,7 @@
 
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
+import { mapState, mapMutations } from 'vuex'
 
 const links = [
   {
@@ -160,6 +167,12 @@ export default {
     searchOpen: false
   }),
 
+  computed: {
+    ...mapState({
+      scrollingState: 'disableScrolling'
+    })
+  },
+
   watch: {
    /**
     * Watches for the route path to hide
@@ -172,10 +185,20 @@ export default {
         }
       },
       immediate: true
-    }
+    },
+
+    scrollingState: {
+      handler: function(val) {
+        val ? (document.body.style.overflow = 'hidden') : (document.body.style.overflow = 'scroll')
+      }
+    },
+    immediate: true
   },
 
   methods: {
+    ...mapMutations({
+      scrolling: 'updateDisableScrolling'
+    }),
     /**
      * Sets a link to active based on current page
      * @param {String} query
@@ -193,9 +216,11 @@ export default {
     openMobileNav: function() {
       if (!this.menuOpen) {
         this.searchOpen = false // just in case the search menu is open also
+        this.$store.commit('updateDisableScrolling', true)
         this.menuOpen = true
       } else {
         this.menuOpen = false
+        this.$store.commit('updateDisableScrolling', false)
       }
     },
 
@@ -205,6 +230,7 @@ export default {
     openMobileSearch: function() {
       this.searchOpen = true
       this.menuOpen = false
+      this.$store.commit('updateDisableScrolling', true)
     },
 
     /**
@@ -212,6 +238,7 @@ export default {
      */
     closeMobileSearch: function() {
       this.searchOpen = false
+      this.$store.commit('updateDisableScrolling', false)
     },
 
     /**
@@ -240,6 +267,26 @@ export default {
   @media (min-width: 320px) and (max-width: 767px) {
     align-items: center;
   }
+}
+
+.overlay {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.search-overlay {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.5);
 }
 
 .divider {
@@ -578,4 +625,10 @@ export default {
   margin-left: 5px;
   user-select: none;
 }
+</style>
+
+<style lang="scss">
+// body {
+//   overflow-y: hidden;
+// }
 </style>
