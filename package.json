@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.8.0",
+    "@nuxtjs/robots": "^2.4.2",
     "babel-eslint": "^10.0.3",
     "contentful": "^7.10.0",
     "date-fns": "^2.8.1",

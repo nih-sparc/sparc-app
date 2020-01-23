@@ -4,16 +4,16 @@
     <div class="data-wrap">
       <nuxt-link
         v-for="item in featuredData"
-        :key="item.id"
+        :key="item.sys.id"
         class="featured-data__item"
-        :to="{
-          name: 'datasets-datasetId',
-          params: { datasetId: item.id }
-        }"
+        :to="item.fields.link"
       >
-        <img :src="item.image" :alt="`Icon for ${item.type} category`" />
+        <img
+          :src="imageUrl(item)"
+          :alt="`Icon for ${item.fields.label} category`"
+        />
         <p class="mb-0 mt-8">
-          {{ item.type }}
+          {{ item.fields.label }}
         </p>
       </nuxt-link>
     </div>
@@ -21,45 +21,26 @@
 </template>
 
 <script>
-// @TODO remove
-const mockFeaturedData = [
-  {
-    id: 0,
-    name: '123',
-    type: 'Category 0',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 1,
-    name: '123',
-    type: 'Category 1',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 2,
-    name: '123',
-    type: 'Category 2',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 3,
-    name: '123',
-    type: 'Category 3',
-    image: 'https://placeholder.pics/svg/252x252'
-  },
-  {
-    id: 4,
-    name: '123',
-    type: 'Category 4',
-    image: 'https://placeholder.pics/svg/252x252'
-  }
-]
+import { pathOr } from 'ramda'
+
 export default {
   name: 'FeaturedData',
 
-  data: function() {
-    return {
-      featuredData: mockFeaturedData
+  props: {
+    featuredData: {
+      type: Array,
+      default: () => []
+    }
+  },
+
+  methods: {
+    /**
+     * Get image URL for the featured data
+     * @param {Object} item
+     * @returns {String}
+     */
+    imageUrl: function(item) {
+      return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], item)
     }
   }
 }

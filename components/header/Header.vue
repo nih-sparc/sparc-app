@@ -258,7 +258,6 @@ export default {
 
 .header__nav {
   background-color: $navy;
-  height: 40px;
   width: 100%;
 }
 
