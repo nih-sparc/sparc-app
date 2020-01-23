@@ -1,12 +1,16 @@
 <template>
   <div class="data-page">
-    <page-hero v-if="heroCopy" class="subpage">
+    <page-hero class="subpage">
       <h2>A growing collection of SPARC data</h2>
       <p>
         The SPARC portal provides access to high-value datasets, maps, and
         predictive simulations ullamco laboris nisi ut aliquip ex ea commodo
         consequat. Lorem ipsum dolor sit amet.
       </p>
+      <input v-model="searchQuery" />
+      <button @click="submitSearch">
+        Search
+      </button>
     </page-hero>
     <div class="page-wrap container">
       <el-row type="flex">
@@ -15,6 +19,7 @@
             <li v-for="type in searchTypes" :key="type.label">
               <nuxt-link
                 class="search-tabs__button"
+                :class="{ active: type.type === $route.query.type }"
                 :to="{
                   name: 'data',
                   query: {
@@ -31,23 +36,11 @@
 
       <el-row :gutter="32" type="flex">
         <el-col :span="6">
-          <search-filters v-model="yo" />
+          <search-filters v-model="filters" />
         </el-col>
         <el-col :span="18">
           <div class="table-wrap">
-            <el-table :data="tableData" style="width: 100%">
-              <el-table-column :fixed="true" prop="name" label="Name" />
-              <el-table-column prop="image" label="Image" />
-              <el-table-column
-                prop="description"
-                label="Description"
-                width="250"
-              />
-              <el-table-column prop="col1" label="Description" width="250" />
-              <el-table-column prop="col2" label="Description" width="250" />
-              <el-table-column prop="col3" label="Description" width="250" />
-              <el-table-column prop="col4" label="Description" width="250" />
-            </el-table>
+            <component :is="searchResultsComponent" :table-data="tableData" />
           </div>
         </el-col>
       </el-row>
@@ -56,9 +49,46 @@
 </template>
 
 <script>
-import { compose, head, propOr } from 'ramda'
+import { compose, defaultTo, head, mergeLeft, propOr, pluck } from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
+
+const ProjectSearchResults = () =>
+  import('@/components/Searchresults/ProjectSearchResults.vue')
+const HelpSearchResults = () =>
+  import('@/components/Searchresults/HelpSearchResults.vue')
+
+const searchResultsComponents = {
+  sparcAward: ProjectSearchResults,
+  helpDocument: HelpSearchResults
+}
+
+const searchTypes = [
+  {
+    label: 'Help',
+    type: 'helpDocument'
+  },
+  {
+    label: 'Datasets',
+    type: 'dataset'
+  },
+  {
+    label: 'Files',
+    type: 'file'
+  },
+  {
+    label: 'Organs',
+    type: 'organ'
+  },
+  {
+    label: 'Projects',
+    type: 'sparcAward'
+  },
+  {
+    label: 'Simulations',
+    type: 'simulation'
+  }
+]
 
 import createClient from '@/plugins/contentful.js'
 
@@ -74,25 +104,36 @@ export default {
 
   mixins: [],
 
-  asyncData() {
+  watchQuery: ['type', 'q'],
+
+  asyncData(ctx) {
+    if (!ctx.route.query.type) {
+      return { searchData: [] }
+    }
+
     return Promise.all([
       // Get page content
-      client.getEntry(process.env.ctf_about_page_id)
+      client.getEntries({
+        content_type: ctx.route.query.type,
+        query: ctx.route.query.q
+      })
     ])
-      .then(([page]) => {
-        return { ...page.fields }
+      .then(([searchData]) => {
+        return { searchData }
       })
       .catch(console.error)
   },
 
   data: () => {
     return {
-      yo: [
+      searchQuery: '',
+      filters: [
         {
           category: 'category',
           items: [
             {
-              label: 'filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 ',
+              label:
+                'filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 ',
               key: 'filter_1',
               value: false
             }
@@ -109,61 +150,51 @@ export default {
           ]
         }
       ],
-      searchType: 'dataset',
-      searchTypes: [
-        {
-          label: 'Datasets',
-          type: 'dataset'
-        },
-        {
-          label: 'Files',
-          type: 'file'
-        },
-        {
-          label: 'Organs',
-          type: 'organ'
-        },
-        {
-          label: 'Projects',
-          type: 'project'
-        },
-        {
-          label: 'Simulations',
-          type: 'simulation'
-        }
-      ],
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: 'Tom',
-          image: '',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…',
-          col1:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…',
-          col2:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…',
-          col3:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…',
-          col4:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…',
-          col5:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…',
-          col6:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore maga aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…',
-          col7:
-            'Lorem ipsum dolor sit amet, consectetur dol adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ea exercitation ullamco laboris nisi ut aliquip commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum…'
-        }
-      ]
+      searchTypes
     }
   },
 
-  mounted: function() {
-    // Check the searchType param in the route and set it if it doesn't exist
-    if (!this.$route.query.type) {
+  computed: {
+    /**
+     * Compute search type
+     * @returns {String}
+     */
+    searchType: function() {
       const firstTabType = compose(propOr('', 'type'), head)(this.searchTypes)
+      return defaultTo(this.$route.query.type, firstTabType)
+    },
+
+    tableData: function() {
+      return compose(pluck('fields'), propOr('', 'items'))(this.searchData)
+    },
+
+    /**
+     * Compute which search results component to display based on the type of search
+     * @returns {Function}
+     */
+    searchResultsComponent: function() {
+      return searchResultsComponents[this.$route.query.type]
+    }
+  },
+
+  /**
+   * Check the searchType param in the route and set it if it doesn't exist
+   */
+  beforeCreate: function() {
+    if (!this.$route.query.type) {
+      const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
       this.$router.replace({ query: { type: firstTabType } })
+    }
+  },
+
+  methods: {
+    /**
+     * Submit search
+     */
+    submitSearch: function() {
+      const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      this.$router.push({ query })
     }
   }
 }
@@ -199,12 +230,19 @@ export default {
   text-decoration: none;
   &:hover,
   &:focus,
-  &.nuxt-link-exact-active {
+  &.active {
     color: $navy;
     border-bottom: 2px solid $median;
   }
 }
 
+.page-hero  {
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+}
 .table-wrap {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
