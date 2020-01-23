@@ -405,7 +405,8 @@ export default {
 .nav-main-container {
   display: flex;
   flex-direction: row;
-  width: 100%;
+  max-width: 1312px;
+  margin: 0 auto;
   @media (min-width: 320px) and (max-width: 767px) {
     display: flex;
     flex-direction: row;
@@ -439,7 +440,7 @@ export default {
 }
 
 .nav-main-container__search-input {
-  width: 22vw;
+  width: 20vw;
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
@@ -502,7 +503,6 @@ export default {
 .mobile-navigation {
   padding: 0px;
   height: 100%;
-  width: 62%;
   margin-left: 1rem;
 
   ul {
@@ -518,11 +518,12 @@ export default {
       a {
         text-decoration: none;
         color: $navy;
-        padding-bottom: 10px;
+        padding-bottom: 0.2rem;
         font-weight: 500;
 
         &.active {
           border-bottom: 2px solid $median;
+          padding-left: 0.1rem;
           color: $median;
         }
 
