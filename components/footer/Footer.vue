@@ -86,7 +86,7 @@
       <div class="footer__links--copyright-mobile">
         <p>
           Data Resource Center &copy; 2020 All rights reserved.
-          <nuxt-link :to="{ name: 'tos' }">
+          <nuxt-link :to="{ name: 'terms-of-service' }">
             Terms of Service
           </nuxt-link> |
           <nuxt-link :to="{ name: 'privacy' }">
@@ -197,7 +197,7 @@ export default {
   }
 }
 
-@media (min-width: 320px) and (max-width: 1023px) {
+@media screen and (git max-width: 1023px) {
   .footer {
     display: flex;
     flex-direction: column;
