@@ -73,7 +73,9 @@ export default {
 }
 
 .events-page {
-  margin-top: 7rem;
+  @media screen and (min-width: 1024px) {
+    margin-top: 7rem;
+  }
 }
 
 .events {

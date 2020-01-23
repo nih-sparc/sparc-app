@@ -25,7 +25,7 @@ export default {
   padding: 2rem 1rem;
   text-align: center;
   margin-top: 1rem;
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     font-size: 1.625em;
     line-height: 2.375rem;
     padding: 1.5rem 0;
