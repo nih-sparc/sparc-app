@@ -1,177 +1,259 @@
 <template>
-  <div class="section footer">
-    <el-row type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <div class="footer-content">
-          <el-row>
-            <el-col class="contact" :md="9">
-              <sparc-logo class="logo" />
-              <p>
-                The Common Fund’s Stimulating Peripheral Activity to Relieve
-                Conditions (SPARC) program seeks to accelerate development of
-                therapeutic devices that modulate electrical activity in nerves
-                to improve organ function.
-              </p>
-            </el-col>
-            <el-col class="contact" :md="4">
-              <h4>Contact</h4>
-              <a href="https://commonfund.nih.gov/Sparc/">
-                <p>SPARC NIH</p>
-              </a>
-              <a href="#" @click.prevent="isContactModalVisible = true">
-                Contact SPARC
-              </a>
-              <a
-                href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1"
-              >
-                <p>Subscribe</p>
-              </a>
-            </el-col>
-            <el-col class="contact" :md="4">
-              <h4>Connect</h4>
-              <a href="https://twitter.com/sparc_science">
-                <p>Twitter</p>
-              </a>
-              <a href="https://www.youtube.com/results?search_query=sparc+nih">
-                <p>Youtube</p>
-              </a>
-            </el-col>
-            <el-col class="contact" :md="5">
-              <h4>Help Us Improve</h4>
-              <a href="https://www.sparc-science.org/feedback/">
-                <p>Send Us Feedback</p>
-              </a>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col>
-              <div class="copyright">
-                <p>
-                  Copyright © 2019. SPARC Data Resource Center. All Rights
-                  Reserved.
-                </p>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-      </el-col>
-    </el-row>
-
-    <contact-us-modal :visible.sync="isContactModalVisible" />
+  <div class="footer container">
+    <div class="footer__info">
+      <div class="footer__info--logo">
+        <nuxt-link :to="{ name: 'index' }">
+          <sparc-logo />
+        </nuxt-link>
+      </div>
+      <div class="footer__info--blurb">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore eiusmod magna aliqua.
+          Ut enim minim veniam, quis anim exercitation ullamco laboris nis ut aliquip ex commodo consequat.
+          Dus aute irure dolor in consectetur reprehenderit in voluptate velit esse cillum dolore fugiat nulla pariatur.
+          Excepteur sint occaecat cupidatat proident.
+        </p>
+      </div>
+      <div class="footer__info--social">
+        <a href="https://twitter.com/sparc_science">
+          <svg-icon icon="icon-twitter" color="#606266" />
+        </a>
+        <a href="https://www.youtube.com/results?search_query=sparc+nih">
+          <svg-icon icon="icon-youtube" color="#606266" />
+        </a>
+      </div>
+      <div class="footer__info--copyright">
+        <p>
+          Data Resource Center &copy; 2020 All rights reserved.
+          <nuxt-link :to="{ name: 'tos' }">
+            Terms of Service
+          </nuxt-link> |
+          <nuxt-link :to="{ name: 'privacy' }">
+            Privacy Policy
+          </nuxt-link>
+        </p>
+      </div>
+    </div>
+    <div class="footer__links">
+      <div class="footer__links--learn">
+        <h3>Learn More</h3>
+        <ul>
+          <li>
+            <nuxt-link :to="{ name: 'about' }">
+              About SPARC
+            </nuxt-link>
+          </li>
+          <li>
+            <a href="https://commonfund.nih.gov/sparc/awards">
+              Funding Opportunities
+            </a>
+          </li>
+          <li>
+            <a href="https://commonfund.nih.gov/Sparc/">NIH SPARC</a>
+          </li>
+        </ul>
+        <h3>Help us Improve</h3>
+        <ul>
+          <li>
+            <a
+              href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji">
+              Site Feedback
+            </a>
+          </li>
+          <li>
+            <a href="#">Report a Bug</a>
+          </li>
+        </ul>
+        <h3>Stay Up-to-Date</h3>
+        <ul>
+          <li>
+            <a
+              href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1"
+            >
+              Join our E-mail list
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__links--social-mobile">
+        <a href="https://twitter.com/sparc_science">
+          <svg-icon icon="icon-twitter" color="#606266" />
+        </a>
+        <a href="https://www.youtube.com/results?search_query=sparc+nih">
+          <svg-icon icon="icon-youtube" color="#606266" />
+        </a>
+      </div>
+      <div class="footer__links--copyright-mobile">
+        <p>
+          Data Resource Center &copy; 2020 All rights reserved.
+          <nuxt-link :to="{ name: 'terms-of-service' }">
+            Terms of Service
+          </nuxt-link> |
+          <nuxt-link :to="{ name: 'privacy' }">
+            Privacy Policy
+          </nuxt-link>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import SparcLogo from '@/components/logo/SparcLogo.vue'
-import ContactUsModal from '@/components/footer/ContactUsModal'
 
 export default {
   name: 'SparcFooter',
   components: {
-    SparcLogo,
-    ContactUsModal
-  },
-  data: () => ({
-    isContactModalVisible: false
-  })
+    SparcLogo
+  }
 }
 </script>
 
 <style scoped lang="scss">
 @import '@/assets/_variables.scss';
 
-.footer-content {
-  size: 10pt;
-}
-
 .footer {
-  padding-top: 4em;
-  padding-bottom: 1em;
-  background: #edf1fc;
+  display: flex;
+  flex-direction: row;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
 
-  color: #5d6478;
-  text-transform: uppercase;
+  &__info {
+    width: 80%;
+    padding-right: 12rem;
 
-  .link-header {
-    color: #000;
-  }
+    &--logo {
+      height: 4rem;
+      padding-bottom: 1rem;
+    }
 
-  .footer-content {
-    .contact {
-      padding-right: 32px;
-      //   margin-bottom: 2em;
+    &--blurb {
+      p {
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 32px;
+        color: $dark-gray;
+        padding-bottom: 2rem;
+      }
+    }
+
+    &--social {
+      .svg-icon {
+        width: 2.2rem;
+        margin-right: 1rem;
+      }
+      padding-bottom: 2rem;
+    }
+
+    &--copyright {
+      p {
+        color: $dark-gray;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 24px;
+      }
 
       a {
-        color: #5d6478;
-        font-weight: lighter;
-        font-size: 15px;
-        text-decoration: none;
-        text-transform: none;
-        &:hover {
+        color: $dark-gray;
+      }
+    }
+  }
+
+  &__links {
+    width: 50%;
+
+    &--learn {
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 32px;
+        color: $dark-gray;
+      }
+      ul {
+        list-style: none;
+        padding-left: 0;
+
+        li {
+          padding-bottom: 1rem;
+        }
+
+        a {
+          color: $dark-gray;
           text-decoration: none;
-          font-size: 15px;
-          color: #5d6478;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    &--social-mobile {
+      display: none;
+    }
+
+    &--copyright-mobile {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .footer {
+    display: flex;
+    flex-direction: column;
+    padding-top: 3rem;
+
+    &__info {
+      width: 100%;
+      &--logo {
+        height: 2rem;
+        padding-left: 2rem;
+      }
+
+      &--blurb {
+        padding-left: 2rem;
+        padding-right: 1rem;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 20px;
+
+        p {
+          padding-bottom: 1rem;
         }
       }
 
-      p {
-        font-weight: lighter;
-        text-transform: none;
-        font-size: 15px;
-        margin: 0;
+      &--social {
+        display: none;
       }
 
-      h4 {
-        margin-top: 0;
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 15px;
-        color: #5d6478;
+      &--copyright {
+        display: none;
       }
     }
 
-    .logo {
-      height: 50px;
-      width: 120px;
-      margin-top: -9px;
-    }
-  }
-}
+    &__links {
+      padding-left: 2rem;
+      width: 65%;
 
-.link-sections {
-  display: flex;
-  flex-wrap: wrap;
-}
+      &--social-mobile {
+        display: block;
+        padding-bottom: 1rem;
+        .svg-icon {
+          width: 2.2rem;
+          margin-right: 1rem;
+        }
+      }
 
-.copyright {
-  margin-top: 80px;
-  // margin-left: 32px;
-  p {
-    font-weight: lighter;
-    text-transform: none;
-    font-size: 15px;
-    margin: 0;
-  }
-}
+      &--copyright-mobile {
+        display: block;
+        p {
+          font-size: 12px;
+          font-weight: 500;
+          color: $dark-gray;
+        }
 
-.link-section {
-  padding-bottom: 3em;
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-
-    li {
-      padding: 0.5em 0;
-      margin: 0;
-
-      a {
-        color: #606266;
-        text-decoration: none;
-
-        &:hover {
-          color: #909399;
+        a {
+          color: $dark-gray;
         }
       }
     }
