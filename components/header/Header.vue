@@ -41,6 +41,7 @@
               icon="icon-magnifying-glass"
               height="25"
               width="25"
+              dir="left"
             />
           </button>
           <div :class="[searchOpen ? 'search-overlay' : '']">
@@ -120,6 +121,7 @@
                 icon="icon-magnifying-glass"
                 height="25"
                 width="25"
+                dir="left"
               />
             </button>
           </div>
@@ -187,9 +189,15 @@ export default {
       immediate: true
     },
 
+    /**
+     * Watches scrollingState in vuex to disable scrolling
+     * on body based on mobile header functionality
+     */
     scrollingState: {
       handler: function(val) {
-        val ? (document.body.style.overflow = 'hidden') : (document.body.style.overflow = 'scroll')
+        val
+          ? (document.body.style.overflow = 'hidden')
+          : (document.body.style.overflow = 'scroll')
       }
     },
     immediate: true
@@ -347,7 +355,6 @@ export default {
     padding-top: 13px;
     .nav-main-container__mobile-menu {
       padding-left: 2px;
-      padding-top: 13px;
     }
   }
 
@@ -391,7 +398,7 @@ export default {
   display: none;
   @media (min-width: 320px) and (max-width: 767px) {
     display: flex;
-    padding-bottom: 0.5rem;
+    padding-bottom: 1rem;
   }
 }
 
