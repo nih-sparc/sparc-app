@@ -86,13 +86,18 @@ h2 {
     height: 70px;
     margin-bottom: 8px;
     width: 100%;
+    border: solid 1px $lightblue;
     @media (min-width: 768px) {
       height: 100%;
     }
   }
   p {
-    font-size: 0.8125em;
+    font-size: 1em;
     font-weight: 700;
+    color: $navy;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 </style>
