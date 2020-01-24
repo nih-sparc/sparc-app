@@ -23,13 +23,8 @@ export default {
   font-size: 1em;
   line-height: 1.5rem;
   padding: 2rem 1rem;
-  text-align: center;
-  margin-top: 1rem;
-  @media (min-width: 1024px) {
-    font-size: 1.625em;
-    line-height: 2.375rem;
+  @media (min-width: 768px) {
     padding: 1.5rem 0;
-    margin-top: 7rem;
   }
   &.large {
     background-image: linear-gradient(
