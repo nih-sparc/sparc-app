@@ -39,6 +39,11 @@
           <search-filters v-model="filters" />
         </el-col>
         <el-col :span="18">
+          <div class="search-heading">
+            <p v-if="!isLoadingSearch && searchData.items.length">
+              {{ searchHeading }}
+            </p>
+          </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
             <el-pagination
@@ -57,7 +62,7 @@
 </template>
 
 <script>
-import { compose, defaultTo, head, mergeLeft, propOr, pluck } from 'ramda'
+import { clone, compose, defaultTo, find, head, mergeLeft, pathOr, propEq, propOr } from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 
@@ -97,6 +102,12 @@ const searchTypes = [
     type: 'simulation'
   }
 ]
+
+const searchData = {
+  limit: 5,
+  skip: 0,
+  items: []
+}
 
 import createClient from '@/plugins/contentful.js'
 
@@ -139,11 +150,7 @@ export default {
         }
       ],
       searchTypes,
-      searchData: {
-        limit: 5,
-        skip: 0,
-        items: []
-      },
+      searchData: clone(searchData),
       isLoadingSearch: false
     }
   },
@@ -176,6 +183,27 @@ export default {
      */
     curSearchPage: function() {
       return this.searchData.skip / this.searchData.limit + 1
+    },
+
+    /**
+     * Compute the search heading
+     * @returns {String}
+     */
+    searchHeading: function() {
+      const start = this.searchData.skip + 1
+      const pageRange = this.searchData.limit * this.curSearchPage
+      const end =
+        pageRange < this.searchData.total ? pageRange : this.searchData.total
+      const query = pathOr('', ['query', 'q'], this.$route)
+
+      const searchTypeLabel = compose(
+        propOr('', 'label'),
+        find(propEq('type', this.$route.query.type))
+      )(this.searchTypes)
+
+      let searchHeading = `Showing ${start}-${end} of ${this.searchData.total} ${searchTypeLabel}`
+
+      return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     }
   },
 
@@ -219,7 +247,9 @@ export default {
         .then(response => {
           this.searchData = response
         })
-        .catch(console.error)
+        .catch(() => {
+          this.searchData = clone(searchData)
+        })
         .finally(() => {
           this.isLoadingSearch = false
         })
@@ -300,5 +330,12 @@ export default {
 .el-pagination {
   margin-top: 1.5em;
   text-align: center;
+}
+.search-heading {
+  margin-bottom: 1em;
+  p {
+    font-size: 0.875em;
+    margin: 0;
+  }
 }
 </style>
