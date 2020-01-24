@@ -2,15 +2,15 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <img src="https://placeholder.pics/svg/18x18" />
+        <svg-icon icon="icon-about" width="18" height="18" />
         <nuxt-link :to="{ name: 'about' }">
           About SPARC
         </nuxt-link>
-        <img src="https://placeholder.pics/svg/18x18" />
+        <svg-icon icon="icon-contact" width="18" height="18" />
         <a href="#">
           Contact Us
         </a>
-        <img src="https://placeholder.pics/svg/18x18" />
+        <svg-icon icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
           Need Help?
         </nuxt-link>
@@ -29,7 +29,9 @@
             />
           </button>
           <div class="logo">
-            <sparc-logo />
+            <nuxt-link :to="{ name: 'index' }">
+              <sparc-logo />
+            </nuxt-link>
           </div>
           <button
             class="nav-main-container__mobile-search"
@@ -145,6 +147,11 @@ const links = [
     title: 'data',
     displayTitle: 'Find Data',
     href: '/data'
+  },
+  {
+    title: 'atlas',
+    displayTitle: 'Atlas',
+    href: '/atlas'
   },
   {
     title: 'resources',
@@ -323,6 +330,11 @@ export default {
   justify-content: flex-end;
   margin-top: 8px;
   margin-bottom: 8px;
+  .svg-icon {
+    color: $cochlear;
+    padding-right: 0.4rem;
+    padding-top: 0.2rem;
+  }
   img {
     margin-right: 5px;
   }
@@ -405,8 +417,7 @@ export default {
 .nav-main-container {
   display: flex;
   flex-direction: row;
-  max-width: 1312px;
-  margin: 0 auto;
+  width: 100%;
   @media (min-width: 320px) and (max-width: 1023px) {
     display: flex;
     flex-direction: row;
@@ -433,13 +444,15 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  width: 54%;
+  margin-right: 1rem;
   @media (min-width: 320px) and (max-width: 1023px) {
     width: 0;
   }
 }
 
 .nav-main-container__search-input {
-  width: 20vw;
+  width: 26vw;
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
@@ -500,16 +513,18 @@ export default {
   padding: 0px;
   height: 100%;
   margin-left: 1rem;
-
+  width: 120%;
   ul {
     padding-left: 0;
     margin-top: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     li {
       display: inline;
       padding-right: 5rem;
       @media screen and (min-width: 1023px) {
         padding-right: 2rem;
-      //  width: 115%;
       }
 
       a {
@@ -547,6 +562,8 @@ export default {
         display: flex;
         margin-left: 0;
         margin-right: 1rem;
+        width: 70%;
+        overflow: scroll;
       }
     }
     ul {
