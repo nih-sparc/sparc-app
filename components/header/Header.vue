@@ -50,7 +50,10 @@
             <div v-if="searchOpen" class="search-mobile">
               <input type="text" placeholder="Search" />
               <button class="search-mobile__close" @click="closeMobileSearch">
-                <svg-icon icon="icon-remove" class="search-mobile__close--icon" />
+                <svg-icon
+                  icon="icon-remove"
+                  class="search-mobile__close--icon"
+                />
               </button>
             </div>
           </div>
@@ -96,7 +99,9 @@
                     color="#606266"
                   />
                 </a>
-                <a href="https://www.youtube.com/results?search_query=sparc+nih">
+                <a
+                  href="https://www.youtube.com/results?search_query=sparc+nih"
+                >
                   <svg-icon
                     icon="icon-youtube"
                     width="30"
