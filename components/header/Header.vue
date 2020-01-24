@@ -181,12 +181,6 @@ export default {
     searchOpen: false
   }),
 
-  computed: {
-    ...mapState({
-      scrollingState: 'disableScrolling'
-    })
-  },
-
   watch: {
    /**
     * Watches for the route path to hide
@@ -199,20 +193,7 @@ export default {
         }
       },
       immediate: true
-    },
-
-    /**
-     * Watches scrollingState in vuex to disable scrolling
-     * on body based on mobile header functionality
-     */
-    scrollingState: {
-      handler: function(val) {
-        val
-          ? (document.body.style.overflow = 'hidden')
-          : (document.body.style.overflow = 'scroll')
-      }
-    },
-    immediate: true
+    }
   },
 
   methods: {
@@ -288,25 +269,28 @@ export default {
     align-items: center;
   }
 }
-
-.overlay {
-  position: absolute;
-  top: 56px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  background-color: rgba(0,0,0,0.5);
+@media (min-width: 320px) and (max-width: 1023px) {
+  .overlay {
+    position: absolute;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
+  }
 }
 
-.search-overlay {
-  position: absolute;
-  top: 56px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  background-color: rgba(0,0,0,0.5);
+@media (min-width: 320px) and (max-width: 1023px) {
+  .search-overlay {
+    position: absolute;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
+  }
 }
 
 .divider {
