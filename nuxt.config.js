@@ -40,6 +40,7 @@ export default {
     ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
+    ctf_project_id: 'sparcAward',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST
@@ -53,9 +54,9 @@ export default {
   /*
    ** Customize router classes globally
    */
-  // router : {
-  //   linkActiveClass: 'active-link'
-  // }
+  router: {
+    linkActiveClass: 'active-link'
+  },
   /*
    ** Global CSS
    */
