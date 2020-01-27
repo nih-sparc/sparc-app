@@ -1,44 +1,40 @@
 <template>
   <div class="project-details">
-     <div class="project-details__header">
-         <div class="project-details__header--image">
-            <img src="http://placehold.jp/368x368.png">
-         </div>
-         <div class="project-details__header--content">
-            <h3>Cardio-Respiratory System: Heart</h3>
-            <h2>Comprehensive structural and functional mapping of the mammalian cardiac nervous system</h2>
-            <p>
-               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-               Lorem ipsum dolor sit amet, consectetur adipiscing...
-            </p>
-            <div class="project-details__header--content-meta">
-                <ul>
-                    <li>
-                        <h3>Project Number</h3>
-                        <p>000000000000</p>
-                    </li>
-                    <li>
-                        <h3>Project Leader</h3>
-                        <p>Fynn Blackwell</p>
-                    </li>
-                    <li>
-                        <h3>Institution</h3>
-                        <p>University of California Los Angeles</p>
-                    </li>
-                </ul>
-            </div>
-            <div class="project-details__header--content-buttons">
-                <button @click="getDataset">Get Dataset</button>
-                <a href="#">View on NIH Website</a>
-            </div>
-         </div>
-     </div>
-     <div class="project-details__info">
-         lorem ipsum
-     </div>
+    <div class="project-details__header">
+      <div class="project-details__header--image">
+        <img src="http://placehold.jp/368x368.png" />
+      </div>
+      <div class="project-details__header--content">
+        <h3>Cardio-Respiratory System: Heart</h3>
+        <h2>Comprehensive structural and functional mapping of the mammalian cardiac nervous system</h2>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+          Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing...
+        </p>
+        <div class="project-details__header--content-meta">
+          <div class="content-meta__item">
+            <h3>Project Number</h3>
+            <p>000000000000</p>
+          </div>
+          <div class="content-meta__item">
+            <h3>Project Leader</h3>
+            <p>Fynn Blackwell</p>
+          </div>
+          <div class="content-meta__item">
+            <h3>Institution</h3>
+            <p>University of California Los Angeles</p>
+          </div>
+        </div>
+        <div class="project-details__header--content-buttons">
+          <button @click="getDataset">Get Dataset</button>
+          <a href="#">View on NIH Website</a>
+        </div>
+      </div>
+    </div>
+    <div class="project-details__info">lorem ipsum</div>
   </div>
 </template>
 
@@ -63,6 +59,7 @@ export default {
       margin-right: 1rem;
     }
     &--content {
+      padding-top: 1.53rem;
       h3 {
         text-transform: uppercase;
         font-weight: 500;
@@ -79,6 +76,33 @@ export default {
         font-size: 14px;
         font-weight: normal;
         line-height: 24px;
+      }
+    }
+    &--content-meta {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+
+    &--content-buttons{
+      button {
+       border-radius: 0.25rem;
+       height: 2.5rem;
+       width: 7.68rem;
+       background-color: $median;
+       color: white;
+       font-size: 14px;
+       font-weight: 500;
+       text-transform: uppercase;
+     }
+    }
+    .content-meta__item {
+      h3 {
+        color: black;
+        margin-bottom: -4rem;
+      }
+      p {
+        padding-top: 3rem;
       }
     }
   }
