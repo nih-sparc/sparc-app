@@ -1,39 +1,31 @@
 <template>
   <div class="data-page">
     <page-hero class="subpage">
-      <h2>A growing collection of SPARC data</h2>
-      <p>
-        The SPARC portal provides access to high-value datasets, maps, and
-        predictive simulations ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Lorem ipsum dolor sit amet.
-      </p>
-      <input v-model="searchQuery" />
-      <button @click="submitSearch">
-        Search
-      </button>
+      <form>
+        <input v-model="searchQuery" />
+        <button @click="submitSearch">
+          Search
+        </button>
+      </form>
+
+      <ul class="search-tabs">
+        <li v-for="type in searchTypes" :key="type.label">
+          <nuxt-link
+            class="search-tabs__button"
+            :class="{ active: type.type === $route.query.type }"
+            :to="{
+              name: 'data',
+              query: {
+                type: type.type
+              }
+            }"
+          >
+            {{ type.label }}
+          </nuxt-link>
+        </li>
+      </ul>
     </page-hero>
     <div class="page-wrap container">
-      <el-row type="flex">
-        <el-col :span="24">
-          <ul class="search-tabs">
-            <li v-for="type in searchTypes" :key="type.label">
-              <nuxt-link
-                class="search-tabs__button"
-                :class="{ active: type.type === $route.query.type }"
-                :to="{
-                  name: 'data',
-                  query: {
-                    type: type.type
-                  }
-                }"
-              >
-                {{ type.label }}
-              </nuxt-link>
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-
       <el-row :gutter="32" type="flex">
         <el-col :span="6">
           <search-filters v-model="filters" />
@@ -286,14 +278,12 @@ export default {
 @import '../../assets/_variables.scss';
 
 .search-tabs {
-  border-bottom: 2px solid #dbdfe6;
   display: flex;
   list-style: none;
-  margin: 0 0 1.5rem;
+  margin: 0;
   padding: 0;
   li {
-    margin: 0 2em;
-    transform: translateY(2px);
+    margin: 0 2.25em;
     &:first-child {
       margin-left: 0;
     }
@@ -301,24 +291,23 @@ export default {
 }
 .search-tabs__button {
   background: none;
-  border: none;
-  color: #909399;
+  border-bottom: 2px solid transparent;
+  color: #fff;
   cursor: pointer;
   display: block;
-  font-size: 1.25em;
-  font-weight: 500;
+  font-size: 1em;
   outline: none;
-  padding: 0.5rem;
+  padding: 0;
   text-decoration: none;
   &:hover,
   &:focus,
   &.active {
-    color: $navy;
-    border-bottom: 2px solid $median;
+    border-bottom-color: #fff;
   }
 }
 
 .page-hero {
+  background: linear-gradient(90deg, rgb(12, 0, 191) 0%, rgb(188, 0, 252) 100%);
   h2 {
     font-size: 2rem;
     font-weight: 500;
