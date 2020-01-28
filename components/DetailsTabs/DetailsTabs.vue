@@ -119,10 +119,12 @@ export default {
         font-size: 14px;
         font-weight: normal;
         line-height: 24px;
+        margin-top: 0;
       }
       ul {
           list-style: none;
           padding-left: 0;
+          margin-top: 0;
           li {
             font-size: 14px;
             font-weight: normal;
