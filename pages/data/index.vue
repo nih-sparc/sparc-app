@@ -274,8 +274,9 @@ export default {
       this.searchData.skip = 0
 
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
-      this.$router.push({ query })
-      this.fetchFromContentful()
+      this.$router.replace({ query }).then(() => {
+        this.fetchFromContentful()
+      })
     }
   }
 }
