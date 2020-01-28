@@ -9,7 +9,7 @@
         <div class="filter__checkbox__wrap">
           <el-checkbox
             v-for="item in filter.items"
-            :key="`${filter.category}_${item.key}`"
+            :key="`${item.category}_${item.key}`"
             v-model="item.value"
             @change="$emit('input', value)"
           >
