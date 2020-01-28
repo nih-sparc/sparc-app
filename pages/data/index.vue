@@ -167,7 +167,6 @@ export default {
 
     tableData: function() {
       return propOr([], 'items', this.searchData)
-      // return compose(pluck('fields'), propOr('', 'items'))(this.searchData)
     },
 
     /**
