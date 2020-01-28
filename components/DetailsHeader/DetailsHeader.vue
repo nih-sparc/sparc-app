@@ -34,7 +34,6 @@
         </div>
       </div>
     </div>
-    <div class="details-header__info">lorem ipsum</div>
   </div>
 </template>
 
