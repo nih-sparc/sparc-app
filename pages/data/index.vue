@@ -1,12 +1,7 @@
 <template>
   <div class="data-page">
     <page-hero class="subpage">
-      <form>
-        <input v-model="searchQuery" />
-        <button @click="submitSearch">
-          Search
-        </button>
-      </form>
+      <search-form v-model="searchQuery" @search="submitSearch" />
 
       <ul class="search-tabs">
         <li v-for="type in searchTypes" :key="type.label">
@@ -54,9 +49,20 @@
 </template>
 
 <script>
-import { clone, compose, defaultTo, find, head, mergeLeft, pathOr, propEq, propOr } from 'ramda'
+import {
+  clone,
+  compose,
+  defaultTo,
+  find,
+  head,
+  mergeLeft,
+  pathOr,
+  propEq,
+  propOr
+} from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
+import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
   import('@/components/Searchresults/ProjectSearchResults.vue')
@@ -110,7 +116,8 @@ export default {
 
   components: {
     PageHero,
-    SearchFilters
+    SearchFilters,
+    SearchForm
   },
 
   mixins: [],
@@ -280,10 +287,18 @@ export default {
 .search-tabs {
   display: flex;
   list-style: none;
-  margin: 0;
-  padding: 0;
+  overflow: auto;
+  margin: 0 -2rem 0 0;
+  padding: 0 1rem;
+  @media (min-width: 48em) {
+    margin: 0;
+    padding: 0;
+  }
   li {
-    margin: 0 2.25em;
+    margin: 0 0.625em;
+    @media (min-width: 48em) {
+      margin: 0 2.25em;
+    }
     &:first-child {
       margin-left: 0;
     }
@@ -295,14 +310,22 @@ export default {
   color: #fff;
   cursor: pointer;
   display: block;
-  font-size: 1em;
+  font-size: 0.75em;
+  font-weight: 500;
   outline: none;
   padding: 0;
   text-decoration: none;
+  text-transform: uppercase;
+  @media (min-width: 48em) {
+    font-size: 1em;
+    font-weight: 400;
+    text-transform: none;
+  }
   &:hover,
   &:focus,
   &.active {
     border-bottom-color: #fff;
+    font-weight: 500;
   }
 }
 
@@ -312,6 +335,9 @@ export default {
     font-size: 2rem;
     font-weight: 500;
     margin-bottom: 1rem;
+  }
+  ::v-deep .el-row--flex.is-justify-center {
+    justify-content: flex-start;
   }
 }
 .table-wrap {
