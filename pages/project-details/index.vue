@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import DetailsHeader from '../../components/DetailsHeader/DetailsHeader.vue';
+import DetailsHeader from '../../components/DetailsHeader/DetailsHeader.vue'
 export default {
   name: 'ProjectDetails',
   components: {
