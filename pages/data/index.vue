@@ -30,6 +30,20 @@
             <p v-if="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }}
             </p>
+            <div class="filter__wrap">
+              <div v-for="(filter, filterIdx) in filters" :key="filter.category" class="filter__wrap-category">
+                <template v-for="(item, itemIdx) in filter.items">
+                  <el-tag
+                    v-if="item.value"
+                    :key="`${item.key}`"
+                    closable
+                    @close="clearFilter(filterIdx, itemIdx)"
+                  >
+                    {{ item.label }}
+                  </el-tag>
+                </template>
+              </div>
+            </div>
           </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
@@ -50,15 +64,19 @@
 
 <script>
 import {
+  assocPath,
   clone,
   compose,
   defaultTo,
+  flatten,
   find,
+  filter,
   head,
   mergeLeft,
   pathOr,
   propEq,
-  propOr
+  propOr,
+  pluck
 } from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
@@ -130,9 +148,39 @@ export default {
           category: 'category',
           items: [
             {
-              label:
-                'filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 ',
+              label: 'Filter 1 ',
+              category: 'category',
               key: 'filter_1',
+              value: false
+            },
+            {
+              label: 'Filter 2',
+              category: 'category',
+              key: 'filter_2',
+              value: false
+            },
+            {
+              label: 'Filter 3',
+              category: 'category',
+              key: 'filter_3',
+              value: false
+            },
+            {
+              label: 'Filter 4',
+              category: 'category',
+              key: 'filter_4',
+              value: false
+            },
+            {
+              label: 'Filter 5',
+              category: 'category',
+              key: 'filter_5',
+              value: false
+            },
+            {
+              label: 'Filter 6',
+              category: 'category',
+              key: 'filter_6',
               value: false
             }
           ]
@@ -142,6 +190,7 @@ export default {
           items: [
             {
               label: 'filter 1',
+              category: 'category_2',
               key: 'filter_2',
               value: false
             }
@@ -205,6 +254,18 @@ export default {
       let searchHeading = `Showing ${start}-${end} of ${this.searchData.total} ${searchTypeLabel}`
 
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
+    },
+
+    /**
+     * Compute selected filters
+     * @returns {Array}
+     */
+    selectedFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('items')
+      )(this.filters)
     }
   },
 
@@ -276,6 +337,20 @@ export default {
       this.$router.replace({ query }).then(() => {
         this.fetchFromContentful()
       })
+    },
+
+    /**
+     * Clear filter's value
+     * @param {Number} filterIdx
+     * @param {Number} itemIdx
+     */
+    clearFilter: function(filterIdx, itemIdx) {
+      const filters = assocPath(
+        [filterIdx, 'items', itemIdx, 'value'],
+        false,
+        this.filters
+      )
+      this.filters = filters
     }
   }
 }
@@ -350,10 +425,20 @@ export default {
   text-align: center;
 }
 .search-heading {
+  align-items: flex-start;
+  display: flex;
   margin-bottom: 1em;
   p {
     font-size: 0.875em;
-    margin: 0;
+    flex-shrink: 0;
+    margin: 1em 1em 0 0;
   }
+}
+.filter__wrap,
+.filter__wrap-category {
+  display: inline;
+}
+.filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
 }
 </style>
