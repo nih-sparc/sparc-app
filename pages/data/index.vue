@@ -187,6 +187,9 @@ export default {
 
     /**
      * Compute the search heading
+     * @TODO Optimize - this is getting a lot of data from various sources
+     * This data could be set at a specific time, such as when the active
+     * tab is set
      * @returns {String}
      */
     searchHeading: function() {
@@ -210,7 +213,7 @@ export default {
   watch: {
     '$route.query.type': function() {
       this.searchData.skip = 0
-      this.fetchResults()
+      this.fetchFromContentful()
     }
   },
 
@@ -222,10 +225,10 @@ export default {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
       this.$router.replace({ query: { type: firstTabType } }).then(() => {
-        this.fetchResults()
+        this.fetchFromContentful()
       })
     } else {
-      this.fetchResults()
+      this.fetchFromContentful()
     }
   },
 
@@ -234,7 +237,7 @@ export default {
      * Get search results
      * This is using the contentful.js client
      */
-    fetchResults: function() {
+    fetchFromContentful: function() {
       this.isLoadingSearch = true
 
       client
@@ -262,7 +265,7 @@ export default {
       const offset = (page - 1) * this.searchData.limit
       this.searchData.skip = offset
 
-      this.fetchResults()
+      this.fetchFromContentful()
     },
 
     /**
@@ -273,7 +276,7 @@ export default {
 
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
       this.$router.push({ query })
-      this.fetchResults()
+      this.fetchFromContentful()
     }
   }
 }
