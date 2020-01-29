@@ -193,6 +193,19 @@ export default {
         }
       },
       immediate: true
+    },
+
+    /**
+     * Watches menuOpen to check if it's false
+     * to enable scrolling
+     */
+    menuOpen: {
+      handler: function(val) {
+        if (!val) {
+          this.$store.commit('updateDisableScrolling', false)
+        }
+      },
+      immediate: true
     }
   },
 
