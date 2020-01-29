@@ -28,5 +28,6 @@ export default {
 @import '@/assets/_variables.scss';
 .layout {
   overflow: hidden;
+  position: fixed;
 }
 </style>
