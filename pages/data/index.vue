@@ -31,7 +31,11 @@
               {{ searchHeading }}
             </p>
             <div class="filter__wrap">
-              <div v-for="(filter, filterIdx) in filters" :key="filter.category" class="filter__wrap-category">
+              <div
+                v-for="(filter, filterIdx) in filters"
+                :key="filter.category"
+                class="filter__wrap-category"
+              >
                 <template v-for="(item, itemIdx) in filter.items">
                   <el-tag
                     v-if="item.value"
