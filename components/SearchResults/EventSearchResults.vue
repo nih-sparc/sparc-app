@@ -1,6 +1,11 @@
 <template>
   <el-table :data="tableData">
-    <el-table-column :fixed="true" prop="fields.title" label="Title" width="300">
+    <el-table-column
+      :fixed="true"
+      prop="fields.title"
+      label="Title"
+      width="300"
+    >
       <template slot-scope="scope">
         <nuxt-link
           :to="{
