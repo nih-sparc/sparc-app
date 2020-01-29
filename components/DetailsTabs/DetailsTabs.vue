@@ -81,7 +81,9 @@ export default {
     border: solid 1px $cloudy;
     padding-left: 3rem;
     padding-right: 2rem;
-    margin: 1.3rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin: 2rem;
     &--types {
       border-bottom: 2px solid #dbdfe6;
       display: flex;
@@ -111,7 +113,7 @@ export default {
       &:hover,
       &:focus,
       &.active {
-        color: $navy;
+        color: $median;
         border-bottom: 2px solid $median;
       }
     }

@@ -31,9 +31,6 @@
           </div>
         </div>
         <div class="details-header__container--content-buttons">
-          <button @click="getDataset">
-            Get Dataset
-          </button>
           <a href="#">View on NIH Website</a>
         </div>
       </div>
@@ -50,12 +47,12 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
 .details-header {
-  margin: 1.25rem;
+  margin: 2rem;
   &__container {
     display: flex;
     flex-direction: row;
     border: solid 1px $cloudy;
-    padding: 1rem;
+    padding: 2rem;
     background: white;
     &--image {
       margin-right: 1rem;
