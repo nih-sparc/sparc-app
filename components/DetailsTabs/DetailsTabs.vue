@@ -141,4 +141,15 @@ export default {
     }
   }
 }
+@media screen and (max-width: 768px) {
+  .details-tabs {
+    &__container {
+      margin: 0;
+      margin-top: 1.5rem;
+      &--types {
+        display: -webkit-inline-box;
+      }
+    }
+  }
+}
 </style>
