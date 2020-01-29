@@ -67,7 +67,7 @@ export default {
         font-weight: 500;
         line-height: 24px;
         font-size: 14px;
-        color: $lightblue;
+        color: $medium-gray;
       }
       h2 {
         font-weight: 500;

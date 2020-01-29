@@ -11,12 +11,30 @@
 <script>
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailsTabs from '@/components/DetailsTabs/DetailsTabs.vue'
+
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
+
+
 export default {
   name: 'ProjectDetails',
   components: {
     DetailsHeader,
     DetailsTabs
-  }
+  },
+
+   asyncData() {
+    return Promise.all([
+      // Get page content
+      client.getEntry( process.env.ctf_project_detail_id)
+    ])
+      .then(([page]) => {
+        // return { ...page.fields }
+        console.log("what are our fields? ", page.fields)
+      })
+      .catch(console.error)
+  },
 }
 </script>
 
