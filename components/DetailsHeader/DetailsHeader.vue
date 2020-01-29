@@ -30,10 +30,7 @@
             <p>University of California Los Angeles</p>
           </div>
         </div>
-        <div class="details-header__container--content-buttons">
-          <button @click="getDataset">
-            Get Dataset
-          </button>
+        <div class="details-header__container--content-links">
           <a href="#">View on NIH Website</a>
         </div>
       </div>
@@ -87,17 +84,7 @@ export default {
       margin-left: -11.2rem;
     }
 
-    &--content-buttons {
-      button {
-        border-radius: 0.25rem;
-        height: 2.5rem;
-        width: 7.68rem;
-        background-color: $median;
-        color: white;
-        font-size: 14px;
-        font-weight: 500;
-        text-transform: uppercase;
-      }
+    &--content-links {
       a {
         font-size: 12px;
         color: $median;
