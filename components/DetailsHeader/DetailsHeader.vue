@@ -6,7 +6,9 @@
       </div>
       <div class="details-header__container--content">
         <h3>Cardio-Respiratory System: Heart</h3>
-        <h2>Comprehensive structural and functional mapping of the mammalian cardiac nervous system</h2>
+        <h2>
+          Comprehensive structural and functional mapping of the mammalian cardiac nervous system
+        </h2>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -29,7 +31,9 @@
           </div>
         </div>
         <div class="details-header__container--content-buttons">
-          <button @click="getDataset">Get Dataset</button>
+          <button @click="getDataset">
+            Get Dataset
+          </button>
           <a href="#">View on NIH Website</a>
         </div>
       </div>
@@ -83,7 +87,7 @@ export default {
       margin-left: -11.2rem;
     }
 
-     &--content-buttons{
+    &--content-buttons {
       button {
         border-radius: 0.25rem;
         height: 2.5rem;
@@ -113,4 +117,14 @@ export default {
     }
   }
 }
+
+@media screen and (max-width: 768px) {
+  .details-header {
+    margin: 0;
+    margin-top: 1.5rem;
+    &__container {
+      flex-direction: column;
+    }
+  }
+ }
 </style>
