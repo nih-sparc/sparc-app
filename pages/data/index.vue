@@ -78,12 +78,12 @@ import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 
 const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
-const EventsearchResults = () =>
-  import('@/components/SearchResults/EventsearchResults.vue')
+const EventSearchResults = () =>
+  import('@/components/SearchResults/EventSearchResults.vue')
 
 const searchResultsComponents = {
   sparcAward: ProjectSearchResults,
-  event: EventsearchResults
+  event: EventSearchResults
 }
 
 const searchTypes = [
