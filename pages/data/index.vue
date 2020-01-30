@@ -1,39 +1,26 @@
 <template>
   <div class="data-page">
     <page-hero class="subpage">
-      <h2>A growing collection of SPARC data</h2>
-      <p>
-        The SPARC portal provides access to high-value datasets, maps, and
-        predictive simulations ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Lorem ipsum dolor sit amet.
-      </p>
-      <input v-model="searchQuery" />
-      <button @click="submitSearch">
-        Search
-      </button>
+      <search-form v-model="searchQuery" @search="submitSearch" />
+
+      <ul class="search-tabs">
+        <li v-for="type in searchTypes" :key="type.label">
+          <nuxt-link
+            class="search-tabs__button"
+            :class="{ active: type.type === $route.query.type }"
+            :to="{
+              name: 'data',
+              query: {
+                type: type.type
+              }
+            }"
+          >
+            {{ type.label }}
+          </nuxt-link>
+        </li>
+      </ul>
     </page-hero>
     <div class="page-wrap container">
-      <el-row type="flex">
-        <el-col :span="24">
-          <ul class="search-tabs">
-            <li v-for="type in searchTypes" :key="type.label">
-              <nuxt-link
-                class="search-tabs__button"
-                :class="{ active: type.type === $route.query.type }"
-                :to="{
-                  name: 'data',
-                  query: {
-                    type: type.type
-                  }
-                }"
-              >
-                {{ type.label }}
-              </nuxt-link>
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-
       <el-row :gutter="32" type="flex">
         <el-col :span="6">
           <search-filters v-model="filters" />
@@ -43,6 +30,24 @@
             <p v-if="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }}
             </p>
+            <div class="filter__wrap">
+              <div
+                v-for="(filter, filterIdx) in filters"
+                :key="filter.category"
+                class="filter__wrap-category"
+              >
+                <template v-for="(item, itemIdx) in filter.items">
+                  <el-tag
+                    v-if="item.value"
+                    :key="`${item.key}`"
+                    closable
+                    @close="clearFilter(filterIdx, itemIdx)"
+                  >
+                    {{ item.label }}
+                  </el-tag>
+                </template>
+              </div>
+            </div>
           </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
@@ -63,18 +68,23 @@
 
 <script>
 import {
+  assocPath,
   clone,
   compose,
   defaultTo,
+  flatten,
   find,
+  filter,
   head,
   mergeLeft,
   pathOr,
   propEq,
-  propOr
+  propOr,
+  pluck
 } from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
+import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
@@ -128,7 +138,8 @@ export default {
 
   components: {
     PageHero,
-    SearchFilters
+    SearchFilters,
+    SearchForm
   },
 
   mixins: [],
@@ -141,9 +152,39 @@ export default {
           category: 'category',
           items: [
             {
-              label:
-                'filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 ',
+              label: 'Filter 1 ',
+              category: 'category',
               key: 'filter_1',
+              value: false
+            },
+            {
+              label: 'Filter 2',
+              category: 'category',
+              key: 'filter_2',
+              value: false
+            },
+            {
+              label: 'Filter 3',
+              category: 'category',
+              key: 'filter_3',
+              value: false
+            },
+            {
+              label: 'Filter 4',
+              category: 'category',
+              key: 'filter_4',
+              value: false
+            },
+            {
+              label: 'Filter 5',
+              category: 'category',
+              key: 'filter_5',
+              value: false
+            },
+            {
+              label: 'Filter 6',
+              category: 'category',
+              key: 'filter_6',
               value: false
             }
           ]
@@ -153,6 +194,7 @@ export default {
           items: [
             {
               label: 'filter 1',
+              category: 'category_2',
               key: 'filter_2',
               value: false
             }
@@ -216,6 +258,18 @@ export default {
       let searchHeading = `Showing ${start}-${end} of ${this.searchData.total} ${searchTypeLabel}`
 
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
+    },
+
+    /**
+     * Compute selected filters
+     * @returns {Array}
+     */
+    selectedFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('items')
+      )(this.filters)
     }
   },
 
@@ -287,6 +341,20 @@ export default {
       this.$router.replace({ query }).then(() => {
         this.fetchFromContentful()
       })
+    },
+
+    /**
+     * Clear filter's value
+     * @param {Number} filterIdx
+     * @param {Number} itemIdx
+     */
+    clearFilter: function(filterIdx, itemIdx) {
+      const filters = assocPath(
+        [filterIdx, 'items', itemIdx, 'value'],
+        false,
+        this.filters
+      )
+      this.filters = filters
     }
   }
 }
@@ -296,14 +364,20 @@ export default {
 @import '../../assets/_variables.scss';
 
 .search-tabs {
-  border-bottom: 2px solid #dbdfe6;
   display: flex;
   list-style: none;
-  margin: 0 0 1.5rem;
-  padding: 0;
+  overflow: auto;
+  margin: 0 -2rem 0 0;
+  padding: 0 1rem;
+  @media (min-width: 48em) {
+    margin: 0;
+    padding: 0;
+  }
   li {
-    margin: 0 2em;
-    transform: translateY(2px);
+    margin: 0 0.625em;
+    @media (min-width: 48em) {
+      margin: 0 2.25em;
+    }
     &:first-child {
       margin-left: 0;
     }
@@ -311,28 +385,38 @@ export default {
 }
 .search-tabs__button {
   background: none;
-  border: none;
-  color: #909399;
+  border-bottom: 2px solid transparent;
+  color: #fff;
   cursor: pointer;
   display: block;
-  font-size: 1.25em;
+  font-size: 0.75em;
   font-weight: 500;
   outline: none;
-  padding: 0.5rem;
+  padding: 0;
   text-decoration: none;
+  text-transform: uppercase;
+  @media (min-width: 48em) {
+    font-size: 1em;
+    font-weight: 400;
+    text-transform: none;
+  }
   &:hover,
   &:focus,
   &.active {
-    color: $navy;
-    border-bottom: 2px solid $median;
+    border-bottom-color: #fff;
+    font-weight: 500;
   }
 }
 
 .page-hero {
+  background: linear-gradient(90deg, rgb(12, 0, 191) 0%, rgb(188, 0, 252) 100%);
   h2 {
     font-size: 2rem;
     font-weight: 500;
     margin-bottom: 1rem;
+  }
+  ::v-deep .el-row--flex.is-justify-center {
+    justify-content: flex-start;
   }
 }
 .table-wrap {
@@ -345,10 +429,20 @@ export default {
   text-align: center;
 }
 .search-heading {
+  align-items: flex-start;
+  display: flex;
   margin-bottom: 1em;
   p {
     font-size: 0.875em;
-    margin: 0;
+    flex-shrink: 0;
+    margin: 1em 1em 0 0;
   }
+}
+.filter__wrap,
+.filter__wrap-category {
+  display: inline;
+}
+.filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
 }
 </style>

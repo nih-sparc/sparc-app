@@ -1,13 +1,33 @@
 <template>
   <el-table :data="tableData">
-    <el-table-column :fixed="true" prop="title" label="Title" width="300" />
-    <el-table-column prop="awardId" label="ID" width="150" />
     <el-table-column
-      prop="principleInvestigator"
+      :fixed="true"
+      prop="fields.title"
+      label="Title"
+      width="300"
+    >
+      <template slot-scope="scope">
+        <nuxt-link
+          :to="{
+            name: 'events-eventId',
+            params: { eventId: scope.row.sys.id }
+          }"
+        >
+          {{ scope.row.fields.title }}
+        </nuxt-link>
+      </template>
+    </el-table-column>
+    <el-table-column prop="fields.awardId" label="ID" width="150" />
+    <el-table-column
+      prop="fields.principleInvestigator"
       label="Principle Investigator"
       width="250"
     />
-    <el-table-column prop="description" label="description" width="500" />
+    <el-table-column
+      prop="fields.description"
+      label="description"
+      width="500"
+    />
   </el-table>
 </template>
 
