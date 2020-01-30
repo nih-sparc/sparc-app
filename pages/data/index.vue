@@ -317,8 +317,16 @@ export default {
       this.isLoadingSearch = true
 
       const searchType = pathOr('', ['query', 'type'], this.$route)
+      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+
+      if (searchType === 'file') {
+        url += '&fileType=tiff'
+      }
+
       const query = pathOr('', ['query', 'q'], this.$route)
-      const url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&query=${query}`
+      if (query) {
+        url += `&query=${query}`
+      }
 
       this.$axios
         .$get(url)
