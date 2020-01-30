@@ -82,7 +82,7 @@ export default {
       UserAgent: '*',
 
       // disallow all in all environments except production
-      Disallow: () => (process.env.NODE_ENV !== 'production' ? '/' : [])
+      Disallow: () => (process.env.DEPLOY_ENV !== 'production' ? '/' : [])
     }
   ],
   /*
