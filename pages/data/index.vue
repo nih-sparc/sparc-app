@@ -271,9 +271,11 @@ export default {
     if (!this.$route.query.type) {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
-      this.$router.replace({ query: { type: firstTabType } }).then(() => {
-        this.fetchFromContentful()
-      })
+      this.$router
+        .replace({ query: { type: firstTabType, ...this.$route.query } })
+        .then(() => {
+          this.fetchFromContentful()
+        })
     } else {
       this.fetchFromContentful()
       this.fetchFilters()
