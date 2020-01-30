@@ -140,7 +140,7 @@
 
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
-import { mapState, mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 
 const links = [
   {
@@ -202,7 +202,7 @@ export default {
     menuOpen: {
       handler: function(val) {
         if (!val) {
-          this.$store.commit('updateDisableScrolling', false)
+          this.$store.dispatch('updateDisabledScrolling', false)
         }
       },
       immediate: true
@@ -210,8 +210,8 @@ export default {
   },
 
   methods: {
-    ...mapMutations({
-      scrolling: 'updateDisableScrolling'
+    ...mapActions({
+      scrolling: 'updateDisabledScrolling'
     }),
     /**
      * Sets a link to active based on current page
@@ -230,11 +230,11 @@ export default {
     openMobileNav: function() {
       if (!this.menuOpen) {
         this.searchOpen = false // just in case the search menu is open also
-        this.$store.commit('updateDisableScrolling', true)
+        this.$store.dispatch('updateDisabledScrolling', true)
         this.menuOpen = true
       } else {
         this.menuOpen = false
-        this.$store.commit('updateDisableScrolling', false)
+        this.$store.dispatch('updateDisabledScrolling', false)
       }
     },
 
@@ -244,7 +244,7 @@ export default {
     openMobileSearch: function() {
       this.searchOpen = true
       this.menuOpen = false
-      this.$store.commit('updateDisableScrolling', true)
+      this.$store.dispatch('updateDisabledScrolling', true)
     },
 
     /**
@@ -252,7 +252,7 @@ export default {
      */
     closeMobileSearch: function() {
       this.searchOpen = false
-      this.$store.commit('updateDisableScrolling', false)
+      this.$store.dispatch('updateDisabledScrolling', false)
     },
 
     /**
