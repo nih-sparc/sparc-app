@@ -23,7 +23,7 @@
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
         <el-col :span="6">
-          <search-filters v-model="filters" />
+          <search-filters v-model="filters" v-loading="isLoadingFilters" />
         </el-col>
         <el-col :span="18">
           <div class="search-heading">
@@ -36,7 +36,7 @@
                 :key="filter.category"
                 class="filter__wrap-category"
               >
-                <template v-for="(item, itemIdx) in filter.items">
+                <template v-for="(item, itemIdx) in filter.filters">
                   <el-tag
                     v-if="item.value"
                     :key="`${item.key}`"
@@ -76,6 +76,7 @@ import {
   find,
   filter,
   head,
+  map,
   mergeLeft,
   pathOr,
   propEq,
@@ -98,28 +99,29 @@ const searchResultsComponents = {
 
 const searchTypes = [
   {
-    label: 'Events',
-    type: process.env.ctf_event_id
-  },
-  {
     label: 'Datasets',
-    type: 'dataset'
+    type: 'dataset',
+    filterId: process.env.ctf_filters_dataset_id
   },
   {
     label: 'Files',
-    type: 'file'
+    type: 'file',
+    filterId: process.env.ctf_filters_file_id
   },
   {
     label: 'Organs',
-    type: 'organ'
+    type: 'organ',
+    filterId: process.env.ctf_filters_organ_id
   },
   {
     label: 'Projects',
-    type: process.env.ctf_project_id
+    type: process.env.ctf_project_id,
+    filterId: process.env.ctf_filters_project_id
   },
   {
     label: 'Simulations',
-    type: 'simulation'
+    type: 'simulation',
+    filterId: process.env.ctf_filters_simulation_id
   }
 ]
 
@@ -132,6 +134,37 @@ const searchData = {
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
+
+/**
+ * Transform indidivual filter
+ * @param {Object} filter
+ */
+const transformIndividualFilter = filter => {
+  const category = propOr('', 'category', filter)
+  const filters = propOr([], 'filters', filter)
+
+  const transformedFilters = filters.map(filter => {
+    return {
+      label: filter,
+      category: category,
+      key: filter,
+      value: false
+    }
+  })
+
+  return mergeLeft({ filters: transformedFilters }, filter)
+}
+
+/**
+ * Transform filter response
+ * @param {Object} filters
+ */
+const transformFilters = compose(
+  flatten,
+  map(transformIndividualFilter),
+  pluck('fields'),
+  propOr([], 'filters')
+)
 
 export default {
   name: 'DataPage',
@@ -147,63 +180,11 @@ export default {
   data: () => {
     return {
       searchQuery: '',
-      filters: [
-        {
-          category: 'category',
-          items: [
-            {
-              label: 'Filter 1 ',
-              category: 'category',
-              key: 'filter_1',
-              value: false
-            },
-            {
-              label: 'Filter 2',
-              category: 'category',
-              key: 'filter_2',
-              value: false
-            },
-            {
-              label: 'Filter 3',
-              category: 'category',
-              key: 'filter_3',
-              value: false
-            },
-            {
-              label: 'Filter 4',
-              category: 'category',
-              key: 'filter_4',
-              value: false
-            },
-            {
-              label: 'Filter 5',
-              category: 'category',
-              key: 'filter_5',
-              value: false
-            },
-            {
-              label: 'Filter 6',
-              category: 'category',
-              key: 'filter_6',
-              value: false
-            }
-          ]
-        },
-        {
-          category: 'category 2',
-          items: [
-            {
-              label: 'filter 1',
-              category: 'category_2',
-              key: 'filter_2',
-              value: false
-            }
-          ]
-        }
-      ],
+      filters: [],
       searchTypes,
       searchData: clone(searchData),
-      isLoadingSearch: false
+      isLoadingSearch: false,
+      isLoadingFilters: false
     }
   },
 
@@ -213,8 +194,10 @@ export default {
      * @returns {String}
      */
     searchType: function() {
-      const firstTabType = compose(propOr('', 'type'), head)(this.searchTypes)
-      return defaultTo(this.$route.query.type, firstTabType)
+      const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
+      const searchType = find(propEq('type', searchTypeQuery), this.searchTypes)
+
+      return defaultTo(head(this.searchTypes), searchType)
     },
 
     tableData: function() {
@@ -277,6 +260,7 @@ export default {
     '$route.query.type': function() {
       this.searchData.skip = 0
       this.fetchFromContentful()
+      this.fetchFilters()
     }
   },
 
@@ -292,6 +276,7 @@ export default {
       })
     } else {
       this.fetchFromContentful()
+      this.fetchFilters()
     }
   },
 
@@ -318,6 +303,26 @@ export default {
         })
         .finally(() => {
           this.isLoadingSearch = false
+        })
+    },
+
+    /**
+     * Get filters based on the search type
+     */
+    fetchFilters: function() {
+      this.filters = []
+      this.isLoadingFilters = true
+
+      client
+        .getEntry(this.searchType.filterId)
+        .then(response => {
+          this.filters = transformFilters(response.fields)
+        })
+        .catch(() => {
+          this.searchData = clone(searchData)
+        })
+        .finally(() => {
+          this.isLoadingFilters = false
         })
     },
 
