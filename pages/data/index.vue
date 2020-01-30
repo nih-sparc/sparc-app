@@ -101,27 +101,32 @@ const searchTypes = [
   {
     label: 'Datasets',
     type: 'dataset',
-    filterId: process.env.ctf_filters_dataset_id
+    filterId: process.env.ctf_filters_dataset_id,
+    dataSource: 'blackfynn'
   },
   {
-    label: 'Files',
-    type: 'file',
-    filterId: process.env.ctf_filters_file_id
+    label: 'Images',
+    type: 'image',
+    filterId: process.env.ctf_filters_file_id,
+    dataSource: 'blackfynn'
   },
   {
     label: 'Organs',
     type: 'organ',
-    filterId: process.env.ctf_filters_organ_id
+    filterId: process.env.ctf_filters_organ_id,
+    dataSource: 'contentful'
   },
   {
     label: 'Projects',
     type: process.env.ctf_project_id,
-    filterId: process.env.ctf_filters_project_id
+    filterId: process.env.ctf_filters_project_id,
+    dataSource: 'contentful'
   },
   {
     label: 'Simulations',
     type: 'simulation',
-    filterId: process.env.ctf_filters_simulation_id
+    filterId: process.env.ctf_filters_simulation_id,
+    dataSource: 'contentful'
   }
 ]
 
@@ -259,8 +264,7 @@ export default {
   watch: {
     '$route.query.type': function() {
       this.searchData.skip = 0
-      this.fetchFromContentful()
-      this.fetchFilters()
+      this.fetchResults()
     }
   },
 
@@ -271,16 +275,41 @@ export default {
     if (!this.$route.query.type) {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
-      this.$router.replace({ query: { type: firstTabType } }).then(() => {
-        this.fetchFromContentful()
-      })
+      this.$router.replace({ query: { type: firstTabType } })
     } else {
-      this.fetchFromContentful()
-      this.fetchFilters()
+      this.fetchResults()
     }
   },
 
   methods: {
+    /**
+     * Figure out which source to fetch results from based on the
+     * type of search
+     */
+    fetchResults: function() {
+      const source = propOr('contentful', 'dataSource', this.searchType)
+
+      const searchSources = {
+        contentful: this.fetchFromContentful,
+        blackfynn: this.fetchFromBlackfynn
+      }
+
+      if (typeof searchSources[source] === 'function') {
+        searchSources[source]()
+      }
+
+      // Fetch filters for the search type
+      this.fetchFilters()
+    },
+
+    /**
+     * Get Search results
+     * This is using fetch from the Blackfynn API
+     */
+    fetchFromBlackfynn: function() {
+      console.log('search')
+    },
+
     /**
      * Get search results
      * This is using the contentful.js client
@@ -333,7 +362,7 @@ export default {
       const offset = (page - 1) * this.searchData.limit
       this.searchData.skip = offset
 
-      this.fetchFromContentful()
+      this.fetchResults()
     },
 
     /**
@@ -344,7 +373,7 @@ export default {
 
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
       this.$router.replace({ query }).then(() => {
-        this.fetchFromContentful()
+        this.fetchResults()
       })
     },
 
