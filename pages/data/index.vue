@@ -62,14 +62,24 @@
 </template>
 
 <script>
-import { clone, compose, defaultTo, find, head, mergeLeft, pathOr, propEq, propOr } from 'ramda'
+import {
+  clone,
+  compose,
+  defaultTo,
+  find,
+  head,
+  mergeLeft,
+  pathOr,
+  propEq,
+  propOr
+} from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 
 const ProjectSearchResults = () =>
-  import('@/components/Searchresults/ProjectSearchResults.vue')
+  import('@/components/SearchResults/ProjectSearchResults.vue')
 const EventsearchResults = () =>
-  import('@/components/Searchresults/EventsearchResults.vue')
+  import('@/components/SearchResults/EventsearchResults.vue')
 
 const searchResultsComponents = {
   sparcAward: ProjectSearchResults,
