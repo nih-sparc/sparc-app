@@ -41,6 +41,12 @@ export default {
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     ctf_project_id: 'sparcAward',
+    ctf_filter_id: '6bya4tyw8399',
+    ctf_filters_dataset_id: '7fL88ABgKSB2tPJmysn2V',
+    ctf_filters_project_id: 'YVan5NSd4bgj2Q5WZdOVw',
+    ctf_filters_organ_id: '5Hhlb7Lf4yijMQUSBai1fh',
+    ctf_filters_image_id: '4R4zfdND13xLLGU9nPpNCD',
+    ctf_filters_simulation_id: '6qMQRugMyzeaUrTIPQDdF1',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST
