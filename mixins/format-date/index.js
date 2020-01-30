@@ -8,7 +8,7 @@ export default {
      * @returns {String}
      */
     formatDate: function(date) {
-      return format(parseISO(date), 'MMMM d, yyyy')
+      return date != '' ? format(parseISO(date), 'MMMM d, yyyy') : ''
     }
   }
 }
