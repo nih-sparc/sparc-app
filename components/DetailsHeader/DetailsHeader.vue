@@ -2,37 +2,13 @@
   <div class="details-header">
     <div class="details-header__container">
       <div class="details-header__container--image">
-        <img src="http://placehold.jp/368x368.png" />
+        <slot name="banner image" />
       </div>
       <div class="details-header__container--content">
-        <h3>Cardio-Respiratory System: Heart</h3>
-        <h2>
-          Comprehensive structural and functional mapping of the mammalian cardiac nervous system
-        </h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-          Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          Lorem ipsum dolor sit amet, consectetur adipiscing...
-        </p>
-        <div class="details-header__container--content-meta">
-          <div class="content-meta__item">
-            <h3>Project Number</h3>
-            <p>000000000000</p>
-          </div>
-          <div class="content-meta__item">
-            <h3>Project Leader</h3>
-            <p>Fynn Blackwell</p>
-          </div>
-          <div class="content-meta__item">
-            <h3>Institution</h3>
-            <p>University of California Los Angeles</p>
-          </div>
-        </div>
-        <div class="details-header__container--content-links">
-          <a href="#">View on NIH Website</a>
-        </div>
+        <slot name="subtitle" />
+        <slot name="title" />
+        <slot name="description" />
+        <slot name="meta content" />
       </div>
     </div>
   </div>
@@ -53,9 +29,11 @@ export default {
     flex-direction: row;
     border: solid 1px $cloudy;
     padding: 1rem;
+    padding-top: 0;
     background: white;
     &--image {
       margin-right: 1rem;
+      margin-top: 2rem;
     }
     &--content {
       padding-top: 1.53rem;
@@ -80,8 +58,7 @@ export default {
     &--content-meta {
       display: flex;
       flex-direction: row;
-      justify-content: space-evenly;
-      margin-left: -11.2rem;
+      align-items: flex-start;
     }
 
     &--content-links {
@@ -92,8 +69,23 @@ export default {
         line-height: 24px;
         margin-left: 1rem;
       }
+      button {
+        background: $median;
+        height: 2.5rem;
+        width: 12rem;
+        border-radius: 4px;
+        a {
+          color: white;
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+          text-decoration: none;
+          margin-left: 0;
+        }
+      }
     }
     .content-meta__item {
+      margin-right: 5.3rem;
       h3 {
         color: black;
         margin-bottom: -4rem;
@@ -113,5 +105,5 @@ export default {
       flex-direction: column;
     }
   }
- }
+}
 </style>

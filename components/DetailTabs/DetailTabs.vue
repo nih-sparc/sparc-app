@@ -4,41 +4,21 @@
       <el-row type="flex">
         <el-col :span="24">
           <ul class="details-tabs__container--types">
-            <li v-for="tab in tabTypes" :key="tab.label">
-              <nuxt-link
+            <li v-for="tab in tabs" :key="tab.label">
+              <a
                 class="details-tabs__container--button"
-                :class="{ active: tab.type === 'teamInformation' }"
-                :to="{
-                  name: 'data',
-                  query: {
-                    type: tab.type
-                  }
-                }"
+                :class="{ active: tab.type === activeTab }"
+                href="#"
+                @click.prevent="$emit('set-active-tab', tab.type)"
               >
                 {{ tab.label }}
-              </nuxt-link>
+              </a>
             </li>
           </ul>
         </el-col>
       </el-row>
       <div class="details-tabs__container--data">
-        <h3>Project Leader</h3>
-        <p>
-          <u>Kalyanam Shivkumar</u>
-        </p>
-        <h3>Other Contacts</h3>
-        <ul>
-          <li>Charles Fowlkes</li>
-          <li>
-            <u>Viviana Gradinaru</u>
-          </li>
-          <li>Beth Habecker</li>
-          <li>Stephen Daniel</li>
-          <li>
-            <u>David Paterson</u>
-          </li>
-          <li>Irving Zucker</li>
-        </ul>
+        <slot />
       </div>
     </div>
   </div>
@@ -47,26 +27,14 @@
 <script>
 export default {
   name: 'DetailsTabs',
-  data() {
-    return {
-      tabTypes: [
-        {
-          label: 'Team Information',
-          type: 'teamInformation'
-        },
-        {
-          label: 'Diseases',
-          type: 'diseases'
-        },
-        {
-          label: 'Datasets',
-          type: 'datasets'
-        },
-        {
-          label: 'Related Projects',
-          type: 'relatedProjects'
-        }
-      ]
+  props: {
+    tabs: {
+      type: Array,
+      default: () => []
+    },
+    activeTab: {
+      type: String,
+      default: 'datasets'
     }
   }
 }
@@ -111,12 +79,13 @@ export default {
       &:hover,
       &:focus,
       &.active {
-        color: $navy;
+        color: $median;
         border-bottom: 2px solid $median;
       }
     }
 
     &--data {
+      padding-bottom: 2.5rem;
       h3 {
         font-size: 14px;
         font-weight: 500;
