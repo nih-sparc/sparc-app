@@ -318,7 +318,7 @@ export default {
 
       const searchType = pathOr('', ['query', 'type'], this.$route)
       const query = pathOr('', ['query', 'q'], this.$route)
-      const url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&query=${query}`
+      const url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium&query=${query}`
 
       this.$axios
         .$get(url)
