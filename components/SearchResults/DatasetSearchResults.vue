@@ -19,12 +19,19 @@
     </el-table-column>
     <el-table-column prop="banner" label="Image" width="148">
       <template slot-scope="scope">
-        <img
-          :src="scope.row.banner"
-          :alt="`Banner for ${scope.row.name}`"
-          height="128"
-          width="128"
-        />
+        <nuxt-link
+          :to="{
+            name: 'datasets-datasetId',
+            params: { datasetId: scope.row.id }
+          }"
+        >
+          <img
+            :src="scope.row.banner"
+            :alt="`Banner for ${scope.row.name}`"
+            height="128"
+            width="128"
+          />
+        </nuxt-link>
       </template>
     </el-table-column>
     <el-table-column prop="description" label="Description" width="400" />
