@@ -32,6 +32,7 @@
             <sparc-logo />
           </div>
           <button
+            v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch"
@@ -99,7 +100,7 @@
               </a>
             </div>
           </div>
-          <div class="nav-main-container__search">
+          <div v-if="shouldShowSearch" class="nav-main-container__search">
             <input
               v-model="searchQuery"
               type="text"
@@ -161,6 +162,16 @@ export default {
     searchOpen: false,
     searchQuery: ''
   }),
+
+  computed: {
+    /**
+     * Compute if search should be visible
+     * @returns {Boolean}
+     */
+    shouldShowSearch: function() {
+      return this.$route.name !== 'data'
+    }
+  },
 
   watch: {
     /**
