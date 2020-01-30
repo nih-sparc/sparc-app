@@ -504,4 +504,9 @@ export default {
 .filter__wrap .el-tag {
   margin: 0.5em 1em 0.5em 0;
 }
+::v-deep {
+  .el-table td {
+    vertical-align: top;
+  }
+}
 </style>
