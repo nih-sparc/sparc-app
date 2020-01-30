@@ -91,8 +91,11 @@ const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
 const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
+const DatasetSearchResults = () =>
+  import('@/components/SearchResults/DatasetSearchResults.vue')
 
 const searchResultsComponents = {
+  dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults
 }
@@ -101,27 +104,32 @@ const searchTypes = [
   {
     label: 'Datasets',
     type: 'dataset',
-    filterId: process.env.ctf_filters_dataset_id
+    filterId: process.env.ctf_filters_dataset_id,
+    dataSource: 'blackfynn'
   },
   {
-    label: 'Files',
+    label: 'Images',
     type: 'file',
-    filterId: process.env.ctf_filters_file_id
+    filterId: process.env.ctf_filters_file_id,
+    dataSource: 'blackfynn'
   },
   {
     label: 'Organs',
     type: 'organ',
-    filterId: process.env.ctf_filters_organ_id
+    filterId: process.env.ctf_filters_organ_id,
+    dataSource: 'contentful'
   },
   {
     label: 'Projects',
     type: process.env.ctf_project_id,
-    filterId: process.env.ctf_filters_project_id
+    filterId: process.env.ctf_filters_project_id,
+    dataSource: 'contentful'
   },
   {
     label: 'Simulations',
     type: 'simulation',
-    filterId: process.env.ctf_filters_simulation_id
+    filterId: process.env.ctf_filters_simulation_id,
+    dataSource: 'contentful'
   }
 ]
 
@@ -209,7 +217,7 @@ export default {
      * @returns {Function}
      */
     searchResultsComponent: function() {
-      return searchResultsComponents[this.$route.query.type]
+      return defaultTo('', searchResultsComponents[this.$route.query.type])
     },
 
     /**
@@ -258,9 +266,12 @@ export default {
 
   watch: {
     '$route.query.type': function() {
-      this.searchData.skip = 0
-      this.fetchFromContentful()
-      this.fetchFilters()
+      /**
+       * Clear table data so the new table that is rendered can
+       * properly render data and account for any missing data
+       */
+      this.searchData = clone(searchData)
+      this.fetchResults()
     }
   },
 
@@ -271,18 +282,59 @@ export default {
     if (!this.$route.query.type) {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
-      this.$router
-        .replace({ query: { type: firstTabType, ...this.$route.query } })
-        .then(() => {
-          this.fetchFromContentful()
-        })
+      this.$router.replace({ query: { type: firstTabType } })
     } else {
-      this.fetchFromContentful()
-      this.fetchFilters()
+      this.fetchResults()
     }
   },
 
   methods: {
+    /**
+     * Figure out which source to fetch results from based on the
+     * type of search
+     */
+    fetchResults: function() {
+      const source = propOr('contentful', 'dataSource', this.searchType)
+
+      const searchSources = {
+        contentful: this.fetchFromContentful,
+        blackfynn: this.fetchFromBlackfynn
+      }
+
+      if (typeof searchSources[source] === 'function') {
+        searchSources[source]()
+      }
+
+      // Fetch filters for the search type
+      this.fetchFilters()
+    },
+
+    /**
+     * Get Search results
+     * This is using fetch from the Blackfynn API
+     */
+    fetchFromBlackfynn: function() {
+      this.isLoadingSearch = true
+
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      const query = pathOr('', ['query', 'q'], this.$route)
+      const url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium&query=${query}`
+
+      this.$axios
+        .$get(url)
+        .then(response => {
+          const searchData = {
+            skip: response.offset,
+            items: response[`${searchType}s`],
+            total: response.totalCount
+          }
+          this.searchData = mergeLeft(searchData, this.searchData)
+        })
+        .finally(() => {
+          this.isLoadingSearch = false
+        })
+    },
+
     /**
      * Get search results
      * This is using the contentful.js client
@@ -335,7 +387,7 @@ export default {
       const offset = (page - 1) * this.searchData.limit
       this.searchData.skip = offset
 
-      this.fetchFromContentful()
+      this.fetchResults()
     },
 
     /**
@@ -346,7 +398,7 @@ export default {
 
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
       this.$router.replace({ query }).then(() => {
-        this.fetchFromContentful()
+        this.fetchResults()
       })
     },
 
@@ -451,5 +503,10 @@ export default {
 }
 .filter__wrap .el-tag {
   margin: 0.5em 1em 0.5em 0;
+}
+::v-deep {
+  .el-table td {
+    vertical-align: top;
+  }
 }
 </style>
