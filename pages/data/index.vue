@@ -93,11 +93,14 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
+const FileSearchResults = () =>
+  import('@/components/SearchResults/FileSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
-  event: EventSearchResults
+  event: EventSearchResults,
+  file: FileSearchResults
 }
 
 const searchTypes = [
@@ -484,6 +487,14 @@ export default {
   }
   ::v-deep .el-row--flex.is-justify-center {
     justify-content: flex-start;
+  }
+}
+.page-wrap {
+  padding-bottom: 1em;
+  padding-top: 1em;
+  @media (min-width: 48em) {
+    padding-bottom: 3em;
+    padding-top: 3em;
   }
 }
 .table-wrap {
