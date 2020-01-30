@@ -91,8 +91,11 @@ const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
 const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
+const DatasetSearchResults = () =>
+  import('@/components/SearchResults/DatasetSearchResults.vue')
 
 const searchResultsComponents = {
+  dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults
 }
@@ -106,7 +109,7 @@ const searchTypes = [
   },
   {
     label: 'Images',
-    type: 'image',
+    type: 'file',
     filterId: process.env.ctf_filters_file_id,
     dataSource: 'blackfynn'
   },
@@ -214,7 +217,7 @@ export default {
      * @returns {Function}
      */
     searchResultsComponent: function() {
-      return searchResultsComponents[this.$route.query.type]
+      return defaultTo('', searchResultsComponents[this.$route.query.type])
     },
 
     /**
@@ -263,7 +266,11 @@ export default {
 
   watch: {
     '$route.query.type': function() {
-      this.searchData.skip = 0
+      /**
+       * Clear table data so the new table that is rendered can
+       * properly render data and account for any missing data
+       */
+      this.searchData = clone(searchData)
       this.fetchResults()
     }
   },
@@ -307,7 +314,25 @@ export default {
      * This is using fetch from the Blackfynn API
      */
     fetchFromBlackfynn: function() {
-      console.log('search')
+      this.isLoadingSearch = true
+
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      const query = pathOr('', ['query', 'q'], this.$route)
+      const url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&query=${query}`
+
+      this.$axios
+        .$get(url)
+        .then(response => {
+          const searchData = {
+            skip: response.offset,
+            items: response[`${searchType}s`],
+            total: response.totalCount
+          }
+          this.searchData = mergeLeft(searchData, this.searchData)
+        })
+        .finally(() => {
+          this.isLoadingSearch = false
+        })
     },
 
     /**
