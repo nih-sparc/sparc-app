@@ -33,8 +33,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.resources {
-  margin-top: 9rem;
-}
-</style>
+<style lang="scss" scoped></style>
