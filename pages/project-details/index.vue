@@ -1,7 +1,19 @@
 <template>
   <div class="project-details">
     <div class="project-details__page-route">
-      <p>Teams and Projects > Comprehensive structural and functional...</p>
+      <p>
+        <nuxt-link
+          :to="{
+            name: 'data',
+            query: {
+              type: 'sparcAward'
+            }
+          }"
+        >
+          Teams and Projects
+        </nuxt-link>
+        > {{ formatBreadcrumb(fields.title) }}
+      </p>
     </div>
     <details-header>
       <img slot="banner image" src="http://placehold.jp/368x368.png" />
@@ -9,7 +21,7 @@
         {{ fields.organ.fields.name }}
       </h3>
       <h2 slot="title">
-        {{ fields.title }}
+        {{ formatTitle(fields.title) }}
       </h2>
       <p slot="description">
         {{ formatDescription(fields.description) }}
@@ -105,6 +117,22 @@ export default {
       } else {
         return description
       }
+    },
+
+    formatBreadcrumb: function(breadcrumb) {
+      if (breadcrumb.length > 32) {
+        return breadcrumb.substring(0, 32) + '...'
+      } else {
+        return breadcrumb
+      }
+    },
+
+    formatTitle: function(title) {
+      if (title.length > 150) {
+        return title.substring(0, 150) + '...'
+      } else {
+        return title
+      }
     }
   }
 }
@@ -124,6 +152,11 @@ export default {
       padding-left: 2rem;
       padding-top: 0.75rem;
       margin-top: 0;
+      color: $midnight;
+    }
+
+    a {
+      text-decoration: none;
       color: $midnight;
     }
   }
