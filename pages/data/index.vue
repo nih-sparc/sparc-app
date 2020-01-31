@@ -1,458 +1,540 @@
 <template>
-  <div id="sparc-dat-core-browse">
-    <div class="header">
-      <div class="gradient">
-        <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
-            <div class="breadcrumb">
-              <h3>Explore data:</h3>
-              <p>
-                Explore the SPARC Data Resources such as Datasets, Protocols,
-                and Metadata records
-              </p>
-            </div>
-          </el-col>
-        </el-row>
-        <div class="search">
-          <el-row type="flex" justify="center">
-            <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
-              <search-controls
-                :search-on-load="true"
-                :is-clear-search-visible="isClearSearchVisible"
-                submit-text="Go"
-                @query="onSearchQuery"
-              />
-            </el-col>
-          </el-row>
-        </div>
-      </div>
-    </div>
+  <div class="data-page">
+    <page-hero class="subpage">
+      <search-form v-model="searchQuery" @search="submitSearch" />
 
-    <div class="section">
-      <el-row type="flex" justify="center">
-        <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-          <div class="tableMetadata">
-            <div class="number-of-records">
-              Showing {{ totalCount }} datasets
-            </div>
-          </div>
+      <ul class="search-tabs">
+        <li v-for="type in searchTypes" :key="type.label">
+          <nuxt-link
+            class="search-tabs__button"
+            :class="{ active: type.type === $route.query.type }"
+            :to="{
+              name: 'data',
+              query: {
+                type: type.type
+              }
+            }"
+          >
+            {{ type.label }}
+          </nuxt-link>
+        </li>
+      </ul>
+    </page-hero>
+    <div class="page-wrap container">
+      <el-row :gutter="32" type="flex">
+        <el-col :span="6">
+          <search-filters v-model="filters" v-loading="isLoadingFilters" />
         </el-col>
-      </el-row>
-    </div>
-    <div class="section">
-      <el-row type="flex" justify="center">
-        <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-          <grid
-            v-if="searchType === 'datasets'"
-            v-loading="loading"
-            :cards="results"
-            :card_type="searchType"
-          />
-
-          <grid
-            v-if="searchType === 'sim_models'"
-            v-loading="loading"
-            :cards="results"
-            :card_type="searchType"
-          />
-
-          <grid-embargo
-            v-if="searchType === 'embargo'"
-            v-loading="loading"
-            :cards="results"
-            :card_type="searchType"
-          />
-
-          <div v-if="searchType === 'files'" class="files-table">
-            <el-table :data="results">
-              <el-table-column fixed label="Name" min-width="300">
-                <template slot-scope="scope">
-                  <div v-if="isMicrosoftFileType(scope)">
-                    <a href="#" @click.prevent="openFile(scope)">
-                      {{ scope.row.name }}
-                    </a>
-                  </div>
-                  <div v-else>
-                    {{ scope.row.name }}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="fileType" label="File type" width="120" />
-              <el-table-column
-                prop="size"
-                label="Size"
-                width="120"
-                :formatter="formatStorage"
-              />
-              <el-table-column
-                align="right"
-                fixed="right"
-                label="Operation"
-                min-width="100"
-                width="100"
+        <el-col :span="18">
+          <div class="search-heading">
+            <p v-if="!isLoadingSearch && searchData.items.length">
+              {{ searchHeading }}
+            </p>
+            <div class="filter__wrap">
+              <div
+                v-for="(filter, filterIdx) in filters"
+                :key="filter.category"
+                class="filter__wrap-category"
               >
-                <template slot-scope="scope">
-                  <el-dropdown trigger="click" @command="onCommandClick">
-                    <el-button icon="el-icon-more" size="small" />
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item
-                        :command="{
-                          type: 'requestDownloadFile',
-                          scope
-                        }"
-                      >
-                        Download
-                      </el-dropdown-item>
-                      <el-dropdown-item
-                        v-if="isMicrosoftFileType(scope)"
-                        :command="{
-                          type: 'openFile',
-                          scope
-                        }"
-                      >
-                        Open
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
+                <template v-for="(item, itemIdx) in filter.filters">
+                  <el-tag
+                    v-if="item.value"
+                    :key="`${item.key}`"
+                    closable
+                    @close="clearFilter(filterIdx, itemIdx)"
+                  >
+                    {{ item.label }}
+                  </el-tag>
                 </template>
-              </el-table-column>
-            </el-table>
+              </div>
+            </div>
           </div>
-        </el-col>
-      </el-row>
-      <el-row v-if="totalCount > 0" type="flex" justify="center">
-        <el-col :xs="22" :sm="22" :md="12" :lg="8">
-          <pagination
-            :selected="page"
-            :page-size="limit"
-            :total-count="totalCount"
-            @select-page="selectPage"
-          />
+          <div v-loading="isLoadingSearch" class="table-wrap">
+            <component :is="searchResultsComponent" :table-data="tableData" />
+            <el-pagination
+              :page-size="searchData.limit"
+              :pager-count="5"
+              :current-page="curSearchPage"
+              layout="prev, pager, next"
+              :total="searchData.total"
+              @current-change="onPaginationPageChange"
+            />
+          </div>
         </el-col>
       </el-row>
     </div>
   </div>
 </template>
+
 <script>
-import { compose, last, defaultTo, split, pathOr, propOr } from 'ramda'
-import Grid from '@/components/grid/Grid.vue'
-import GridEmbargo from '@/components/gridEmbargo/GridEmbargo.vue'
+import {
+  assocPath,
+  clone,
+  compose,
+  defaultTo,
+  flatten,
+  find,
+  filter,
+  head,
+  map,
+  mergeLeft,
+  pathOr,
+  propEq,
+  propOr,
+  pluck
+} from 'ramda'
+import PageHero from '@/components/PageHero/PageHero.vue'
+import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
+import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
-import SearchControls from '@/components/search-controls/SearchControls.vue'
-import Pagination from '@/components/Pagination/Pagination.vue'
+const ProjectSearchResults = () =>
+  import('@/components/SearchResults/ProjectSearchResults.vue')
+const EventSearchResults = () =>
+  import('@/components/SearchResults/EventSearchResults.vue')
+const DatasetSearchResults = () =>
+  import('@/components/SearchResults/DatasetSearchResults.vue')
+const FileSearchResults = () =>
+  import('@/components/SearchResults/FileSearchResults.vue')
 
-import FormatStorage from '@/mixins/bf-storage-metrics/index'
+const searchResultsComponents = {
+  dataset: DatasetSearchResults,
+  sparcAward: ProjectSearchResults,
+  event: EventSearchResults,
+  file: FileSearchResults
+}
 
-import 'regenerator-runtime/runtime'
+const searchTypes = [
+  {
+    label: 'Datasets',
+    type: 'dataset',
+    filterId: process.env.ctf_filters_dataset_id,
+    dataSource: 'blackfynn'
+  },
+  {
+    label: 'Images',
+    type: 'file',
+    filterId: process.env.ctf_filters_file_id,
+    dataSource: 'blackfynn'
+  },
+  {
+    label: 'Organs',
+    type: 'organ',
+    filterId: process.env.ctf_filters_organ_id,
+    dataSource: 'contentful'
+  },
+  {
+    label: 'Projects',
+    type: process.env.ctf_project_id,
+    filterId: process.env.ctf_filters_project_id,
+    dataSource: 'contentful'
+  },
+  {
+    label: 'Simulations',
+    type: 'simulation',
+    filterId: process.env.ctf_filters_simulation_id,
+    dataSource: 'contentful'
+  }
+]
+
+const searchData = {
+  limit: 12,
+  skip: 0,
+  items: []
+}
+
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
+
+/**
+ * Transform indidivual filter
+ * @param {Object} filter
+ */
+const transformIndividualFilter = filter => {
+  const category = propOr('', 'category', filter)
+  const filters = propOr([], 'filters', filter)
+
+  const transformedFilters = filters.map(filter => {
+    return {
+      label: filter,
+      category: category,
+      key: filter,
+      value: false
+    }
+  })
+
+  return mergeLeft({ filters: transformedFilters }, filter)
+}
+
+/**
+ * Transform filter response
+ * @param {Object} filters
+ */
+const transformFilters = compose(
+  flatten,
+  map(transformIndividualFilter),
+  pluck('fields'),
+  propOr([], 'filters')
+)
 
 export default {
-  name: 'Browse',
+  name: 'DataPage',
 
   components: {
-    Grid,
-    SearchControls,
-    Pagination,
-    GridEmbargo
+    PageHero,
+    SearchFilters,
+    SearchForm
   },
 
-  mixins: [FormatStorage],
+  mixins: [],
 
-  data() {
+  data: () => {
     return {
-      loading: false,
-      totalCount: 0,
-      limit: 16,
-      offset: 0,
-      page: 1,
-      results: [],
-      searchType: '',
-      searchTerms: ''
+      searchQuery: '',
+      filters: [],
+      searchTypes,
+      searchData: clone(searchData),
+      isLoadingSearch: false,
+      isLoadingFilters: false
     }
   },
 
   computed: {
     /**
-     * Compute if the clear search
-     * button is visible
-     * @returns {Boolean}
+     * Compute the URL for using a Blackfynn API
+     * @returns {String}
      */
-    isClearSearchVisible: function() {
-      return this.searchTerms !== ''
+    blackfynnApiUrl: function() {
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+
+      if (searchType === 'file') {
+        url += '&fileType=tiff'
+      }
+
+      const query = pathOr('', ['query', 'q'], this.$route)
+      if (query) {
+        url += `&query=${query}`
+      }
+
+      return url
+    },
+
+    /**
+     * Compute search type
+     * @returns {String}
+     */
+    searchType: function() {
+      const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
+      const searchType = find(propEq('type', searchTypeQuery), this.searchTypes)
+
+      return defaultTo(head(this.searchTypes), searchType)
+    },
+
+    tableData: function() {
+      return propOr([], 'items', this.searchData)
+    },
+
+    /**
+     * Compute which search results component to display based on the type of search
+     * @returns {Function}
+     */
+    searchResultsComponent: function() {
+      return defaultTo('', searchResultsComponents[this.$route.query.type])
+    },
+
+    /**
+     * Compute the current search page based off the limit and the offset
+     */
+    curSearchPage: function() {
+      return this.searchData.skip / this.searchData.limit + 1
+    },
+
+    /**
+     * Compute the search heading
+     * @TODO Optimize - this is getting a lot of data from various sources
+     * This data could be set at a specific time, such as when the active
+     * tab is set
+     * @returns {String}
+     */
+    searchHeading: function() {
+      const start = this.searchData.skip + 1
+      const pageRange = this.searchData.limit * this.curSearchPage
+      const end =
+        pageRange < this.searchData.total ? pageRange : this.searchData.total
+      const query = pathOr('', ['query', 'q'], this.$route)
+
+      const searchTypeLabel = compose(
+        propOr('', 'label'),
+        find(propEq('type', this.$route.query.type))
+      )(this.searchTypes)
+
+      let searchHeading = `Showing ${start}-${end} of ${this.searchData.total} ${searchTypeLabel}`
+
+      return query === '' ? searchHeading : `${searchHeading} for “${query}”`
+    },
+
+    /**
+     * Compute selected filters
+     * @returns {Array}
+     */
+    selectedFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('items')
+      )(this.filters)
     }
   },
 
-  created: function() {
-    // if (window.gtag) {
-    //   const routerBase = pathOr('', ['options', 'base'], this.$router)
-    //   window.gtag('config', 'UA-143804703-1', {
-    //     'page_title' : this.$route.name,
-    //     'page_path': `${routerBase}/#${this.$route.fullPath}`
-    //   })
-    // }
+  watch: {
+    '$route.query.type': function() {
+      /**
+       * Clear table data so the new table that is rendered can
+       * properly render data and account for any missing data
+       */
+      this.searchData = clone(searchData)
+      this.fetchResults()
+    }
+  },
+
+  /**
+   * Check the searchType param in the route and set it if it doesn't exist
+   */
+  mounted: function() {
+    if (!this.$route.query.type) {
+      const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
+
+      this.$router.replace({ query: { type: firstTabType } })
+    } else {
+      this.fetchResults()
+    }
   },
 
   methods: {
     /**
-     * Checks if file is MS Word, MS Excel, or MS Powerpoint
-     * @param {Object} scope
+     * Figure out which source to fetch results from based on the
+     * type of search
      */
-    isMicrosoftFileType: function(scope) {
-      return (
-        scope.row.fileType === 'MSWord' ||
-        scope.row.fileType === 'MSExcel' ||
-        scope.row.fileType === 'PowerPoint'
-      )
-    },
-    /**
-     * Format storage column
-     * @param {Object} row
-     * @param {Object} column
-     * @param {Number} cellValue
-     * @returns {String}
-     */
-    formatStorage: function(row, column, cellValue) {
-      return this.formatMetric(cellValue)
-    },
+    fetchResults: function() {
+      const source = propOr('contentful', 'dataSource', this.searchType)
 
-    /**
-     * On search query event from search controls
-     * @param {String} selectedType
-     * @param {String} terms
-     */
-    onSearchQuery: function(selectedType, terms) {
-      this.page = 1
-      this.fetchResults(selectedType, terms)
-    },
-
-    onCommandClick: function(evt) {
-      const scope = propOr({}, 'scope', evt)
-      const type = propOr({}, 'type', evt)
-      const handler = this[type]
-
-      if (typeof handler === 'function') {
-        handler(scope)
-      }
-    },
-    selectPage(index) {
-      this.page = index
-      this.fetchResults(this.searchType, this.searchTerms)
-    },
-    async fetchResults(type, terms) {
-      this.results = []
-      this.loading = true
-      this.searchType = type
-      this.searchTerms = terms
-
-      const offset = (this.page - 1) * this.limit
-      let requestUrl = ''
-
-      switch (type) {
-        case 'datasets':
-        case 'files':
-          requestUrl = `https://api.blackfynn.io/discover/search/${type}?limit=${this.limit}&offset=${offset}&organization=SPARC%20Consortium`
-
-          if (terms) {
-            requestUrl += `&query=${terms}`
-          }
-          break
-        case 'sim_models':
-          requestUrl = `https://api.blackfynn.io/discover/search/datasets?limit=${this.limit}&offset=${offset}&query=simcore`
-          break
-        case 'embargo':
-          requestUrl = `/api/datasets/embargo`
-          break
+      const searchSources = {
+        contentful: this.fetchFromContentful,
+        blackfynn: this.fetchFromBlackfynn
       }
 
-      // Update URL to reflect the search
-      this.$router.push({
-        query: {
-          searchType: type,
-          searchTerms: terms
-        }
-      })
+      if (typeof searchSources[source] === 'function') {
+        searchSources[source]()
+      }
 
-      this.$axios.$get(requestUrl).then(
-        function(response) {
-          this.totalCount = response.totalCount
-          this.limit = response.limit
-          this.offset = response.offset
+      // Fetch filters for the search type
+      this.fetchFilters()
+    },
 
-          switch (type) {
-            case 'datasets':
-            case 'sim_models':
-              this.results = response.datasets
-              break
-            case 'files':
-              this.results = response.files.map(response => ({
-                uri: response.uri,
-                name: response.name,
-                size: response.size,
-                fileType: response.fileType
-              }))
-              break
-            case 'embargo':
-              this.results = response
-              this.limit = response.length
-              this.offset = 0
+    /**
+     * Get Search results
+     * This is using fetch from the Blackfynn API
+     */
+    fetchFromBlackfynn: function() {
+      this.isLoadingSearch = true
+
+      this.$axios
+        .$get(this.blackfynnApiUrl)
+        .then(response => {
+          const searchType = pathOr('', ['query', 'type'], this.$route)
+          const searchData = {
+            skip: response.offset,
+            items: response[`${searchType}s`],
+            total: response.totalCount
           }
+          this.searchData = mergeLeft(searchData, this.searchData)
+        })
+        .finally(() => {
+          this.isLoadingSearch = false
+        })
+    },
 
-          this.loading = false
-        }.bind(this)
+    /**
+     * Get search results
+     * This is using the contentful.js client
+     */
+    fetchFromContentful: function() {
+      this.isLoadingSearch = true
+
+      client
+        .getEntries({
+          content_type: this.$route.query.type,
+          query: this.$route.query.q,
+          limit: this.searchData.limit,
+          skip: this.searchData.skip
+        })
+        .then(response => {
+          this.searchData = response
+        })
+        .catch(() => {
+          this.searchData = clone(searchData)
+        })
+        .finally(() => {
+          this.isLoadingSearch = false
+        })
+    },
+
+    /**
+     * Get filters based on the search type
+     */
+    fetchFilters: function() {
+      this.filters = []
+      this.isLoadingFilters = true
+
+      client
+        .getEntry(this.searchType.filterId)
+        .then(response => {
+          this.filters = transformFilters(response.fields)
+        })
+        .catch(() => {
+          this.searchData = clone(searchData)
+        })
+        .finally(() => {
+          this.isLoadingFilters = false
+        })
+    },
+
+    /**
+     * Update offset
+     */
+    onPaginationPageChange: function(page) {
+      const offset = (page - 1) * this.searchData.limit
+      this.searchData.skip = offset
+
+      this.fetchResults()
+    },
+
+    /**
+     * Submit search
+     */
+    submitSearch: function() {
+      this.searchData.skip = 0
+
+      const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      this.$router.replace({ query }).then(() => {
+        this.fetchResults()
+      })
+    },
+
+    /**
+     * Clear filter's value
+     * @param {Number} filterIdx
+     * @param {Number} itemIdx
+     */
+    clearFilter: function(filterIdx, itemIdx) {
+      const filters = assocPath(
+        [filterIdx, 'items', itemIdx, 'value'],
+        false,
+        this.filters
       )
-    },
-
-    /**
-     * Download file
-     * @param {Object} scope
-     */
-    requestDownloadFile: function(scope) {
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['row', 'uri'])
-      )(scope)
-
-      const fileName = pathOr('', ['row', 'name'], scope)
-
-      const requestUrl = `/api/download?key=${filePath}`
-
-      this.$axios.get(requestUrl).then(response => {
-        this.downloadFile(fileName, response)
-      })
-    },
-
-    /**
-     * Opens a file in a new tab
-     * This is currently for MS Word, MS Excel, and Powerpoint files only
-     * @param {Object} scope
-     */
-    openFile: function(scope) {
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['row', 'uri'])
-      )(scope)
-
-      const requestUrl = `/api/download?key=${filePath}`
-
-      this.$axios.get(requestUrl).then(response => {
-        const url = response.data
-        const encodedUrl = encodeURIComponent(url)
-        const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
-        window.open(finalURL, '_blank')
-      })
-    },
-
-    /**
-     * Create an `a` tag to trigger downloading file
-     * @param {String} filename
-     * @param {String} url
-     */
-    downloadFile: function(filename, url) {
-      const el = document.createElement('a')
-      el.setAttribute('href', url)
-      el.setAttribute('download', filename)
-
-      el.style.display = 'none'
-      document.body.appendChild(el)
-
-      el.click()
-
-      document.body.removeChild(el)
+      this.filters = filters
     }
   }
 }
 </script>
 
-<style lang="scss">
-.browse-table {
-  border: 1px solid #e4e7ed;
-}
-</style>
-
-<style lang="scss" scoped>
+<style scoped lang="scss">
 @import '../../assets/_variables.scss';
 
-#sparc-dat-core-browse {
-  @media screen and (min-width: 1024px) {
-    margin-top: 7rem;
+.search-tabs {
+  display: flex;
+  list-style: none;
+  overflow: auto;
+  margin: 0 -2rem 0 0;
+  padding: 0 1rem;
+  @media (min-width: 48em) {
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    margin: 0 0.625em;
+    @media (min-width: 48em) {
+      margin: 0 2.25em;
+    }
+    &:first-child {
+      margin-left: 0;
+    }
   }
 }
-
-button.clear-all {
-  color: $median;
+.search-tabs__button {
   background: none;
-}
-
-.table-metadata {
-  display: flex;
-}
-
-.number-of-records {
-  text-align: right;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  text-align: left;
-
-  .tag {
-    text-align: center;
-    margin-right: 2em;
-    background: #f9f2fc;
-    border: 1px solid #8300bf;
-    border-radius: 4px;
-    display: flex;
-    color: #8300bf;
-    padding: 0.3em;
-    text-transform: uppercase;
-
-    .content {
-      text-align: left;
-    }
-
-    .delete {
-      text-align: right;
-      padding-left: 1em;
-    }
+  border-bottom: 2px solid transparent;
+  color: #fff;
+  cursor: pointer;
+  display: block;
+  font-size: 0.75em;
+  font-weight: 500;
+  outline: none;
+  padding: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  @media (min-width: 48em) {
+    font-size: 1em;
+    font-weight: 400;
+    text-transform: none;
+  }
+  &:hover,
+  &:focus,
+  &.active {
+    border-bottom-color: #fff;
+    font-weight: 500;
   }
 }
 
-.files-table {
+.page-hero {
+  background: linear-gradient(90deg, rgb(12, 0, 191) 0%, rgb(188, 0, 252) 100%);
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  ::v-deep .el-row--flex.is-justify-center {
+    justify-content: flex-start;
+  }
+}
+.page-wrap {
+  padding-bottom: 1em;
+  padding-top: 1em;
+  @media (min-width: 48em) {
+    padding-bottom: 3em;
+    padding-top: 3em;
+  }
+}
+.table-wrap {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
   padding: 16px;
 }
-
-.search {
-  padding-top: 1em;
+.el-pagination {
+  margin-top: 1.5em;
+  text-align: center;
 }
-
-.section {
-  padding: 1em 0;
-}
-
-.header {
-  .gradient {
-    padding: 1.5em 0;
-    color: #f0f2f5;
-    background-image: linear-gradient(90deg, #0026ff 0%, #00ffb9 100%);
-
-    .breadcrumb {
-      width: 75%;
-    }
+.search-heading {
+  align-items: flex-start;
+  display: flex;
+  margin-bottom: 1em;
+  p {
+    font-size: 0.875em;
+    flex-shrink: 0;
+    margin: 1em 1em 0 0;
   }
 }
-
-.top {
-  padding-top: 2em;
-  .header {
-    h2 {
-      text-align: center;
-    }
+.filter__wrap,
+.filter__wrap-category {
+  display: inline;
+}
+.filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
+}
+::v-deep {
+  .el-table td {
+    vertical-align: top;
   }
 }
 </style>

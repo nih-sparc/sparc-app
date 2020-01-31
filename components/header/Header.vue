@@ -34,6 +34,7 @@
             </nuxt-link>
           </div>
           <button
+            v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch"
@@ -112,9 +113,9 @@
               </div>
             </div>
           </div>
-
-          <div class="nav-main-container__search">
+          <div v-if="shouldShowSearch" class="nav-main-container__search">
             <input
+              v-model="searchQuery"
               type="text"
               class="nav-main-container__search-input"
               placeholder="Search"
@@ -178,14 +179,25 @@ export default {
   data: () => ({
     links,
     menuOpen: false,
-    searchOpen: false
+    searchOpen: false,
+    searchQuery: ''
   }),
 
+  computed: {
+    /**
+     * Compute if search should be visible
+     * @returns {Boolean}
+     */
+    shouldShowSearch: function() {
+      return this.$route.name !== 'data'
+    }
+  },
+
   watch: {
-   /**
-    * Watches for the route path to hide
-    * mobile nav on menu click
-   **/
+    /**
+     * Watches for the route path to hide
+     * mobile nav on menu click
+     **/
     '$nuxt.$route.path': {
       handler: function(val) {
         if (val) {
@@ -259,7 +271,15 @@ export default {
      * Executes a search query
      */
     executeSearch: function() {
-      // logic goes here
+      this.$router.push({
+        name: 'data',
+        query: {
+          q: this.searchQuery,
+          type: 'dataset'
+        }
+      })
+
+      this.searchQuery = ''
     }
   }
 }
@@ -476,7 +496,8 @@ export default {
   }
 }
 
-::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: lightgray;
   opacity: 1; /* Firefox */
   font-size: 14px;
@@ -485,7 +506,8 @@ export default {
   padding-left: 7px;
 }
 
-:-ms-input-placeholder {   /* Internet Explorer 10-11 */
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
   color: lightgray;
   font-size: 14px;
   font-weight: 300;
@@ -620,7 +642,8 @@ export default {
     width: 90%;
   }
 
-  ::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  ::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: lightgrey;
     opacity: 1; /* Firefox */
     font-size: 16px;
@@ -629,7 +652,8 @@ export default {
     padding-left: 7px;
   }
 
-  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
     color: lightgrey;
     font-size: 16px;
     font-weight: 300;

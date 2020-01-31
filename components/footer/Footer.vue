@@ -25,7 +25,7 @@
       <div class="footer__info--copyright">
         <p>
           Data Resource Center &copy; 2020 All rights reserved.
-          <nuxt-link :to="{ name: 'tos' }">
+          <nuxt-link :to="{ name: 'terms-of-service' }">
             Terms of Service
           </nuxt-link> |
           <nuxt-link :to="{ name: 'privacy' }">
