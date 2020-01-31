@@ -106,32 +106,40 @@ export default {
   },
 
   methods: {
+    /**
+     * Sets active tab
+     * @param {String} activeLabel
+     */
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
     },
 
+    /**
+     * Formats description based on length
+     * @param {String} description
+     */
     formatDescription: function(description) {
-      if (description.length > 540) {
-        return description.substring(0, 540) + '...'
-      } else {
-        return description
-      }
+      return description.length > 540
+        ? description.substring(0, 540) + '...'
+        : description
     },
 
+    /**
+     * Formats breadcrumb length
+     * @param {String} breadcrumb
+     */
     formatBreadcrumb: function(breadcrumb) {
-      if (breadcrumb.length > 32) {
-        return breadcrumb.substring(0, 32) + '...'
-      } else {
-        return breadcrumb
-      }
+      return breadcrumb.length > 32
+        ? breadcrumb.substring(0, 32) + '...'
+        : breadcrumb
     },
 
+    /**
+     * Formats title length
+     * @param {String} title
+     */
     formatTitle: function(title) {
-      if (title.length > 150) {
-        return title.substring(0, 150) + '...'
-      } else {
-        return title
-      }
+      return title.length > 150 ? title.substring(0, 150) + '...' : title
     }
   }
 }
