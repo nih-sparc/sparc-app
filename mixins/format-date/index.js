@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { format, parseISO } from 'date-fns'
 
 export default {
   methods: {
@@ -8,7 +8,7 @@ export default {
      * @returns {String}
      */
     formatDate: function(date) {
-      return moment.utc(date).format('MMMM D, YYYY')
+      return date != '' ? format(parseISO(date), 'MMMM d, yyyy') : ''
     }
   }
 }

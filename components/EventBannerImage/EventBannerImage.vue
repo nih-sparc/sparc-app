@@ -58,3 +58,10 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+img {
+  height: auto;
+  max-width: 400px;
+  width: 100%;
+}
+</style>

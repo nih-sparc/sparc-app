@@ -2,15 +2,15 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <img src="https://placeholder.pics/svg/18x18" />
+        <svg-icon icon="icon-about" width="18" height="18" />
         <nuxt-link :to="{ name: 'about' }">
           About SPARC
         </nuxt-link>
-        <img src="https://placeholder.pics/svg/18x18" />
+        <svg-icon icon="icon-contact" width="18" height="18" />
         <a href="#">
           Contact Us
         </a>
-        <img src="https://placeholder.pics/svg/18x18" />
+        <svg-icon icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
           Need Help?
         </nuxt-link>
@@ -29,9 +29,12 @@
             />
           </button>
           <div class="logo">
-            <sparc-logo />
+            <nuxt-link :to="{ name: 'index' }">
+              <sparc-logo />
+            </nuxt-link>
           </div>
           <button
+            v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch"
@@ -41,66 +44,78 @@
               icon="icon-magnifying-glass"
               height="25"
               width="25"
+              dir="left"
             />
           </button>
-          <div v-if="searchOpen" class="search-mobile">
-            <input type="text" placeholder="Search" />
-            <button class="search-mobile__close" @click="closeMobileSearch">
-              <svg-icon icon="icon-remove" class="search-mobile__close--icon" />
-            </button>
-          </div>
-          <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
-            <ul>
-              <li v-for="link in links" :key="link.href">
-                <nuxt-link
-                  :to="{ name: link.title }"
-                  :class="{ active: activeLink(link.href) }"
-                  exact-active-class="active"
-                >
-                  {{ link.displayTitle }}
-                </nuxt-link>
-              </li>
-              <hr class="divider" />
-            </ul>
-            <ul class="mobile-navigation__links">
-              <li>
-                <img src="https://placeholder.pics/svg/20x20" />
-                <nuxt-link :to="{ name: 'about' }">
-                  About SPARC
-                </nuxt-link>
-              </li>
-              <li>
-                <img src="https://placeholder.pics/svg/20x20" />
-                <a href="#">Contact Us</a>
-              </li>
-              <li>
-                <img src="https://placeholder.pics/svg/20x20" />
-                <nuxt-link :to="{ name: 'help' }">
-                  Need Help?
-                </nuxt-link>
-              </li>
-            </ul>
-            <div class="mobile-navigation__links--social">
-              <a href="https://twitter.com/sparc_science">
+          <div :class="[searchOpen ? 'search-overlay' : '']">
+            <div v-if="searchOpen" class="search-mobile">
+              <input type="text" placeholder="Search" />
+              <button class="search-mobile__close" @click="closeMobileSearch">
                 <svg-icon
-                  icon="icon-twitter"
-                  width="30"
-                  height="26"
-                  color="#606266"
+                  icon="icon-remove"
+                  class="search-mobile__close--icon"
                 />
-              </a>
-              <a href="https://www.youtube.com/results?search_query=sparc+nih">
-                <svg-icon
-                  icon="icon-youtube"
-                  width="30"
-                  height="26"
-                  color="#606266"
-                />
-              </a>
+              </button>
             </div>
           </div>
-          <div class="nav-main-container__search">
+
+          <div :class="[menuOpen ? 'overlay' : '']">
+            <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
+              <ul>
+                <li v-for="link in links" :key="link.href">
+                  <nuxt-link
+                    :to="{ name: link.title }"
+                    :class="{ active: activeLink(link.href) }"
+                    exact-active-class="active"
+                  >
+                    {{ link.displayTitle }}
+                  </nuxt-link>
+                </li>
+                <hr class="divider" />
+              </ul>
+              <ul class="mobile-navigation__links">
+                <li>
+                  <img src="https://placeholder.pics/svg/20x20" />
+                  <nuxt-link :to="{ name: 'about' }">
+                    About SPARC
+                  </nuxt-link>
+                </li>
+                <li>
+                  <img src="https://placeholder.pics/svg/20x20" />
+                  <a href="#">Contact Us</a>
+                </li>
+                <li>
+                  <img src="https://placeholder.pics/svg/20x20" />
+                  <nuxt-link :to="{ name: 'help' }">
+                    Need Help?
+                  </nuxt-link>
+                </li>
+              </ul>
+              <div class="mobile-navigation__links--social">
+                <a href="https://twitter.com/sparc_science">
+                  <svg-icon
+                    icon="icon-twitter"
+                    width="30"
+                    height="26"
+                    color="#606266"
+                  />
+                </a>
+                <a
+                  href="https://www.youtube.com/results?search_query=sparc+nih"
+                >
+                  <svg-icon
+                    icon="icon-youtube"
+                    width="30"
+                    height="26"
+                    color="#606266"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div v-if="shouldShowSearch" class="nav-main-container__search">
             <input
+              v-model="searchQuery"
               type="text"
               class="nav-main-container__search-input"
               placeholder="Search"
@@ -114,6 +129,7 @@
                 icon="icon-magnifying-glass"
                 height="25"
                 width="25"
+                dir="left"
               />
             </button>
           </div>
@@ -125,6 +141,7 @@
 
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
+import { mapActions } from 'vuex'
 
 const links = [
   {
@@ -136,6 +153,11 @@ const links = [
     title: 'data',
     displayTitle: 'Find Data',
     href: '/data'
+  },
+  {
+    title: 'atlas',
+    displayTitle: 'Atlas',
+    href: '/atlas'
   },
   {
     title: 'resources',
@@ -157,14 +179,25 @@ export default {
   data: () => ({
     links,
     menuOpen: false,
-    searchOpen: false
+    searchOpen: false,
+    searchQuery: ''
   }),
 
+  computed: {
+    /**
+     * Compute if search should be visible
+     * @returns {Boolean}
+     */
+    shouldShowSearch: function() {
+      return this.$route.name !== 'data'
+    }
+  },
+
   watch: {
-   /**
-    * Watches for the route path to hide
-    * mobile nav on menu click
-   **/
+    /**
+     * Watches for the route path to hide
+     * mobile nav on menu click
+     **/
     '$nuxt.$route.path': {
       handler: function(val) {
         if (val) {
@@ -172,10 +205,26 @@ export default {
         }
       },
       immediate: true
+    },
+
+    /**
+     * Watches menuOpen to check if it's false
+     * to enable scrolling
+     */
+    menuOpen: {
+      handler: function(val) {
+        if (!val) {
+          this.$store.dispatch('updateDisabledScrolling', false)
+        }
+      },
+      immediate: true
     }
   },
 
   methods: {
+    ...mapActions({
+      scrolling: 'updateDisabledScrolling'
+    }),
     /**
      * Sets a link to active based on current page
      * @param {String} query
@@ -193,9 +242,11 @@ export default {
     openMobileNav: function() {
       if (!this.menuOpen) {
         this.searchOpen = false // just in case the search menu is open also
+        this.$store.dispatch('updateDisabledScrolling', true)
         this.menuOpen = true
       } else {
         this.menuOpen = false
+        this.$store.dispatch('updateDisabledScrolling', false)
       }
     },
 
@@ -205,6 +256,7 @@ export default {
     openMobileSearch: function() {
       this.searchOpen = true
       this.menuOpen = false
+      this.$store.dispatch('updateDisabledScrolling', true)
     },
 
     /**
@@ -212,13 +264,22 @@ export default {
      */
     closeMobileSearch: function() {
       this.searchOpen = false
+      this.$store.dispatch('updateDisabledScrolling', false)
     },
 
     /**
      * Executes a search query
      */
     executeSearch: function() {
-      // logic goes here
+      this.$router.push({
+        name: 'data',
+        query: {
+          q: this.searchQuery,
+          type: 'dataset'
+        }
+      })
+
+      this.searchQuery = ''
     }
   }
 }
@@ -237,14 +298,37 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 1023px) {
     align-items: center;
+  }
+}
+@media (min-width: 320px) and (max-width: 1023px) {
+  .overlay {
+    position: absolute;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
+  }
+}
+
+@media (min-width: 320px) and (max-width: 1023px) {
+  .search-overlay {
+    position: absolute;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
   }
 }
 
 .divider {
   display: none;
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1023px) {
     border: 0;
     clear: both;
     display: block;
@@ -267,6 +351,11 @@ export default {
   justify-content: flex-end;
   margin-top: 8px;
   margin-bottom: 8px;
+  .svg-icon {
+    color: $cochlear;
+    padding-right: 0.4rem;
+    padding-top: 0.2rem;
+  }
   img {
     margin-right: 5px;
   }
@@ -279,7 +368,7 @@ export default {
     padding-right: 18px;
     text-decoration: none;
   }
-  @media (min-width: 320px) and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 1023px) {
     & {
       display: none;
     }
@@ -293,13 +382,12 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 1023px) {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
     .nav-main-container__mobile-menu {
       padding-left: 2px;
-      padding-top: 13px;
     }
   }
 
@@ -308,7 +396,7 @@ export default {
     &--social {
       display: none;
     }
-    @media (min-width: 320px) and (max-width: 767px) {
+    @media (min-width: 320px) and (max-width: 1023px) {
       display: flex;
       flex-direction: column;
       a {
@@ -341,9 +429,9 @@ export default {
 
 .nav-main-container__mobile-search {
   display: none;
-  @media (min-width: 320px) and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 1023px) {
     display: flex;
-    padding-bottom: 0.5rem;
+    padding-bottom: 1rem;
   }
 }
 
@@ -351,10 +439,12 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media (min-width: 320px) and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 1023px) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin: 0;
+    width: 100%;
   }
 }
 
@@ -363,7 +453,7 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media (min-width: 320px) and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 1023px) {
     height: 2rem;
     width: 100%;
     margin-right: 0;
@@ -375,26 +465,22 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  @media (min-width: 768px) and (max-width: 1024px) {
-    width: 28%;
-  }
-  @media (min-width: 320px) and (max-width: 767px) {
+  width: 54%;
+  margin-right: 1rem;
+  @media (min-width: 320px) and (max-width: 1023px) {
     width: 0;
   }
 }
 
 .nav-main-container__search-input {
-  width: 22vw;
+  width: 26vw;
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
   margin-top: 2px;
   padding-left: 1rem;
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1023px) {
     display: none;
-  }
-  @media (min-width: 768px) and (max-width: 1024px) {
-    width: 100%;
   }
 }
 
@@ -405,12 +491,13 @@ export default {
   border-radius: 4px;
   margin-left: 9px;
   border: none;
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1023px) {
     display: none;
   }
 }
 
-::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: lightgray;
   opacity: 1; /* Firefox */
   font-size: 14px;
@@ -419,7 +506,8 @@ export default {
   padding-left: 7px;
 }
 
-:-ms-input-placeholder {   /* Internet Explorer 10-11 */
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
   color: lightgray;
   font-size: 14px;
   font-weight: 300;
@@ -437,7 +525,7 @@ export default {
   transform: translate(12px, -8px);
   -webkit-appearance: none;
 
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1023px) {
     & {
       display: block;
     }
@@ -447,27 +535,30 @@ export default {
 .mobile-navigation {
   padding: 0px;
   height: 100%;
-  width: 62%;
   margin-left: 1rem;
-
+  width: 120%;
   ul {
     padding-left: 0;
     margin-top: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     li {
       display: inline;
       padding-right: 5rem;
-      @media (min-width: 320px) and (max-width: 767px) {
+      @media screen and (min-width: 1023px) {
         padding-right: 2rem;
       }
 
       a {
         text-decoration: none;
         color: $navy;
-        padding-bottom: 10px;
+        padding-bottom: 0.2rem;
         font-weight: 500;
 
         &.active {
           border-bottom: 2px solid $median;
+          padding-left: 0.1rem;
           color: $median;
         }
 
@@ -478,7 +569,7 @@ export default {
     }
   }
 
-  @media (min-width: 320px) and (max-width: 767px) {
+  @media (min-width: 320px) and (max-width: 1023px) {
     & {
       background: $seafoam;
       bottom: 0;
@@ -494,6 +585,8 @@ export default {
         display: flex;
         margin-left: 0;
         margin-right: 1rem;
+        width: 70%;
+        overflow: scroll;
       }
     }
     ul {
@@ -512,7 +605,7 @@ export default {
   display: none;
 }
 
-@media (min-width: 320px) and (max-width: 767px) {
+@media (min-width: 320px) and (max-width: 1023px) {
   .search-mobile {
     background-color: $cochlear;
     flex-direction: column;
@@ -549,7 +642,8 @@ export default {
     width: 90%;
   }
 
-  ::placeholder {  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  ::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: lightgrey;
     opacity: 1; /* Firefox */
     font-size: 16px;
@@ -558,7 +652,8 @@ export default {
     padding-left: 7px;
   }
 
-  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
     color: lightgrey;
     font-size: 16px;
     font-weight: 300;

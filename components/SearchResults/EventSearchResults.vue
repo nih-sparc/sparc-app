@@ -17,23 +17,14 @@
         </nuxt-link>
       </template>
     </el-table-column>
-    <el-table-column prop="fields.awardId" label="ID" width="150" />
-    <el-table-column
-      prop="fields.principleInvestigator"
-      label="Principle Investigator"
-      width="250"
-    />
-    <el-table-column
-      prop="fields.description"
-      label="description"
-      width="500"
-    />
+    <el-table-column prop="fields.eventType" label="Event Type" />
+    <el-table-column prop="fields.location" label="Location" />
   </el-table>
 </template>
 
 <script>
 export default {
-  name: 'ProjectSearchResults',
+  name: 'EventSearchResults',
 
   props: {
     tableData: {

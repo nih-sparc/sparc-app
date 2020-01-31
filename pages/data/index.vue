@@ -1,46 +1,64 @@
 <template>
   <div class="data-page">
-    <page-hero class="subpage">
-      <h2>A growing collection of SPARC data</h2>
-      <p>
-        The SPARC portal provides access to high-value datasets, maps, and
-        predictive simulations ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Lorem ipsum dolor sit amet.
-      </p>
-      <input v-model="searchQuery" />
-      <button @click="submitSearch">
-        Search
-      </button>
+    <page-hero>
+      <search-form v-model="searchQuery" @search="submitSearch" />
+
+      <ul class="search-tabs">
+        <li v-for="type in searchTypes" :key="type.label">
+          <nuxt-link
+            class="search-tabs__button"
+            :class="{ active: type.type === $route.query.type }"
+            :to="{
+              name: 'data',
+              query: {
+                type: type.type
+              }
+            }"
+          >
+            {{ type.label }}
+          </nuxt-link>
+        </li>
+      </ul>
     </page-hero>
     <div class="page-wrap container">
-      <el-row type="flex">
-        <el-col :span="24">
-          <ul class="search-tabs">
-            <li v-for="type in searchTypes" :key="type.label">
-              <nuxt-link
-                class="search-tabs__button"
-                :class="{ active: type.type === $route.query.type }"
-                :to="{
-                  name: 'data',
-                  query: {
-                    type: type.type
-                  }
-                }"
-              >
-                {{ type.label }}
-              </nuxt-link>
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-
       <el-row :gutter="32" type="flex">
         <el-col :span="6">
-          <search-filters v-model="filters" />
+          <search-filters v-model="filters" v-loading="isLoadingFilters" />
         </el-col>
         <el-col :span="18">
-          <div class="table-wrap">
+          <div class="search-heading">
+            <p v-if="!isLoadingSearch && searchData.items.length">
+              {{ searchHeading }}
+            </p>
+            <div class="filter__wrap">
+              <div
+                v-for="(filter, filterIdx) in filters"
+                :key="filter.category"
+                class="filter__wrap-category"
+              >
+                <template v-for="(item, itemIdx) in filter.filters">
+                  <el-tag
+                    v-if="item.value"
+                    :key="`${item.key}`"
+                    closable
+                    @close="clearFilter(filterIdx, itemIdx)"
+                  >
+                    {{ item.label }}
+                  </el-tag>
+                </template>
+              </div>
+            </div>
+          </div>
+          <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
+            <el-pagination
+              :page-size="searchData.limit"
+              :pager-count="5"
+              :current-page="curSearchPage"
+              layout="prev, pager, next"
+              :total="searchData.total"
+              @current-change="onPaginationPageChange"
+            />
           </div>
         </el-col>
       </el-row>
@@ -49,123 +67,172 @@
 </template>
 
 <script>
-import { compose, defaultTo, head, mergeLeft, propOr, pluck } from 'ramda'
+import {
+  assocPath,
+  clone,
+  compose,
+  defaultTo,
+  flatten,
+  find,
+  filter,
+  head,
+  map,
+  mergeLeft,
+  pathOr,
+  propEq,
+  propOr,
+  pluck
+} from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
+import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
-  import('@/components/Searchresults/ProjectSearchResults.vue')
-const HelpSearchResults = () =>
-  import('@/components/Searchresults/HelpSearchResults.vue')
+  import('@/components/SearchResults/ProjectSearchResults.vue')
+const EventSearchResults = () =>
+  import('@/components/SearchResults/EventSearchResults.vue')
+const DatasetSearchResults = () =>
+  import('@/components/SearchResults/DatasetSearchResults.vue')
+const FileSearchResults = () =>
+  import('@/components/SearchResults/FileSearchResults.vue')
 
 const searchResultsComponents = {
+  dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
-  helpDocument: HelpSearchResults
+  event: EventSearchResults,
+  file: FileSearchResults
 }
 
 const searchTypes = [
   {
-    label: 'Help',
-    type: 'helpDocument'
-  },
-  {
     label: 'Datasets',
-    type: 'dataset'
+    type: 'dataset',
+    filterId: process.env.ctf_filters_dataset_id,
+    dataSource: 'blackfynn'
   },
   {
-    label: 'Files',
-    type: 'file'
+    label: 'Images',
+    type: 'file',
+    filterId: process.env.ctf_filters_file_id,
+    dataSource: 'blackfynn'
   },
   {
     label: 'Organs',
-    type: 'organ'
+    type: 'organ',
+    filterId: process.env.ctf_filters_organ_id,
+    dataSource: 'contentful'
   },
   {
     label: 'Projects',
-    type: 'sparcAward'
+    type: process.env.ctf_project_id,
+    filterId: process.env.ctf_filters_project_id,
+    dataSource: 'contentful'
   },
   {
     label: 'Simulations',
-    type: 'simulation'
+    type: 'simulation',
+    filterId: process.env.ctf_filters_simulation_id,
+    dataSource: 'contentful'
   }
 ]
+
+const searchData = {
+  limit: 12,
+  skip: 0,
+  items: []
+}
 
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
+
+/**
+ * Transform indidivual filter
+ * @param {Object} filter
+ */
+const transformIndividualFilter = filter => {
+  const category = propOr('', 'category', filter)
+  const filters = propOr([], 'filters', filter)
+
+  const transformedFilters = filters.map(filter => {
+    return {
+      label: filter,
+      category: category,
+      key: filter,
+      value: false
+    }
+  })
+
+  return mergeLeft({ filters: transformedFilters }, filter)
+}
+
+/**
+ * Transform filter response
+ * @param {Object} filters
+ */
+const transformFilters = compose(
+  flatten,
+  map(transformIndividualFilter),
+  pluck('fields'),
+  propOr([], 'filters')
+)
 
 export default {
   name: 'DataPage',
 
   components: {
     PageHero,
-    SearchFilters
+    SearchFilters,
+    SearchForm
   },
 
   mixins: [],
 
-  watchQuery: ['type', 'q'],
-
-  asyncData(ctx) {
-    if (!ctx.route.query.type) {
-      return { searchData: [] }
-    }
-
-    return Promise.all([
-      // Get page content
-      client.getEntries({
-        content_type: ctx.route.query.type,
-        query: ctx.route.query.q
-      })
-    ])
-      .then(([searchData]) => {
-        return { searchData }
-      })
-      .catch(console.error)
-  },
-
   data: () => {
     return {
       searchQuery: '',
-      filters: [
-        {
-          category: 'category',
-          items: [
-            {
-              label:
-                'filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 filter 1 ',
-              key: 'filter_1',
-              value: false
-            }
-          ]
-        },
-        {
-          category: 'category 2',
-          items: [
-            {
-              label: 'filter 1',
-              key: 'filter_2',
-              value: false
-            }
-          ]
-        }
-      ],
-      searchTypes
+      filters: [],
+      searchTypes,
+      searchData: clone(searchData),
+      isLoadingSearch: false,
+      isLoadingFilters: false
     }
   },
 
   computed: {
     /**
+     * Compute the URL for using a Blackfynn API
+     * @returns {String}
+     */
+    blackfynnApiUrl: function() {
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+
+      if (searchType === 'file') {
+        url += '&fileType=tiff'
+      }
+
+      const query = pathOr('', ['query', 'q'], this.$route)
+      if (query) {
+        url += `&query=${query}`
+      }
+
+      return url
+    },
+
+    /**
      * Compute search type
      * @returns {String}
      */
     searchType: function() {
-      const firstTabType = compose(propOr('', 'type'), head)(this.searchTypes)
-      return defaultTo(this.$route.query.type, firstTabType)
+      const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
+      const searchType = find(propEq('type', searchTypeQuery), this.searchTypes)
+
+      return defaultTo(head(this.searchTypes), searchType)
     },
 
     tableData: function() {
-      return compose(pluck('fields'), propOr('', 'items'))(this.searchData)
+      return propOr([], 'items', this.searchData)
     },
 
     /**
@@ -173,28 +240,200 @@ export default {
      * @returns {Function}
      */
     searchResultsComponent: function() {
-      return searchResultsComponents[this.$route.query.type]
+      return defaultTo('', searchResultsComponents[this.$route.query.type])
+    },
+
+    /**
+     * Compute the current search page based off the limit and the offset
+     */
+    curSearchPage: function() {
+      return this.searchData.skip / this.searchData.limit + 1
+    },
+
+    /**
+     * Compute the search heading
+     * @TODO Optimize - this is getting a lot of data from various sources
+     * This data could be set at a specific time, such as when the active
+     * tab is set
+     * @returns {String}
+     */
+    searchHeading: function() {
+      const start = this.searchData.skip + 1
+      const pageRange = this.searchData.limit * this.curSearchPage
+      const end =
+        pageRange < this.searchData.total ? pageRange : this.searchData.total
+      const query = pathOr('', ['query', 'q'], this.$route)
+
+      const searchTypeLabel = compose(
+        propOr('', 'label'),
+        find(propEq('type', this.$route.query.type))
+      )(this.searchTypes)
+
+      let searchHeading = `Showing ${start}-${end} of ${this.searchData.total} ${searchTypeLabel}`
+
+      return query === '' ? searchHeading : `${searchHeading} for “${query}”`
+    },
+
+    /**
+     * Compute selected filters
+     * @returns {Array}
+     */
+    selectedFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('items')
+      )(this.filters)
+    }
+  },
+
+  watch: {
+    '$route.query.type': function() {
+      /**
+       * Clear table data so the new table that is rendered can
+       * properly render data and account for any missing data
+       */
+      this.searchData = clone(searchData)
+      this.fetchResults()
     }
   },
 
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    */
-  beforeCreate: function() {
+  mounted: function() {
     if (!this.$route.query.type) {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
       this.$router.replace({ query: { type: firstTabType } })
+    } else {
+      this.fetchResults()
     }
   },
 
   methods: {
     /**
+     * Figure out which source to fetch results from based on the
+     * type of search
+     */
+    fetchResults: function() {
+      const source = propOr('contentful', 'dataSource', this.searchType)
+
+      const searchSources = {
+        contentful: this.fetchFromContentful,
+        blackfynn: this.fetchFromBlackfynn
+      }
+
+      if (typeof searchSources[source] === 'function') {
+        searchSources[source]()
+      }
+
+      // Fetch filters for the search type
+      this.fetchFilters()
+    },
+
+    /**
+     * Get Search results
+     * This is using fetch from the Blackfynn API
+     */
+    fetchFromBlackfynn: function() {
+      this.isLoadingSearch = true
+
+      this.$axios
+        .$get(this.blackfynnApiUrl)
+        .then(response => {
+          const searchType = pathOr('', ['query', 'type'], this.$route)
+          const searchData = {
+            skip: response.offset,
+            items: response[`${searchType}s`],
+            total: response.totalCount
+          }
+          this.searchData = mergeLeft(searchData, this.searchData)
+        })
+        .finally(() => {
+          this.isLoadingSearch = false
+        })
+    },
+
+    /**
+     * Get search results
+     * This is using the contentful.js client
+     */
+    fetchFromContentful: function() {
+      this.isLoadingSearch = true
+
+      client
+        .getEntries({
+          content_type: this.$route.query.type,
+          query: this.$route.query.q,
+          limit: this.searchData.limit,
+          skip: this.searchData.skip
+        })
+        .then(response => {
+          this.searchData = response
+        })
+        .catch(() => {
+          this.searchData = clone(searchData)
+        })
+        .finally(() => {
+          this.isLoadingSearch = false
+        })
+    },
+
+    /**
+     * Get filters based on the search type
+     */
+    fetchFilters: function() {
+      this.filters = []
+      this.isLoadingFilters = true
+
+      client
+        .getEntry(this.searchType.filterId)
+        .then(response => {
+          this.filters = transformFilters(response.fields)
+        })
+        .catch(() => {
+          this.searchData = clone(searchData)
+        })
+        .finally(() => {
+          this.isLoadingFilters = false
+        })
+    },
+
+    /**
+     * Update offset
+     */
+    onPaginationPageChange: function(page) {
+      const offset = (page - 1) * this.searchData.limit
+      this.searchData.skip = offset
+
+      this.fetchResults()
+    },
+
+    /**
      * Submit search
      */
     submitSearch: function() {
+      this.searchData.skip = 0
+
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
-      this.$router.push({ query })
+      this.$router.replace({ query }).then(() => {
+        this.fetchResults()
+      })
+    },
+
+    /**
+     * Clear filter's value
+     * @param {Number} filterIdx
+     * @param {Number} itemIdx
+     */
+    clearFilter: function(filterIdx, itemIdx) {
+      const filters = assocPath(
+        [filterIdx, 'items', itemIdx, 'value'],
+        false,
+        this.filters
+      )
+      this.filters = filters
     }
   }
 }
@@ -204,14 +443,20 @@ export default {
 @import '../../assets/_variables.scss';
 
 .search-tabs {
-  border-bottom: 2px solid #dbdfe6;
   display: flex;
   list-style: none;
-  margin: 0 0 1.5rem;
-  padding: 0;
+  overflow: auto;
+  margin: 0 -2rem 0 0;
+  padding: 0 1rem;
+  @media (min-width: 48em) {
+    margin: 0;
+    padding: 0;
+  }
   li {
-    margin: 0 2em;
-    transform: translateY(2px);
+    margin: 0 0.625em;
+    @media (min-width: 48em) {
+      margin: 0 2.25em;
+    }
     &:first-child {
       margin-left: 0;
     }
@@ -219,33 +464,77 @@ export default {
 }
 .search-tabs__button {
   background: none;
-  border: none;
-  color: #909399;
+  border-bottom: 2px solid transparent;
+  color: #fff;
   cursor: pointer;
   display: block;
-  font-size: 1.25em;
+  font-size: 0.75em;
   font-weight: 500;
   outline: none;
-  padding: 0.5rem;
+  padding: 0;
   text-decoration: none;
+  text-transform: uppercase;
+  @media (min-width: 48em) {
+    font-size: 1em;
+    font-weight: 400;
+    text-transform: none;
+  }
   &:hover,
   &:focus,
   &.active {
-    color: $navy;
-    border-bottom: 2px solid $median;
+    border-bottom-color: #fff;
+    font-weight: 500;
   }
 }
 
-.page-hero  {
+.page-hero {
+  background: linear-gradient(90deg, rgb(12, 0, 191) 0%, rgb(188, 0, 252) 100%);
   h2 {
     font-size: 2rem;
     font-weight: 500;
     margin-bottom: 1rem;
+  }
+  ::v-deep .el-row--flex.is-justify-center {
+    justify-content: flex-start;
+  }
+}
+.page-wrap {
+  padding-bottom: 1em;
+  padding-top: 1em;
+  @media (min-width: 48em) {
+    padding-bottom: 3em;
+    padding-top: 3em;
   }
 }
 .table-wrap {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
   padding: 16px;
+}
+.el-pagination {
+  margin-top: 1.5em;
+  text-align: center;
+}
+.search-heading {
+  align-items: flex-start;
+  display: flex;
+  margin-bottom: 1em;
+  p {
+    font-size: 0.875em;
+    flex-shrink: 0;
+    margin: 1em 1em 0 0;
+  }
+}
+.filter__wrap,
+.filter__wrap-category {
+  display: inline;
+}
+.filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
+}
+::v-deep {
+  .el-table td {
+    vertical-align: top;
+  }
 }
 </style>
