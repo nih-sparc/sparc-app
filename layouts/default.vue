@@ -27,7 +27,9 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .layout {
-  overflow: hidden;
-  position: fixed;
+  @media screen and (max-width: 768px) {
+    overflow: hidden;
+    position: fixed;
+  }
 }
 </style>
