@@ -9,8 +9,8 @@
       <template slot-scope="scope">
         <nuxt-link
           :to="{
-            name: 'events-eventId',
-            params: { eventId: scope.row.sys.id }
+            name: 'project-details',
+            params: { projectId: scope.row.sys.id }
           }"
         >
           {{ scope.row.fields.title }}

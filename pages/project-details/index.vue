@@ -76,13 +76,12 @@ export default {
     ProjectTeamInfo
   },
 
-  asyncData() {
+  asyncData(ctx) {
     return Promise.all([
       // Get page content
-      client.getEntry(process.env.ctf_project_detail_id)
+      client.getEntry(ctx.route.params.projectId)
     ])
       .then(([page]) => {
-        console.log('what is page ', page.fields)
         return {
           fields: page.fields
         }

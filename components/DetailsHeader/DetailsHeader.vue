@@ -92,6 +92,7 @@ export default {
       }
       p {
         padding-top: 3rem;
+        margin-top: 0.5rem;
       }
     }
   }
