@@ -12,6 +12,9 @@ export default {
 
 <style lang="scss" scoped>
  .resources {
-   margin-top: 9rem;
+   margin-top: 3rem;
+   @media screen and (min-width: 1024px) {
+    margin-top: 9rem;
+   }
  }
 </style>
