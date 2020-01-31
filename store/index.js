@@ -9,7 +9,7 @@ export const mutations = {
 }
 
 export const actions = {
-  updateDisabledScrolling: ({ commit, state }) => {
+  updateDisabledScrolling: ({ commit }, state) => {
     commit('UPDATE_DISABLED_SCROLLING', state)
   }
 }
