@@ -1,6 +1,6 @@
 <template>
   <div class="events-page">
-    <page-hero class="subpage">
+    <page-hero>
       <HelpSearchControls
         :search-on-load="true"
         submit-text="Go"
@@ -8,7 +8,7 @@
       />
     </page-hero>
     <div class="page-wrap container">
-      <div class="help-section">
+      <div class="subpage">
         <div class="header">
           <h2>{{ helpItem.fields.title }}</h2>
           <div class="summary">
@@ -49,14 +49,15 @@ export default {
   mixins: [MarkedMixin],
 
   asyncData(env) {
-    console.log('fetching data: ' + process.env.ctf_help_id)
     return Promise.all([client.getEntry(env.params.helpId)])
       .then(([helpItem]) => {
         return {
           helpItem: helpItem
         }
       })
-      .catch(console.error)
+      .catch(() => {
+        throw Error
+      })
   },
 
   computed: {
@@ -87,47 +88,24 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.help-section {
-  color: $vestibular;
-  margin-top: 32px;
-  margin: 24px auto;
-  width: 80%;
-  background-color: #fff;
-  padding: 8px;
-  border-radius: 16px;
-  max-width: 900px;
 
-  @media screen and (min-width: 48em) {
-    padding: 16px 120px;
+.content {
+  & ::v-deep {
+    color: $vestibular;
   }
-
-  .content {
-    & ::v-deep {
-      color: $vestibular;
-    }
-    & ::v-deep p {
-      margin-bottom: 8px;
-    }
-    & ::v-deep img {
-      width: 100%;
-      margin: 5px 0;
-    }
+  & ::v-deep p {
+    margin-bottom: 8px;
   }
+  & ::v-deep img {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
 
-  .header {
-    margin-bottom: 48px;
-    h2 {
-      color: $vagus;
-    }
-    .summary {
-      font-size: 1.1em;
-      color: grey;
-      margin-bottom: 8px;
-    }
-
-    .updated {
-      color: #aaa;
-    }
+.header {
+  margin-bottom: 3em;
+  .updated {
+    color: #aaa;
   }
 }
 </style>
