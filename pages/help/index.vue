@@ -8,6 +8,11 @@
       <p>
         <!-- {{ heroCopy }} -->
       </p>
+      <HelpSearchControls
+        :search-on-load="true"
+        submit-text="Go"
+        @query="onSearchQuery"
+      />
     </page-hero>
 
     <div class="page-wrap container">
@@ -38,6 +43,7 @@
 
 <script>
 import HelpSection from '@/components/HelpSection/HelpSection.vue'
+import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 
@@ -48,6 +54,7 @@ export default {
 
   components: {
     HelpSection,
+    HelpSearchControls,
     PageHero
   },
 
@@ -60,21 +67,6 @@ export default {
         return {
           helpData: resp.fields
         }
-        // let docDict = {}
-        // for (let i = 0; i < docs.items.length; i++) {
-        //   docDict[docs.items[i].sys.id] = docs.items[i].fields
-        // }
-        // for (let i = 0; i < resp.fields.sections.length; i++) {
-        //   var curSection = resp.fields.sections[i]
-        //   for (let j = 0; j < curSection.fields.helpDocuments.length; j++) {
-        //     let curDoc = curSection.fields.helpDocuments[j]
-        //     curDoc['title'] = docDict[curDoc.sys.id]['title']
-        //     curDoc['summary'] = docDict[curDoc.sys.id]['summary']
-        //   }
-        // }
-        // return {
-        //   topics: resp
-        // }
       })
       .catch(console.error)
   },
@@ -82,6 +74,12 @@ export default {
   data() {
     return {
       helpData: []
+    }
+  },
+
+  methods: {
+    onSearchQuery: function() {
+      return 0
     }
   }
 }
