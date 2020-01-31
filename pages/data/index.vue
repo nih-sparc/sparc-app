@@ -93,11 +93,14 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
+const FileSearchResults = () =>
+  import('@/components/SearchResults/FileSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
-  event: EventSearchResults
+  event: EventSearchResults,
+  file: FileSearchResults
 }
 
 const searchTypes = [
@@ -134,7 +137,7 @@ const searchTypes = [
 ]
 
 const searchData = {
-  limit: 5,
+  limit: 12,
   skip: 0,
   items: []
 }
@@ -197,6 +200,26 @@ export default {
   },
 
   computed: {
+    /**
+     * Compute the URL for using a Blackfynn API
+     * @returns {String}
+     */
+    blackfynnApiUrl: function() {
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+
+      if (searchType === 'file') {
+        url += '&fileType=tiff'
+      }
+
+      const query = pathOr('', ['query', 'q'], this.$route)
+      if (query) {
+        url += `&query=${query}`
+      }
+
+      return url
+    },
+
     /**
      * Compute search type
      * @returns {String}
@@ -316,13 +339,10 @@ export default {
     fetchFromBlackfynn: function() {
       this.isLoadingSearch = true
 
-      const searchType = pathOr('', ['query', 'type'], this.$route)
-      const query = pathOr('', ['query', 'q'], this.$route)
-      const url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium&query=${query}`
-
       this.$axios
-        .$get(url)
+        .$get(this.blackfynnApiUrl)
         .then(response => {
+          const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
             items: response[`${searchType}s`],
@@ -476,6 +496,14 @@ export default {
   }
   ::v-deep .el-row--flex.is-justify-center {
     justify-content: flex-start;
+  }
+}
+.page-wrap {
+  padding-bottom: 1em;
+  padding-top: 1em;
+  @media (min-width: 48em) {
+    padding-bottom: 3em;
+    padding-top: 3em;
   }
 }
 .table-wrap {
