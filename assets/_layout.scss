@@ -11,3 +11,14 @@
   max-width: 1280px;
   padding: 0 1em;
 }
+
+.subpage {
+  background: #fff;
+  border: 1px solid #dcdfe6;
+  margin: 1em 0;
+  padding: 1em;
+  @media (min-width: 48em) {
+    margin: 2.5em 0;
+   padding: 2em;
+}
+}

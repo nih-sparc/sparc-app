@@ -1,24 +1,23 @@
 <template>
   <div class="events-page">
-    <div class="header">
-      <div class="gradient">
+    <page-hero>
+      <h3>SPARC Events:</h3>
+      <p>
+        Join the SPARC teams at the following events, conferences and workshops
+      </p>
+    </page-hero>
+
+    <div class="page-wrap container">
+      <div class="subpage">
         <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
-            <div class="breadcrumb">
-              <h3>SPARC Events:</h3>
-              <p>
-                Join the SPARC teams at the following events, conferences and
-                workshops
-              </p>
-            </div>
+          <el-col :row="24">
+            <event-card
+              v-for="(event, index) in events"
+              :key="`${event}-${index}`"
+              :event="event"
+            />
           </el-col>
         </el-row>
-      </div>
-    </div>
-
-    <div class="section events">
-      <div v-for="(event, index) in events" :key="`${event}-${index}`">
-        <event-card :event="event" />
       </div>
     </div>
   </div>
@@ -26,6 +25,7 @@
 
 <script>
 import EventCard from '@/components/EventCard/EventCard.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
@@ -33,7 +33,8 @@ const client = createClient()
 export default {
   name: 'EventPage',
   components: {
-    EventCard
+    EventCard,
+    PageHero
   },
 
   asyncData() {
@@ -60,27 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.header {
-  .gradient {
-    padding: 1.5em 0;
-    color: #f0f2f5;
-    background-image: linear-gradient(90deg, #0026ff 0%, #00ffb9 100%);
-
-    .breadcrumb {
-      width: 75%;
-    }
-  }
-}
-
-.events-page {
-  @media screen and (min-width: 1024px) {
-    margin-top: 7rem;
-  }
-}
-
-.events {
-  margin-left: 32px;
-  margin: 24px auto;
-  width: 80%;
+.event-card {
+  margin-bottom: 2em;
 }
 </style>
