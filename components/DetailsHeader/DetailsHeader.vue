@@ -50,9 +50,9 @@ export default {
         line-height: 32px;
       }
       p {
-        font-size: 14px;
+        font-size: 16px;
         font-weight: normal;
-        line-height: 24px;
+        line-height: 28px;
       }
     }
     &--content-meta {

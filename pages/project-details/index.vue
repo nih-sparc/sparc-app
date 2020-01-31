@@ -12,7 +12,7 @@
         {{ fields.title }}
       </h2>
       <p slot="description">
-        {{ fields.description }}
+        {{ formatDescription(fields.description) }}
       </p>
       <div slot="meta content" class="details-header__container--content-meta">
         <div class="content-meta__item">
@@ -97,6 +97,14 @@ export default {
   methods: {
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
+    },
+
+    formatDescription: function(description) {
+      if (description.length > 540) {
+        return description.substring(0, 540) + '...'
+      } else {
+        return description
+      }
     }
   }
 }
