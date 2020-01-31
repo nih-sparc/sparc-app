@@ -201,6 +201,26 @@ export default {
 
   computed: {
     /**
+     * Compute the URL for using a Blackfynn API
+     * @returns {String}
+     */
+    blackfynnApiUrl: function() {
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+
+      if (searchType === 'file') {
+        url += '&fileType=tiff'
+      }
+
+      const query = pathOr('', ['query', 'q'], this.$route)
+      if (query) {
+        url += `&query=${query}`
+      }
+
+      return url
+    },
+
+    /**
      * Compute search type
      * @returns {String}
      */
@@ -319,21 +339,11 @@ export default {
     fetchFromBlackfynn: function() {
       this.isLoadingSearch = true
 
-      const searchType = pathOr('', ['query', 'type'], this.$route)
-      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
-
-      if (searchType === 'file') {
-        url += '&fileType=tiff'
-      }
-
-      const query = pathOr('', ['query', 'q'], this.$route)
-      if (query) {
-        url += `&query=${query}`
-      }
-
       this.$axios
-        .$get(url)
+        .$get(this.blackfynnApiUrl)
         .then(response => {
+          const searchType = pathOr('', ['query', 'type'], this.$route)
+
           const searchData = {
             skip: response.offset,
             items: response[`${searchType}s`],
