@@ -6,13 +6,15 @@
       </p>
     </page-hero>
     <div class="page-wrap container">
-      <el-row type="flex" justify="center">
-        <el-col :xs="24" :md="22" :lg="20" :xl="18">
-          <!-- eslint-disable vue/no-v-html -->
-          <!-- marked will sanitize the HTML injected -->
-          <div v-html="parseMarkdown(copy)" />
-        </el-col>
-      </el-row>
+      <div class="subpage">
+        <el-row type="flex" justify="center">
+          <el-col :row="24">
+            <!-- eslint-disable vue/no-v-html -->
+            <!-- marked will sanitize the HTML injected -->
+            <div v-html="parseMarkdown(copy)" />
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
@@ -37,7 +39,7 @@ export default {
   asyncData() {
     return Promise.all([
       // Get page content
-      client.getEntry( process.env.ctf_about_page_id)
+      client.getEntry(process.env.ctf_about_page_id)
     ])
       .then(([page]) => {
         return { ...page.fields }
