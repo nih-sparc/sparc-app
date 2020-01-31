@@ -343,7 +343,6 @@ export default {
         .$get(this.blackfynnApiUrl)
         .then(response => {
           const searchType = pathOr('', ['query', 'type'], this.$route)
-
           const searchData = {
             skip: response.offset,
             items: response[`${searchType}s`],
