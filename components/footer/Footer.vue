@@ -8,10 +8,12 @@
       </div>
       <div class="footer__info--blurb">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore eiusmod magna aliqua.
-          Ut enim minim veniam, quis anim exercitation ullamco laboris nis ut aliquip ex commodo consequat.
-          Dus aute irure dolor in consectetur reprehenderit in voluptate velit esse cillum dolore fugiat nulla pariatur.
-          Excepteur sint occaecat cupidatat proident.
+          Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod
+          tempor incididunt ut labore et dolore eiusmod magna aliqua. Ut enim
+          minim veniam, quis anim exercitation ullamco laboris nis ut aliquip ex
+          commodo consequat. Dus aute irure dolor in consectetur reprehenderit
+          in voluptate velit esse cillum dolore fugiat nulla pariatur. Excepteur
+          sint occaecat cupidatat proident.
         </p>
       </div>
       <div class="footer__info--social">
@@ -27,7 +29,8 @@
           Data Resource Center &copy; 2020 All rights reserved.
           <nuxt-link :to="{ name: 'terms-of-service' }">
             Terms of Service
-          </nuxt-link> |
+          </nuxt-link>
+          |
           <nuxt-link :to="{ name: 'privacy' }">
             Privacy Policy
           </nuxt-link>
@@ -56,7 +59,8 @@
         <ul>
           <li>
             <a
-              href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji">
+              href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji"
+            >
               Site Feedback
             </a>
           </li>
@@ -88,7 +92,8 @@
           Data Resource Center &copy; 2020 All rights reserved.
           <nuxt-link :to="{ name: 'terms-of-service' }">
             Terms of Service
-          </nuxt-link> |
+          </nuxt-link>
+          |
           <nuxt-link :to="{ name: 'privacy' }">
             Privacy Policy
           </nuxt-link>
@@ -120,7 +125,9 @@ export default {
 
   &__info {
     width: 80%;
-    padding-right: 12rem;
+    @media (min-width: 64em) {
+      padding-right: 12rem;
+    }
 
     &--logo {
       height: 4rem;
