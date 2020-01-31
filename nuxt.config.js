@@ -35,6 +35,7 @@ export default {
       process.env.BLACKFYNN_DISCOVER_API_HOST ||
       'https://api.blackfynn.io/discover',
     ctf_event_id: 'event',
+    ctf_resource_id: 'sparcPartners',
     ctf_help_id: 'helpDocument',
     ctf_help_list_id: 'helpSection',
     ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
