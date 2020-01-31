@@ -1,6 +1,6 @@
 <template>
   <div class="data-page">
-    <page-hero class="subpage">
+    <page-hero>
       <search-form v-model="searchQuery" @search="submitSearch" />
 
       <ul class="search-tabs">
