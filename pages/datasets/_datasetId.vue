@@ -13,7 +13,7 @@
           Find Data
         </nuxt-link>
         <!-- > {{ formatBreadcrumb(fields.title) }} -->
-        > Spatial Distribution and Morphometric...
+        > {{ formatBreadcrumb(datasetTitle) }}
       </p>
     </div>
     <!-- <div class="discover-content container-fluid">
@@ -25,19 +25,40 @@
         Stomach
       </h3>
       <h2 slot="title">
-        Spatial distribution and morphometric characterization of vagal
-        afferents (intramuscular arrays (IMAs)) within the longitudinal and
-        circular muscle...
+        {{ formatTitle(datasetTitle) }}
       </h2>
       <p slot="description">
-        Spatial distribution and morphometric characterization of vagal
-        afferents (specifically: intramuscular arrays (IMAs)) within the
-        longitudinal and circular muscle layers of the rat stomach.
+        {{ formatDescription(datasetDescription) }}
       </p>
-      <div slot="meta content" class="details-header__container--content-meta">
-        Lorem ipsum test
-      </div>
       <div slot="meta content" class="details-header__container--content-links">
+        <div class="dataset-meta">
+          <div class="dataset-updated-date">
+            Last updated on {{ lastUpdatedDate }}
+          </div>
+        </div>
+        <div class="dataset-owners">
+          <template v-if="!isContributorListVisible">
+            <contributor-item :contributor="firstContributor" />
+            <button
+              class="contributors-button"
+              href="#"
+              @click.prevent="isContributorListVisible = true"
+            >
+              <span class="button-text">...</span>
+            </button>
+          </template>
+
+          <div
+            v-for="(contributor, idx) in datasetContributorsList"
+            :key="contributor.id"
+            class="contributor-item-wrap"
+          >
+            <contributor-item :contributor="contributor" />
+            <template v-if="idx < datasetContributorsList.length - 1">
+              ,
+            </template>
+          </div>
+        </div>
         <button>
           <a href="#">Get Dataset</a>
         </button>
@@ -139,7 +160,7 @@
                   v-html="citationText"
                 />
                 <!-- "$sanitize(citationText, ['i'])" -->
-               <!-- <div class="info-citation-links mb-24">
+    <!-- <div class="info-citation-links mb-24">
                   Formatted as:
                   <button
                     title="Format citation apa"
@@ -243,6 +264,14 @@ export default {
   },
 
   computed: {
+    /**
+     * Returns the dataset title
+     * @returns {String}
+     */
+    datasetTitle: function() {
+      return propOr('', 'name', this.datasetDetails)
+    },
+
     /**
      * Returns the records in the protocol model for this dataset
      * @returns {String}
@@ -383,6 +412,33 @@ export default {
 
   methods: {
     /**
+     * Formats description based on length
+     * @param {String} description
+     */
+    formatDescription: function(description) {
+      return description.length > 540
+        ? description.substring(0, 540) + '...'
+        : description
+    },
+
+    /**
+     * Formats title length
+     * @param {String} title
+     */
+    formatTitle: function(title) {
+      return title.length > 150 ? title.substring(0, 150) + '...' : title
+    },
+
+    /**
+     * Formats breadcrumb length
+     * @param {String} breadcrumb
+     */
+    formatBreadcrumb: function(breadcrumb) {
+      return breadcrumb.length > 32
+        ? breadcrumb.substring(0, 32) + '...'
+        : breadcrumb
+    },
+    /**
      * Returns protocol records in a dataset's model if they exist
      */
     getProtocolRecords: function() {
@@ -515,6 +571,31 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_spacing.scss';
 @import '@/assets/_variables.scss';
+.details-header {
+  &__container {
+    &--content-links {
+      .contributors-button {
+        height: 14px;
+        width: 18px;
+        border: 1px solid $median;
+        border-radius: 2px;
+        background-color: $light-purple;
+        cursor: pointer;
+        margin: 0 6px;
+        padding: 0;
+
+        &:focus {
+          background-color: #b6b7ba;
+        }
+
+        .button-text {
+          position: relative;
+          bottom: 5px;
+        }
+      }
+    }
+  }
+}
 
 .breadcrumb {
   a {
