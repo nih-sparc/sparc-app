@@ -1,25 +1,48 @@
 <template>
   <div class="dataset-details">
-    <div class="header">
-      <div class="gradient">
-        <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-            <div class="breadcrumb">
-              <el-row>
-                <el-col :span="24">
-                  <router-link :to="{ name: 'data' }">
-                    <i class="el-icon-arrow-left" />Back to all results
-                  </router-link>
-                </el-col>
-              </el-row>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+    <div class="dataset-details__page-route">
+      <p>
+        <nuxt-link
+          :to="{
+            name: 'data',
+            query: {
+              type: 'sparcAward'
+            }
+          }"
+        >
+          Find Data
+        </nuxt-link>
+        <!-- > {{ formatBreadcrumb(fields.title) }} -->
+        > Spatial Distribution and Morphometric...
+      </p>
     </div>
-    <div class="discover-content container-fluid">
+    <!-- <div class="discover-content container-fluid">
       <dataset-header :dataset-details="datasetDetails" />
-    </div>
+    </div> -->
+    <details-header>
+      <img slot="banner image" src="http://placehold.jp/368x368.png" />
+      <h3 slot="subtitle">
+        Stomach
+      </h3>
+      <h2 slot="title">
+        Spatial distribution and morphometric characterization of vagal
+        afferents (intramuscular arrays (IMAs)) within the longitudinal and
+        circular muscle...
+      </h2>
+      <p slot="description">
+        Spatial distribution and morphometric characterization of vagal
+        afferents (specifically: intramuscular arrays (IMAs)) within the
+        longitudinal and circular muscle layers of the rat stomach.
+      </p>
+      <div slot="meta content" class="details-header__container--content-meta">
+        Lorem ipsum test
+      </div>
+      <div slot="meta content" class="details-header__container--content-links">
+        <button>
+          <a href="#">Get Dataset</a>
+        </button>
+      </div>
+    </details-header>
 
     <el-row type="flex" justify="center">
       <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
@@ -55,7 +78,7 @@
       </el-col>
     </el-row>
 
-    <div class="dataset-info">
+    <!-- <div class="dataset-info">
       <div class="discover-content container-fluid dataset-info-container">
         <el-row type="flex" justify="center">
           <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
@@ -116,7 +139,7 @@
                   v-html="citationText"
                 />
                 <!-- "$sanitize(citationText, ['i'])" -->
-                <div class="info-citation-links mb-24">
+               <!-- <div class="info-citation-links mb-24">
                   Formatted as:
                   <button
                     title="Format citation apa"
@@ -159,7 +182,7 @@
           </el-col>
         </el-row>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -168,10 +191,10 @@ import marked from 'marked'
 import { propOr, pathOr } from 'ramda'
 // import { mapState } from 'vuex'
 
-import DatasetHeader from '@/components/DatasetHeader/DatasetHeader.vue'
 import TagList from '@/components/TagList/TagList.vue'
 import FilesTable from '@/components/FilesTable/FilesTable.vue'
 import MetadataTable from '@/components/MetadataTable/MetadataTable.vue'
+import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -184,10 +207,10 @@ export default {
   name: 'DatasetDetails',
 
   components: {
-    DatasetHeader,
     FilesTable,
     MetadataTable,
-    TagList
+    TagList,
+    DetailsHeader
   },
 
   mixins: [Request, DateUtils],
@@ -491,6 +514,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_spacing.scss';
+@import '@/assets/_variables.scss';
 
 .breadcrumb {
   a {
@@ -508,7 +532,25 @@ export default {
 }
 
 .dataset-details {
-  background-color: #ffffff;
+  &__page-route {
+    background: $purple-gray;
+    height: 2.5rem;
+    margin-top: 0;
+    p {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+      padding-left: 2rem;
+      padding-top: 0.75rem;
+      margin-top: 0;
+      color: $midnight;
+    }
+
+    a {
+      text-decoration: none;
+      color: $midnight;
+    }
+  }
 }
 
 .copy-success-notification {
