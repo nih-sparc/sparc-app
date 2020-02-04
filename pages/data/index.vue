@@ -28,7 +28,11 @@
               {{ searchHeading }}
             </p>
             <div class="filter__wrap">
-              <button class="btn__filters" @click="isFiltersVisible = true">
+              <button
+                class="btn__filters"
+                :disabled="filters.length === 0"
+                @click="isFiltersVisible = true"
+              >
                 <svg-icon name="icon-preset" height="20" width="20" />
                 Filters
               </button>
@@ -511,14 +515,19 @@ export default {
   background: none;
   border: none;
   color: $median;
-  cursor: pointer;
   display: flex;
   font-size: 0.875em;
   outline: none;
   padding: 0;
-  &:hover,
-  &:focus {
-    text-decoration: underline;
+  &[disabled] {
+    opacity: 0.7;
+  }
+  &:not([disabled]) {
+    &:hover,
+    &:focus {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
   .svg-icon {
     margin-right: 0.3125rem;
