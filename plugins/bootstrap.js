@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Element from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
-import '@abi-software/scaffoldvuer';
-import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css';
 
 Vue.use(Element, { locale })
 Vue.config.devtools = true

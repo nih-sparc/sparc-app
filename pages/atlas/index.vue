@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import '@abi-software/scaffoldvuer';
+import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css';
 export default {
   name: 'Atlas'
 }
