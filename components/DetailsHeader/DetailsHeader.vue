@@ -34,6 +34,9 @@ export default {
     &--image {
       margin-right: 1rem;
       margin-top: 2rem;
+      .dataset-image {
+        border: solid 1px $cloudy;
+      }
     }
     &--content {
       padding-top: 1.53rem;
@@ -93,6 +96,36 @@ export default {
       p {
         padding-top: 3rem;
         margin-top: 0.5rem;
+      }
+    }
+
+    &--dataset-description {
+      font-size: 14px !important;
+      font-weight: normal;
+      line-height: 24px !important;
+      color: black;
+      margin-bottom: 3rem;
+    }
+
+    .header-stats-section {
+      display: flex;
+      margin: 40px 0 0;
+    }
+
+    .header-stats-block {
+      align-items: center;
+      display: flex;
+      font-size: 14px;
+      font-weight: 500;
+      margin-right: 12px;
+      margin-bottom: 1rem;
+      .svg-icon {
+        margin-right: 3px;
+      }
+      a {
+        &:focus {
+          color: #1c46bd;
+        }
       }
     }
   }
