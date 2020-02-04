@@ -1,21 +1,6 @@
 <template>
   <div class="project-details">
-    <div class="project-details__page-route">
-      <p>
-        <nuxt-link
-          :to="{
-            name: 'data',
-            query: {
-              type: 'sparcAward'
-            }
-          }"
-        >
-          Teams and Projects
-        </nuxt-link>
-        > {{ formatBreadcrumb(fields.title) }}
-      </p>
-    </div>
-    <details-header>
+    <details-header :data="fields" :breadcrumb="breadcrumb">
       <img slot="banner image" src="http://placehold.jp/368x368.png" />
       <h3 slot="subtitle">
         {{ fields.organ.fields.name }}
@@ -50,9 +35,9 @@
       :tabs="tabs"
       :active-tab="activeTab"
       @set-active-tab="setActiveTab"
+      class="container"
     >
       <project-dataset-info v-show="activeTab === 'datasets'" />
-      <project-team-info v-show="activeTab === 'teamInformation'" />
     </detail-tabs>
   </div>
 </template>
@@ -61,7 +46,6 @@
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ProjectDatasetInfo from '@/components/ProjectDatasetInfo/ProjectDatasetInfo.vue'
-import ProjectTeamInfo from '@/components/ProjectTeamInfo/ProjectTeamInfo.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -72,8 +56,7 @@ export default {
   components: {
     DetailsHeader,
     DetailTabs,
-    ProjectDatasetInfo,
-    ProjectTeamInfo
+    ProjectDatasetInfo
   },
 
   asyncData(ctx) {
@@ -95,13 +78,14 @@ export default {
         {
           label: 'Datasets',
           type: 'datasets'
-        },
-        {
-          label: 'Team Information',
-          type: 'teamInformation'
         }
       ],
-      activeTab: 'datasets'
+      activeTab: 'datasets',
+      breadcrumb: {
+        name: 'data',
+        type: 'sparcAward',
+        parent: 'Teams and Projects'
+      }
     }
   },
 

@@ -49,7 +49,8 @@ export default {
     border: solid 1px $cloudy;
     padding-left: 3rem;
     padding-right: 2rem;
-    margin: 1.3rem;
+    margin-top: 1.3rem;
+    margin-bottom: 1.3rem;
     &--types {
       border-bottom: 2px solid #dbdfe6;
       display: flex;
