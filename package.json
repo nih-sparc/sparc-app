@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.5.6",
+    "@types/ramda": "^0.26.40",
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0"
   },

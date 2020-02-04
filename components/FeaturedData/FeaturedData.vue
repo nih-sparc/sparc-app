@@ -20,10 +20,11 @@
   </div>
 </template>
 
-<script>
-import { pathOr } from 'ramda'
+<script lang="ts">
+import Vue from 'vue';
+import {Methods, Props} from "~/components/FeaturedData/model";
 
-export default {
+export default Vue.extend<never, Methods, never, Props>({
   name: 'FeaturedData',
 
   props: {
@@ -40,10 +41,10 @@ export default {
      * @returns {String}
      */
     imageUrl: function(item) {
-      return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], item)
+      return item.fields.image?.fields?.file?.url ?? ''
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
