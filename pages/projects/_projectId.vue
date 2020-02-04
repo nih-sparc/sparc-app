@@ -2,15 +2,6 @@
   <div class="project-details">
     <details-header :data="fields" :breadcrumb="breadcrumb">
       <img slot="banner image" src="http://placehold.jp/368x368.png" />
-      <h3 slot="subtitle">
-        {{ fields.organ.fields.name }}
-      </h3>
-      <h2 slot="title">
-        {{ formatTitle(fields.title) }}
-      </h2>
-      <p slot="description">
-        {{ formatDescription(fields.description) }}
-      </p>
       <div slot="meta content" class="details-header__container--content-meta">
         <div class="content-meta__item">
           <h3>Project Number</h3>
@@ -34,8 +25,8 @@
     <detail-tabs
       :tabs="tabs"
       :active-tab="activeTab"
-      @set-active-tab="setActiveTab"
       class="container"
+      @set-active-tab="setActiveTab"
     >
       <project-dataset-info v-show="activeTab === 'datasets'" />
     </detail-tabs>
@@ -96,34 +87,6 @@ export default {
      */
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
-    },
-
-    /**
-     * Formats description based on length
-     * @param {String} description
-     */
-    formatDescription: function(description) {
-      return description.length > 540
-        ? description.substring(0, 540) + '...'
-        : description
-    },
-
-    /**
-     * Formats breadcrumb length
-     * @param {String} breadcrumb
-     */
-    formatBreadcrumb: function(breadcrumb) {
-      return breadcrumb.length > 32
-        ? breadcrumb.substring(0, 32) + '...'
-        : breadcrumb
-    },
-
-    /**
-     * Formats title length
-     * @param {String} title
-     */
-    formatTitle: function(title) {
-      return title.length > 150 ? title.substring(0, 150) + '...' : title
     }
   }
 }

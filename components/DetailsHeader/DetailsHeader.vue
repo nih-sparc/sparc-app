@@ -20,9 +20,15 @@
         <slot name="banner image" />
       </div>
       <div class="details-header__container--content">
-        <slot name="subtitle" />
-        <slot name="title" />
-        <slot name="description" />
+        <h3>
+          {{ data.organ.fields.name }}
+        </h3>
+        <h2>
+          {{ formatTitle(data.title) }}
+        </h2>
+        <p>
+          {{ formatDescription(data.description) }}
+        </p>
         <slot name="meta content" />
       </div>
     </div>
@@ -53,6 +59,24 @@ export default {
       return breadcrumb.length > 32
         ? breadcrumb.substring(0, 32) + '...'
         : breadcrumb
+    },
+
+    /**
+     * Formats title length
+     * @param {String} title
+     */
+    formatTitle: function(title) {
+      return title.length > 150 ? title.substring(0, 150) + '...' : title
+    },
+
+    /**
+     * Formats description based on length
+     * @param {String} description
+     */
+    formatDescription: function(description) {
+      return description.length > 540
+        ? description.substring(0, 540) + '...'
+        : description
     }
   }
 }
