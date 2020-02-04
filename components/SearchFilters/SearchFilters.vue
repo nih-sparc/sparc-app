@@ -1,12 +1,17 @@
 <template>
-  <el-dialog :visible="visible" :show-close="false" @close="closeDialog">
+  <el-dialog
+    :visible="visible"
+    :show-close="false"
+    @open="onOpen"
+    @close="closeDialog"
+  >
     <bf-dialog-header slot="title" :title="dialogHeader" />
 
     <dialog-body>
       <div v-if="activeFilters.length" class="active__filters-wrap">
         <div class="active__filters">
           <div
-            v-for="(filter, filterIdx) in value"
+            v-for="(filter, filterIdx) in filters"
             :key="filter.category"
             class="active__filters__category"
           >
@@ -23,7 +28,7 @@
           </div>
         </div>
       </div>
-      <template v-for="filter in value">
+      <template v-for="filter in filters">
         <div :key="filter.category">
           <h3>
             {{ filter.category }}
@@ -33,7 +38,6 @@
               v-for="item in filter.filters"
               :key="`${item.category}_${item.key}`"
               v-model="item.value"
-              @change="$emit('input', value)"
             >
               {{ item.label }}
             </el-checkbox>
@@ -43,10 +47,10 @@
     </dialog-body>
 
     <div slot="footer" class="dialog-footer">
-      <bf-button class="ghost" @click="closeDialog">
+      <bf-button class="ghost" @click="clearAllFilters">
         Clear All
       </bf-button>
-      <bf-button>
+      <bf-button @click="applyFilters">
         Apply
       </bf-button>
     </div>
@@ -54,7 +58,15 @@
 </template>
 
 <script>
-import { assocPath, compose, filter, propEq, flatten, pluck } from 'ramda'
+import {
+  assocPath,
+  clone,
+  compose,
+  filter,
+  propEq,
+  flatten,
+  pluck
+} from 'ramda'
 import BfDialogHeader from '@/components/bf-dialog-header/BfDialogHeader.vue'
 import DialogBody from '@/components/dialog-body/DialogBody.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
@@ -89,6 +101,12 @@ export default {
     }
   },
 
+  data() {
+    return {
+      filters: []
+    }
+  },
+
   computed: {
     /**
      * Compute active filters
@@ -99,7 +117,7 @@ export default {
         filter(propEq('value', true)),
         flatten,
         pluck('filters')
-      )(this.value)
+      )(this.filters)
     },
 
     /**
@@ -114,6 +132,30 @@ export default {
 
   methods: {
     /**
+     * Callback for opening filter
+     * Copy the filters passed down to the component
+     * to make a local copy for local CRUD
+     */
+    onOpen: function() {
+      this.filters = clone(this.value)
+    },
+
+    /**
+     * Closes the dialog
+     */
+    closeDialog: function() {
+      this.$emit('update:visible', false)
+    },
+
+    /**
+     * Apply filters
+     */
+    applyFilters: function() {
+      this.$emit('input', this.filters)
+      this.closeDialog()
+    },
+
+    /**
      * Clear filter's value
      * @param {Number} filterIdx
      * @param {Number} itemIdx
@@ -122,16 +164,26 @@ export default {
       const filters = assocPath(
         [filterIdx, 'filters', itemIdx, 'value'],
         false,
-        this.value
+        this.filters
       )
-      this.$emit('input', filters)
+      this.filters = filters
     },
 
     /**
-     * Closes the dialog
+     * Clear all filters
      */
-    closeDialog: function() {
-      this.$emit('update:visible', false)
+    clearAllFilters: function() {
+      const resetFilters = this.filters.map(filter => {
+        filter.filters.map(item => {
+          return (item.value = false)
+        })
+
+        return filter
+      })
+
+      this.$emit('input', resetFilters)
+
+      this.closeDialog()
     }
   }
 }
@@ -142,6 +194,11 @@ export default {
   .dialog-body,
   .el-dialog__body {
     font-size: inherit;
+  }
+  .el-dialog__body {
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: 400px;
   }
 }
 h2 {
@@ -178,5 +235,10 @@ h3 {
 }
 .active__filters .el-tag {
   margin: 0.5em 1em 0.5em 0;
+}
+::v-deep .el-dialog {
+  @media (max-width: 48em) {
+    width: calc(100vw - 2em);
+  }
 }
 </style>
