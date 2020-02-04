@@ -88,12 +88,15 @@ const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
 const FileSearchResults = () =>
   import('@/components/SearchResults/FileSearchResults.vue')
+const OrganSearchResults = () =>
+  import('@/components/SearchResults/OrganSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
-  file: FileSearchResults
+  file: FileSearchResults,
+  organ: OrganSearchResults
 }
 
 const searchTypes = [
@@ -111,7 +114,7 @@ const searchTypes = [
   },
   {
     label: 'Organs',
-    type: 'organ',
+    type: process.env.ctf_organ_id,
     filterId: process.env.ctf_filters_organ_id,
     dataSource: 'contentful'
   },
