@@ -116,7 +116,10 @@
       :active-tab="activeTab"
       @set-active-tab="setActiveTab"
     >
-      <dataset-about-info v-show="activeTab === 'about'" />
+      <dataset-about-info
+        v-show="activeTab === 'about'"
+        :dataset-details="datasetDetails"
+      />
       <dataset-description-info v-show="activeTab === 'description'" />
       <dataset-metadata-info v-show="activeTab === 'metadata'" />
       <dataset-files-info v-show="activeTab === 'files'" />
