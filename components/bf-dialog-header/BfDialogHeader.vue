@@ -38,8 +38,12 @@ export default {
   display: flex;
   position: relative;
   .icon-close {
+    border: none;
     color: $glial;
     cursor: pointer;
+    outline: none;
+    margin: 0;
+    padding: 0;
   }
 }
 .bf-dialog-header-title {
