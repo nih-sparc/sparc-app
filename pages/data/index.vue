@@ -38,6 +38,26 @@
               </button>
             </div>
           </div>
+          <div class="mb-16">
+            <div class="active__filter__wrap">
+              <div
+                v-for="(filter, filterIdx) in filters"
+                :key="filter.category"
+                class="active__filter__wrap-category"
+              >
+                <template v-for="(item, itemIdx) in filter.filters">
+                  <el-tag
+                    v-if="item.value"
+                    :key="`${item.key}`"
+                    closable
+                    @close="clearFilter(filterIdx, itemIdx)"
+                  >
+                    {{ item.label }}
+                  </el-tag>
+                </template>
+              </div>
+            </div>
+          </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
             <el-pagination
@@ -62,6 +82,7 @@
 
 <script>
 import {
+  assocPath,
   clone,
   compose,
   defaultTo,
@@ -417,6 +438,20 @@ export default {
       this.$router.replace({ query }).then(() => {
         this.fetchResults()
       })
+    },
+
+    /**
+     * Clear filter's value
+     * @param {Number} filterIdx
+     * @param {Number} itemIdx
+     */
+    clearFilter: function(filterIdx, itemIdx) {
+      const filters = assocPath(
+        [filterIdx, 'filters', itemIdx, 'value'],
+        false,
+        this.filters
+      )
+      this.filters = filters
     }
   }
 }
@@ -535,5 +570,12 @@ export default {
   .svg-icon {
     margin-right: 0.3125rem;
   }
+}
+.active__filter__wrap,
+.active__filter__wrap-category {
+  display: inline;
+}
+.active__filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
 }
 </style>

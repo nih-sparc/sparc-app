@@ -8,26 +8,6 @@
     <bf-dialog-header slot="title" :title="dialogHeader" />
 
     <dialog-body>
-      <div v-if="activeFilters.length" class="active__filters-wrap">
-        <div class="active__filters">
-          <div
-            v-for="(filter, filterIdx) in filters"
-            :key="filter.category"
-            class="active__filters__category"
-          >
-            <template v-for="(item, itemIdx) in filter.filters">
-              <el-tag
-                v-if="item.value"
-                :key="`${item.key}`"
-                closable
-                @close="clearFilter(filterIdx, itemIdx)"
-              >
-                {{ item.label }}
-              </el-tag>
-            </template>
-          </div>
-        </div>
-      </div>
       <template v-for="filter in filters">
         <div :key="filter.category">
           <h3>
@@ -153,20 +133,6 @@ export default {
     applyFilters: function() {
       this.$emit('input', this.filters)
       this.closeDialog()
-    },
-
-    /**
-     * Clear filter's value
-     * @param {Number} filterIdx
-     * @param {Number} itemIdx
-     */
-    clearFilter: function(filterIdx, itemIdx) {
-      const filters = assocPath(
-        [filterIdx, 'filters', itemIdx, 'value'],
-        false,
-        this.filters
-      )
-      this.filters = filters
     },
 
     /**
