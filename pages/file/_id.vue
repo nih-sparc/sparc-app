@@ -3,7 +3,9 @@
     <div class="page-wrap container">
       <div class="subpage">
         <el-row type="flex" justify="center">
-          <el-col :row="24" />
+          <el-col :row="24">
+            <biolucida-viewer />
+          </el-col>
         </el-row>
       </div>
     </div>
@@ -11,10 +13,25 @@
 </template>
 
 <script>
+import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
+
 export default {
   name: 'FileDetailPage',
 
-  asyncData() {},
+  components: {
+    BiolucidaViewer
+  },
+
+  asyncData(ctx) {
+    const id = ctx.route.params.id
+    this.$axios
+      .$get(`${process.env.BL_SERVER_URL}/image/${id}`)
+      .then(response => {
+        return {
+          biolucidaData: response
+        }
+      })
+  },
 
   data: () => {
     return {}
