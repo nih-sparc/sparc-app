@@ -5,7 +5,7 @@
     @open="onOpen"
     @close="closeDialog"
   >
-    <bf-dialog-header slot="title" :title="dialogHeader" />
+    <bf-dialog-header slot="title" :title="dialogTitle" />
 
     <dialog-body>
       <template v-for="filter in filters">
@@ -38,15 +38,7 @@
 </template>
 
 <script>
-import {
-  assocPath,
-  clone,
-  compose,
-  filter,
-  propEq,
-  flatten,
-  pluck
-} from 'ramda'
+import { clone } from 'ramda'
 import BfDialogHeader from '@/components/bf-dialog-header/BfDialogHeader.vue'
 import DialogBody from '@/components/dialog-body/DialogBody.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
@@ -78,35 +70,16 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    dialogTitle: {
+      type: String,
+      default: ''
     }
   },
 
   data() {
     return {
       filters: []
-    }
-  },
-
-  computed: {
-    /**
-     * Compute active filters
-     * @returns {Array}
-     */
-    activeFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('filters')
-      )(this.filters)
-    },
-
-    /**
-     * Compute dialog header based on how many active filters
-     * @returns {String}
-     */
-    dialogHeader: function() {
-      const activeFilterLength = this.activeFilters.length
-      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     }
   },
 

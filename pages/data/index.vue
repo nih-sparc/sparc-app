@@ -34,7 +34,7 @@
                 @click="isFiltersVisible = true"
               >
                 <svg-icon name="icon-preset" height="20" width="20" />
-                Filters
+                {{ activeFiltersLabel }}
               </button>
             </div>
           </div>
@@ -76,6 +76,7 @@
       v-model="filters"
       :visible.sync="isFiltersVisible"
       :is-loading="isLoadingFilters"
+      :dialog-title="activeFiltersLabel"
     />
   </div>
 </template>
@@ -302,6 +303,27 @@ export default {
         flatten,
         pluck('items')
       )(this.filters)
+    },
+
+    /**
+     * Compute active filters
+     * @returns {Array}
+     */
+    activeFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('filters')
+      )(this.filters)
+    },
+
+    /**
+     * Compute dialog header based on how many active filters
+     * @returns {String}
+     */
+    activeFiltersLabel: function() {
+      const activeFilterLength = this.activeFilters.length
+      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     }
   },
 
