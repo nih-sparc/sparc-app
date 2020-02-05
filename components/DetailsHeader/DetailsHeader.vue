@@ -12,7 +12,7 @@
         >
           {{ breadcrumb.parent }}
         </nuxt-link>
-        > {{ formatBreadcrumb(data.title) }}
+        > {{ formatBreadcrumb(title) }}
       </p>
     </div>
     <div class="details-header__container container">
@@ -21,13 +21,13 @@
       </div>
       <div class="details-header__container--content">
         <h3>
-          {{ data.organ.fields.name }}
+          {{ subtitle }}
         </h3>
         <h2>
-          {{ formatTitle(data.title) }}
+          {{ formatTitle(title) }}
         </h2>
         <p>
-          {{ formatDescription(data.description) }}
+          {{ formatDescription(description) }}
         </p>
         <slot name="meta content" />
       </div>
@@ -44,9 +44,17 @@ export default {
       type: Object,
       default: () => {}
     },
-    data: {
-      type: Object,
-      default: () => {}
+    subtitle: {
+      type: String,
+      default: ''
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    description: {
+      type: String,
+      default: ''
     }
   },
 
