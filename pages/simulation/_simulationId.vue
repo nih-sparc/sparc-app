@@ -9,11 +9,11 @@
       <img slot="banner image" src="http://placehold.jp/368x368.png" />
       <div slot="meta content" class="details-header__container--content-links">
         <div class="dataset-meta">
-          <div class="dataset-updated-date">
+          <div class="simulation-updated-date">
             Last updated on {{ fields.lastUpdatedDate }}
           </div>
         </div>
-        <div class="dataset-owners">
+        <div class="simulation-owners">
           <template>
             {{ fields.firstContributor }}
             <button class="contributors-button" href="#">
@@ -89,12 +89,12 @@
             </div>
           </div>
         </div>
-        <button class="simulation-button">
-          <a href="#">Run Simulation</a>
-        </button>
         <div class="simulation-links">
+          <button class="simulation-button">
+            <a href="#">Run Simulation</a>
+          </button>
           <a href="#">Get Dataset</a>
-          <a href="#">eSPARC Docs</a>
+          <a href="#">oSPARC Docs</a>
         </div>
       </div>
     </details-header>
@@ -103,8 +103,9 @@
       :active-tab="activeTab"
       class="container"
       @set-active-tab="setActiveTab"
-    />
-    <simulation-about-info v-show="activeTab === 'about'" />
+    >
+      <simulation-about-info v-show="activeTab === 'about'" />
+    </detail-tabs>
   </div>
 </template>
 
@@ -198,13 +199,38 @@ export default {
         }
         .simulation-button {
           background-color: $median;
-          width: 127px;
+          width: 151px;
           height: 40px;
           font-size: 14px;
           color: #ffffff;
           font-weight: 500;
         }
-        .dataset-owners {
+        .simulation-links {
+          a {
+            text-decoration: none;
+          }
+        }
+
+        .simulation-updated-date {
+          line-height: 24px;
+          color: black;
+          font-size: 14px;
+          line-height: 24px;
+
+          a {
+            color: #404554;
+            text-decoration: underline;
+            &:hover,
+            &:active,
+            &:visited {
+              color: #404554;
+            }
+            &:focus {
+              color: black;
+            }
+          }
+        }
+        .simulation-owners {
           align-items: center;
           display: flex;
           flex-wrap: wrap;
