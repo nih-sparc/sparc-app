@@ -1,7 +1,12 @@
 <template>
   <div class="organ-details">
-    <details-header :data="test" :breadcrumb="breadcrumb">
-      <img slot="banner image" :src="test.file.url" />
+    <details-header
+      :subtitle="fields.subtitle"
+      :title="fields.title"
+      :description="fields.description"
+      :breadcrumb="breadcrumb"
+    >
+      <img slot="banner image" src="http://placehold.jp/368x368.png" />
     </details-header>
     <detail-tabs
       :tabs="tabs"
@@ -45,9 +50,9 @@ export default {
       client.getEntry(ctx.route.params.organId)
     ])
       .then(([page]) => {
-        return {
-          test: page.fields.bannerImage.fields
-        }
+        // return {
+        //   fields: page.fields.bannerImage.fields
+        // } // TODO add later when we actually start populating with content
       })
       .catch(console.error)
   },
@@ -73,6 +78,12 @@ export default {
         name: 'data',
         type: 'organ',
         parent: 'Teams and Projects'
+      },
+      fields: {  // TODO remove later
+        subtitle: 'Cardio-Respitory System',
+        title: 'Human Heart',
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing…'
       }
     }
   },
