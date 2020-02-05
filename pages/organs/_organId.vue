@@ -79,7 +79,8 @@ export default {
         type: 'organ',
         parent: 'Teams and Projects'
       },
-      fields: {  // TODO remove later
+      fields: {
+        // TODO remove later
         subtitle: 'Cardio-Respitory System',
         title: 'Human Heart',
         description:
@@ -97,7 +98,7 @@ export default {
       this.activeTab = activeLabel
     }
   }
-
+}
 </script>
 
 <style lang="scss" scoped></style>
