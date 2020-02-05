@@ -1,6 +1,6 @@
 <template>
   <div class="project-details">
-    <details-header :data="fields" :breadcrumb="breadcrumb">
+    <details-header :subtitle="fields.organ.fields.name" :title="fields.title" :description="fields.description" :breadcrumb="breadcrumb">
       <img slot="banner image" src="http://placehold.jp/368x368.png" />
       <div slot="meta content" class="details-header__container--content-meta">
         <div class="content-meta__item">

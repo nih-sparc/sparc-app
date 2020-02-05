@@ -97,7 +97,7 @@ export default {
       this.activeTab = activeLabel
     }
   }
-}
+
 </script>
 
 <style lang="scss" scoped></style>
