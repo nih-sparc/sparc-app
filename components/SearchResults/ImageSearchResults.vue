@@ -46,7 +46,7 @@ import { compose, last, defaultTo, split, pathOr, propOr } from 'ramda'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 
 export default {
-  name: 'FileSearchResults',
+  name: 'ImageSearchResults',
 
   mixins: [StorageMetrics],
 
