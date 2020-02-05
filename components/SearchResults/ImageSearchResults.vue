@@ -27,6 +27,15 @@
               Download
             </el-dropdown-item>
             <el-dropdown-item
+              v-if="scope.row.sourcePackageId"
+              :command="{
+                type: 'openFile',
+                scope
+              }"
+            >
+              Open
+            </el-dropdown-item>
+            <el-dropdown-item
               :command="{
                 type: 'openDataset',
                 scope
@@ -123,6 +132,22 @@ export default {
       el.click()
 
       document.body.removeChild(el)
+    },
+
+    /**
+     * Open the file
+     * @param {Object} scope
+     */
+    openFile: function(scope) {
+      const sourcePackageId = pathOr('', ['row', 'sourcePackageId'], scope)
+      if (sourcePackageId) {
+        this.$router.push({
+          name: 'file-id',
+          params: {
+            id: sourcePackageId
+          }
+        })
+      }
     }
   }
 }
