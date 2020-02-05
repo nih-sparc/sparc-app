@@ -156,8 +156,13 @@ const links = [
   },
   {
     title: 'atlas',
-    displayTitle: 'Atlas',
+    displayTitle: 'Atlas (3D)',
     href: '/atlas'
+  },
+  {
+    title: 'flatmap',
+    displayTitle: 'Atlas (2D)',
+    href: '/flatmap'
   },
   {
     title: 'resources',
