@@ -96,7 +96,8 @@ const searchResultsComponents = {
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
   file: FileSearchResults,
-  organ: OrganSearchResults
+  organ: OrganSearchResults,
+  simulation: DatasetSearchResults,
 }
 
 const searchTypes = [
@@ -128,7 +129,7 @@ const searchTypes = [
     label: 'Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'contentful'
+    dataSource: 'blackfynn'
   }
 ]
 
@@ -203,7 +204,11 @@ export default {
      */
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+      let url = `${process.env.discover_api_host}/search/${
+        searchType === 'simulation' ? 'dataset' : searchType
+      }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
+        searchType === 'simulation' ? 'tags=simcore' : 'organization=SPARC%20Consortium'
+      }`
 
       if (searchType === 'file') {
         url += '&fileType=tiff'
@@ -342,7 +347,7 @@ export default {
           const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
-            items: response[`${searchType}s`],
+            items: response[`${searchType === 'simulation' ? 'dataset' : searchType}s`],
             total: response.totalCount
           }
           this.searchData = mergeLeft(searchData, this.searchData)
