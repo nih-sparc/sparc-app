@@ -31,8 +31,8 @@
         <el-col :span="24">
           <h3>
             Cite this dataset
-          </h3> -->
-          <!-- <div
+          </h3>
+          <div
             v-loading="citationLoading"
             class="info-citation"
             aria-live="polite"
@@ -110,7 +110,41 @@ export default {
       type: Array,
       default: () => []
     }
-  }
+  },
+
+  data() {
+    return {
+      citationLoading: false,
+      citationText: ''
+    }
+  },
+
+  methods: {
+    /**
+     * gets bibiolography based on citation type for current DOI
+     * @param {String} citationType
+     */
+    handleCitationChanged: function(citationType) {
+      if (citationType === this.activeCitation) {
+        return
+      }
+      this.citationLoading = true
+      this.activeCitation = citationType
+      // find all citation types at https://github.com/citation-style-language/style
+      const doi = propOr('', 'doi', this.datasetDetails)
+      const url = `${this.crosscite_host}/format?doi=${doi}&style=${citationType}&lang=en-US`
+      return fetch(url)
+        .then(response => {
+          return response.text()
+        })
+        .then(text => {
+          this.citationText = text
+        })
+        .finally(() => {
+          this.citationLoading = false
+        })
+    }
+  },
 }
 </script>
 

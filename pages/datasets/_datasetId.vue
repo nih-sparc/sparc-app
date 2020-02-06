@@ -123,45 +123,21 @@
         :dataset-records="datasetRecords"
         :dataset-tags="datasetTags"
       />
-      <dataset-description-info v-show="activeTab === 'description'" />
-      <dataset-metadata-info v-show="activeTab === 'metadata'" />
-      <dataset-files-info v-show="activeTab === 'files'" />
+      <dataset-description-info
+        v-show="activeTab === 'description'"
+        :markdown="markdown"
+        :loading-markdown="loadingMarkdown"
+      />
+      <dataset-metadata-info
+        v-show="activeTab === 'metadata'"
+        :dataset-details="datasetDetails"
+      />
+      <dataset-files-info
+        v-show="activeTab === 'files'"
+        :dataset-details="datasetDetails"
+      />
       <dataset-model-info v-show="activeTab === '3DModel'" />
     </detail-tabs>
-
-    <!-- <el-row type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <div
-          v-loading="loadingMarkdown"
-          class="col-xs-12 description-container"
-          v-html="parsedMarkdown"
-        />
-      </el-col>
-    </el-row> -->
-
-    <!-- <el-row type="flex" justify="center">
-      <el-col class="meta_switch" :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <el-switch
-          v-model="show_meta"
-          active-color="#24245b"
-          inactive-color="#24245b"
-          active-text="Show Metadata"
-          inactive-text="Show Files"
-        />
-      </el-col>
-    </el-row> -->
-
-    <!-- <el-row v-if="!show_meta" type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <files-table :dataset-details="datasetDetails" />
-      </el-col>
-    </el-row> -->
-
-    <!-- <el-row v-if="show_meta" type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <metadata-table :dataset-details="datasetDetails" />
-      </el-col>
-    </el-row> -->
 
     <!-- <div class="dataset-info">
       <div class="discover-content container-fluid dataset-info-container">
