@@ -1,27 +1,132 @@
 <template>
   <div class="dataset-details">
-    <div class="header">
-      <div class="gradient">
-        <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-            <div class="breadcrumb">
-              <el-row>
-                <el-col :span="24">
-                  <router-link :to="{ name: 'data' }">
-                    <i class="el-icon-arrow-left" />Back to all results
-                  </router-link>
-                </el-col>
-              </el-row>
-            </div>
-          </el-col>
-        </el-row>
+    <div class="dataset-details__page-route">
+      <p>
+        <nuxt-link
+          :to="{
+            name: 'data',
+            query: {
+              type: 'sparcAward'
+            }
+          }"
+        >
+          Find Data
+        </nuxt-link>
+        > {{ formatBreadcrumb(datasetTitle) }}
+      </p>
+    </div>
+    <details-header>
+      <div slot="banner image">
+        <dataset-banner-image class="dataset-image" :src="getDatasetImage" />
       </div>
-    </div>
-    <div class="discover-content container-fluid">
-      <dataset-header :dataset-details="datasetDetails" />
-    </div>
+      <h3 slot="subtitle">
+        Stomach
+      </h3>
+      <h2 slot="title">
+        {{ formatTitle(datasetTitle) }}
+      </h2>
+      <p
+        slot="description"
+        class="details-header__container--dataset-description"
+      >
+        {{ formatDescription(datasetDescription) }}
+      </p>
+      <div slot="meta content" class="details-header__container--content-links">
+        <div class="dataset-meta">
+          <div class="dataset-updated-date">
+            Last updated on {{ lastUpdatedDate }}
+          </div>
+        </div>
+        <div class="dataset-owners">
+          <template v-if="!isContributorListVisible">
+            <contributor-item :contributor="firstContributor" />
+            <button
+              class="contributors-button"
+              href="#"
+              @click.prevent="isContributorListVisible = true"
+            >
+              <span class="button-text">...</span>
+            </button>
+          </template>
 
-    <el-row type="flex" justify="center">
+          <div
+            v-for="(contributor, idx) in datasetContributorsList"
+            :key="contributor.id"
+            class="contributor-item-wrap"
+          >
+            <contributor-item :contributor="contributor" />
+            <template v-if="idx < datasetContributorsList.length - 1">
+              ,
+            </template>
+          </div>
+        </div>
+        <div class="header-stats-section">
+          <div class="header-stats-block">
+            <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
+            <div>
+              <template v-if="datasetFiles > 0">
+                <strong>
+                  {{ datasetFiles }}
+                </strong>
+                Files
+              </template>
+
+              <template v-else>
+                No Files
+              </template>
+            </div>
+          </div>
+          <div class="header-stats-block">
+            <svg-icon class="mr-8" name="icon-storage" height="20" width="20" />
+            <div>
+              <strong>{{ datasetStorage.number }}</strong>
+              {{ datasetStorage.unit }}
+            </div>
+          </div>
+          <div class="header-stats-block">
+            <svg-icon class="mr-8" name="icon-license" height="20" width="20" />
+            <div>
+              <template v-if="datasetLicense">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="datasetLicenseName"
+                  placement="top"
+                  :visible-arrow="false"
+                >
+                  <a :href="licenseLink" target="_blank">
+                    {{ datasetLicense }}
+                  </a>
+                </el-tooltip>
+              </template>
+
+              <template v-else>
+                No License Selected
+              </template>
+            </div>
+          </div>
+        </div>
+        <button class="dataset-button">
+          <a href="#">Get Dataset</a>
+        </button>
+      </div>
+    </details-header>
+    <detail-tabs
+      :tabs="tabs"
+      :active-tab="activeTab"
+      @set-active-tab="setActiveTab"
+    >
+      <dataset-about-info
+        v-show="activeTab === 'about'"
+        :dataset-details="datasetDetails"
+      />
+      <dataset-description-info v-show="activeTab === 'description'" />
+      <dataset-metadata-info v-show="activeTab === 'metadata'" />
+      <dataset-files-info v-show="activeTab === 'files'" />
+      <dataset-model-info v-show="activeTab === '3DModel'" />
+    </detail-tabs>
+
+    <!-- <el-row type="flex" justify="center">
       <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
         <div
           v-loading="loadingMarkdown"
@@ -29,9 +134,9 @@
           v-html="parsedMarkdown"
         />
       </el-col>
-    </el-row>
+    </el-row> -->
 
-    <el-row type="flex" justify="center">
+    <!-- <el-row type="flex" justify="center">
       <el-col class="meta_switch" :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
         <el-switch
           v-model="show_meta"
@@ -41,21 +146,21 @@
           inactive-text="Show Files"
         />
       </el-col>
-    </el-row>
+    </el-row> -->
 
-    <el-row v-if="!show_meta" type="flex" justify="center">
+    <!-- <el-row v-if="!show_meta" type="flex" justify="center">
       <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
         <files-table :dataset-details="datasetDetails" />
       </el-col>
-    </el-row>
+    </el-row> -->
 
-    <el-row v-if="show_meta" type="flex" justify="center">
+    <!-- <el-row v-if="show_meta" type="flex" justify="center">
       <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
         <metadata-table :dataset-details="datasetDetails" />
       </el-col>
-    </el-row>
+    </el-row> -->
 
-    <div class="dataset-info">
+    <!-- <div class="dataset-info">
       <div class="discover-content container-fluid dataset-info-container">
         <el-row type="flex" justify="center">
           <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
@@ -116,7 +221,7 @@
                   v-html="citationText"
                 />
                 <!-- "$sanitize(citationText, ['i'])" -->
-                <div class="info-citation-links mb-24">
+    <!-- <div class="info-citation-links mb-24">
                   Formatted as:
                   <button
                     title="Format citation apa"
@@ -159,19 +264,29 @@
           </el-col>
         </el-row>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import marked from 'marked'
-import { propOr, pathOr } from 'ramda'
+import { propOr, pathOr, last, head, compose, split } from 'ramda'
 // import { mapState } from 'vuex'
 
-import DatasetHeader from '@/components/DatasetHeader/DatasetHeader.vue'
 import TagList from '@/components/TagList/TagList.vue'
 import FilesTable from '@/components/FilesTable/FilesTable.vue'
 import MetadataTable from '@/components/MetadataTable/MetadataTable.vue'
+import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
+import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
+import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
+import FormatStorage from '@/mixins/bf-storage-metrics'
+
+import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
+import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
+import DatasetMetadataInfo from '@/components/DatasetDetails/DatasetMetadataInfo.vue'
+import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
+import DatasetModelInfo from '@/components/DatasetDetails/DatasetModelInfo.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -184,13 +299,21 @@ export default {
   name: 'DatasetDetails',
 
   components: {
-    DatasetHeader,
     FilesTable,
     MetadataTable,
-    TagList
+    TagList,
+    DetailsHeader,
+    DetailTabs,
+    ContributorItem,
+    DatasetBannerImage,
+    DatasetAboutInfo,
+    DatasetDescriptionInfo,
+    DatasetMetadataInfo,
+    DatasetFilesInfo,
+    DatasetModelInfo
   },
 
-  mixins: [Request, DateUtils],
+  mixins: [Request, DateUtils, FormatStorage],
 
   props: {
     showSignupFooter: {
@@ -215,11 +338,103 @@ export default {
       show_meta: false,
       crosscite_host: process.env.crosscite_api_host,
       discover_host: process.env.discover_api_host,
-      portal_host: process.env.portal_api
+      portal_host: process.env.portal_api,
+      isContributorListVisible: true,
+      tabs: [
+        {
+          label: 'About',
+          type: 'about'
+        },
+        {
+          label: 'Description',
+          type: 'description'
+        },
+        {
+          label: 'Metadata',
+          type: 'metadata'
+        },
+        {
+          label: 'Files',
+          type: 'files'
+        },
+        {
+          label: '3-D Model',
+          type: '3DModel'
+        }
+      ],
+      activeTab: 'about'
     }
   },
 
   computed: {
+    /**
+     * Returns the dataset storage count
+     * @returns {Object}
+     */
+    datasetStorage: function() {
+      const storage = compose(
+        split(' '),
+        this.formatMetric,
+        propOr(0, 'size')
+      )(this.datasetDetails)
+
+      return storage.reduce((number, unit) => {
+        return {
+          number,
+          unit
+        }
+      })
+    },
+
+    /**
+     * Returns the files associated with the dataset
+     * @returns {String}
+     */
+    datasetFiles: function() {
+      return propOr('', 'fileCount', this.datasetDetails)
+    },
+
+    /**
+     * Returns dataset banner
+     * @returns {String}
+     */
+    getDatasetImage: function() {
+      return propOr('', 'banner', this.datasetDetails)
+    },
+
+    /**
+     * Returns the list of contributors who contributed to the dataset
+     * @returns {String}
+     */
+    datasetContributors: function() {
+      return propOr([], 'contributors', this.datasetDetails)
+    },
+    /**
+     * Compute contributors list based
+     * on expanded list being show
+     * @returns {Array}
+     */
+    datasetContributorsList: function() {
+      return this.isContributorListVisible
+        ? this.datasetContributors
+        : [last(this.datasetContributors)]
+    },
+
+    /**
+     * Gets the first contributor from the list
+     * @returns {String}
+     */
+    firstContributor: function() {
+      return head(this.datasetContributors)
+    },
+    /**
+     * Returns the dataset title
+     * @returns {String}
+     */
+    datasetTitle: function() {
+      return propOr('', 'name', this.datasetDetails)
+    },
+
     /**
      * Returns the records in the protocol model for this dataset
      * @returns {String}
@@ -355,10 +570,53 @@ export default {
         this.getMarkdown()
       },
       immediate: true
+    },
+
+    datasetContributors: {
+      handler: function(val) {
+        if (val.length > 5) {
+          this.isContributorListVisible = false
+        }
+      },
+      immediate: true
     }
   },
 
   methods: {
+    /**
+     * Sets active tab
+     * @param {String} activeLabel
+     */
+    setActiveTab: function(activeLabel) {
+      this.activeTab = activeLabel
+    },
+    /**
+     * Formats description based on length
+     * @param {String} description
+     */
+    formatDescription: function(description) {
+      return description.length > 540
+        ? description.substring(0, 540) + '...'
+        : description
+    },
+
+    /**
+     * Formats title length
+     * @param {String} title
+     */
+    formatTitle: function(title) {
+      return title.length > 150 ? title.substring(0, 150) + '...' : title
+    },
+
+    /**
+     * Formats breadcrumb length
+     * @param {String} breadcrumb
+     */
+    formatBreadcrumb: function(breadcrumb) {
+      return breadcrumb.length > 32
+        ? breadcrumb.substring(0, 32) + '...'
+        : breadcrumb
+    },
     /**
      * Returns protocol records in a dataset's model if they exist
      */
@@ -491,6 +749,74 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_spacing.scss';
+@import '@/assets/_variables.scss';
+.details-header {
+  &__container {
+    &--content-links {
+      .contributors-button {
+        height: 14px;
+        width: 18px;
+        border: 1px solid $median;
+        border-radius: 2px;
+        background-color: $light-purple;
+        cursor: pointer;
+        margin: 0 6px;
+        padding: 0;
+
+        &:focus {
+          background-color: #b6b7ba;
+        }
+
+        .button-text {
+          position: relative;
+          bottom: 5px;
+        }
+      }
+      .dataset-button {
+        background-color: $median;
+        width: 127px;
+        height: 40px;
+        font-size: 14px;
+        color: #ffffff;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.dataset-updated-date {
+  line-height: 24px;
+  color: black;
+  font-size: 14px;
+  line-height: 24px;
+
+  a {
+    color: #404554;
+    text-decoration: underline;
+    &:hover,
+    &:active,
+    &:visited {
+      color: #404554;
+    }
+    &:focus {
+      color: black;
+    }
+  }
+}
+
+.dataset-owners {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  color: #404554;
+  font-size: 14px;
+  line-height: 24px;
+  margin-bottom: 40px;
+  .contributor-item-wrap {
+    display: inline-flex;
+    margin-right: 4px;
+  }
+}
 
 .breadcrumb {
   a {
@@ -508,7 +834,25 @@ export default {
 }
 
 .dataset-details {
-  background-color: #ffffff;
+  &__page-route {
+    background: $purple-gray;
+    height: 2.5rem;
+    margin-top: 0;
+    p {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+      padding-left: 2rem;
+      padding-top: 0.75rem;
+      margin-top: 0;
+      color: $midnight;
+    }
+
+    a {
+      text-decoration: none;
+      color: $midnight;
+    }
+  }
 }
 
 .copy-success-notification {
