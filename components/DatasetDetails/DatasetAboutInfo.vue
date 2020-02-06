@@ -2,37 +2,113 @@
   <div class="dataset-about-info">
     <div class="dataset-about-info__container">
       <h3>Last Updated</h3>
-      <p>{{ lastUpdatedDate }}</p>
+      <p>{{ updatedDate }}</p>
       <h3>Dataset DOI</h3>
-      <p>{{ datasetDOI }}</p>
-      <h3>Protocol DOIs</h3>
-      <p>{{ protocolDOIs }}</p>
+      <p>{{ doi }}</p>
+      <el-row
+        v-if="datasetRecords.length !== 0"
+        type="flex"
+        justify="center"
+        class="protocol-block"
+      >
+        <el-col :span="24">
+          <h3>
+            Protocol DOIs
+          </h3>
+          <a
+            v-for="(record, index) in datasetRecords"
+            :key="`${record}-${index}`"
+            :href="record.properties.url"
+            class="dataset-about-info__container--protocol-text"
+          >
+            {{ record.properties.url }}
+          </a>
+        </el-col>
+      </el-row>
       <h3>Awards</h3>
-      <p>{{ datasetAwards }}</p>
       <h3>Cite This Dataset</h3>
+      <!-- <el-row type="flex" justify="center">
+        <el-col :span="24">
+          <h3>
+            Cite this dataset
+          </h3> -->
+          <!-- <div
+            v-loading="citationLoading"
+            class="info-citation"
+            aria-live="polite"
+            v-html="citationText"
+          />
+          "$sanitize(citationText, ['i'])"
+          <div class="info-citation-links mb-24">
+            Formatted as:
+            <button
+              title="Format citation apa"
+              :class="{ active: activeCitation === 'apa' }"
+              @click="handleCitationChanged('apa')"
+            >
+              APA
+            </button>
+            <button
+              title="Format citation chicago"
+              :class="{
+                active: activeCitation === 'chicago-note-bibliography'
+              }"
+              @click="handleCitationChanged('chicago-note-bibliography')"
+            >
+              Chicago
+            </button>
+            <button
+              title="Format citation ieee"
+              :class="{ active: activeCitation === 'ieee' }"
+              @click="handleCitationChanged('ieee')"
+            >
+              IEEE
+            </button>
+            <a
+              :href="`https://crosscite.org/?doi=${datasetDetails.doi}`"
+              target="_blank"
+            >
+              More on Crosscite.org
+            </a>
+          </div>
+        </el-col>
+      </el-row> -->
       <div class="dataset-about-info__container--citation">
         Citation goes here
       </div>
       <h3>Tags</h3>
-      <ul>
-        <li>
-          Tag 1
-        </li>
-        <li>
-          Tag 2
-        </li>
-      </ul>
+      <tag-list :tags="datasetTags" />
     </div>
   </div>
 </template>
 
 <script>
+import TagList from '@/components/TagList/TagList.vue'
 export default {
   name: 'DatasetAboutInfo',
+
+  components: {
+    TagList
+  },
   props: {
-    datasetDetails: {
-      type: Object,
-      default: () => {}
+    updatedDate: {
+      type: String,
+      default: ''
+    },
+
+    doi: {
+      type: String,
+      default: ''
+    },
+
+    datasetRecords: {
+      type: Array,
+      default: () => []
+    },
+
+    datasetTags: {
+      type: Array,
+      default: () => []
     }
   }
 }
@@ -54,7 +130,6 @@ export default {
       font-weight: normal;
       line-height: 24px;
       color: black;
-      margin-bottom: 1.5rem;
     }
 
     &--citation {
@@ -63,6 +138,15 @@ export default {
       padding-left: 1rem;
       padding-right: 1rem;
       margin-bottom: 1.5rem;
+    }
+
+    &--protocol-text {
+      color: black;
+      text-decoration: none;
+      font-size: 0.875em;
+      line-height: 24px;
+      margin-bottom: 1.5rem;
+      font-weight: normal;
     }
   }
 }

@@ -6,7 +6,7 @@
           :to="{
             name: 'data',
             query: {
-              type: 'sparcAward'
+              type: 'dataset'
             }
           }"
         >
@@ -17,7 +17,7 @@
     </div>
     <details-header>
       <div slot="banner image">
-        <dataset-banner-image class="dataset-image" :src="getDatasetImage" />
+        <dataset-banner-image :src="getDatasetImage" />
       </div>
       <h3 slot="subtitle">
         Stomach
@@ -118,7 +118,10 @@
     >
       <dataset-about-info
         v-show="activeTab === 'about'"
-        :dataset-details="datasetDetails"
+        :updated-date="lastUpdatedDate"
+        :doi="datasetDOI"
+        :dataset-records="datasetRecords"
+        :dataset-tags="datasetTags"
       />
       <dataset-description-info v-show="activeTab === 'description'" />
       <dataset-metadata-info v-show="activeTab === 'metadata'" />
