@@ -108,10 +108,6 @@
         :markdown="markdown"
         :loading-markdown="loadingMarkdown"
       />
-      <dataset-metadata-info
-        v-show="activeTab === 'metadata'"
-        :dataset-details="datasetDetails"
-      />
       <dataset-files-info
         v-show="activeTab === 'files'"
         :dataset-details="datasetDetails"
@@ -167,7 +163,6 @@ export default {
     DownloadDataset,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
-    DatasetMetadataInfo,
     DatasetFilesInfo,
     DatasetModelInfo
   },
@@ -198,7 +193,6 @@ export default {
       markdown: '',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
-      portal_host: process.env.portal_api,
       isContributorListVisible: true,
       isDownloadModalVisible: false,
       tabs: [
@@ -209,10 +203,6 @@ export default {
         {
           label: 'Description',
           type: 'description'
-        },
-        {
-          label: 'Metadata',
-          type: 'metadata'
         },
         {
           label: 'Files',
