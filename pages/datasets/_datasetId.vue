@@ -1,7 +1,7 @@
 <template>
   <div class="dataset-details">
     <details-header
-      :subtitle="'Stomach'"
+      :subtitle="subtitles.toString()"
       :title="datasetTitle"
       :description="datasetDescription"
       :breadcrumb="breadcrumb"
@@ -172,13 +172,15 @@ export default {
   asyncData() {
     return Promise.all([
       // Get page content
-      client.getEntries(process.env.ctf_organ_id)
+      client.getEntries({
+        content_type: process.env.ctf_organ_id
+      })
     ])
-      .then(([page]) => {
-        console.log("what do I get for page ", page)
-        // return {
-        //   fields: page.fields
-        // }
+      .then(([entries]) => {
+        console.log('what do I get for entries ', entries.items)
+        return {
+          entries: entries.items
+        }
       })
       .catch(console.error)
   },
@@ -218,7 +220,8 @@ export default {
         name: 'data',
         type: 'dataset',
         parent: 'Teams and Projects'
-      }
+      },
+      subtitles: []
     }
   },
 
@@ -454,6 +457,19 @@ export default {
       handler: function(val) {
         if (val.length > 5) {
           this.isContributorListVisible = false
+        }
+      },
+      immediate: true
+    },
+
+    datasetTags: {
+      handler: function(val) {
+        if (val) {
+          this.entries.forEach(entry => {
+            if (this.datasetTags.includes(entry.fields.name.toLowerCase())) {
+              this.subtitles.push(entry.fields.name)
+            }
+          })
         }
       },
       immediate: true
