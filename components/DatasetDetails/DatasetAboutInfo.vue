@@ -5,24 +5,24 @@
       <p>{{ updatedDate }}</p>
       <h3>Dataset DOI</h3>
       <p>{{ doi }}</p>
-      <el-row
-        v-if="datasetRecords.length !== 0"
-        type="flex"
-        justify="center"
-        class="protocol-block"
-      >
+      <el-row type="flex" justify="center" class="protocol-block">
         <el-col :span="24">
           <h3>
             Protocol DOIs
           </h3>
-          <a
-            v-for="(record, index) in datasetRecords"
-            :key="`${record}-${index}`"
-            :href="record.properties.url"
-            class="dataset-about-info__container--protocol-text"
-          >
-            {{ record.properties.url }}
-          </a>
+          <div v-if="datasetRecords.length !== 0">
+            <a
+              v-for="(record, index) in datasetRecords"
+              :key="`${record}-${index}`"
+              :href="record.properties.url"
+              class="dataset-about-info__container--protocol-text"
+            >
+              {{ record.properties.url }}
+            </a>
+          </div>
+          <div v-else class="dataset-about-info__container--protocol-text-na">
+            <p>N/A</p>
+          </div>
         </el-col>
       </el-row>
       <h3>Awards</h3>
@@ -76,7 +76,12 @@
         </el-row>
       </div>
       <h3>Tags</h3>
-      <tag-list :tags="datasetTags" />
+      <div v-if="datasetTags.length !== 0">
+        <tag-list :tags="datasetTags" />
+      </div>
+      <div v-else>
+        <p>N/A</p>
+      </div>
     </div>
   </div>
 </template>
@@ -159,8 +164,7 @@ export default {
       this.citationLoading = true
       this.activeCitation = citationType
       // find all citation types at https://github.com/citation-style-language/style
-      const doi = propOr('', 'doi', this.datasetDetails)
-      const url = `${this.crosscite_host}/format?doi=${doi}&style=${citationType}&lang=en-US`
+      const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType}&lang=en-US`
       return fetch(url)
         .then(response => {
           console.log('hellooo ', response.text())
@@ -228,6 +232,12 @@ export default {
       font-size: 0.875em;
       line-height: 24px;
       font-weight: normal;
+    }
+
+    &--protocol-text-na {
+      p {
+        margin-bottom: 0;
+      }
     }
 
     .protocol-block {

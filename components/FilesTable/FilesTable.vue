@@ -29,7 +29,7 @@
           fixed
           prop="name"
           label="Name"
-          min-width="300"
+          min-width="200"
           sortable
         >
           <template slot-scope="scope">
@@ -345,7 +345,6 @@ export default {
 }
 .files-table-table {
   background: #fff;
-  border: 1px solid rgb(228, 231, 237);
   padding: 16px;
 }
 .error-wrap {
@@ -359,5 +358,16 @@ export default {
   font-size: 16px;
   flex-shrink: 0;
   margin: 3px 8px 0 0;
+}
+
+::v-deep .el-table {
+  th {
+    .cell {
+      color: black;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+  }
 }
 </style>
