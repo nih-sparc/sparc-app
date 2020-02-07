@@ -30,7 +30,7 @@ export default {
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:4000',
     crosscite_api_host:
-      process.env.CROSSCITE_API_HOST || 'https://crosscite.org',
+      process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
       process.env.BLACKFYNN_DISCOVER_API_HOST ||
       'https://api.blackfynn.io/discover',

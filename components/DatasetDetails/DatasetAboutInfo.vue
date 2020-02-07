@@ -41,7 +41,7 @@
               Formatted as:
               <a
                 title="Format citation apa"
-                :class="{ active: activeCitation === 'apa' }"
+                :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
               >
                 APA
@@ -50,7 +50,7 @@
               <a
                 title="Format citation chicago"
                 :class="{
-                  active: activeCitation === 'chicago-note-bibliography'
+                  'active-citation': activeCitation === 'chicago-note-bibliography'
                 }"
                 @click="handleCitationChanged('chicago-note-bibliography')"
               >
@@ -59,14 +59,14 @@
               |
               <a
                 title="Format citation ieee"
-                :class="{ active: activeCitation === 'ieee' }"
+                :class="{ 'active-citation': activeCitation === 'ieee' }"
                 @click="handleCitationChanged('ieee')"
               >
                 IEEE
               </a>
               |
               <a
-                :href="`https://crosscite.org/?doi=${doiValue}`"
+                :href="`https://citation.crosscite.org/?doi=${doiValue}`"
                 target="_blank"
               >
                 More on Crosscite.org
@@ -167,7 +167,6 @@ export default {
       const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType}&lang=en-US`
       return fetch(url)
         .then(response => {
-          console.log('hellooo ', response.text())
           return response.text()
         })
         .then(text => {
@@ -208,6 +207,14 @@ export default {
       margin-bottom: 1.5rem;
     }
 
+    .info-citation {
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 24px;
+      color: black;
+      margin-top: 1rem;
+    }
+
     &--citation-links {
       font-weight: bold;
       font-size: 14px;
@@ -219,7 +226,7 @@ export default {
         font-weight: 500;
         line-height: 16px;
         cursor: pointer;
-        &:active {
+        &.active-citation {
           color: black;
           text-decoration: underline;
         }
