@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@abi-software/flatmapvuer": "^0.1.0",
-    "@abi-software/scaffoldvuer": "^0.1.12",
+    "@abi-software/scaffoldvuer": "^0.1.13",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/robots": "^2.4.2",
     "babel-eslint": "^10.0.3",

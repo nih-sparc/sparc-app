@@ -3,11 +3,13 @@
     <div class="container">
       <div class="subpage">
         <div style="width:100%;height:1028px">
-          <FlatmapVuer
-            entry="NCBITaxon:9606"
-            height="100%"
-            v-on:resource-selected="logScaffoldInteraction"
-          />
+          <client-only placeholder="Loading viewer...">
+            <FlatmapVuer
+              entry="NCBITaxon:9606"
+              height="100%"
+              v-on:resource-selected="logScaffoldInteraction"
+            />
+          </client-only>
         </div>
       </div>
     </div>

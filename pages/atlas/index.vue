@@ -3,10 +3,12 @@
     <div class="container">
       <div class="subpage">
         <div style="height:1028px;width:100%">
-          <ScaffoldVuer
-            url="https://mapcore-bucket1.s3-us-west-2.amazonaws.com/others/a3/a3_metadata.json"
-            v-on:scaffold-selected="logScaffoldInteraction"
-          />
+          <client-only placeholder="Loading viewer...">
+            <ScaffoldVuer
+              url="https://mapcore-bucket1.s3-us-west-2.amazonaws.com/others/a3/a3_metadata.json"
+              v-on:scaffold-selected="logScaffoldInteraction"
+            />
+          </client-only>
         </div>
       </div>
     </div>
