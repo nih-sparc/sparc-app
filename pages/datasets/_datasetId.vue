@@ -84,8 +84,8 @@
             </div>
           </div>
         </div>
-        <button class="dataset-button">
-          <a href="#">Get Dataset</a>
+        <button class="dataset-button" @click="isDownloadModalVisible = true">
+          Get Dataset
         </button>
       </div>
     </details-header>
@@ -118,7 +118,12 @@
       />
       <dataset-model-info v-show="activeTab === '3DModel'" />
     </detail-tabs>
-
+    <download-dataset
+      :visible.sync="isDownloadModalVisible"
+      :dataset-details="datasetDetails"
+      :download-size="getDownloadSize"
+      @close-download-dialog="isDownloadModalVisible = false"
+    />
     <!-- <div class="dataset-info">
       <div class="discover-content container-fluid dataset-info-container">
         <el-row type="flex" justify="center">
@@ -165,7 +170,7 @@
                   class="info-text"
                 >
                   {{ record.properties.url }}
-                </a>
+                </Get>
               </el-col>
             </el-row>
             <el-row type="flex" justify="center">
@@ -235,7 +240,7 @@ import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
-import FormatStorage from '@/mixins/bf-storage-metrics'
+import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
@@ -245,6 +250,8 @@ import DatasetModelInfo from '@/components/DatasetDetails/DatasetModelInfo.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
+import FormatStorage from '@/mixins/bf-storage-metrics'
+import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 marked.setOptions({
   sanitize: true
@@ -258,6 +265,7 @@ export default {
     DetailTabs,
     ContributorItem,
     DatasetBannerImage,
+    DownloadDataset,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetMetadataInfo,
@@ -279,6 +287,7 @@ export default {
       discover_host: process.env.discover_api_host,
       portal_host: process.env.portal_api,
       isContributorListVisible: true,
+      isDownloadModalVisible: false,
       tabs: [
         {
           label: 'About',
@@ -312,6 +321,13 @@ export default {
 
   computed: {
     /**
+     * Gets dataset size for download
+     * @returns {Number}
+     */
+    getDownloadSize: function() {
+      return propOr(0, 'size', this.datasetDetails)
+    },
+    /**
      * Returns the dataset storage count
      * @returns {Object}
      */
@@ -336,6 +352,31 @@ export default {
      */
     datasetFiles: function() {
       return propOr('', 'fileCount', this.datasetDetails)
+    },
+
+    /**
+     * Gets license link
+     * @returns {String}
+     */
+    licenseLink: function() {
+      return getLicenseLink(this.datasetLicense)
+    },
+
+    /**
+     * Returns the license abbr associated with the dataset
+     * @returns {String}
+     */
+    datasetLicense: function() {
+      const licenseKey = propOr('', 'license', this.datasetDetails)
+      return getLicenseAbbr(licenseKey)
+    },
+
+    /**
+     * Returns the license name associated with the dataset
+     * @returns {String}
+     */
+    datasetLicenseName: function() {
+      return propOr('', 'license', this.datasetDetails)
     },
 
     /**
@@ -694,7 +735,6 @@ export default {
   color: #404554;
   font-size: 14px;
   line-height: 24px;
-  margin-bottom: 40px;
   .contributor-item-wrap {
     display: inline-flex;
     margin-right: 4px;
@@ -703,7 +743,7 @@ export default {
 
 .header-stats-section {
   display: flex;
-  margin: 40px 0 0;
+  margin: 20px 0 0;
 }
 
 .header-stats-block {
@@ -717,6 +757,8 @@ export default {
     margin-right: 3px;
   }
   a {
+    margin-left: 0;
+    font-size: 14px;
     &:focus {
       color: #1c46bd;
     }

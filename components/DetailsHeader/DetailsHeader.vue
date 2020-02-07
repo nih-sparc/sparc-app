@@ -145,6 +145,7 @@ export default {
         font-size: 14px;
         font-weight: normal;
         line-height: 24px;
+        margin-bottom: 5rem;
       }
     }
     &--content-meta {

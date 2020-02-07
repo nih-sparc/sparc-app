@@ -26,6 +26,7 @@
         </el-col>
       </el-row>
       <h3>Awards</h3>
+      <p>Lorem ipsum text</p>
       <h3>Cite This Dataset</h3>
       <div class="dataset-about-info__container--citation">
         <el-row type="flex" justify="center">
@@ -226,8 +227,11 @@ export default {
       text-decoration: none;
       font-size: 0.875em;
       line-height: 24px;
-      margin-bottom: 1.5rem;
       font-weight: normal;
+    }
+
+    .protocol-block {
+      margin-bottom: 1rem;
     }
   }
 }
