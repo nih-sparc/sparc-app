@@ -120,6 +120,7 @@
         v-show="activeTab === 'about'"
         :updated-date="lastUpdatedDate"
         :doi="datasetDOI"
+        :doi-value="datasetDetails.doi"
         :dataset-records="datasetRecords"
         :dataset-tags="datasetTags"
       />

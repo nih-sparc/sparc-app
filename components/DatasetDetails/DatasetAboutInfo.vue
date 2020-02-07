@@ -27,54 +27,52 @@
       </el-row>
       <h3>Awards</h3>
       <h3>Cite This Dataset</h3>
-      <!-- <el-row type="flex" justify="center">
-        <el-col :span="24">
-          <h3>
-            Cite this dataset
-          </h3>
-          <div
-            v-loading="citationLoading"
-            class="info-citation"
-            aria-live="polite"
-            v-html="citationText"
-          />
-          "$sanitize(citationText, ['i'])"
-          <div class="info-citation-links mb-24">
-            Formatted as:
-            <button
-              title="Format citation apa"
-              :class="{ active: activeCitation === 'apa' }"
-              @click="handleCitationChanged('apa')"
-            >
-              APA
-            </button>
-            <button
-              title="Format citation chicago"
-              :class="{
-                active: activeCitation === 'chicago-note-bibliography'
-              }"
-              @click="handleCitationChanged('chicago-note-bibliography')"
-            >
-              Chicago
-            </button>
-            <button
-              title="Format citation ieee"
-              :class="{ active: activeCitation === 'ieee' }"
-              @click="handleCitationChanged('ieee')"
-            >
-              IEEE
-            </button>
-            <a
-              :href="`https://crosscite.org/?doi=${datasetDetails.doi}`"
-              target="_blank"
-            >
-              More on Crosscite.org
-            </a>
-          </div>
-        </el-col>
-      </el-row> -->
       <div class="dataset-about-info__container--citation">
-        Citation goes here
+        <el-row type="flex" justify="center">
+          <el-col :span="24">
+            <div
+              v-loading="citationLoading"
+              class="info-citation"
+              aria-live="polite"
+              v-html="citationText"
+            />
+            <div class="dataset-about-info__container--citation-links mb-24">
+              Formatted as:
+              <a
+                title="Format citation apa"
+                :class="{ active: activeCitation === 'apa' }"
+                @click="handleCitationChanged('apa')"
+              >
+                APA
+              </a>
+              |
+              <a
+                title="Format citation chicago"
+                :class="{
+                  active: activeCitation === 'chicago-note-bibliography'
+                }"
+                @click="handleCitationChanged('chicago-note-bibliography')"
+              >
+                Chicago
+              </a>
+              |
+              <a
+                title="Format citation ieee"
+                :class="{ active: activeCitation === 'ieee' }"
+                @click="handleCitationChanged('ieee')"
+              >
+                IEEE
+              </a>
+              |
+              <a
+                :href="`https://crosscite.org/?doi=${doiValue}`"
+                target="_blank"
+              >
+                More on Crosscite.org
+              </a>
+            </div>
+          </el-col>
+        </el-row>
       </div>
       <h3>Tags</h3>
       <tag-list :tags="datasetTags" />
@@ -84,6 +82,7 @@
 
 <script>
 import TagList from '@/components/TagList/TagList.vue'
+import { propOr } from 'ramda'
 export default {
   name: 'DatasetAboutInfo',
 
@@ -97,6 +96,11 @@ export default {
     },
 
     doi: {
+      type: String,
+      default: ''
+    },
+
+    doiValue: {
       type: String,
       default: ''
     },
@@ -115,7 +119,30 @@ export default {
   data() {
     return {
       citationLoading: false,
-      citationText: ''
+      citationText: '',
+      activeCitation: '',
+      crosscite_host: process.env.crosscite_api_host
+    }
+  },
+
+  computed: {
+    /**
+     * Return DOI link
+     * @returns {String}
+     */
+    DOIlink: function() {
+      return this.doiValue ? `https://doi.org/${this.doiValue}` : ''
+    }
+  },
+
+  watch: {
+    DOIlink: {
+      handler: function(val) {
+        if (val) {
+          this.handleCitationChanged('apa')
+        }
+      },
+      immediate: true
     }
   },
 
@@ -135,16 +162,18 @@ export default {
       const url = `${this.crosscite_host}/format?doi=${doi}&style=${citationType}&lang=en-US`
       return fetch(url)
         .then(response => {
+          console.log('hellooo ', response.text())
           return response.text()
         })
         .then(text => {
+          console.log('what am I getting ', text)
           this.citationText = text
         })
         .finally(() => {
           this.citationLoading = false
         })
     }
-  },
+  }
 }
 </script>
 
@@ -172,6 +201,24 @@ export default {
       padding-left: 1rem;
       padding-right: 1rem;
       margin-bottom: 1.5rem;
+    }
+
+    &--citation-links {
+      font-weight: bold;
+      font-size: 14px;
+      margin-top: 1rem;
+      a {
+        text-decoration: none;
+        color: $median;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 16px;
+        cursor: pointer;
+        &:active {
+          color: black;
+          text-decoration: underline;
+        }
+      }
     }
 
     &--protocol-text {
