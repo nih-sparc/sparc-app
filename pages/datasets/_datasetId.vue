@@ -1,36 +1,14 @@
 <template>
   <div class="dataset-details">
-    <div class="dataset-details__page-route">
-      <p>
-        <nuxt-link
-          :to="{
-            name: 'data',
-            query: {
-              type: 'dataset'
-            }
-          }"
-        >
-          Find Data
-        </nuxt-link>
-        > {{ formatBreadcrumb(datasetTitle) }}
-      </p>
-    </div>
-    <details-header>
+    <details-header
+      :subtitle="'Stomach'"
+      :title="datasetTitle"
+      :description="datasetDescription"
+      :breadcrumb="breadcrumb"
+    >
       <div slot="banner image">
         <dataset-banner-image :src="getDatasetImage" />
       </div>
-      <h3 slot="subtitle">
-        Stomach
-      </h3>
-      <h2 slot="title">
-        {{ formatTitle(datasetTitle) }}
-      </h2>
-      <p
-        slot="description"
-        class="details-header__container--dataset-description"
-      >
-        {{ formatDescription(datasetDescription) }}
-      </p>
       <div slot="meta content" class="details-header__container--content-links">
         <div class="dataset-meta">
           <div class="dataset-updated-date">
@@ -114,6 +92,7 @@
     <detail-tabs
       :tabs="tabs"
       :active-tab="activeTab"
+      class="container"
       @set-active-tab="setActiveTab"
     >
       <dataset-about-info
@@ -251,11 +230,7 @@
 <script>
 import marked from 'marked'
 import { propOr, pathOr, last, head, compose, split } from 'ramda'
-// import { mapState } from 'vuex'
 
-import TagList from '@/components/TagList/TagList.vue'
-import FilesTable from '@/components/FilesTable/FilesTable.vue'
-import MetadataTable from '@/components/MetadataTable/MetadataTable.vue'
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
@@ -279,9 +254,6 @@ export default {
   name: 'DatasetDetails',
 
   components: {
-    FilesTable,
-    MetadataTable,
-    TagList,
     DetailsHeader,
     DetailTabs,
     ContributorItem,
@@ -295,28 +267,15 @@ export default {
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  props: {
-    showSignupFooter: {
-      type: Boolean,
-      default: false
-    }
-  },
-
   data() {
     return {
-      citationText: '',
-      activeCitation: '',
       showCopySuccess: false,
-      citationLoading: false,
-      isTombStone: false,
       isLoadingDataset: false,
       datasetDetails: {},
       errorLoading: false,
       loadingMarkdown: false,
       markdown: '',
       datasetRecords: [],
-      show_meta: false,
-      crosscite_host: process.env.crosscite_api_host,
       discover_host: process.env.discover_api_host,
       portal_host: process.env.portal_api,
       isContributorListVisible: true,
@@ -342,7 +301,12 @@ export default {
           type: '3DModel'
         }
       ],
-      activeTab: 'about'
+      activeTab: 'about',
+      breadcrumb: {
+        name: 'data',
+        type: 'dataset',
+        parent: 'Teams and Projects'
+      }
     }
   },
 
@@ -421,12 +385,6 @@ export default {
      */
     getSearchRecordsUrl: function() {
       return `${this.discover_host}/search/records?datasetId=${this.datasetId}&model=protocol`
-    },
-    /**
-     * Parses the markdown text
-     */
-    parsedMarkdown: function() {
-      return marked(this.markdown)
     },
 
     /**
@@ -510,20 +468,16 @@ export default {
       return `${this.discover_host}/datasets/${this.datasetId}`
     },
 
+    /**
+     * Get datasetid
+     * @returns {String}
+     */
     datasetId: function() {
       return pathOr('', ['params', 'datasetId'], this.$route)
     }
   },
 
   watch: {
-    DOIlink: {
-      handler: function(val) {
-        if (val) {
-          this.handleCitationChanged('apa')
-        }
-      },
-      immediate: true
-    },
     getDatasetUrl: {
       handler: function(val) {
         if (val) {
@@ -571,33 +525,6 @@ export default {
       this.activeTab = activeLabel
     },
     /**
-     * Formats description based on length
-     * @param {String} description
-     */
-    formatDescription: function(description) {
-      return description.length > 540
-        ? description.substring(0, 540) + '...'
-        : description
-    },
-
-    /**
-     * Formats title length
-     * @param {String} title
-     */
-    formatTitle: function(title) {
-      return title.length > 150 ? title.substring(0, 150) + '...' : title
-    },
-
-    /**
-     * Formats breadcrumb length
-     * @param {String} breadcrumb
-     */
-    formatBreadcrumb: function(breadcrumb) {
-      return breadcrumb.length > 32
-        ? breadcrumb.substring(0, 32) + '...'
-        : breadcrumb
-    },
-    /**
      * Returns protocol records in a dataset's model if they exist
      */
     getProtocolRecords: function() {
@@ -639,30 +566,6 @@ export default {
      */
     onCopySuccess: function() {
       this.showCopySuccess = true
-    },
-    /**
-     * gets bibiolography based on citation type for current DOI
-     * @param {String} citationType
-     */
-    handleCitationChanged: function(citationType) {
-      if (citationType === this.activeCitation) {
-        return
-      }
-      this.citationLoading = true
-      this.activeCitation = citationType
-      // find all citation types at https://github.com/citation-style-language/style
-      const doi = propOr('', 'doi', this.datasetDetails)
-      const url = `${this.crosscite_host}/format?doi=${doi}&style=${citationType}&lang=en-US`
-      return fetch(url)
-        .then(response => {
-          return response.text()
-        })
-        .then(text => {
-          this.citationText = text
-        })
-        .finally(() => {
-          this.citationLoading = false
-        })
     },
 
     /**
@@ -798,256 +701,30 @@ export default {
   }
 }
 
-.breadcrumb {
+.header-stats-section {
+  display: flex;
+  margin: 40px 0 0;
+}
+
+.header-stats-block {
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 12px;
+  margin-bottom: 1rem;
+  .svg-icon {
+    margin-right: 3px;
+  }
   a {
-    color: white;
-    font-weight: 600;
-  }
-}
-
-.header {
-  .gradient {
-    padding: 1.5em 0;
-    color: #f0f2f5;
-    background-image: linear-gradient(90deg, #0026ff 0%, #00ffb9 100%);
-  }
-}
-
-.dataset-details {
-  &__page-route {
-    background: $purple-gray;
-    height: 2.5rem;
-    margin-top: 0;
-    p {
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 16px;
-      padding-left: 2rem;
-      padding-top: 0.75rem;
-      margin-top: 0;
-      color: $midnight;
-    }
-
-    a {
-      text-decoration: none;
-      color: $midnight;
+    &:focus {
+      color: #1c46bd;
     }
   }
-}
-
-.copy-success-notification {
-  color: #fff;
-  margin-left: 5px;
-}
-
-.meta_switch {
-  padding: 8px 0;
-  color: #f0f2f5;
-  border-bottom: 1px solid #0026ff;
-}
-
-.fade-leave-active {
-  transition: opacity 0.5s ease-out 2s;
-}
-
-.fade-enter {
-  opacity: 1;
-}
-
-.fade-leave-to {
-  opacity: 0;
 }
 
 .dataset-details {
   width: 100%;
   overflow-x: hidden;
-
-  .dataset-info {
-    background-color: #24245b;
-    padding-bottom: 64px;
-  }
-}
-
-// Footer styles
-.dataset-info {
-  h2 {
-    color: #f9f2fc;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 32px;
-    margin: 56px 0 24px;
-  }
-
-  h3 {
-    color: #f9f2fc;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 16px;
-    margin: 5px 16px 7px 0px;
-  }
-}
-
-.protocol-block {
-  margin-bottom: 15px;
-}
-
-.doi-block {
-  margin-bottom: 15px;
-}
-
-.info-publishing-history {
-  @media (min-width: 48em) {
-    display: flex;
-  }
-  .info-text {
-    margin-right: 90px;
-  }
-}
-
-.info-text {
-  color: #fff;
-  font-size: 14px;
-  line-height: 24px;
-
-  a {
-    color: #fff;
-    text-decoration: underline;
-  }
-
-  .info-text-caps {
-    text-transform: uppercase;
-    color: #f2f6fc;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 16px;
-  }
-}
-
-.info-citation {
-  border-radius: 4px;
-  background-color: #f2f6fc;
-  padding: 16px;
-  color: #1c46bd;
-  font-size: 14px;
-  line-height: 24px;
-  margin-bottom: 8px;
-}
-
-.info-citation-links {
-  font-size: 14px;
-  line-height: 16px;
-  color: #c0c4cc;
-  button,
-  a {
-    background: none;
-    border: none;
-    color: #c0c4cc;
-    line-height: 16px;
-    text-decoration: underline;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 0;
-    margin-left: 11px;
-
-    &.active {
-      text-decoration: none;
-      color: #fff;
-    }
-  }
-}
-
-// Markdown styles
-.description-container {
-  color: #000;
-  font-size: 16px;
-  line-height: 24px;
-  padding-bottom: 92px;
-
-  h1,
-  p,
-  h2,
-  h3,
-  blockquote,
-  h4,
-  pre {
-    max-width: 616px;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5 {
-    margin: 0 0 8px;
-  }
-
-  h1 {
-    font-size: 32px;
-    font-weight: bold;
-    line-height: 40px;
-  }
-
-  p {
-    margin-bottom: 16px;
-  }
-
-  img {
-    height: auto;
-    max-width: 170%;
-    margin-bottom: 20px;
-    flex-basis: 50%;
-    margin-top: 24px;
-  }
-
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 32px;
-  }
-
-  h3 {
-    font-size: 20px;
-    font-weight: bold;
-    line-height: 24px;
-    letter-spacing: 0px;
-  }
-
-  h4 {
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 24px;
-    text-transform: uppercase;
-    letter-spacing: 0px;
-  }
-
-  ul {
-    margin: 0 0 16px;
-    padding: 0 0 0 18px;
-  }
-
-  blockquote {
-    font-weight: normal;
-    line-height: 24px;
-    font-size: 16px;
-    border-left: 8px solid #2760ff;
-    margin-left: 0;
-
-    p {
-      margin-left: 16px;
-    }
-  }
-  pre {
-    background-color: #f1f1f3;
-    line-height: 24px;
-    padding: 16px;
-
-    code {
-      font-weight: normal;
-      font-size: 14px;
-    }
-  }
-}
-.files-table {
-  margin: 8px 0;
 }
 </style>
