@@ -1,7 +1,11 @@
 <template>
-<div class="atlas">
-    Atlas
-</div>
+  <div class="atlas">
+    <div class="container">
+      <div class="subpage">
+        Atlas
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -9,12 +13,3 @@ export default {
   name: 'Atlas'
 }
 </script>
-
-<style lang="scss" scoped>
-.atlas {
-  margin-top: 8rem;
-  @media screen and (max-width: 1023px) {
-    margin-top: 3rem;
-  }
-}
-</style>

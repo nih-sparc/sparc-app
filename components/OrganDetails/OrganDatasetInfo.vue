@@ -1,12 +1,12 @@
 <template>
-  <div name="project-team-info">
-    Lorem ipsum 2 woohoo
+  <div class="organ-dataset-info">
+    lorem ipsum 2
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ProjectTeamInfo'
+  name: 'OrganDatasetInfo'
 }
 </script>
 

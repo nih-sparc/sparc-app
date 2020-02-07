@@ -49,7 +49,7 @@ export default {
     border: solid 1px $cloudy;
     padding-left: 3rem;
     padding-right: 2rem;
-    margin: 1.3rem;
+    margin: 1.3rem -1rem 1.3rem -1rem;
     &--types {
       border-bottom: 2px solid #dbdfe6;
       display: flex;

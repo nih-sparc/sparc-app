@@ -22,31 +22,20 @@
     </page-hero>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
-        <el-col :span="6">
-          <search-filters v-model="filters" v-loading="isLoadingFilters" />
-        </el-col>
-        <el-col :span="18">
+        <el-col :span="24">
           <div class="search-heading">
             <p v-if="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }}
             </p>
             <div class="filter__wrap">
-              <div
-                v-for="(filter, filterIdx) in filters"
-                :key="filter.category"
-                class="filter__wrap-category"
+              <button
+                class="btn__filters"
+                :disabled="filters.length === 0"
+                @click="isFiltersVisible = true"
               >
-                <template v-for="(item, itemIdx) in filter.filters">
-                  <el-tag
-                    v-if="item.value"
-                    :key="`${item.key}`"
-                    closable
-                    @close="clearFilter(filterIdx, itemIdx)"
-                  >
-                    {{ item.label }}
-                  </el-tag>
-                </template>
-              </div>
+                <svg-icon name="icon-preset" height="20" width="20" />
+                Filters
+              </button>
             </div>
           </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
@@ -63,12 +52,16 @@
         </el-col>
       </el-row>
     </div>
+    <search-filters
+      v-model="filters"
+      :visible.sync="isFiltersVisible"
+      :is-loading="isLoadingFilters"
+    />
   </div>
 </template>
 
 <script>
 import {
-  assocPath,
   clone,
   compose,
   defaultTo,
@@ -95,12 +88,15 @@ const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
 const FileSearchResults = () =>
   import('@/components/SearchResults/FileSearchResults.vue')
+const OrganSearchResults = () =>
+  import('@/components/SearchResults/OrganSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
-  file: FileSearchResults
+  file: FileSearchResults,
+  organ: OrganSearchResults
 }
 
 const searchTypes = [
@@ -118,7 +114,7 @@ const searchTypes = [
   },
   {
     label: 'Organs',
-    type: 'organ',
+    type: process.env.ctf_organ_id,
     filterId: process.env.ctf_filters_organ_id,
     dataSource: 'contentful'
   },
@@ -195,7 +191,8 @@ export default {
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
-      isLoadingFilters: false
+      isLoadingFilters: false,
+      isFiltersVisible: false
     }
   },
 
@@ -420,20 +417,6 @@ export default {
       this.$router.replace({ query }).then(() => {
         this.fetchResults()
       })
-    },
-
-    /**
-     * Clear filter's value
-     * @param {Number} filterIdx
-     * @param {Number} itemIdx
-     */
-    clearFilter: function(filterIdx, itemIdx) {
-      const filters = assocPath(
-        [filterIdx, 'items', itemIdx, 'value'],
-        false,
-        this.filters
-      )
-      this.filters = filters
     }
   }
 }
@@ -516,25 +499,41 @@ export default {
   text-align: center;
 }
 .search-heading {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   margin-bottom: 1em;
   p {
     font-size: 0.875em;
     flex-shrink: 0;
-    margin: 1em 1em 0 0;
+    margin: 0 1em 0 0;
   }
-}
-.filter__wrap,
-.filter__wrap-category {
-  display: inline;
-}
-.filter__wrap .el-tag {
-  margin: 0.5em 1em 0.5em 0;
 }
 ::v-deep {
   .el-table td {
     vertical-align: top;
+  }
+}
+.btn__filters {
+  align-items: center;
+  background: none;
+  border: none;
+  color: $median;
+  display: flex;
+  font-size: 0.875em;
+  outline: none;
+  padding: 0;
+  &[disabled] {
+    opacity: 0.7;
+  }
+  &:not([disabled]) {
+    &:hover,
+    &:focus {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+  .svg-icon {
+    margin-right: 0.3125rem;
   }
 }
 </style>

@@ -9,7 +9,8 @@
       <template slot-scope="scope">
         <nuxt-link
           :to="{
-            name: 'project-details',
+            name: 'projects-projectId',
+            path: 'projects/:scope.row.sys.id',
             params: { projectId: scope.row.sys.id }
           }"
         >

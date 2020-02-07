@@ -1,31 +1,7 @@
 <template>
   <div class="project-details">
-    <div class="project-details__page-route">
-      <p>
-        <nuxt-link
-          :to="{
-            name: 'data',
-            query: {
-              type: 'sparcAward'
-            }
-          }"
-        >
-          Teams and Projects
-        </nuxt-link>
-        > {{ formatBreadcrumb(fields.title) }}
-      </p>
-    </div>
-    <details-header>
+    <details-header :subtitle="fields.organ.fields.name" :title="fields.title" :description="fields.description" :breadcrumb="breadcrumb">
       <img slot="banner image" src="http://placehold.jp/368x368.png" />
-      <h3 slot="subtitle">
-        {{ fields.organ.fields.name }}
-      </h3>
-      <h2 slot="title">
-        {{ formatTitle(fields.title) }}
-      </h2>
-      <p slot="description">
-        {{ formatDescription(fields.description) }}
-      </p>
       <div slot="meta content" class="details-header__container--content-meta">
         <div class="content-meta__item">
           <h3>Project Number</h3>
@@ -49,10 +25,10 @@
     <detail-tabs
       :tabs="tabs"
       :active-tab="activeTab"
+      class="container"
       @set-active-tab="setActiveTab"
     >
       <project-dataset-info v-show="activeTab === 'datasets'" />
-      <project-team-info v-show="activeTab === 'teamInformation'" />
     </detail-tabs>
   </div>
 </template>
@@ -61,7 +37,6 @@
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ProjectDatasetInfo from '@/components/ProjectDatasetInfo/ProjectDatasetInfo.vue'
-import ProjectTeamInfo from '@/components/ProjectTeamInfo/ProjectTeamInfo.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -72,8 +47,7 @@ export default {
   components: {
     DetailsHeader,
     DetailTabs,
-    ProjectDatasetInfo,
-    ProjectTeamInfo
+    ProjectDatasetInfo
   },
 
   asyncData(ctx) {
@@ -95,13 +69,14 @@ export default {
         {
           label: 'Datasets',
           type: 'datasets'
-        },
-        {
-          label: 'Team Information',
-          type: 'teamInformation'
         }
       ],
-      activeTab: 'datasets'
+      activeTab: 'datasets',
+      breadcrumb: {
+        name: 'data',
+        type: 'sparcAward',
+        parent: 'Teams and Projects'
+      }
     }
   },
 
@@ -112,34 +87,6 @@ export default {
      */
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
-    },
-
-    /**
-     * Formats description based on length
-     * @param {String} description
-     */
-    formatDescription: function(description) {
-      return description.length > 540
-        ? description.substring(0, 540) + '...'
-        : description
-    },
-
-    /**
-     * Formats breadcrumb length
-     * @param {String} breadcrumb
-     */
-    formatBreadcrumb: function(breadcrumb) {
-      return breadcrumb.length > 32
-        ? breadcrumb.substring(0, 32) + '...'
-        : breadcrumb
-    },
-
-    /**
-     * Formats title length
-     * @param {String} title
-     */
-    formatTitle: function(title) {
-      return title.length > 150 ? title.substring(0, 150) + '...' : title
     }
   }
 }

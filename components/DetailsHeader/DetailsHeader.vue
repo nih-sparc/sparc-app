@@ -1,13 +1,34 @@
 <template>
   <div class="details-header">
-    <div class="details-header__container">
+    <div class="details-header__page-route">
+      <p>
+        <nuxt-link
+          :to="{
+            name: breadcrumb.name,
+            query: {
+              type: breadcrumb.type
+            }
+          }"
+        >
+          {{ breadcrumb.parent }}
+        </nuxt-link>
+        > {{ formatBreadcrumb(title) }}
+      </p>
+    </div>
+    <div class="details-header__container container">
       <div class="details-header__container--image">
         <slot name="banner image" />
       </div>
       <div class="details-header__container--content">
-        <slot name="subtitle" />
-        <slot name="title" />
-        <slot name="description" />
+        <h3>
+          {{ subtitle }}
+        </h3>
+        <h2>
+          {{ formatTitle(title) }}
+        </h2>
+        <p>
+          {{ formatDescription(description) }}
+        </p>
         <slot name="meta content" />
       </div>
     </div>
@@ -16,14 +37,81 @@
 
 <script>
 export default {
-  name: 'DetailsHeader'
+  name: 'DetailsHeader',
+
+  props: {
+    breadcrumb: {
+      type: Object,
+      default: () => {}
+    },
+    subtitle: {
+      type: String,
+      default: ''
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    description: {
+      type: String,
+      default: ''
+    }
+  },
+
+  methods: {
+    /**
+     * Formats breadcrumb length
+     * @param {String} breadcrumb
+     */
+    formatBreadcrumb: function(breadcrumb) {
+      return breadcrumb.length > 32
+        ? breadcrumb.substring(0, 32) + '...'
+        : breadcrumb
+    },
+
+    /**
+     * Formats title length
+     * @param {String} title
+     */
+    formatTitle: function(title) {
+      return title.length > 150 ? title.substring(0, 150) + '...' : title
+    },
+
+    /**
+     * Formats description based on length
+     * @param {String} description
+     */
+    formatDescription: function(description) {
+      return description.length > 540
+        ? description.substring(0, 540) + '...'
+        : description
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
 .details-header {
-  margin: 1.25rem;
+  &__page-route {
+    background: $purple-gray;
+    height: 2.5rem;
+    margin-top: 0;
+    p {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+      padding-left: 2rem;
+      padding-top: 0.75rem;
+      margin-top: 0;
+      color: $midnight;
+    }
+
+    a {
+      text-decoration: none;
+      color: $midnight;
+    }
+  }
   &__container {
     display: flex;
     flex-direction: row;
@@ -31,6 +119,7 @@ export default {
     padding: 1rem;
     padding-top: 0;
     background: white;
+    margin-top: 1.25rem;
     &--image {
       margin-right: 1rem;
       margin-top: 2rem;
@@ -53,9 +142,9 @@ export default {
         line-height: 32px;
       }
       p {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: normal;
-        line-height: 28px;
+        line-height: 24px;
       }
     }
     &--content-meta {
