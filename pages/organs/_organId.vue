@@ -15,7 +15,10 @@
       @set-active-tab="setActiveTab"
     >
       <organ-model-info v-show="activeTab === '3DScaffold'" />
-      <organ-dataset-info v-show="activeTab === 'datasets'" />
+      <dataset-search-results
+        v-show="activeTab === 'datasets'"
+        :table-data="datasets"
+      />
       <project-search-results
         v-show="activeTab === 'projects'"
         :table-data="projects"
@@ -31,8 +34,8 @@ import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
 import OrganModelInfo from '@/components/OrganDetails/OrganModelInfo.vue'
-import OrganDatasetInfo from '@/components/OrganDetails/OrganDatasetInfo.vue'
 import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
+import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -45,28 +48,33 @@ export default {
     DetailsHeader,
     DetailTabs,
     OrganModelInfo,
-    OrganDatasetInfo,
-    ProjectSearchResults
+    ProjectSearchResults,
+    DatasetSearchResults
   },
 
-  asyncData(ctx) {
-    return Promise.all([
-      // Get page content
-      client.getEntry(ctx.route.params.organId),
+  async asyncData({ route, $axios }) {
+    // Get page content
+    const pageData = await client.getEntry(route.params.organId)
 
-      // Get related projects
-      client.getEntries({
-        content_type: process.env.ctf_project_id,
-        links_to_entry: ctx.route.params.organId
-      })
-    ])
-      .then(([page, projects]) => {
-        return {
-          pageData: page,
-          projects: projects.items
-        }
-      })
-      .catch(console.error)
+    // Get related projects
+    const projects = await client.getEntries({
+      content_type: process.env.ctf_project_id,
+      links_to_entry: route.params.organId
+    })
+
+    // Get related datasets
+    const organType = pathOr('', ['fields', 'name'], pageData)
+    const datasets = await $axios.$get(
+      `${
+        process.env.discover_api_host
+      }/search/datasets?tags=${organType.toLowerCase()}&limit=100`
+    )
+
+    return {
+      pageData,
+      projects: projects.items,
+      datasets: datasets.datasets
+    }
   },
 
   data() {
@@ -127,6 +135,17 @@ export default {
      */
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
+    },
+
+    /**
+     * Get related datsets
+     * @param {String} organ
+     */
+    getRelatedDatasets: function(organ) {
+      const organType = organ.toLowerCase()
+      return this.$axios.$get(
+        `${process.env.discover_api_host}/search/datasets?tags=${organType}`
+      )
     }
   }
 }
