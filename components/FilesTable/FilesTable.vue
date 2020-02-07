@@ -25,13 +25,7 @@
         </el-button>
       </div>
       <el-table v-else v-loading="isLoading" :data="data">
-        <el-table-column
-          fixed
-          prop="name"
-          label="Name"
-          min-width="200"
-          sortable
-        >
+        <el-table-column fixed prop="name" label="Name" width="340" sortable>
           <template slot-scope="scope">
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
@@ -63,7 +57,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="120">
+        <el-table-column
+          prop="fileType"
+          label="File type"
+          width="360"
+        >
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -77,19 +75,13 @@
         <el-table-column
           prop="size"
           label="Size"
-          width="120"
+          width="360"
           :formatter="formatStorage"
         />
-        <el-table-column
-          align="right"
-          fixed="right"
-          label="Operation"
-          min-width="100"
-          width="100"
-        >
+        <el-table-column label="Operation" width="200">
           <template v-if="scope.row.type === 'File'" slot-scope="scope">
             <el-dropdown trigger="click" @command="onCommandClick">
-              <el-button icon="el-icon-more" size="small" />
+              <el-button icon="el-icon-more" size="small" class="operation-button" />
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   :command="{
@@ -328,6 +320,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/_variables.scss';
 .breadcrumb {
   display: flex;
   margin-bottom: 8px;
@@ -353,6 +346,11 @@ export default {
 .file-name-wrap {
   display: flex;
 }
+
+.file-name {
+  color: $median;
+}
+
 .file-icon {
   color: #000;
   font-size: 16px;

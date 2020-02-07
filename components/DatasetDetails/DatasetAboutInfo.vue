@@ -43,9 +43,7 @@
                 title="Format citation apa"
                 :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
-              >
-                APA
-              </a>
+              >APA</a>
               |
               <a
                 title="Format citation chicago"
