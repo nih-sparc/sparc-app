@@ -16,7 +16,10 @@
     >
       <organ-model-info v-show="activeTab === '3DScaffold'" />
       <organ-dataset-info v-show="activeTab === 'datasets'" />
-      <organ-project-info v-show="activeTab === 'projects'" />
+      <project-search-results
+        v-show="activeTab === 'projects'"
+        :table-data="projects"
+      />
     </detail-tabs>
   </div>
 </template>
@@ -27,7 +30,7 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
 import OrganModelInfo from '@/components/OrganDetails/OrganModelInfo.vue'
 import OrganDatasetInfo from '@/components/OrganDetails/OrganDatasetInfo.vue'
-import OrganProjectInfo from '@/components/OrganDetails/OrganProjectInfo.vue'
+import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -41,18 +44,25 @@ export default {
     DetailTabs,
     OrganModelInfo,
     OrganDatasetInfo,
-    OrganProjectInfo
+    ProjectSearchResults
   },
 
   asyncData(ctx) {
     return Promise.all([
       // Get page content
-      client.getEntry(ctx.route.params.organId)
+      client.getEntry(ctx.route.params.organId),
+
+      // Get related projects
+      client.getEntries({
+        content_type: process.env.ctf_project_id,
+        links_to_entry: ctx.route.params.organId
+      })
     ])
-      .then(([page]) => {
-        // return {
-        //   fields: page.fields.bannerImage.fields
-        // } // TODO add later when we actually start populating with content
+      .then(([page, projects]) => {
+        return {
+          pageData: page,
+          projects: projects.items
+        }
       })
       .catch(console.error)
   },
@@ -101,4 +111,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep {
+  .el-table td {
+    vertical-align: top;
+  }
+}
+</style>
