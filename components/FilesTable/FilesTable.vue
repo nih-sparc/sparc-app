@@ -260,7 +260,7 @@ export default {
 
       const fileName = pathOr('', ['row', 'name'], scope)
 
-      const requestUrl = `/api/download?key=${filePath}`
+      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
       this.$axios.$get(requestUrl).then(response => {
         this.downloadFile(fileName, response)
       })
@@ -279,7 +279,7 @@ export default {
         pathOr('', ['row', 'uri'])
       )(scope)
 
-      const requestUrl = `/api/download?key=${filePath}`
+      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
 
       this.$axios.$get(requestUrl).then(response => {
         const url = response

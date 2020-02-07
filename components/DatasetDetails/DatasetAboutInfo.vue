@@ -168,7 +168,6 @@ export default {
           return response.text()
         })
         .then(text => {
-          console.log('what am I getting ', text)
           this.citationText = text
         })
         .finally(() => {

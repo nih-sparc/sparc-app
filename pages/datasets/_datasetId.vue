@@ -124,111 +124,6 @@
       :download-size="getDownloadSize"
       @close-download-dialog="isDownloadModalVisible = false"
     />
-    <!-- <div class="dataset-info">
-      <div class="discover-content container-fluid dataset-info-container">
-        <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-            <el-row type="flex" justify="center">
-              <el-col :span="24">
-                <h2>
-                  About this dataset
-                </h2>
-              </el-col>
-            </el-row>
-            <el-row class="mb-16">
-              <el-col :span="24">
-                <h3>
-                  Last Updated
-                </h3>
-                <div class="info-text">
-                  {{ lastUpdatedDate }}
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" justify="center" class="doi-block">
-              <el-col :span="24">
-                <h3>
-                  Dataset DOI
-                </h3>
-                <a :href="datasetDOI" class="info-text">{{ datasetDOI }}</a>
-              </el-col>
-            </el-row>
-            <el-row
-              v-if="datasetRecords.length !== 0"
-              type="flex"
-              justify="center"
-              class="protocol-block"
-            >
-              <el-col :span="24">
-                <h3>
-                  Protocol DOIs
-                </h3>
-                <a
-                  v-for="(record, index) in datasetRecords"
-                  :key="`${record}-${index}`"
-                  :href="record.properties.url"
-                  class="info-text"
-                >
-                  {{ record.properties.url }}
-                </Get>
-              </el-col>
-            </el-row>
-            <el-row type="flex" justify="center">
-              <el-col :span="24">
-                <h3>
-                  Cite this dataset
-                </h3>
-                <div
-                  v-loading="citationLoading"
-                  class="info-citation"
-                  aria-live="polite"
-                  v-html="citationText"
-                />
-                <!-- "$sanitize(citationText, ['i'])" -->
-    <!-- <div class="info-citation-links mb-24">
-                  Formatted as:
-                  <button
-                    title="Format citation apa"
-                    :class="{ active: activeCitation === 'apa' }"
-                    @click="handleCitationChanged('apa')"
-                  >
-                    APA
-                  </button>
-                  <button
-                    title="Format citation chicago"
-                    :class="{
-                      active: activeCitation === 'chicago-note-bibliography'
-                    }"
-                    @click="handleCitationChanged('chicago-note-bibliography')"
-                  >
-                    Chicago
-                  </button>
-                  <button
-                    title="Format citation ieee"
-                    :class="{ active: activeCitation === 'ieee' }"
-                    @click="handleCitationChanged('ieee')"
-                  >
-                    IEEE
-                  </button>
-                  <a
-                    :href="`https://crosscite.org/?doi=${datasetDetails.doi}`"
-                    target="_blank"
-                  >
-                    More on Crosscite.org
-                  </a>
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" justify="center">
-              <el-col :span="24">
-                <h3>Tags</h3>
-                <tag-list :tags="datasetTags" />
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -253,6 +148,10 @@ import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
+
 marked.setOptions({
   sanitize: true
 })
@@ -274,6 +173,20 @@ export default {
   },
 
   mixins: [Request, DateUtils, FormatStorage],
+
+  asyncData() {
+    return Promise.all([
+      // Get page content
+      client.getEntries(process.env.ctf_organ_id)
+    ])
+      .then(([page]) => {
+        console.log("what do I get for page ", page)
+        // return {
+        //   fields: page.fields
+        // }
+      })
+      .catch(console.error)
+  },
 
   data() {
     return {
