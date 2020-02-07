@@ -177,7 +177,6 @@ export default {
       })
     ])
       .then(([entries]) => {
-        console.log('what do I get for entries ', entries.items)
         return {
           entries: entries.items
         }
