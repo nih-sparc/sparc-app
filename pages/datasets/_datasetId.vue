@@ -86,7 +86,7 @@
         </div>
         <div v-if="getDatasetType === 'simulation'">
           <button class="dataset-button">
-            <a href="#">
+            <a href="#" target="_blank">
               Run Simulation
             </a>
           </button>
