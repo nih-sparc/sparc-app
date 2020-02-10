@@ -67,8 +67,8 @@ export default {
      * Clear search
      */
     clearSearch: function() {
-      // this.terms = ''
-      // this.submit()
+      this.terms = ''
+      this.submit()
     },
 
     /**

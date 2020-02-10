@@ -13,10 +13,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import HelpCard from '@/components/HelpCard/HelpCard.vue'
+import {HelpSection} from "~/pages/help/model";
+import {Sys} from "contentful";
 
-export default {
+export default Vue.extend<never, never, never, { section: HelpSection }>({
   name: 'HelpSection',
   components: {
     HelpCard
@@ -26,15 +29,13 @@ export default {
       type: Object,
       default: () => {
         return {
-          title: '',
           sys: {},
-          summary: ''
-        }
+          fields: {}
+        } as HelpSection
       }
     }
-  },
-  methods: {}
-}
+  }
+})
 </script>
 
 <style lang="scss" scoped>

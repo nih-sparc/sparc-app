@@ -9,6 +9,7 @@
         <!-- {{ heroCopy }} -->
       </p>
       <HelpSearchControls
+        isClearSearchVisible
         :search-on-load="true"
         submit-text="Go"
         @query="onSearchQuery"
@@ -18,15 +19,6 @@
     <div class="page-wrap container">
       <div class="subpage">
         <el-row type="flex" :gutter="32">
-          <el-col :xs="24" :md="22" :lg="6">
-            <h2>Menu</h2>
-            <ul>
-              <li><a href="#">Lorem Ipsum</a></li>
-              <li><a href="#">Lorem Ipsum</a></li>
-              <li><a href="#">Lorem Ipsum</a></li>
-              <li><a href="#">Lorem Ipsum</a></li>
-            </ul>
-          </el-col>
           <el-col :xs="24" :md="22" :lg="18">
             <help-section
               v-for="item in helpData.sections"
@@ -41,15 +33,18 @@
   </div>
 </template>
 
-<script>
-import HelpSection from '@/components/HelpSection/HelpSection.vue'
-import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
-import PageHero from '@/components/PageHero/PageHero.vue'
+<script lang="ts">
+import Vue from 'vue';
 import createClient from '@/plugins/contentful.js'
+import {Data, HelpData, HelpDocument, Methods} from "./model";
+import HelpSection from "@/components/HelpSection/HelpSection.vue";
+import HelpSearchControls from "@/components/help-search-controls/HelpSearchControls.vue";
+import PageHero from "@/components/PageHero/PageHero.vue";
 
 const client = createClient()
 
-export default {
+
+export default Vue.extend<Data, Methods, never, never>({
   name: 'HelpPage',
 
   components: {
@@ -59,12 +54,10 @@ export default {
   },
 
   asyncData() {
-    return Promise.all([
-      // fetch all blog posts sorted by creation date
-      client.getEntry(process.env.ctf_support_page_id, { include: 2 })
-    ])
-      .then(([resp]) => {
+    return client.getEntry<HelpData>(process.env.ctf_support_page_id as string, { include: 2 })
+      .then((resp) => {
         return {
+          allHelpData: resp.fields,
           helpData: resp.fields
         }
       })
@@ -73,16 +66,34 @@ export default {
 
   data() {
     return {
-      helpData: []
+      allHelpData: {},
+      helpData: {},
     }
   },
 
   methods: {
-    onSearchQuery: function() {
-      return 0
+    onSearchQuery: function(this: Data, terms) {
+      client
+        .getEntries<HelpDocument>({
+          content_type: 'helpDocument',
+          query: terms
+        })
+        .then(resp => {
+          this.helpData = {
+            ...this.allHelpData,
+            sections: (this.allHelpData.sections ?? []).map(section => ({
+              ...section,
+              fields: {
+                ...section.fields,
+                helpDocuments: section.fields.helpDocuments.filter(hd => resp.items.find(r => r.sys.id === hd.sys.id))
+              }
+            }))
+          }
+        })
+        .catch(console.error)
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

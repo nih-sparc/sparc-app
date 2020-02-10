@@ -11,21 +11,24 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+import {HelpDocument} from "~/pages/help/model";
+
+export default Vue.extend<never, never, never, { helpItem: HelpDocument }>({
   name: 'HelpCard',
   props: {
     helpItem: {
       type: Object,
       default: () => {
         return {
-          title: ''
-        }
+          sys: {},
+          fields: {}
+        } as HelpDocument
       }
     }
-  },
-  methods: {}
-}
+  }
+})
 </script>
 
 <style lang="scss" scoped>
