@@ -22,6 +22,7 @@ export interface HelpData {
 export interface Data {
   allHelpData: Partial<HelpData>
   helpData: Partial<HelpData>;
+  isLoadingSearch: boolean;
 }
 
 export interface Methods {

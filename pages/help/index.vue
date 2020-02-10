@@ -20,12 +20,14 @@
       <div class="subpage">
         <el-row type="flex" :gutter="32">
           <el-col :xs="24" :md="22" :lg="18">
-            <help-section
-              v-for="item in helpData.sections"
-              :key="item.sys.id"
-              class="help-section"
-              :section="item"
-            />
+            <div v-loading="isLoadingSearch">
+              <help-section
+                v-for="item in helpData.sections"
+                :key="item.sys.id"
+                class="help-section"
+                :section="item"
+              />
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -68,11 +70,13 @@ export default Vue.extend<Data, Methods, never, never>({
     return {
       allHelpData: {},
       helpData: {},
+      isLoadingSearch: false,
     }
   },
 
   methods: {
     onSearchQuery: function(this: Data, terms) {
+      this.isLoadingSearch = true;
       client
         .getEntries<HelpDocument>({
           content_type: 'helpDocument',
@@ -91,6 +95,9 @@ export default Vue.extend<Data, Methods, never, never>({
           }
         })
         .catch(console.error)
+        .finally(() => {
+          this.isLoadingSearch = false;
+        })
     }
   }
 })
