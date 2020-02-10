@@ -3,7 +3,7 @@
     <sparc-header />
     <nuxt />
     <sparc-footer />
-    <cookie-notice v-if="!hasAccepteedGDPR" />
+    <cookie-notice v-if="!hasAcceptedGDPR" />
   </div>
 </template>
 
@@ -24,12 +24,7 @@ export default {
       scrollingState: 'disableScrolling'
     }),
 
-    /**
-     * Compute if the user has accepted GDPR cookie notice
-     */
-    hasAccepteedGDPR: function() {
-      return this.$cookies.get('GDPR:accepted')
-    }
+    ...mapState(['hasAcceptedGDPR'])
   }
 }
 </script>

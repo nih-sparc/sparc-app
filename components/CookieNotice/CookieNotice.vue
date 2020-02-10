@@ -40,6 +40,7 @@ export default {
      */
     closeNotice: function() {
       this.$cookies.set('GDPR:accepted', true)
+      this.$store.dispatch('setHasAcceptedGdpr', true)
     }
   }
 }
@@ -78,6 +79,7 @@ p {
 }
 .btn-close {
   border: none;
+  cursor: pointer;
   padding: 0.25em;
   position: absolute;
   right: 1em;
