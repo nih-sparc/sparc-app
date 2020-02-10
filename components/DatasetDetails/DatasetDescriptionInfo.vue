@@ -3,19 +3,18 @@
     <div
       v-loading="loadingMarkdown"
       class="col-xs-12 description-container"
-      v-html="parsedMarkdown"
+      v-html="parseMarkdown(markdown)"
     />
   </div>
 </template>
 
 <script>
-import marked from 'marked'
+import marked from '@/mixins/marked/index'
 
-marked.setOptions({
-  sanitize: true
-})
 export default {
   name: 'DatasetDescriptionInfo',
+
+  mixins: [marked],
 
   props: {
     loadingMarkdown: {
