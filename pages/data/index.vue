@@ -34,8 +34,28 @@
                 @click="isFiltersVisible = true"
               >
                 <svg-icon name="icon-preset" height="20" width="20" />
-                Filters
+                {{ activeFiltersLabel }}
               </button>
+            </div>
+          </div>
+          <div class="mb-16">
+            <div class="active__filter__wrap">
+              <div
+                v-for="(filter, filterIdx) in filters"
+                :key="filter.category"
+                class="active__filter__wrap-category"
+              >
+                <template v-for="(item, itemIdx) in filter.filters">
+                  <el-tag
+                    v-if="item.value"
+                    :key="`${item.key}`"
+                    closable
+                    @close="clearFilter(filterIdx, itemIdx)"
+                  >
+                    {{ item.label }}
+                  </el-tag>
+                </template>
+              </div>
             </div>
           </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
@@ -56,12 +76,14 @@
       v-model="filters"
       :visible.sync="isFiltersVisible"
       :is-loading="isLoadingFilters"
+      :dialog-title="activeFiltersLabel"
     />
   </div>
 </template>
 
 <script>
 import {
+  assocPath,
   clone,
   compose,
   defaultTo,
@@ -96,7 +118,8 @@ const searchResultsComponents = {
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
   file: FileSearchResults,
-  organ: OrganSearchResults
+  organ: OrganSearchResults,
+  simulation: DatasetSearchResults,
 }
 
 const searchTypes = [
@@ -128,7 +151,7 @@ const searchTypes = [
     label: 'Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'contentful'
+    dataSource: 'blackfynn'
   }
 ]
 
@@ -203,7 +226,11 @@ export default {
      */
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+      let url = `${process.env.discover_api_host}/search/${
+        searchType === 'simulation' ? 'dataset' : searchType
+      }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
+        searchType === 'simulation' ? 'tags=simcore' : 'organization=SPARC%20Consortium'
+      }`
 
       if (searchType === 'file') {
         url += '&fileType=tiff'
@@ -281,6 +308,27 @@ export default {
         flatten,
         pluck('items')
       )(this.filters)
+    },
+
+    /**
+     * Compute active filters
+     * @returns {Array}
+     */
+    activeFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('filters')
+      )(this.filters)
+    },
+
+    /**
+     * Compute dialog header based on how many active filters
+     * @returns {String}
+     */
+    activeFiltersLabel: function() {
+      const activeFilterLength = this.activeFilters.length
+      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     }
   },
 
@@ -342,7 +390,7 @@ export default {
           const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
-            items: response[`${searchType}s`],
+            items: response[`${searchType === 'simulation' ? 'dataset' : searchType}s`],
             total: response.totalCount
           }
           this.searchData = mergeLeft(searchData, this.searchData)
@@ -417,6 +465,20 @@ export default {
       this.$router.replace({ query }).then(() => {
         this.fetchResults()
       })
+    },
+
+    /**
+     * Clear filter's value
+     * @param {Number} filterIdx
+     * @param {Number} itemIdx
+     */
+    clearFilter: function(filterIdx, itemIdx) {
+      const filters = assocPath(
+        [filterIdx, 'filters', itemIdx, 'value'],
+        false,
+        this.filters
+      )
+      this.filters = filters
     }
   }
 }
@@ -535,5 +597,12 @@ export default {
   .svg-icon {
     margin-right: 0.3125rem;
   }
+}
+.active__filter__wrap,
+.active__filter__wrap-category {
+  display: inline;
+}
+.active__filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
 }
 </style>
