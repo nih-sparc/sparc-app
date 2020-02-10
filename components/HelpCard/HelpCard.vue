@@ -1,7 +1,7 @@
 <template>
   <div class="help-card">
     <h3>
-      <nuxt-link
+      <nuxt-link class="help-link"
         :to="{ name: 'help-helpId', params: { helpId: helpItem.sys.id } }"
       >
         {{ helpItem.fields.title }}
@@ -33,4 +33,10 @@ export default Vue.extend<never, never, never, { helpItem: HelpDocument }>({
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
+.help-link {
+  color: $median
+}
+.help-link:not(:hover) {
+  text-decoration: none;
+}
 </style>

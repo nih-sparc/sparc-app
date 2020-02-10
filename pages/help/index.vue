@@ -1,12 +1,9 @@
 <template>
   <div class="help-page">
-    <page-hero>
+    <page-hero justify="left">
       <h2>{{ helpData.title }}</h2>
       <p>
         {{ helpData.summary }}
-      </p>
-      <p>
-        <!-- {{ heroCopy }} -->
       </p>
       <HelpSearchControls
         isClearSearchVisible
@@ -15,22 +12,14 @@
         @query="onSearchQuery"
       />
     </page-hero>
-
-    <div class="page-wrap container">
-      <div class="subpage">
-        <el-row type="flex" :gutter="32">
-          <el-col :xs="24" :md="22" :lg="18">
-            <div v-loading="isLoadingSearch">
-              <help-section
-                v-for="item in helpData.sections"
-                :key="item.sys.id"
-                class="help-section"
-                :section="item"
-              />
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+    <div v-loading="isLoadingSearch">
+      <help-section
+        v-for="item in helpData.sections"
+        :key="item.sys.id"
+        class="help-section"
+        :section="item"
+        :searchTerms="searchTerms"
+      />
     </div>
   </div>
 </template>
@@ -42,6 +31,7 @@ import {Data, HelpData, HelpDocument, Methods} from "./model";
 import HelpSection from "@/components/HelpSection/HelpSection.vue";
 import HelpSearchControls from "@/components/help-search-controls/HelpSearchControls.vue";
 import PageHero from "@/components/PageHero/PageHero.vue";
+import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const client = createClient()
 
@@ -52,7 +42,8 @@ export default Vue.extend<Data, Methods, never, never>({
   components: {
     HelpSection,
     HelpSearchControls,
-    PageHero
+    PageHero,
+    SearchForm
   },
 
   asyncData() {
@@ -71,12 +62,14 @@ export default Vue.extend<Data, Methods, never, never>({
       allHelpData: {},
       helpData: {},
       isLoadingSearch: false,
+      searchTerms: '',
     }
   },
 
   methods: {
     onSearchQuery: function(this: Data, terms) {
       this.isLoadingSearch = true;
+      this.searchTerms = terms;
       client
         .getEntries<HelpDocument>({
           content_type: 'helpDocument',
@@ -105,7 +98,8 @@ export default Vue.extend<Data, Methods, never, never>({
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.help-section {
-  margin: 0 0 2em;
+.page-hero {
+  background-color: $navy;
+  background-image: none;
 }
 </style>

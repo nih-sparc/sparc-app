@@ -1,29 +1,15 @@
 <template>
-  <div class="controls">
-    <div v-if="isSearchVisible" class="control control-search-input">
-      <el-input
-        v-model="terms"
-        placeholder="Search Documentation..."
-        suffix-icon="el-icon-search"
-        @keyup.native.enter="submit"
-      />
-    </div>
-    <div v-if="isSearchVisible" class="search-button">
-      <el-button
-        type="primary"
-        class="view-search-results"
-        @click.native="submit"
-      >
-        {{ submitText }}
-      </el-button>
-      <el-button
-        v-if="isClearSearchVisible"
-        class="btn-clear-search"
-        @click.native="clearSearch"
-      >
-        Clear search
-      </el-button>
-    </div>
+  <div class="search-form" @keyup.enter="submit">
+    <input
+      v-model="terms"
+      placeholder="Search help topics"
+      suffix-icon="el-icon-search"
+      @keyup.enter="submit"
+    />
+    <button title="Search" @click="submit">
+      <span class="visuallyhidden">Search</span>
+      <svg-icon name="icon-magnifying-glass" height="20" width="20" />
+    </button>
   </div>
 </template>
 
@@ -90,51 +76,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.controls {
-  align-items: center;
-  display: flex;
-  width: 100%;
-  display: flex;
-  max-width: 900px;
-}
-
-.control {
-  display: inline-block;
-
-  :selected {
-    color: red;
+  @import '@/assets/_variables.scss';
+  .search-form {
+    display: flex;
+    margin: 0 0 1rem;
   }
-}
-
-.search-control {
-  border: 0;
-  -webkit-appearance: none;
-  width: 100%;
-  height: 100%;
-}
-
-.control-search-type {
-  margin-right: 8px;
-  // width: 180px;
-}
-.control-search-input {
-  flex: 1;
-  margin-right: 16px;
-  width: 100%;
-}
-
-.search-button {
-  .view-search-results {
-    background: #24245b;
-    border: 0;
-    height: 40px;
+  input {
+    border: 1px solid #909399;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #909399;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+    outline: none;
+    padding: 0.5rem 0.8125rem;
+    width: 28.0625rem;
+    &:focus {
+      border-color: $median;
+    }
   }
-}
-
-.btn-clear-search {
-  background: none;
-  border: none;
-  color: #8300bf;
-  padding: 0;
-}
+  button {
+    background: #f9f2fc;
+    border: 1px solid $median;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 2.5rem;
+    width: 2.5rem;
+  }
 </style>
