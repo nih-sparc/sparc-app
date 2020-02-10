@@ -82,7 +82,7 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios', '@nuxtjs/robots'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/robots', 'cookie-universal-nuxt'],
   /*
    ** robots.txt
    */
