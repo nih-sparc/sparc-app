@@ -8,8 +8,12 @@
             experience.
           </h2>
           <p>
-            To learn more, please refer to the Privacy Policy. By closing this
-            banner or clicking accept, you agree to the use of cookies.
+            To learn more, please refer to the
+            <nuxt-link to="privacy">
+              Privacy Policy.
+            </nuxt-link>
+            By closing this banner or clicking accept, you agree to the use of
+            cookies.
           </p>
         </div>
         <div>
@@ -59,25 +63,36 @@ export default {
   position: fixed;
 }
 .cookie-notice__content {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+  max-width: 80%;
+  @media (min-width: 48em) {
+    align-items: center;
+    display: flex;
+    max-width: none;
+    justify-content: space-between;
+  }
 }
 .cookie-notice__copy {
+  margin-bottom: 1em;
   @media (min-width: 48em) {
-    margin-right: 1em;
+    margin: 0 1em 0 0;
     max-width: 53.75em;
   }
 }
 h2 {
-  font-size: 1.5em;
+  font-size: 1.1em;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
+  @media (min-width: 48em) {
+    font-size: 1.5em;
+  }
 }
 p {
+  font-size: 0.875em;
+  line-height: 1.2;
   margin: 0;
 }
 .btn-close {
+  background: none;
   border: none;
   cursor: pointer;
   padding: 0.25em;
