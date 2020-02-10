@@ -1,7 +1,7 @@
 <template>
   <div class="page-hero">
     <div class="container">
-      <el-row type="flex" justify="center">
+      <el-row type="flex" :justify="justify">
         <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="18">
           <slot />
         </el-col>
@@ -12,7 +12,13 @@
 
 <script>
 export default {
-  name: 'PageHero'
+  name: 'PageHero',
+  props: {
+    justify: {
+      type: String,
+      default: 'center'
+    }
+  }
 }
 </script>
 
