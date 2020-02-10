@@ -50,3 +50,10 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.dataset-image {
+  width: 368px;
+  height: 368px;
+}
+</style>

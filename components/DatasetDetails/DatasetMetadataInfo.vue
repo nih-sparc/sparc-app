@@ -1,12 +1,23 @@
 <template>
   <div class="dataset-metadata-info">
-    Testing lorem ipsum 4
+    <metadata-table :dataset-details="datasetDetails" />
   </div>
 </template>
 
 <script>
+import MetadataTable from '@/components/MetadataTable/MetadataTable.vue'
 export default {
-  name: 'DatasetMetadataInfo'
+  name: 'DatasetMetadataInfo',
+  components: {
+    MetadataTable
+  },
+
+  props: {
+    datasetDetails: {
+      type: Object,
+      default: () => {}
+    }
+  }
 }
 </script>
 

@@ -2,37 +2,177 @@
   <div class="dataset-about-info">
     <div class="dataset-about-info__container">
       <h3>Last Updated</h3>
-      <p>{{ lastUpdatedDate }}</p>
+      <p>{{ updatedDate }}</p>
       <h3>Dataset DOI</h3>
-      <p>{{ datasetDOI }}</p>
-      <h3>Protocol DOIs</h3>
-      <p>{{ protocolDOIs }}</p>
+      <p>{{ doi }}</p>
+      <el-row type="flex" justify="center" class="protocol-block">
+        <el-col :span="24">
+          <h3>
+            Protocol DOIs
+          </h3>
+          <div v-if="datasetRecords.length !== 0">
+            <a
+              v-for="(record, index) in datasetRecords"
+              :key="`${record}-${index}`"
+              :href="record.properties.url"
+              class="dataset-about-info__container--protocol-text"
+            >
+              {{ record.properties.url }}
+            </a>
+          </div>
+          <div v-else class="dataset-about-info__container--protocol-text-na">
+            <p>N/A</p>
+          </div>
+        </el-col>
+      </el-row>
       <h3>Awards</h3>
-      <p>{{ datasetAwards }}</p>
+      <p>Lorem ipsum text</p>
       <h3>Cite This Dataset</h3>
       <div class="dataset-about-info__container--citation">
-        Citation goes here
+        <el-row type="flex" justify="center">
+          <el-col :span="24">
+            <div
+              v-loading="citationLoading"
+              class="info-citation"
+              aria-live="polite"
+              v-html="citationText"
+            />
+            <div class="dataset-about-info__container--citation-links mb-24">
+              Formatted as:
+              <a
+                title="Format citation apa"
+                :class="{ 'active-citation': activeCitation === 'apa' }"
+                @click="handleCitationChanged('apa')"
+              >APA</a>
+              |
+              <a
+                title="Format citation chicago"
+                :class="{
+                  'active-citation': activeCitation === 'chicago-note-bibliography'
+                }"
+                @click="handleCitationChanged('chicago-note-bibliography')"
+              >
+                Chicago
+              </a>
+              |
+              <a
+                title="Format citation ieee"
+                :class="{ 'active-citation': activeCitation === 'ieee' }"
+                @click="handleCitationChanged('ieee')"
+              >
+                IEEE
+              </a>
+              |
+              <a
+                :href="`https://citation.crosscite.org/?doi=${doiValue}`"
+                target="_blank"
+              >
+                More on Crosscite.org
+              </a>
+            </div>
+          </el-col>
+        </el-row>
       </div>
       <h3>Tags</h3>
-      <ul>
-        <li>
-          Tag 1
-        </li>
-        <li>
-          Tag 2
-        </li>
-      </ul>
+      <div v-if="datasetTags.length !== 0">
+        <tag-list :tags="datasetTags" />
+      </div>
+      <div v-else>
+        <p>N/A</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import TagList from '@/components/TagList/TagList.vue'
+import { propOr } from 'ramda'
 export default {
   name: 'DatasetAboutInfo',
+
+  components: {
+    TagList
+  },
   props: {
-    datasetDetails: {
-      type: Object,
-      default: () => {}
+    updatedDate: {
+      type: String,
+      default: ''
+    },
+
+    doi: {
+      type: String,
+      default: ''
+    },
+
+    doiValue: {
+      type: String,
+      default: ''
+    },
+
+    datasetRecords: {
+      type: Array,
+      default: () => []
+    },
+
+    datasetTags: {
+      type: Array,
+      default: () => []
+    }
+  },
+
+  data() {
+    return {
+      citationLoading: false,
+      citationText: '',
+      activeCitation: '',
+      crosscite_host: process.env.crosscite_api_host
+    }
+  },
+
+  computed: {
+    /**
+     * Return DOI link
+     * @returns {String}
+     */
+    DOIlink: function() {
+      return this.doiValue ? `https://doi.org/${this.doiValue}` : ''
+    }
+  },
+
+  watch: {
+    DOIlink: {
+      handler: function(val) {
+        if (val) {
+          this.handleCitationChanged('apa')
+        }
+      },
+      immediate: true
+    }
+  },
+
+  methods: {
+    /**
+     * gets bibiolography based on citation type for current DOI
+     * @param {String} citationType
+     */
+    handleCitationChanged: function(citationType) {
+      if (citationType === this.activeCitation) {
+        return
+      }
+      this.citationLoading = true
+      this.activeCitation = citationType
+      // find all citation types at https://github.com/citation-style-language/style
+      const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType}&lang=en-US`
+      return fetch(url)
+        .then(response => {
+          return response.text()
+        })
+        .then(text => {
+          this.citationText = text
+        })
+        .finally(() => {
+          this.citationLoading = false
+        })
     }
   }
 }
@@ -54,7 +194,6 @@ export default {
       font-weight: normal;
       line-height: 24px;
       color: black;
-      margin-bottom: 1.5rem;
     }
 
     &--citation {
@@ -63,6 +202,50 @@ export default {
       padding-left: 1rem;
       padding-right: 1rem;
       margin-bottom: 1.5rem;
+    }
+
+    .info-citation {
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 24px;
+      color: black;
+      margin-top: 1rem;
+    }
+
+    &--citation-links {
+      font-weight: bold;
+      font-size: 14px;
+      margin-top: 1rem;
+      a {
+        text-decoration: none;
+        color: $median;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 16px;
+        cursor: pointer;
+        &.active-citation {
+          color: black;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    &--protocol-text {
+      color: black;
+      text-decoration: none;
+      font-size: 0.875em;
+      line-height: 24px;
+      font-weight: normal;
+    }
+
+    &--protocol-text-na {
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    .protocol-block {
+      margin-bottom: 1rem;
     }
   }
 }

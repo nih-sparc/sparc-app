@@ -167,7 +167,6 @@ export default {
 <style lang="scss" scoped>
 .metadata-table-content {
   background: #fff;
-  border: 1px solid rgb(228, 231, 237);
   padding: 16px;
   margin-top: 20px;
   margin-bottom: 10px;
