@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@abi-software/flatmapvuer@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.0.tgz#bfb3f733e76ed7c7808e308ba3ebbc6fa94efbd5"
-  integrity sha512-4vurWQBs/Zv1dOYHUKA1JijGhM+wrWD5KI/VB+xaiG3TgY/MZ2ayuGojIBQSZUaEzI5uWbiVfO5Uuu85Jolu3A==
+"@abi-software/flatmapvuer@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.1.tgz#e210502b5b32cebe893482bcb0140beb38eddd71"
+  integrity sha512-GbZIjuj63HEVcleGS9jW4JWRlPd5+M01vb4X4B73DFzKRKsfE6vCuuRWrUF5qmLKWbnfFsOuVBrtLH9qrSgDDw==
   dependencies:
     "@dbrnz/flatmap-viewer" "^0.8.10"
     broadcast-channel "^3.0.3"
