@@ -1,12 +1,12 @@
 <template>
   <div class="organ-details">
     <details-header
-      :subtitle="fields.subtitle"
-      :title="fields.title"
-      :description="fields.description"
+      :subtitle="pageData.fields.subtitle"
+      :title="pageData.fields.name"
+      :description="pageData.fields.description"
       :breadcrumb="breadcrumb"
     >
-      <img slot="banner image" src="http://placehold.jp/368x368.png" />
+      <img slot="banner image" :src="bannerImage" :alt="bannerImageAlt" />
     </details-header>
     <detail-tabs
       :tabs="tabs"
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import { pathOr } from 'ramda'
+
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
@@ -88,14 +90,33 @@ export default {
         name: 'data',
         type: 'organ',
         parent: 'Teams and Projects'
-      },
-      fields: {
-        // TODO remove later
-        subtitle: 'Cardio-Respitory System',
-        title: 'Human Heart',
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing…'
       }
+    }
+  },
+
+  computed: {
+    /**
+     * Compute banner image
+     * @returns {String}
+     */
+    bannerImage: function() {
+      return pathOr(
+        '',
+        ['fields', 'bannerImage', 'fields', 'file', 'url'],
+        this.pageData
+      )
+    },
+
+    /**
+     * Compute banner image alt tag
+     * @returns {String}
+     */
+    bannerImageAlt: function() {
+      return pathOr(
+        '',
+        ['fields', 'bannerImage', 'fields', 'description'],
+        this.pageData
+      )
     }
   },
 
