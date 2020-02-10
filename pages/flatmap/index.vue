@@ -17,13 +17,14 @@
 </template>
 
 <script>
-  import '@abi-software/flatmapvuer';
-  export default {
-    name: 'AtlasFlatMap',
-    methods: {
-      logScaffoldInteraction: function(payload) {
-        console.log(JSON.stringify(payload, undefined, 2))
-      }
+import '@abi-software/flatmapvuer';
+import '@abi-software/flatmapvuer/dist/flatmapvuer.css'
+export default {
+  name: 'AtlasFlatMap',
+  methods: {
+    logScaffoldInteraction: function(payload) {
+      console.log(JSON.stringify(payload, undefined, 2))
     }
   }
+}
 </script>
