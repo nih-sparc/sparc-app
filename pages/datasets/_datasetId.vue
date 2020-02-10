@@ -86,7 +86,7 @@
         </div>
         <div v-if="getDatasetType === 'simulation'">
           <button class="dataset-button">
-            <a href="#" target="_blank">
+            <a :href="`https://osparc.io/study/${this.simulationId}`" target="_blank">
               Run Simulation
             </a>
           </button>
@@ -238,7 +238,8 @@ export default {
         type: this.$route.params.type,
         parent: 'Find Data'
       },
-      subtitles: []
+      subtitles: [],
+      simulationId: ''
     }
   },
 
@@ -512,10 +513,29 @@ export default {
         }
       },
       immediate: true
+    },
+
+    getDatasetType: {
+      handler: function(val) {
+        if (val === 'simulation') {
+          this.getSimulationId()
+        }
+      },
+      immediate: true
     }
   },
 
   methods: {
+
+    /**
+     * Gets the uuid for the simulation dataset
+     */
+    getSimulationId: function() {
+      const requestUrl = `${process.env.portal_api}/sim/dataset/${this.$route.params.datasetId}`
+      this.$axios.$get(requestUrl).then(response => {
+        this.simulationId = response.study.uuid
+      })
+    },
     /**
      * Sets active tab
      * @param {String} activeLabel
