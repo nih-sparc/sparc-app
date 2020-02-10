@@ -10,6 +10,7 @@
 
 <script>
 import marked from '@/mixins/marked/index'
+
 export default {
   name: 'DatasetDescriptionInfo',
 
