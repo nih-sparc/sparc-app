@@ -49,6 +49,7 @@ export default {
     ctf_filters_organ_id: '5Hhlb7Lf4yijMQUSBai1fh',
     ctf_filters_image_id: '4R4zfdND13xLLGU9nPpNCD',
     ctf_filters_simulation_id: '6qMQRugMyzeaUrTIPQDdF1',
+    ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST
