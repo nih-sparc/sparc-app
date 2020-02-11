@@ -1,25 +1,31 @@
 <template>
   <div class="file-detail-page">
     <div class="page-wrap container">
-      <div class="subpage">
-        <el-row type="flex" justify="center">
-          <el-col :row="24">
-            <biolucida-viewer :data="biolucidaData" />
-          </el-col>
-        </el-row>
-      </div>
+      <detail-tabs
+        :tabs="tabs"
+        :active-tab="activeTab"
+        class="container"
+        @set-active-tab="activeTab = $event"
+      >
+        <biolucida-viewer
+          v-show="activeTab === 'viewer'"
+          :data="biolucidaData"
+        />
+      </detail-tabs>
     </div>
   </div>
 </template>
 
 <script>
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
+import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
 export default {
   name: 'FileDetailPage',
 
   components: {
-    BiolucidaViewer
+    BiolucidaViewer,
+    DetailTabs
   },
 
   async asyncData({ route, $axios }) {
@@ -37,7 +43,14 @@ export default {
         biolucida_image_id: '',
         share_link: '',
         status: ''
-      }
+      },
+      tabs: [
+        {
+          label: 'Viewer',
+          type: 'viewer'
+        }
+      ],
+      activeTab: 'viewer'
     }
   }
 }
