@@ -37,24 +37,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$image-fixed: 350px;
-$sparc-card-bp: 1024px;
+$image-fixed-large: 350px;
+$image-fixed-small: 250px;
+$tablet-large: 1024px;
+$tablet-small: 768px;
 .sparc-card {
-  /*background: #24245b;*/
-  @media (min-width: $sparc-card-bp) {
+  @media (min-width: $tablet-small) {
     display: flex;
   }
   &--image-right {
     .sparc-card__image {
-      @media (min-width: $sparc-card-bp) {
+      @media (min-width: $tablet-small) {
         order: 2;
       }
     }
   }
   &__image {
-    @media (min-width: $sparc-card-bp) {
-      flex: 0 0 $image-fixed;
-      max-height: $image-fixed;
+    @media (min-width: $tablet-large) {
+      flex: 0 0 $image-fixed-large;
+      max-height: $image-fixed-large;
+    }
+    @media (min-width: $tablet-small) and (max-width: $tablet-large - 1) {
+      flex: 0 0 $image-fixed-small;
+      max-height: $image-fixed-small;
     }
     img {
       width: 100%;
@@ -63,8 +68,12 @@ $sparc-card-bp: 1024px;
   }
   &__image,
   &__content-wrap {
-    @media (min-width: $sparc-card-bp) {
-      min-height: $image-fixed;
+    @media (min-width: $tablet-large) {
+      min-height: $image-fixed-large;
+      display: flex;
+    }
+    @media (min-width: $tablet-small) and (max-width: $tablet-large - 1) {
+      min-height: $image-fixed-small;
       display: flex;
     }
     &__content {
@@ -74,7 +83,16 @@ $sparc-card-bp: 1024px;
       line-height: 1.3125rem;
       padding: 1em;
 
-      @media (min-width: $sparc-card-bp) {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      @media (min-width: $tablet-small + 1) and (max-width: $tablet-large) {
+        font-size: 1em;
+        line-height: 2rem;
+        padding: 2em;
+      }
+      @media (min-width: $tablet-large + 1) {
         font-size: 1.125em;
         line-height: 2rem;
         padding: 3em;
