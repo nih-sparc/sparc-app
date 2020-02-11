@@ -59,9 +59,6 @@
               Site Feedback
             </a>
           </li>
-          <li>
-            <a href="#">Report a Bug</a>
-          </li>
         </ul>
         <h3>Stay Up-to-Date</h3>
         <ul>
