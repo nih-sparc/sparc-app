@@ -98,7 +98,9 @@ import {
   pathOr,
   propEq,
   propOr,
-  pluck
+  pluck,
+  split,
+  toLower
 } from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
@@ -380,13 +382,16 @@ export default {
      * @returns {Array}
      */
     setActiveFilters: function(filters) {
-      const tags = pathOr('', ['query', 'tags'], this.$route).split(',')
+      const tags = compose(
+        split(','),
+        toLower,
+        pathOr('', ['query', 'tags'])
+      )(this.$route)
+
       return filters.map(category => {
         category.filters.map(filter => {
-          const hasTag = tags.indexOf(filter.key)
-          if (hasTag >= 0) {
-            filter.value = true
-          }
+          const hasTag = tags.indexOf(filter.key.toLowerCase())
+          filter.value = hasTag >= 0
           return filter
         })
 
@@ -473,9 +478,7 @@ export default {
         .getEntry(this.searchType.filterId)
         .then(response => {
           const filters = transformFilters(response.fields)
-          const activeFilters = this.setActiveFilters(filters)
-
-          this.filters = activeFilters
+          this.filters = this.setActiveFilters(filters)
         })
         .catch(() => {
           this.filters = []
