@@ -1,5 +1,6 @@
 import Vue, { ComponentOptions } from "vue";
 import { Store } from "vuex";
+import { Route } from "vue-router"
 
 declare module "*.vue" {
   export default Vue
