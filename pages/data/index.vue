@@ -77,6 +77,7 @@
       :visible.sync="isFiltersVisible"
       :is-loading="isLoadingFilters"
       :dialog-title="activeFiltersLabel"
+      @input="setTagsQuery"
     />
   </div>
 </template>
@@ -87,6 +88,7 @@ import {
   clone,
   compose,
   defaultTo,
+  equals,
   flatten,
   find,
   filter,
@@ -119,7 +121,7 @@ const searchResultsComponents = {
   event: EventSearchResults,
   file: FileSearchResults,
   organ: OrganSearchResults,
-  simulation: DatasetSearchResults,
+  simulation: DatasetSearchResults
 }
 
 const searchTypes = [
@@ -229,7 +231,9 @@ export default {
       let url = `${process.env.discover_api_host}/search/${
         searchType === 'simulation' ? 'dataset' : searchType
       }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
-        searchType === 'simulation' ? 'tags=simcore' : 'organization=SPARC%20Consortium'
+        searchType === 'simulation'
+          ? 'tags=simcore'
+          : 'organization=SPARC%20Consortium'
       }`
 
       if (searchType === 'file') {
@@ -239,6 +243,11 @@ export default {
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
         url += `&query=${query}`
+      }
+
+      const tags = pathOr('', ['query', 'tags'], this.$route)
+      if (tags) {
+        url += `&tags=${tags}`
       }
 
       return url
@@ -340,9 +349,17 @@ export default {
        */
       this.searchData = clone(searchData)
       this.fetchResults()
+    },
+
+    'searchType.filterId': {
+      handler: function(val) {
+        if (val) {
+          this.fetchFilters()
+        }
+      },
+      immediate: true
     }
   },
-
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    */
@@ -353,10 +370,31 @@ export default {
       this.$router.replace({ query: { type: firstTabType } })
     } else {
       this.fetchResults()
+      // this.fetchFilters()
     }
   },
 
   methods: {
+    /**
+     * Set active filters based on the query params
+     * @params {Array} filters
+     * @returns {Array}
+     */
+    setActiveFilters: function(filters) {
+      const tags = pathOr('', ['query', 'tags'], this.$route).split(',')
+      return filters.map(category => {
+        category.filters.map(filter => {
+          const hasTag = tags.indexOf(filter.key)
+          if (hasTag >= 0) {
+            filter.value = true
+          }
+          return filter
+        })
+
+        return category
+      })
+    },
+
     /**
      * Figure out which source to fetch results from based on the
      * type of search
@@ -374,7 +412,7 @@ export default {
       }
 
       // Fetch filters for the search type
-      this.fetchFilters()
+      // this.fetchFilters()
     },
 
     /**
@@ -390,7 +428,10 @@ export default {
           const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
-            items: response[`${searchType === 'simulation' ? 'dataset' : searchType}s`],
+            items:
+              response[
+                `${searchType === 'simulation' ? 'dataset' : searchType}s`
+              ],
             total: response.totalCount
           }
           this.searchData = mergeLeft(searchData, this.searchData)
@@ -435,10 +476,13 @@ export default {
       client
         .getEntry(this.searchType.filterId)
         .then(response => {
-          this.filters = transformFilters(response.fields)
+          const filters = transformFilters(response.fields)
+          const activeFilters = this.setActiveFilters(filters)
+
+          this.filters = activeFilters
         })
         .catch(() => {
-          this.searchData = clone(searchData)
+          this.filters = []
         })
         .finally(() => {
           this.isLoadingFilters = false
@@ -479,6 +523,28 @@ export default {
         this.filters
       )
       this.filters = filters
+      this.setTagsQuery()
+    },
+
+    /**
+     * Set the tags query parameter in the router
+     */
+    setTagsQuery: function() {
+      const filterVals = this.activeFilters.map(filter => {
+        return filter.key
+      })
+
+      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
+      if (equals(filterVals, queryParamTags.split(','))) {
+        return
+      }
+
+      const tags = { tags: filterVals.join(',') }
+
+      const query = mergeLeft(tags, this.$route.query)
+      this.$router.replace({ query }).then(() => {
+        this.fetchResults()
+      })
     }
   }
 }
