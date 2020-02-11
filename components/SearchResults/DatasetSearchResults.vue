@@ -10,7 +10,7 @@
         <nuxt-link
           :to="{
             name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id }
+            params: { datasetId: scope.row.id, type: $route.query.type }
           }"
         >
           {{ scope.row.name }}

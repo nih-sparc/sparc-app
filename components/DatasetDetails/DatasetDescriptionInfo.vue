@@ -25,15 +25,6 @@ export default {
       type: String,
       default: ''
     }
-  },
-
-  computed: {
-    /**
-     * Parses the markdown text
-     */
-    parsedMarkdown: function() {
-      return marked(this.markdown)
-    }
   }
 }
 </script>
