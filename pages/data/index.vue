@@ -234,7 +234,7 @@ export default {
         searchType === 'simulation' ? 'dataset' : searchType
       }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
         searchType === 'simulation'
-          ? 'tags=simcore'
+          ? `organization=IT'IS%20Foundation`
           : 'organization=SPARC%20Consortium'
       }`
 
