@@ -140,10 +140,14 @@ export default {
      */
     openFile: function(scope) {
       const sourcePackageId = pathOr('', ['row', 'sourcePackageId'], scope)
+      const datasetId = pathOr('', ['row', 'datasetId'], scope)
+      const datasetVersion = pathOr('', ['row', 'datasetVersion'], scope)
       if (sourcePackageId) {
         this.$router.push({
-          name: 'file-id',
+          name: 'file-datasetId-datasetVersion-id',
           params: {
+            datasetId,
+            datasetVersion,
             id: sourcePackageId
           }
         })

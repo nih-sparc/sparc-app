@@ -4,7 +4,7 @@
       <div class="subpage">
         <el-row type="flex" justify="center">
           <el-col :row="24">
-            <biolucida-viewer />
+            <biolucida-viewer :data="biolucidaData" />
           </el-col>
         </el-row>
       </div>
@@ -22,19 +22,23 @@ export default {
     BiolucidaViewer
   },
 
-  asyncData(ctx) {
-    const id = ctx.route.params.id
-    this.$axios
-      .$get(`${process.env.BL_SERVER_URL}/image/${id}`)
-      .then(response => {
-        return {
-          biolucidaData: response
-        }
-      })
+  async asyncData({ route, $axios }) {
+    const id = route.params.id
+    const biolucidaData = await $axios.$get(
+      `${process.env.BL_SERVER_URL}/imagemap/sharelink/${id}`
+    )
+
+    return { biolucidaData }
   },
 
   data: () => {
-    return {}
+    return {
+      biolucidaData: {
+        biolucida_image_id: '',
+        share_link: '',
+        status: ''
+      }
+    }
   }
 }
 </script>
