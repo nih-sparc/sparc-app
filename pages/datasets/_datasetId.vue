@@ -1,180 +1,152 @@
 <template>
   <div class="dataset-details">
-    <div class="header">
-      <div class="gradient">
-        <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-            <div class="breadcrumb">
-              <el-row>
-                <el-col :span="24">
-                  <router-link :to="{ name: 'data' }">
-                    <i class="el-icon-arrow-left" />Back to all results
-                  </router-link>
-                </el-col>
-              </el-row>
-            </div>
-          </el-col>
-        </el-row>
+    <details-header
+      :subtitle="subtitles.toString()"
+      :title="datasetTitle"
+      :description="datasetDescription"
+      :breadcrumb="breadcrumb"
+    >
+      <div slot="banner image">
+        <dataset-banner-image :src="getDatasetImage" />
       </div>
-    </div>
-    <div class="discover-content container-fluid">
-      <dataset-header :dataset-details="datasetDetails" />
-    </div>
-
-    <el-row type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <div
-          v-loading="loadingMarkdown"
-          class="col-xs-12 description-container"
-          v-html="parsedMarkdown"
-        />
-      </el-col>
-    </el-row>
-
-    <el-row type="flex" justify="center">
-      <el-col class="meta_switch" :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <el-switch
-          v-model="show_meta"
-          active-color="#24245b"
-          inactive-color="#24245b"
-          active-text="Show Metadata"
-          inactive-text="Show Files"
-        />
-      </el-col>
-    </el-row>
-
-    <el-row v-if="!show_meta" type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <files-table :dataset-details="datasetDetails" />
-      </el-col>
-    </el-row>
-
-    <el-row v-if="show_meta" type="flex" justify="center">
-      <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-        <metadata-table :dataset-details="datasetDetails" />
-      </el-col>
-    </el-row>
-
-    <div class="dataset-info">
-      <div class="discover-content container-fluid dataset-info-container">
-        <el-row type="flex" justify="center">
-          <el-col :xs="22" :sm="22" :md="22" :lg="18" :xl="16">
-            <el-row type="flex" justify="center">
-              <el-col :span="24">
-                <h2>
-                  About this dataset
-                </h2>
-              </el-col>
-            </el-row>
-            <el-row class="mb-16">
-              <el-col :span="24">
-                <h3>
-                  Last Updated
-                </h3>
-                <div class="info-text">
-                  {{ lastUpdatedDate }}
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" justify="center" class="doi-block">
-              <el-col :span="24">
-                <h3>
-                  Dataset DOI
-                </h3>
-                <a :href="datasetDOI" class="info-text">{{ datasetDOI }}</a>
-              </el-col>
-            </el-row>
-            <el-row
-              v-if="datasetRecords.length !== 0"
-              type="flex"
-              justify="center"
-              class="protocol-block"
+      <div slot="meta content" class="details-header__container--content-links">
+        <div class="dataset-meta">
+          <div class="dataset-updated-date">
+            Last updated on {{ lastUpdatedDate }}
+          </div>
+        </div>
+        <div class="dataset-owners">
+          <template v-if="!isContributorListVisible">
+            <contributor-item :contributor="firstContributor" />
+            <button
+              class="contributors-button"
+              href="#"
+              @click.prevent="isContributorListVisible = true"
             >
-              <el-col :span="24">
-                <h3>
-                  Protocol DOIs
-                </h3>
-                <a
-                  v-for="(record, index) in datasetRecords"
-                  :key="`${record}-${index}`"
-                  :href="record.properties.url"
-                  class="info-text"
+              <span class="button-text">...</span>
+            </button>
+          </template>
+
+          <div
+            v-for="(contributor, idx) in datasetContributorsList"
+            :key="contributor.id"
+            class="contributor-item-wrap"
+          >
+            <contributor-item :contributor="contributor" />
+            <template v-if="idx < datasetContributorsList.length - 1">
+              ,
+            </template>
+          </div>
+        </div>
+        <div class="header-stats-section">
+          <div class="header-stats-block">
+            <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
+            <div>
+              <template v-if="datasetFiles > 0">
+                <strong>
+                  {{ datasetFiles }}
+                </strong>
+                Files
+              </template>
+
+              <template v-else>
+                No Files
+              </template>
+            </div>
+          </div>
+          <div class="header-stats-block">
+            <svg-icon class="mr-8" name="icon-storage" height="20" width="20" />
+            <div>
+              <strong>{{ datasetStorage.number }}</strong>
+              {{ datasetStorage.unit }}
+            </div>
+          </div>
+          <div class="header-stats-block">
+            <svg-icon class="mr-8" name="icon-license" height="20" width="20" />
+            <div>
+              <template v-if="datasetLicense">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="datasetLicenseName"
+                  placement="top"
+                  :visible-arrow="false"
                 >
-                  {{ record.properties.url }}
-                </a>
-              </el-col>
-            </el-row>
-            <el-row type="flex" justify="center">
-              <el-col :span="24">
-                <h3>
-                  Cite this dataset
-                </h3>
-                <div
-                  v-loading="citationLoading"
-                  class="info-citation"
-                  aria-live="polite"
-                  v-html="citationText"
-                />
-                <!-- "$sanitize(citationText, ['i'])" -->
-                <div class="info-citation-links mb-24">
-                  Formatted as:
-                  <button
-                    title="Format citation apa"
-                    :class="{ active: activeCitation === 'apa' }"
-                    @click="handleCitationChanged('apa')"
-                  >
-                    APA
-                  </button>
-                  <button
-                    title="Format citation chicago"
-                    :class="{
-                      active: activeCitation === 'chicago-note-bibliography'
-                    }"
-                    @click="handleCitationChanged('chicago-note-bibliography')"
-                  >
-                    Chicago
-                  </button>
-                  <button
-                    title="Format citation ieee"
-                    :class="{ active: activeCitation === 'ieee' }"
-                    @click="handleCitationChanged('ieee')"
-                  >
-                    IEEE
-                  </button>
-                  <a
-                    :href="`https://crosscite.org/?doi=${datasetDetails.doi}`"
-                    target="_blank"
-                  >
-                    More on Crosscite.org
+                  <a :href="licenseLink" target="_blank">
+                    {{ datasetLicense }}
                   </a>
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" justify="center">
-              <el-col :span="24">
-                <h3>Tags</h3>
-                <tag-list :tags="datasetTags" />
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
+                </el-tooltip>
+              </template>
+
+              <template v-else>
+                No License Selected
+              </template>
+            </div>
+          </div>
+        </div>
+        <button class="dataset-button" @click="isDownloadModalVisible = true">
+          Get Dataset
+        </button>
       </div>
-    </div>
+    </details-header>
+    <detail-tabs
+      :tabs="tabs"
+      :active-tab="activeTab"
+      class="container"
+      @set-active-tab="setActiveTab"
+    >
+      <dataset-about-info
+        v-show="activeTab === 'about'"
+        :updated-date="lastUpdatedDate"
+        :doi="datasetDOI"
+        :doi-value="datasetDetails.doi"
+        :dataset-records="datasetRecords"
+        :dataset-tags="datasetTags"
+      />
+      <dataset-description-info
+        v-show="activeTab === 'description'"
+        :markdown="markdown"
+        :loading-markdown="loadingMarkdown"
+      />
+      <dataset-files-info
+        v-show="activeTab === 'files'"
+        :dataset-details="datasetDetails"
+      />
+      <dataset-model-info v-show="activeTab === '3DModel'" />
+    </detail-tabs>
+    <download-dataset
+      :visible.sync="isDownloadModalVisible"
+      :dataset-details="datasetDetails"
+      :download-size="getDownloadSize"
+      @close-download-dialog="isDownloadModalVisible = false"
+    />
   </div>
 </template>
 
 <script>
 import marked from 'marked'
-import { propOr, pathOr } from 'ramda'
-// import { mapState } from 'vuex'
+import { propOr, pathOr, last, head, compose, split } from 'ramda'
 
-import DatasetHeader from '@/components/DatasetHeader/DatasetHeader.vue'
-import TagList from '@/components/TagList/TagList.vue'
-import FilesTable from '@/components/FilesTable/FilesTable.vue'
-import MetadataTable from '@/components/MetadataTable/MetadataTable.vue'
+import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
+import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
+import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
+import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
+
+import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
+import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
+import DatasetMetadataInfo from '@/components/DatasetDetails/DatasetMetadataInfo.vue'
+import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
+import DatasetModelInfo from '@/components/DatasetDetails/DatasetModelInfo.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
+import FormatStorage from '@/mixins/bf-storage-metrics'
+import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
+
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
 
 marked.setOptions({
   sanitize: true
@@ -184,54 +156,181 @@ export default {
   name: 'DatasetDetails',
 
   components: {
-    DatasetHeader,
-    FilesTable,
-    MetadataTable,
-    TagList
+    DetailsHeader,
+    DetailTabs,
+    ContributorItem,
+    DatasetBannerImage,
+    DownloadDataset,
+    DatasetAboutInfo,
+    DatasetDescriptionInfo,
+    DatasetFilesInfo,
+    DatasetModelInfo
   },
 
-  mixins: [Request, DateUtils],
+  mixins: [Request, DateUtils, FormatStorage],
 
-  props: {
-    showSignupFooter: {
-      type: Boolean,
-      default: false
-    }
+  asyncData() {
+    return Promise.all([
+      // Get page content
+      client.getEntries({
+        content_type: process.env.ctf_organ_id
+      })
+    ])
+      .then(([entries]) => {
+        return {
+          entries: entries.items
+        }
+      })
+      .catch(console.error)
   },
 
   data() {
     return {
-      citationText: '',
-      activeCitation: '',
       showCopySuccess: false,
-      citationLoading: false,
-      isTombStone: false,
       isLoadingDataset: false,
       datasetDetails: {},
       errorLoading: false,
       loadingMarkdown: false,
       markdown: '',
       datasetRecords: [],
-      show_meta: false,
-      crosscite_host: process.env.crosscite_api_host,
       discover_host: process.env.discover_api_host,
-      portal_host: process.env.portal_api
+      isContributorListVisible: true,
+      isDownloadModalVisible: false,
+      tabs: [
+        {
+          label: 'About',
+          type: 'about'
+        },
+        {
+          label: 'Description',
+          type: 'description'
+        },
+        {
+          label: 'Files',
+          type: 'files'
+        },
+        {
+          label: '3-D Model',
+          type: '3DModel'
+        }
+      ],
+      activeTab: 'about',
+      breadcrumb: {
+        name: 'data',
+        type: 'dataset',
+        parent: 'Teams and Projects'
+      },
+      subtitles: []
     }
   },
 
   computed: {
+    /**
+     * Gets dataset size for download
+     * @returns {Number}
+     */
+    getDownloadSize: function() {
+      return propOr(0, 'size', this.datasetDetails)
+    },
+    /**
+     * Returns the dataset storage count
+     * @returns {Object}
+     */
+    datasetStorage: function() {
+      const storage = compose(
+        split(' '),
+        this.formatMetric,
+        propOr(0, 'size')
+      )(this.datasetDetails)
+
+      return storage.reduce((number, unit) => {
+        return {
+          number,
+          unit
+        }
+      })
+    },
+
+    /**
+     * Returns the files associated with the dataset
+     * @returns {String}
+     */
+    datasetFiles: function() {
+      return propOr('', 'fileCount', this.datasetDetails)
+    },
+
+    /**
+     * Gets license link
+     * @returns {String}
+     */
+    licenseLink: function() {
+      return getLicenseLink(this.datasetLicense)
+    },
+
+    /**
+     * Returns the license abbr associated with the dataset
+     * @returns {String}
+     */
+    datasetLicense: function() {
+      const licenseKey = propOr('', 'license', this.datasetDetails)
+      return getLicenseAbbr(licenseKey)
+    },
+
+    /**
+     * Returns the license name associated with the dataset
+     * @returns {String}
+     */
+    datasetLicenseName: function() {
+      return propOr('', 'license', this.datasetDetails)
+    },
+
+    /**
+     * Returns dataset banner
+     * @returns {String}
+     */
+    getDatasetImage: function() {
+      return propOr('', 'banner', this.datasetDetails)
+    },
+
+    /**
+     * Returns the list of contributors who contributed to the dataset
+     * @returns {String}
+     */
+    datasetContributors: function() {
+      return propOr([], 'contributors', this.datasetDetails)
+    },
+    /**
+     * Compute contributors list based
+     * on expanded list being show
+     * @returns {Array}
+     */
+    datasetContributorsList: function() {
+      return this.isContributorListVisible
+        ? this.datasetContributors
+        : [last(this.datasetContributors)]
+    },
+
+    /**
+     * Gets the first contributor from the list
+     * @returns {String}
+     */
+    firstContributor: function() {
+      return head(this.datasetContributors)
+    },
+    /**
+     * Returns the dataset title
+     * @returns {String}
+     */
+    datasetTitle: function() {
+      return propOr('', 'name', this.datasetDetails)
+    },
+
     /**
      * Returns the records in the protocol model for this dataset
      * @returns {String}
      */
     getSearchRecordsUrl: function() {
       return `${this.discover_host}/search/records?datasetId=${this.datasetId}&model=protocol`
-    },
-    /**
-     * Parses the markdown text
-     */
-    parsedMarkdown: function() {
-      return marked(this.markdown)
     },
 
     /**
@@ -315,20 +414,16 @@ export default {
       return `${this.discover_host}/datasets/${this.datasetId}`
     },
 
+    /**
+     * Get datasetid
+     * @returns {String}
+     */
     datasetId: function() {
       return pathOr('', ['params', 'datasetId'], this.$route)
     }
   },
 
   watch: {
-    DOIlink: {
-      handler: function(val) {
-        if (val) {
-          this.handleCitationChanged('apa')
-        }
-      },
-      immediate: true
-    },
     getDatasetUrl: {
       handler: function(val) {
         if (val) {
@@ -355,10 +450,39 @@ export default {
         this.getMarkdown()
       },
       immediate: true
+    },
+
+    datasetContributors: {
+      handler: function(val) {
+        if (val.length > 5) {
+          this.isContributorListVisible = false
+        }
+      },
+      immediate: true
+    },
+
+    datasetTags: {
+      handler: function(val) {
+        if (val) {
+          this.entries.forEach(entry => {
+            if (this.datasetTags.includes(entry.fields.name.toLowerCase())) {
+              this.subtitles.push(entry.fields.name)
+            }
+          })
+        }
+      },
+      immediate: true
     }
   },
 
   methods: {
+    /**
+     * Sets active tab
+     * @param {String} activeLabel
+     */
+    setActiveTab: function(activeLabel) {
+      this.activeTab = activeLabel
+    },
     /**
      * Returns protocol records in a dataset's model if they exist
      */
@@ -401,30 +525,6 @@ export default {
      */
     onCopySuccess: function() {
       this.showCopySuccess = true
-    },
-    /**
-     * gets bibiolography based on citation type for current DOI
-     * @param {String} citationType
-     */
-    handleCitationChanged: function(citationType) {
-      if (citationType === this.activeCitation) {
-        return
-      }
-      this.citationLoading = true
-      this.activeCitation = citationType
-      // find all citation types at https://github.com/citation-style-language/style
-      const doi = propOr('', 'doi', this.datasetDetails)
-      const url = `${this.crosscite_host}/format?doi=${doi}&style=${citationType}&lang=en-US`
-      return fetch(url)
-        .then(response => {
-          return response.text()
-        })
-        .then(text => {
-          this.citationText = text
-        })
-        .finally(() => {
-          this.citationLoading = false
-        })
     },
 
     /**
@@ -491,239 +591,100 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_spacing.scss';
+@import '@/assets/_variables.scss';
+.details-header {
+  &__container {
+    &--content-links {
+      .contributors-button {
+        height: 14px;
+        width: 18px;
+        border: 1px solid $median;
+        border-radius: 2px;
+        background-color: $light-purple;
+        cursor: pointer;
+        margin: 0 6px;
+        padding: 0;
 
-.breadcrumb {
+        &:focus {
+          background-color: #b6b7ba;
+        }
+
+        .button-text {
+          position: relative;
+          bottom: 5px;
+        }
+      }
+      .dataset-button {
+        background-color: $median;
+        width: 127px;
+        height: 40px;
+        font-size: 14px;
+        color: #ffffff;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.dataset-updated-date {
+  line-height: 24px;
+  color: black;
+  font-size: 14px;
+  line-height: 24px;
+
   a {
-    color: white;
-    font-weight: 600;
+    color: #404554;
+    text-decoration: underline;
+    &:hover,
+    &:active,
+    &:visited {
+      color: #404554;
+    }
+    &:focus {
+      color: black;
+    }
   }
 }
 
-.header {
-  .gradient {
-    padding: 1.5em 0;
-    color: #f0f2f5;
-    background-image: linear-gradient(90deg, #0026ff 0%, #00ffb9 100%);
+.dataset-owners {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  color: #404554;
+  font-size: 14px;
+  line-height: 24px;
+  .contributor-item-wrap {
+    display: inline-flex;
+    margin-right: 4px;
   }
 }
 
-.dataset-details {
-  background-color: #ffffff;
+.header-stats-section {
+  display: flex;
+  margin: 20px 0 0;
 }
 
-.copy-success-notification {
-  color: #fff;
-  margin-left: 5px;
-}
-
-.meta_switch {
-  padding: 8px 0;
-  color: #f0f2f5;
-  border-bottom: 1px solid #0026ff;
-}
-
-.fade-leave-active {
-  transition: opacity 0.5s ease-out 2s;
-}
-
-.fade-enter {
-  opacity: 1;
-}
-
-.fade-leave-to {
-  opacity: 0;
+.header-stats-block {
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 12px;
+  margin-bottom: 1rem;
+  .svg-icon {
+    margin-right: 3px;
+  }
+  a {
+    margin-left: 0;
+    font-size: 14px;
+    &:focus {
+      color: #1c46bd;
+    }
+  }
 }
 
 .dataset-details {
   width: 100%;
   overflow-x: hidden;
-
-  .dataset-info {
-    background-color: #24245b;
-    padding-bottom: 64px;
-  }
-}
-
-// Footer styles
-.dataset-info {
-  h2 {
-    color: #f9f2fc;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 32px;
-    margin: 56px 0 24px;
-  }
-
-  h3 {
-    color: #f9f2fc;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 16px;
-    margin: 5px 16px 7px 0px;
-  }
-}
-
-.protocol-block {
-  margin-bottom: 15px;
-}
-
-.doi-block {
-  margin-bottom: 15px;
-}
-
-.info-publishing-history {
-  @media (min-width: 48em) {
-    display: flex;
-  }
-  .info-text {
-    margin-right: 90px;
-  }
-}
-
-.info-text {
-  color: #fff;
-  font-size: 14px;
-  line-height: 24px;
-
-  a {
-    color: #fff;
-    text-decoration: underline;
-  }
-
-  .info-text-caps {
-    text-transform: uppercase;
-    color: #f2f6fc;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 16px;
-  }
-}
-
-.info-citation {
-  border-radius: 4px;
-  background-color: #f2f6fc;
-  padding: 16px;
-  color: #1c46bd;
-  font-size: 14px;
-  line-height: 24px;
-  margin-bottom: 8px;
-}
-
-.info-citation-links {
-  font-size: 14px;
-  line-height: 16px;
-  color: #c0c4cc;
-  button,
-  a {
-    background: none;
-    border: none;
-    color: #c0c4cc;
-    line-height: 16px;
-    text-decoration: underline;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 0;
-    margin-left: 11px;
-
-    &.active {
-      text-decoration: none;
-      color: #fff;
-    }
-  }
-}
-
-// Markdown styles
-.description-container {
-  color: #000;
-  font-size: 16px;
-  line-height: 24px;
-  padding-bottom: 92px;
-
-  h1,
-  p,
-  h2,
-  h3,
-  blockquote,
-  h4,
-  pre {
-    max-width: 616px;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5 {
-    margin: 0 0 8px;
-  }
-
-  h1 {
-    font-size: 32px;
-    font-weight: bold;
-    line-height: 40px;
-  }
-
-  p {
-    margin-bottom: 16px;
-  }
-
-  img {
-    height: auto;
-    max-width: 170%;
-    margin-bottom: 20px;
-    flex-basis: 50%;
-    margin-top: 24px;
-  }
-
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 32px;
-  }
-
-  h3 {
-    font-size: 20px;
-    font-weight: bold;
-    line-height: 24px;
-    letter-spacing: 0px;
-  }
-
-  h4 {
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 24px;
-    text-transform: uppercase;
-    letter-spacing: 0px;
-  }
-
-  ul {
-    margin: 0 0 16px;
-    padding: 0 0 0 18px;
-  }
-
-  blockquote {
-    font-weight: normal;
-    line-height: 24px;
-    font-size: 16px;
-    border-left: 8px solid #2760ff;
-    margin-left: 0;
-
-    p {
-      margin-left: 16px;
-    }
-  }
-  pre {
-    background-color: #f1f1f3;
-    line-height: 24px;
-    padding: 16px;
-
-    code {
-      font-weight: normal;
-      font-size: 14px;
-    }
-  }
-}
-.files-table {
-  margin: 8px 0;
 }
 </style>

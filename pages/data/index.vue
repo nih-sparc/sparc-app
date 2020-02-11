@@ -22,19 +22,28 @@
     </page-hero>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
-        <el-col :span="6">
-          <search-filters v-model="filters" v-loading="isLoadingFilters" />
-        </el-col>
-        <el-col :span="18">
+        <el-col :span="24">
           <div class="search-heading">
             <p v-if="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }}
             </p>
             <div class="filter__wrap">
+              <button
+                class="btn__filters"
+                :disabled="filters.length === 0"
+                @click="isFiltersVisible = true"
+              >
+                <svg-icon name="icon-preset" height="20" width="20" />
+                {{ activeFiltersLabel }}
+              </button>
+            </div>
+          </div>
+          <div class="mb-16">
+            <div class="active__filter__wrap">
               <div
                 v-for="(filter, filterIdx) in filters"
                 :key="filter.category"
-                class="filter__wrap-category"
+                class="active__filter__wrap-category"
               >
                 <template v-for="(item, itemIdx) in filter.filters">
                   <el-tag
@@ -63,6 +72,12 @@
         </el-col>
       </el-row>
     </div>
+    <search-filters
+      v-model="filters"
+      :visible.sync="isFiltersVisible"
+      :is-loading="isLoadingFilters"
+      :dialog-title="activeFiltersLabel"
+    />
   </div>
 </template>
 
@@ -103,7 +118,8 @@ const searchResultsComponents = {
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
   file: ImageSearchResults,
-  organ: OrganSearchResults
+  organ: OrganSearchResults,
+  simulation: DatasetSearchResults
 }
 
 const searchTypes = [
@@ -135,7 +151,7 @@ const searchTypes = [
     label: 'Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'contentful'
+    dataSource: 'blackfynn'
   }
 ]
 
@@ -198,7 +214,8 @@ export default {
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
-      isLoadingFilters: false
+      isLoadingFilters: false,
+      isFiltersVisible: false
     }
   },
 
@@ -209,7 +226,13 @@ export default {
      */
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+      let url = `${process.env.discover_api_host}/search/${
+        searchType === 'simulation' ? 'dataset' : searchType
+      }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
+        searchType === 'simulation'
+          ? 'tags=simcore'
+          : 'organization=SPARC%20Consortium'
+      }`
 
       if (searchType === 'file') {
         url += '&fileType=tiff'
@@ -287,6 +310,27 @@ export default {
         flatten,
         pluck('items')
       )(this.filters)
+    },
+
+    /**
+     * Compute active filters
+     * @returns {Array}
+     */
+    activeFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('filters')
+      )(this.filters)
+    },
+
+    /**
+     * Compute dialog header based on how many active filters
+     * @returns {String}
+     */
+    activeFiltersLabel: function() {
+      const activeFilterLength = this.activeFilters.length
+      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     }
   },
 
@@ -348,7 +392,10 @@ export default {
           const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
-            items: response[`${searchType}s`],
+            items:
+              response[
+                `${searchType === 'simulation' ? 'dataset' : searchType}s`
+              ],
             total: response.totalCount
           }
           this.searchData = mergeLeft(searchData, this.searchData)
@@ -432,7 +479,7 @@ export default {
      */
     clearFilter: function(filterIdx, itemIdx) {
       const filters = assocPath(
-        [filterIdx, 'items', itemIdx, 'value'],
+        [filterIdx, 'filters', itemIdx, 'value'],
         false,
         this.filters
       )
@@ -519,25 +566,48 @@ export default {
   text-align: center;
 }
 .search-heading {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   margin-bottom: 1em;
   p {
     font-size: 0.875em;
     flex-shrink: 0;
-    margin: 1em 1em 0 0;
+    margin: 0 1em 0 0;
   }
-}
-.filter__wrap,
-.filter__wrap-category {
-  display: inline;
-}
-.filter__wrap .el-tag {
-  margin: 0.5em 1em 0.5em 0;
 }
 ::v-deep {
   .el-table td {
     vertical-align: top;
   }
+}
+.btn__filters {
+  align-items: center;
+  background: none;
+  border: none;
+  color: $median;
+  display: flex;
+  font-size: 0.875em;
+  outline: none;
+  padding: 0;
+  &[disabled] {
+    opacity: 0.7;
+  }
+  &:not([disabled]) {
+    &:hover,
+    &:focus {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+  .svg-icon {
+    margin-right: 0.3125rem;
+  }
+}
+.active__filter__wrap,
+.active__filter__wrap-category {
+  display: inline;
+}
+.active__filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
 }
 </style>

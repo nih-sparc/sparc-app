@@ -22,6 +22,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/_variables.scss';
 .tag-list {
   margin: 0;
   padding: 0;
@@ -31,15 +32,16 @@ export default {
   }
 }
 .tag-list-tag {
-  border-radius: 4px;
-  background-color: #f2f6fc;
-  color: #24245b;
+  border-radius: 3px;
+  border: solid 1px $cloudy;
+  color: $dark-sky;
   display: block;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: normal;
   line-height: 16px;
   padding: 8px;
   text-align: center;
   text-decoration: none;
+  margin-top: 13px;
 }
 </style>
