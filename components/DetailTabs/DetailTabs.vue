@@ -117,8 +117,23 @@ export default {
       margin-top: 1.5rem;
       &--types {
         display: -webkit-inline-box;
+        position: relative;
+        overflow: hidden;
+      }
+      &--types:after {
+        position: absolute;
+        background: linear-gradient(to right, transparent, white);
+        content: '';
+        left: 0px;
+        top: 0px;
+        height: 100%;
+        width: 100%;
       }
     }
+  }
+
+  ::v-deep .el-row--flex {
+    overflow-y: scroll;
   }
 }
 </style>
