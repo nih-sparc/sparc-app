@@ -1,5 +1,5 @@
 <template>
-  <MarkdownPage :header="header" :body="body" />
+  <markdown-page :header="header" :body="body" />
 </template>
 
 <script lang="ts">

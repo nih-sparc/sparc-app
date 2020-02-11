@@ -1,6 +1,6 @@
 <template>
   <div class="help-page">
-    <HelpHero :title="allHelpData.title" :summary="allHelpData.summary" />
+    <help-hero :title="allHelpData.title" :summary="allHelpData.summary" />
     <div v-loading="isLoadingSearch">
       <help-section
         v-for="item in helpData.sections"

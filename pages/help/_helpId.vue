@@ -1,6 +1,7 @@
 <template>
   <div class="events-page">
-    <HelpHero :title="helpHeroData.title" :summary="helpHeroData.summary" />
+    <help-hero :title="helpHeroData.title" :summary="helpHeroData.summary" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="helpItem.fields.title" />
     <div class="page-wrap container">
       <div class="subpage">
         <div class="header">
@@ -26,6 +27,7 @@ import { pathOr } from 'ramda'
 
 import HelpHero from "@/components/HelpHero/HelpHero";
 import MarkedMixin from '@/mixins/marked'
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 
 import createClient from '@/plugins/contentful.js'
 
@@ -36,6 +38,7 @@ export default {
 
   components: {
     HelpHero,
+    Breadcrumb,
   },
 
   mixins: [MarkedMixin],
@@ -48,7 +51,11 @@ export default {
       .then(([allHelpData, helpItem]) => {
         return {
           helpHeroData: allHelpData.fields,
-          helpItem: helpItem
+          helpItem: helpItem,
+          breadcrumb: {
+            name: 'help',
+            parent: allHelpData.fields.title
+          }
         }
       })
       .catch(() => {
