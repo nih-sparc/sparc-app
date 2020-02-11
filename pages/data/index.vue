@@ -175,13 +175,13 @@ const client = createClient()
  */
 const transformIndividualFilter = filter => {
   const category = propOr('', 'category', filter)
-  const filters = propOr([], 'filters', filter)
+  const filters = propOr([], 'tags', filter)
 
   const transformedFilters = filters.map(filter => {
     return {
-      label: filter,
+      label: filter.fields.name,
       category: category,
-      key: filter,
+      key: filter.fields.slug,
       value: false
     }
   })
@@ -475,7 +475,7 @@ export default {
       this.isLoadingFilters = true
 
       client
-        .getEntry(this.searchType.filterId)
+        .getEntry(this.searchType.filterId, { include: 2 })
         .then(response => {
           const filters = transformFilters(response.fields)
           this.filters = this.setActiveFilters(filters)
