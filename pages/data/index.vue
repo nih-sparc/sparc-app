@@ -449,12 +449,16 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
+      const tags = this.$route.query.tags || undefined
+
       client
         .getEntries({
           content_type: this.$route.query.type,
           query: this.$route.query.q,
           limit: this.searchData.limit,
-          skip: this.searchData.skip
+          skip: this.searchData.skip,
+          include: 2,
+          'fields.tags[all]': tags
         })
         .then(response => {
           this.searchData = response
