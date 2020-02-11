@@ -136,7 +136,7 @@ const searchTypes = [
   {
     label: 'Images',
     type: 'file',
-    filterId: process.env.ctf_filters_file_id,
+    filterId: process.env.ctf_filters_image_id,
     dataSource: 'blackfynn'
   },
   {
