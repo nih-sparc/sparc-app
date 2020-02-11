@@ -4,9 +4,10 @@
       <div class="subpage">
         <el-row type="flex" justify="center">
           <el-col :row="24">
+            <h2>{{ header }}</h2>
             <!-- eslint-disable vue/no-v-html -->
             <!-- marked will sanitize the HTML injected -->
-            <div v-html="parseMarkdown(copy)" />
+            <div v-html="parseMarkdown(body)" />
           </el-col>
         </el-row>
       </div>
@@ -18,9 +19,13 @@
 import Vue from 'vue';
 import MarkedMixin from '@/mixins/marked'
 
-export default Vue.extend<never, never, never, { copy: string }>({
+export default Vue.extend<never, never, never, { header: string, body: string }>({
   props: {
-    copy: {
+    header: {
+      type: String,
+      default: ''
+    },
+    body: {
       type: String,
       default: ''
     }

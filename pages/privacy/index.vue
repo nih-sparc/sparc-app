@@ -1,5 +1,5 @@
 <template>
-  <MarkdownPage :copy="copy" />
+  <MarkdownPage :header="header" :body="body" />
 </template>
 
 <script lang="ts">
@@ -7,11 +7,11 @@ import Vue from 'vue';
 import {asyncMarkdown} from "~/components/MarkdownPage/asyncMarkdown";
 import MarkdownPage from "~/components/MarkdownPage/MarkdownPage.vue";
 
-export default Vue.extend<{ copy: string }, never, never, never>({
+export default Vue.extend<{ header: string, body: string }, never, never, never>({
   name: 'PrivacyPolicy',
 
   data() {
-    return { copy: '' }
+    return { header: '', body: '' }
   },
 
   components: {
@@ -19,7 +19,11 @@ export default Vue.extend<{ copy: string }, never, never, never>({
   },
 
   asyncData() {
-    return asyncMarkdown(process.env.ctf_privacy_policy_id as string, 'privacyPolicyCopy')
+    return asyncMarkdown(
+      process.env.ctf_privacy_policy_id as string,
+      'heroCopy',
+      'privacyPolicyCopy'
+    )
   }
 })
 </script>
