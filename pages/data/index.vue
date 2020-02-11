@@ -285,7 +285,6 @@ export default {
 
     /**
      * Compute the search heading
-     * @TODO Optimize - this is getting a lot of data from various sources
      * This data could be set at a specific time, such as when the active
      * tab is set
      * @returns {String}
@@ -410,9 +409,6 @@ export default {
       if (typeof searchSources[source] === 'function') {
         searchSources[source]()
       }
-
-      // Fetch filters for the search type
-      // this.fetchFilters()
     },
 
     /**
