@@ -86,7 +86,7 @@
         </div>
         <div v-if="datasetType === 'simulation'">
           <button class="dataset-button">
-            <a :href="`https://osparc.io/study/${this.simulationId}`" target="_blank">
+            <a :href="`https://osparc.io/study/${this.getSimulationId}`" target="_blank">
               Run Simulation
             </a>
           </button>
@@ -195,16 +195,17 @@ export default {
     const datasetId = pathOr('', ['params', 'datasetId'], route)
     const datasetUrl = `${process.env.discover_api_host}/datasets/${datasetId}`
     const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
+    let datasetDetails = {}
 
-    const datasetDetails = await $axios.$get(datasetUrl)
-    let simulation = ''
     if (route.query.type === 'simulation') {
-      simulation = await $axios.$get(simulationUrl)
+      datasetDetails = await $axios.$get(simulationUrl)
+    } else {
+      datasetDetails = await $axios.$get(datasetUrl)
     }
+
     return {
       entries: organEntries.items,
       datasetInfo: datasetDetails,
-      simulationId: simulation !== '' ? simulation.study.uuid : '',
       datasetType: route.query.type
     }
   },
@@ -249,12 +250,20 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Returns simulation id for run simulation button
+     * @returns {String}
+     */
+    getSimulationId: function() {
+      return this.datasetInfo.study.uuid || ''
+    },
     /**
      * Get tabs based on dataset type
      * @returns {Array}
      */
     getDetailTabs: function() {
-      return this.getDatasetType === 'simulation'
+      return this.datasetType === 'simulation'
         ? [
             {
               label: 'About',
@@ -262,13 +271,6 @@ export default {
             }
           ]
         : this.tabs
-    },
-    /**
-     * Get dataset type that is being displayed
-     * @returns {String}
-     */
-    getDatasetType: function() {
-      return this.$route.query.type
     },
 
     /**
