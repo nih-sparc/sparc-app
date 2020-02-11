@@ -253,7 +253,7 @@ export default {
   .dataset-about-info {
     &__container {
       &--citation {
-        height: 12rem;
+        height: 100%;
       }
     }
   }

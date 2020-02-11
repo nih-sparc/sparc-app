@@ -117,19 +117,18 @@ export default {
     &__container {
       margin: 0;
       margin-top: 1.5rem;
+      padding-right: 1rem;
+      padding-left: 1rem;
       &--types {
         display: -webkit-inline-box;
-        position: relative;
-        overflow: hidden;
       }
-      &--types:after {
-        position: absolute;
-        background: linear-gradient(to right, transparent, white);
-        content: '';
-        left: 0px;
-        top: 0px;
-        height: 100%;
-        width: 100%;
+      &--button {
+        font-size: 1em;
+        padding-right: 0;
+        padding-left: 0;
+      }
+      li {
+        margin-right: 0;
       }
     }
   }
