@@ -23,9 +23,9 @@ export interface Data {
   allHelpData: Partial<HelpData>
   helpData: Partial<HelpData>;
   isLoadingSearch: boolean;
-  searchTerms: string;
+  searchTerms?: string;
 }
 
 export interface Methods {
-  onSearchQuery: (terms: string) => void
+  doSearch: (terms: string | undefined) => void
 }
