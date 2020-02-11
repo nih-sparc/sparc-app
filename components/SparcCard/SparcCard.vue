@@ -3,8 +3,8 @@
     class="sparc-card"
     :class="{ 'sparc-card--image-right': imageAlign === 'right' }"
   >
-    <div class="sparc-card__image" :style="`background-image: url(${image})`">
-      <img class="visuallyhidden" :src="image" :alt="imageAlt" />
+    <div class="sparc-card__image">
+      <img :src="image" :alt="imageAlt" />
     </div>
 
     <div class="sparc-card__content-wrap">
@@ -37,28 +37,36 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$image-fixed: 350px;
+$sparc-card-bp: 1024px;
 .sparc-card {
-  @media (min-width: 768px) {
+  /*background: #24245b;*/
+  @media (min-width: $sparc-card-bp) {
     display: flex;
   }
   &--image-right {
     .sparc-card__image {
-      @media (min-width: 768px) {
+      @media (min-width: $sparc-card-bp) {
         order: 2;
       }
     }
   }
   &__image {
-    background-size: cover;
-    background-position: center;
-    height: 206px;
-    @media (min-width: 768px) {
-      height: auto;
+    @media (min-width: $sparc-card-bp) {
+      flex: 0 0 $image-fixed;
+      max-height: $image-fixed;
+    }
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
   &__image,
   &__content-wrap {
-    flex: 1 0 0em; // Unit required for IE11
+    @media (min-width: $sparc-card-bp) {
+      min-height: $image-fixed;
+      display: flex;
+    }
     &__content {
       background: #24245b;
       color: #fff;
@@ -66,7 +74,7 @@ export default {
       line-height: 1.3125rem;
       padding: 1em;
 
-      @media (min-width: 768px) {
+      @media (min-width: $sparc-card-bp) {
         font-size: 1.125em;
         line-height: 2rem;
         padding: 3em;
