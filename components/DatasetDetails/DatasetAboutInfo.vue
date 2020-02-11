@@ -249,4 +249,13 @@ export default {
     }
   }
 }
+@media screen and (max-width: 768px) {
+  .dataset-about-info {
+    &__container {
+      &--citation {
+        height: 12rem;
+      }
+    }
+  }
+}
 </style>

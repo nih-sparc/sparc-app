@@ -3,18 +3,20 @@
     <div class="details-tabs__container">
       <el-row type="flex">
         <el-col :span="24">
-          <ul class="details-tabs__container--types">
-            <li v-for="tab in tabs" :key="tab.label">
-              <a
-                class="details-tabs__container--button"
-                :class="{ active: tab.type === activeTab }"
-                href="#"
-                @click.prevent="$emit('set-active-tab', tab.type)"
-              >
-                {{ tab.label }}
-              </a>
-            </li>
-          </ul>
+          <div class="shadow">
+            <ul class="details-tabs__container--types">
+              <li v-for="tab in tabs" :key="tab.label">
+                <a
+                  class="details-tabs__container--button"
+                  :class="{ active: tab.type === activeTab }"
+                  href="#"
+                  @click.prevent="$emit('set-active-tab', tab.type)"
+                >
+                  {{ tab.label }}
+                </a>
+              </li>
+            </ul>
+          </div>
         </el-col>
       </el-row>
       <div class="details-tabs__container--data">
