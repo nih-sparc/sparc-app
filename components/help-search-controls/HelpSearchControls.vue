@@ -15,61 +15,22 @@
 
 <script>
 export default {
-  props: {
-    searchOnLoad: {
-      type: Boolean,
-      default: false
-    },
-    submitText: {
-      type: String,
-      default: 'View Results'
-    },
-    isClearSearchVisible: {
-      type: Boolean,
-      default: false
-    },
-    isSearchVisible: {
-      type: Boolean,
-      default: true
-    }
-  },
-
   data() {
     return {
       loading: false,
-      terms: null
+      terms: this.$route.query.search
     }
   },
-  watch: {},
 
-  mounted: function() {
-    if (this.searchOnLoad) {
-      // this.setSearchOnLoad()
+  watch: {
+    '$route.query.search': function() {
+      this.terms = this.$route.query.search
     }
   },
 
   methods: {
-    /**
-     * Clear search
-     */
-    clearSearch: function() {
-      this.terms = ''
-      this.submit()
-    },
-
-    /**
-     * Set search and execute search
-     */
-    setSearchOnLoad: function() {
-      // const terms = pathOr('', ['query', 'searchTerms'], this.$route)
-      // const type = pathOr('datasets', ['query', 'searchType'], this.$route)
-      // this.selectedType = type
-      // this.terms = terms
-      // this.submit()
-    },
-
     submit() {
-      this.$emit('query', this.terms)
+      this.$router.push({ path: '/help',  query: { search: this.terms }})
     }
   }
 }
