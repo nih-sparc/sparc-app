@@ -110,8 +110,8 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const FileSearchResults = () =>
-  import('@/components/SearchResults/FileSearchResults.vue')
+const ImageSearchResults = () =>
+  import('@/components/SearchResults/ImageSearchResults.vue')
 const OrganSearchResults = () =>
   import('@/components/SearchResults/OrganSearchResults.vue')
 
@@ -119,7 +119,7 @@ const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
-  file: FileSearchResults,
+  file: ImageSearchResults,
   organ: OrganSearchResults,
   simulation: DatasetSearchResults
 }
