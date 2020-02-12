@@ -37,6 +37,15 @@
                 {{ activeFiltersLabel }}
               </button>
             </div>
+            <div class="filter__wrap">
+              <button
+                class="btn__filters"
+                @click="isSearchMapVisible = true"
+              >
+                <svg-icon name="icon-anatomy" height="20" width="20" />
+                Anatomical Map
+              </button>
+            </div>
           </div>
           <div class="mb-16">
             <div class="active__filter__wrap">
@@ -78,6 +87,10 @@
       :is-loading="isLoadingFilters"
       :dialog-title="activeFiltersLabel"
       @input="setTagsQuery"
+    />
+    <search-map-popup
+      :visible.sync="isSearchMapVisible"
+      :on-map-click="onMapClick"
     />
   </div>
 </template>
@@ -164,6 +177,7 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
+import SearchMapPopup from "../../components/SearchMapPopup/SearchMapPopup";
 
 const client = createClient()
 
@@ -202,6 +216,7 @@ export default {
   name: 'DataPage',
 
   components: {
+    SearchMapPopup,
     PageHero,
     SearchFilters,
     SearchForm
@@ -217,7 +232,8 @@ export default {
       searchData: clone(searchData),
       isLoadingSearch: false,
       isLoadingFilters: false,
-      isFiltersVisible: false
+      isFiltersVisible: false,
+      isSearchMapVisible: false,
     }
   },
 
@@ -348,6 +364,13 @@ export default {
        */
       this.searchData = clone(searchData)
       this.fetchResults()
+    },
+
+    '$route.query.q': {
+      handler: function() {
+        this.searchQuery = this.$route.query.q
+      },
+      immediate: true
     },
 
     'searchType.filterId': {
@@ -541,6 +564,20 @@ export default {
       this.$router.replace({ query }).then(() => {
         this.fetchResults()
       })
+    },
+
+    onMapClick: function(label) {
+      const { query } = this.$route;
+      this.$router
+        .replace({
+          query: {
+            ...query,
+            q: query.q ? [this.$route.query.q, label].join(' ') : label
+          }
+        })
+        .then(() => {
+          this.fetchResults()
+      })
     }
   }
 }
@@ -666,5 +703,8 @@ export default {
 }
 .active__filter__wrap .el-tag {
   margin: 0.5em 1em 0.5em 0;
+}
+.filter__wrap {
+  padding-right: 1em;
 }
 </style>
