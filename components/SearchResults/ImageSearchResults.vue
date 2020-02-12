@@ -27,6 +27,15 @@
               Download
             </el-dropdown-item>
             <el-dropdown-item
+              v-if="scope.row.sourcePackageId"
+              :command="{
+                type: 'openFile',
+                scope
+              }"
+            >
+              Open
+            </el-dropdown-item>
+            <el-dropdown-item
               :command="{
                 type: 'openDataset',
                 scope
@@ -46,7 +55,7 @@ import { compose, last, defaultTo, split, pathOr, propOr } from 'ramda'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 
 export default {
-  name: 'FileSearchResults',
+  name: 'ImageSearchResults',
 
   mixins: [StorageMetrics],
 
@@ -123,6 +132,26 @@ export default {
       el.click()
 
       document.body.removeChild(el)
+    },
+
+    /**
+     * Open the file
+     * @param {Object} scope
+     */
+    openFile: function(scope) {
+      const sourcePackageId = pathOr('', ['row', 'sourcePackageId'], scope)
+      const datasetId = pathOr('', ['row', 'datasetId'], scope)
+      const datasetVersion = pathOr('', ['row', 'datasetVersion'], scope)
+      if (sourcePackageId) {
+        this.$router.push({
+          name: 'file-datasetId-datasetVersion-id',
+          params: {
+            datasetId,
+            datasetVersion,
+            id: sourcePackageId
+          }
+        })
+      }
     }
   }
 }

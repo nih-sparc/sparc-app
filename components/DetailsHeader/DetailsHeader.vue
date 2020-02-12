@@ -1,20 +1,6 @@
 <template>
   <div class="details-header">
-    <div class="details-header__page-route">
-      <p>
-        <nuxt-link
-          :to="{
-            name: breadcrumb.name,
-            query: {
-              type: breadcrumb.type
-            }
-          }"
-        >
-          {{ breadcrumb.parent }}
-        </nuxt-link>
-        > {{ formatBreadcrumb(title) }}
-      </p>
-    </div>
+    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="details-header__container container">
       <div class="details-header__container--image">
         <slot name="banner image" />
@@ -42,8 +28,13 @@
 </template>
 
 <script>
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
 export default {
   name: 'DetailsHeader',
+
+  components: {
+    Breadcrumb
+  },
 
   props: {
     breadcrumb: {
@@ -117,25 +108,6 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
 .details-header {
-  &__page-route {
-    background: $purple-gray;
-    height: 2.5rem;
-    margin-top: 0;
-    p {
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 16px;
-      padding-left: 2rem;
-      padding-top: 0.75rem;
-      margin-top: 0;
-      color: $midnight;
-    }
-
-    a {
-      text-decoration: none;
-      color: $midnight;
-    }
-  }
   &__container {
     display: flex;
     flex-direction: row;

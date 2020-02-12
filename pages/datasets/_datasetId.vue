@@ -84,39 +84,58 @@
             </div>
           </div>
         </div>
-        <button class="dataset-button" @click="isDownloadModalVisible = true">
-          Get Dataset
-        </button>
+        <div v-if="datasetType === 'simulation'">
+          <button class="dataset-button">
+            <a :href="`https://osparc.io/study/${this.getSimulationId}`" target="_blank">
+              Run Simulation
+            </a>
+          </button>
+          <a :href="`https://discover.blackfynn.com/datasets/${$route.params.datasetId}/index.html`" target="_blank" class="dataset-link">Get Dataset</a>
+        </div>
+        <div v-else>
+          <button class="dataset-button" @click="isDownloadModalVisible = true">
+            Get Dataset
+          </button>
+        </div>
       </div>
     </details-header>
     <detail-tabs
-      :tabs="tabs"
+      :tabs="getDetailTabs"
       :active-tab="activeTab"
       class="container"
       @set-active-tab="setActiveTab"
     >
-      <dataset-about-info
-        v-show="activeTab === 'about'"
-        :updated-date="lastUpdatedDate"
-        :doi="datasetDOI"
-        :doi-value="datasetDetails.doi"
-        :dataset-records="datasetRecords"
-        :dataset-tags="datasetTags"
-      />
-      <dataset-description-info
-        v-show="activeTab === 'description'"
-        :markdown="markdown"
-        :loading-markdown="loadingMarkdown"
-      />
-      <dataset-files-info
-        v-show="activeTab === 'files'"
-        :dataset-details="datasetDetails"
-      />
-      <dataset-model-info v-show="activeTab === '3DModel'" />
+      <div v-if="datasetType === 'simulation'">
+        <dataset-description-info
+          v-show="activeTab === 'about'"
+          :markdown="markdown"
+          :loading-markdown="loadingMarkdown"
+        />
+      </div>
+      <div v-else>
+        <dataset-about-info
+          v-show="activeTab === 'about'"
+          :updated-date="lastUpdatedDate"
+          :doi="datasetDOI"
+          :doi-value="datasetInfo.doi"
+          :dataset-records="datasetRecords"
+          :dataset-tags="datasetTags"
+        />
+        <dataset-description-info
+          v-show="activeTab === 'description'"
+          :markdown="markdown"
+          :loading-markdown="loadingMarkdown"
+        />
+        <dataset-files-info
+          v-show="activeTab === 'files'"
+          :dataset-details="datasetInfo"
+        />
+        <dataset-model-info v-show="activeTab === '3DModel'" />
+      </div>
     </detail-tabs>
     <download-dataset
       :visible.sync="isDownloadModalVisible"
-      :dataset-details="datasetDetails"
+      :dataset-details="datasetInfo"
       :download-size="getDownloadSize"
       @close-download-dialog="isDownloadModalVisible = false"
     />
@@ -135,7 +154,6 @@ import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
-import DatasetMetadataInfo from '@/components/DatasetDetails/DatasetMetadataInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import DatasetModelInfo from '@/components/DatasetDetails/DatasetModelInfo.vue'
 
@@ -169,26 +187,33 @@ export default {
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  asyncData() {
-    return Promise.all([
-      // Get page content
-      client.getEntries({
-        content_type: process.env.ctf_organ_id
-      })
-    ])
-      .then(([entries]) => {
-        return {
-          entries: entries.items
-        }
-      })
-      .catch(console.error)
+  async asyncData({ route, $axios }) {
+    const organEntries = await client.getEntries({
+      content_type: process.env.ctf_organ_id
+    })
+
+    const datasetId = pathOr('', ['params', 'datasetId'], route)
+    const datasetUrl = `${process.env.discover_api_host}/datasets/${datasetId}`
+    const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
+    let datasetDetails = {}
+
+    if (route.query.type === 'simulation') {
+      datasetDetails = await $axios.$get(simulationUrl)
+    } else {
+      datasetDetails = await $axios.$get(datasetUrl)
+    }
+
+    return {
+      entries: organEntries.items,
+      datasetInfo: datasetDetails,
+      datasetType: route.query.type
+    }
   },
 
   data() {
     return {
       showCopySuccess: false,
       isLoadingDataset: false,
-      datasetDetails: {},
       errorLoading: false,
       loadingMarkdown: false,
       markdown: '',
@@ -217,20 +242,43 @@ export default {
       activeTab: 'about',
       breadcrumb: {
         name: 'data',
-        type: 'dataset',
-        parent: 'Teams and Projects'
+        type: this.$route.query.type,
+        parent: 'Find Data'
       },
-      subtitles: []
+      subtitles: [],
     }
   },
 
   computed: {
+
+    /**
+     * Returns simulation id for run simulation button
+     * @returns {String}
+     */
+    getSimulationId: function() {
+      return this.datasetInfo.study.uuid || ''
+    },
+    /**
+     * Get tabs based on dataset type
+     * @returns {Array}
+     */
+    getDetailTabs: function() {
+      return this.datasetType === 'simulation'
+        ? [
+            {
+              label: 'About',
+              type: 'about'
+            }
+          ]
+        : this.tabs
+    },
+
     /**
      * Gets dataset size for download
      * @returns {Number}
      */
     getDownloadSize: function() {
-      return propOr(0, 'size', this.datasetDetails)
+      return propOr(0, 'size', this.datasetInfo)
     },
     /**
      * Returns the dataset storage count
@@ -241,7 +289,7 @@ export default {
         split(' '),
         this.formatMetric,
         propOr(0, 'size')
-      )(this.datasetDetails)
+      )(this.datasetInfo)
 
       return storage.reduce((number, unit) => {
         return {
@@ -256,7 +304,7 @@ export default {
      * @returns {String}
      */
     datasetFiles: function() {
-      return propOr('', 'fileCount', this.datasetDetails)
+      return propOr('', 'fileCount', this.datasetInfo)
     },
 
     /**
@@ -272,7 +320,7 @@ export default {
      * @returns {String}
      */
     datasetLicense: function() {
-      const licenseKey = propOr('', 'license', this.datasetDetails)
+      const licenseKey = propOr('', 'license', this.datasetInfo)
       return getLicenseAbbr(licenseKey)
     },
 
@@ -281,7 +329,7 @@ export default {
      * @returns {String}
      */
     datasetLicenseName: function() {
-      return propOr('', 'license', this.datasetDetails)
+      return propOr('', 'license', this.datasetInfo)
     },
 
     /**
@@ -289,7 +337,7 @@ export default {
      * @returns {String}
      */
     getDatasetImage: function() {
-      return propOr('', 'banner', this.datasetDetails)
+      return propOr('', 'banner', this.datasetInfo)
     },
 
     /**
@@ -297,7 +345,7 @@ export default {
      * @returns {String}
      */
     datasetContributors: function() {
-      return propOr([], 'contributors', this.datasetDetails)
+      return propOr([], 'contributors', this.datasetInfo)
     },
     /**
      * Compute contributors list based
@@ -322,7 +370,7 @@ export default {
      * @returns {String}
      */
     datasetTitle: function() {
-      return propOr('', 'name', this.datasetDetails)
+      return propOr('', 'name', this.datasetInfo)
     },
 
     /**
@@ -338,7 +386,7 @@ export default {
      * @returns {String}
      */
     datasetDOI: function() {
-      const doi = propOr('', 'doi', this.datasetDetails)
+      const doi = propOr('', 'doi', this.datasetInfo)
       return `https://doi.org/${doi}`
     },
 
@@ -347,7 +395,7 @@ export default {
      * @return {String}
      */
     originallyPublishedDate: function() {
-      const date = propOr('', 'createdAt', this.datasetDetails)
+      const date = propOr('', 'createdAt', this.datasetInfo)
       return this.formatDate(date)
     },
     /**
@@ -355,7 +403,7 @@ export default {
      * @return {String}
      */
     lastUpdatedDate: function() {
-      const date = propOr('', 'updatedAt', this.datasetDetails)
+      const date = propOr('', 'updatedAt', this.datasetInfo)
       return this.formatDate(date)
     },
     /**
@@ -363,7 +411,7 @@ export default {
      * @returns {Array}
      */
     datasetTags: function() {
-      return propOr([], 'tags', this.datasetDetails)
+      return propOr([], 'tags', this.datasetInfo)
     },
     /**
      * Returns the current location href from the window object
@@ -378,7 +426,7 @@ export default {
      * @returns {String}
      */
     DOIlink: function() {
-      const doi = propOr('', 'doi', this.datasetDetails)
+      const doi = propOr('', 'doi', this.datasetInfo)
       return doi ? `https://doi.org/${doi}` : ''
     },
 
@@ -387,7 +435,7 @@ export default {
      * @returns {String}
      */
     datasetDescription: function() {
-      return propOr('', 'description', this.datasetDetails)
+      return propOr('', 'description', this.datasetInfo)
     },
 
     /**
@@ -395,7 +443,7 @@ export default {
      * @returns {String}
      */
     datasetName: function() {
-      return propOr('', 'name', this.datasetDetails)
+      return propOr('', 'name', this.datasetInfo)
     },
 
     /**
@@ -403,7 +451,7 @@ export default {
      * @returns {String}
      */
     organizationName: function() {
-      return propOr('', 'organizationName', this.datasetDetails)
+      return propOr('', 'organizationName', this.datasetInfo)
     },
 
     /**
@@ -424,15 +472,6 @@ export default {
   },
 
   watch: {
-    getDatasetUrl: {
-      handler: function(val) {
-        if (val) {
-          this.getDataset()
-        }
-      },
-      immediate: true
-    },
-
     /**
      * Watcher for getSearchRecordsUrl
      */
@@ -445,7 +484,7 @@ export default {
       immediate: true
     },
 
-    datasetDetails: {
+    datasetInfo: {
       handler: function() {
         this.getMarkdown()
       },
@@ -502,23 +541,6 @@ export default {
         })
     },
 
-    getDataset: function() {
-      this.isLoadingDataset = true
-
-      this.$axios
-        .$get(this.getDatasetUrl)
-        .then(response => {
-          this.datasetDetails = response
-        })
-        .catch(() => {
-          // handle error
-          this.errorLoading = true
-        })
-        .finally(() => {
-          this.isLoadingDataset = false
-        })
-    },
-
     /**
      * Confirms that url of dataset was copied successfully
      * and sets boolean to true
@@ -532,7 +554,7 @@ export default {
      */
     getMarkdown: function() {
       this.loadingMarkdown = true
-      const readme = propOr('', 'readme', this.datasetDetails)
+      const readme = propOr('', 'readme', this.datasetInfo)
       if (readme !== '') {
         fetch(readme)
           .then(response => response.text())
@@ -577,7 +599,7 @@ export default {
       script: [
         {
           vmid: 'ldjson-schema',
-          innerHTML: `{"@context": "http://schema.org","@type": "Dataset","@id": "${this.DOIlink}","name": "${this.datasetName}","publisher": "${this.organizationName}", "datePublished": "${this.datasetDetails.createdAt}", "dateModified": "${this.datasetDetails.updatedAt}", "Description": "${this.datasetDescription}"}`,
+          innerHTML: `{"@context": "http://schema.org","@type": "Dataset","@id": "${this.DOIlink}","name": "${this.datasetName}","publisher": "${this.organizationName}", "datePublished": "${this.datasetInfo.createdAt}", "dateModified": "${this.datasetInfo.updatedAt}", "Description": "${this.datasetDescription}"}`,
           type: 'application/ld+json'
         }
       ],
@@ -616,11 +638,16 @@ export default {
       }
       .dataset-button {
         background-color: $median;
-        width: 127px;
+        width: 138px;
         height: 40px;
         font-size: 14px;
         color: #ffffff;
         font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .dataset-link {
+        text-decoration: none;
       }
     }
   }

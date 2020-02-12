@@ -1,12 +1,7 @@
 <template>
   <div class="events-page">
-    <page-hero>
-      <HelpSearchControls
-        :search-on-load="true"
-        submit-text="Go"
-        @query="onSearchQuery"
-      />
-    </page-hero>
+    <help-hero :title="helpHeroData.title" :summary="helpHeroData.summary" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="helpItem.fields.title" />
     <div class="page-wrap container">
       <div class="subpage">
         <div class="header">
@@ -30,9 +25,9 @@
 import { format, parseISO } from 'date-fns'
 import { pathOr } from 'ramda'
 
-import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
-import PageHero from '@/components/PageHero/PageHero.vue'
+import HelpHero from "@/components/HelpHero/HelpHero";
 import MarkedMixin from '@/mixins/marked'
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 
 import createClient from '@/plugins/contentful.js'
 
@@ -42,17 +37,25 @@ export default {
   name: 'EventPage',
 
   components: {
-    HelpSearchControls,
-    PageHero
+    HelpHero,
+    Breadcrumb,
   },
 
   mixins: [MarkedMixin],
 
   asyncData(env) {
-    return Promise.all([client.getEntry(env.params.helpId)])
-      .then(([helpItem]) => {
+    return Promise.all([
+      client.getEntry(process.env.ctf_support_page_id, { include: 2 }),
+      client.getEntry(env.params.helpId)
+    ])
+      .then(([allHelpData, helpItem]) => {
         return {
-          helpItem: helpItem
+          helpHeroData: allHelpData.fields,
+          helpItem: helpItem,
+          breadcrumb: {
+            name: 'help',
+            parent: allHelpData.fields.title
+          }
         }
       })
       .catch(() => {
@@ -75,12 +78,6 @@ export default {
      */
     updateDate: function() {
       return format(parseISO(this.helpItem.sys.updatedAt), 'MM/dd/yyyy')
-    }
-  },
-
-  methods: {
-    onSearchQuery: function() {
-      return 0
     }
   }
 }

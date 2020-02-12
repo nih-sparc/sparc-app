@@ -37,6 +37,15 @@
                 {{ activeFiltersLabel }}
               </button>
             </div>
+            <div class="filter__wrap">
+              <button
+                class="btn__filters"
+                @click="isSearchMapVisible = true"
+              >
+                <svg-icon name="icon-anatomy" height="20" width="20" />
+                Anatomical Map
+              </button>
+            </div>
           </div>
           <div class="mb-16">
             <div class="active__filter__wrap">
@@ -77,6 +86,11 @@
       :visible.sync="isFiltersVisible"
       :is-loading="isLoadingFilters"
       :dialog-title="activeFiltersLabel"
+      @input="setTagsQuery"
+    />
+    <search-map-popup
+      :visible.sync="isSearchMapVisible"
+      :on-map-click="onMapClick"
     />
   </div>
 </template>
@@ -87,6 +101,7 @@ import {
   clone,
   compose,
   defaultTo,
+  equals,
   flatten,
   find,
   filter,
@@ -108,8 +123,8 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const FileSearchResults = () =>
-  import('@/components/SearchResults/FileSearchResults.vue')
+const ImageSearchResults = () =>
+  import('@/components/SearchResults/ImageSearchResults.vue')
 const OrganSearchResults = () =>
   import('@/components/SearchResults/OrganSearchResults.vue')
 
@@ -117,9 +132,9 @@ const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
-  file: FileSearchResults,
+  file: ImageSearchResults,
   organ: OrganSearchResults,
-  simulation: DatasetSearchResults,
+  simulation: DatasetSearchResults
 }
 
 const searchTypes = [
@@ -132,7 +147,7 @@ const searchTypes = [
   {
     label: 'Images',
     type: 'file',
-    filterId: process.env.ctf_filters_file_id,
+    filterId: process.env.ctf_filters_image_id,
     dataSource: 'blackfynn'
   },
   {
@@ -162,6 +177,7 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
+import SearchMapPopup from "../../components/SearchMapPopup/SearchMapPopup";
 
 const client = createClient()
 
@@ -171,13 +187,13 @@ const client = createClient()
  */
 const transformIndividualFilter = filter => {
   const category = propOr('', 'category', filter)
-  const filters = propOr([], 'filters', filter)
+  const filters = propOr([], 'tags', filter)
 
   const transformedFilters = filters.map(filter => {
     return {
-      label: filter,
+      label: filter.fields.name,
       category: category,
-      key: filter,
+      key: filter.fields.slug,
       value: false
     }
   })
@@ -200,6 +216,7 @@ export default {
   name: 'DataPage',
 
   components: {
+    SearchMapPopup,
     PageHero,
     SearchFilters,
     SearchForm
@@ -215,7 +232,8 @@ export default {
       searchData: clone(searchData),
       isLoadingSearch: false,
       isLoadingFilters: false,
-      isFiltersVisible: false
+      isFiltersVisible: false,
+      isSearchMapVisible: false,
     }
   },
 
@@ -229,7 +247,9 @@ export default {
       let url = `${process.env.discover_api_host}/search/${
         searchType === 'simulation' ? 'dataset' : searchType
       }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
-        searchType === 'simulation' ? 'tags=simcore' : 'organization=SPARC%20Consortium'
+        searchType === 'simulation'
+          ? `organization=IT'IS%20Foundation`
+          : 'organization=SPARC%20Consortium'
       }`
 
       if (searchType === 'file') {
@@ -239,6 +259,11 @@ export default {
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
         url += `&query=${query}`
+      }
+
+      const tags = this.$route.query.tags || ''
+      if (tags) {
+        url += `&tags=${tags}`
       }
 
       return url
@@ -276,7 +301,6 @@ export default {
 
     /**
      * Compute the search heading
-     * @TODO Optimize - this is getting a lot of data from various sources
      * This data could be set at a specific time, such as when the active
      * tab is set
      * @returns {String}
@@ -340,9 +364,24 @@ export default {
        */
       this.searchData = clone(searchData)
       this.fetchResults()
+    },
+
+    '$route.query.q': {
+      handler: function() {
+        this.searchQuery = this.$route.query.q
+      },
+      immediate: true
+    },
+
+    'searchType.filterId': {
+      handler: function(val) {
+        if (val) {
+          this.fetchFilters()
+        }
+      },
+      immediate: true
     }
   },
-
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    */
@@ -358,6 +397,25 @@ export default {
 
   methods: {
     /**
+     * Set active filters based on the query params
+     * @params {Array} filters
+     * @returns {Array}
+     */
+    setActiveFilters: function(filters) {
+      const tags = (this.$route.query.tags || '').toLowerCase().split(',')
+
+      return filters.map(category => {
+        category.filters.map(filter => {
+          const hasTag = tags.indexOf(filter.key.toLowerCase())
+          filter.value = hasTag >= 0
+          return filter
+        })
+
+        return category
+      })
+    },
+
+    /**
      * Figure out which source to fetch results from based on the
      * type of search
      */
@@ -372,9 +430,6 @@ export default {
       if (typeof searchSources[source] === 'function') {
         searchSources[source]()
       }
-
-      // Fetch filters for the search type
-      this.fetchFilters()
     },
 
     /**
@@ -390,7 +445,10 @@ export default {
           const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
-            items: response[`${searchType === 'simulation' ? 'dataset' : searchType}s`],
+            items:
+              response[
+                `${searchType === 'simulation' ? 'dataset' : searchType}s`
+              ],
             total: response.totalCount
           }
           this.searchData = mergeLeft(searchData, this.searchData)
@@ -407,12 +465,16 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
+      const tags = this.$route.query.tags || undefined
+
       client
         .getEntries({
           content_type: this.$route.query.type,
           query: this.$route.query.q,
           limit: this.searchData.limit,
-          skip: this.searchData.skip
+          skip: this.searchData.skip,
+          include: 2,
+          'fields.tags[all]': tags
         })
         .then(response => {
           this.searchData = response
@@ -433,12 +495,13 @@ export default {
       this.isLoadingFilters = true
 
       client
-        .getEntry(this.searchType.filterId)
+        .getEntry(this.searchType.filterId, { include: 2 })
         .then(response => {
-          this.filters = transformFilters(response.fields)
+          const filters = transformFilters(response.fields)
+          this.filters = this.setActiveFilters(filters)
         })
         .catch(() => {
-          this.searchData = clone(searchData)
+          this.filters = []
         })
         .finally(() => {
           this.isLoadingFilters = false
@@ -479,6 +542,42 @@ export default {
         this.filters
       )
       this.filters = filters
+      this.setTagsQuery()
+    },
+
+    /**
+     * Set the tags query parameter in the router
+     */
+    setTagsQuery: function() {
+      const filterVals = this.activeFilters.map(filter => {
+        return filter.key
+      })
+
+      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
+      if (equals(filterVals, queryParamTags.split(','))) {
+        return
+      }
+
+      const tags = { tags: filterVals.join(',') }
+
+      const query = { ...this.$route.query, ...tags }
+      this.$router.replace({ query }).then(() => {
+        this.fetchResults()
+      })
+    },
+
+    onMapClick: function(label) {
+      const { query } = this.$route;
+      this.$router
+        .replace({
+          query: {
+            ...query,
+            q: query.q ? [this.$route.query.q, label].join(' ') : label
+          }
+        })
+        .then(() => {
+          this.fetchResults()
+      })
     }
   }
 }
@@ -604,5 +703,8 @@ export default {
 }
 .active__filter__wrap .el-tag {
   margin: 0.5em 1em 0.5em 0;
+}
+.filter__wrap {
+  padding-right: 1em;
 }
 </style>

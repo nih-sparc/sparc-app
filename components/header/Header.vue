@@ -7,7 +7,10 @@
           About SPARC
         </nuxt-link>
         <svg-icon icon="icon-contact" width="18" height="18" />
-        <a href="#">
+        <a
+          href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji"
+          target="_blank"
+        >
           Contact Us
         </a>
         <svg-icon icon="icon-help" width="18" height="18" />
@@ -62,7 +65,7 @@
           <div :class="[menuOpen ? 'overlay' : '']">
             <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
               <ul>
-                <li v-for="link in links" :key="link.href">
+                <li v-for="link in links" :key="link.href" style="z-index: 100;">
                   <nuxt-link
                     :to="{ name: link.title }"
                     :class="{ active: activeLink(link.href) }"
@@ -153,11 +156,6 @@ const links = [
     title: 'data',
     displayTitle: 'Find Data',
     href: '/data'
-  },
-  {
-    title: 'atlas',
-    displayTitle: 'Atlas',
-    href: '/atlas'
   },
   {
     title: 'resources',
@@ -310,7 +308,7 @@ export default {
     width: 100%;
     height: 100%;
     z-index: 10;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -322,7 +320,7 @@ export default {
     width: 100%;
     height: 100%;
     z-index: 10;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 }
 

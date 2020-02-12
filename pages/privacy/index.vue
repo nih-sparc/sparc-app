@@ -1,26 +1,31 @@
 <template>
-  <div class="privacy-policy">
-    <div class="page-wrap container">
-      <div class="subpage">
-        <el-row type="flex" justify="center">
-          <el-col :row="24">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet
-              similique numquam accusamus quae, aliquid vero obcaecati facilis
-              reprehenderit. Fugit quibusdam placeat repellendus vitae similique
-              reprehenderit, aspernatur velit blanditiis non dicta.
-            </p>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-  </div>
+  <markdown-page :header="header" :body="body" />
 </template>
 
-<script>
-export default {
-  name: 'PrivacyPolicy'
-}
+<script lang="ts">
+import Vue from 'vue';
+import {asyncMarkdown} from "~/components/MarkdownPage/asyncMarkdown";
+import MarkdownPage from "~/components/MarkdownPage/MarkdownPage.vue";
+
+export default Vue.extend<{ header: string, body: string }, never, never, never>({
+  name: 'PrivacyPolicy',
+
+  data() {
+    return { header: '', body: '' }
+  },
+
+  components: {
+    MarkdownPage
+  },
+
+  asyncData() {
+    return asyncMarkdown(
+      process.env.ctf_privacy_policy_id as string,
+      'heroCopy',
+      'privacyPolicyCopy'
+    )
+  }
+})
 </script>
 
 <style lang="scss" scoped></style>

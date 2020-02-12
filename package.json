@@ -14,10 +14,12 @@
     "generate-icons": "vsvg -s ./static/icons-svg -t ./static/icons-js"
   },
   "dependencies": {
+    "@abi-software/flatmapvuer": "0.1.2",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/robots": "^2.4.2",
     "babel-eslint": "^10.0.3",
     "contentful": "^7.10.0",
+    "cookie-universal-nuxt": "^2.1.1",
     "date-fns": "^2.8.1",
     "element-ui": "^2.4.11",
     "eslint": "^6.8.0",
@@ -36,6 +38,8 @@
     "vue-svgicon": "^3.2.6"
   },
   "devDependencies": {
+    "@nuxt/typescript-build": "^0.5.6",
+    "@types/node": "^13.7.0",
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0"
   },

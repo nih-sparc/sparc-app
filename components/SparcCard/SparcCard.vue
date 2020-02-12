@@ -3,8 +3,8 @@
     class="sparc-card"
     :class="{ 'sparc-card--image-right': imageAlign === 'right' }"
   >
-    <div class="sparc-card__image" :style="`background-image: url(${image})`">
-      <img class="visuallyhidden" :src="image" :alt="imageAlt" />
+    <div class="sparc-card__image">
+      <img :src="image" :alt="imageAlt" />
     </div>
 
     <div class="sparc-card__content-wrap">
@@ -37,36 +37,66 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$image-fixed-small: 250px;
+$image-fixed-large: 350px;
+$tablet-small: 768px;
+$tablet-large: 1024px;
 .sparc-card {
-  @media (min-width: 768px) {
+  @media (min-width: $tablet-small) {
     display: flex;
   }
   &--image-right {
     .sparc-card__image {
-      @media (min-width: 768px) {
+      @media (min-width: $tablet-small) {
         order: 2;
       }
     }
   }
   &__image {
-    background-size: cover;
-    background-position: center;
-    height: 206px;
-    @media (min-width: 768px) {
-      height: auto;
+    @media (min-width: $tablet-small) {
+      flex: 0 0 $image-fixed-small;
+      max-height: $image-fixed-small;
     }
+    @media (min-width: $tablet-large) {
+      flex: 0 0 $image-fixed-large;
+      max-height: $image-fixed-large;
+    }
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  &__content-wrap {
+    flex: 1;
+    background: #24245b;
   }
   &__image,
   &__content-wrap {
-    flex: 1 0 0em; // Unit required for IE11
+    @media (min-width: $tablet-small) {
+      min-height: $image-fixed-small;
+      display: flex;
+    }
+    @media (min-width: $tablet-large) {
+      min-height: $image-fixed-large;
+      display: flex;
+    }
     &__content {
-      background: #24245b;
       color: #fff;
       font-size: 0.75em;
       line-height: 1.3125rem;
       padding: 1em;
 
-      @media (min-width: 768px) {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      @media (min-width: $tablet-small + 1) and (max-width: $tablet-large) {
+        font-size: 1em;
+        line-height: 2rem;
+        padding: 2em;
+      }
+      @media (min-width: $tablet-large + 1) {
         font-size: 1.125em;
         line-height: 2rem;
         padding: 3em;

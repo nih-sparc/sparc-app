@@ -1,26 +1,28 @@
 <template>
-  <div class="terms-of-service">
-    <div class="page-wrap container">
-      <div class="subpage">
-        <el-row type="flex" justify="center">
-          <el-col :row="24">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet
-              similique numquam accusamus quae, aliquid vero obcaecati facilis
-              reprehenderit. Fugit quibusdam placeat repellendus vitae similique
-              reprehenderit, aspernatur velit blanditiis non dicta.
-            </p>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-  </div>
+  <markdown-page :header="header" :body="body" />
 </template>
 
-<script>
-export default {
-  name: 'TermsOfService'
-}
-</script>
+<script lang="ts">
+import Vue from 'vue';
+import MarkdownPage from '~/components/MarkdownPage/MarkdownPage.vue'
+import {asyncMarkdown} from "~/components/MarkdownPage/asyncMarkdown";
+export default Vue.extend<{ header: string, body: string }, never, never, never>({
+  name: 'TermsOfService',
 
-<style lang="scss" scoped></style>
+  data() {
+    return { header: '', body: '' }
+  },
+
+  components: {
+    MarkdownPage
+  },
+
+  asyncData() {
+    return asyncMarkdown(
+      process.env.ctf_terms_id as string,
+      'heroCopy',
+      'termsOfServiceCopy'
+    )
+  }
+})
+</script>
