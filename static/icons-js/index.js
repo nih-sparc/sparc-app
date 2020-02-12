@@ -1,5 +1,6 @@
 /* eslint-disable */
 require('./icon-about')
+require('./icon-anatomy')
 require('./icon-contact')
 require('./icon-files')
 require('./icon-hamburger')
