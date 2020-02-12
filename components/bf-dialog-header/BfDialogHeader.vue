@@ -1,10 +1,13 @@
 <template>
-  <div class="bf-dialog-header">
-    <span class="bf-dialog-header-title">{{ title }}</span>
-    <button v-if="!this.$slots.tabs" class="icon-close" @click="onClose">
-      <svg-icon icon="icon-remove" height="12" width="12" />
-    </button>
-    <slot name="tabs" />
+  <div>
+    <div class="bf-dialog-header">
+      <span class="bf-dialog-header-title">{{ title }}</span>
+      <button v-if="!this.$slots.tabs" class="icon-close" @click="onClose">
+        <svg-icon icon="icon-remove" height="12" width="12" />
+      </button>
+      <slot name="tabs" />
+    </div>
+    <p class="bf-dialog-sub-title" v-if="this.subTitle">{{ subTitle }}</p>
   </div>
 </template>
 
@@ -14,6 +17,10 @@ export default {
 
   props: {
     title: {
+      type: String,
+      default: ''
+    },
+    subTitle: {
       type: String,
       default: ''
     }
@@ -61,5 +68,9 @@ export default {
   bottom: -25px;
   right: 40px;
   position: absolute;
+}
+.bf-dialog-sub-title {
+  margin: .75em 0 0 0;
+  font-size: .75em;
 }
 </style>
