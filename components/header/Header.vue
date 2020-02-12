@@ -65,7 +65,7 @@
           <div :class="[menuOpen ? 'overlay' : '']">
             <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
               <ul>
-                <li v-for="link in links" :key="link.href">
+                <li v-for="link in links" :key="link.href" style="z-index: 100;">
                   <nuxt-link
                     :to="{ name: link.title }"
                     :class="{ active: activeLink(link.href) }"
