@@ -22,19 +22,28 @@
     </page-hero>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
-        <el-col :span="6">
-          <search-filters v-model="filters" v-loading="isLoadingFilters" />
-        </el-col>
-        <el-col :span="18">
+        <el-col :span="24">
           <div class="search-heading">
             <p v-if="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }}
             </p>
             <div class="filter__wrap">
+              <button
+                class="btn__filters"
+                :disabled="filters.length === 0"
+                @click="isFiltersVisible = true"
+              >
+                <svg-icon name="icon-preset" height="20" width="20" />
+                {{ activeFiltersLabel }}
+              </button>
+            </div>
+          </div>
+          <div class="mb-16">
+            <div class="active__filter__wrap">
               <div
                 v-for="(filter, filterIdx) in filters"
                 :key="filter.category"
-                class="filter__wrap-category"
+                class="active__filter__wrap-category"
               >
                 <template v-for="(item, itemIdx) in filter.filters">
                   <el-tag
@@ -63,6 +72,13 @@
         </el-col>
       </el-row>
     </div>
+    <search-filters
+      v-model="filters"
+      :visible.sync="isFiltersVisible"
+      :is-loading="isLoadingFilters"
+      :dialog-title="activeFiltersLabel"
+      @input="setTagsQuery"
+    />
   </div>
 </template>
 
@@ -72,6 +88,7 @@ import {
   clone,
   compose,
   defaultTo,
+  equals,
   flatten,
   find,
   filter,
@@ -95,12 +112,16 @@ const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
 const FileSearchResults = () =>
   import('@/components/SearchResults/FileSearchResults.vue')
+const OrganSearchResults = () =>
+  import('@/components/SearchResults/OrganSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
-  file: FileSearchResults
+  file: FileSearchResults,
+  organ: OrganSearchResults,
+  simulation: DatasetSearchResults
 }
 
 const searchTypes = [
@@ -113,12 +134,12 @@ const searchTypes = [
   {
     label: 'Images',
     type: 'file',
-    filterId: process.env.ctf_filters_file_id,
+    filterId: process.env.ctf_filters_image_id,
     dataSource: 'blackfynn'
   },
   {
     label: 'Organs',
-    type: 'organ',
+    type: process.env.ctf_organ_id,
     filterId: process.env.ctf_filters_organ_id,
     dataSource: 'contentful'
   },
@@ -132,7 +153,7 @@ const searchTypes = [
     label: 'Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'contentful'
+    dataSource: 'blackfynn'
   }
 ]
 
@@ -152,13 +173,13 @@ const client = createClient()
  */
 const transformIndividualFilter = filter => {
   const category = propOr('', 'category', filter)
-  const filters = propOr([], 'filters', filter)
+  const filters = propOr([], 'tags', filter)
 
   const transformedFilters = filters.map(filter => {
     return {
-      label: filter,
+      label: filter.fields.name,
       category: category,
-      key: filter,
+      key: filter.fields.slug,
       value: false
     }
   })
@@ -195,7 +216,8 @@ export default {
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
-      isLoadingFilters: false
+      isLoadingFilters: false,
+      isFiltersVisible: false
     }
   },
 
@@ -206,7 +228,13 @@ export default {
      */
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      let url = `${process.env.discover_api_host}/search/${searchType}s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&organization=SPARC%20Consortium`
+      let url = `${process.env.discover_api_host}/search/${
+        searchType === 'simulation' ? 'dataset' : searchType
+      }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
+        searchType === 'simulation'
+          ? `organization=IT'IS%20Foundation`
+          : 'organization=SPARC%20Consortium'
+      }`
 
       if (searchType === 'file') {
         url += '&fileType=tiff'
@@ -215,6 +243,11 @@ export default {
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
         url += `&query=${query}`
+      }
+
+      const tags = this.$route.query.tags || ''
+      if (tags) {
+        url += `&tags=${tags}`
       }
 
       return url
@@ -252,7 +285,6 @@ export default {
 
     /**
      * Compute the search heading
-     * @TODO Optimize - this is getting a lot of data from various sources
      * This data could be set at a specific time, such as when the active
      * tab is set
      * @returns {String}
@@ -284,6 +316,27 @@ export default {
         flatten,
         pluck('items')
       )(this.filters)
+    },
+
+    /**
+     * Compute active filters
+     * @returns {Array}
+     */
+    activeFilters: function() {
+      return compose(
+        filter(propEq('value', true)),
+        flatten,
+        pluck('filters')
+      )(this.filters)
+    },
+
+    /**
+     * Compute dialog header based on how many active filters
+     * @returns {String}
+     */
+    activeFiltersLabel: function() {
+      const activeFilterLength = this.activeFilters.length
+      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     }
   },
 
@@ -295,9 +348,17 @@ export default {
        */
       this.searchData = clone(searchData)
       this.fetchResults()
+    },
+
+    'searchType.filterId': {
+      handler: function(val) {
+        if (val) {
+          this.fetchFilters()
+        }
+      },
+      immediate: true
     }
   },
-
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    */
@@ -313,6 +374,25 @@ export default {
 
   methods: {
     /**
+     * Set active filters based on the query params
+     * @params {Array} filters
+     * @returns {Array}
+     */
+    setActiveFilters: function(filters) {
+      const tags = (this.$route.query.tags || '').toLowerCase().split(',')
+
+      return filters.map(category => {
+        category.filters.map(filter => {
+          const hasTag = tags.indexOf(filter.key.toLowerCase())
+          filter.value = hasTag >= 0
+          return filter
+        })
+
+        return category
+      })
+    },
+
+    /**
      * Figure out which source to fetch results from based on the
      * type of search
      */
@@ -327,9 +407,6 @@ export default {
       if (typeof searchSources[source] === 'function') {
         searchSources[source]()
       }
-
-      // Fetch filters for the search type
-      this.fetchFilters()
     },
 
     /**
@@ -345,7 +422,10 @@ export default {
           const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
-            items: response[`${searchType}s`],
+            items:
+              response[
+                `${searchType === 'simulation' ? 'dataset' : searchType}s`
+              ],
             total: response.totalCount
           }
           this.searchData = mergeLeft(searchData, this.searchData)
@@ -362,12 +442,16 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
+      const tags = this.$route.query.tags || undefined
+
       client
         .getEntries({
           content_type: this.$route.query.type,
           query: this.$route.query.q,
           limit: this.searchData.limit,
-          skip: this.searchData.skip
+          skip: this.searchData.skip,
+          include: 2,
+          'fields.tags[all]': tags
         })
         .then(response => {
           this.searchData = response
@@ -388,12 +472,13 @@ export default {
       this.isLoadingFilters = true
 
       client
-        .getEntry(this.searchType.filterId)
+        .getEntry(this.searchType.filterId, { include: 2 })
         .then(response => {
-          this.filters = transformFilters(response.fields)
+          const filters = transformFilters(response.fields)
+          this.filters = this.setActiveFilters(filters)
         })
         .catch(() => {
-          this.searchData = clone(searchData)
+          this.filters = []
         })
         .finally(() => {
           this.isLoadingFilters = false
@@ -429,11 +514,33 @@ export default {
      */
     clearFilter: function(filterIdx, itemIdx) {
       const filters = assocPath(
-        [filterIdx, 'items', itemIdx, 'value'],
+        [filterIdx, 'filters', itemIdx, 'value'],
         false,
         this.filters
       )
       this.filters = filters
+      this.setTagsQuery()
+    },
+
+    /**
+     * Set the tags query parameter in the router
+     */
+    setTagsQuery: function() {
+      const filterVals = this.activeFilters.map(filter => {
+        return filter.key
+      })
+
+      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
+      if (equals(filterVals, queryParamTags.split(','))) {
+        return
+      }
+
+      const tags = { tags: filterVals.join(',') }
+
+      const query = { ...this.$route.query, ...tags }
+      this.$router.replace({ query }).then(() => {
+        this.fetchResults()
+      })
     }
   }
 }
@@ -516,25 +623,48 @@ export default {
   text-align: center;
 }
 .search-heading {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   margin-bottom: 1em;
   p {
     font-size: 0.875em;
     flex-shrink: 0;
-    margin: 1em 1em 0 0;
+    margin: 0 1em 0 0;
   }
-}
-.filter__wrap,
-.filter__wrap-category {
-  display: inline;
-}
-.filter__wrap .el-tag {
-  margin: 0.5em 1em 0.5em 0;
 }
 ::v-deep {
   .el-table td {
     vertical-align: top;
   }
+}
+.btn__filters {
+  align-items: center;
+  background: none;
+  border: none;
+  color: $median;
+  display: flex;
+  font-size: 0.875em;
+  outline: none;
+  padding: 0;
+  &[disabled] {
+    opacity: 0.7;
+  }
+  &:not([disabled]) {
+    &:hover,
+    &:focus {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+  .svg-icon {
+    margin-right: 0.3125rem;
+  }
+}
+.active__filter__wrap,
+.active__filter__wrap-category {
+  display: inline;
+}
+.active__filter__wrap .el-tag {
+  margin: 0.5em 1em 0.5em 0;
 }
 </style>

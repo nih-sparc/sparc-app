@@ -28,12 +28,13 @@ export default {
     ]
   },
   env: {
-    portal_api: process.env.PORTAL_API_HOST || 'http://localhost:4000',
+    portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
     crosscite_api_host:
-      process.env.CROSSCITE_API_HOST || 'https://crosscite.org',
+      process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
       process.env.BLACKFYNN_DISCOVER_API_HOST ||
       'https://api.blackfynn.io/discover',
+    sparc_api_host: 'http://localhost:8000',
     ctf_event_id: 'event',
     ctf_resource_id: 'sparcPartners',
     ctf_help_id: 'helpDocument',
@@ -42,12 +43,16 @@ export default {
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     ctf_project_id: 'sparcAward',
+    ctf_organ_id: 'organ',
     ctf_filter_id: '6bya4tyw8399',
     ctf_filters_dataset_id: '7fL88ABgKSB2tPJmysn2V',
     ctf_filters_project_id: 'YVan5NSd4bgj2Q5WZdOVw',
     ctf_filters_organ_id: '5Hhlb7Lf4yijMQUSBai1fh',
     ctf_filters_image_id: '4R4zfdND13xLLGU9nPpNCD',
     ctf_filters_simulation_id: '6qMQRugMyzeaUrTIPQDdF1',
+    ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
+    ctf_terms_id: '6XCER8v1TVVCoZdaBWg66t',
+    ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST
@@ -75,11 +80,11 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [],
+  buildModules: ['@nuxt/typescript-build'],
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios', '@nuxtjs/robots'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/robots', 'cookie-universal-nuxt'],
   /*
    ** robots.txt
    */

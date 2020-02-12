@@ -8,12 +8,7 @@
       </div>
       <div class="footer__info--blurb">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod
-          tempor incididunt ut labore et dolore eiusmod magna aliqua. Ut enim
-          minim veniam, quis anim exercitation ullamco laboris nis ut aliquip ex
-          commodo consequat. Dus aute irure dolor in consectetur reprehenderit
-          in voluptate velit esse cillum dolore fugiat nulla pariatur. Excepteur
-          sint occaecat cupidatat proident.
+          {{ footerData }}
         </p>
       </div>
       <div class="footer__info--social">
@@ -64,9 +59,6 @@
               Site Feedback
             </a>
           </li>
-          <li>
-            <a href="#">Report a Bug</a>
-          </li>
         </ul>
         <h3>Stay Up-to-Date</h3>
         <ul>
@@ -105,11 +97,18 @@
 
 <script>
 import SparcLogo from '@/components/logo/SparcLogo.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'SparcFooter',
   components: {
     SparcLogo
+  },
+
+  computed: {
+    ...mapState({
+      footerData: 'footerData'
+    })
   }
 }
 </script>

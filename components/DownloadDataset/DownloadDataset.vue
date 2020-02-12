@@ -174,7 +174,7 @@ export default {
 .download-dataset-dialog {
   .download-dataset-container {
     display: flex;
-    height: 430px;
+    height: 513px;
     word-break: normal;
   }
   .download-block {

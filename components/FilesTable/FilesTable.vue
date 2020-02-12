@@ -25,13 +25,7 @@
         </el-button>
       </div>
       <el-table v-else v-loading="isLoading" :data="data">
-        <el-table-column
-          fixed
-          prop="name"
-          label="Name"
-          min-width="300"
-          sortable
-        >
+        <el-table-column fixed prop="name" label="Name" width="340" sortable>
           <template slot-scope="scope">
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
@@ -63,7 +57,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="120">
+        <el-table-column
+          prop="fileType"
+          label="File type"
+          width="360"
+        >
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -77,19 +75,13 @@
         <el-table-column
           prop="size"
           label="Size"
-          width="120"
+          width="360"
           :formatter="formatStorage"
         />
-        <el-table-column
-          align="right"
-          fixed="right"
-          label="Operation"
-          min-width="100"
-          width="100"
-        >
+        <el-table-column label="Operation" width="200">
           <template v-if="scope.row.type === 'File'" slot-scope="scope">
             <el-dropdown trigger="click" @command="onCommandClick">
-              <el-button icon="el-icon-more" size="small" />
+              <el-button icon="el-icon-more" size="small" class="operation-button" />
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   :command="{
@@ -268,7 +260,7 @@ export default {
 
       const fileName = pathOr('', ['row', 'name'], scope)
 
-      const requestUrl = `/api/download?key=${filePath}`
+      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
       this.$axios.$get(requestUrl).then(response => {
         this.downloadFile(fileName, response)
       })
@@ -287,7 +279,7 @@ export default {
         pathOr('', ['row', 'uri'])
       )(scope)
 
-      const requestUrl = `/api/download?key=${filePath}`
+      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
 
       this.$axios.$get(requestUrl).then(response => {
         const url = response
@@ -328,6 +320,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/_variables.scss';
 .breadcrumb {
   display: flex;
   margin-bottom: 8px;
@@ -345,7 +338,6 @@ export default {
 }
 .files-table-table {
   background: #fff;
-  border: 1px solid rgb(228, 231, 237);
   padding: 16px;
 }
 .error-wrap {
@@ -354,10 +346,26 @@ export default {
 .file-name-wrap {
   display: flex;
 }
+
+.file-name {
+  color: $median;
+}
+
 .file-icon {
   color: #000;
   font-size: 16px;
   flex-shrink: 0;
   margin: 3px 8px 0 0;
+}
+
+::v-deep .el-table {
+  th {
+    .cell {
+      color: black;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+  }
 }
 </style>
