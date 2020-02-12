@@ -57,11 +57,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="fileType"
-          label="File type"
-          width="360"
-        >
+        <el-table-column prop="fileType" label="File type" width="360">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -81,7 +77,11 @@
         <el-table-column label="Operation" width="200">
           <template v-if="scope.row.type === 'File'" slot-scope="scope">
             <el-dropdown trigger="click" @command="onCommandClick">
-              <el-button icon="el-icon-more" size="small" class="operation-button" />
+              <el-button
+                icon="el-icon-more"
+                size="small"
+                class="operation-button"
+              />
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   :command="{
@@ -144,7 +144,8 @@ export default {
       data: [],
       isLoading: false,
       hasError: false,
-      limit: 500
+      limit: 500,
+      schemaVersion: ''
     }
   },
 
@@ -165,13 +166,23 @@ export default {
       return this.path
         ? `${url}?path=${this.path}&limit=${this.limit}`
         : `${url}?limit=${this.limit}`
+    },
+
+    /**
+     * Url to retrieve the dataset to get the version number
+     * @returns {String}
+     */
+    getFilesIdUrl: function() {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = propOr(1, 'version', this.datasetDetails)
+      return `https://api.blackfynn.io/discover/datasets/${id}/versions/${version}`
     }
   },
 
   watch: {
-    getFilesurl: {
+    getFilesIdUrl: {
       handler: function() {
-        this.getFiles()
+        this.getDatasetVersionNumber()
       },
       immediate: true
     }
@@ -180,6 +191,24 @@ export default {
   mounted: function() {},
 
   methods: {
+    /**
+     * Gets the dataset version number to get the files for the dataset
+     */
+    getDatasetVersionNumber: function() {
+      this.isLoading = true
+      this.hasError = false
+
+      this.$axios
+        .$get(this.getFilesIdUrl)
+        .then(response => {
+          if (response.blackfynnSchemaVersion < '4.0') {
+            // add logic here
+          }
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+    },
     /**
      * Checks if file is MS Word, MS Excel, or MS Powerpoint
      * @param {Object} scope
