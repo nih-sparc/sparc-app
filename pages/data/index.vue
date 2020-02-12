@@ -98,9 +98,7 @@ import {
   pathOr,
   propEq,
   propOr,
-  pluck,
-  split,
-  toLower
+  pluck
 } from 'ramda'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
@@ -247,7 +245,7 @@ export default {
         url += `&query=${query}`
       }
 
-      const tags = pathOr('', ['query', 'tags'], this.$route)
+      const tags = this.$route.query.tags || ''
       if (tags) {
         url += `&tags=${tags}`
       }
@@ -371,7 +369,6 @@ export default {
       this.$router.replace({ query: { type: firstTabType } })
     } else {
       this.fetchResults()
-      // this.fetchFilters()
     }
   },
 
@@ -382,11 +379,7 @@ export default {
      * @returns {Array}
      */
     setActiveFilters: function(filters) {
-      const tags = compose(
-        split(','),
-        toLower,
-        pathOr('', ['query', 'tags'])
-      )(this.$route)
+      const tags = (this.$route.query.tags || '').toLowerCase().split(',')
 
       return filters.map(category => {
         category.filters.map(filter => {
@@ -544,7 +537,7 @@ export default {
 
       const tags = { tags: filterVals.join(',') }
 
-      const query = mergeLeft(tags, this.$route.query)
+      const query = { ...this.$route.query, ...tags }
       this.$router.replace({ query }).then(() => {
         this.fetchResults()
       })
