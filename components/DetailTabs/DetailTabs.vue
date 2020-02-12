@@ -3,7 +3,6 @@
     <div class="details-tabs__container">
       <el-row type="flex">
         <el-col :span="24">
-          <div class="shadow">
             <ul class="details-tabs__container--types">
               <li v-for="tab in tabs" :key="tab.label">
                 <a
@@ -16,7 +15,6 @@
                 </a>
               </li>
             </ul>
-          </div>
         </el-col>
       </el-row>
       <div class="details-tabs__container--data">
@@ -120,7 +118,8 @@ export default {
       padding-right: 1rem;
       padding-left: 1rem;
       &--types {
-        display: -webkit-inline-box;
+        display: -webkit-box;
+        width: max-content;
       }
       &--button {
         font-size: 1em;
