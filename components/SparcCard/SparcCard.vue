@@ -67,6 +67,10 @@ $tablet-large: 1024px;
       height: 100%;
     }
   }
+  &__content-wrap {
+    flex: 1;
+    background: #24245b;
+  }
   &__image,
   &__content-wrap {
     @media (min-width: $tablet-small) {
@@ -78,7 +82,6 @@ $tablet-large: 1024px;
       display: flex;
     }
     &__content {
-      background: #24245b;
       color: #fff;
       font-size: 0.75em;
       line-height: 1.3125rem;
