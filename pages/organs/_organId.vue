@@ -14,7 +14,14 @@
       class="container"
       @set-active-tab="setActiveTab"
     >
-      <organ-model-info v-show="activeTab === '3DScaffold'" />
+      <client-only placeholder="Loading viewer...">
+        <div v-show="activeTab === '3DScaffold'" class="scaffold">
+          <scaffold-vuer v-if="scaffold" :url="scaffold" />
+          <p v-else>
+            No 3D scaffold available
+          </p>
+        </div>
+      </client-only>
       <dataset-search-results
         v-show="activeTab === 'datasets'"
         :table-data="datasets"
@@ -29,13 +36,16 @@
 
 <script>
 import { pathOr } from 'ramda'
+import '@abi-software/scaffoldvuer'
+import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
-import OrganModelInfo from '@/components/OrganDetails/OrganModelInfo.vue'
 import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
+
+import Scaffolds from '@/static/js/scaffolds.js'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -47,7 +57,6 @@ export default {
   components: {
     DetailsHeader,
     DetailTabs,
-    OrganModelInfo,
     ProjectSearchResults,
     DatasetSearchResults
   },
@@ -73,7 +82,8 @@ export default {
     return {
       pageData,
       projects: projects.items,
-      datasets: datasets.datasets
+      datasets: datasets.datasets,
+      scaffold: Scaffolds[organType.toLowerCase()]
     }
   },
 
@@ -81,7 +91,7 @@ export default {
     return {
       tabs: [
         {
-          label: '3-D Scaffold',
+          label: '3D Scaffold',
           type: '3DScaffold'
         },
         {
@@ -98,7 +108,8 @@ export default {
         name: 'data',
         type: 'organ',
         parent: 'Organs'
-      }
+      },
+      scaffold: ''
     }
   },
 
@@ -156,5 +167,8 @@ export default {
   .el-table td {
     vertical-align: top;
   }
+}
+.scaffold {
+  height: 500px;
 }
 </style>
