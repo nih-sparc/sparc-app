@@ -86,11 +86,20 @@
         </div>
         <div v-if="datasetType === 'simulation'">
           <button class="dataset-button">
-            <a :href="`https://osparc.io/study/${this.getSimulationId}`" target="_blank">
+            <a
+              :href="`https://osparc.io/study/${this.getSimulationId}`"
+              target="_blank"
+            >
               Run Simulation
             </a>
           </button>
-          <a :href="`https://discover.blackfynn.com/datasets/${$route.params.datasetId}/index.html`" target="_blank" class="dataset-link">Get Dataset</a>
+          <a
+            :href="
+              `https://discover.blackfynn.com/datasets/${$route.params.datasetId}/index.html`
+            "
+            target="_blank"
+            class="dataset-link"
+          >Get Dataset</a>
         </div>
         <div v-else>
           <button class="dataset-button" @click="isDownloadModalVisible = true">
@@ -130,7 +139,14 @@
           v-show="activeTab === 'files'"
           :dataset-details="datasetInfo"
         />
-        <dataset-model-info v-show="activeTab === '3DModel'" />
+        <client-only placeholder="Loading viewer...">
+          <div v-show="activeTab === '3DScaffold'" class="scaffold">
+            <scaffold-vuer v-if="scaffold" :url="scaffold" />
+            <p v-else>
+              No 3D scaffold available
+            </p>
+          </div>
+        </client-only>
       </div>
     </detail-tabs>
     <download-dataset
@@ -145,6 +161,8 @@
 <script>
 import marked from 'marked'
 import { propOr, pathOr, last, head, compose, split } from 'ramda'
+import '@abi-software/scaffoldvuer'
+import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -155,12 +173,13 @@ import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
-import DatasetModelInfo from '@/components/DatasetDetails/DatasetModelInfo.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
+
+import Scaffolds from '@/static/js/scaffolds.js'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -181,8 +200,7 @@ export default {
     DownloadDataset,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
-    DatasetFilesInfo,
-    DatasetModelInfo
+    DatasetFilesInfo
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -235,8 +253,8 @@ export default {
           type: 'files'
         },
         {
-          label: '3-D Model',
-          type: '3DModel'
+          label: '3D Scaffold',
+          type: '3DScaffold'
         }
       ],
       activeTab: 'about',
@@ -245,12 +263,11 @@ export default {
         type: this.$route.query.type,
         parent: 'Find Data'
       },
-      subtitles: [],
+      subtitles: []
     }
   },
 
   computed: {
-
     /**
      * Returns simulation id for run simulation button
      * @returns {String}
@@ -468,6 +485,24 @@ export default {
      */
     datasetId: function() {
       return pathOr('', ['params', 'datasetId'], this.$route)
+    },
+
+    /**
+     * Compute the organ type
+     * This assumes that the subtitles are the organ types
+     * @TODO Adjust this based on how 3D scaffold is associated with Dataset
+     * @returns {String}
+     */
+    organType: function() {
+      return this.subtitles[0] || ''
+    },
+
+    /**
+     * Compute the scaffold type based on organ type
+     * @returns {String}
+     */
+    scaffold: function() {
+      return Scaffolds[this.organType.toLowerCase()]
     }
   },
 
@@ -713,5 +748,8 @@ export default {
 .dataset-details {
   width: 100%;
   overflow-x: hidden;
+}
+.scaffold {
+  height: 500px;
 }
 </style>
