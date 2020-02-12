@@ -54,7 +54,7 @@
     },
 
     methods: {
-      searchScaffoldLabel: function(payload) {
+      searchScaffoldLabel: function(this: Props & Methods, payload) {
         console.log(JSON.stringify(payload, undefined, 2))
         this.onMapClick(payload.label)
         this.closeDialog()
@@ -63,7 +63,7 @@
       /**
        * Closes the dialog
        */
-      closeDialog: function() {
+      closeDialog: function(this: { $emit: (message: string, value: boolean ) => void }) {
         this.$emit('update:visible', false)
       },
     }
