@@ -37,10 +37,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$image-fixed-large: 350px;
 $image-fixed-small: 250px;
-$tablet-large: 1024px;
+$image-fixed-large: 350px;
 $tablet-small: 768px;
+$tablet-large: 1024px;
 .sparc-card {
   @media (min-width: $tablet-small) {
     display: flex;
@@ -53,27 +53,28 @@ $tablet-small: 768px;
     }
   }
   &__image {
+    @media (min-width: $tablet-small) {
+      flex: 0 0 $image-fixed-small;
+      max-height: $image-fixed-small;
+    }
     @media (min-width: $tablet-large) {
       flex: 0 0 $image-fixed-large;
       max-height: $image-fixed-large;
     }
-    @media (min-width: $tablet-small) and (max-width: $tablet-large - 1) {
-      flex: 0 0 $image-fixed-small;
-      max-height: $image-fixed-small;
-    }
     img {
+      display: block;
       width: 100%;
       height: 100%;
     }
   }
   &__image,
   &__content-wrap {
-    @media (min-width: $tablet-large) {
-      min-height: $image-fixed-large;
+    @media (min-width: $tablet-small) {
+      min-height: $image-fixed-small;
       display: flex;
     }
-    @media (min-width: $tablet-small) and (max-width: $tablet-large - 1) {
-      min-height: $image-fixed-small;
+    @media (min-width: $tablet-large) {
+      min-height: $image-fixed-large;
       display: flex;
     }
     &__content {

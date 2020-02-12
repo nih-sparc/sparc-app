@@ -9,21 +9,23 @@
         :image-alt="item.fields.image.fields.title"
         :image-align="idx % 2 ? 'right' : ''"
       >
-        <h3>
-          <nuxt-link
-            :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
-          >
-            {{ item.fields.title }}
-          </nuxt-link>
-        </h3>
-        <!-- eslint-disable vue/no-v-html -->
-        <!-- marked will sanitize the HTML injected -->
-        <div v-html="parseMarkdown(item.fields.summary)" />
+        <div>
+          <h3>
+            <nuxt-link
+              :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
+            >
+              {{ item.fields.title }}
+            </nuxt-link>
+          </h3>
+          <!-- eslint-disable vue/no-v-html -->
+          <!-- marked will sanitize the HTML injected -->
+          <div v-html="parseMarkdown(item.fields.summary)" />
+        </div>
         <p>
           <nuxt-link
             :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
           >
-            <el-button>
+            <el-button size="medium">
               Learn More
             </el-button>
           </nuxt-link>
