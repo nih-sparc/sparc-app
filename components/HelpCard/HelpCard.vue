@@ -33,8 +33,14 @@ export default Vue.extend<never, never, never, { helpItem: HelpDocument }>({
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
+.help-card {
+  h3 {
+    margin-bottom: 0;
+  }
+}
 .help-link {
-  color: $median
+  color: $median;
+  font-size: 24px;
 }
 .help-link:not(:hover) {
   text-decoration: none;

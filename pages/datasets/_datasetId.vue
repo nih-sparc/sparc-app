@@ -84,35 +84,54 @@
             </div>
           </div>
         </div>
-        <button class="dataset-button" @click="isDownloadModalVisible = true">
-          Get Dataset
-        </button>
+        <div v-if="getDatasetType === 'simulation'">
+          <button class="dataset-button">
+            <a :href="`https://osparc.io/study/${this.simulationId}`" target="_blank">
+              Run Simulation
+            </a>
+          </button>
+          <a :href="`https://discover.blackfynn.com/datasets/${$route.params.datasetId}/index.html`" target="_blank" class="dataset-link">Get Dataset</a>
+        </div>
+        <div v-else>
+          <button class="dataset-button" @click="isDownloadModalVisible = true">
+            Get Dataset
+          </button>
+        </div>
       </div>
     </details-header>
     <detail-tabs
-      :tabs="tabs"
+      :tabs="getDetailTabs"
       :active-tab="activeTab"
       class="container"
       @set-active-tab="setActiveTab"
     >
-      <dataset-about-info
-        v-show="activeTab === 'about'"
-        :updated-date="lastUpdatedDate"
-        :doi="datasetDOI"
-        :doi-value="datasetDetails.doi"
-        :dataset-records="datasetRecords"
-        :dataset-tags="datasetTags"
-      />
-      <dataset-description-info
-        v-show="activeTab === 'description'"
-        :markdown="markdown"
-        :loading-markdown="loadingMarkdown"
-      />
-      <dataset-files-info
-        v-show="activeTab === 'files'"
-        :dataset-details="datasetDetails"
-      />
-      <dataset-model-info v-show="activeTab === '3DModel'" />
+      <div v-if="getDatasetType === 'simulation'">
+        <dataset-description-info
+          v-show="activeTab === 'about'"
+          :markdown="markdown"
+          :loading-markdown="loadingMarkdown"
+        />
+      </div>
+      <div v-else>
+        <dataset-about-info
+          v-show="activeTab === 'about'"
+          :updated-date="lastUpdatedDate"
+          :doi="datasetDOI"
+          :doi-value="datasetDetails.doi"
+          :dataset-records="datasetRecords"
+          :dataset-tags="datasetTags"
+        />
+        <dataset-description-info
+          v-show="activeTab === 'description'"
+          :markdown="markdown"
+          :loading-markdown="loadingMarkdown"
+        />
+        <dataset-files-info
+          v-show="activeTab === 'files'"
+          :dataset-details="datasetDetails"
+        />
+        <dataset-model-info v-show="activeTab === '3DModel'" />
+      </div>
     </detail-tabs>
     <download-dataset
       :visible.sync="isDownloadModalVisible"
@@ -135,7 +154,6 @@ import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
-import DatasetMetadataInfo from '@/components/DatasetDetails/DatasetMetadataInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import DatasetModelInfo from '@/components/DatasetDetails/DatasetModelInfo.vue'
 
@@ -217,14 +235,37 @@ export default {
       activeTab: 'about',
       breadcrumb: {
         name: 'data',
-        type: 'dataset',
-        parent: 'Teams and Projects'
+        type: this.$route.params.type,
+        parent: 'Find Data'
       },
-      subtitles: []
+      subtitles: [],
+      simulationId: ''
     }
   },
 
   computed: {
+    /**
+     * Get tabs based on dataset type
+     * @returns {Array}
+     */
+    getDetailTabs: function() {
+      return this.getDatasetType === 'simulation'
+        ? [
+            {
+              label: 'About',
+              type: 'about'
+            }
+          ]
+        : this.tabs
+    },
+    /**
+     * Get dataset type that is being displayed
+     * @returns {String}
+     */
+    getDatasetType: function() {
+      return this.$route.params.type
+    },
+
     /**
      * Gets dataset size for download
      * @returns {Number}
@@ -472,10 +513,29 @@ export default {
         }
       },
       immediate: true
+    },
+
+    getDatasetType: {
+      handler: function(val) {
+        if (val === 'simulation') {
+          this.getSimulationId()
+        }
+      },
+      immediate: true
     }
   },
 
   methods: {
+
+    /**
+     * Gets the uuid for the simulation dataset
+     */
+    getSimulationId: function() {
+      const requestUrl = `${process.env.portal_api}/sim/dataset/${this.$route.params.datasetId}`
+      this.$axios.$get(requestUrl).then(response => {
+        this.simulationId = response.study.uuid
+      })
+    },
     /**
      * Sets active tab
      * @param {String} activeLabel
@@ -616,11 +676,15 @@ export default {
       }
       .dataset-button {
         background-color: $median;
-        width: 127px;
+        width: 138px;
         height: 40px;
         font-size: 14px;
         color: #ffffff;
         font-weight: 500;
+      }
+
+      .dataset-link {
+        text-decoration: none;
       }
     }
   }

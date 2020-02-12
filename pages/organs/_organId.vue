@@ -97,7 +97,7 @@ export default {
       breadcrumb: {
         name: 'data',
         type: 'organ',
-        parent: 'Teams and Projects'
+        parent: 'Organs'
       }
     }
   },
