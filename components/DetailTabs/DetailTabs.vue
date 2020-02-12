@@ -113,7 +113,6 @@ export default {
 @media screen and (max-width: 768px) {
   .details-tabs {
     &__container {
-      margin: 0;
       margin-top: 1.5rem;
       padding-right: 1rem;
       padding-left: 1rem;
@@ -134,6 +133,16 @@ export default {
 
   ::v-deep .el-row--flex {
     overflow-y: scroll;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .details-tabs {
+    &__container {
+      &--types {
+        width: 100%;
+      }
+    }
   }
 }
 </style>
