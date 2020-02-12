@@ -233,7 +233,7 @@ export default {
     &__page-route {
       height: 100%;
       p {
-        padding-bottom: 0.5rem;
+        padding-bottom: 0.75rem;
       }
     }
     &__container {
