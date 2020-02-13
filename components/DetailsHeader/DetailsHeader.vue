@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 export default {
   name: 'DetailsHeader',
 
