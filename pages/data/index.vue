@@ -177,7 +177,8 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
-import SearchMapPopup from "../../components/SearchMapPopup/SearchMapPopup"
+import SearchMapPopup from "../../components/SearchMapPopup/SearchMapPopup";
+import {transformFilters} from "./utils";
 
 const client = createClient()
 
@@ -185,7 +186,7 @@ const client = createClient()
  * Transform indidivual filter
  * @param {Object} filter
  */
-const transformIndividualFilter = filter => {
+/*const transformIndividualFilter = filter => {
   const category = propOr('', 'category', filter)
   const filters = propOr([], 'tags', filter)
 
@@ -199,18 +200,18 @@ const transformIndividualFilter = filter => {
   })
 
   return mergeLeft({ filters: transformedFilters }, filter)
-}
+}*/
 
 /**
  * Transform filter response
  * @param {Object} filters
  */
-const transformFilters = compose(
+/*const transformFilters = compose(
   flatten,
   map(transformIndividualFilter),
   pluck('fields'),
   propOr([], 'filters')
-)
+)*/
 
 export default {
   name: 'DataPage',
@@ -498,6 +499,7 @@ export default {
         .getEntry(this.searchType.filterId, { include: 2 })
         .then(response => {
           const filters = transformFilters(response.fields)
+          debugger;
           this.filters = this.setActiveFilters(filters)
         })
         .catch(() => {
