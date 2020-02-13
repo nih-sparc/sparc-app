@@ -6,11 +6,9 @@
       </div>
       <div class="event-content-wrap">
         <h3>
-          <nuxt-link
-            :to="{ name: 'events-eventId', params: { eventId: event.sys.id } }"
-          >
+          <a :href="event.fields.url" target="_blank">
             {{ event.fields.title }}
-          </nuxt-link>
+          </a>
         </h3>
         <div class="subtitle">
           <div>{{ event.fields.location }}</div>
