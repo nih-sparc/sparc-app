@@ -28,8 +28,14 @@
                     {{ event.fields.title }}
                   </a>
                 </h3>
-                <p>{{ eventDate(event) }}</p>
-                <p>{{ event.fields.location }}</p>
+                <div class="upcoming-event__detail">
+                  <svg-icon name="icon-calendar" height="16" width="16" />
+                  <p>{{ eventDate(event) }}</p>
+                </div>
+                <div class="upcoming-event__detail">
+                  <svg-icon name="icon-map" height="16" width="16" />
+                  <p>{{ event.fields.location }}</p>
+                </div>
               </div>
             </el-col>
           </el-row>
@@ -72,17 +78,24 @@ export default {
 
   asyncData() {
     return Promise.all([
-      // fetch all blog posts sorted by creation date
+      // Fetch events
       client.getEntries({
         content_type: process.env.ctf_event_id,
         order: 'fields.startDate'
+      }),
+
+      // Fetch news
+      client.getEntries({
+        content_type: process.env.ctf_news_id,
+        order: 'fields.publishedDate'
       })
     ])
-      .then(([events]) => {
+      .then(([events, news]) => {
         // return data that should be available
         // in the template
         return {
-          events: events.items
+          events: events.items,
+          news
         }
       })
       .catch(console.error)
@@ -184,9 +197,25 @@ export default {
       right: 14px;
     }
   }
+  &__detail {
+    align-items: baseline;
+    display: flex;
+    margin-bottom: 0.625rem;
+    &:last-child {
+      margin: 0;
+    }
+    .svg-icon {
+      flex-shrink: 0;
+      margin-right: 0.5rem;
+    }
+    p {
+      margin: 0;
+    }
+  }
   h3 {
     font-size: 1.125rem;
     font-weight: 500;
+    margin-bottom: 1rem;
     line-height: 1.375rem;
   }
   a {
