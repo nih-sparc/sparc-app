@@ -568,11 +568,33 @@ export default {
 
     onMapClick: function(label) {
       const { query } = this.$route;
+      const labelKey = label.toLowerCase()
+
+      // short circuit if nothing has changed
+      if (query.tags === labelKey || find(t => t === labelKey, query.tags)) {
+        return;
+      }
+
+      const newTags = query.tags ? [query.tags, labelKey].join(',') : labelKey;
+
+      this.filters = this.filters.map(f => ({
+        ...f,
+        filters: f.filters.map(subFilter => {
+          if (subFilter.label === label) {
+            return {
+              ...subFilter,
+              value: true,
+            }
+          }
+          return subFilter;
+        })
+      }))
+
       this.$router
         .replace({
           query: {
             ...query,
-            q: query.q ? [this.$route.query.q, label].join(' ') : label
+            tags: newTags,
           }
         })
         .then(() => {
