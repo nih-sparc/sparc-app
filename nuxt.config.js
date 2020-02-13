@@ -36,6 +36,7 @@ export default {
       'https://api.blackfynn.io/discover',
     sparc_api_host: 'http://localhost:8000',
     ctf_event_id: 'event',
+    ctf_news_id: 'news',
     ctf_resource_id: 'sparcPartners',
     ctf_help_id: 'helpDocument',
     ctf_help_list_id: 'helpSection',
