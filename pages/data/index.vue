@@ -499,7 +499,6 @@ export default {
         .getEntry(this.searchType.filterId, { include: 2 })
         .then(response => {
           const filters = transformFilters(response.fields)
-          debugger;
           this.filters = this.setActiveFilters(filters)
         })
         .catch(() => {
