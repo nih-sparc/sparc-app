@@ -1,45 +1,16 @@
 <template>
   <div class="resources">
-    <page-hero>
-      <h2>Resources</h2>
-    </page-hero>
+    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    
     <div class="page-wrap container">
-      <div class="subpage">
-        <el-row type="flex" justify="center">
-          <el-col :row="24">
-            <div
-              v-for="resource in resources"
-              :key="resource.sys.id"
-              class="resource"
-            >
-              <img
-                :src="resourceLogoUrl(resource)"
-                :alt="resourceLogoAlt(resource)"
-              />
-              <div class="resource__content">
-                <h2>
-                  <nuxt-link
-                    :to="{
-                      name: 'resources-resourceId',
-                      params: { resourceId: resource.sys.id }
-                    }"
-                  >
-                    {{ resource.fields.name }}
-                  </nuxt-link>
-                </h2>
-                <div>{{ resource.fields.description }}</div>
-              </div>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+      lorem ipsum
     </div>
   </div>
 </template>
 
 <script>
 import { pathOr } from 'ramda'
-import PageHero from '@/components/PageHero/PageHero.vue'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
@@ -48,7 +19,7 @@ export default {
   name: 'Resources',
 
   components: {
-    PageHero
+    Breadcrumb
   },
 
   asyncData() {
@@ -67,7 +38,12 @@ export default {
 
   data() {
     return {
-      resources: []
+      resources: [],
+      title: 'Resources',
+      breadcrumb: {
+        name: 'resources',
+        parent: 'Home'
+      }
     }
   },
 
