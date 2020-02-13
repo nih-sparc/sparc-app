@@ -1,7 +1,10 @@
 <template>
   <div class="resources">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
-    
+    <page-hero>
+      <h4>Resources</h4>
+      <p>Ut ultrices fermentum null alacinia rhoncus. Donec dictum nisl turpis, non laoreet neque aliquet quis. Vivamus varius, urna a cursus tincidunt, erat lectus tincidunt dui, eu interdum arcu sapien.</p>
+    </page-hero>
     <div class="page-wrap container">
       lorem ipsum
     </div>
@@ -11,6 +14,7 @@
 <script>
 import { pathOr } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
@@ -19,7 +23,8 @@ export default {
   name: 'Resources',
 
   components: {
-    Breadcrumb
+    Breadcrumb,
+    PageHero
   },
 
   asyncData() {
@@ -41,7 +46,7 @@ export default {
       resources: [],
       title: 'Resources',
       breadcrumb: {
-        name: 'resources',
+        name: 'index',
         parent: 'Home'
       }
     }
@@ -60,11 +65,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.resource {
-  img {
-    display: block;
-    height: auto;
-    max-width: 300px;
+@import '@/assets/_variables.scss';
+.resources {
+  .page-hero {
+    background-image: none;
+    background: $midnight;
+    height: 211px;
+    container {
+      margin: 0;
+    }
+    p {
+      font-size: 20px;
+      font-weight: normal;
+      line-height: 38px;
+    }
   }
 }
 </style>
