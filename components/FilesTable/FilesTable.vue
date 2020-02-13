@@ -206,7 +206,7 @@ export default {
      * @param {String} semverVersion
      */
     convertSchemaVersionToInteger: function(semverVersion) {
-      // split version number into three parts
+      // split version number into parts
       let parts = semverVersion.split('.')
       // make sure no part is larger than 1023 or else it won't fit
       // into 32-bit integer
