@@ -177,7 +177,7 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
-import SearchMapPopup from "../../components/SearchMapPopup/SearchMapPopup";
+import SearchMapPopup from "../../components/SearchMapPopup/SearchMapPopup"
 
 const client = createClient()
 
@@ -566,13 +566,42 @@ export default {
       })
     },
 
+    /**
+     * responds to a click in the anatomical map popup by adding a filter
+     * @param {String} label
+     */
     onMapClick: function(label) {
-      const { query } = this.$route;
+      const { query } = this.$route
+      const labelKey = label.toLowerCase()
+
+      // short circuit if nothing has changed
+      if (
+        query.tags === labelKey ||
+        find(t => t === labelKey, (query.tags || '').split(','))
+      ) {
+        return
+      }
+
+      const newTags = query.tags ? [query.tags, labelKey].join(',') : labelKey
+
+      this.filters = this.filters.map(f => ({
+        ...f,
+        filters: f.filters.map(subFilter => {
+          if (subFilter.label === label) {
+            return {
+              ...subFilter,
+              value: true,
+            }
+          }
+          return subFilter
+        })
+      }))
+
       this.$router
         .replace({
           query: {
             ...query,
-            q: query.q ? [this.$route.query.q, label].join(' ') : label
+            tags: newTags,
           }
         })
         .then(() => {
