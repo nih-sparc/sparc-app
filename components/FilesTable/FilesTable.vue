@@ -1,12 +1,7 @@
 <template>
   <div class="files-table">
     <div class="breadcrumb-list">
-      <a class="breadcrumb" href="#" @click.prevent="path = ''">
-        Root
-      </a>
-
       <div v-for="(item, idx) in breadcrumbs" :key="idx" class="breadcrumb">
-        <span class="breadcrumb-separator">/</span>
         <a
           class="breadcrumb-link"
           href="#"
@@ -14,6 +9,13 @@
         >
           {{ item }}
         </a>
+
+        <span
+          v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length-1"
+          class="breadcrumb-separator"
+        >
+          /
+        </span>
       </div>
     </div>
 
@@ -144,8 +146,7 @@ export default {
       data: [],
       isLoading: false,
       hasError: false,
-      limit: 500,
-      schemaVersion: ''
+      limit: 500
     }
   },
 
@@ -185,12 +186,43 @@ export default {
         this.getDatasetVersionNumber()
       },
       immediate: true
+    },
+
+    path: {
+      handler: function(val) {
+        if (val !== '') {
+          this.getFiles()
+        }
+      },
+      immediate: true
     }
   },
 
   mounted: function() {},
 
   methods: {
+    /**
+     * Converts a semver version string to an integer
+     * @param {String} semverVersion
+     */
+    convertSchemaVersionToInteger: function(semverVersion) {
+      // split version number into three parts
+      let parts = semverVersion.split('.')
+      // make sure no part is larger than 1023 or else it won't fit
+      // into 32-bit integer
+      parts.forEach(part => {
+        if (part >= 1024) {
+          throw new Error(`Version string invalid, ${part} is too large`)
+        }
+      })
+      let numericVersion = 0
+      // shift all parts either 0, 10, or 20 bits to the left
+      for (let i = 0; i < 3; i++) {
+        numericVersion |= parts[i] << (i * 10)
+      }
+      return numericVersion
+    },
+
     /**
      * Gets the dataset version number to get the files for the dataset
      */
@@ -201,8 +233,13 @@ export default {
       this.$axios
         .$get(this.getFilesIdUrl)
         .then(response => {
-          if (response.blackfynnSchemaVersion < '4.0') {
-            // add logic here
+          const schemaVersion = this.convertSchemaVersionToInteger(
+            response.blackfynnSchemaVersion
+          )
+          if (schemaVersion < 4.0) {
+            this.path = 'packages'
+          } else {
+            this.path = 'files'
           }
         })
         .catch(() => {
@@ -353,6 +390,7 @@ export default {
 .breadcrumb {
   display: flex;
   margin-bottom: 8px;
+  background: none;
 }
 .breadcrumb-list {
   display: flex;
@@ -361,6 +399,8 @@ export default {
 }
 .breadcrumb-link {
   word-break: break-word;
+  text-decoration: underline;
+  color: $median;
 }
 .breadcrumb-separator {
   margin: 0 4px;
