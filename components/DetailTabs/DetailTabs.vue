@@ -136,7 +136,7 @@ export default {
   }
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 1024px) {
   .details-tabs {
     &__container {
       &--types {

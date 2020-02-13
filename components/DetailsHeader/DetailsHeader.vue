@@ -57,16 +57,6 @@ export default {
 
   methods: {
     /**
-     * Formats breadcrumb length
-     * @param {String} breadcrumb
-     */
-    formatBreadcrumb: function(breadcrumb) {
-      return breadcrumb.length > 32
-        ? breadcrumb.substring(0, 32) + '...'
-        : breadcrumb
-    },
-
-    /**
      * Formats title length for regular viewports
      * @param {String} title
      */
