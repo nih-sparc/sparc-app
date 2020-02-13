@@ -3,11 +3,11 @@
     <p>
       <nuxt-link
         :to="{
-            name: breadcrumb.name,
-            query: breadcrumb.type
-              ? { type: breadcrumb.type }
-              : []
-          }"
+          name: breadcrumb.name,
+          query: breadcrumb.type
+            ? { type: breadcrumb.type }
+            : []
+        }"
       >
         {{ breadcrumb.parent }}
       </nuxt-link>
@@ -17,16 +17,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from 'vue'
 
 interface Breadcrumb {
-  name: string,
-  type: string,
+  name: string
+  type: string
   parent: string
 }
 
 interface Props {
-  breadcrumb: Breadcrumb,
+  breadcrumb: Breadcrumb
   title: string
 }
 
@@ -43,13 +43,13 @@ export default Vue.extend<never, Methods, never, Props>({
       default: () => ({
         name: '',
         type: '',
-        parent: '',
+        parent: ''
       })
     },
     title: {
       type: String,
       default: ''
-    },
+    }
   },
 
   methods: {
@@ -58,10 +58,8 @@ export default Vue.extend<never, Methods, never, Props>({
      * @param {String} breadcrumb
      */
     formatTitle: function(title) {
-      return title.length > 32
-        ? title.substring(0, 32) + '...'
-        : title
-    },
+      return title.length > 32 ? title.substring(0, 32) + '...' : title
+    }
   }
 })
 </script>

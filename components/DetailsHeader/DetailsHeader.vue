@@ -9,11 +9,17 @@
         <h3>
           {{ subtitle }}
         </h3>
-        <h2>
+        <h2 class="details-header__container--content-title-default">
           {{ formatTitle(title) }}
         </h2>
-        <p>
+        <h2 class="details-header__container--content-title-mobile">
+          {{ formatMobileTitle(title) }}
+        </h2>
+        <p class="details-header__container--content-description-default">
           {{ formatDescription(description) }}
+        </p>
+        <p class="details-header__container--content-description-mobile">
+          {{ formatMobileDescription(description) }}
         </p>
         <slot name="meta content" />
       </div>
@@ -22,7 +28,7 @@
 </template>
 
 <script>
-import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 export default {
   name: 'DetailsHeader',
 
@@ -51,7 +57,7 @@ export default {
 
   methods: {
     /**
-     * Formats title length
+     * Formats title length for regular viewports
      * @param {String} title
      */
     formatTitle: function(title) {
@@ -59,12 +65,30 @@ export default {
     },
 
     /**
-     * Formats description based on length
+     * Formats title length for mobile viewports
+     * @param {String} title
+     */
+    formatMobileTitle: function(title) {
+      return title.length > 90 ? title.substring(0, 90) + '...' : title
+    },
+
+    /**
+     * Formats description based on length for regular viewports
      * @param {String} description
      */
     formatDescription: function(description) {
       return description.length > 540
         ? description.substring(0, 540) + '...'
+        : description
+    },
+
+    /**
+     * Formats description based on length for mobile viewports
+     * @param {String}
+     */
+    formatMobileDescription: function(description) {
+      return description.length > 260
+        ? description.substring(0, 260) + '...'
         : description
     }
   }
@@ -85,8 +109,13 @@ export default {
     &--image {
       margin-right: 1rem;
       margin-top: 2rem;
+      margin-left: 0.5rem;
       .dataset-image {
         border: solid 1px $cloudy;
+      }
+      img {
+        width: 368px;
+        height: 368px;
       }
     }
     &--content {
@@ -98,17 +127,23 @@ export default {
         font-size: 14px;
         color: $medium-gray;
       }
-      h2 {
-        font-weight: 500;
-        font-size: 24px;
-        line-height: 32px;
-      }
-      p {
-        font-size: 14px;
-        font-weight: normal;
-        line-height: 24px;
-        margin-bottom: 5rem;
-      }
+    }
+    &--content-title-default {
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 32px;
+    }
+    &--content-title-mobile {
+      display: none;
+    }
+    &--content-description-default {
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 24px;
+      margin-bottom: 5rem;
+    }
+    &--content-description-mobile {
+      display: none;
     }
     &--content-meta {
       display: flex;
@@ -156,9 +191,56 @@ export default {
 @media screen and (max-width: 768px) {
   .details-header {
     margin: 0;
-    margin-top: 1.5rem;
+    margin-top: 0;
+    &__page-route {
+      height: 100%;
+      p {
+        padding-bottom: 0.75rem;
+      }
+    }
     &__container {
       flex-direction: column;
+      &--content-description-default {
+        display: none;
+      }
+      &--content-description-mobile {
+        display: block;
+      }
+      &--content-title-default {
+        display: none;
+      }
+      &--content-title-mobile {
+        display: block;
+      }
+      &--content-meta {
+        flex-direction: column;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .details-header {
+    &__container {
+      &--image {
+        img {
+          width: 288px;
+          height: 288px;
+          margin-left: 1rem;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .details-header {
+    &__container {
+      &--image {
+        img {
+          margin-left: 0;
+        }
+      }
     }
   }
 }

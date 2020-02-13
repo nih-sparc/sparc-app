@@ -20,7 +20,6 @@ Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>
 
 // // configure language
 // locale.use(lang)
-
 Vue.config.productionTip = false
 
 // // Vue.use(VueClipboard)

@@ -113,10 +113,34 @@ export default {
 @media screen and (max-width: 768px) {
   .details-tabs {
     &__container {
-      margin: 0;
       margin-top: 1.5rem;
+      padding-right: 1rem;
+      padding-left: 1rem;
       &--types {
-        display: -webkit-inline-box;
+        display: -webkit-box;
+        width: max-content;
+      }
+      &--button {
+        font-size: 1em;
+        padding-right: 0;
+        padding-left: 0;
+      }
+      li {
+        margin-right: 0;
+      }
+    }
+  }
+
+  ::v-deep .el-row--flex {
+    overflow-y: scroll;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .details-tabs {
+    &__container {
+      &--types {
+        width: 100%;
       }
     }
   }
