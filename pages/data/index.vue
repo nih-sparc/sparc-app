@@ -571,7 +571,7 @@ export default {
       const labelKey = label.toLowerCase()
 
       // short circuit if nothing has changed
-      if (query.tags === labelKey || find(t => t === labelKey, query.tags.split(','))) {
+      if (query.tags === labelKey || find(t => t === labelKey, (query.tags || '').split(','))) {
         return;
       }
 
