@@ -25,7 +25,10 @@
         </li>
       </ul>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="page-wrap">
+      <div class="page-wrap__results">
+        <p>Showing 9 of <strong>19 resources</strong></p>
+      </div>
       <div v-loading="isLoadingResources" class="table-wrap">
         <component :is="resourcesResultsComponent" :table-data="tableData" />
         <!-- <el-pagination
@@ -174,6 +177,22 @@ export default {
     background: #fff;
     border: 1px solid rgb(228, 231, 237);
     padding: 16px;
+  }
+
+  .page-wrap {
+    margin: 0 2.625rem 0 2.625rem;
+    &__results {
+      font-size: 0.875em;
+      font-weight: normal;
+      line-height: 1em;
+
+      p {
+        margin-top: 1.5rem;
+      }
+    }
+    @media (min-width: 48em) {
+      padding-top: 0;
+    }
   }
 
   &__tabs {
