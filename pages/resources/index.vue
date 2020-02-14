@@ -27,25 +27,27 @@
     </page-hero>
     <div class="page-wrap">
       <div class="page-wrap__results">
-        <p>Showing 9 of <strong>19 resources</strong></p>
+        <p>
+          Showing 9 of <strong>{{ totalResourceCount }}</strong>
+        </p>
       </div>
       <div v-loading="isLoadingResources" class="table-wrap">
         <component :is="resourcesResultsComponent" :table-data="tableData" />
-        <!-- <el-pagination
+        <el-pagination
           :page-size="resourceData.limit"
           :pager-count="5"
           :current-page="curSearchPage"
           layout="prev, pager, next"
           :total="resourceData.total"
           @current-change="onPaginationPageChange"
-        /> -->
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { pathOr, propOr, clone, defaultTo } from 'ramda'
+import { pathOr, propOr, clone, defaultTo, compose, head } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
@@ -65,27 +67,33 @@ const resourcesResultsComponents = {
   tools: ToolSearchResults
 }
 
+const resourceData = {
+  limit: 12,
+  skip: 0,
+  items: []
+}
+
+const tabTypes = [
+  {
+    label: 'Resources',
+    type: 'sparcPartners'
+  },
+  {
+    label: 'Platforms',
+    type: 'platforms'
+  },
+  {
+    label: 'Tools',
+    type: 'tools'
+  }
+]
+
 export default {
   name: 'Resources',
 
   components: {
     Breadcrumb,
     PageHero
-  },
-
-  asyncData() {
-    return Promise.all([
-      client.getEntries({
-        content_type: process.env.ctf_resource_id
-      })
-    ])
-      .then(([resources]) => {
-        console.log('these are my resources ', resources)
-        return {
-          resources: resources
-        }
-      })
-      .catch(console.error)
   },
 
   data() {
@@ -96,34 +104,28 @@ export default {
         name: 'index',
         parent: 'Home'
       },
-      // resourceData: clone(this.resources),
-      tabTypes: [
-        {
-          label: 'Resources',
-          type: 'resources',
-          filterId: process.env.ctf_filters_dataset_id,
-          dataSource: 'blackfynn'
-        },
-        {
-          label: 'Platforms',
-          type: 'platforms',
-          filterId: process.env.ctf_filters_image_id,
-          dataSource: 'blackfynn'
-        },
-        {
-          label: 'Tools',
-          type: 'tools',
-          filterId: '',
-          dataSource: 'blackfynn'
-        }
-      ],
+      resourceData: clone(resourceData),
+      tabTypes: tabTypes,
       isLoadingResources: false
     }
   },
 
   computed: {
+    totalResourceCount: function() {
+      return this.resourceData.total > 1
+        ? `${this.resourceData.total} resources`
+        : `${this.resourceData.total} resource`
+    },
+
     tableData: function() {
-      return propOr([], 'items', this.resources)
+      return propOr([], 'items', this.resourceData)
+    },
+
+    /**
+     * Compute the current search page based off the limit and the offset
+     */
+    curSearchPage: function() {
+      return this.resourceData.skip / this.resourceData.limit + 1
     },
 
     /**
@@ -135,13 +137,69 @@ export default {
     }
   },
 
+  watch: {
+    '$route.query.type': function() {
+      /**
+       * Clear table data so the new table that is rendered can
+       * properly render data and account for any missing data
+       */
+      this.resourceData = clone(resourceData)
+      this.fetchResults()
+    }
+  },
+
+  /**
+   * Check the searchType param in the route and set it if it doesn't exist
+   */
+  mounted: function() {
+    if (!this.$route.query.type) {
+      const firstTabType = compose(propOr('', 'type'), head)(tabTypes)
+
+      this.$router.replace({ query: { type: firstTabType } })
+    } else {
+      this.fetchResults()
+    }
+  },
+
   methods: {
+    fetchResults: function() {
+      this.isLoadingResources = true
+
+      client
+        .getEntries({
+          content_type: this.$route.query.type,
+          limit: this.resourceData.limit,
+          skip: this.resourceData.skip,
+          include: 2
+        })
+        .then(response => {
+          console.log('hello what is this ', response)
+          this.resourceData = response
+        })
+        .catch(() => {
+          this.resourceData = clone(resourceData)
+        })
+        .finally(() => {
+          this.isLoadingResources = false
+        })
+    },
+
     resourceLogoUrl: function(resource) {
       return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], resource)
     },
 
     resourceLogoAlt: function(resource) {
       return pathOr('', ['fields', 'logo', 'fields', 'title'], resource)
+    },
+
+    /**
+     * Update offset
+     */
+    onPaginationPageChange: function(page) {
+      const offset = (page - 1) * this.searchData.limit
+      this.searchData.skip = offset
+
+      this.fetchResults()
     }
   }
 }

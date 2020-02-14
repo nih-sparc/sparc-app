@@ -8,6 +8,7 @@
         <img v-show="data.fields.logo" :src="getBannerImage(data)" />
       </div>
       <div class="resources-search-results__items--content">
+          hello
         <h4>{{ data.fields.name }}</h4>
         <p class="resources-search-results__items--content-date">
           {{ formatDate(data.sys.updatedAt) }}
