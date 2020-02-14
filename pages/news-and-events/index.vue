@@ -19,13 +19,17 @@
             />
           </div>
 
-          <a
-            v-if="!isShowingAllUpcomingEvents"
-            href="#"
-            @click.prevent="isShowingAllUpcomingEvents = true"
-          >
-            Show All ({{ upcomingEvents.length }}) Upcoming Events
-          </a>
+          <div class="show-all-upcoming-events">
+            <a
+              v-if="!isShowingAllUpcomingEvents"
+              class="show-all-upcoming-events__btn"
+              href="#"
+              @click.prevent="isShowingAllUpcomingEvents = true"
+            >
+              Show All ({{ upcomingEvents.length }}) Upcoming Events
+              <svg-icon name="icon-sort-desc" height="10" width="10" />
+            </a>
+          </div>
         </template>
 
         <div v-if="activeTab === 'past'" class="subpage">
@@ -157,6 +161,23 @@ export default {
   }
   @media (min-width: 64em) {
     width: calc(25% - 4.125em); // Account for the margins and the border
+  }
+}
+.show-all-upcoming-events {
+  text-align: center;
+  &__btn {
+    align-items: center;
+    color: $navy;
+    display: inline-flex;
+    font-weight: 500;
+    text-decoration: none;
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+  .svg-icon {
+    margin-left: 0.5rem;
   }
 }
 </style>
