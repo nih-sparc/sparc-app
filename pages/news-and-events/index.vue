@@ -11,12 +11,13 @@
           @set-active-tab="activeTab = $event"
         />
         <template v-if="activeTab === 'upcoming'">
-          <el-row type="flex" :gutter="32">
+          <el-row :gutter="32">
             <el-col
               v-for="event in upcomingEvents"
               :key="event.sys.id"
               :xs="24"
-              :sm="6"
+              :sm="12"
+              :md="6"
             >
               <div class="upcoming-event">
                 <div class="upcoming-event__image">
@@ -179,7 +180,7 @@ export default {
   padding: 1em;
   &__image {
     margin-bottom: 1rem;
-    min-height: 262px;
+    min-height: 180px;
     position: relative;
     img {
       display: block;
