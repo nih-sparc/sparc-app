@@ -1,162 +1,129 @@
 <template>
-  <div class="event-card">
-    <div class="event-content">
-      <div class="image">
-        <event-banner-image :src="bannerUrl" />
-      </div>
-      <div class="event-content-wrap">
-        <h3>
-          <a :href="event.fields.url" target="_blank">
-            {{ event.fields.title }}
-          </a>
-        </h3>
-        <div class="subtitle">
-          <div>{{ event.fields.location }}</div>
-          <!-- <div>{{ startDate }} - {{ endDate }}</div> -->
-        </div>
-        <div class="details">
-          <div class="detail">
-            {{ event.fields.summary }}
-          </div>
-          <div class="detail eventinfo">
-            {{ event.fields.eventType }} - SPARC Attendees:
-            {{ event.fields.sparcAttendees }}
-          </div>
-        </div>
-      </div>
+  <div class="upcoming-event">
+    <div class="upcoming-event__image">
+      <img :src="eventImage(event)" :alt="eventAlt(event)" />
+      <span>{{ event.fields.eventType }}</span>
+    </div>
+    <h3>
+      <a :href="event.fields.url" target="_blank">
+        {{ event.fields.title }}
+      </a>
+    </h3>
+    <div class="upcoming-event__detail">
+      <svg-icon name="icon-calendar" height="16" width="16" />
+      <p>{{ eventDate(event) }}</p>
+    </div>
+    <div class="upcoming-event__detail">
+      <svg-icon name="icon-map" height="16" width="16" />
+      <p>{{ event.fields.location }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import { format, parseISO } from 'date-fns'
 import { pathOr } from 'ramda'
-import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
+
 import FormatDate from '@/mixins/format-date'
 
 export default {
   name: 'EventCard',
-  components: {
-    eventBannerImage
-  },
+
   mixins: [FormatDate],
+
   props: {
     event: {
       type: Object,
-      default: () => {
-        return {
-          banner: '',
-          description: '',
-          name: '',
-          image: {
-            fields: {
-              file: {
-                url: ''
-              }
-            }
-          }
-        }
-      }
+      default: () => {}
     }
   },
-  computed: {
-    bannerUrl: function() {
-      return pathOr(
-        '',
-        ['fields', 'image', 'fields', 'file', 'url'],
-        this.event
-      )
+
+  methods: {
+    /**
+     * Get event image
+     * @returns {String}
+     */
+    eventImage: function(event) {
+      return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], event)
     },
-    startDate: function() {
-      return format(parseISO(this.event.fields.startDate), 'MM/dd/yyyy')
+    /**
+     * Get event image alt tag
+     * @returns {String}
+     */
+    eventAlt: function(event) {
+      return pathOr('', ['fields', 'image', 'fields', 'title'], event)
     },
-    endDate: function() {
-      return format(parseISO(this.event.fields.endDate), 'MM/dd/yyyy')
+    /**
+     * Get event date range
+     * @returns {String}
+     */
+    eventDate: function(event) {
+      const startDate = this.formatDate(event.fields.startDate)
+      const endDate = this.formatDate(event.fields.endDate)
+      return `${startDate} - ${endDate}`
     }
-  },
-  methods: {}
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.event-card {
-  border-radius: 3px 3px 0 0;
-  background-color: white;
-  margin-bottom: 5px;
-}
-h3 {
-  color: $vagus;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.2;
-  word-break: break-word;
-}
-.subtitle {
-  color: #000;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 24px;
-  margin-bottom: 16px;
-}
-.details {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  .detail {
-    align-items: center;
+
+.upcoming-event {
+  background: #fff;
+  border: 1px solid #dbdfe6;
+  color: $dark-sky;
+  padding: 1em;
+  &__image {
+    margin-bottom: 1rem;
+    padding-top: 100%;
+    position: relative;
+    img {
+      display: block;
+      height: auto;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    span {
+      background: $median;
+      border-radius: 15px;
+      color: #fff;
+      font-size: 0.875rem;
+      top: 10px;
+      padding: 0 0.65rem;
+      position: absolute;
+      right: 14px;
+    }
+  }
+  &__detail {
+    align-items: baseline;
     display: flex;
-    padding-right: 24px;
-    color: #404554;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0px;
-    line-height: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 0.625rem;
+    &:last-child {
+      margin: 0;
+    }
     .svg-icon {
-      margin-right: 8px;
+      flex-shrink: 0;
+      margin-right: 0.5rem;
     }
-    .eventinfo {
-      margin-top: 8px;
+    p {
+      margin: 0;
     }
   }
-}
-.event-content {
-  display: flex;
-  flex-direction: row;
-  img {
-    display: block;
-    width: 86px;
-    height: 86px;
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    line-height: 1.375rem;
   }
-
-  .image {
-    margin: 2px;
-  }
-
-  .event-content-wrap {
-    margin-left: 16px;
-  }
-}
-.meta {
-  border-top: solid 1px $pudendal;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 8px 16px;
-  .author {
-    font-size: 12px;
-    line-height: 14px;
-  }
-  .tags {
-    font-size: 12px;
-    line-height: 14px;
-  }
-}
-a {
-  &:focus {
-    color: $vagus;
+  a {
+    color: $median;
+    text-decoration: none;
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
   }
 }
 </style>

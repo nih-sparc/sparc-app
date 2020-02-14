@@ -11,40 +11,26 @@
           @set-active-tab="activeTab = $event"
         />
         <template v-if="activeTab === 'upcoming'">
-          <el-row :gutter="32">
-            <el-col
-              v-for="event in upcomingEvents"
+          <div class="upcoming-events">
+            <event-card
+              v-for="event in displayedUpcomingEvents"
               :key="event.sys.id"
-              :xs="24"
-              :sm="12"
-              :md="6"
-            >
-              <div class="upcoming-event">
-                <div class="upcoming-event__image">
-                  <img :src="eventImage(event)" :alt="eventAlt(event)" />
-                  <span>{{ event.fields.eventType }}</span>
-                </div>
-                <h3>
-                  <a :href="event.fields.url" target="_blank">
-                    {{ event.fields.title }}
-                  </a>
-                </h3>
-                <div class="upcoming-event__detail">
-                  <svg-icon name="icon-calendar" height="16" width="16" />
-                  <p>{{ eventDate(event) }}</p>
-                </div>
-                <div class="upcoming-event__detail">
-                  <svg-icon name="icon-map" height="16" width="16" />
-                  <p>{{ event.fields.location }}</p>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
+              :event="event"
+            />
+          </div>
+
+          <a
+            v-if="!isShowingAllUpcomingEvents"
+            href="#"
+            @click.prevent="isShowingAllUpcomingEvents = true"
+          >
+            Show All ({{ upcomingEvents.length }}) Upcoming Events
+          </a>
         </template>
 
-        <div v-if="activeTab === 'all'" class="subpage">
-          <event-card
-            v-for="(event, index) in events"
+        <div v-if="activeTab === 'past'" class="subpage">
+          <event-list-item
+            v-for="(event, index) in pastEvents"
             :key="`${event}-${index}`"
             :event="event"
           />
@@ -55,14 +41,12 @@
 </template>
 
 <script>
-import { pathOr } from 'ramda'
+import EventListItem from '@/components/EventListItem/EventListItem.vue'
 import EventCard from '@/components/EventCard/EventCard.vue'
 import createClient from '@/plugins/contentful.js'
 
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import TabNav from '@/components/TabNav/TabNav'
-
-import FormatDate from '@/mixins/format-date'
 
 const client = createClient()
 
@@ -71,18 +55,26 @@ export default {
 
   components: {
     Breadcrumb,
-    TabNav,
-    EventCard
+    EventCard,
+    EventListItem,
+    TabNav
   },
 
-  mixins: [FormatDate],
-
   asyncData() {
+    const todaysDate = new Date()
     return Promise.all([
-      // Fetch events
+      // Fetch upcoming events
       client.getEntries({
         content_type: process.env.ctf_event_id,
-        order: 'fields.startDate'
+        order: 'fields.startDate',
+        'fields.startDate[gte]': todaysDate.toISOString()
+      }),
+
+      // Fetch past events
+      client.getEntries({
+        content_type: process.env.ctf_event_id,
+        order: 'fields.startDate',
+        'fields.startDate[lt]': todaysDate.toISOString()
       }),
 
       // Fetch news
@@ -91,11 +83,12 @@ export default {
         order: 'fields.publishedDate'
       })
     ])
-      .then(([events, news]) => {
+      .then(([upcomingEvents, pastEvents, news]) => {
         // return data that should be available
         // in the template
         return {
-          events: events.items,
+          upcomingEvents: upcomingEvents.items,
+          pastEvents: pastEvents.items,
           news
         }
       })
@@ -116,10 +109,13 @@ export default {
           type: 'upcoming'
         },
         {
-          label: 'All',
-          type: 'all'
+          label: 'Past',
+          type: 'past'
         }
-      ]
+      ],
+      upcomingEvents: [],
+      pastEvents: [],
+      isShowingAllUpcomingEvents: false
     }
   },
 
@@ -129,34 +125,10 @@ export default {
      * Used to display four events in the upcoming tab
      * @returns {Array}
      */
-    upcomingEvents: function() {
-      return this.events.slice(0, 4)
-    }
-  },
-
-  methods: {
-    /**
-     * Get event image
-     * @returns {String}
-     */
-    eventImage: function(event) {
-      return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], event)
-    },
-    /**
-     * Get event image alt tag
-     * @returns {String}
-     */
-    eventAlt: function(event) {
-      return pathOr('', ['fields', 'image', 'fields', 'title'], event)
-    },
-    /**
-     * Get event date range
-     * @returns {String}
-     */
-    eventDate: function(event) {
-      const startDate = this.formatDate(event.fields.startDate)
-      const endDate = this.formatDate(event.fields.endDate)
-      return `${startDate} - ${endDate}`
+    displayedUpcomingEvents: function() {
+      return this.isShowingAllUpcomingEvents
+        ? this.upcomingEvents
+        : this.upcomingEvents.slice(0, 4)
     }
   }
 }
@@ -173,59 +145,18 @@ export default {
   margin: 1em 0;
   padding: 0;
 }
+.upcoming-events {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -1em;
+}
 .upcoming-event {
-  background: #fff;
-  border: 1px solid #dbdfe6;
-  color: $dark-sky;
-  padding: 1em;
-  &__image {
-    margin-bottom: 1rem;
-    min-height: 180px;
-    position: relative;
-    img {
-      display: block;
-      height: auto;
-      width: 100%;
-    }
-    span {
-      background: $median;
-      border-radius: 15px;
-      color: #fff;
-      font-size: 0.875rem;
-      top: 10px;
-      padding: 0 0.65rem;
-      position: absolute;
-      right: 14px;
-    }
+  margin: 0 1em 2em;
+  @media (min-width: 48em) {
+    width: calc(50% - 4.125em); // Account for the margins and the border
   }
-  &__detail {
-    align-items: baseline;
-    display: flex;
-    margin-bottom: 0.625rem;
-    &:last-child {
-      margin: 0;
-    }
-    .svg-icon {
-      flex-shrink: 0;
-      margin-right: 0.5rem;
-    }
-    p {
-      margin: 0;
-    }
-  }
-  h3 {
-    font-size: 1.125rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    line-height: 1.375rem;
-  }
-  a {
-    color: $median;
-    text-decoration: none;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
+  @media (min-width: 64em) {
+    width: calc(25% - 4.125em); // Account for the margins and the border
   }
 }
 </style>
