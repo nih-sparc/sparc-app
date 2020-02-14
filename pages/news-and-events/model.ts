@@ -1,4 +1,4 @@
-import {Asset, Entry, ContentfulClientApi} from "contentful";
+import {Asset, Entry, ContentfulClientApi} from "contentful"
 
 export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData | void> => {
   try {
@@ -68,8 +68,6 @@ export interface Breadcrumb {
 }
 
 export interface Data {
-  isLoadingSearch: boolean;
-  searchTerms?: string;
   title: string
   breadcrumb: Breadcrumb,
   activeTab: string,
@@ -82,5 +80,5 @@ export interface Data {
 
 
 export interface Computed {
-  displayedUpcomingEvents: (isShowingAllUpcomingEvents: boolean) => EventsEntry
+  displayedUpcomingEvents: EventsEntry[]
 }

@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import TabNav from '@/components/TabNav/TabNav.vue'
@@ -61,7 +61,7 @@ import { EventsEntry, NewsEntry, Data, Computed, fetchData } from './model'
 
 const client = createClient()
 
-export default {
+export default Vue.extend<Data, never, Computed, never>({
   name: 'EventPage',
 
   components: {
@@ -95,7 +95,8 @@ export default {
       ],
       upcomingEvents: [],
       pastEvents: [],
-      isShowingAllUpcomingEvents: false
+      isShowingAllUpcomingEvents: false,
+      news: []
     }
   },
 
@@ -105,15 +106,13 @@ export default {
      * Used to display four events in the upcoming tab
      * @returns {Array}
      */
-    displayedUpcomingEvents() {
-      if (this.isShowingAllUpcomingEvents) {
-        return this.upcomingEvents
-      } else {
-        return this.upcomingEvents.slice(0, 4)
-      }
+    displayedUpcomingEvents: function(this: Data) {
+      return this.isShowingAllUpcomingEvents
+        ? this.upcomingEvents
+        : this.upcomingEvents.slice(0, 4)
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
