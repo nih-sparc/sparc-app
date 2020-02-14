@@ -1,41 +1,39 @@
-import {Asset, Entry, ContentfulClientApi } from "contentful";
+import {Asset, Entry, ContentfulClientApi} from "contentful";
 
-const fetchData = (client: ContentfulClientApi) : Promise<AsyncData> => {
-  const todaysDate = new Date()
-  return Promise.all([
-    // Fetch upcoming events
-    client.getEntries<EventsEntry>({
+export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData | void> => {
+  try {
+    const todaysDate = new Date()
+
+    const upcomingEvents = await client.getEntries<Event>({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
       'fields.startDate[gte]': todaysDate.toISOString()
-    }),
+    })
 
-    // Fetch past events
-    client.getEntries<EventsEntry>({
+    const pastEvents = await client.getEntries<Event>({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString()
-    }),
+    })
 
-    // Fetch news
-    client.getEntries<NewsEntry>({
+    const news = await client.getEntries<News>({
       content_type: process.env.ctf_news_id,
       order: 'fields.publishedDate'
     })
-  ]).then(([upcomingEvents, pastEvents, news]) => {
-    // return data that should be available
-    // in the template
+
     return {
       upcomingEvents: upcomingEvents.items,
       pastEvents: pastEvents.items,
       news: news.items
     }
-  })
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news">
 
-export type EventsEntry = {
+export interface Event {
   endDate?: string;
   eventType?: string;
   hasSparcEvent?: boolean;
@@ -48,12 +46,16 @@ export type EventsEntry = {
   url?: string;
 }
 
-export type NewsEntry = {
+export type EventsEntry = Entry<Event>
+
+export interface News {
   publishedDate?: string;
   summary?: string;
   title?: string;
   url?: string
 }
+
+export type NewsEntry = Entry<News>
 
 export interface Tab {
   label: string;
@@ -75,7 +77,7 @@ export interface Data {
   upcomingEvents: EventsEntry[],
   pastEvents: EventsEntry[],
   isShowingAllUpcomingEvents: boolean,
-  news: Partial<NewsEntry>
+  news: NewsEntry[]
 }
 
 

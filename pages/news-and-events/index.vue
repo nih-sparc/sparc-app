@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import TabNav from '@/components/TabNav/TabNav.vue'

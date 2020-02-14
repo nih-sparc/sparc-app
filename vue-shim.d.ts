@@ -8,12 +8,12 @@ declare module "*.vue" {
 
 declare module "vue/types/options" {
   interface ComponentOptions<V extends Vue, Data> {
-    asyncData?: (store: Store<any>, route: Route) => any;
+    asyncData?: (store: Store<any>, route: Route) => Promise<Partial<Data> | void>;
   }
 }
 
 declare module "vue/types/vue" {
   interface Vue<Data> {
-    asyncData?: (store: Store<any>, route: Route) => any;
+    asyncData?: (store: Store<any>, route: Route) => Promise<Partial<Data> | void>;
   }
 }
