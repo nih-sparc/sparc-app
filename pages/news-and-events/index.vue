@@ -40,17 +40,24 @@
           />
         </div>
       </div>
+
+      <div class="subpage">
+        <div v-for="newsItem in news" :key="newsItem.sys.id" />
+      </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import TabNav from '@/components/TabNav/TabNav.vue'
 import EventListItem from '@/components/EventListItem/EventListItem.vue'
 import EventCard from '@/components/EventCard/EventCard.vue'
+
 import createClient from '@/plugins/contentful.js'
 
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
-import TabNav from '@/components/TabNav/TabNav'
+import { EventsEntry, NewsEntry, Data, Computed, fetchData } from './model'
 
 const client = createClient()
 
@@ -65,38 +72,7 @@ export default {
   },
 
   asyncData() {
-    const todaysDate = new Date()
-    return Promise.all([
-      // Fetch upcoming events
-      client.getEntries({
-        content_type: process.env.ctf_event_id,
-        order: 'fields.startDate',
-        'fields.startDate[gte]': todaysDate.toISOString()
-      }),
-
-      // Fetch past events
-      client.getEntries({
-        content_type: process.env.ctf_event_id,
-        order: 'fields.startDate',
-        'fields.startDate[lt]': todaysDate.toISOString()
-      }),
-
-      // Fetch news
-      client.getEntries({
-        content_type: process.env.ctf_news_id,
-        order: 'fields.publishedDate'
-      })
-    ])
-      .then(([upcomingEvents, pastEvents, news]) => {
-        // return data that should be available
-        // in the template
-        return {
-          upcomingEvents: upcomingEvents.items,
-          pastEvents: pastEvents.items,
-          news
-        }
-      })
-      .catch(console.error)
+    return fetchData(client)
   },
 
   data: function() {
@@ -129,10 +105,12 @@ export default {
      * Used to display four events in the upcoming tab
      * @returns {Array}
      */
-    displayedUpcomingEvents: function() {
-      return this.isShowingAllUpcomingEvents
-        ? this.upcomingEvents
-        : this.upcomingEvents.slice(0, 4)
+    displayedUpcomingEvents() {
+      if (this.isShowingAllUpcomingEvents) {
+        return this.upcomingEvents
+      } else {
+        return this.upcomingEvents.slice(0, 4)
+      }
     }
   }
 }
