@@ -28,7 +28,8 @@
     <div class="page-wrap">
       <div class="page-wrap__results">
         <p>
-          Showing 9 of <strong>{{ totalResourceCount }}</strong>
+          Showing {{ currentResourceCount }} of
+          <strong>{{ totalResourceCount }}</strong>
         </p>
       </div>
       <div v-loading="isLoadingResources" class="table-wrap">
@@ -111,6 +112,13 @@ export default {
   },
 
   computed: {
+    // TODO fix this logic
+    currentResourceCount: function() {
+      return this.resourceData.skip !== 0
+        ? this.resourceData.total - this.resourceData.limit
+        : this.resourceData.limit
+    },
+
     totalResourceCount: function() {
       return this.resourceData.total > 1
         ? `${this.resourceData.total} resources`
@@ -173,7 +181,6 @@ export default {
           include: 2
         })
         .then(response => {
-          console.log('hello what is this ', response)
           this.resourceData = response
         })
         .catch(() => {
@@ -196,8 +203,8 @@ export default {
      * Update offset
      */
     onPaginationPageChange: function(page) {
-      const offset = (page - 1) * this.searchData.limit
-      this.searchData.skip = offset
+      const offset = (page - 1) * this.resourceData.limit
+      this.resourceData.skip = offset
 
       this.fetchResults()
     }
@@ -235,6 +242,11 @@ export default {
     background: #fff;
     border: 1px solid rgb(228, 231, 237);
     padding: 16px;
+  }
+
+  .el-pagination {
+    margin-top: 1.5em;
+    text-align: center;
   }
 
   .page-wrap {

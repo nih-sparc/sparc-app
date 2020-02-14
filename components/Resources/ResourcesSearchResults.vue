@@ -8,7 +8,6 @@
         <img v-show="data.fields.logo" :src="getBannerImage(data)" />
       </div>
       <div class="resources-search-results__items--content">
-          hello
         <h4>{{ data.fields.name }}</h4>
         <p class="resources-search-results__items--content-date">
           {{ formatDate(data.sys.updatedAt) }}
@@ -19,35 +18,6 @@
       </div>
     </div>
   </div>
-  <!-- <el-table :data="tableData">
-    <el-table-column
-      :fixed="true"
-      prop="fields.title"
-      label="Title"
-      width="300"
-    >
-      <template slot-scope="scope">
-        <nuxt-link
-          :to="{
-            name: 'organs-organId',
-            params: { organId: scope.row.sys.id }
-          }"
-        >
-          {{ scope.row.fields.name }}
-        </nuxt-link>
-      </template>
-    </el-table-column>
-    <el-table-column :fixed="true" prop="fields.title" label="Banner">
-      <template slot-scope="scope">
-        <img
-          :src="getImageSrc(scope)"
-          :alt="getImageAlt(scope)"
-          height="128"
-          width="128"
-        />
-      </template>
-    </el-table-column>
-  </el-table> -->
 </template>
 
 <script>
