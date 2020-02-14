@@ -12,7 +12,7 @@
         <li v-for="type in tabTypes" :key="type.label">
           <nuxt-link
             class="resources__tabs--button"
-            :class="{ active: type.type === 'resources' }"
+            :class="{ active: type.type === $route.query.type }"
             :to="{
               name: 'resources',
               query: {
@@ -62,7 +62,7 @@ const ToolSearchResults = () =>
   import('@/components/Resources/ToolSearchResults.vue')
 
 const resourcesResultsComponents = {
-  resources: ResourcesSearchResults,
+  sparcPartners: ResourcesSearchResults,
   platforms: PlatformSearchResults,
   tools: ToolSearchResults
 }
