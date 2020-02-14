@@ -56,7 +56,6 @@ export default {
       color: $dark-sky;
       cursor: pointer;
       display: block;
-      font-size: 1.375em;
       font-weight: normal;
       outline: none;
       padding: 0.5rem;
@@ -66,6 +65,9 @@ export default {
       &.active {
         color: $median;
         border-bottom: 2px solid $median;
+      }
+      &.active {
+        font-weight: 500;
       }
     }
   }
