@@ -74,7 +74,7 @@ const resourceData = {
 
 const tabTypes = [
   {
-    label: 'Resources',
+    label: 'All Resources',
     type: 'sparcPartners'
   },
   {
@@ -244,7 +244,7 @@ export default {
       // removing default margin from container to be consistent
       // with left alignment in design and didn't want to create different component
       margin: 0;
-      margin-left: -8%;
+      margin-left: -5%;
     }
   }
 
@@ -261,10 +261,17 @@ export default {
 
   .page-wrap {
     margin: 0 2.625rem 0 2.625rem;
+    @media screen and (max-width: 768px) {
+      margin: 0;
+    }
     &__results {
       font-size: 0.875em;
       font-weight: normal;
       line-height: 1em;
+
+      @media screen and (max-width: 768px) {
+        margin-left: 0.9375rem;
+      }
 
       p {
         margin-top: 1.5rem;
@@ -279,10 +286,13 @@ export default {
     display: flex;
     list-style: none;
     overflow: auto;
-    margin: 0 -2rem 0 0;
-    padding: 0 1rem;
-    @media (min-width: 48em) {
-      margin: 0;
+    padding: 0;
+    margin-top: 3.625rem;
+    @media (max-width: 48em) {
+      padding: 0;
+      margin-top: 3rem;
+    }
+    @media (max-width: 1024px) {
       padding: 0;
     }
     li {
@@ -309,7 +319,7 @@ export default {
       @media (min-width: 48em) {
         font-size: 0.875em;
         margin-top: 1rem;
-        font-weight: 400;
+        font-weight: normal;
         text-transform: none;
       }
       &:hover,

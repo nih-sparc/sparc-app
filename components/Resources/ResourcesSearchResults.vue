@@ -52,6 +52,13 @@ export default {
     flex-direction: row;
     border-bottom: solid 1px $light-grey;
     margin-bottom: 1.375rem;
+    @media screen and (max-width: 768px) {
+      height: 100%;
+      display: block;
+    }
+    @media screen and (max-width: 1024px) {
+      height: 100%;
+    }
     h4 {
       font-size: 1em;
       color: $median;

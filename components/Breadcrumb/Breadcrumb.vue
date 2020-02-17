@@ -1,5 +1,6 @@
 <template>
   <div class="breadcrumb">
+
     <p>
       <nuxt-link
         :to="{
@@ -11,6 +12,7 @@
       >
         {{ breadcrumb.parent }}
       </nuxt-link>
+
       > {{ formatTitle(title) }}
     </p>
   </div>
@@ -74,7 +76,7 @@ export default Vue.extend<never, Methods, never, Props>({
     font-size: 14px;
     font-weight: 500;
     line-height: 16px;
-    padding-left: 2rem;
+    padding-left: 1rem;
     padding-top: 0.75rem;
     margin-top: 0;
     color: $midnight;
