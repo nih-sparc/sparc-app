@@ -4,9 +4,7 @@
     <page-hero>
       <h4>Resources</h4>
       <p>
-        Ut ultrices fermentum null alacinia rhoncus. Donec dictum nisl turpis,
-        non laoreet neque aliquet quis. Vivamus varius, urna a cursus tincidunt,
-        erat lectus tincidunt dui, eu interdum arcu sapien.
+        {{ fields.heroCopy }}
       </p>
       <ul class="resources__tabs">
         <li v-for="type in tabTypes" :key="type.label">
@@ -97,6 +95,19 @@ export default {
     PageHero
   },
 
+  asyncData() {
+    return Promise.all([
+      // Get page content
+      client.getEntry(process.env.ctf_resource_hero_id)
+    ])
+      .then(([page]) => {
+        return {
+          fields: page.fields
+        }
+      })
+      .catch(console.error)
+  },
+
   data() {
     return {
       resources: [],
@@ -112,7 +123,6 @@ export default {
   },
 
   computed: {
-    // TODO fix this logic
     currentResourceCount: function() {
       return this.resourceData.skip !== 0
         ? this.resourceData.total - this.resourceData.limit

@@ -37,6 +37,7 @@ export default {
     sparc_api_host: 'http://localhost:8000',
     ctf_event_id: 'event',
     ctf_resource_id: 'sparcPartners',
+    ctf_resource_hero_id: '3ImGx7UyDXPwM3oTag06nt',
     ctf_help_id: 'helpDocument',
     ctf_help_list_id: 'helpSection',
     ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
