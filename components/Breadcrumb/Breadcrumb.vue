@@ -1,6 +1,5 @@
 <template>
   <div class="breadcrumb">
-
     <p>
       <nuxt-link
         :to="{
@@ -12,7 +11,6 @@
       >
         {{ breadcrumb.parent }}
       </nuxt-link>
-
       > {{ formatTitle(title) }}
     </p>
   </div>
