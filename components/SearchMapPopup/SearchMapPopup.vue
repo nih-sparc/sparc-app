@@ -148,6 +148,11 @@
     &__active {
       background-color: $median;
       color: $cochlear;
+      &:focus,
+      &:active {
+        background-color: $median;
+        color: $cochlear;
+      }
     }
   }
 </style>

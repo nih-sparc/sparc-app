@@ -11,24 +11,20 @@
       >
         <div>
           <h3>
-            <nuxt-link
-              :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
-            >
+            <a :href="item.fields.url" target="_blank">
               {{ item.fields.title }}
-            </nuxt-link>
+            </a>
           </h3>
           <!-- eslint-disable vue/no-v-html -->
           <!-- marked will sanitize the HTML injected -->
           <div v-html="parseMarkdown(item.fields.summary)" />
         </div>
         <p>
-          <nuxt-link
-            :to="{ name: 'events-eventId', params: { eventId: item.sys.id } }"
-          >
+          <a :href="item.fields.url" target="_blank">
             <el-button size="medium">
               Learn More
             </el-button>
-          </nuxt-link>
+          </a>
         </p>
       </sparc-card>
     </div>

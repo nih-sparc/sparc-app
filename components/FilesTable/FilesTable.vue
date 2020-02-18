@@ -1,12 +1,7 @@
 <template>
   <div class="files-table">
     <div class="breadcrumb-list">
-      <a class="breadcrumb" href="#" @click.prevent="path = ''">
-        Root
-      </a>
-
       <div v-for="(item, idx) in breadcrumbs" :key="idx" class="breadcrumb">
-        <span class="breadcrumb-separator">/</span>
         <a
           class="breadcrumb-link"
           href="#"
@@ -14,6 +9,13 @@
         >
           {{ item }}
         </a>
+
+        <span
+          v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length-1"
+          class="breadcrumb-separator"
+        >
+          /
+        </span>
       </div>
     </div>
 
@@ -57,11 +59,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="fileType"
-          label="File type"
-          width="360"
-        >
+        <el-table-column prop="fileType" label="File type" width="360">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -81,7 +79,11 @@
         <el-table-column label="Operation" width="200">
           <template v-if="scope.row.type === 'File'" slot-scope="scope">
             <el-dropdown trigger="click" @command="onCommandClick">
-              <el-button icon="el-icon-more" size="small" class="operation-button" />
+              <el-button
+                icon="el-icon-more"
+                size="small"
+                class="operation-button"
+              />
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   :command="{
@@ -165,13 +167,32 @@ export default {
       return this.path
         ? `${url}?path=${this.path}&limit=${this.limit}`
         : `${url}?limit=${this.limit}`
+    },
+
+    /**
+     * Url to retrieve the dataset to get the version number
+     * @returns {String}
+     */
+    getFilesIdUrl: function() {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = propOr(1, 'version', this.datasetDetails)
+      return `https://api.blackfynn.io/discover/datasets/${id}/versions/${version}`
     }
   },
 
   watch: {
-    getFilesurl: {
+    getFilesIdUrl: {
       handler: function() {
-        this.getFiles()
+        this.getDatasetVersionNumber()
+      },
+      immediate: true
+    },
+
+    path: {
+      handler: function(val) {
+        if (val !== '') {
+          this.getFiles()
+        }
       },
       immediate: true
     }
@@ -180,6 +201,51 @@ export default {
   mounted: function() {},
 
   methods: {
+    /**
+     * Converts a semver version string to an integer
+     * @param {String} semverVersion
+     */
+    convertSchemaVersionToInteger: function(semverVersion) {
+      // split version number into parts
+      let parts = semverVersion.split('.')
+      // make sure no part is larger than 1023 or else it won't fit
+      // into 32-bit integer
+      parts.forEach(part => {
+        if (part >= 1024) {
+          throw new Error(`Version string invalid, ${part} is too large`)
+        }
+      })
+      let numericVersion = 0
+      // shift all parts either 0, 10, or 20 bits to the left
+      for (let i = 0; i < 3; i++) {
+        numericVersion |= parts[i] << (i * 10)
+      }
+      return numericVersion
+    },
+
+    /**
+     * Gets the dataset version number to get the files for the dataset
+     */
+    getDatasetVersionNumber: function() {
+      this.isLoading = true
+      this.hasError = false
+
+      this.$axios
+        .$get(this.getFilesIdUrl)
+        .then(response => {
+          const schemaVersion = this.convertSchemaVersionToInteger(
+            response.blackfynnSchemaVersion
+          )
+          if (schemaVersion < 4.0) {
+            this.path = 'packages'
+          } else {
+            this.path = 'files'
+          }
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+    },
     /**
      * Checks if file is MS Word, MS Excel, or MS Powerpoint
      * @param {Object} scope
@@ -324,6 +390,7 @@ export default {
 .breadcrumb {
   display: flex;
   margin-bottom: 8px;
+  background: none;
 }
 .breadcrumb-list {
   display: flex;
@@ -332,6 +399,8 @@ export default {
 }
 .breadcrumb-link {
   word-break: break-word;
+  text-decoration: underline;
+  color: $median;
 }
 .breadcrumb-separator {
   margin: 0 4px;

@@ -539,7 +539,8 @@ export default {
       handler: function(val) {
         if (val) {
           this.entries.forEach(entry => {
-            if (this.datasetTags.includes(entry.fields.name.toLowerCase())) {
+            const name = pathOr('', ['fields', 'name'], entry)
+            if (this.datasetTags.includes(name.toLowerCase())) {
               this.subtitles.push(entry.fields.name)
             }
           })

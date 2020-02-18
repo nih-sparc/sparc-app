@@ -9,7 +9,7 @@
       </div>
       <div class="resources-search-results__items--content">
         <a :href="data.fields.url" target="blank">
-          <h4>{{ data.fields.name }}</h4>
+          <h2>{{ data.fields.name }}</h2>
         </a>
         <p class="resources-search-results__items--content-date">
           {{ formatDate(data.sys.updatedAt) }}
@@ -38,6 +38,10 @@ export default {
   },
 
   methods: {
+    /**
+     * Gets the banner image for the resource
+     * @returns {String}
+     */
     getBannerImage: function(data) {
       return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], data)
     }
