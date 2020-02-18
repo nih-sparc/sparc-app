@@ -8,7 +8,9 @@
         <img v-show="data.fields.logo" :src="getBannerImage(data)" />
       </div>
       <div class="resources-search-results__items--content">
-        <h4>{{ data.fields.name }}</h4>
+        <a :href="data.fields.url" target="blank">
+          <h4>{{ data.fields.name }}</h4>
+        </a>
         <p class="resources-search-results__items--content-date">
           {{ formatDate(data.sys.updatedAt) }}
         </p>
@@ -65,6 +67,13 @@ export default {
       line-height: 22px;
       font-weight: 500;
     }
+
+    &--content {
+      a {
+        text-decoration: none;
+      }
+    }
+
     &--image {
       margin-right: 1rem;
       img {
