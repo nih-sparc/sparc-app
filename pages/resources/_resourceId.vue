@@ -18,7 +18,6 @@
                     Visit Website
                   </bf-button>
                 </a>
-                </p>
               </div>
             </div>
           </el-col>
