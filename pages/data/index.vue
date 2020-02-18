@@ -165,7 +165,7 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
-import SearchMapPopup from '../../components/SearchMapPopup/SearchMapPopup'
+import SearchMapPopup from '@/components/SearchMapPopup/SearchMapPopup'
 import { transformFilters } from './utils'
 
 const client = createClient()
