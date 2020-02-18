@@ -14,14 +14,6 @@
       class="container"
       @set-active-tab="setActiveTab"
     >
-      <client-only placeholder="Loading viewer...">
-        <div v-show="activeTab === '3DScaffold'" class="scaffold">
-          <scaffold-vuer v-if="scaffold" :url="scaffold" />
-          <p v-else>
-            No 3D scaffold available
-          </p>
-        </div>
-      </client-only>
       <dataset-search-results
         v-show="activeTab === 'datasets'"
         :table-data="datasets"
@@ -36,16 +28,12 @@
 
 <script>
 import { pathOr } from 'ramda'
-import '@abi-software/scaffoldvuer'
-import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
 import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
-
-import Scaffolds from '@/static/js/scaffolds.js'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -82,18 +70,13 @@ export default {
     return {
       pageData,
       projects: projects.items,
-      datasets: datasets.datasets,
-      scaffold: Scaffolds[organType.toLowerCase()]
+      datasets: datasets.datasets
     }
   },
 
   data() {
     return {
       tabs: [
-        {
-          label: '3D Scaffold',
-          type: '3DScaffold'
-        },
         {
           label: 'Datasets',
           type: 'datasets'
@@ -108,8 +91,7 @@ export default {
         name: 'data',
         type: 'organ',
         parent: 'Organs'
-      },
-      scaffold: ''
+      }
     }
   },
 
@@ -146,17 +128,6 @@ export default {
      */
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
-    },
-
-    /**
-     * Get related datsets
-     * @param {String} organ
-     */
-    getRelatedDatasets: function(organ) {
-      const organType = organ.toLowerCase()
-      return this.$axios.$get(
-        `${process.env.discover_api_host}/search/datasets?tags=${organType}`
-      )
     }
   }
 }
@@ -167,8 +138,5 @@ export default {
   .el-table td {
     vertical-align: top;
   }
-}
-.scaffold {
-  height: 500px;
 }
 </style>
