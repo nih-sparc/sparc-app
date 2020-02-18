@@ -38,6 +38,10 @@ export default {
   },
 
   methods: {
+    /**
+     * Gets the banner image for the resource
+     * @returns {String}
+     */
     getBannerImage: function(data) {
       return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], data)
     }
