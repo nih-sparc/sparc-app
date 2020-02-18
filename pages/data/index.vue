@@ -687,6 +687,9 @@ export default {
   .el-table td {
     vertical-align: top;
   }
+  .el-table .cell {
+    word-break: normal;
+  }
 }
 .btn__filters {
   align-items: center;
