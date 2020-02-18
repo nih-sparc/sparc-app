@@ -265,8 +265,9 @@ export default {
       line-height: 38px;
     }
 
-    h4 {
+    h1 {
       font-weight: 500;
+      font-size: 24px;
     }
 
     ::v-deep .container {
@@ -347,7 +348,6 @@ export default {
       text-transform: uppercase;
       @media (min-width: 48em) {
         font-size: 0.875em;
-        margin-top: 1rem;
         font-weight: normal;
         text-transform: none;
       }
