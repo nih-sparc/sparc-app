@@ -38,10 +38,7 @@
               </button>
             </div>
             <div class="filter__wrap">
-              <button
-                class="btn__filters"
-                @click="isSearchMapVisible = true"
-              >
+              <button class="btn__filters" @click="isSearchMapVisible = true">
                 <svg-icon name="icon-anatomy" height="20" width="20" />
                 Anatomical Map
               </button>
@@ -123,8 +120,6 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const ImageSearchResults = () =>
-  import('@/components/SearchResults/ImageSearchResults.vue')
 const OrganSearchResults = () =>
   import('@/components/SearchResults/OrganSearchResults.vue')
 
@@ -132,7 +127,6 @@ const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
-  file: ImageSearchResults,
   organ: OrganSearchResults,
   simulation: DatasetSearchResults
 }
@@ -142,12 +136,6 @@ const searchTypes = [
     label: 'Datasets',
     type: 'dataset',
     filterId: process.env.ctf_filters_dataset_id,
-    dataSource: 'blackfynn'
-  },
-  {
-    label: 'Images',
-    type: 'file',
-    filterId: process.env.ctf_filters_image_id,
     dataSource: 'blackfynn'
   },
   {
@@ -177,8 +165,8 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
-import SearchMapPopup from "../../components/SearchMapPopup/SearchMapPopup";
-import {transformFilters} from "./utils";
+import SearchMapPopup from '@/components/SearchMapPopup/SearchMapPopup'
+import { transformFilters } from './utils'
 
 const client = createClient()
 
@@ -234,7 +222,7 @@ export default {
       isLoadingSearch: false,
       isLoadingFilters: false,
       isFiltersVisible: false,
-      isSearchMapVisible: false,
+      isSearchMapVisible: false
     }
   },
 
@@ -252,10 +240,6 @@ export default {
           ? `organization=IT'IS%20Foundation`
           : 'organization=SPARC%20Consortium'
       }`
-
-      if (searchType === 'file') {
-        url += '&fileType=tiff'
-      }
 
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
@@ -591,7 +575,7 @@ export default {
           if (subFilter.label === label) {
             return {
               ...subFilter,
-              value: true,
+              value: true
             }
           }
           return subFilter
@@ -602,12 +586,12 @@ export default {
         .replace({
           query: {
             ...query,
-            tags: newTags,
+            tags: newTags
           }
         })
         .then(() => {
           this.fetchResults()
-      })
+        })
     }
   }
 }
@@ -702,6 +686,9 @@ export default {
 ::v-deep {
   .el-table td {
     vertical-align: top;
+  }
+  .el-table .cell {
+    word-break: normal;
   }
 }
 .btn__filters {

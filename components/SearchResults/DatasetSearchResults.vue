@@ -38,9 +38,9 @@
       </template>
     </el-table-column>
     <el-table-column prop="description" label="Description" width="400" />
-    <el-table-column prop="createdAt" label="Date" width="200">
+    <el-table-column prop="updatedAt" label="Last Updated" width="200">
       <template slot-scope="scope">
-        {{ formatDate(scope.row.createdAt) }}
+        {{ formatDate(scope.row.updatedAt) }}
       </template>
     </el-table-column>
     <el-table-column prop="size" label="Size" width="150">
