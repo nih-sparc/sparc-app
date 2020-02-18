@@ -59,6 +59,10 @@ export default {
     }
   },
   computed: {
+    /**
+     * Compute banner URL
+     * @returns {String}
+     */
     bannerUrl: function() {
       return pathOr(
         '',
@@ -66,9 +70,19 @@ export default {
         this.event
       )
     },
+
+    /**
+     * Compute and formate start date
+     * @returns {String}
+     */
     startDate: function() {
       return format(parseISO(this.event.fields.startDate), 'MM/dd/yyyy')
     },
+
+    /**
+     * Compute and formate end date
+     * @returns {String}
+     */
     endDate: function() {
       return format(parseISO(this.event.fields.endDate), 'MM/dd/yyyy')
     }
