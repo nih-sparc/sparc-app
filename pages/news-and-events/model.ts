@@ -18,7 +18,7 @@ export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData
 
     const news = await client.getEntries<News>({
       content_type: process.env.ctf_news_id,
-      order: 'fields.publishedDate'
+      order: '-fields.publishedDate'
     })
 
     return {
