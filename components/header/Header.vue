@@ -82,17 +82,22 @@
               </ul>
               <ul class="mobile-navigation__links">
                 <li>
-                  <img src="https://placeholder.pics/svg/20x20" />
+                  <svg-icon icon="icon-about" width="18" height="18" />
                   <nuxt-link :to="{ name: 'about' }">
                     About SPARC
                   </nuxt-link>
                 </li>
                 <li>
-                  <img src="https://placeholder.pics/svg/20x20" />
-                  <a href="#">Contact Us</a>
+                  <svg-icon icon="icon-contact" width="18" height="18" />
+                  <a
+                    href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji"
+                    target="_blank"
+                  >
+                    Contact Us
+                  </a>
                 </li>
                 <li>
-                  <img src="https://placeholder.pics/svg/20x20" />
+                  <svg-icon icon="icon-help" width="18" height="18" />
                   <nuxt-link :to="{ name: 'help' }">
                     Need Help?
                   </nuxt-link>
