@@ -55,21 +55,18 @@ const client = createClient()
 
 const ResourcesSearchResults = () =>
   import('@/components/Resources/ResourcesSearchResults.vue')
-const PlatformSearchResults = () =>
-  import('@/components/Resources/PlatformSearchResults.vue')
-const ToolSearchResults = () =>
-  import('@/components/Resources/ToolSearchResults.vue')
 
 const resourcesResultsComponents = {
   sparcPartners: ResourcesSearchResults,
-  platforms: PlatformSearchResults,
-  tools: ToolSearchResults
+  platforms: ResourcesSearchResults,
+  tools: ResourcesSearchResults
 }
 
 const resourceData = {
   limit: 12,
   skip: 0,
-  items: []
+  items: [],
+  total: 0
 }
 
 const tabTypes = [
@@ -118,13 +115,17 @@ export default {
       },
       resourceData: clone(resourceData),
       tabTypes: tabTypes,
+      platformItems: [],
+      toolItems: [],
       isLoadingResources: false
     }
   },
 
   computed: {
     currentResourceCount: function() {
-      return this.resourceData.skip !== 0
+      return this.resourceData.limit > this.resourceData.total
+        ? this.resourceData.total
+        : this.resourceData.skip !== 0
         ? this.resourceData.total - this.resourceData.limit
         : this.resourceData.limit
     },
@@ -156,13 +157,21 @@ export default {
   },
 
   watch: {
-    '$route.query.type': function() {
+    '$route.query.type': function(val) {
       /**
        * Clear table data so the new table that is rendered can
        * properly render data and account for any missing data
        */
       this.resourceData = clone(resourceData)
-      this.fetchResults()
+      if (val === 'platforms') {
+        this.resourceData.items = this.platformItems
+        this.resourceData.total = this.platformItems.length
+      } else if (val === 'tools') {
+        this.resourceData.items = this.toolItems
+        this.resourceData.total = this.toolItems.length
+      } else {
+        this.fetchResults()
+      }
     }
   },
 
@@ -174,8 +183,6 @@ export default {
       const firstTabType = compose(propOr('', 'type'), head)(tabTypes)
 
       this.$router.replace({ query: { type: firstTabType } })
-    } else {
-      this.fetchResults()
     }
   },
 
@@ -192,6 +199,16 @@ export default {
         })
         .then(response => {
           this.resourceData = response
+          this.platformItems = []
+          this.toolItems = []
+          this.resourceData.items.forEach(item => {
+            if (item.fields.resourceType === 'Platform') {
+              this.platformItems.push(item)
+            }
+            if (item.fields.resourceType === 'Tool') {
+              this.toolItems.push(item)
+            }
+          })
         })
         .catch(() => {
           this.resourceData = clone(resourceData)
@@ -216,7 +233,12 @@ export default {
       const offset = (page - 1) * this.resourceData.limit
       this.resourceData.skip = offset
 
-      this.fetchResults()
+      if (
+        this.$route.query.type !== 'platforms' ||
+        this.$route.query.type !== 'tools'
+      ) {
+        this.fetchResults()
+      }
     }
   }
 }
