@@ -24,12 +24,7 @@
             class="nav-main-container__mobile-menu"
             @click="openMobileNav"
           >
-            <svg-icon
-              color="black"
-              icon="icon-hamburger"
-              height="25"
-              width="25"
-            />
+            <svg-icon icon="icon-hamburger" height="25" width="25" />
           </button>
           <div class="logo">
             <nuxt-link :to="{ name: 'index' }">
@@ -43,7 +38,6 @@
             @enter="executeSearch"
           >
             <svg-icon
-              color="black"
               icon="icon-magnifying-glass"
               height="25"
               width="25"
@@ -82,17 +76,22 @@
               </ul>
               <ul class="mobile-navigation__links">
                 <li>
-                  <img src="https://placeholder.pics/svg/20x20" />
+                  <svg-icon icon="icon-about" width="18" height="18" />
                   <nuxt-link :to="{ name: 'about' }">
                     About SPARC
                   </nuxt-link>
                 </li>
                 <li>
-                  <img src="https://placeholder.pics/svg/20x20" />
-                  <a href="#">Contact Us</a>
+                  <svg-icon icon="icon-contact" width="18" height="18" />
+                  <a
+                    href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji"
+                    target="_blank"
+                  >
+                    Contact Us
+                  </a>
                 </li>
                 <li>
-                  <img src="https://placeholder.pics/svg/20x20" />
+                  <svg-icon icon="icon-help" width="18" height="18" />
                   <nuxt-link :to="{ name: 'help' }">
                     Need Help?
                   </nuxt-link>
@@ -430,10 +429,18 @@ export default {
 }
 
 .nav-main-container__mobile-search {
-  display: none;
-  @media (min-width: 320px) and (max-width: 1023px) {
-    display: flex;
-    padding-bottom: 1rem;
+  background: none;
+  border: none;
+  color: #000;
+  display: flex;
+  outline: none;
+  padding-bottom: 1rem;
+  &:hover:not(:active),
+  &:focus:not(:active) {
+    color: $app-primary-color;
+  }
+  @media (min-width: 64em) {
+    display: none;
   }
 }
 
@@ -520,12 +527,19 @@ export default {
 .nav-main-container__mobile-menu {
   background: none;
   border: none;
+  color: #000;
   display: none;
   font-size: 24px;
   margin: 0;
+  outline: none;
   padding: 10px;
   transform: translate(12px, -8px);
   -webkit-appearance: none;
+
+  &:hover:not(:active),
+  &:focus:not(:active) {
+    color: $app-primary-color;
+  }
 
   @media screen and (max-width: 1023px) {
     & {
