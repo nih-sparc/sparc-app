@@ -24,12 +24,7 @@
             class="nav-main-container__mobile-menu"
             @click="openMobileNav"
           >
-            <svg-icon
-              color="black"
-              icon="icon-hamburger"
-              height="25"
-              width="25"
-            />
+            <svg-icon icon="icon-hamburger" height="25" width="25" />
           </button>
           <div class="logo">
             <nuxt-link :to="{ name: 'index' }">
@@ -43,7 +38,6 @@
             @enter="executeSearch"
           >
             <svg-icon
-              color="black"
               icon="icon-magnifying-glass"
               height="25"
               width="25"
@@ -435,10 +429,18 @@ export default {
 }
 
 .nav-main-container__mobile-search {
-  display: none;
-  @media (min-width: 320px) and (max-width: 1023px) {
-    display: flex;
-    padding-bottom: 1rem;
+  background: none;
+  border: none;
+  color: #000;
+  display: flex;
+  outline: none;
+  padding-bottom: 1rem;
+  &:hover:not(:active),
+  &:focus:not(:active) {
+    color: $app-primary-color;
+  }
+  @media (min-width: 64em) {
+    display: none;
   }
 }
 
@@ -525,12 +527,19 @@ export default {
 .nav-main-container__mobile-menu {
   background: none;
   border: none;
+  color: #000;
   display: none;
   font-size: 24px;
   margin: 0;
+  outline: none;
   padding: 10px;
   transform: translate(12px, -8px);
   -webkit-appearance: none;
+
+  &:hover:not(:active),
+  &:focus:not(:active) {
+    color: $app-primary-color;
+  }
 
   @media screen and (max-width: 1023px) {
     & {
