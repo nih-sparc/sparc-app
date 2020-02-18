@@ -9,7 +9,7 @@
       </div>
       <div class="resources-search-results__items--content">
         <a :href="data.fields.url" target="blank">
-          <h4>{{ data.fields.name }}</h4>
+          <h2>{{ data.fields.name }}</h2>
         </a>
         <p class="resources-search-results__items--content-date">
           {{ formatDate(data.sys.updatedAt) }}

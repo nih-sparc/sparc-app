@@ -2,7 +2,7 @@
   <div class="resources">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
-      <h4>Resources</h4>
+      <h1>Resources</h1>
       <p>
         {{ fields.heroCopy }}
       </p>
@@ -123,18 +123,30 @@ export default {
   },
 
   computed: {
+    /**
+     * Returns the current displayed number of resources
+     * @returns {Number}
+     */
     currentResourceCount: function() {
       return this.resourceData.skip !== 0
         ? this.resourceData.total - this.resourceData.limit
         : this.resourceData.limit
     },
 
+    /**
+     * Returns total number of resources
+     * @returns {Number}
+     */
     totalResourceCount: function() {
       return this.resourceData.total > 1
         ? `${this.resourceData.total} resources`
         : `${this.resourceData.total} resource`
     },
 
+    /**
+     * Returns data that is displayed in table
+     * @returns {Array}
+     */
     tableData: function() {
       return propOr([], 'items', this.resourceData)
     },
@@ -180,6 +192,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Fetches resource results
+     */
     fetchResults: function() {
       this.isLoadingResources = true
 
@@ -199,14 +214,6 @@ export default {
         .finally(() => {
           this.isLoadingResources = false
         })
-    },
-
-    resourceLogoUrl: function(resource) {
-      return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], resource)
-    },
-
-    resourceLogoAlt: function(resource) {
-      return pathOr('', ['fields', 'logo', 'fields', 'title'], resource)
     },
 
     /**
