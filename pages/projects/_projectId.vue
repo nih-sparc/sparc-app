@@ -1,7 +1,7 @@
 <template>
   <div class="project-details">
     <details-header
-      :subtitle="fields.organ.fields.name"
+      :subtitle="''"
       :title="fields.title"
       :description="fields.description"
       :breadcrumb="breadcrumb"
