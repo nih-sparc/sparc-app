@@ -10,39 +10,44 @@
           :active-tab="activeTab"
           @set-active-tab="activeTab = $event"
         />
-        <template v-if="activeTab === 'upcoming'">
-          <div class="upcoming-events">
-            <event-card
-              v-for="event in displayedUpcomingEvents"
-              :key="event.sys.id"
+        <div class="events-wrap">
+          <template v-if="activeTab === 'upcoming'">
+            <div class="upcoming-events">
+              <event-card
+                v-for="event in displayedUpcomingEvents"
+                :key="event.sys.id"
+                :event="event"
+              />
+            </div>
+
+            <div class="show-all-upcoming-events">
+              <a
+                v-if="!isShowingAllUpcomingEvents"
+                class="show-all-upcoming-events__btn"
+                href="#"
+                @click.prevent="isShowingAllUpcomingEvents = true"
+              >
+                Show All ({{ upcomingEvents.length }}) Upcoming Events
+                <svg-icon name="icon-sort-desc" height="10" width="10" />
+              </a>
+            </div>
+          </template>
+
+          <div v-if="activeTab === 'past'" class="subpage">
+            <event-list-item
+              v-for="(event, index) in pastEvents"
+              :key="`${event}-${index}`"
               :event="event"
             />
           </div>
-
-          <div class="show-all-upcoming-events">
-            <a
-              v-if="!isShowingAllUpcomingEvents"
-              class="show-all-upcoming-events__btn"
-              href="#"
-              @click.prevent="isShowingAllUpcomingEvents = true"
-            >
-              Show All ({{ upcomingEvents.length }}) Upcoming Events
-              <svg-icon name="icon-sort-desc" height="10" width="10" />
-            </a>
-          </div>
-        </template>
-
-        <div v-if="activeTab === 'past'" class="subpage">
-          <event-list-item
-            v-for="(event, index) in pastEvents"
-            :key="`${event}-${index}`"
-            :event="event"
-          />
         </div>
-      </div>
 
-      <div class="subpage">
-        <div v-for="newsItem in news" :key="newsItem.sys.id" />
+        <h2>Latest News</h2>
+        <div class="subpage">
+          <div>
+            <news-list-item v-for="newsItem in news" :key="newsItem.sys.id" :item="newsItem" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -53,6 +58,7 @@ import Vue from 'vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import TabNav from '@/components/TabNav/TabNav.vue'
 import EventListItem from '@/components/EventListItem/EventListItem.vue'
+import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 import EventCard from '@/components/EventCard/EventCard.vue'
 
 import createClient from '@/plugins/contentful.js'
@@ -68,6 +74,7 @@ export default Vue.extend<Data, never, Computed, never>({
     Breadcrumb,
     EventCard,
     EventListItem,
+    NewsListItem,
     TabNav
   },
 
@@ -155,6 +162,16 @@ export default Vue.extend<Data, never, Computed, never>({
   }
   .svg-icon {
     margin-left: 0.5rem;
+  }
+}
+.events-wrap {
+  margin-bottom: 2.625em;
+}
+.news-list-item {
+  border-bottom: 2px solid #d8d8d8;
+  padding: 1.5em 0;
+  &:first-child {
+    padding-top: 0;
   }
 }
 </style>
