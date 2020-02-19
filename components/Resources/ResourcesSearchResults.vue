@@ -57,7 +57,7 @@ export default {
     display: flex;
     flex-direction: row;
     border-bottom: solid 1px $light-grey;
-    margin-bottom: 1.375rem;
+    padding: 1.25em 0;
     @media screen and (max-width: 768px) {
       height: 100%;
       display: block;
@@ -68,6 +68,7 @@ export default {
     h2 {
       font-size: 1em;
       color: $median;
+      margin-bottom: 0.375rem;
       line-height: 22px;
       font-weight: 500;
     }
@@ -80,9 +81,13 @@ export default {
 
     &--image {
       margin-right: 1rem;
-      img {
+      @media (min-width: 48em) {
+        flex-shrink: 0;
         width: 128px;
-        height: 128px;
+      }
+      img {
+        width: 100%;
+        height: auto;
       }
     }
     &--content-date {
