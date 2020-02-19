@@ -57,7 +57,7 @@
                 <h3>
                   Dataset DOI
                 </h3>
-                <a :href="datasetDOI" class="info-text">{{ datasetDOI }}</a>
+                <a :href="datasetDOI" class="info-text" target="_blank">{{ datasetDOI }}</a>
               </el-col>
             </el-row>
             <el-row

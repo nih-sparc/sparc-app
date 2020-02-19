@@ -1,7 +1,9 @@
 <template>
   <div>
     <page-hero class="large">
-      <h2 v-if="heroHeading">{{ heroHeading }}</h2>
+      <h2 v-if="heroHeading">
+        {{ heroHeading }}
+      </h2>
       <p>
         {{ heroCopy }}
       </p>
@@ -46,7 +48,7 @@ export default {
   asyncData() {
     return Promise.all([
       // Get homepage content
-      client.getEntry( process.env.ctf_home_page_id)
+      client.getEntry(process.env.ctf_home_page_id)
     ])
       .then(([homepage]) => {
         return { ...homepage.fields }
@@ -69,7 +71,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page-hero  {
+.page-hero {
   h2 {
     font-size: 2rem;
     font-weight: 500;

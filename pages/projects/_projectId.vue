@@ -23,7 +23,9 @@
       </div>
       <div slot="meta content" class="details-header__container--content-links">
         <button>
-          <a :href="fields.nihReporterUrl">View on NIH Website</a>
+          <a :href="fields.nihReporterUrl" target="_blank">
+            View on NIH Website
+          </a>
         </button>
       </div>
     </details-header>
