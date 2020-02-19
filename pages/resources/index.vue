@@ -31,7 +31,7 @@
         </p>
       </div>
       <div v-loading="isLoadingResources" class="table-wrap">
-        <component :is="resourcesResultsComponent" :table-data="tableData" />
+        <resources-search-results :table-data="tableData" />
         <el-pagination
           :page-size="resourceData.limit"
           :pager-count="5"
@@ -48,25 +48,16 @@
 <script>
 import { pathOr, propOr, clone, defaultTo, compose, head } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
 
-const ResourcesSearchResults = () =>
-  import('@/components/Resources/ResourcesSearchResults.vue')
-
-const resourcesResultsComponents = {
-  sparcPartners: ResourcesSearchResults,
-  platforms: ResourcesSearchResults,
-  tools: ResourcesSearchResults
-}
-
 const resourceData = {
   limit: 12,
   skip: 0,
-  items: [],
-  total: 0
+  items: []
 }
 
 const tabTypes = [
@@ -76,11 +67,11 @@ const tabTypes = [
   },
   {
     label: 'Platforms',
-    type: 'platforms'
+    type: 'Platform'
   },
   {
     label: 'Tools',
-    type: 'tools'
+    type: 'Tool'
   }
 ]
 
@@ -89,6 +80,7 @@ export default {
 
   components: {
     Breadcrumb,
+    ResourcesSearchResults,
     PageHero
   },
 
@@ -157,33 +149,17 @@ export default {
      */
     curSearchPage: function() {
       return this.resourceData.skip / this.resourceData.limit + 1
-    },
-
-    /**
-     * Compute which search results component to display based on the type of search
-     * @returns {Function}
-     */
-    resourcesResultsComponent: function() {
-      return defaultTo('', resourcesResultsComponents[this.$route.query.type])
     }
   },
 
   watch: {
-    '$route.query.type': function(val) {
+    '$route.query.type': function() {
       /**
        * Clear table data so the new table that is rendered can
        * properly render data and account for any missing data
        */
       this.resourceData = clone(resourceData)
-      if (val === 'platforms') {
-        this.resourceData.items = this.platformItems
-        this.resourceData.total = this.platformItems.length
-      } else if (val === 'tools') {
-        this.resourceData.items = this.toolItems
-        this.resourceData.total = this.toolItems.length
-      } else {
-        this.fetchResults()
-      }
+      this.fetchResults()
     }
   },
 
@@ -195,6 +171,8 @@ export default {
       const firstTabType = compose(propOr('', 'type'), head)(tabTypes)
 
       this.$router.replace({ query: { type: firstTabType } })
+    } else {
+      this.fetchResults()
     }
   },
 
@@ -204,26 +182,31 @@ export default {
      */
     fetchResults: function() {
       this.isLoadingResources = true
+      let entries = {
+        content_type: this.$route.query.type,
+        limit: this.resourceData.limit,
+        skip: this.resourceData.skip,
+        include: 2
+      }
 
-      client
-        .getEntries({
-          content_type: this.$route.query.type,
+      if (
+        this.$route.query.type === 'Platform' ||
+        this.$route.query.type === 'Tool'
+      ) {
+        entries = {
+          content_type: 'sparcPartners',
           limit: this.resourceData.limit,
           skip: this.resourceData.skip,
-          include: 2
-        })
+          include: 2,
+          'fields.resourceType': this.$route.query.type
+        }
+      }
+
+      client
+        .getEntries(entries)
         .then(response => {
+          console.log('this is my response ', response)
           this.resourceData = response
-          this.platformItems = []
-          this.toolItems = []
-          this.resourceData.items.forEach(item => {
-            if (item.fields.resourceType === 'Platform') {
-              this.platformItems.push(item)
-            }
-            if (item.fields.resourceType === 'Tool') {
-              this.toolItems.push(item)
-            }
-          })
         })
         .catch(() => {
           this.resourceData = clone(resourceData)
@@ -240,12 +223,7 @@ export default {
       const offset = (page - 1) * this.resourceData.limit
       this.resourceData.skip = offset
 
-      if (
-        this.$route.query.type !== 'platforms' ||
-        this.$route.query.type !== 'tools'
-      ) {
-        this.fetchResults()
-      }
+      this.fetchResults()
     }
   }
 }
@@ -260,9 +238,10 @@ export default {
     height: 211px;
     padding-bottom: 0;
     p {
-      font-size: 20px;
+      font-size: 17px;
       font-weight: normal;
       line-height: 38px;
+      margin-top: 0;
     }
 
     h1 {
@@ -317,7 +296,7 @@ export default {
     list-style: none;
     overflow: auto;
     padding: 0;
-    margin-top: 3.625rem;
+    // margin-top: 3.625rem;
     @media (max-width: 48em) {
       padding: 0;
       margin-top: 3rem;
