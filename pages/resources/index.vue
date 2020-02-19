@@ -193,13 +193,11 @@ export default {
         this.$route.query.type === 'Platform' ||
         this.$route.query.type === 'Tool'
       ) {
-        entries = {
+        const obj = {
           content_type: 'sparcPartners',
-          limit: this.resourceData.limit,
-          skip: this.resourceData.skip,
-          include: 2,
           'fields.resourceType': this.$route.query.type
         }
+        Object.assign(entries, obj)
       }
 
       client
