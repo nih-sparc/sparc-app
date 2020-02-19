@@ -23,7 +23,7 @@
         </li>
       </ul>
     </page-hero>
-    <div class="page-wrap">
+    <div class="page-wrap container">
       <div class="page-wrap__results">
         <p>
           Showing {{ currentResourceCount }} of
@@ -230,30 +230,8 @@ export default {
 @import '@/assets/_variables.scss';
 .resources {
   .page-hero {
-    background-image: none;
-    background: $midnight;
-    height: 211px;
-    padding-bottom: 0;
-    p {
-      font-size: 1.0625em;
-      font-weight: normal;
-      line-height: 38px;
-      margin-top: 0;
-    }
-
-    h1 {
-      font-weight: 500;
-      font-size: 24px;
-    }
-
-    ::v-deep .container {
-      // removing default margin from container to be consistent
-      // with left alignment in design and didn't want to create different component
-      margin: 0;
-      margin-left: -5%;
-    }
+    padding-bottom: 1.3125em;
   }
-
   .table-wrap {
     background: #fff;
     border: 1px solid rgb(228, 231, 237);
@@ -266,10 +244,6 @@ export default {
   }
 
   .page-wrap {
-    margin: 0 2.625rem 0 2.625rem;
-    @media screen and (max-width: 768px) {
-      margin: 0;
-    }
     &__results {
       font-size: 0.875em;
       font-weight: normal;
@@ -292,10 +266,11 @@ export default {
     display: flex;
     list-style: none;
     overflow: auto;
+    margin: 0;
     padding: 0;
     @media (max-width: 48em) {
       padding: 0;
-      margin-top: 3rem;
+      margin: 1rem 0 0;
     }
     @media (max-width: 1024px) {
       padding: 0;

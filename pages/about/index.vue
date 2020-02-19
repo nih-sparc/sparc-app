@@ -1,6 +1,7 @@
 <template>
   <div class="about-page">
-    <page-hero v-if="heroCopy" class="subpage">
+    <page-hero v-if="heroCopy">
+      <h1>{{ pageTitle }}</h1>
       <p>
         {{ heroCopy }}
       </p>
