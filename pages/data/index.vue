@@ -11,7 +11,8 @@
             :to="{
               name: 'data',
               query: {
-                type: type.type
+                type: type.type,
+                q: $route.query.q
               }
             }"
           >
