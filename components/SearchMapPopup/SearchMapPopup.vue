@@ -30,7 +30,14 @@
       <div class="flatmap__wrapper">
         <client-only placeholder="Loading viewer...">
           <FlatmapVuer
-            :entry="entry"
+            v-show="entry === 'NCBITaxon:9606'"
+            entry="NCBITaxon:9606"
+            height="100%"
+            v-on:resource-selected="searchScaffoldLabel"
+          />
+          <FlatmapVuer
+            v-show="entry === 'NCBITaxon:10114' "
+            entry="NCBITaxon:10114"
             height="100%"
             v-on:resource-selected="searchScaffoldLabel"
           />
