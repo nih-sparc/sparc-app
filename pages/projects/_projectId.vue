@@ -1,7 +1,7 @@
 <template>
   <div class="project-details">
     <details-header
-      :subtitle="''"
+      :subtitle="projectSection"
       :title="fields.title"
       :description="fields.description"
       :breadcrumb="breadcrumb"
@@ -111,6 +111,16 @@ export default {
     getImageAlt: function() {
       return this.fields.institution.image
         ? this.fields.institution.image.fields.file.description
+        : ''
+     },
+     
+     /**
+     * Compute subtitle based on its project section
+     * @returns {String}
+     */
+    projectSection: function() {
+      return this.fields.projectSection
+        ? this.fields.projectSection.fields.title
         : ''
     }
   },

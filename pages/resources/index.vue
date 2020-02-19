@@ -31,7 +31,7 @@
         </p>
       </div>
       <div v-loading="isLoadingResources" class="table-wrap">
-        <component :is="resourcesResultsComponent" :table-data="tableData" />
+        <resources-search-results :table-data="tableData" />
         <el-pagination
           :page-size="resourceData.limit"
           :pager-count="5"
@@ -48,23 +48,11 @@
 <script>
 import { pathOr, propOr, clone, defaultTo, compose, head } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
-
-const ResourcesSearchResults = () =>
-  import('@/components/Resources/ResourcesSearchResults.vue')
-const PlatformSearchResults = () =>
-  import('@/components/Resources/PlatformSearchResults.vue')
-const ToolSearchResults = () =>
-  import('@/components/Resources/ToolSearchResults.vue')
-
-const resourcesResultsComponents = {
-  sparcPartners: ResourcesSearchResults,
-  platforms: PlatformSearchResults,
-  tools: ToolSearchResults
-}
 
 const resourceData = {
   limit: 12,
@@ -79,11 +67,11 @@ const tabTypes = [
   },
   {
     label: 'Platforms',
-    type: 'platforms'
+    type: 'Platform'
   },
   {
     label: 'Tools',
-    type: 'tools'
+    type: 'Tool'
   }
 ]
 
@@ -92,6 +80,7 @@ export default {
 
   components: {
     Breadcrumb,
+    ResourcesSearchResults,
     PageHero
   },
 
@@ -118,6 +107,8 @@ export default {
       },
       resourceData: clone(resourceData),
       tabTypes: tabTypes,
+      platformItems: [],
+      toolItems: [],
       isLoadingResources: false
     }
   },
@@ -128,7 +119,9 @@ export default {
      * @returns {Number}
      */
     currentResourceCount: function() {
-      return this.resourceData.skip !== 0
+      return this.resourceData.limit > this.resourceData.total
+        ? this.resourceData.total
+        : this.resourceData.skip !== 0
         ? this.resourceData.total - this.resourceData.limit
         : this.resourceData.limit
     },
@@ -156,14 +149,6 @@ export default {
      */
     curSearchPage: function() {
       return this.resourceData.skip / this.resourceData.limit + 1
-    },
-
-    /**
-     * Compute which search results component to display based on the type of search
-     * @returns {Function}
-     */
-    resourcesResultsComponent: function() {
-      return defaultTo('', resourcesResultsComponents[this.$route.query.type])
     }
   },
 
@@ -197,14 +182,26 @@ export default {
      */
     fetchResults: function() {
       this.isLoadingResources = true
+      let entries = {
+        content_type: this.$route.query.type,
+        limit: this.resourceData.limit,
+        skip: this.resourceData.skip,
+        include: 2
+      }
+
+      if (
+        this.$route.query.type === 'Platform' ||
+        this.$route.query.type === 'Tool'
+      ) {
+        const obj = {
+          content_type: 'sparcPartners',
+          'fields.resourceType': this.$route.query.type
+        }
+        Object.assign(entries, obj)
+      }
 
       client
-        .getEntries({
-          content_type: this.$route.query.type,
-          limit: this.resourceData.limit,
-          skip: this.resourceData.skip,
-          include: 2
-        })
+        .getEntries(entries)
         .then(response => {
           this.resourceData = response
         })
@@ -238,13 +235,15 @@ export default {
     height: 211px;
     padding-bottom: 0;
     p {
-      font-size: 20px;
+      font-size: 1.0625em;
       font-weight: normal;
       line-height: 38px;
+      margin-top: 0;
     }
 
-    h4 {
+    h1 {
       font-weight: 500;
+      font-size: 24px;
     }
 
     ::v-deep .container {
@@ -294,7 +293,6 @@ export default {
     list-style: none;
     overflow: auto;
     padding: 0;
-    margin-top: 3.625rem;
     @media (max-width: 48em) {
       padding: 0;
       margin-top: 3rem;
@@ -325,7 +323,6 @@ export default {
       text-transform: uppercase;
       @media (min-width: 48em) {
         font-size: 0.875em;
-        margin-top: 1rem;
         font-weight: normal;
         text-transform: none;
       }

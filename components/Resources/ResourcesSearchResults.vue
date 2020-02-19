@@ -65,7 +65,7 @@ export default {
     @media screen and (max-width: 1024px) {
       height: 100%;
     }
-    h4 {
+    h2 {
       font-size: 1em;
       color: $median;
       line-height: 22px;
