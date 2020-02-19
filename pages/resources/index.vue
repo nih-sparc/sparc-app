@@ -296,7 +296,6 @@ export default {
     list-style: none;
     overflow: auto;
     padding: 0;
-    // margin-top: 3.625rem;
     @media (max-width: 48em) {
       padding: 0;
       margin-top: 3rem;
