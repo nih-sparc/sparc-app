@@ -205,7 +205,6 @@ export default {
       client
         .getEntries(entries)
         .then(response => {
-          console.log('this is my response ', response)
           this.resourceData = response
         })
         .catch(() => {
