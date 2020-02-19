@@ -7,6 +7,7 @@
             class="twitter-timeline"
             href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw"
             data-height="500"
+            target="_blank"
           >
             Tweets by sparc_science
           </a>

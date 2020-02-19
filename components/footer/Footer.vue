@@ -12,10 +12,10 @@
         </p>
       </div>
       <div class="footer__info--social">
-        <a href="https://twitter.com/sparc_science">
+        <a href="https://twitter.com/sparc_science" target="_blank">
           <svg-icon icon="icon-twitter" color="#606266" />
         </a>
-        <a href="https://www.youtube.com/results?search_query=sparc+nih">
+        <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
           <svg-icon icon="icon-youtube" color="#606266" />
         </a>
       </div>
@@ -42,12 +42,12 @@
             </nuxt-link>
           </li>
           <li>
-            <a href="https://commonfund.nih.gov/sparc/awards">
+            <a href="https://commonfund.nih.gov/sparc/awards" target="_blank">
               Funding Opportunities
             </a>
           </li>
           <li>
-            <a href="https://commonfund.nih.gov/Sparc/">NIH SPARC</a>
+            <a href="https://commonfund.nih.gov/Sparc/" target="_blank">NIH SPARC</a>
           </li>
         </ul>
         <h3>Help us Improve</h3>
@@ -55,6 +55,7 @@
           <li>
             <a
               href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji"
+              target="_blank"
             >
               Site Feedback
             </a>
@@ -65,6 +66,7 @@
           <li>
             <a
               href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=NIH-SPARC-INFO&A=1"
+              target="_blank"
             >
               Join our E-mail list
             </a>
@@ -72,10 +74,10 @@
         </ul>
       </div>
       <div class="footer__links--social-mobile">
-        <a href="https://twitter.com/sparc_science">
+        <a href="https://twitter.com/sparc_science" target="_blank">
           <svg-icon icon="icon-twitter" color="#606266" />
         </a>
-        <a href="https://www.youtube.com/results?search_query=sparc+nih">
+        <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
           <svg-icon icon="icon-youtube" color="#606266" />
         </a>
       </div>

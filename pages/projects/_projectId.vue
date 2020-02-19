@@ -1,7 +1,7 @@
 <template>
   <div class="project-details">
     <details-header
-      :subtitle="''"
+      :subtitle="projectSection"
       :title="fields.title"
       :description="fields.description"
       :breadcrumb="breadcrumb"
@@ -23,7 +23,9 @@
       </div>
       <div slot="meta content" class="details-header__container--content-links">
         <button>
-          <a :href="fields.nihReporterUrl">View on NIH Website</a>
+          <a :href="fields.nihReporterUrl" target="_blank">
+            View on NIH Website
+          </a>
         </button>
       </div>
     </details-header>
@@ -82,6 +84,18 @@ export default {
         type: 'sparcAward',
         parent: 'Teams and Projects'
       }
+    }
+  },
+
+  computed: {
+    /**
+     * Compute subtitle based on its project section
+     * @returns {String}
+     */
+    projectSection: function() {
+      return this.fields.projectSection
+        ? this.fields.projectSection.fields.title
+        : ''
     }
   },
 

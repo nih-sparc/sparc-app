@@ -12,7 +12,6 @@ import '@/static/icons-js'
 // // import '@/assets/icons'
 // // import SocialSharing from 'vue-social-sharing'
 // // import VueClipboard from 'vue-clipboard2'
-// // import VueMeta from 'vue-meta'
 
 import striptags from 'striptags'
 Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>
@@ -31,9 +30,5 @@ Vue.config.productionTip = false
 Vue.use(svgicon, {
   tagName: 'svg-icon'
 })
-
-// // Vue.use(VueMeta, {
-// //   refreshOnceOnNavigation: true
-// // })
 
 Vue.prototype.$message = Message

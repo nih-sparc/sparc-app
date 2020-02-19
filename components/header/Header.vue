@@ -98,7 +98,7 @@
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
-                <a href="https://twitter.com/sparc_science">
+                <a href="https://twitter.com/sparc_science" target="_blank">
                   <svg-icon
                     icon="icon-twitter"
                     width="30"
@@ -108,6 +108,7 @@
                 </a>
                 <a
                   href="https://www.youtube.com/results?search_query=sparc+nih"
+                  target="_blank"
                 >
                   <svg-icon
                     icon="icon-youtube"
