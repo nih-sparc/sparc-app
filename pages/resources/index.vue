@@ -233,28 +233,8 @@ export default {
 @import '@/assets/_variables.scss';
 .resources {
   .page-hero {
-    background-image: none;
-    background: $midnight;
-    height: 211px;
-    padding-bottom: 0;
-    p {
-      font-size: 20px;
-      font-weight: normal;
-      line-height: 38px;
-    }
-
-    h4 {
-      font-weight: 500;
-    }
-
-    ::v-deep .container {
-      // removing default margin from container to be consistent
-      // with left alignment in design and didn't want to create different component
-      margin: 0;
-      margin-left: -5%;
-    }
+    padding-bottom: 1.3125em;
   }
-
   .table-wrap {
     background: #fff;
     border: 1px solid rgb(228, 231, 237);
@@ -293,11 +273,11 @@ export default {
     display: flex;
     list-style: none;
     overflow: auto;
+    margin: 0;
     padding: 0;
-    margin-top: 3.625rem;
     @media (max-width: 48em) {
       padding: 0;
-      margin-top: 3rem;
+      margin: 1rem 0 0;
     }
     @media (max-width: 1024px) {
       padding: 0;
