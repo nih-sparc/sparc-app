@@ -1,7 +1,7 @@
 <template>
   <div class="project-details">
     <details-header
-      :subtitle="''"
+      :subtitle="projectSection"
       :title="fields.title"
       :description="fields.description"
       :breadcrumb="breadcrumb"
@@ -82,6 +82,18 @@ export default {
         type: 'sparcAward',
         parent: 'Teams and Projects'
       }
+    }
+  },
+
+  computed: {
+    /**
+     * Compute subtitle based on its project section
+     * @returns {String}
+     */
+    projectSection: function() {
+      return this.fields.projectSection
+        ? this.fields.projectSection.fields.title
+        : ''
     }
   },
 
