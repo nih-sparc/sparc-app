@@ -1,6 +1,6 @@
 <template>
   <page-hero justify="left">
-    <h2>{{ title }}</h2>
+    <h1>{{ title }}</h1>
     <p>
       {{ summary }}
     </p>
@@ -9,12 +9,22 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import HelpSearchControls from "~/components/help-search-controls/HelpSearchControls.vue";
-import PageHero from "~/components/PageHero/PageHero.vue";
+import Vue from 'vue'
+import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
 
-export default Vue.extend<never, never, never, { title: string, summary: string }>({
+export default Vue.extend<
+  never,
+  never,
+  never,
+  { title: string; summary: string }
+>({
   name: 'HelpHero',
+
+  components: {
+    HelpSearchControls,
+    PageHero
+  },
 
   props: {
     title: {
@@ -24,12 +34,7 @@ export default Vue.extend<never, never, never, { title: string, summary: string 
     summary: {
       type: String,
       default: ''
-    },
-  },
-
-  components: {
-    HelpSearchControls,
-    PageHero
+    }
   }
 })
 </script>
