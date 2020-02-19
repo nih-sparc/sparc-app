@@ -23,7 +23,7 @@
         </li>
       </ul>
     </page-hero>
-    <div class="page-wrap">
+    <div class="page-wrap container">
       <div class="page-wrap__results">
         <p>
           Showing {{ currentResourceCount }} of
@@ -244,10 +244,6 @@ export default {
   }
 
   .page-wrap {
-    margin: 0 2.625rem 0 2.625rem;
-    @media screen and (max-width: 768px) {
-      margin: 0;
-    }
     &__results {
       font-size: 0.875em;
       font-weight: normal;
