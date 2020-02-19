@@ -645,17 +645,6 @@ export default {
   }
 }
 
-.page-hero {
-  background: linear-gradient(90deg, rgb(12, 0, 191) 0%, rgb(188, 0, 252) 100%);
-  h2 {
-    font-size: 2rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-  }
-  ::v-deep .el-row--flex.is-justify-center {
-    justify-content: flex-start;
-  }
-}
 .page-wrap {
   padding-bottom: 1em;
   padding-top: 1em;
