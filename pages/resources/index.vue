@@ -238,7 +238,7 @@ export default {
     height: 211px;
     padding-bottom: 0;
     p {
-      font-size: 17px;
+      font-size: 1.0625em;
       font-weight: normal;
       line-height: 38px;
       margin-top: 0;
