@@ -112,9 +112,8 @@ export default {
       return this.fields.institution.image
         ? this.fields.institution.image.fields.file.description
         : ''
-     },
-     
-     /**
+    },
+    /**
      * Compute subtitle based on its project section
      * @returns {String}
      */
