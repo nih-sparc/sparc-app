@@ -6,7 +6,13 @@
       :description="fields.description"
       :breadcrumb="breadcrumb"
     >
-      <img slot="banner image" src="http://placehold.jp/368x368.png" />
+      <img
+        slot="banner image"
+        :src="getImageSrc"
+        :alt="getImageAlt"
+        height="368"
+        width="368"
+      />
       <div slot="meta content" class="details-header__container--content-meta">
         <div class="content-meta__item">
           <h3>Project Number</h3>
@@ -88,6 +94,25 @@ export default {
   },
 
   computed: {
+    /**
+     * Get image Source
+     * @returns {String}
+     */
+    getImageSrc: function() {
+      return this.fields.institution.image
+        ? this.fields.institution.image.fields.file.url
+        : ''
+    },
+
+    /**
+     * Get image source
+     * @returns {String}
+     */
+    getImageAlt: function() {
+      return this.fields.institution.image
+        ? this.fields.institution.image.fields.file.description
+        : ''
+    },
     /**
      * Compute subtitle based on its project section
      * @returns {String}
