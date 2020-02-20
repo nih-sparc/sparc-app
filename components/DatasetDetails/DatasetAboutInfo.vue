@@ -26,7 +26,7 @@
         </el-col>
       </el-row>
       <h3>Awards</h3>
-      <p>{{ sparcAwardNumber }}</p>
+      <p>{{ getSparcAwardNumber }}</p>
       <h3>Cite This Dataset</h3>
       <div class="dataset-about-info__container--citation">
         <el-row type="flex" justify="center">
@@ -135,6 +135,15 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Gets the sparc award number
+     * @return {String}
+     */
+    getSparcAwardNumber: function() {
+      return this.sparcAwardNumber !== '' ? this.sparcAwardNumber : 'N/A'
+    },
+
     /**
      * Return DOI link
      * @returns {String}
@@ -183,7 +192,7 @@ export default {
         .then(response => {
           response.records.forEach(record => {
             if (record.model === 'summary') {
-              this.sparcAwardNumber = record.properties.hasAwardNumber
+              this.sparcAwardNumber = record.properties.hasAwardNumber || ''
             }
           })
         })
