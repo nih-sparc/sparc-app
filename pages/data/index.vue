@@ -598,6 +598,9 @@ export default {
 <style scoped lang="scss">
 @import '../../assets/_variables.scss';
 
+.page-hero {
+  padding-bottom: 1.3125em;
+}
 .search-tabs {
   display: flex;
   list-style: none;
