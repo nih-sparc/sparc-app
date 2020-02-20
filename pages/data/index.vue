@@ -64,6 +64,7 @@
           <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
             <el-pagination
+              v-if="searchData.limit < searchData.total"
               :page-size="searchData.limit"
               :pager-count="5"
               :current-page="curSearchPage"
