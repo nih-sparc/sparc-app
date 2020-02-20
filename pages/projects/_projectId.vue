@@ -41,7 +41,10 @@
       class="container"
       @set-active-tab="setActiveTab"
     >
-      <project-dataset-info v-show="activeTab === 'datasets'" />
+      <dataset-search-results
+        v-show="activeTab === 'datasets'"
+        :table-data="datasets.datasets"
+      />
     </detail-tabs>
   </div>
 </template>
@@ -49,7 +52,7 @@
 <script>
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import ProjectDatasetInfo from '@/components/ProjectDatasetInfo/ProjectDatasetInfo.vue'
+import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -58,26 +61,36 @@ const client = createClient()
 export default {
   name: 'ProjectDetails',
   components: {
+    DatasetSearchResults,
     DetailsHeader,
-    DetailTabs,
-    ProjectDatasetInfo
+    DetailTabs
   },
 
-  asyncData(ctx) {
-    return Promise.all([
-      // Get page content
-      client.getEntry(ctx.route.params.projectId)
-    ])
-      .then(([page]) => {
-        return {
-          fields: page.fields
-        }
-      })
-      .catch(console.error)
+  async asyncData({ route, $axios }) {
+    try {
+      const project = await client.getEntry(route.params.projectId)
+
+      const datasets = await $axios.$get(
+        `${process.env.portal_api}/project/${project.fields.awardId}`
+      )
+
+      return {
+        fields: project.fields,
+        datasets
+      }
+    } catch (e) {
+      console.error(e)
+    }
   },
 
   data() {
     return {
+      datasets: {
+        datasets: [],
+        limit: 0,
+        offset: 0,
+        totalCount: 0
+      },
       tabs: [
         {
           label: 'Datasets',
