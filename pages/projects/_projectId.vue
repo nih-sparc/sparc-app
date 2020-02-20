@@ -70,9 +70,11 @@ export default {
     try {
       const project = await client.getEntry(route.params.projectId)
 
-      const datasets = await $axios.$get(
-        `${process.env.portal_api}/project/${project.fields.awardId}`
-      )
+      const datasets = await $axios
+        .$get(`${process.env.portal_api}/project/${project.fields.awardId}`)
+        .catch(() => {
+          return {}
+        })
 
       return {
         fields: project.fields,
