@@ -104,7 +104,7 @@ p {
     transform: translateX(-10px);
   }
   &::after {
-    content: '“';
+    content: '”';
   }
 }
 .homepage-testimonials__testimonial-wrap {
