@@ -125,6 +125,7 @@
         <dataset-about-info
           v-show="activeTab === 'about'"
           :updated-date="lastUpdatedDate"
+          :dataset-id="datasetId"
           :doi="datasetDOI"
           :doi-value="datasetInfo.doi"
           :dataset-records="datasetRecords"
@@ -406,7 +407,6 @@ export default {
       const doi = propOr('', 'doi', this.datasetInfo)
       return `https://doi.org/${doi}`
     },
-
     /**
      * Get formatted originally published date
      * @return {String}
