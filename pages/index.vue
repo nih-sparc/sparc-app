@@ -1,9 +1,9 @@
 <template>
   <div>
     <page-hero class="large">
-      <h2 v-if="heroHeading">
+      <h1 v-if="heroHeading">
         {{ heroHeading }}
-      </h2>
+      </h1>
       <p>
         {{ heroCopy }}
       </p>
