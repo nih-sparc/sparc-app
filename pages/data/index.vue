@@ -40,12 +40,6 @@
                 {{ activeFiltersLabel }}
               </button>
             </div>
-            <div class="filter__wrap">
-              <button class="btn__filters" @click="isSearchMapVisible = true">
-                <svg-icon name="icon-anatomy" height="20" width="20" />
-                Anatomical Map
-              </button>
-            </div>
           </div>
           <div class="mb-16">
             <div class="active__filter__wrap">
@@ -87,10 +81,6 @@
       :is-loading="isLoadingFilters"
       :dialog-title="activeFiltersLabel"
       @input="setTagsQuery"
-    />
-    <search-map-popup
-      :visible.sync="isSearchMapVisible"
-      :on-map-click="onMapClick"
     />
   </div>
 </template>
@@ -169,7 +159,6 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
-import SearchMapPopup from '@/components/SearchMapPopup/SearchMapPopup'
 import { transformFilters } from './utils'
 
 const client = createClient()
@@ -210,7 +199,6 @@ export default {
 
   components: {
     Breadcrumb,
-    SearchMapPopup,
     PageHero,
     SearchFilters,
     SearchForm
