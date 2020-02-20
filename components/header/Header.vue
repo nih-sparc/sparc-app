@@ -46,7 +46,7 @@
           </button>
           <div :class="[searchOpen ? 'search-overlay' : '']">
             <div v-if="searchOpen" class="search-mobile">
-              <input type="text" placeholder="Search" />
+              <input type="text" placeholder="Search Datasets" />
               <button class="search-mobile__close" @click="closeMobileSearch">
                 <svg-icon
                   icon="icon-remove"
@@ -125,7 +125,7 @@
               v-model="searchQuery"
               type="text"
               class="nav-main-container__search-input"
-              placeholder="Search"
+              placeholder="Search Datasets"
             />
             <button
               class="nav-main-container__search-button"
