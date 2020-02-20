@@ -1,5 +1,7 @@
 <template>
   <div class="data-page">
+    <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
+
     <page-hero>
       <search-form v-model="searchQuery" @search="submitSearch" />
 
@@ -111,6 +113,7 @@ import {
   propOr,
   pluck
 } from 'ramda'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
@@ -206,6 +209,7 @@ export default {
   name: 'DataPage',
 
   components: {
+    Breadcrumb,
     SearchMapPopup,
     PageHero,
     SearchFilters,
@@ -223,7 +227,11 @@ export default {
       isLoadingSearch: false,
       isLoadingFilters: false,
       isFiltersVisible: false,
-      isSearchMapVisible: false
+      isSearchMapVisible: false,
+      breadcrumb: {
+        name: 'index',
+        parent: 'Home'
+      }
     }
   },
 
