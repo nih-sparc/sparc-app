@@ -65,7 +65,7 @@
                   style="z-index: 100;"
                 >
                   <nuxt-link
-                    :to="{ name: link.title }"
+                    :to="link.href"
                     :class="{ active: activeLink(link.href) }"
                     exact-active-class="active"
                   >
@@ -159,7 +159,7 @@ const links = [
   {
     title: 'data',
     displayTitle: 'Find Data',
-    href: '/data'
+    href: '/data?type=dataset'
   },
   {
     title: 'resources',
@@ -575,7 +575,6 @@ export default {
 
         &.active {
           border-bottom: 2px solid $median;
-          padding-left: 0.1rem;
           color: $median;
         }
 
