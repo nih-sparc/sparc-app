@@ -126,6 +126,7 @@
               type="text"
               class="nav-main-container__search-input"
               placeholder="Search Datasets"
+              @keyup.enter="executeSearch"
             />
             <button
               class="nav-main-container__search-button"
