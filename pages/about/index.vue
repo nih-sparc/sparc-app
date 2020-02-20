@@ -1,5 +1,6 @@
 <template>
   <div class="about-page">
+    <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
       <p>
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 
 import MarkedMixin from '@/mixins/marked'
@@ -32,6 +34,7 @@ export default {
   name: 'AboutPage',
 
   components: {
+    Breadcrumb,
     PageHero
   },
 
@@ -51,7 +54,11 @@ export default {
   data: () => {
     return {
       heroCopy: '',
-      copy: ''
+      copy: '',
+      breadcrumb: {
+        name: 'index',
+        parent: 'Home'
+      }
     }
   }
 }

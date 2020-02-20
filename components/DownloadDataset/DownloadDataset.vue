@@ -36,13 +36,11 @@
         <p>
           Raw files and metadata are stored in an AWS S3 Requester Pays bucket.
           You can learn more about
-          <a
-            href="https://docs.sparc.science/public_dataset_access.html"
-            target="_blank"
-          >
+          <nuxt-link :to="{ name: 'help-helpId', params: { helpId: 'zQfzadwADutviJjT19hA5' }}">
             downloading data from AWS
-          </a>
+          </nuxt-link>
           in the Help Center.
+          </nuxt-link>
         </p>
         <h2>Resource Type</h2>
         <p>Amazon S3 Bucket (Requester Pays)</p>
@@ -57,13 +55,10 @@
       </div>
     </div>
     <div class="discover-banner">
-      For more information, visit:
-      <a
-        href="https://docs.sparc.science/public_dataset_access.html"
-        target="_blank"
-      >
-        https://docs.sparc.science
-      </a>
+      For more information, visit the
+      <nuxt-link :to="{ name: 'help' }">
+        help page
+      </nuxt-link>
     </div>
   </el-dialog>
 </template>

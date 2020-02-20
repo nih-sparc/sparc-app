@@ -46,7 +46,7 @@
           </button>
           <div :class="[searchOpen ? 'search-overlay' : '']">
             <div v-if="searchOpen" class="search-mobile">
-              <input type="text" placeholder="Search" />
+              <input type="text" placeholder="Search Datasets" />
               <button class="search-mobile__close" @click="closeMobileSearch">
                 <svg-icon
                   icon="icon-remove"
@@ -65,7 +65,7 @@
                   style="z-index: 100;"
                 >
                   <nuxt-link
-                    :to="{ name: link.title }"
+                    :to="link.href"
                     :class="{ active: activeLink(link.href) }"
                     exact-active-class="active"
                   >
@@ -125,7 +125,8 @@
               v-model="searchQuery"
               type="text"
               class="nav-main-container__search-input"
-              placeholder="Search"
+              placeholder="Search Datasets"
+              @keyup.enter="executeSearch"
             />
             <button
               class="nav-main-container__search-button"
@@ -159,7 +160,7 @@ const links = [
   {
     title: 'data',
     displayTitle: 'Find Data',
-    href: '/data'
+    href: '/data?type=dataset'
   },
   {
     title: 'resources',
@@ -575,7 +576,6 @@ export default {
 
         &.active {
           border-bottom: 2px solid $median;
-          padding-left: 0.1rem;
           color: $median;
         }
 

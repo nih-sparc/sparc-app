@@ -156,7 +156,7 @@ export default {
       })
 
       if (this.hasOrcid && Object.keys(this.orcidData).length === 0) {
-        this.$http
+        this.$axios
           .get(`https://pub.orcid.org/v2.1/${this.orcidId}`, {
             headers: { Accept: 'application/json' }
           })

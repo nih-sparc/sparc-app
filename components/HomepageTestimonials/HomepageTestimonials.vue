@@ -15,10 +15,7 @@
           <p>{{ testimonial.fields.testimonial }}</p>
           <span class="homepage-testimonial__author">
             &mdash;
-            {{ testimonial.fields.author }}
-            <template v-if="testimonial.fields.organization">
-              , {{ testimonial.fields.organization }}
-            </template>
+            {{ getByLine(testimonial.fields) }}
           </span>
         </div>
       </div>
@@ -60,6 +57,18 @@ export default {
     return {
       activeTestimonial: 0
     }
+  },
+
+  methods: {
+    /**
+     * Compute byline for the testimonial
+     * @param {Object}
+     * @returns {String}
+     */
+    getByLine: function(fields) {
+      const author = fields.author
+      return fields.organization ? `${author}, ${fields.organization}` : author
+    }
   }
 }
 </script>
@@ -95,7 +104,7 @@ p {
     transform: translateX(-10px);
   }
   &::after {
-    content: '“';
+    content: '”';
   }
 }
 .homepage-testimonials__testimonial-wrap {
@@ -113,10 +122,10 @@ p {
     margin: 0 2rem;
   }
   &:first-child {
-    margin-left: 0
+    margin-left: 0;
   }
   &:last-child {
-    margin-right: 0
+    margin-right: 0;
   }
   &--active {
     display: block;

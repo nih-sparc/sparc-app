@@ -15,13 +15,15 @@
         <a href="https://twitter.com/sparc_science" target="_blank">
           <svg-icon icon="icon-twitter" color="#606266" />
         </a>
-        <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
+        <a
+          href="https://www.youtube.com/results?search_query=sparc+nih"
+          target="_blank"
+        >
           <svg-icon icon="icon-youtube" color="#606266" />
         </a>
       </div>
       <div class="footer__info--copyright">
         <p>
-          Data Resource Center &copy; 2020 All rights reserved.
           <nuxt-link :to="{ name: 'terms-of-service' }">
             Terms of Service
           </nuxt-link>
@@ -77,13 +79,15 @@
         <a href="https://twitter.com/sparc_science" target="_blank">
           <svg-icon icon="icon-twitter" color="#606266" />
         </a>
-        <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
+        <a
+          href="https://www.youtube.com/results?search_query=sparc+nih"
+          target="_blank"
+        >
           <svg-icon icon="icon-youtube" color="#606266" />
         </a>
       </div>
       <div class="footer__links--copyright-mobile">
         <p>
-          Data Resource Center &copy; 2020 All rights reserved.
           <nuxt-link :to="{ name: 'terms-of-service' }">
             Terms of Service
           </nuxt-link>

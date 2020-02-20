@@ -1,5 +1,7 @@
 <template>
   <div class="data-page">
+    <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
+
     <page-hero>
       <search-form v-model="searchQuery" @search="submitSearch" />
 
@@ -38,12 +40,6 @@
                 {{ activeFiltersLabel }}
               </button>
             </div>
-            <div class="filter__wrap">
-              <button class="btn__filters" @click="isSearchMapVisible = true">
-                <svg-icon name="icon-anatomy" height="20" width="20" />
-                Anatomical Map
-              </button>
-            </div>
           </div>
           <div class="mb-16">
             <div class="active__filter__wrap">
@@ -68,6 +64,7 @@
           <div v-loading="isLoadingSearch" class="table-wrap">
             <component :is="searchResultsComponent" :table-data="tableData" />
             <el-pagination
+              v-if="searchData.limit < searchData.total"
               :page-size="searchData.limit"
               :pager-count="5"
               :current-page="curSearchPage"
@@ -85,10 +82,6 @@
       :is-loading="isLoadingFilters"
       :dialog-title="activeFiltersLabel"
       @input="setTagsQuery"
-    />
-    <search-map-popup
-      :visible.sync="isSearchMapVisible"
-      :on-map-click="onMapClick"
     />
   </div>
 </template>
@@ -111,6 +104,7 @@ import {
   propOr,
   pluck
 } from 'ramda'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
@@ -166,7 +160,6 @@ const searchData = {
 }
 
 import createClient from '@/plugins/contentful.js'
-import SearchMapPopup from '@/components/SearchMapPopup/SearchMapPopup'
 import { transformFilters } from './utils'
 
 const client = createClient()
@@ -206,7 +199,7 @@ export default {
   name: 'DataPage',
 
   components: {
-    SearchMapPopup,
+    Breadcrumb,
     PageHero,
     SearchFilters,
     SearchForm
@@ -223,7 +216,11 @@ export default {
       isLoadingSearch: false,
       isLoadingFilters: false,
       isFiltersVisible: false,
-      isSearchMapVisible: false
+      isSearchMapVisible: false,
+      breadcrumb: {
+        name: 'index',
+        parent: 'Home'
+      }
     }
   },
 
@@ -601,6 +598,9 @@ export default {
 <style scoped lang="scss">
 @import '../../assets/_variables.scss';
 
+.page-hero {
+  padding-bottom: 1.3125em;
+}
 .search-tabs {
   display: flex;
   list-style: none;
