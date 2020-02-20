@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="tableData">
+  <el-table :data="tableData" empty-text="No Results">
     <el-table-column
       :fixed="true"
       prop="fields.title"
