@@ -1,7 +1,7 @@
 <template>
   <div class="events-page">
-    <help-hero :title="helpHeroData.title" :summary="helpHeroData.summary" />
     <breadcrumb :breadcrumb="breadcrumb" :title="helpItem.fields.title" />
+    <help-hero :title="helpHeroData.title" :summary="helpHeroData.summary" />
     <div class="page-wrap container">
       <div class="subpage">
         <div class="header">
@@ -25,9 +25,9 @@
 import { format, parseISO } from 'date-fns'
 import { pathOr } from 'ramda'
 
-import HelpHero from "@/components/HelpHero/HelpHero";
+import HelpHero from '@/components/HelpHero/HelpHero'
 import MarkedMixin from '@/mixins/marked'
-import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -38,7 +38,7 @@ export default {
 
   components: {
     HelpHero,
-    Breadcrumb,
+    Breadcrumb
   },
 
   mixins: [MarkedMixin],
