@@ -1,7 +1,7 @@
 <template>
   <div class="homepage-testimonials">
     <div class="container home-container">
-      <h2>Connecting the Datascience Community</h2>
+      <h2>Connecting the Research Community</h2>
       <div class="homepage-testimonials__testimonial-wrap">
         <div
           v-for="(testimonial, idx) in testimonials"

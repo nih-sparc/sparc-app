@@ -15,11 +15,11 @@
       />
       <div slot="meta content" class="details-header__container--content-meta">
         <div class="content-meta__item">
-          <h3>Project Number</h3>
+          <h3>NIH Award</h3>
           <p>{{ fields.awardId }}</p>
         </div>
         <div class="content-meta__item">
-          <h3>Project Leader</h3>
+          <h3>Principal Investigator</h3>
           <p>{{ fields.principleInvestigator }}</p>
         </div>
         <div class="content-meta__item">
