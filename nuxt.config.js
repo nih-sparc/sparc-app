@@ -61,6 +61,11 @@ export default {
     BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/'
   },
 
+  serverMiddleware: [
+    // Will register redirect-ssl npm package
+    'redirect-ssl'
+  ],
+
   /*
    ** Customize the progress-bar color
    */
