@@ -2,6 +2,7 @@
 
 .el-button {
   color: $median;
+  font-family: $font-family;
   &.uppercase {
     text-transform: uppercase;
   }
