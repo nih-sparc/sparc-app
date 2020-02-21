@@ -2,8 +2,8 @@
   <div class="about-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
-      <el-row :gutter="20">
-        <el-col :span="14">
+      <div class="row">
+        <div class="col">
           <h1>{{ pageTitle }}</h1>
           <p>
             {{ heroCopy }}
@@ -11,9 +11,11 @@
           <button class="about-page-button">
             <a href="https://commonfund.nih.gov/sparc/" target="_blank">More Info NIH Website</a>
           </button>
-        </el-col>
-        <img src="@/static/images/about-hero.png" />
-      </el-row>
+        </div>
+        <div class="col">
+          <img class="page-hero-img" src="@/static/images/about-hero.png" />
+        </div>
+      </div>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
@@ -31,10 +33,11 @@
         <div class="row">
           <div class="col">
             <h2>Sparc Portal</h2>
-            <img src="https://via.placeholder.com/222" />
+            <img class="about-page-portal-img" src="https://via.placeholder.com/222" />
           </div>
           <div class="subpage-col">
             <p class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
+            <img class="about-page-portal-img-mobile" src="https://via.placeholder.com/222" />
             <button class="about-teams-and-projects-button">
               View Teams & Projects
             </button>
@@ -107,6 +110,10 @@ export default {
   h1 {
     margin-top: 2.3125rem;
   }
+
+  .row {
+    display: flex;
+  }
 }
 
 .subpage {
@@ -118,13 +125,37 @@ export default {
   }
   .subpage-col {
     margin-top: 38px;
+    @media screen and (max-width: 767px) {
+      margin-top: 0;
+    }
     .about-page-text {
       margin-left: 30px;
+      @media screen and (max-width: 767px) {
+        margin-left: 0;
+      }
     }
+
+    .about-page-portal-img-mobile {
+      display: none;
+      @media screen and (max-width: 767px) {
+        display: block;
+        margin-bottom: 20px;
+      }
+    }
+
   }
+
+    @media screen and (max-width: 767px) {
+      .about-page-portal-img {
+        display: none;
+      }
+    }
 
   .row {
     display: flex;
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
+    }
   }
 }
 
@@ -133,6 +164,7 @@ export default {
   height: 2.5rem;
   border-radius: 4px;
   margin-top: 1rem;
+  background: #fff;
   a {
     font-size: 14px;
     font-weight: 500;
@@ -153,6 +185,9 @@ export default {
   font-size: 14px;
   font-weight: 500;
   margin-left: 30px;
+  @media screen and (max-width: 767px) {
+    margin-left: 0;
+  }
 }
 
 .about-page-text {
@@ -162,8 +197,11 @@ export default {
   color: $dark-sky;
 }
 
-img {
+.page-hero-img {
   height: 19rem;
+  @media screen and (max-width: 767px) {
+    display: none;
+  }
 }
 
 .about {
