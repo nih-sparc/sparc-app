@@ -573,12 +573,10 @@ export default {
         padding-bottom: 0.2rem;
         font-weight: 500;
 
-        &.active {
+        &.active,
+        &:hover,
+        &:focus {
           border-bottom: 2px solid $median;
-          color: $median;
-        }
-
-        &:hover {
           color: $median;
         }
       }
