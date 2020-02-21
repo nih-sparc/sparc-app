@@ -114,6 +114,12 @@ export default {
   .row {
     display: flex;
   }
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    p {
+      position: absolute;
+      background: $midnight;
+    }
+  }
 }
 
 .subpage {
