@@ -1,27 +1,29 @@
 <template>
   <div class="details-header">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
-    <div class="details-header__container container">
-      <div class="details-header__container--image">
-        <slot name="banner image" />
-      </div>
-      <div class="details-header__container--content">
-        <h3>
-          {{ subtitle }}
-        </h3>
-        <h2 class="details-header__container--content-title-default">
-          {{ formatTitle(title) }}
-        </h2>
-        <h2 class="details-header__container--content-title-mobile">
-          {{ formatMobileTitle(title) }}
-        </h2>
-        <p class="details-header__container--content-description-default">
-          {{ formatDescription(description) }}
-        </p>
-        <p class="details-header__container--content-description-mobile">
-          {{ formatMobileDescription(description) }}
-        </p>
-        <slot name="meta content" />
+    <div class="container">
+      <div class="details-header__container">
+        <div class="details-header__container--image">
+          <slot name="banner image" />
+        </div>
+        <div class="details-header__container--content">
+          <h3>
+            {{ subtitle }}
+          </h3>
+          <h2 class="details-header__container--content-title-default">
+            {{ formatTitle(title) }}
+          </h2>
+          <h2 class="details-header__container--content-title-mobile">
+            {{ formatMobileTitle(title) }}
+          </h2>
+          <p class="details-header__container--content-description-default">
+            {{ formatDescription(description) }}
+          </p>
+          <p class="details-header__container--content-description-mobile">
+            {{ formatMobileDescription(description) }}
+          </p>
+          <slot name="meta content" />
+        </div>
       </div>
     </div>
   </div>
@@ -102,24 +104,21 @@ export default {
     display: flex;
     flex-direction: row;
     border: solid 1px $cloudy;
-    padding: 1rem;
-    padding-top: 0;
+    padding: 2rem;
     background: white;
-    margin-top: 1.25rem;
+    margin: 1.25rem 0 2rem;
     &--image {
       margin-right: 1rem;
-      margin-top: 2rem;
-      margin-left: 0.5rem;
       .dataset-image {
         border: solid 1px $cloudy;
       }
       img {
+        display: block;
         width: 368px;
         height: 368px;
       }
     }
     &--content {
-      padding-top: 1.53rem;
       h3 {
         text-transform: uppercase;
         font-weight: 500;
