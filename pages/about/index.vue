@@ -9,7 +9,7 @@
             {{ heroCopy }}
           </p>
           <button class="about-page-button">
-            <a href="#" target="_blank">More Info NIH Website</a>
+            <a href="https://commonfund.nih.gov/sparc/" target="_blank">More Info NIH Website</a>
           </button>
         </el-col>
         <img src="@/static/images/about-hero.png" />
@@ -17,32 +17,29 @@
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
-        <el-row type="flex" justify="left" :gutter="60">
-          <el-col :span="24">
-            <!-- eslint-disable vue/no-v-html -->
-            <!-- marked will sanitize the HTML injected -->
+        <div class="row">
+          <div class="col">
             <h2>SPARC Program</h2>
             <div class="about-page-text" v-html="parseMarkdown(sparcProgram)" />
-          </el-col>
-          <el-col :span="8">
+          </div>
+          <div class="col">
             <img src="https://via.placeholder.com/222" />
-          </el-col>
-
-        </el-row>
+          </div>
+        </div>
       </div>
       <div class="subpage">
-        <el-row type="flex" justify="right" :gutter="40">
-          <el-col :span="8">
+        <div class="row">
+          <div class="col">
             <h2>Sparc Portal</h2>
             <img src="https://via.placeholder.com/222" />
-          </el-col>
-          <el-col class="subpage-col" :span="24">
-            <div class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
+          </div>
+          <div class="subpage-col">
+            <p class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
             <button class="about-teams-and-projects-button">
               View Teams & Projects
             </button>
-          </el-col>
-        </el-row>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -121,6 +118,13 @@ export default {
   }
   .subpage-col {
     margin-top: 38px;
+    .about-page-text {
+      margin-left: 30px;
+    }
+  }
+
+  .row {
+    display: flex;
   }
 }
 
@@ -148,6 +152,7 @@ export default {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  margin-left: 30px;
 }
 
 .about-page-text {
