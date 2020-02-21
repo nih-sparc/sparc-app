@@ -25,7 +25,7 @@
           </div>
         </el-col>
       </el-row>
-      <h3>Awards</h3>
+      <h3>NIH Award</h3>
       <p>Lorem ipsum text</p>
       <h3>Cite This Dataset</h3>
       <div class="dataset-about-info__container--citation">
@@ -43,12 +43,14 @@
                 title="Format citation apa"
                 :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
-              >APA</a>
+                >APA</a
+              >
               |
               <a
                 title="Format citation chicago"
                 :class="{
-                  'active-citation': activeCitation === 'chicago-note-bibliography'
+                  'active-citation':
+                    activeCitation === 'chicago-note-bibliography'
                 }"
                 @click="handleCitationChanged('chicago-note-bibliography')"
               >
