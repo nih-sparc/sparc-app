@@ -24,11 +24,11 @@
       </div>
       <div class="footer__info--copyright">
         <p>
-          <nuxt-link :to="{ name: 'terms-of-service' }">
+          <nuxt-link class="underline" :to="{ name: 'terms-of-service' }">
             Terms of Service
           </nuxt-link>
           |
-          <nuxt-link :to="{ name: 'privacy' }">
+          <nuxt-link class="underline" :to="{ name: 'privacy' }">
             Privacy Policy
           </nuxt-link>
         </p>
@@ -49,7 +49,9 @@
             </a>
           </li>
           <li>
-            <a href="https://commonfund.nih.gov/Sparc/" target="_blank">NIH SPARC</a>
+            <a href="https://commonfund.nih.gov/Sparc/" target="_blank"
+              >NIH SPARC</a
+            >
           </li>
         </ul>
         <h3>Help us Improve</h3>
@@ -88,11 +90,11 @@
       </div>
       <div class="footer__links--copyright-mobile">
         <p>
-          <nuxt-link :to="{ name: 'terms-of-service' }">
+          <nuxt-link class="underline" :to="{ name: 'terms-of-service' }">
             Terms of Service
           </nuxt-link>
           |
-          <nuxt-link :to="{ name: 'privacy' }">
+          <nuxt-link class="underline" :to="{ name: 'privacy' }">
             Privacy Policy
           </nuxt-link>
         </p>

@@ -47,9 +47,8 @@ export default {
   &__container {
     background: white;
     border: solid 1px $cloudy;
-    padding-left: 3rem;
-    padding-right: 2rem;
-    margin: 1.3rem -1rem 1.3rem -1rem;
+    padding: 2em;
+
     &--types {
       border-bottom: 2px solid #dbdfe6;
       display: flex;
@@ -85,7 +84,6 @@ export default {
     }
 
     &--data {
-      padding-bottom: 2.5rem;
       h3 {
         font-size: 14px;
         font-weight: 500;

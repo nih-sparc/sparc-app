@@ -86,6 +86,7 @@ export default {
   cursor: pointer;
   display: inline-flex;
   flex-direction: row;
+  font-family: $font-family;
   font-size: 14px;
   justify-content: center;
   line-height: 1;
