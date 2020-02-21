@@ -1,3 +1,5 @@
+@import './_variables.scss';
+
 body {
   background-color: #F7FAFF;
   font-family: 'Asap', sans-serif;
@@ -52,6 +54,17 @@ h6 {
   line-height: 1.75rem;
   margin: 0 0 0.5rem;
   padding: 0;
+}
+
+a {
+  color: $median;
+  &:not(.underline) {
+    text-decoration: none;
+  }
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
 }
 
 p {
