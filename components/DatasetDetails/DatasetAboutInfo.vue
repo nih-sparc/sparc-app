@@ -8,7 +8,7 @@
       <el-row type="flex" justify="center" class="protocol-block">
         <el-col :span="24">
           <h3>
-            Protocol DOIs
+            Protocol Links
           </h3>
           <div v-if="datasetRecords.length !== 0">
             <a
@@ -43,8 +43,7 @@
                 title="Format citation apa"
                 :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
-                >APA</a
-              >
+              >APA</a>
               |
               <a
                 title="Format citation chicago"
