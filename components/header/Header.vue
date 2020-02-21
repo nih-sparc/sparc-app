@@ -364,7 +364,6 @@ export default {
   }
   a {
     font-size: 13px;
-    font-family: $system-font;
     font-weight: 400;
     line-height: 24px;
     color: $cochlear;
@@ -680,7 +679,6 @@ export default {
 }
 
 .data-portal-title {
-  font-family: 'SF Pro Text';
   font-size: 14px;
   color: #303133;
   line-height: 14px;
