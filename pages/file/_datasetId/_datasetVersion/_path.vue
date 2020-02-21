@@ -39,6 +39,7 @@
         </div>
       </div>
       <detail-tabs
+        v-if="hasViewer"
         :tabs="tabs"
         :active-tab="activeTab"
         class="container"
@@ -91,9 +92,12 @@ export default {
       `${process.env.BL_SERVER_URL}/imagemap/sharelink/${sourcePackageId}`
     )
 
+    const hasViewer = biolucidaData.status !== 'error'
+
     return {
       biolucidaData,
-      file
+      file,
+      hasViewer
     }
   },
 
