@@ -408,7 +408,6 @@ export default {
       const doi = propOr('', 'doi', this.datasetInfo)
       return `https://doi.org/${doi}`
     },
-
     /**
      * Get formatted originally published date
      * @return {String}

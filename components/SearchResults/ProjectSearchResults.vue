@@ -45,7 +45,7 @@
       label="Institution"
       width="200"
     />
-    <el-table-column prop="fields.awardId" label="ID" width="150" />
+    <el-table-column prop="fields.awardId" label="NIH Award" width="150" />
 
     <el-table-column
       prop="fields.principleInvestigator"
