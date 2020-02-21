@@ -11,7 +11,7 @@
         </a>
 
         <span
-          v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length-1"
+          v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length - 1"
           class="breadcrumb-separator"
         >
           /
@@ -53,7 +53,18 @@
                   </a>
                 </div>
                 <div v-else>
-                  {{ scope.row.name }}
+                  <nuxt-link
+                    :to="{
+                      name: 'file-datasetId-datasetVersion-path',
+                      params: {
+                        datasetId: datasetDetails.id,
+                        datasetVersion: datasetDetails.version,
+                        path: scope.row.path
+                      }
+                    }"
+                  >
+                    {{ scope.row.name }}
+                  </nuxt-link>
                 </div>
               </template>
             </div>
