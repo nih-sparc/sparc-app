@@ -488,7 +488,7 @@ export default {
   border-radius: 4px;
   border: solid 1px $dark-gray;
   margin-top: 2px;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   @media screen and (max-width: 1023px) {
     display: none;
   }
@@ -508,7 +508,7 @@ export default {
 
 ::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: lightgray;
+  color: #909399;
   opacity: 1; /* Firefox */
   font-size: 14px;
   font-weight: 300;
