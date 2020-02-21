@@ -26,7 +26,7 @@
         </el-col>
       </el-row>
       <h3>NIH Award</h3>
-      <p>Lorem ipsum text</p>
+      <p>{{ getSparcAwardNumber }}</p>
       <h3>Cite This Dataset</h3>
       <div class="dataset-about-info__container--citation">
         <el-row type="flex" justify="center">
@@ -43,7 +43,8 @@
                 title="Format citation apa"
                 :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
-              >APA</a>
+                >APA</a
+              >
               |
               <a
                 title="Format citation chicago"
@@ -87,7 +88,6 @@
 
 <script>
 import TagList from '@/components/TagList/TagList.vue'
-import { propOr } from 'ramda'
 export default {
   name: 'DatasetAboutInfo',
 
@@ -96,6 +96,11 @@ export default {
   },
   props: {
     updatedDate: {
+      type: String,
+      default: ''
+    },
+
+    datasetId: {
       type: String,
       default: ''
     },
@@ -126,17 +131,34 @@ export default {
       citationLoading: false,
       citationText: '',
       activeCitation: '',
-      crosscite_host: process.env.crosscite_api_host
+      crosscite_host: process.env.crosscite_api_host,
+      sparcAwardNumber: ''
     }
   },
 
   computed: {
+    /**
+     * Gets the sparc award number
+     * @return {String}
+     */
+    getSparcAwardNumber: function() {
+      return this.sparcAwardNumber !== '' ? this.sparcAwardNumber : 'N/A'
+    },
+
     /**
      * Return DOI link
      * @returns {String}
      */
     DOIlink: function() {
       return this.doiValue ? `https://doi.org/${this.doiValue}` : ''
+    },
+
+    /**
+     * Url to get records for model
+     * @returns {String}
+     */
+    getRecordsUrl: function() {
+      return `${process.env.discover_api_host}/search/records?datasetId=${this.datasetId}`
     }
   },
 
@@ -148,10 +170,38 @@ export default {
         }
       },
       immediate: true
+    },
+
+    getRecordsUrl: {
+      handler: function(val) {
+        if (val) {
+          this.getDatasetRecords()
+        }
+      },
+      immediate: true
     }
   },
 
   methods: {
+    /**
+     * Retrievs the metadata records for a dataset to get the sparc award number
+     */
+    getDatasetRecords: function() {
+      this.$axios
+        .$get(this.getRecordsUrl)
+        .then(response => {
+          response.records.forEach(record => {
+            if (record.model === 'summary') {
+              this.sparcAwardNumber = record.properties.hasAwardNumber || ''
+            }
+          })
+        })
+        .catch(
+          // handle error
+          (this.errorLoading = true)
+        )
+    },
+
     /**
      * gets bibiolography based on citation type for current DOI
      * @param {String} citationType
