@@ -77,8 +77,8 @@ export default {
      * @returns {String}
      */
     getImageSrc: function(scope) {
-      return scope.row.fields.institution.image
-        ? scope.row.fields.institution.image.fields.file.url
+      return scope.row.fields.institution.fields.logo
+        ? scope.row.fields.institution.fields.logo.fields.file.url
         : ''
     },
     /**
@@ -87,8 +87,8 @@ export default {
      * @returns {String}
      */
     getImageAlt: function(scope) {
-      return scope.row.fields.institution.image
-        ? scope.row.fields.institution.image.fields.file.description
+      return scope.row.fields.institution.fields.logo
+        ? scope.row.fields.institution.fields.logo.fields.file.description
         : ''
     }
   }
