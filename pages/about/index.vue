@@ -80,7 +80,6 @@ export default {
       client.getEntry(process.env.ctf_about_page_id)
     ])
       .then(([page]) => {
-        console.log('give me page ', page)
         return { ...page.fields }
       })
       .catch(console.error)
