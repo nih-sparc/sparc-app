@@ -1,10 +1,11 @@
 <template>
   <div class="resources-search-results">
-    <div v-for="data in tableData" class="resources-search-results__items">
-      <div
-        v-show="data.fields.logo"
-        class="resources-search-results__items--image"
-      >
+    <div
+      v-for="data in tableData"
+      :key="data.sys.id"
+      class="resources-search-results__items"
+    >
+      <div class="resources-search-results__items--image">
         <img v-show="data.fields.logo" :src="getBannerImage(data)" />
       </div>
       <div class="resources-search-results__items--content">

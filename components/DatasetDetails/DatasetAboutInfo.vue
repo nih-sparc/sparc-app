@@ -8,7 +8,7 @@
       <el-row type="flex" justify="center" class="protocol-block">
         <el-col :span="24">
           <h3>
-            Protocol DOIs
+            Protocol Links
           </h3>
           <div v-if="datasetRecords.length !== 0">
             <a
@@ -25,7 +25,7 @@
           </div>
         </el-col>
       </el-row>
-      <h3>Awards</h3>
+      <h3>NIH Award</h3>
       <p>{{ getSparcAwardNumber }}</p>
       <h3>Cite This Dataset</h3>
       <div class="dataset-about-info__container--citation">
@@ -43,12 +43,14 @@
                 title="Format citation apa"
                 :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
-              >APA</a>
+                >APA</a
+              >
               |
               <a
                 title="Format citation chicago"
                 :class="{
-                  'active-citation': activeCitation === 'chicago-note-bibliography'
+                  'active-citation':
+                    activeCitation === 'chicago-note-bibliography'
                 }"
                 @click="handleCitationChanged('chicago-note-bibliography')"
               >
@@ -135,7 +137,6 @@ export default {
   },
 
   computed: {
-
     /**
      * Gets the sparc award number
      * @return {String}
@@ -182,12 +183,11 @@ export default {
   },
 
   methods: {
-
     /**
      * Retrievs the metadata records for a dataset to get the sparc award number
      */
     getDatasetRecords: function() {
-       this.$axios
+      this.$axios
         .$get(this.getRecordsUrl)
         .then(response => {
           response.records.forEach(record => {

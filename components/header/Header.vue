@@ -364,7 +364,6 @@ export default {
   }
   a {
     font-size: 13px;
-    font-family: $system-font;
     font-weight: 400;
     line-height: 24px;
     color: $cochlear;
@@ -489,7 +488,7 @@ export default {
   border-radius: 4px;
   border: solid 1px $dark-gray;
   margin-top: 2px;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   @media screen and (max-width: 1023px) {
     display: none;
   }
@@ -509,7 +508,7 @@ export default {
 
 ::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: lightgray;
+  color: #909399;
   opacity: 1; /* Firefox */
   font-size: 14px;
   font-weight: 300;
@@ -574,12 +573,10 @@ export default {
         padding-bottom: 0.2rem;
         font-weight: 500;
 
-        &.active {
+        &.active,
+        &:hover,
+        &:focus {
           border-bottom: 2px solid $median;
-          color: $median;
-        }
-
-        &:hover {
           color: $median;
         }
       }
@@ -680,7 +677,6 @@ export default {
 }
 
 .data-portal-title {
-  font-family: 'SF Pro Text';
   font-size: 14px;
   color: #303133;
   line-height: 14px;
