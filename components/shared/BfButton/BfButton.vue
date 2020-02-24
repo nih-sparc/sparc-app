@@ -81,7 +81,7 @@ export default {
   align-items: center;
   background: $median;
   border: 1px solid transparent;
-  border-radius: 3px;
+  border-radius: 4px;
   color: #fff;
   cursor: pointer;
   display: inline-flex;
@@ -151,6 +151,20 @@ export default {
       background: #fff;
     }
   }
+  &.secondary {
+    background-color: $light-purple;
+    border: solid 1px $median;
+    color: $median;
+    border-radius: 4px;
+    width: 178px;
+    &:hover {
+      background: $light-purple;
+    }
+  }
+  &.button-spacing {
+    margin-left: 16px;
+  }
+
   & iron-icon {
     margin-right: 5px;
   }
