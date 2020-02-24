@@ -21,23 +21,23 @@
       <div class="subpage">
         <div class="row">
           <div class="col">
-            <h2>SPARC Program</h2>
-            <div class="about-page-text" v-html="parseMarkdown(sparcProgram)" />
+            <!-- <h2>Overview</h2> -->
+            <div class="about-page-text" v-html="parseMarkdown(overview)" />
           </div>
           <div class="col">
-            <img src="https://via.placeholder.com/222" />
+            <!-- <img src="https://via.placeholder.com/222" /> -->
           </div>
         </div>
       </div>
       <div class="subpage">
         <div class="row">
           <div class="col">
-            <h2>Sparc Portal</h2>
-            <img class="about-page-portal-img" src="https://via.placeholder.com/222" />
+            <!-- <h2>The Sparc Portal</h2> -->
+            <!-- <img class="about-page-portal-img" src="https://via.placeholder.com/222" /> -->
           </div>
           <div class="subpage-col">
             <p class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
-            <img class="about-page-portal-img-mobile" src="https://via.placeholder.com/222" />
+            <!-- <img class="about-page-portal-img-mobile" src="https://via.placeholder.com/222" /> -->
             <button class="about-teams-and-projects-button">
               View Teams & Projects
             </button>
@@ -103,9 +103,33 @@ export default {
   }
 }
 
+::v-deep h2 {  // for markdown styles on page
+  font-size: 28px;
+  font-weight: normal;
+  line-height: 28px;
+  color: $navy;
+}
+
+::v-deep p { // for markdown styles on page
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 22px;
+  color: $dark-sky;
+}
+
 .page-hero {
   padding: 0;
   height: 19rem;
+
+  p {
+    color: #fff;
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 38px;
+    @media screen and (min-width: 768px) {
+      line-height: 30px;
+    }
+  }
 
   h1 {
     margin-top: 2.3125rem;
@@ -114,28 +138,23 @@ export default {
   .row {
     display: flex;
   }
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
+  @media screen and (min-width: 768px) {
     p {
       position: absolute;
-      background: $midnight;
+      background-color: rgba(36, 36, 91, 0.75);
+    }
+    .about-page-button {
+      margin-top: 7rem;
     }
   }
 }
 
 .subpage {
-  h2 {
-    font-size: 28px;
-    font-weight: normal;
-    line-height: 28px;
-    color: $navy;
-  }
   .subpage-col {
-    margin-top: 38px;
     @media screen and (max-width: 767px) {
       margin-top: 0;
     }
     .about-page-text {
-      margin-left: 30px;
       @media screen and (max-width: 767px) {
         margin-left: 0;
       }
@@ -148,14 +167,13 @@ export default {
         margin-bottom: 20px;
       }
     }
-
   }
 
-    @media screen and (max-width: 767px) {
-      .about-page-portal-img {
-        display: none;
-      }
+  @media screen and (max-width: 767px) {
+    .about-page-portal-img {
+      display: none;
     }
+  }
 
   .row {
     display: flex;
@@ -190,17 +208,9 @@ export default {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
-  margin-left: 30px;
   @media screen and (max-width: 767px) {
     margin-left: 0;
   }
-}
-
-.about-page-text {
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 22px;
-  color: $dark-sky;
 }
 
 .page-hero-img {
