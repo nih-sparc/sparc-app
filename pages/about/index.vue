@@ -21,7 +21,6 @@
       <div class="subpage">
         <div class="row">
           <div class="col">
-            <!-- <h2>Overview</h2> -->
             <div class="about-page-text" v-html="parseMarkdown(overview)" />
           </div>
           <div class="col">
@@ -32,14 +31,22 @@
       <div class="subpage">
         <div class="row">
           <div class="col">
-            <!-- <h2>The Sparc Portal</h2> -->
             <!-- <img class="about-page-portal-img" src="https://via.placeholder.com/222" /> -->
           </div>
           <div class="subpage-col">
             <p class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
             <!-- <img class="about-page-portal-img-mobile" src="https://via.placeholder.com/222" /> -->
             <button class="about-teams-and-projects-button">
-              View Teams & Projects
+              <nuxt-link
+                :to="{
+                  name: 'data',
+                  query: {
+                    type: 'sparcAward'
+                  }
+                }"
+              >
+                View Teams & Projects
+              </nuxt-link>
             </button>
           </div>
         </div>
@@ -126,8 +133,11 @@ export default {
     font-size: 20px;
     font-weight: normal;
     line-height: 38px;
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: 768px) and (max-width: 1023px) {
       line-height: 30px;
+    }
+    @media screen and (max-width: 767px) {
+      line-height: 20px;
     }
   }
 
@@ -138,7 +148,7 @@ export default {
   .row {
     display: flex;
   }
-  @media screen and (min-width: 768px) {
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
     p {
       position: absolute;
       background-color: rgba(36, 36, 91, 0.75);
@@ -164,7 +174,7 @@ export default {
       display: none;
       @media screen and (max-width: 767px) {
         display: block;
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
       }
     }
   }
@@ -204,10 +214,13 @@ export default {
   text-transform: uppercase;
   height: 2.5rem;
   width: 12.4rem;
-  color: #fff;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  a {
+    text-decoration: none;
+    color: #fff;
+  }
   @media screen and (max-width: 767px) {
     margin-left: 0;
   }
