@@ -87,7 +87,7 @@
         <div v-if="datasetType === 'simulation'">
           <button class="dataset-button">
             <a
-              :href="`https://osparc.io/study/${this.getSimulationId}`"
+              :href="`https://osparc.io/study/${getSimulationId}`"
               target="_blank"
             >
               Run Simulation
@@ -99,8 +99,9 @@
             "
             target="_blank"
             class="dataset-link"
-            >Get Dataset</a
           >
+            Get Dataset
+          </a>
         </div>
         <div v-else>
           <button class="dataset-button" @click="isDownloadModalVisible = true">
@@ -111,44 +112,35 @@
     </details-header>
     <div class="container">
       <detail-tabs
-        :tabs="getDetailTabs"
+        :tabs="tabs"
         :active-tab="activeTab"
         @set-active-tab="setActiveTab"
       >
-        <div v-if="datasetType === 'simulation'">
-          <dataset-description-info
-            v-show="activeTab === 'about'"
-            :markdown="markdown"
-            :loading-markdown="loadingMarkdown"
-          />
-        </div>
-        <div v-else>
-          <dataset-about-info
-            v-show="activeTab === 'about'"
-            :updated-date="lastUpdatedDate"
-            :doi="datasetDOI"
-            :doi-value="datasetInfo.doi"
-            :dataset-records="datasetRecords"
-            :dataset-tags="datasetTags"
-          />
-          <dataset-description-info
-            v-show="activeTab === 'description'"
-            :markdown="markdown"
-            :loading-markdown="loadingMarkdown"
-          />
-          <dataset-files-info
-            v-show="activeTab === 'files'"
-            :dataset-details="datasetInfo"
-          />
-          <client-only placeholder="Loading viewer...">
-            <div v-show="activeTab === '3DScaffold'" class="scaffold">
-              <scaffold-vuer v-if="scaffold" :url="scaffold" />
-              <p v-else>
-                No 3D scaffold available
-              </p>
-            </div>
-          </client-only>
-        </div>
+        <dataset-about-info
+          v-show="activeTab === 'about'"
+          :updated-date="lastUpdatedDate"
+          :doi="datasetDOI"
+          :doi-value="datasetInfo.doi"
+          :dataset-records="datasetRecords"
+          :dataset-tags="datasetTags"
+        />
+        <dataset-description-info
+          v-show="activeTab === 'description'"
+          :markdown="markdown"
+          :loading-markdown="loadingMarkdown"
+        />
+        <dataset-files-info
+          v-show="activeTab === 'files'"
+          :dataset-details="datasetInfo"
+        />
+        <client-only placeholder="Loading viewer...">
+          <div v-show="activeTab === '3DScaffold'" class="scaffold">
+            <scaffold-vuer v-if="scaffold" :url="scaffold" />
+            <p v-else>
+              No 3D scaffold available
+            </p>
+          </div>
+        </client-only>
       </detail-tabs>
     </div>
     <download-dataset
@@ -276,20 +268,6 @@ export default {
      */
     getSimulationId: function() {
       return this.datasetInfo.study.uuid || ''
-    },
-    /**
-     * Get tabs based on dataset type
-     * @returns {Array}
-     */
-    getDetailTabs: function() {
-      return this.datasetType === 'simulation'
-        ? [
-            {
-              label: 'About',
-              type: 'about'
-            }
-          ]
-        : this.tabs
     },
 
     /**
