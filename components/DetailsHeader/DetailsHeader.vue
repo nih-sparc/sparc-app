@@ -108,14 +108,20 @@ export default {
     background: white;
     margin: 1.25rem 0 2rem;
     &--image {
+      flex-shrink: 0;
       margin-right: 1rem;
+      width: 100%;
+      @media (min-width: 48em) {
+        height: 368px;
+        width: 368px;
+      }
       .dataset-image {
         border: solid 1px $cloudy;
       }
       img {
         display: block;
-        width: 368px;
-        height: 368px;
+        width: 100%;
+        height: auto;
       }
     }
     &--content {

@@ -27,6 +27,7 @@
           }"
         >
           <img
+            class="img-project"
             :src="getImageSrc(scope)"
             :alt="getImageAlt(scope)"
             height="128"
@@ -77,8 +78,8 @@ export default {
      * @returns {String}
      */
     getImageSrc: function(scope) {
-      return scope.row.fields.institution.image
-        ? scope.row.fields.institution.image.fields.file.url
+      return scope.row.fields.institution.fields.logo
+        ? scope.row.fields.institution.fields.logo.fields.file.url
         : ''
     },
     /**
@@ -87,8 +88,8 @@ export default {
      * @returns {String}
      */
     getImageAlt: function(scope) {
-      return scope.row.fields.institution.image
-        ? scope.row.fields.institution.image.fields.file.description
+      return scope.row.fields.institution.fields.logo
+        ? scope.row.fields.institution.fields.logo.fields.file.description
         : ''
     }
   }
@@ -97,6 +98,10 @@ export default {
 
 <style lang="scss" scoped>
 .el-table {
+  width: 100%;
+}
+.img-project {
+  height: auto;
   width: 100%;
 }
 </style>

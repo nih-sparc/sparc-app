@@ -114,8 +114,8 @@ export default {
      * @returns {String}
      */
     getImageSrc: function() {
-      return this.fields.institution.image
-        ? this.fields.institution.image.fields.file.url
+      return this.fields.institution.fields.logo
+        ? this.fields.institution.fields.logo.fields.file.url
         : ''
     },
 
@@ -124,8 +124,8 @@ export default {
      * @returns {String}
      */
     getImageAlt: function() {
-      return this.fields.institution.image
-        ? this.fields.institution.image.fields.file.description
+      return this.fields.institution.fields.logo
+        ? this.fields.institution.fields.logo.fields.file.description
         : ''
     },
     /**
