@@ -27,6 +27,7 @@
           }"
         >
           <img
+            class="img-project"
             :src="getImageSrc(scope)"
             :alt="getImageAlt(scope)"
             height="128"
@@ -97,6 +98,10 @@ export default {
 
 <style lang="scss" scoped>
 .el-table {
+  width: 100%;
+}
+.img-project {
+  height: auto;
   width: 100%;
 }
 </style>
