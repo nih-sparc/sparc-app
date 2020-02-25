@@ -242,6 +242,8 @@ export default {
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
         url += `&query=${query}`
+      } else {
+        url += '&orderBy=date'
       }
 
       const tags = this.$route.query.tags || ''
