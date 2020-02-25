@@ -120,7 +120,7 @@ export default {
     },
 
     /**
-     * Compute width based on isDatasetSizeLarge
+     * Compute height based on isDatasetSizeLarge
      * @returns {String}
      */
     height: function() {
