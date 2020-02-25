@@ -41,7 +41,7 @@
                 :to="{
                   name: 'data',
                   query: {
-                    type: 'sparcAward'
+                    type: projectId
                   }
                 }"
               >
@@ -92,7 +92,8 @@ export default {
       breadcrumb: {
         name: 'index',
         parent: 'Home'
-      }
+      },
+      projectId: process.env.ctf_project_id
     }
   }
 }
@@ -110,16 +111,16 @@ export default {
 }
 
 ::v-deep h2 {  // for markdown styles on page
-  font-size: 28px;
+  font-size: 1.75em;
   font-weight: normal;
-  line-height: 28px;
+  line-height: 1.75em;
   color: $navy;
 }
 
 ::v-deep p { // for markdown styles on page
-  font-size: 16px;
+  font-size: 1em;
   font-weight: normal;
-  line-height: 22px;
+  line-height: 1.375em;
   color: $dark-sky;
 }
 
@@ -127,16 +128,20 @@ export default {
   padding: 0;
   height: 19rem;
 
+  h1 {
+    font-size: 1.25em;
+  }
+
   p {
     color: #fff;
-    font-size: 20px;
+    font-size: 1em;
     font-weight: normal;
-    line-height: 38px;
+    line-height: 1.75em;
     @media screen and (min-width: 768px) and (max-width: 1023px) {
-      line-height: 30px;
+      line-height: 1.875em;
     }
     @media screen and (max-width: 767px) {
-      line-height: 20px;
+      line-height: 1.25em;
     }
   }
 
@@ -195,11 +200,11 @@ export default {
 .about-page-button {
   width: 12.3rem;
   height: 2.5rem;
-  border-radius: 4px;
+  border-radius: 0.25em;
   margin-top: 1rem;
   background: #fff;
   a {
-    font-size: 14px;
+    font-size: 1.25em;
     font-weight: 500;
     letter-spacing: 0;
     text-transform: uppercase;
@@ -214,7 +219,7 @@ export default {
   height: 2.5rem;
   width: 12.4rem;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 0.875em;
   font-weight: 500;
   a {
     text-decoration: none;
