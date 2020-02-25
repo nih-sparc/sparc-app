@@ -27,7 +27,7 @@
           Dataset Size: {{ formatMetric(datasetDetails.size) }}
         </p>
         <a :href="downloadUrl">
-          <bf-button class="download-dataset">Download Dataset</bf-button>
+          <bf-button class="download-button">Download Dataset</bf-button>
         </a>
         <bf-button class="secondary button-spacing" @click="closeDialog">
           Cancel
@@ -64,7 +64,16 @@
         <div class="buttons">
           <a :href="downloadUrl">
             <bf-button class="download-button">
-              Download to AWS Bucket
+              <nuxt-link
+                :to="{
+                  name: 'help-helpId',
+                  query: {
+                    type: process.env.ctf_help_aws_id
+                  }
+                }"
+              >
+                Download to AWS Bucket
+              </nuxt-link>
             </bf-button>
           </a>
           <bf-button class="secondary button-spacing" @click="closeDialog">
@@ -203,6 +212,7 @@ export default {
       color: #000;
       font-size: 16px;
       margin-top: 8px;
+      margin-bottom: 16px;
     }
 
     .size {
@@ -214,15 +224,14 @@ export default {
     }
 
     .download-button {
-      height: 60px;
-      width: 236px;
-      border-radius: 3px;
-      background-color: #071540;
-      color: #ffffff;
-      font-size: 16px;
+      width: 178px;
+    }
+
+    .dataset-size-text {
+      font-size: 18px;
       font-weight: 500;
       line-height: 24px;
-      margin-top: 5px;
+      margin-bottom: 32px;
     }
 
     .buttons {
