@@ -3,7 +3,6 @@
     :visible="visible"
     :show-close="false"
     class="download-dataset-dialog"
-    width="768px"
     :height="height"
     @close="closeDialog"
   >
@@ -26,12 +25,14 @@
         <p class="dataset-size-text">
           Dataset Size: {{ formatMetric(datasetDetails.size) }}
         </p>
-        <a :href="downloadUrl">
-          <bf-button class="download-button">Download Dataset</bf-button>
-        </a>
-        <bf-button class="secondary button-spacing" @click="closeDialog">
-          Cancel
-        </bf-button>
+        <div class="buttons">
+          <a :href="downloadUrl">
+            <bf-button class="download-button">Download Dataset</bf-button>
+          </a>
+          <bf-button class="secondary button-spacing" @click="closeDialog">
+            Cancel
+          </bf-button>
+        </div>
       </div>
       <div v-else class="aws-container">
         <h1>Download from AWS</h1>
@@ -174,6 +175,11 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 
+@media screen and (max-width: 767px) {
+  ::v-deep .el-dialog {
+    width: 93%;
+  }
+}
 .el-dialog__body {
   padding: 0;
 }
@@ -222,6 +228,9 @@ export default {
 
     .download-button {
       width: 178px;
+      @media screen and (max-width: 767px) {
+        width: 100%;
+      }
     }
 
     .dataset-size-text {
@@ -230,12 +239,19 @@ export default {
       line-height: 24px;
       margin-bottom: 32px;
     }
+  }
 
+  @media screen and (max-width: 767px) {
     .buttons {
-      .cancel-button {
-        color: $median;
-        border: solid 1px $median;
-        background: $light-purple !important;
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    ::v-deep .bf-button {
+      &.secondary {
+        width: 30%;
       }
     }
   }
@@ -319,6 +335,9 @@ export default {
   ::v-deep .el-dialog {
     border-radius: 0;
     width: 768px;
+    @media screen and (max-width: 767px) {
+      width: 93%;
+    }
     .el-dialog__body {
       padding: 0;
     }
