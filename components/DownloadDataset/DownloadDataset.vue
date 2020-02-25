@@ -67,8 +67,8 @@
               <nuxt-link
                 :to="{
                   name: 'help-helpId',
-                  query: {
-                    type: process.env.ctf_help_aws_id
+                  params: {
+                    helpId: helpId
                   }
                 }"
               >
@@ -109,6 +109,12 @@ export default {
     datasetDetails: {
       type: Object,
       default: () => {}
+    }
+  },
+
+  data() {
+    return {
+      helpId: process.env.ctf_help_aws_id
     }
   },
 
@@ -255,7 +261,7 @@ export default {
     margin-top: 47px;
 
     a {
-      font-weight: bold;
+      color: #fff;
     }
   }
 
