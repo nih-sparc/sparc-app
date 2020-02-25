@@ -30,16 +30,6 @@
             <p v-if="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }}
             </p>
-            <div class="filter__wrap">
-              <button
-                class="btn__filters"
-                :disabled="filters.length === 0"
-                @click="isFiltersVisible = true"
-              >
-                <svg-icon name="icon-preset" height="20" width="20" />
-                {{ activeFiltersLabel }}
-              </button>
-            </div>
           </div>
           <div class="mb-16">
             <div class="active__filter__wrap">
@@ -242,6 +232,8 @@ export default {
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
         url += `&query=${query}`
+      } else {
+        url += '&orderBy=date'
       }
 
       const tags = this.$route.query.tags || ''
@@ -352,15 +344,6 @@ export default {
     '$route.query.q': {
       handler: function() {
         this.searchQuery = this.$route.query.q
-      },
-      immediate: true
-    },
-
-    'searchType.filterId': {
-      handler: function(val) {
-        if (val) {
-          this.fetchFilters()
-        }
       },
       immediate: true
     }
