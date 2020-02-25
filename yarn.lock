@@ -16,10 +16,10 @@
     lodash "^4.17.15"
     vue "^2.6.10"
 
-"@abi-software/scaffoldvuer@^0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.14.tgz#50ae4d60d97b347da32b710662ac9e019a733aaf"
-  integrity sha512-2euEdvSfu2L8axkBL2ZKdzDIiWtHzg0ZK6Y4jjbitDbfXFGD4qhL+f2m5lEiFqS2ukLmiKXZC7+aNNQzU4DrhA==
+"@abi-software/scaffoldvuer@0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.15.tgz#9e52100aa4e05cbb976880b74b7954abc7305474"
+  integrity sha512-PHjIYYRi7vLLE/E6Bglit1m/4qUMy85I6XQYoxHjlvgjt69LsT1rOroU1bF0gBgbcz75+5Wz9fKW+DpexsWXNA==
   dependencies:
     core-js "^3.3.2"
     element-ui "^2.13.0"
