@@ -25,7 +25,10 @@
         <nuxt-link
           :to="{
             name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id }
+            params: { datasetId: scope.row.id },
+            query: {
+              type: $route.query.type
+            }
           }"
         >
           <img
