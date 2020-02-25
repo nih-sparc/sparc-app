@@ -8,16 +8,16 @@
     @close="closeDialog"
   >
     <div class="download-dataset-container">
+      <button class="close-dialog" @click="closeDialog">
+        <svg-icon
+          name="icon-remove"
+          width="16"
+          height="16"
+          color="#71747c"
+          class="close-icon"
+        />
+      </button>
       <div v-if="!isDatasetSizeLarge" class="download-block">
-        <button class="close-dialog" @click="closeDialog">
-          <svg-icon
-            name="icon-remove"
-            width="16"
-            height="16"
-            color="#71747c"
-            class="close-icon"
-          />
-        </button>
         <h1>Direct Download</h1>
         <p>
           You can download the raw files and metadata directly to your computer
@@ -34,15 +34,6 @@
         </bf-button>
       </div>
       <div v-else class="aws-container">
-        <button class="close-dialog" @click="closeDialog">
-          <svg-icon
-            name="icon-remove"
-            width="16"
-            height="16"
-            color="#71747c"
-            class="close-icon"
-          />
-        </button>
         <h1>Download from AWS</h1>
         <p>
           Raw files and metadata are stored in an AWS S3 Requester Pays bucket.
@@ -269,9 +260,9 @@ export default {
     background: none;
     border: none;
     cursor: pointer;
-    float: right;
-    margin-top: -47px;
     padding: 0;
+    position: absolute;
+    right: 41px;
   }
 
   .close-icon {
