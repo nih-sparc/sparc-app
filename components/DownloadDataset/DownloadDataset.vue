@@ -3,43 +3,44 @@
     :visible="visible"
     :show-close="false"
     class="download-dataset-dialog"
-    :width="width"
-    height="448px"
+    :height="height"
     @close="closeDialog"
   >
     <div class="download-dataset-container">
+      <button class="close-dialog" @click="closeDialog">
+        <svg-icon
+          name="icon-remove"
+          width="16"
+          height="16"
+          color="#71747c"
+          class="close-icon"
+        />
+      </button>
       <div v-if="!isDatasetSizeLarge" class="download-block">
         <h1>Direct Download</h1>
         <p>
           You can download the raw files and metadata directly to your computer
           as a zip archive free of charge.
         </p>
-        <a :href="downloadUrl">
-          <bf-button class="download-button">Download Dataset</bf-button>
-        </a>
-
-        <div class="size">
-          {{ formatMetric(datasetDetails.size) }}
+        <p class="dataset-size-text">
+          Dataset Size: {{ formatMetric(datasetDetails.size) }}
+        </p>
+        <div class="buttons">
+          <a :href="downloadUrl">
+            <bf-button class="download-button">Download Dataset</bf-button>
+          </a>
+          <bf-button class="secondary button-spacing" @click="closeDialog">
+            Cancel
+          </bf-button>
         </div>
       </div>
-      <div :class="[isDatasetSizeLarge ? 'aws-container' : 'aws-block']">
-        <button class="close-dialog" @click="closeDialog">
-          <svg-icon
-            name="icon-remove"
-            width="16"
-            height="16"
-            color="#71747c"
-            class="close-icon"
-          />
-        </button>
+      <div v-else class="aws-container">
         <h1>Download from AWS</h1>
         <p>
           Raw files and metadata are stored in an AWS S3 Requester Pays bucket.
-          You can learn more about
-          <nuxt-link :to="{ name: 'help-helpId', params: { helpId: 'zQfzadwADutviJjT19hA5' }}">
-            downloading data from AWS
-          </nuxt-link>
-          in the Help Center.
+          You can learn more about downloading data from AWS on our
+          <nuxt-link :to="{ name: 'help' }">
+            Help Page.
           </nuxt-link>
         </p>
         <h2>Resource Type</h2>
@@ -49,16 +50,29 @@
           {{ datasetArn }}
         </div>
         <h2>AWS Region</h2>
-        <div class="text-block">
+        <div class="text-block aws">
           us-east-1
         </div>
+        <div class="buttons">
+          <a :href="downloadUrl">
+            <bf-button class="download-button">
+              <nuxt-link
+                :to="{
+                  name: 'help-helpId',
+                  params: {
+                    helpId: helpId
+                  }
+                }"
+              >
+                Download to AWS Bucket
+              </nuxt-link>
+            </bf-button>
+          </a>
+          <bf-button class="secondary button-spacing" @click="closeDialog">
+            Cancel
+          </bf-button>
+        </div>
       </div>
-    </div>
-    <div class="discover-banner">
-      For more information, visit the
-      <nuxt-link :to="{ name: 'help' }">
-        help page
-      </nuxt-link>
     </div>
   </el-dialog>
 </template>
@@ -90,6 +104,12 @@ export default {
     }
   },
 
+  data() {
+    return {
+      helpId: process.env.ctf_help_aws_id
+    }
+  },
+
   computed: {
     /**
      * Checks whether the dataset download size is larger or smaller than 1GB
@@ -101,11 +121,11 @@ export default {
     },
 
     /**
-     * Compute width based on isDatasetSizeLarge
+     * Compute height based on isDatasetSizeLarge
      * @returns {String}
      */
-    width: function() {
-      return this.isDatasetSizeLarge ? '490px' : '772px'
+    height: function() {
+      return this.isDatasetSizeLarge ? '460px' : '284px'
     },
 
     /**
@@ -153,6 +173,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/_variables.scss';
+
+@media screen and (max-width: 767px) {
+  ::v-deep .el-dialog {
+    width: 93%;
+  }
+}
 .el-dialog__body {
   padding: 0;
 }
@@ -169,18 +196,10 @@ export default {
 .download-dataset-dialog {
   .download-dataset-container {
     display: flex;
-    height: 513px;
     word-break: normal;
   }
   .download-block {
-    box-sizing: border-box;
-    flex-shrink: 0;
-    height: 100%;
-    width: 316px;
-    overflow: hidden;
-    position: relative;
-    background-color: #24245b;
-    padding: 40px 40px 0px 40px;
+    padding: 40px;
 
     img {
       position: absolute;
@@ -191,19 +210,12 @@ export default {
       height: 402px;
     }
 
-    h1 {
-      line-height: 32px;
-      color: #ffffff;
-      font-size: 24px;
-      font-weight: 500;
-      margin: 0;
-    }
-
     p {
       line-height: 24px;
-      color: #cddaff;
+      color: #000;
       font-size: 16px;
       margin-top: 8px;
+      margin-bottom: 16px;
     }
 
     .size {
@@ -215,15 +227,32 @@ export default {
     }
 
     .download-button {
-      height: 60px;
-      width: 236px;
-      border-radius: 3px;
-      background-color: #071540;
-      color: #ffffff;
-      font-size: 16px;
+      width: 178px;
+      @media screen and (max-width: 767px) {
+        width: 100%;
+      }
+    }
+
+    .dataset-size-text {
+      font-size: 18px;
       font-weight: 500;
       line-height: 24px;
-      margin-top: 5px;
+      margin-bottom: 32px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .buttons {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    ::v-deep .bf-button {
+      &.secondary {
+        width: 30%;
+      }
     }
   }
 
@@ -235,17 +264,21 @@ export default {
   }
 
   .aws-container {
-    margin: 21px 48px;
+    margin: 40px 48px;
     margin-top: 47px;
+
+    a {
+      color: #fff;
+    }
   }
 
   .close-dialog {
     background: none;
     border: none;
     cursor: pointer;
-    float: right;
-    margin-top: -21px;
     padding: 0;
+    position: absolute;
+    right: 41px;
   }
 
   .close-icon {
@@ -254,10 +287,10 @@ export default {
   }
 
   h1 {
-    color: #000000;
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 32px;
+    line-height: 36px;
+    color: $midnight;
+    font-size: 28px;
+    font-weight: normal;
     margin-bottom: 8px;
   }
 
@@ -265,25 +298,33 @@ export default {
     color: #000000;
     font-size: 16px;
     line-height: 24px;
-    margin-bottom: 16px;
+    margin-bottom: -4px;
   }
 
   h2 {
     color: #000000;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
     margin: 0 0 8px;
+    margin-top: 15px;
   }
 
   .text-block {
     border-radius: 2px;
-    background-color: #f1f1f3;
-    padding: 8px 8px 8px 8px;
+    background-color: #f5f7fa;
+    padding: 6px 6px 6px 6px;
     margin-bottom: 16px;
     font-family: monospace;
     font-size: 14px;
     display: flex;
     align-items: center;
+    border-radius: 4px;
+    color: #000;
+
+    &.aws {
+      margin-bottom: 36px;
+    }
   }
 
   .aws-block {
@@ -293,7 +334,10 @@ export default {
 
   ::v-deep .el-dialog {
     border-radius: 0;
-    width: var(--widthSmaller);
+    width: 768px;
+    @media screen and (max-width: 767px) {
+      width: 93%;
+    }
     .el-dialog__body {
       padding: 0;
     }
@@ -301,12 +345,6 @@ export default {
     .el-dialog__header {
       padding: 0;
       border-bottom: none;
-    }
-  }
-
-  ::v-deep .bf-button {
-    &:focus {
-      background-color: #11369c;
     }
   }
 }
