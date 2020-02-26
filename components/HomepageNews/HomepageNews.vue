@@ -19,13 +19,11 @@
           <!-- marked will sanitize the HTML injected -->
           <div v-html="parseMarkdown(item.fields.summary)" />
         </div>
-        <p>
-          <a :href="item.fields.url" target="_blank">
-            <el-button size="medium">
-              Learn More
-            </el-button>
-          </a>
-        </p>
+        <a :href="item.fields.url" target="_blank">
+          <el-button size="medium">
+            Learn More
+          </el-button>
+        </a>
       </sparc-card>
     </div>
   </div>
