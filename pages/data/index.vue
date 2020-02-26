@@ -144,7 +144,7 @@ const searchTypes = [
 ]
 
 const searchData = {
-  limit: 12,
+  limit: 10,
   skip: 0,
   items: []
 }
