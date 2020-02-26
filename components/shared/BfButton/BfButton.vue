@@ -156,7 +156,7 @@ export default {
     border: solid 1px $median;
     color: $median;
     border-radius: 4px;
-    width: 178px;
+    width: 140px;
     &:hover {
       background: $light-purple;
     }
