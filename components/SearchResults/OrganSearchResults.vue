@@ -19,12 +19,19 @@
     </el-table-column>
     <el-table-column :fixed="true" prop="fields.title" label="Banner">
       <template slot-scope="scope">
-        <img
-          :src="getImageSrc(scope)"
-          :alt="getImageAlt(scope)"
-          height="128"
-          width="128"
-        />
+        <nuxt-link
+          :to="{
+            name: 'organs-organId',
+            params: { organId: scope.row.sys.id }
+          }"
+        >
+          <img
+            :src="getImageSrc(scope)"
+            :alt="getImageAlt(scope)"
+            height="128"
+            width="128"
+          />
+        </nuxt-link>
       </template>
     </el-table-column>
   </el-table>
