@@ -189,8 +189,16 @@ export default {
 </style>
 <style lang="scss">
 .orcid-popover {
-  p:last-of-type {
-    margin: 0;
+  h2 {
+    font-size: 1.25em;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  p {
+    margin-bottom: 0.5em;
+    &:last-of-type {
+      margin: 0;
+    }
   }
 }
 </style>

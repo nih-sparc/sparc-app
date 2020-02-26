@@ -91,11 +91,12 @@ export default {
     color: $vestibular;
   }
   & ::v-deep p {
-    margin-bottom: 8px;
+    margin-bottom: 1em;
   }
   & ::v-deep img {
-    width: 100%;
-    margin: 5px 0;
+    height: auto;
+    margin: 0.5em 0;
+    max-width: 100%;
   }
 }
 

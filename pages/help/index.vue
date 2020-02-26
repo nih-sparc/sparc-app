@@ -1,5 +1,6 @@
 <template>
   <div class="help-page">
+    <breadcrumb :breadcrumb="breadcrumb" :title="allHelpData.title" />
     <help-hero :title="allHelpData.title" :summary="allHelpData.summary" />
     <div v-loading="isLoadingSearch">
       <help-section
@@ -20,6 +21,7 @@ import createClient from '@/plugins/contentful.js'
 import {Data, HelpData, HelpDocument, Methods} from "./model";
 import HelpSection from "@/components/HelpSection/HelpSection.vue";
 import HelpHero from "@/components/HelpHero/HelpHero.vue";
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 
 const client = createClient()
 
@@ -28,6 +30,7 @@ export default Vue.extend<Data, Methods, never, never>({
   name: 'HelpPage',
 
   components: {
+    Breadcrumb,
     HelpSection,
     HelpHero
   },
@@ -52,6 +55,10 @@ export default Vue.extend<Data, Methods, never, never>({
       helpData: {},
       isLoadingSearch: false,
       searchTerms: '',
+      breadcrumb: {
+        name: 'index',
+        parent: 'Home'
+      }
     }
   },
 
