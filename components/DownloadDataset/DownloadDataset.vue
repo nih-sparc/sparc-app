@@ -64,12 +64,12 @@
                   }
                 }"
               >
-                Download to AWS Bucket
+                More Information
               </nuxt-link>
             </bf-button>
           </a>
           <bf-button class="secondary button-spacing" @click="closeDialog">
-            Cancel
+            Okay
           </bf-button>
         </div>
       </div>
