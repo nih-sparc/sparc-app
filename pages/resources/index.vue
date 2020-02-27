@@ -22,6 +22,11 @@
           </nuxt-link>
         </li>
       </ul>
+      <img
+        slot="pagehero image"
+        class="page-hero-img"
+        src="@/static/images/about-hero.png"
+      />
     </page-hero>
     <div class="page-wrap container">
       <div class="page-wrap__results">
@@ -230,7 +235,17 @@ export default {
 @import '@/assets/_variables.scss';
 .resources {
   .page-hero {
-    padding-bottom: 1.3125em;
+    padding: 0;
+    height: 18rem;
+    padding-bottom: 1rem;
+
+    h1 {
+      margin-top: 2rem;
+    }
+
+    p {
+      margin-bottom: 4rem;
+    }
   }
   .table-wrap {
     background: #fff;

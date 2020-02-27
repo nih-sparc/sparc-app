@@ -1,7 +1,14 @@
 <template>
   <div class="page-hero">
     <div class="container">
-      <slot />
+      <div class="row">
+        <div class="col">
+          <slot />
+        </div>
+        <div class="col">
+          <slot name="pagehero image" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +44,17 @@ export default {
   }
   p:last-child {
     margin: 0;
+  }
+
+  .row {
+    display: flex;
+  }
+
+  .page-hero-img {
+    height: 19rem;
+    @media screen and (max-width: 767px) {
+      display: none;
+    }
   }
 }
 </style>
