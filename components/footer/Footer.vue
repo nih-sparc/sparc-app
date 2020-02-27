@@ -24,10 +24,6 @@
       </div>
       <div class="footer__info--copyright">
         <p>
-          <nuxt-link class="underline" :to="{ name: 'terms-of-service' }">
-            Terms of Service
-          </nuxt-link>
-          |
           <nuxt-link class="underline" :to="{ name: 'privacy' }">
             Privacy Policy
           </nuxt-link>
@@ -49,9 +45,7 @@
             </a>
           </li>
           <li>
-            <a href="https://commonfund.nih.gov/Sparc/" target="_blank"
-              >NIH SPARC</a
-            >
+            <a href="https://commonfund.nih.gov/Sparc/" target="_blank">NIH SPARC</a>
           </li>
         </ul>
         <h3>Help us Improve</h3>
