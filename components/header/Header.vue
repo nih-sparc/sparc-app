@@ -165,7 +165,7 @@ const links = [
   {
     title: 'resources',
     displayTitle: 'Resources',
-    href: '/resources?type=sparcPartners'
+    href: `/resources?type=${process.env.ctf_resource_id}`
   },
   {
     title: 'news-and-events',
