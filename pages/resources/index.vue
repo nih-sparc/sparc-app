@@ -55,7 +55,7 @@ import createClient from '@/plugins/contentful.js'
 const client = createClient()
 
 const resourceData = {
-  limit: 12,
+  limit: 10,
   skip: 0,
   items: []
 }
