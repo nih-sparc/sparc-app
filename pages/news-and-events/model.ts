@@ -21,7 +21,7 @@ export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData
       order: '-fields.publishedDate'
     })
 
-    const heroData = await client.getEntry<HeroData>('4IoMamTLRlN3OpxT1zgnU')
+    const heroData = await client.getEntry<HeroData>(process.env.ctf_news_and_events_page_id ?? '')
 
     return {
       upcomingEvents: upcomingEvents.items,
