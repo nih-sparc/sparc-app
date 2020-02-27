@@ -246,6 +246,13 @@ export default {
     p {
       margin-bottom: 4rem;
     }
+
+    @media screen and (min-width: 768px) and (max-width: 1023px) {
+      p {
+        position: absolute;
+        background-color: rgba(36, 36, 91, 0.75);
+      }
+    }
   }
   .table-wrap {
     background: #fff;
