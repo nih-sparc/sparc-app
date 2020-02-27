@@ -1,6 +1,12 @@
 <template>
   <div class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <page-hero>
+      <h1>{{ heroData.fields.page_title }}</h1>
+      <p>
+        {{ heroData.fields.heroCopy }}
+      </p>
+    </page-hero>
 
     <div class="page-wrap">
       <div class="container">
@@ -60,10 +66,11 @@ import TabNav from '@/components/TabNav/TabNav.vue'
 import EventListItem from '@/components/EventListItem/EventListItem.vue'
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 import EventCard from '@/components/EventCard/EventCard.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
 
 import createClient from '@/plugins/contentful.js'
 
-import { EventsEntry, NewsEntry, Data, Computed, fetchData } from './model'
+import { EventsEntry, HeroDataEntry, NewsEntry, Data, Computed, fetchData } from './model'
 
 const client = createClient()
 
@@ -74,6 +81,7 @@ export default Vue.extend<Data, never, Computed, never>({
     Breadcrumb,
     EventCard,
     EventListItem,
+    PageHero,
     NewsListItem,
     TabNav
   },
@@ -103,7 +111,8 @@ export default Vue.extend<Data, never, Computed, never>({
       upcomingEvents: [],
       pastEvents: [],
       isShowingAllUpcomingEvents: false,
-      news: []
+      news: [],
+      heroData: {} as HeroDataEntry
     }
   },
 

@@ -21,17 +21,29 @@ export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData
       order: '-fields.publishedDate'
     })
 
+    const heroData = await client.getEntry<HeroData>('4IoMamTLRlN3OpxT1zgnU')
+
     return {
       upcomingEvents: upcomingEvents.items,
       pastEvents: pastEvents.items,
-      news: news.items
+      news: news.items,
+      heroData
     }
   } catch (e) {
     console.error(e)
   }
 }
 
-export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news">
+export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "heroData">
+
+export interface HeroData {
+  page_title?: string;
+  heroCopy?: string;
+  heroImage?: Asset;
+}
+
+export type HeroDataEntry = Entry<HeroData>
+
 
 export interface Event {
   endDate?: string;
@@ -75,7 +87,8 @@ export interface Data {
   upcomingEvents: EventsEntry[],
   pastEvents: EventsEntry[],
   isShowingAllUpcomingEvents: boolean,
-  news: NewsEntry[]
+  news: NewsEntry[],
+  heroData: HeroDataEntry
 }
 
 
