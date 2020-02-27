@@ -1,17 +1,24 @@
 <template>
   <div>
     <page-hero class="large">
-      <h1 v-if="heroHeading">
-        {{ heroHeading }}
-      </h1>
-      <p>
-        {{ heroCopy }}
-      </p>
-      <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
-        <el-button class="uppercase">
-          {{ heroButtonLabel }}
-        </el-button>
-      </a>
+      <div class="row">
+        <div class="col">
+          <h1 v-if="heroHeading">
+            {{ heroHeading }}
+          </h1>
+          <p>
+            {{ heroCopy }}
+          </p>
+          <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
+            <el-button class="uppercase">
+              {{ heroButtonLabel }}
+            </el-button>
+          </a>
+        </div>
+        <div class="col">
+          <img class="page-hero-img" src="@/static/images/about-hero.png" />
+        </div>
+      </div>
     </page-hero>
 
     <featured-data :featured-data="featuredData" />
@@ -72,10 +79,43 @@ export default {
 
 <style lang="scss" scoped>
 .page-hero {
+  padding: 0;
+  height: 19rem;
   h2 {
     font-size: 2rem;
     font-weight: 500;
     margin-bottom: 1rem;
+  }
+
+  h1 {
+    margin-top: 2.3125rem;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    p {
+      position: absolute;
+      background-color: rgba(36, 36, 91, 0.75);
+    }
+    .btn-link {
+      margin-top: 7rem;
+    }
+
+    .row {
+      &.col {
+        position: absolute;
+      }
+    }
+  }
+
+  .page-hero-img {
+    height: 19rem;
+    @media screen and (max-width: 767px) {
+      display: none;
+    }
+  }
+
+  .row {
+    display: flex;
   }
 }
 ::v-deep h2 {
