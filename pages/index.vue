@@ -88,16 +88,17 @@ export default {
   }
 
   h1 {
-    margin-top: 2.3125rem;
+    margin-top: 2rem;
   }
 
   @media screen and (min-width: 768px) and (max-width: 1023px) {
     p {
       position: absolute;
       background-color: rgba(36, 36, 91, 0.75);
+      top: 167px;
     }
     .btn-link {
-      margin-top: 7rem;
+      margin-top: 12rem;
     }
 
     .row {
@@ -105,12 +106,26 @@ export default {
         position: absolute;
       }
     }
+
+    h1 {
+      font-size: 1.45rem;
+      position: absolute;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    h1 {
+      font-size: 1.45rem;
+    }
   }
 
   .page-hero-img {
     height: 19rem;
     @media screen and (max-width: 767px) {
       display: none;
+    }
+    @media screen and (min-width: 768px) and (max-width: 1023px) {
+      margin-left: 14rem;
     }
   }
 
