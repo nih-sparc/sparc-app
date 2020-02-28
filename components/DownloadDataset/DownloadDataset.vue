@@ -54,20 +54,18 @@
           us-east-1
         </div>
         <div class="buttons">
-          <a :href="downloadUrl">
+          <nuxt-link
+            :to="{
+              name: 'help-helpId',
+              params: {
+                helpId: helpId
+              }
+            }"
+          >
             <bf-button class="download-button">
-              <nuxt-link
-                :to="{
-                  name: 'help-helpId',
-                  params: {
-                    helpId: helpId
-                  }
-                }"
-              >
-                More Information
-              </nuxt-link>
+              More Information
             </bf-button>
-          </a>
+          </nuxt-link>
           <bf-button class="secondary button-spacing" @click="closeDialog">
             Okay
           </bf-button>
@@ -266,10 +264,6 @@ export default {
   .aws-container {
     margin: 40px 48px;
     margin-top: 47px;
-
-    a {
-      color: #fff;
-    }
   }
 
   .close-dialog {

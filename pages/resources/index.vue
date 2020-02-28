@@ -60,7 +60,7 @@ import createClient from '@/plugins/contentful.js'
 const client = createClient()
 
 const resourceData = {
-  limit: 12,
+  limit: 10,
   skip: 0,
   items: []
 }
@@ -106,10 +106,14 @@ export default {
     return {
       resources: [],
       title: 'Resources',
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      },
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ],
       resourceData: clone(resourceData),
       tabTypes: tabTypes,
       platformItems: [],

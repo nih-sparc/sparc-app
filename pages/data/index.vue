@@ -144,7 +144,7 @@ const searchTypes = [
 ]
 
 const searchData = {
-  limit: 12,
+  limit: 10,
   skip: 0,
   items: []
 }
@@ -207,10 +207,14 @@ export default {
       isLoadingFilters: false,
       isFiltersVisible: false,
       isSearchMapVisible: false,
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      }
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ]
     }
   },
 

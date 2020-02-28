@@ -34,7 +34,7 @@
             <!-- <img class="about-page-portal-img" src="https://via.placeholder.com/222" /> -->
           </div>
           <div class="subpage-col">
-            <p class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
+            <div class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
             <!-- <img class="about-page-portal-img-mobile" src="https://via.placeholder.com/222" /> -->
             <button class="about-teams-and-projects-button">
               <nuxt-link
@@ -89,10 +89,14 @@ export default {
     return {
       heroCopy: '',
       copy: '',
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      },
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ],
       projectId: process.env.ctf_project_id
     }
   }
@@ -110,14 +114,16 @@ export default {
   }
 }
 
-::v-deep h2 {  // for markdown styles on page
+::v-deep h2 {
+  // for markdown styles on page
   font-size: 1.75em;
   font-weight: normal;
   line-height: 1.75em;
   color: $navy;
 }
 
-::v-deep p { // for markdown styles on page
+::v-deep p {
+  // for markdown styles on page
   font-size: 1em;
   font-weight: normal;
   line-height: 1.375em;

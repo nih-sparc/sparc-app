@@ -55,10 +55,14 @@ export default Vue.extend<Data, Methods, never, never>({
       helpData: {},
       isLoadingSearch: false,
       searchTerms: '',
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      }
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ]
     }
   },
 

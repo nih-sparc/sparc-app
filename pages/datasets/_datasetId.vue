@@ -107,6 +107,17 @@
           <button class="dataset-button" @click="isDownloadModalVisible = true">
             Get Dataset
           </button>
+          <nuxt-link
+            :to="{
+              name: 'help-helpId',
+              params: {
+                helpId: ctfDatasetFormatInfoPageId
+              }
+            }"
+            class="dataset-link"
+          >
+            Dataset Format Information
+          </nuxt-link>
         </div>
       </div>
     </details-header>
@@ -141,6 +152,10 @@
             </p>
           </div>
         </client-only>
+        <images-table
+          v-show="activeTab === 'images'"
+          :table-data="imagesData.dataset_images"
+        />
       </detail-tabs>
     </div>
     <download-dataset
@@ -154,7 +169,7 @@
 
 <script>
 import marked from 'marked'
-import { propOr, pathOr, last, head, compose, split } from 'ramda'
+import { clone, propOr, pathOr, last, head, compose, split } from 'ramda'
 import '@abi-software/scaffoldvuer'
 import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
@@ -167,6 +182,7 @@ import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
+import ImagesTable from '@/components/ImagesTable/ImagesTable.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -183,6 +199,21 @@ marked.setOptions({
   sanitize: true
 })
 
+const tabs = [
+  {
+    label: 'About',
+    type: 'about'
+  },
+  {
+    label: 'Description',
+    type: 'description'
+  },
+  {
+    label: 'Files',
+    type: 'files'
+  }
+]
+
 export default {
   name: 'DatasetDetails',
 
@@ -194,7 +225,8 @@ export default {
     DownloadDataset,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
-    DatasetFilesInfo
+    DatasetFilesInfo,
+    ImagesTable
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -215,10 +247,35 @@ export default {
       datasetDetails = await $axios.$get(datasetUrl)
     }
 
+    const imagesData = await $axios
+      .$get(
+        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${route.params.datasetId}`
+      )
+      .catch(() => {
+        return {}
+      })
+
+    const tabsData = clone(tabs)
+
+    if (imagesData.status === 'success') {
+      tabsData.push({ label: 'Images', type: 'images' })
+    }
+
+    // @TODO Add logic for 3D Scaffold
+    const hasScaffold = false
+    if (hasScaffold) {
+      tabsData.push({
+        label: '3D Scaffold',
+        type: '3DScaffold'
+      })
+    }
+
     return {
       entries: organEntries.items,
       datasetInfo: datasetDetails,
-      datasetType: route.query.type
+      datasetType: route.query.type,
+      imagesData,
+      tabs: tabsData
     }
   },
 
@@ -233,31 +290,27 @@ export default {
       discover_host: process.env.discover_api_host,
       isContributorListVisible: true,
       isDownloadModalVisible: false,
-      tabs: [
+      tabs: [],
+      activeTab: 'about',
+      breadcrumb: [
         {
-          label: 'About',
-          type: 'about'
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
         },
         {
-          label: 'Description',
-          type: 'description'
-        },
-        {
-          label: 'Files',
-          type: 'files'
-        },
-        {
-          label: '3D Scaffold',
-          type: '3DScaffold'
+          to: {
+            name: 'data',
+            query: {
+              type: this.$route.query.type
+            }
+          },
+          label: 'Find Data'
         }
       ],
-      activeTab: 'about',
-      breadcrumb: {
-        name: 'data',
-        type: this.$route.query.type,
-        parent: 'Find Data'
-      },
-      subtitles: []
+      subtitles: [],
+      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
     }
   },
 

@@ -45,6 +45,8 @@ export default {
     ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
+    ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
+    ctf_dataset_format_info_page_id: '3FXikFXC8shPRd8xZqhjVT',
     ctf_project_id: 'sparcAward',
     ctf_organ_id: 'organ',
     ctf_filter_id: '6bya4tyw8399',
@@ -59,7 +61,8 @@ export default {
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
-    BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/'
+    BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
+    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c='
   },
 
   serverMiddleware: [
@@ -93,7 +96,12 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios', '@nuxtjs/robots', 'cookie-universal-nuxt'],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/robots',
+    'cookie-universal-nuxt',
+    '@miyaoka/nuxt-twitter-widgets-module'
+  ],
   /*
    ** robots.txt
    */

@@ -43,8 +43,9 @@
                 title="Format citation apa"
                 :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
-                >APA</a
               >
+                APA
+              </a>
               |
               <a
                 title="Format citation chicago"
@@ -87,6 +88,8 @@
 </template>
 
 <script>
+import { compose, propOr, head } from 'ramda'
+
 import TagList from '@/components/TagList/TagList.vue'
 export default {
   name: 'DatasetAboutInfo',
@@ -96,11 +99,6 @@ export default {
   },
   props: {
     updatedDate: {
-      type: String,
-      default: ''
-    },
-
-    datasetId: {
       type: String,
       default: ''
     },
@@ -158,7 +156,7 @@ export default {
      * @returns {String}
      */
     getRecordsUrl: function() {
-      return `${process.env.discover_api_host}/search/records?datasetId=${this.datasetId}`
+      return `${process.env.discover_api_host}/search/records?datasetId=${this.$route.params.datasetId}`
     }
   },
 
@@ -186,20 +184,39 @@ export default {
     /**
      * Retrievs the metadata records for a dataset to get the sparc award number
      */
-    getDatasetRecords: function() {
-      this.$axios
-        .$get(this.getRecordsUrl)
-        .then(response => {
-          response.records.forEach(record => {
-            if (record.model === 'summary') {
-              this.sparcAwardNumber = record.properties.hasAwardNumber || ''
-            }
-          })
-        })
-        .catch(
-          // handle error
-          (this.errorLoading = true)
-        )
+    getDatasetRecords: async function() {
+      try {
+        const summary = await this.$axios
+          .$get(`${this.getRecordsUrl}&model=summary`)
+          .catch(
+            // handle error
+            (this.errorLoading = true)
+          )
+        const award = await this.$axios
+          .$get(`${this.getRecordsUrl}&model=award`)
+          .catch(
+            // handle error
+            (this.errorLoading = true)
+          )
+
+        const summaryId = compose(
+          propOr('', 'hasAwardNumber'),
+          propOr([], 'properties'),
+          head,
+          propOr([], 'records')
+        )(summary)
+
+        const awardId = compose(
+          propOr('', 'award_id'),
+          propOr([], 'properties'),
+          head,
+          propOr([], 'records')
+        )(award)
+
+        this.sparcAwardNumber = summaryId || awardId
+      } catch (e) {
+        console.error(e)
+      }
     },
 
     /**
