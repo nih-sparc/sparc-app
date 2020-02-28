@@ -20,14 +20,14 @@
       />
       <project-search-results
         v-show="activeTab === 'projects'"
-        :table-data="projects"
+        :table-data="projectTableData"
       />
     </detail-tabs>
   </div>
 </template>
 
 <script>
-import { pathOr } from 'ramda'
+import { clone, pathOr } from 'ramda'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -38,6 +38,13 @@ import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResult
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
+
+const tabs = [
+  {
+    label: 'Datasets',
+    type: 'datasets'
+  }
+]
 
 export default {
   name: 'OrganDetails',
@@ -51,13 +58,11 @@ export default {
 
   async asyncData({ route, $axios }) {
     // Get page content
-    const pageData = await client.getEntry(route.params.organId)
+    const pageData = await client.getEntry(route.params.organId, { include: 3 })
 
-    // Get related projects
-    const projects = await client.getEntries({
-      content_type: process.env.ctf_project_id,
-      links_to_entry: route.params.organId
-    })
+    const projectTableData = pageData.fields.projectSection
+      ? pageData.fields.projectSection.fields.awards
+      : []
 
     // Get related datasets
     const organType = pathOr('', ['fields', 'name'], pageData)
@@ -67,25 +72,26 @@ export default {
       }/search/datasets?tags=${organType.toLowerCase()}&limit=100`
     )
 
+    const tabsData = clone(tabs)
+
+    if (projectTableData.length) {
+      tabsData.push({
+        label: 'Projects',
+        type: 'projects'
+      })
+    }
+
     return {
       pageData,
-      projects: projects.items,
-      datasets: datasets.datasets
+      datasets: datasets.datasets,
+      projectTableData,
+      tabs: tabsData
     }
   },
 
   data() {
     return {
-      tabs: [
-        {
-          label: 'Datasets',
-          type: 'datasets'
-        },
-        {
-          label: 'Projects',
-          type: 'projects'
-        }
-      ],
+      tabs: [],
       activeTab: 'datasets',
       breadcrumb: {
         name: 'data',
