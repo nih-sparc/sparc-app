@@ -43,8 +43,9 @@
                 title="Format citation apa"
                 :class="{ 'active-citation': activeCitation === 'apa' }"
                 @click="handleCitationChanged('apa')"
-                >APA</a
               >
+                APA
+              </a>
               |
               <a
                 title="Format citation chicago"
@@ -96,11 +97,6 @@ export default {
   },
   props: {
     updatedDate: {
-      type: String,
-      default: ''
-    },
-
-    datasetId: {
       type: String,
       default: ''
     },
@@ -158,7 +154,7 @@ export default {
      * @returns {String}
      */
     getRecordsUrl: function() {
-      return `${process.env.discover_api_host}/search/records?datasetId=${this.datasetId}`
+      return `${process.env.discover_api_host}/search/records?datasetId=${this.$route.params.datasetId}&model=summary`
     }
   },
 
