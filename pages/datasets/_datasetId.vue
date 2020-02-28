@@ -200,10 +200,6 @@ const tabs = [
   {
     label: 'Files',
     type: 'files'
-  },
-  {
-    label: '3D Scaffold',
-    type: '3DScaffold'
   }
 ]
 
@@ -252,6 +248,15 @@ export default {
 
     if (imagesData.status === 'success') {
       tabsData.push({ label: 'Images', type: 'images' })
+    }
+
+    // @TODO Add logic for 3D Scaffold
+    const hasScaffold = false
+    if (hasScaffold) {
+      tabsData.push({
+        label: '3D Scaffold',
+        type: '3DScaffold'
+      })
     }
 
     return {
