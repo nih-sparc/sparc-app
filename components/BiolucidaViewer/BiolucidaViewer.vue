@@ -1,10 +1,20 @@
 <template>
   <div class="biolucida-viewer">
     <template v-if="data.status !== 'error'">
+      <p>
+        <a :href="data.share_link" target="_blank">
+          <bf-button>
+            View Full Screen
+            <svg-icon
+              class="icon-full-screen"
+              name="icon-full-screen"
+              height="24"
+              width="24"
+            />
+          </bf-button>
+        </a>
+      </p>
       <iframe :src="data.share_link" />
-      <a :href="data.share_link" target="_blank">
-        <bf-button>Full screen</bf-button>
-      </a>
     </template>
     <p v-else class="error">
       Sorry, an error has occurred
@@ -46,5 +56,8 @@ iframe {
 .error {
   margin: 0;
   text-align: center;
+}
+.icon-full-screen {
+  margin: -5px 0;
 }
 </style>
