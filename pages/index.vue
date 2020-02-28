@@ -1,19 +1,17 @@
 <template>
   <div>
     <page-hero>
-      <template>
-        <h1 v-if="heroHeading">
-          {{ heroHeading }}
-        </h1>
-        <p>
-          {{ heroCopy }}
-        </p>
-        <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
-          <el-button class="uppercase">
-            {{ heroButtonLabel }}
-          </el-button>
-        </a>
-      </template>
+      <h1 v-if="heroHeading">
+        {{ heroHeading }}
+      </h1>
+      <p>
+        {{ heroCopy }}
+      </p>
+      <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
+        <el-button class="uppercase">
+          {{ heroButtonLabel }}
+        </el-button>
+      </a>
       <img
         v-if="heroImage"
         slot="image"
