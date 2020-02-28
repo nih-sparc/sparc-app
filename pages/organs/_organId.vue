@@ -87,11 +87,23 @@ export default {
         }
       ],
       activeTab: 'datasets',
-      breadcrumb: {
-        name: 'data',
-        type: 'organ',
-        parent: 'Organs'
-      }
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: 'organ'
+            }
+          },
+          label: 'Find Data'
+        }
+      ]
     }
   },
 

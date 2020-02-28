@@ -40,8 +40,8 @@ export default {
 
   props: {
     breadcrumb: {
-      type: Object,
-      default: () => {}
+      type: Array,
+      default: () => []
     },
     subtitle: {
       type: String,

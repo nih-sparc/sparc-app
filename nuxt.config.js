@@ -96,7 +96,12 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios', '@nuxtjs/robots', 'cookie-universal-nuxt'],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/robots',
+    'cookie-universal-nuxt',
+    '@miyaoka/nuxt-twitter-widgets-module'
+  ],
   /*
    ** robots.txt
    */

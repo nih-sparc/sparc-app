@@ -101,10 +101,14 @@ export default {
     return {
       resources: [],
       title: 'Resources',
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      },
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ],
       resourceData: clone(resourceData),
       tabTypes: tabTypes,
       platformItems: [],
