@@ -100,11 +100,23 @@ export default {
         }
       ],
       activeTab: 'datasets',
-      breadcrumb: {
-        name: 'data',
-        type: 'sparcAward',
-        parent: 'Teams and Projects'
-      }
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: 'sparcAward'
+            }
+          },
+          label: 'Find Data'
+        }
+      ]
     }
   },
 

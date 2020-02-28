@@ -9,9 +9,7 @@
             {{ heroCopy }}
           </p>
           <button class="about-page-button">
-            <a href="https://commonfund.nih.gov/sparc/" target="_blank"
-              >More Info NIH Website</a
-            >
+            <a href="https://commonfund.nih.gov/sparc/" target="_blank">More Info NIH Website</a>
           </button>
         </div>
         <div class="col">
@@ -91,10 +89,14 @@ export default {
     return {
       heroCopy: '',
       copy: '',
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      },
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ],
       projectId: process.env.ctf_project_id
     }
   }

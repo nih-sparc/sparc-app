@@ -207,10 +207,14 @@ export default {
       isLoadingFilters: false,
       isFiltersVisible: false,
       isSearchMapVisible: false,
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      }
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ]
     }
   },
 

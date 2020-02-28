@@ -93,10 +93,14 @@ export default Vue.extend<Data, never, Computed, never>({
   data: function() {
     return {
       title: 'News & Events',
-      breadcrumb: {
-        name: 'index',
-        parent: 'Home'
-      },
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        }
+      ],
       activeTab: 'upcoming',
       eventsTabs: [
         {
@@ -113,7 +117,7 @@ export default Vue.extend<Data, never, Computed, never>({
       isShowingAllUpcomingEvents: false,
       news: [],
       heroData: {} as HeroDataEntry
-    }
+    } as Data
   },
 
   computed: {

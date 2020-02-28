@@ -292,11 +292,23 @@ export default {
       isDownloadModalVisible: false,
       tabs: [],
       activeTab: 'about',
-      breadcrumb: {
-        name: 'data',
-        type: this.$route.query.type,
-        parent: 'Find Data'
-      },
+      breadcrumb: [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: this.$route.query.type
+            }
+          },
+          label: 'Find Data'
+        }
+      ],
       subtitles: [],
       ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
     }

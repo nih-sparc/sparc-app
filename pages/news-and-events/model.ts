@@ -1,5 +1,8 @@
 import {Asset, Entry, ContentfulClientApi} from "contentful"
 
+import { Breadcrumb } from '@/components/Breadcrumb/model.ts'
+
+
 export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData | void> => {
   try {
     const todaysDate = new Date()
@@ -74,14 +77,9 @@ export interface Tab {
   type: string;
 }
 
-export interface Breadcrumb {
-  name: string;
-  parent: string;
-}
-
 export interface Data {
   title: string
-  breadcrumb: Breadcrumb,
+  breadcrumb: Breadcrumb[],
   activeTab: string,
   eventsTabs: Tab[],
   upcomingEvents: EventsEntry[],

@@ -52,10 +52,20 @@ export default {
         return {
           helpHeroData: allHelpData.fields,
           helpItem: helpItem,
-          breadcrumb: {
-            name: 'help',
-            parent: allHelpData.fields.title
-          }
+          breadcrumb: [
+            {
+              label: 'Home',
+              to: {
+                name: 'index'
+              }
+            },
+            {
+              label: allHelpData.fields.title,
+              to: {
+                name: 'help'
+              }
+            }
+          ]
         }
       })
       .catch(() => {
