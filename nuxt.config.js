@@ -60,7 +60,8 @@ export default {
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
-    BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/'
+    BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
+    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c='
   },
 
   serverMiddleware: [
