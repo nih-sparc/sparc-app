@@ -3,7 +3,7 @@
     <template v-if="data.status !== 'error'">
       <iframe :src="data.share_link" />
       <a :href="data.share_link" target="_blank">
-        <bf-button>Fullscreen</bf-button>
+        <bf-button>Full screen</bf-button>
       </a>
     </template>
     <p v-else class="error">
