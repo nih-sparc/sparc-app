@@ -107,6 +107,17 @@
           <button class="dataset-button" @click="isDownloadModalVisible = true">
             Get Dataset
           </button>
+          <nuxt-link
+            :to="{
+              name: 'help-helpId',
+              params: {
+                helpId: ctfDatasetFormatInfoPageId
+              }
+            }"
+            class="dataset-link"
+          >
+            Dataset Format Information
+          </nuxt-link>
         </div>
       </div>
     </details-header>
@@ -200,10 +211,6 @@ const tabs = [
   {
     label: 'Files',
     type: 'files'
-  },
-  {
-    label: '3D Scaffold',
-    type: '3DScaffold'
   }
 ]
 
@@ -254,6 +261,15 @@ export default {
       tabsData.push({ label: 'Images', type: 'images' })
     }
 
+    // @TODO Add logic for 3D Scaffold
+    const hasScaffold = false
+    if (hasScaffold) {
+      tabsData.push({
+        label: '3D Scaffold',
+        type: '3DScaffold'
+      })
+    }
+
     return {
       entries: organEntries.items,
       datasetInfo: datasetDetails,
@@ -281,7 +297,8 @@ export default {
         type: this.$route.query.type,
         parent: 'Find Data'
       },
-      subtitles: []
+      subtitles: [],
+      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
     }
   },
 

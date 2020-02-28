@@ -27,7 +27,9 @@
 
     <homepage-testimonials :testimonials="testimonials" />
 
-    <homepage-twitter />
+    <client-only>
+      <homepage-twitter />
+    </client-only>
   </div>
 </template>
 
