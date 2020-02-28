@@ -30,38 +30,38 @@ export default {
 
   methods: {
     submit() {
-      this.$router.push({ path: '/help',  query: { search: this.terms }})
+      this.$router.push({ path: '/help', query: { search: this.terms } })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/_variables.scss';
-  .search-form {
-    display: flex;
-    margin: 0 0 1rem;
+@import '@/assets/_variables.scss';
+.search-form {
+  display: flex;
+  margin: 0 0 1rem;
+}
+input {
+  border: 1px solid #909399;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #909399;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+  outline: none;
+  padding: 0.5rem 0.8125rem;
+  width: 100%;
+  &:focus {
+    border-color: $median;
   }
-  input {
-    border: 1px solid #909399;
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: #909399;
-    font-size: 0.875rem;
-    margin-right: 0.5rem;
-    outline: none;
-    padding: 0.5rem 0.8125rem;
-    width: 28.0625rem;
-    &:focus {
-      border-color: $median;
-    }
-  }
-  button {
-    background: #f9f2fc;
-    border: 1px solid $median;
-    border-radius: 4px;
-    cursor: pointer;
-    height: 2.5rem;
-    width: 2.5rem;
-  }
+}
+button {
+  background: #f9f2fc;
+  border: 1px solid $median;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 2.5rem;
+  width: 2.5rem;
+}
 </style>

@@ -23,9 +23,10 @@
         </li>
       </ul>
       <img
-        slot="pagehero image"
+        v-if="fields.heroImage"
+        slot="image"
         class="page-hero-img"
-        src="@/static/images/about-hero.png"
+        :src="fields.heroImage.fields.file.url"
       />
     </page-hero>
     <div class="page-wrap container">
@@ -238,26 +239,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .resources {
-  .page-hero {
-    padding: 0;
-    height: 18rem;
-    padding-bottom: 1rem;
-
-    h1 {
-      margin-top: 2rem;
-    }
-
-    p {
-      margin-bottom: 4rem;
-    }
-
-    @media screen and (min-width: 768px) and (max-width: 1023px) {
-      p {
-        position: absolute;
-        background-color: rgba(36, 36, 91, 0.75);
-      }
-    }
-  }
   .table-wrap {
     background: #fff;
     border: 1px solid rgb(228, 231, 237);

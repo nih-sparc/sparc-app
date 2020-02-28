@@ -2,20 +2,21 @@
   <div class="about-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
-      <div class="row">
-        <div class="col">
-          <h1>{{ pageTitle }}</h1>
-          <p>
-            {{ heroCopy }}
-          </p>
-          <button class="about-page-button">
-            <a href="https://commonfund.nih.gov/sparc/" target="_blank">More Info NIH Website</a>
-          </button>
-        </div>
-        <div class="col">
-          <img class="page-hero-img" src="@/static/images/about-hero.png" />
-        </div>
-      </div>
+      <h1>{{ pageTitle }}</h1>
+      <p>
+        {{ heroCopy }}
+      </p>
+      <button class="about-page-button">
+        <a href="https://commonfund.nih.gov/sparc/" target="_blank">
+          More Info NIH Website
+        </a>
+      </button>
+      <img
+        v-if="heroImage"
+        slot="image"
+        class="page-hero-img"
+        :src="heroImage.fields.file.url"
+      />
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
@@ -28,6 +29,7 @@
           </div>
         </div>
       </div>
+
       <div class="subpage">
         <div class="row">
           <div class="col">
@@ -97,7 +99,8 @@ export default {
           label: 'Home'
         }
       ],
-      projectId: process.env.ctf_project_id
+      projectId: process.env.ctf_project_id,
+      heroImage: {}
     }
   }
 }
@@ -111,61 +114,6 @@ export default {
 
   p {
     color: #606266;
-  }
-}
-
-::v-deep h2 {
-  // for markdown styles on page
-  font-size: 1.75em;
-  font-weight: normal;
-  line-height: 1.75em;
-  color: $navy;
-}
-
-::v-deep p {
-  // for markdown styles on page
-  font-size: 1em;
-  font-weight: normal;
-  line-height: 1.375em;
-  color: $dark-sky;
-}
-
-.page-hero {
-  padding: 0;
-  height: 19rem;
-
-  h1 {
-    font-size: 1.25em;
-  }
-
-  p {
-    color: #fff;
-    font-size: 1em;
-    font-weight: normal;
-    line-height: 1.75em;
-    @media screen and (min-width: 768px) and (max-width: 1023px) {
-      line-height: 1.875em;
-    }
-    @media screen and (max-width: 767px) {
-      line-height: 1.25em;
-    }
-  }
-
-  h1 {
-    margin-top: 2.3125rem;
-  }
-
-  .row {
-    display: flex;
-  }
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    p {
-      position: absolute;
-      background-color: rgba(36, 36, 91, 0.75);
-    }
-    .about-page-button {
-      margin-top: 7rem;
-    }
   }
 }
 
@@ -233,13 +181,6 @@ export default {
   }
   @media screen and (max-width: 767px) {
     margin-left: 0;
-  }
-}
-
-.page-hero-img {
-  height: 19rem;
-  @media screen and (max-width: 767px) {
-    display: none;
   }
 }
 

@@ -6,6 +6,12 @@
       <p>
         {{ heroData.fields.heroCopy }}
       </p>
+      <img
+        v-if="heroImage"
+        slot="image"
+        class="page-hero-img"
+        :src="heroImage.fields.file.url"
+      />
     </page-hero>
 
     <div class="page-wrap">
