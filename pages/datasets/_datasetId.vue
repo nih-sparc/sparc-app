@@ -107,6 +107,17 @@
           <button class="dataset-button" @click="isDownloadModalVisible = true">
             Get Dataset
           </button>
+          <nuxt-link
+            :to="{
+              name: 'help-helpId',
+              params: {
+                helpId: '3FXikFXC8shPRd8xZqhjVT'
+              }
+            }"
+            class="dataset-link"
+          >
+            Dataset Format Information
+          </nuxt-link>
         </div>
       </div>
     </details-header>
