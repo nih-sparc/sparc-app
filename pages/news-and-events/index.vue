@@ -117,7 +117,7 @@ export default Vue.extend<Data, never, Computed, never>({
       isShowingAllUpcomingEvents: false,
       news: [],
       heroData: {} as HeroDataEntry
-    } as Data
+    }
   },
 
   computed: {
