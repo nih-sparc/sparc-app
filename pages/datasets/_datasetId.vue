@@ -111,7 +111,7 @@
             :to="{
               name: 'help-helpId',
               params: {
-                helpId: '3FXikFXC8shPRd8xZqhjVT'
+                helpId: ctfDatasetFormatInfoPageId
               }
             }"
             class="dataset-link"
@@ -297,7 +297,8 @@ export default {
         type: this.$route.query.type,
         parent: 'Find Data'
       },
-      subtitles: []
+      subtitles: [],
+      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
     }
   },
 
