@@ -22,6 +22,12 @@
           </nuxt-link>
         </li>
       </ul>
+      <img
+        v-if="fields.heroImage"
+        slot="image"
+        class="page-hero-img"
+        :src="fields.heroImage.fields.file.url"
+      />
     </page-hero>
     <div class="page-wrap container">
       <div class="page-wrap__results">
@@ -233,9 +239,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .resources {
-  .page-hero {
-    padding-bottom: 1.3125em;
-  }
   .table-wrap {
     background: #fff;
     border: 1px solid rgb(228, 231, 237);

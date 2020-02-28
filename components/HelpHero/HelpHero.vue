@@ -5,6 +5,13 @@
       {{ summary }}
     </p>
     <HelpSearchControls />
+
+    <img
+      v-if="heroImage"
+      slot="image"
+      class="page-hero-img"
+      :src="heroImage.fields.file.url"
+    />
   </page-hero>
 </template>
 
@@ -17,7 +24,7 @@ export default Vue.extend<
   never,
   never,
   never,
-  { title: string; summary: string }
+  { title: string; summary: string; heroImage: {} }
 >({
   name: 'HelpHero',
 
@@ -34,30 +41,17 @@ export default Vue.extend<
     summary: {
       type: String,
       default: ''
+    },
+    heroImage: {
+      type: Object,
+      default: () => {}
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-.page-hero {
-  background-color: $navy;
-  background-image: none;
-  h2 {
-    font-size: 2rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-  }
-}
-::v-deep h2 {
-  font-size: 1.5em;
-  font-weight: 500;
-  line-height: 2rem;
-  margin-bottom: 2rem;
-  @media (min-width: 768px) {
-    font-size: 1.5em;
-    margin-bottom: 2rem;
-  }
+.search-form {
+  max-width: 31.25rem;
 }
 </style>
