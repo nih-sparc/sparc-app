@@ -1,6 +1,11 @@
 <template>
   <div class="biolucida-viewer">
-    <iframe v-if="data.status !== 'error'" :src="data.share_link" />
+    <template v-if="data.status !== 'error'">
+      <iframe :src="data.share_link" />
+      <a :href="data.share_link" target="_blank">
+        <bf-button>Fullscreen</bf-button>
+      </a>
+    </template>
     <p v-else class="error">
       Sorry, an error has occurred
     </p>
@@ -8,8 +13,14 @@
 </template>
 
 <script>
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
+
 export default {
   name: 'BiolucidaViewer',
+
+  components: {
+    BfButton
+  },
 
   props: {
     data: {
