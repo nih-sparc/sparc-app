@@ -9,7 +9,9 @@
             {{ heroCopy }}
           </p>
           <button class="about-page-button">
-            <a href="https://commonfund.nih.gov/sparc/" target="_blank">More Info NIH Website</a>
+            <a href="https://commonfund.nih.gov/sparc/" target="_blank"
+              >More Info NIH Website</a
+            >
           </button>
         </div>
         <div class="col">
@@ -34,7 +36,7 @@
             <!-- <img class="about-page-portal-img" src="https://via.placeholder.com/222" /> -->
           </div>
           <div class="subpage-col">
-            <p class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
+            <div class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
             <!-- <img class="about-page-portal-img-mobile" src="https://via.placeholder.com/222" /> -->
             <button class="about-teams-and-projects-button">
               <nuxt-link
@@ -110,14 +112,16 @@ export default {
   }
 }
 
-::v-deep h2 {  // for markdown styles on page
+::v-deep h2 {
+  // for markdown styles on page
   font-size: 1.75em;
   font-weight: normal;
   line-height: 1.75em;
   color: $navy;
 }
 
-::v-deep p { // for markdown styles on page
+::v-deep p {
+  // for markdown styles on page
   font-size: 1em;
   font-weight: normal;
   line-height: 1.375em;
