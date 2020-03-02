@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { clone, pathOr } from 'ramda'
+import { clone, path, pathOr, propOr } from 'ramda'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -58,11 +58,25 @@ export default {
 
   async asyncData({ route, $axios }) {
     // Get page content
-    const pageData = await client.getEntry(route.params.organId, { include: 3 })
+    const pageData = await client.getEntry(route.params.organId)
 
-    const projectTableData = pageData.fields.projectSection
-      ? pageData.fields.projectSection.fields.awards
-      : []
+    const projectSectionId = path(
+      ['fields', 'projectSection', 'sys', 'id'],
+      pageData
+    )
+
+    // Get related projects
+    let projects = []
+    if (projectSectionId) {
+      projects = await client
+        .getEntries({
+          content_type: process.env.ctf_project_id,
+          links_to_entry: projectSectionId
+        })
+        .catch(() => {
+          return []
+        })
+    }
 
     // Get related datasets
     const organType = pathOr('', ['fields', 'name'], pageData)
@@ -74,12 +88,14 @@ export default {
 
     const tabsData = clone(tabs)
 
-    if (projectTableData.length) {
+    if (projects.total > 0) {
       tabsData.push({
         label: 'Projects',
         type: 'projects'
       })
     }
+
+    const projectTableData = propOr([], 'items', projects)
 
     return {
       pageData,

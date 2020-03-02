@@ -7,10 +7,10 @@
         {{ heroData.fields.heroCopy }}
       </p>
       <img
-        v-if="heroImage"
+        v-if="heroData.fields.heroImage"
         slot="image"
         class="page-hero-img"
-        :src="heroImage.fields.file.url"
+        :src="heroData.fields.heroImage.fields.file.url"
       />
     </page-hero>
 
