@@ -22,12 +22,6 @@
           </nuxt-link>
         </li>
       </ul>
-      <img
-        v-if="heroImage"
-        slot="image"
-        class="page-hero-img"
-        :src="heroImage.fields.file.url"
-      />
     </page-hero>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
