@@ -60,9 +60,11 @@ export default {
     // Get page content
     const pageData = await client.getEntry(route.params.organId, { include: 3 })
 
-    const projectTableData = pageData.fields.projectSection
-      ? pageData.fields.projectSection.fields.awards
-      : []
+    const projectTableData = pathOr(
+      [],
+      ['fields', 'projectSection', 'fields', 'awards'],
+      pageData
+    )
 
     // Get related datasets
     const organType = pathOr('', ['fields', 'name'], pageData)
