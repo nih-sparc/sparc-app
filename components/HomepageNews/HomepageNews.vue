@@ -5,8 +5,8 @@
       <sparc-card
         v-for="(item, idx) in news"
         :key="item.sys.id"
-        :image="item.fields.image.fields.file.url"
-        :image-alt="item.fields.image.fields.title"
+        :image="getImageSrc(item)"
+        :image-alt="getImageAlt(item)"
         :image-align="idx % 2 ? 'right' : ''"
       >
         <div>
@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { pathOr } from 'ramda'
+
 import SparcCard from '@/components/SparcCard/SparcCard.vue'
 
 import MarkedMixin from '@/mixins/marked'
@@ -47,6 +49,29 @@ export default {
     news: {
       type: Array,
       default: () => []
+    }
+  },
+
+  methods: {
+    /**
+     * Get image source
+     * @param {Object} item
+     * @returns {String}
+     */
+    getImageSrc: function(item) {
+      return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], item)
+    },
+    /**
+     * Get image source
+     * @param {Object} item
+     * @returns {String}
+     */
+    getImageAlt: function(item) {
+      return pathOr(
+        '',
+        ['fields', 'image', 'fields', 'file', 'description'],
+        item
+      )
     }
   }
 }

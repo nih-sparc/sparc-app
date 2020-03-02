@@ -4,10 +4,10 @@
       <nuxt-link class="help-link"
         :to="{ name: 'help-helpId', params: { helpId: helpItem.sys.id } }"
       >
-        {{ helpItem.fields.title }}
+        {{ helpItem.fields.title || '' }}
       </nuxt-link>
     </h3>
-    <p>{{ helpItem.fields.summary }}</p>
+    <p>{{ helpItem.fields.summary || '' }}</p>
   </div>
 </template>
 
