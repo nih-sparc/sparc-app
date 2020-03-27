@@ -1,11 +1,11 @@
 <template>
   <div class="search-form" @keyup.enter="$emit('search')">
     <input :value="value" @input="$emit('input', $event.target.value)" />
-    <button class="mr-16" title="Search" @click="$emit('search')">
+    <button class="mr-8" title="Search" @click="$emit('search')">
       <span class="visuallyhidden">Search</span>
       <svg-icon name="icon-magnifying-glass" height="20" width="20" />
     </button>
-    <a v-if="q" class="clear-link" @click="$emit('clear')">Clear Search</a>
+    <button v-if="q" class="clear-search" @click="$emit('clear')">Clear Search</button>
   </div>
 </template>
 
@@ -31,7 +31,6 @@ export default {
 
 .search-form {
   display: flex;
-  align-items: center;
   margin: 0 0 1rem;
 }
 input {
@@ -43,9 +42,11 @@ input {
   margin-right: 0.5rem;
   outline: none;
   padding: 0.5rem 0.8125rem;
-  width: 28.0625rem;
   &:focus {
     border-color: $median;
+  }
+  @media (min-width: 768px) {
+    width: 28.0625rem;
   }
 }
 button {
@@ -57,7 +58,11 @@ button {
   width: 2.5rem;
 }
 
-.clear-link {
+.clear-search {
+  background-color: transparent;
+  display: inline-block;
+  border: none;
+  width: fit-content;
   color: $cochlear;
   font-size: 1rem
 }
