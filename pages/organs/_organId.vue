@@ -5,6 +5,7 @@
       :title="pageData.fields.name"
       :description="pageData.fields.description"
       :breadcrumb="breadcrumb"
+      :full-description="true"
     >
       <img slot="banner image" :src="bannerImage" :alt="bannerImageAlt" />
     </details-header>
