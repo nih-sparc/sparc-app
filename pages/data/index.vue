@@ -3,7 +3,7 @@
     <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
 
     <page-hero>
-      <search-form v-model="searchQuery" @search="submitSearch" />
+      <search-form v-model="searchQuery" @search="submitSearch" @clear="clearSearch" :q="q" />
 
       <ul class="search-tabs">
         <li v-for="type in searchTypes" :key="type.label">
@@ -332,6 +332,10 @@ export default {
     activeFiltersLabel: function() {
       const activeFilterLength = this.activeFilters.length
       return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
+    },
+
+    q: function() {
+      return this.$route.query.q || ''
     }
   },
 
@@ -495,6 +499,18 @@ export default {
       this.searchData.skip = 0
 
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      this.$router.replace({ query }).then(() => {
+        this.fetchResults()
+      })
+    },
+
+    /**
+     * Submit search
+     */
+    clearSearch: function() {
+      this.searchData.skip = 0
+
+      const query = { ...this.$route.query, q: '' }
       this.$router.replace({ query }).then(() => {
         this.fetchResults()
       })
