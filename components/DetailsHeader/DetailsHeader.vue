@@ -17,7 +17,7 @@
             {{ formatMobileTitle(title) }}
           </h2>
           <p class="details-header__container--content-description-default">
-            {{ formatDescription(description) }}
+            {{ fullDescription ? description : formatDescription(description) }}
           </p>
           <p class="details-header__container--content-description-mobile">
             {{ formatMobileDescription(description) }}
@@ -54,6 +54,10 @@ export default {
     description: {
       type: String,
       default: ''
+    },
+    fullDescription: {
+      type: Boolean,
+      default: false
     }
   },
 
