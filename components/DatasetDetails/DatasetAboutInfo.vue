@@ -15,6 +15,7 @@
               v-for="(record, index) in datasetRecords"
               :key="`${record}-${index}`"
               :href="record.properties.url"
+              target="_blank"
               class="dataset-about-info__container--protocol-text"
             >
               {{ record.properties.url }}
