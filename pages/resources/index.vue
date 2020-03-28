@@ -196,6 +196,7 @@ export default {
         content_type: this.$route.query.type,
         limit: this.resourceData.limit,
         skip: this.resourceData.skip,
+        order: 'fields.name',
         include: 2
       }
 

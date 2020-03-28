@@ -1,4 +1,5 @@
 import { Entry } from "contentful";
+import {ExtendedVue, Vue, VueConfiguration, VueConstructor} from "vue/types/vue";
 
 interface Tag {
   name: string;
@@ -85,3 +86,50 @@ export const transformFilters: TransformFilters = fields =>
   (fields.filters ?? [])
     .map(f => transformIndividualFilter(f.fields))
 
+/**
+ * common function to bubble the search change event from a component containing an el-table to a parent component
+ */
+export const onSortChange = (instance: Vue<{}>, payload: SortChangeEvent): void => {
+  instance.$emit('sort-change', payload)
+}
+
+interface SearchData {
+  limit: number;
+  skip: number;
+  items: unknown[];
+  order?: string
+  ascending: boolean;
+}
+
+interface SortChangeEvent {
+  column: unknown;
+  prop: string;
+  order: 'ascending' | 'descending' | null
+}
+
+/**
+ * mutates the searchData parameter according to the payload parameter
+ * calls the passed fetchResults function to get new, sorted results
+ * @param dataSource indicates which API we are using
+ * @param searchData gets mutated based on payload
+ * @param fetchResults called once searchData is updated
+ * @param payload the sort event
+ */
+export const handleSortChange = (
+  dataSource: 'contentful' | 'blackfynn',
+  searchData: SearchData,
+  fetchResults: () => void,
+  payload: SortChangeEvent
+): void => {
+  searchData.skip = 0
+  if (dataSource === 'blackfynn') {
+    searchData.order = payload.order === null ? 'date' : payload.prop
+    searchData.ascending = payload.order === 'ascending'
+  } else {
+    searchData.order = payload.order === null
+      ? undefined
+      : `${payload.order === 'descending' ? '-' : ''}${payload.prop}`
+  }
+
+  fetchResults()
+}
