@@ -710,7 +710,7 @@ export default {
         },
         {
           name: 'twitter:site',
-          content: '@sparc'
+          content: '@sparc_science'
         },
         {
           name: 'twitter:description',
