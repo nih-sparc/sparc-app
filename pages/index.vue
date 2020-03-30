@@ -72,6 +72,47 @@ export default {
       heroButtonLink: '',
       heroButtonLabel: ''
     }
+  },
+
+  head() {
+    return {
+      title: 'SPARC Portal',
+      titleTemplate: '%s - SPARC Portal',
+      meta: [
+        {
+          name: 'description',
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+        {
+          name: 'og:type',
+          content: 'website'
+        },
+        {
+          name: 'og:title',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'og:description',
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+        {
+          name: 'og:site_name',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          name: 'twitter:site',
+          content: '@sparc'
+        },
+        {
+          name: 'twitter:description',
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        }
+      ]
+    }
   }
 }
 </script>

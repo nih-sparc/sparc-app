@@ -662,7 +662,64 @@ export default {
     const creators = contributors.concat(org)
 
     return {
+      title: `${this.datasetTitle} - SPARC Portal`,
       meta: [
+        {
+          name: 'DC.type',
+          content: 'Dataset'
+        },
+        {
+          name: 'DC.title',
+          content: this.datasetTitle
+        },
+        {
+          name: 'DC.description',
+          content: this.datasetDescription
+        },
+        {
+          name: 'DCTERMS.license',
+          content: this.licenseLink
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:title',
+          content: this.datasetTitle
+        },
+        {
+          property: 'og:description',
+          content: this.datasetDescription
+        },
+        {
+          property: 'og:image',
+          content: this.getDatasetImage
+        },
+        {
+          property: 'og:image:alt',
+          content: `${this.datasetTitle} Banner Image`
+        },
+        {
+          property: 'og:site_name',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          name: 'twitter:site',
+          content: '@sparc'
+        },
+        {
+          name: 'twitter:description',
+          content: this.datasetDescription
+        },
+        {
+          name: 'twitter:image',
+          content: this.getDatasetImage
+        },
         {
           name: 'DC.creator',
           content: JSON.stringify(creators)
