@@ -123,7 +123,9 @@ export const handleSortChange = (
 ): void => {
   searchData.skip = 0
   if (dataSource === 'blackfynn') {
-    searchData.order = payload.order === null ? 'date' : payload.prop
+    searchData.order = payload.order === null || payload.prop === 'createdAt'
+      ? 'date'
+      : payload.prop
     searchData.ascending = payload.order === 'ascending'
   } else {
     searchData.order = payload.order === null

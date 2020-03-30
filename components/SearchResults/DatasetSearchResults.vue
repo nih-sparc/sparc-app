@@ -42,7 +42,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="description" label="Description" width="400" />
-    <el-table-column prop="updatedAt" label="Last Updated" width="200" sortable="custom">
+    <el-table-column prop="createdAt" label="Last Published" width="200" sortable="custom">
       <template slot-scope="scope">
         {{ formatDate(scope.row.updatedAt) }}
       </template>
