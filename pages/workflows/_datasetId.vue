@@ -419,9 +419,38 @@ export default {
     }
   },
 
-  metaInfo() {
+  head() {
+    // Creator data
+    const org = [
+      {
+        '@type': 'Organization',
+        name: this.organizationName
+      }
+    ]
+    const contributors = this.datasetContributors.map((contributor) => {
+      const sameAs = contributor.orcid
+        ? `http://orcid.org/${contributor.orcid}`
+        : null
+
+      return {
+        '@type': 'Person',
+        sameAs,
+        givenName: contributor.firstName,
+        familyName: contributor.lastName,
+        name: `${contributor.firstName} ${contributor.lastName}`
+      }
+    })
+
+    const creators = contributors.concat(org)
+
+    debugger;
+
     return {
       meta: [
+        {
+          name: 'DC.creator',
+          content: JSON.stringify(creators)
+        },
         {
           name: 'DC.identifier',
           content: this.DOIlink,
@@ -437,25 +466,49 @@ export default {
           scheme: 'DCTERMS.W3CDTF'
         },
         {
-          name: 'DC.identifier',
-          content: this.thisUrl,
-          scheme: 'DCTERMS.URI'
+          name: 'DC.version',
+          content: this.currentVersion
         },
         {
           property: 'og:url',
-          content: this.thisUrl
+          content: process.env.siteUrl
         }
       ],
       script: [
         {
           vmid: 'ldjson-schema',
-          innerHTML: `{"@context": "http://schema.org","@type": "Dataset","@id": "${this.DOIlink}","name": "${this.datasetName}","publisher": "${this.organizationName}", "datePublished": "${this.datasetDetails.createdAt}", "dateModified": "${this.datasetDetails.updatedAt}", "Description": "${this.datasetDescription}"}`,
+          json: {
+            '@context': 'http://schema.org',
+            '@type': 'Dataset',
+            '@id': this.DOIlink,
+            name: this.datasetName,
+            creator: creators,
+            datePublished: this.datasetDetails.createdAt,
+            dateModified: this.datasetDetails.updatedAt,
+            description: this.datasetDescription,
+            license: this.licenseLink,
+            version: this.datasetDetails.version,
+            url: process.env.siteUrl,
+            citation: this.citationText,
+            identifier: this.DOIlink,
+            isAccessibleForFree: true
+          },
+          type: 'application/ld+json'
+        },
+        {
+          vmid: 'ldjson-schema',
+          json: {
+            '@context': 'http://schema.org',
+            '@type': 'WebSite',
+            url: process.env.siteUrl,
+            name: 'Blackfynn Discover'
+          },
           type: 'application/ld+json'
         }
       ],
-      __dangerouslyDisableSanitizersByTagID: {
+      /*__dangerouslyDisableSanitizersByTagID: {
         'ldjson-schema': ['innerHTML']
-      }
+      }*/
     }
   }
 }
