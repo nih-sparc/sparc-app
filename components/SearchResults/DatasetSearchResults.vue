@@ -1,8 +1,9 @@
 <template>
-  <el-table :data="tableData" empty-text="No Results">
+  <el-table :data="tableData" empty-text="No Results" @sort-change="onSortChange">
     <el-table-column
       :fixed="true"
-      prop="fields.title"
+      sortable="custom"
+      prop="name"
       label="Title"
       width="300"
     >
@@ -41,12 +42,12 @@
       </template>
     </el-table-column>
     <el-table-column prop="description" label="Description" width="400" />
-    <el-table-column prop="updatedAt" label="Last Updated" width="200">
+    <el-table-column prop="createdAt" label="Last Published" width="200" sortable="custom">
       <template slot-scope="scope">
         {{ formatDate(scope.row.updatedAt) }}
       </template>
     </el-table-column>
-    <el-table-column prop="size" label="Size" width="150">
+    <el-table-column prop="size" label="Size" width="150" sortable="custom">
       <template slot-scope="scope">
         {{ formatMetric(scope.row.size) }}
       </template>
@@ -57,6 +58,7 @@
 <script>
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
+import { onSortChange } from '@/pages/data/utils'
 
 export default {
   name: 'DatasetSearchResults',
@@ -67,6 +69,12 @@ export default {
     tableData: {
       type: Array,
       default: () => []
+    }
+  },
+
+  methods: {
+    onSortChange: function(payload) {
+      onSortChange(this, payload)
     }
   }
 }

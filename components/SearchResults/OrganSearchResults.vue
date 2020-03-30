@@ -1,8 +1,9 @@
 <template>
-  <el-table :data="tableData" empty-text="No Results">
+  <el-table :data="tableData" empty-text="No Results" @sort-change="onSortChange">
     <el-table-column
       :fixed="true"
-      prop="fields.title"
+      sortable="custom"
+      prop="fields.name"
       label="Title"
       width="300"
     >
@@ -39,6 +40,7 @@
 
 <script>
 import { pathOr } from 'ramda'
+import { onSortChange } from '../../pages/data/utils'
 
 export default {
   name: 'OrganSearchResults',
@@ -74,6 +76,10 @@ export default {
         ['row', 'fields', 'bannerImage', 'fields', 'file', 'description'],
         scope
       )
+    },
+
+    onSortChange: function(payload) {
+      onSortChange(this, payload)
     }
   }
 }

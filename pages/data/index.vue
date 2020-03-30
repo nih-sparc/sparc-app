@@ -52,7 +52,7 @@
             </div>
           </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
-            <component :is="searchResultsComponent" :table-data="tableData" />
+            <component :is="searchResultsComponent" :table-data="tableData" @sort-change="handleSortChange" />
             <el-pagination
               v-if="searchData.limit < searchData.total"
               :page-size="searchData.limit"
@@ -146,11 +146,13 @@ const searchTypes = [
 const searchData = {
   limit: 10,
   skip: 0,
-  items: []
+  items: [],
+  order: undefined,
+  ascending: false,
 }
 
 import createClient from '@/plugins/contentful.js'
-import { transformFilters } from './utils'
+import { handleSortChange, transformFilters } from './utils'
 
 const client = createClient()
 
@@ -225,9 +227,15 @@ export default {
      */
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      let url = `${process.env.discover_api_host}/search/${
+      let url = `${
+        process.env.discover_api_host}/search/${
         searchType === 'simulation' ? 'dataset' : searchType
-      }s?offset=${this.searchData.skip}&limit=${this.searchData.limit}&${
+      }s?offset=${this.searchData.skip
+      }&limit=${this.searchData.limit
+      }&orderBy=${this.searchData.order || 'date'
+      }&orderDirection=${
+        this.searchData.ascending ? 'asc' : 'desc'
+      }&${
         searchType === 'simulation'
           ? `organization=IT'IS%20Foundation`
           : 'organization=SPARC%20Consortium'
@@ -236,8 +244,6 @@ export default {
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
         url += `&query=${query}`
-      } else {
-        url += '&orderBy=date'
       }
 
       const tags = this.$route.query.tags || ''
@@ -406,6 +412,10 @@ export default {
       }
     },
 
+    handleSortChange: function(payload) {
+      handleSortChange(this.searchType.dataSource, this.searchData, this.fetchResults, payload)
+    },
+
     /**
      * Get Search results
      * This is using fetch from the Blackfynn API
@@ -447,11 +457,12 @@ export default {
           query: this.$route.query.q,
           limit: this.searchData.limit,
           skip: this.searchData.skip,
+          order: this.searchData.order,
           include: 2,
           'fields.tags[all]': tags
         })
         .then(response => {
-          this.searchData = response
+          this.searchData = { ...response, order: this.searchData.order }
         })
         .catch(() => {
           this.searchData = clone(searchData)

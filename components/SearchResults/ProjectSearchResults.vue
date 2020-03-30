@@ -1,7 +1,8 @@
 <template>
-  <el-table :data="tableData" empty-text="No Results">
+  <el-table :data="tableData" empty-text="No Results" @sort-change="onSortChange">
     <el-table-column
       :fixed="true"
+      sortable="custom"
       prop="fields.title"
       label="Title"
       width="300"
@@ -46,9 +47,10 @@
       label="Institution"
       width="200"
     />
-    <el-table-column prop="fields.awardId" label="NIH Award" width="150" />
+    <el-table-column sortable="custom" prop="fields.awardId" label="NIH Award" width="150" />
 
     <el-table-column
+      sortable="custom"
       prop="fields.principleInvestigator"
       label="Principal Investigator"
       width="250"
@@ -58,6 +60,7 @@
 
 <script>
 import Truncate from '@/mixins/truncate'
+import { onSortChange } from '../../pages/data/utils'
 
 export default {
   name: 'ProjectSearchResults',
@@ -91,6 +94,10 @@ export default {
       return scope.row.fields.institution.fields.logo
         ? scope.row.fields.institution.fields.logo.fields.file.description
         : ''
+    },
+
+    onSortChange: function(payload) {
+      onSortChange(this, payload)
     }
   }
 }

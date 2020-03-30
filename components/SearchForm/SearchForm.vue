@@ -64,6 +64,7 @@ button {
   border: none;
   width: fit-content;
   color: $cochlear;
-  font-size: 1rem
+  font-size: 1rem;
+  font-family: $font-family;
 }
 </style>
