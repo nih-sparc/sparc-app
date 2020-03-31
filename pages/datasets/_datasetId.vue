@@ -637,9 +637,93 @@ export default {
     }
   },
 
-  metaInfo() {
+  head() {
+    // Creator data
+    const org = [
+      {
+        '@type': 'Organization',
+        name: this.organizationName
+      }
+    ]
+    const contributors = this.datasetContributors.map((contributor) => {
+      const sameAs = contributor.orcid
+        ? `http://orcid.org/${contributor.orcid}`
+        : null
+
+      return {
+        '@type': 'Person',
+        sameAs,
+        givenName: contributor.firstName,
+        familyName: contributor.lastName,
+        name: `${contributor.firstName} ${contributor.lastName}`
+      }
+    })
+
+    const creators = contributors.concat(org)
+
     return {
+      title: `${this.datasetTitle} - SPARC Portal`,
       meta: [
+        {
+          name: 'DC.type',
+          content: 'Dataset'
+        },
+        {
+          name: 'DC.title',
+          content: this.datasetTitle
+        },
+        {
+          name: 'DC.description',
+          content: this.datasetDescription
+        },
+        {
+          name: 'DCTERMS.license',
+          content: this.licenseLink
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:title',
+          content: this.datasetTitle
+        },
+        {
+          property: 'og:description',
+          content: this.datasetDescription
+        },
+        {
+          property: 'og:image',
+          content: this.getDatasetImage
+        },
+        {
+          property: 'og:image:alt',
+          content: `${this.datasetTitle} Banner Image`
+        },
+        {
+          property: 'og:site_name',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          name: 'twitter:site',
+          content: '@sparc_science'
+        },
+        {
+          name: 'twitter:description',
+          content: this.datasetDescription
+        },
+        {
+          name: 'twitter:image',
+          content: this.getDatasetImage
+        },
+        {
+          name: 'DC.creator',
+          content: JSON.stringify(creators)
+        },
         {
           name: 'DC.identifier',
           content: this.DOIlink,
@@ -655,25 +739,47 @@ export default {
           scheme: 'DCTERMS.W3CDTF'
         },
         {
-          name: 'DC.identifier',
-          content: this.thisUrl,
-          scheme: 'DCTERMS.URI'
+          name: 'DC.version',
+          content: this.datasetInfo.version
         },
         {
           property: 'og:url',
-          content: this.thisUrl
+          content: process.env.siteUrl
         }
       ],
       script: [
         {
           vmid: 'ldjson-schema',
-          innerHTML: `{"@context": "http://schema.org","@type": "Dataset","@id": "${this.DOIlink}","name": "${this.datasetName}","publisher": "${this.organizationName}", "datePublished": "${this.datasetInfo.createdAt}", "dateModified": "${this.datasetInfo.updatedAt}", "Description": "${this.datasetDescription}"}`,
+          json: {
+            '@context': 'http://schema.org',
+            '@type': 'Dataset',
+            '@id': this.DOIlink,
+            sameAs: this.getDatasetUrl,
+            name: this.datasetName,
+            creator: creators,
+            datePublished: this.datasetInfo.createdAt,
+            dateModified: this.datasetInfo.updatedAt,
+            description: this.datasetDescription,
+            license: this.licenseLink,
+            version: this.datasetInfo.version,
+            url: process.env.siteUrl,
+            citation: this.citationText,
+            identifier: this.DOIlink,
+            isAccessibleForFree: true
+          },
+          type: 'application/ld+json'
+        },
+        {
+          vmid: 'ldjson-schema',
+          json: {
+            '@context': 'http://schema.org',
+            '@type': 'WebSite',
+            url: process.env.siteUrl,
+            name: 'Blackfynn Discover'
+          },
           type: 'application/ld+json'
         }
       ],
-      __dangerouslyDisableSanitizersByTagID: {
-        'ldjson-schema': ['innerHTML']
-      }
     }
   }
 }
