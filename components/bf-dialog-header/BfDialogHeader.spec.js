@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import BfDialogHeader from './BfDialogHeader.vue'
-import { mount } from 'vue-test-utils'
+import { mount } from '@vue/test-utils'
 
 describe('BfDialogHeader.vue', () => {
   let cmp
@@ -25,5 +25,4 @@ describe('BfDialogHeader.vue', () => {
     cmp.vm.$children[0].onClose()
     expect(spy).toBeCalled()
   })
-
 })
