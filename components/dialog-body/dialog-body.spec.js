@@ -1,5 +1,5 @@
 import DialogBody from './DialogBody.vue'
-import { shallow } from 'vue-test-utils'
+import { shallow } from '@vue/test-utils'
 
 describe('DialogBody.vue', () => {
   let cmp
