@@ -25,4 +25,9 @@ describe('DialogBody.vue', () => {
     expect(cmpEmpty.vm.$slots.icon).toBe(undefined)
     expect(cmpEmpty.vm.$slots.heading).toBe(undefined)
   })
+
+  it('Should fail', () => {
+    const yo = true
+    expect(yo).toBe(false)
+  })
 })
