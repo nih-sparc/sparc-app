@@ -55,8 +55,7 @@ export default {
       top: -2.5rem;
       width: auto;
     }
-    img,
-    video {
+    img {
       display: block;
       height: 100%;
       width: inherit;
