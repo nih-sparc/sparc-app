@@ -12,14 +12,9 @@
         />
       </button>
     </div>
-    <button
-      class="mr-8 btn-submit-search"
-      title="Search"
-      @click="$emit('search')"
-    >
-      <span class="visuallyhidden">Search</span>
-      <svg-icon name="icon-magnifying-glass" height="20" width="20" />
-    </button>
+    <el-button class="mr-8 btn-submit-search" @click="$emit('search')">
+      Search
+    </el-button>
   </div>
 </template>
 
@@ -91,7 +86,8 @@ input {
   border-radius: 4px;
   cursor: pointer;
   height: 2.5rem;
-  width: 2.5rem;
+  padding-left: 1.6875rem;
+  padding-right: 1.6875rem;
 }
 
 .clear-search {
