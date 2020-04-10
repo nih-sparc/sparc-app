@@ -65,16 +65,20 @@ input {
   &:focus {
     border-color: $median;
   }
+  &::-ms-clear {
+    display: none;
+  }
 }
 .btn-clear-search {
   background: none;
   border: none;
   cursor: pointer;
+  height: 100%;
   outline: none;
   margin: 0;
   position: absolute;
   right: 0;
-  top: 0.4375rem;
+  top: 0;
   &:hover,
   &:active {
     opacity: 0.75;
