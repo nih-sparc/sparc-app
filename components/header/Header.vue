@@ -168,6 +168,11 @@ const links = [
     href: `/resources?type=${process.env.ctf_resource_id}`
   },
   {
+    title: 'map',
+    displayTitle: 'Map',
+    href: '/map'
+  },
+  {
     title: 'news-and-events',
     displayTitle: 'News & Events',
     href: '/news-and-events'
