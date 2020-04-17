@@ -64,8 +64,8 @@ export default {
 
   }
   .map-app {
-    position:absolute;
-    width:95%;
+    position:relative;
+    width:100%;
     height:100%;
     border: solid 1px #dcdfe6;
     box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
