@@ -20,7 +20,6 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-process.client ? import('@abi-software/mapintegratedvuer') : null
 process.client ? import('@abi-software/mapintegratedvuer/dist/mapintegratedvuer.css') : null
 
 export default {
@@ -29,6 +28,7 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
+    MapContent: process.client ? () => import('@/components/MapApp/MapApp') : null
   },
 
   data() {
