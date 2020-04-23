@@ -6,11 +6,13 @@
       <p>
         {{ heroCopy }}
       </p>
-      <button class="about-page-button">
+      <p>
+        Visit the
         <a href="https://commonfund.nih.gov/sparc/" target="_blank">
-          More Info NIH Website
+          NIH SPARC program website
         </a>
-      </button>
+        to learn more.
+      </p>
       <img
         v-if="heroImage"
         slot="image"
