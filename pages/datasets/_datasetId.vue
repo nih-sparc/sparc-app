@@ -54,7 +54,7 @@
               </template>
             </div>
           </div>
-          <div class="header-stats-block">
+          <div v-if="datasetType !== 'simulation'" class="header-stats-block">
             <svg-icon class="mr-8" name="icon-storage" height="20" width="20" />
             <div>
               <strong>{{ datasetStorage.number }}</strong>
