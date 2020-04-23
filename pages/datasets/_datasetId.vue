@@ -201,12 +201,12 @@ marked.setOptions({
 
 const tabs = [
   {
-    label: 'Description',
-    type: 'description'
-  },
-  {
     label: 'About',
     type: 'about'
+  },
+  {
+    label: 'Description',
+    type: 'description'
   },
   {
     label: 'Files',
@@ -314,7 +314,6 @@ export default {
   },
 
   computed: {
-
     /**
      * Returns active tab based on details page displayed
      * @returns {String}
@@ -653,7 +652,7 @@ export default {
         name: this.organizationName
       }
     ]
-    const contributors = this.datasetContributors.map((contributor) => {
+    const contributors = this.datasetContributors.map(contributor => {
       const sameAs = contributor.orcid
         ? `http://orcid.org/${contributor.orcid}`
         : null
@@ -787,7 +786,7 @@ export default {
           },
           type: 'application/ld+json'
         }
-      ],
+      ]
     }
   }
 }
