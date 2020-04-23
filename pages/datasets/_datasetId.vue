@@ -286,6 +286,7 @@ export default {
       errorLoading: false,
       loadingMarkdown: false,
       markdown: '',
+      activeTab: 'about',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
       isContributorListVisible: true,
@@ -314,14 +315,6 @@ export default {
   },
 
   computed: {
-    /**
-     * Returns active tab based on details page displayed
-     * @returns {String}
-     */
-    activeTab: function() {
-      return this.datasetType === 'simulation' ? 'about' : 'description'
-    },
-
     /**
      * Returns simulation id for run simulation button
      * @returns {String}
@@ -586,6 +579,12 @@ export default {
         }
       },
       immediate: true
+    }
+  },
+
+  mounted() {
+    if (this.datasetType !== 'simulation') {
+      this.activeTab = 'description'
     }
   },
 
