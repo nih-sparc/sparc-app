@@ -201,12 +201,12 @@ marked.setOptions({
 
 const tabs = [
   {
-    label: 'About',
-    type: 'about'
-  },
-  {
     label: 'Description',
     type: 'description'
+  },
+  {
+    label: 'About',
+    type: 'about'
   },
   {
     label: 'Files',
@@ -291,7 +291,6 @@ export default {
       isContributorListVisible: true,
       isDownloadModalVisible: false,
       tabs: [],
-      activeTab: 'about',
       breadcrumb: [
         {
           to: {
@@ -315,6 +314,15 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Returns active tab based on details page displayed
+     * @returns {String}
+     */
+    activeTab: function() {
+      return this.datasetType === 'simulation' ? 'about' : 'description'
+    },
+
     /**
      * Returns simulation id for run simulation button
      * @returns {String}
