@@ -3,9 +3,6 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
       <h1>Map</h1>
-      <p>
-        Interactive Map
-      </p>
     </page-hero>
     <div class="page-wrap container">
       <client-only placeholder="Loading...">
