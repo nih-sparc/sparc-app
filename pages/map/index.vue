@@ -57,8 +57,8 @@ export default {
 
   .container {
     margin-top: 1.5rem;
-    height:45em;
-
+    height:90vh;
+    max-width:none;
   }
   .map-app {
     position:relative;
