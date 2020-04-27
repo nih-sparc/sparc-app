@@ -116,7 +116,7 @@
             }"
             class="dataset-link"
           >
-            SPARC data structure
+            SPARC Data Structure
           </nuxt-link>
         </div>
       </div>
