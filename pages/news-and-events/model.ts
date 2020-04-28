@@ -94,7 +94,7 @@ export interface Data {
 
 export interface Computed {
   displayedUpcomingEvents: EventsEntry[],
-  pastEventsReversed: EventsEntry[],
+  // pastEventsReversed: EventsEntry[],
   pastEventsChunkSize: number,
   displayedPastEvents: EventsEntry[]
 }

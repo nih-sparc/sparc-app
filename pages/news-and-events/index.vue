@@ -154,13 +154,13 @@ export default Vue.extend<Data, never, Computed, never>({
         : this.upcomingEvents.slice(0, 4)
     },
 
-    /**
-     * Reverse past events array
-     * @returns {Array}
-     */
-    pastEventsReversed: function(this: Data) {
-      return this.pastEvents.slice().reverse()
-    },
+    // /**
+    //  * Reverse past events array
+    //  * @returns {Array}
+    //  */
+    // pastEventsReversed: function(this: Data) {
+    //   return this.pastEvents.slice().reverse()
+    // },
 
     /**
      * Compute chunk size for "View More" button
@@ -178,7 +178,7 @@ export default Vue.extend<Data, never, Computed, never>({
     displayedPastEvents: function (this: Data & Computed) {
       if (this.pastEventChunk === this.pastEventsChunkSize) this.isShowingAllPastEvents = true;
       const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
-      return this.pastEventsReversed.slice(0, endChunk)
+      return this.pastEvents.slice().reverse().slice(0, endChunk)
     }
   }
 })
