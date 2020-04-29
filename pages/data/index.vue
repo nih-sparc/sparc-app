@@ -34,19 +34,23 @@
           <div class="search-heading">
             <p v-if="!isLoadingSearch && searchData.items.length">
               Showing
-              <pagination-menu @update-page-size="updateDataSearchLimit" :page-size="searchData.limit" />
+              <pagination-menu
+                :page-size="searchData.limit"
+                @update-page-size="updateDataSearchLimit"
+              />
               of {{ searchHeading }}
             </p>
-            <el-pagination
-              v-if="searchData.limit < searchData.total"
-              :page-size="searchData.limit"
-              :pager-count="5"
-              :current-page="curSearchPage"
-              layout="prev, pager, next"
-              :total="searchData.total"
-              @current-change="onPaginationPageChange"
-            />
           </div>
+          <el-pagination
+            v-if="searchData.limit < searchData.total"
+            class="test-pagination"
+            :page-size="searchData.limit"
+            :pager-count="5"
+            :current-page="curSearchPage"
+            layout="prev, pager, next"
+            :total="searchData.total"
+            @current-change="onPaginationPageChange"
+          />
           <div class="mb-16">
             <div class="active__filter__wrap">
               <div
@@ -76,6 +80,14 @@
           </div>
         </el-col>
       </el-row>
+      <p v-if="!isLoadingSearch && searchData.items.length">
+        Showing
+        <pagination-menu
+          :page-size="searchData.limit"
+          @update-page-size="updateDataSearchLimit"
+        />
+        of {{ searchHeading }}
+      </p>
       <el-pagination
         v-if="searchData.limit < searchData.total"
         :page-size="searchData.limit"
@@ -714,7 +726,15 @@ export default {
 }
 .el-pagination {
   margin-top: 1.5em;
-  text-align: center;
+  text-align: right;
+}
+.test-pagination {
+  background-color: orange;
+  // &.el-pager {
+  //   li {
+  //     background-color: orange;
+  //   }
+  // }
 }
 .search-heading {
   align-items: center;
