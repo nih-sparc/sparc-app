@@ -33,7 +33,9 @@
         <el-col :span="24">
           <div class="search-heading">
             <p v-if="!isLoadingSearch && searchData.items.length">
-              {{ searchHeading }}
+              Showing
+              <pagination-menu @update-page-size="updateDataSearchLimit" :page-size="searchData.limit" />
+              of {{ searchHeading }}
             </p>
             <el-pagination
               v-if="searchData.limit < searchData.total"
@@ -43,12 +45,6 @@
               layout="prev, pager, next"
               :total="searchData.total"
               @current-change="onPaginationPageChange"
-            />
-            <pagination-menu
-              class="mr-24"
-              pagination-item-label="Datasets"
-              :page-size="datasetSearchParams.limit"
-              @update-page-size="updateDatasetSearchLimit"
             />
           </div>
           <div class="mb-16">
@@ -80,6 +76,15 @@
           </div>
         </el-col>
       </el-row>
+      <el-pagination
+        v-if="searchData.limit < searchData.total"
+        :page-size="searchData.limit"
+        :pager-count="5"
+        :current-page="curSearchPage"
+        layout="prev, pager, next"
+        :total="searchData.total"
+        @current-change="onPaginationPageChange"
+      />
     </div>
     <search-filters
       v-model="filters"
@@ -317,7 +322,7 @@ export default {
         find(propEq('type', this.$route.query.type))
       )(this.searchTypes)
 
-      let searchHeading = `Showing ${start}-${end} of ${this.searchData.total} ${searchTypeLabel}`
+      let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
 
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
@@ -391,6 +396,20 @@ export default {
   },
 
   methods: {
+    /**
+     * Update search limit based on pagination number selection
+     * @param {Number} limit
+     */
+    updateDataSearchLimit: function(limit) {
+      this.searchData.skip = 0
+      if (limit === 'View All') {
+        this.searchData.limit = this.searchData.total
+      } else {
+        this.searchData.limit = limit
+      }
+      this.fetchResults()
+    },
+
     /**
      * Set active filters based on the query params
      * @params {Array} filters
