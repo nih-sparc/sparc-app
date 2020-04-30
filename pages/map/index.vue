@@ -4,7 +4,7 @@
     <page-hero>
       <h1>Map</h1>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="page-wrap portalmapcontainer">
       <client-only placeholder="Loading...">
         <div class="map-app">
           <MapContent />
@@ -55,10 +55,22 @@ export default {
 @import '@/assets/_variables.scss';
 .map {
 
-  .container {
+  .portalmapcontainer {
     margin-top: 1.5rem;
     height:90vh;
     max-width:none;
+
+    @media screen and (min-width: 1440px) {
+      width: 1393px;
+      height: 778px;
+      padding-left:24px;
+    }
+
+    @media screen and (min-width: 1920px) {
+      width: 1851px ;
+      height: 938px ;
+      padding-left:34px;
+    }
   }
   .map-app {
     position:relative;
