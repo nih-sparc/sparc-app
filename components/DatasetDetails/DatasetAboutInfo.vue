@@ -4,9 +4,15 @@
       <h3>Last Updated</h3>
       <p>{{ updatedDate }}</p>
       <h3>Dataset DOI</h3>
-      <div class="dataset-about-info__container--doi-link mb-16">
-        <a :href="DOIlink" target="_blank">{{ doi }}</a>
-      </div>
+      <p>
+        <a
+          class="dataset-about-info__container--doi-link mb-16"
+          :href="DOIlink"
+          target="_blank"
+        >
+          {{ doi }}
+        </a>
+      </p>
       <el-row type="flex" justify="center" class="protocol-block">
         <el-col :span="24">
           <h3>
@@ -320,11 +326,8 @@ export default {
     }
 
     &--doi-link {
-      @extend p;
-      a {
-        color: black;
-        text-decoration: none;
-      }
+      color: black;
+      text-decoration: none;
     }
   }
 }
