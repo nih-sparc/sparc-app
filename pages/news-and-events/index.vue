@@ -56,7 +56,7 @@
 
             <div class="show-more-past-events">
               <a
-                v-if="!isShowingAllPastEvents && pastEventsChunkSize > 1"
+                v-if="!isShowingAllPastEvents && pastEventsChunkMax > 1"
                 class="show-more-past-events__btn"
                 href="#"
                 @click.prevent="pastEventChunk += 1"
@@ -155,11 +155,10 @@ export default Vue.extend<Data, never, Computed, never>({
     },
 
     /**
-     * Compute chunk size for "View More" button
-     * to display up to 8 more events on click
+     * Compute maximum chunk value
      * @returns {Number}
      */
-    pastEventsChunkSize: function(this: Data) {
+    pastEventsChunkMax: function(this: Data) {
       return Math.ceil(this.pastEvents.length / MAX_PAST_EVENTS)
     },
 
@@ -169,7 +168,7 @@ export default Vue.extend<Data, never, Computed, never>({
      * @returns {Array}
      */
     displayedPastEvents: function (this: Data & Computed) {
-      if (this.pastEventChunk === this.pastEventsChunkSize) this.isShowingAllPastEvents = true;
+      if (this.pastEventChunk === this.pastEventsChunkMax) this.isShowingAllPastEvents = true;
       const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
       return this.pastEvents.slice().reverse().slice(0, endChunk)
     }

@@ -94,6 +94,6 @@ export interface Data {
 
 export interface Computed {
   displayedUpcomingEvents: EventsEntry[],
-  pastEventsChunkSize: number,
+  pastEventsChunkMax: number,
   displayedPastEvents: EventsEntry[]
 }
