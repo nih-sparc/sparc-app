@@ -154,16 +154,9 @@ export default Vue.extend<Data, never, Computed, never>({
         : this.upcomingEvents.slice(0, 4)
     },
 
-    // /**
-    //  * Reverse past events array
-    //  * @returns {Array}
-    //  */
-    // pastEventsReversed: function(this: Data) {
-    //   return this.pastEvents.slice().reverse()
-    // },
-
     /**
      * Compute chunk size for "View More" button
+     * to display up to 8 more events on click
      * @returns {Number}
      */
     pastEventsChunkSize: function(this: Data) {
@@ -172,7 +165,7 @@ export default Vue.extend<Data, never, Computed, never>({
 
     /**
      * Compute past events to display based on
-     * current chunk amount
+     * current chunk value
      * @returns {Array}
      */
     displayedPastEvents: function (this: Data & Computed) {
