@@ -139,4 +139,5 @@ export default {
 .page-hero-video {
   width: 406px;
 }
+
 </style>
