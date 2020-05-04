@@ -129,4 +129,8 @@ export default {
     margin-bottom: 2rem;
   }
 }
+.page-hero-video {
+  width: 406px;
+}
+
 </style>
