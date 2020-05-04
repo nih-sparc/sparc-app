@@ -1,7 +1,7 @@
 <template>
   <div class="featured-datasets container">
     <div class="home-container">
-      <h2><a href="#">News &amp; Upcoming Events</a></h2>
+      <h2><nuxt-link to="/news-and-events">News &amp; Upcoming Events</nuxt-link></h2>
       <sparc-card
         v-for="(item, idx) in news"
         :key="item.sys.id"

@@ -54,7 +54,7 @@
               </template>
             </div>
           </div>
-          <div class="header-stats-block">
+          <div v-if="datasetType !== 'simulation'" class="header-stats-block">
             <svg-icon class="mr-8" name="icon-storage" height="20" width="20" />
             <div>
               <strong>{{ datasetStorage.number }}</strong>
@@ -116,7 +116,7 @@
             }"
             class="dataset-link"
           >
-            Dataset Format Information
+            SPARC Data Structure
           </nuxt-link>
         </div>
       </div>
@@ -286,12 +286,12 @@ export default {
       errorLoading: false,
       loadingMarkdown: false,
       markdown: '',
+      activeTab: 'about',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
       isContributorListVisible: true,
       isDownloadModalVisible: false,
       tabs: [],
-      activeTab: 'about',
       breadcrumb: [
         {
           to: {
@@ -582,6 +582,12 @@ export default {
     }
   },
 
+  mounted() {
+    if (this.datasetType !== 'simulation') {
+      this.activeTab = 'description'
+    }
+  },
+
   methods: {
     /**
      * Sets active tab
@@ -645,7 +651,7 @@ export default {
         name: this.organizationName
       }
     ]
-    const contributors = this.datasetContributors.map((contributor) => {
+    const contributors = this.datasetContributors.map(contributor => {
       const sameAs = contributor.orcid
         ? `http://orcid.org/${contributor.orcid}`
         : null
@@ -779,7 +785,7 @@ export default {
           },
           type: 'application/ld+json'
         }
-      ],
+      ]
     }
   }
 }

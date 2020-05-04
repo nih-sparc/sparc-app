@@ -12,16 +12,12 @@
           {{ heroButtonLabel }}
         </el-button>
       </a>
-      <video
+      <img
         v-if="heroImage"
         slot="image"
-        class="page-hero-video"
-        autoplay
-        loop
-        muted
-      >
-        <source :src="heroImage.fields.file.url" type="video/mp4" />
-      </video>
+        class="page-hero-img"
+        :src="heroImage.fields.file.url"
+      />
     </page-hero>
 
     <featured-data :featured-data="featuredData" />
@@ -85,8 +81,7 @@ export default {
       meta: [
         {
           name: 'description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
         },
         {
           name: 'og:type',
@@ -98,8 +93,7 @@ export default {
         },
         {
           name: 'og:description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
         },
         {
           name: 'og:site_name',
@@ -115,8 +109,7 @@ export default {
         },
         {
           name: 'twitter:description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
         }
       ]
     }

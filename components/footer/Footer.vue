@@ -45,7 +45,12 @@
             </a>
           </li>
           <li>
-            <a href="https://commonfund.nih.gov/Sparc/" target="_blank">NIH SPARC</a>
+            <a href="https://commonfund.nih.gov/Sparc/" target="_blank">
+              NIH SPARC Program
+            </a>
+          </li>
+          <li>
+            <a href="http://status.sparc.science/" target="_blank">SPARC.science Site Status</a>
           </li>
         </ul>
         <h3>Help us Improve</h3>

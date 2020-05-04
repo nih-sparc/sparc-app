@@ -1,11 +1,20 @@
 <template>
   <div class="search-form" @keyup.enter="$emit('search')">
-    <input :value="value" @input="$emit('input', $event.target.value)" />
-    <button class="mr-8" title="Search" @click="$emit('search')">
-      <span class="visuallyhidden">Search</span>
-      <svg-icon name="icon-magnifying-glass" height="20" width="20" />
-    </button>
-    <button v-if="q" class="clear-search" @click="$emit('clear')">Clear Search</button>
+    <div class="input-wrap">
+      <input :value="value" @input="$emit('input', $event.target.value)" />
+      <button v-if="q" class="btn-clear-search" @click="$emit('clear')">
+        <svg-icon
+          name="icon-clear"
+          stroke="red"
+          color="#909399 #fff"
+          height="22"
+          width="22"
+        />
+      </button>
+    </div>
+    <el-button class="mr-8 btn-submit-search" @click="$emit('search')">
+      Search
+    </el-button>
   </div>
 </template>
 
@@ -33,29 +42,56 @@ export default {
   display: flex;
   margin: 0 0 1rem;
 }
-input {
-  border: 1px solid #909399;
-  border-radius: 4px;
-  box-sizing: border-box;
-  color: #909399;
-  font-size: 0.875rem;
+.input-wrap {
+  display: flex;
   margin-right: 0.5rem;
-  outline: none;
-  padding: 0.5rem 0.8125rem;
-  &:focus {
-    border-color: $median;
-  }
+  position: relative;
   @media (min-width: 768px) {
     width: 28.0625rem;
   }
 }
-button {
+input {
+  background: #fff;
+  border: 1px solid #909399;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border: none;
+  color: #909399;
+  flex: 1;
+  font-size: 0.875rem;
+  outline: none;
+  margin: 0;
+  padding: 0.5rem 2.25rem 0.5rem 0.8125rem;
+  &:focus {
+    border-color: $median;
+  }
+  &::-ms-clear {
+    display: none;
+  }
+}
+.btn-clear-search {
+  background: none;
+  border: none;
+  cursor: pointer;
+  height: 100%;
+  outline: none;
+  margin: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  &:hover,
+  &:active {
+    opacity: 0.75;
+  }
+}
+.btn-submit-search {
   background: #f9f2fc;
   border: 1px solid $median;
   border-radius: 4px;
   cursor: pointer;
   height: 2.5rem;
-  width: 2.5rem;
+  padding-left: 1.6875rem;
+  padding-right: 1.6875rem;
 }
 
 .clear-search {
