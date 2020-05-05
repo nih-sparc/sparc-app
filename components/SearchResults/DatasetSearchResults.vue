@@ -41,13 +41,13 @@
         </nuxt-link>
       </template>
     </el-table-column>
-    <el-table-column prop="description" label="Description" width="400" />
+    <el-table-column prop="description" label="Description" :width="areSimulationResults ? 550 : 400" />
     <el-table-column prop="createdAt" label="Last Published" width="200" sortable="custom">
       <template slot-scope="scope">
         {{ formatDate(scope.row.updatedAt) }}
       </template>
     </el-table-column>
-    <el-table-column prop="size" label="Size" width="150" sortable="custom">
+    <el-table-column v-if="!areSimulationResults" prop="size" label="Size" width="150" sortable="custom">
       <template slot-scope="scope">
         {{ formatMetric(scope.row.size) }}
       </template>
@@ -59,6 +59,7 @@
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 import { onSortChange } from '@/pages/data/utils'
+import { pathOr } from 'ramda'
 
 export default {
   name: 'DatasetSearchResults',
@@ -69,6 +70,13 @@ export default {
     tableData: {
       type: Array,
       default: () => []
+    }
+  },
+
+  computed: {
+    areSimulationResults: function() {
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      return searchType === 'simulation'
     }
   },
 
