@@ -232,6 +232,10 @@ export default {
 
   mixins: [],
 
+  // async asyncData({ route }) {
+  //   console.log(route, console.log(this.searchData))
+  // },
+
   data: () => {
     return {
       searchQuery: '',
@@ -501,6 +505,10 @@ export default {
 
       const tags = this.$route.query.tags || undefined
 
+      // Keep the original search data limit to get all organs before pagination
+      let origSearchDataLimit = this.searchData.limit
+      this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
+
       client
         .getEntries({
           content_type: this.$route.query.type,
@@ -513,6 +521,11 @@ export default {
         })
         .then(response => {
           this.searchData = { ...response, order: this.searchData.order }
+          if (this.$route.query.type === 'organ') {
+            this.removeOrganNoDatasets()
+            this.searchData.limit = origSearchDataLimit
+          }
+          console.log(this.searchData)
         })
         .catch(() => {
           this.searchData = clone(searchData)
@@ -520,6 +533,33 @@ export default {
         .finally(() => {
           this.isLoadingSearch = false
         })
+    },
+
+    /**
+     * Get organ datasets from discover api
+     * @returns {Object}
+     */
+    getOrganDatasets: function(organData) {
+      let organType = pathOr('', ['fields', 'name'], organData)
+      return this.$axios.get(
+        `${
+          process.env.discover_api_host
+        }/search/datasets?query=${organType.toLowerCase()}&limit=100`
+      )
+    },
+
+    removeOrganNoDatasets: function() {
+      // Remove organs that do not have any associated datasets
+      this.searchData.items.forEach(async organData => {
+        let organDatasets = await this.getOrganDatasets(organData)
+        // if (organDatasets.data.datasets.length === 0) {
+        //   this.searchData.items.splice(
+        //     this.searchData.items.indexOf(organData),
+        //     1
+        //   )
+        // }
+        this.searchData.total = this.searchData.items.length
+      })
     },
 
     /**
