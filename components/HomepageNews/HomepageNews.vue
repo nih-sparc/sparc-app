@@ -71,13 +71,7 @@ export default {
      * @returns {Array}
      */
     upcomingNews: function() {
-      const newsToFilter = [...this.news]
-      newsToFilter.forEach(event => {
-        this.isUpcoming(event)
-          ? ''
-          : newsToFilter.splice(newsToFilter.indexOf(event), 1)
-      })
-      return newsToFilter
+      return this.news.filter(event => this.isUpcoming(event))
     }
   },
 
