@@ -3,7 +3,7 @@
     <div class="home-container">
       <h2><nuxt-link to="/news-and-events">News &amp; Upcoming Events</nuxt-link></h2>
       <sparc-card
-        v-for="(item, idx) in news"
+        v-for="(item, idx) in upcomingNews"
         :key="item.sys.id"
         :image="getImageSrc(item)"
         :image-alt="getImageAlt(item)"
@@ -65,6 +65,16 @@ export default {
     }
   },
 
+  computed: {
+    /**
+     * Filter news to remove past events
+     * @returns {Array}
+     */
+    upcomingNews: function() {
+      return this.news.filter(event => this.isUpcoming(event))
+    }
+  },
+
   methods: {
     /**
      * Get image source
@@ -94,6 +104,16 @@ export default {
       const startDate = this.formatDate(event.fields.startDate)
       const endDate = this.formatDate(event.fields.endDate)
       return `${startDate} - ${endDate}`
+    },
+    /**
+     * Check if an event is upcoming
+     * @param {Object} item
+     * @returns {Boolean}
+     */
+    isUpcoming: function(item) {
+      const today = new Date()
+      const eventEndDate = pathOr('', ['fields', 'endDate'], item)
+      return Date.parse(eventEndDate) > Date.parse(today) ? true : false
     }
   }
 }
