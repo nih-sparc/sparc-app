@@ -74,6 +74,10 @@ export default {
   },
 
   computed: {
+    /**
+     * Compute if the search results are for simulations
+     * @returns {Boolean}
+     */
     areSimulationResults: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
       return searchType === 'simulation'
