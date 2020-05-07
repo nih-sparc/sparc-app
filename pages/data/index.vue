@@ -560,7 +560,7 @@ export default {
      * @return {Boolean}
      */
     hasDatasets: function(organData) {
-      return organData.totalCount > 0 ? true : false
+      return organData.totalCount > 0
     },
 
     /**
