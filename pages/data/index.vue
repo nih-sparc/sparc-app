@@ -232,10 +232,6 @@ export default {
 
   mixins: [],
 
-  // async asyncData({ route }) {
-  //   console.log(route, console.log(this.searchData))
-  // },
-
   data: () => {
     return {
       searchQuery: '',
@@ -506,7 +502,7 @@ export default {
       const tags = this.$route.query.tags || undefined
 
       // Keep the original search data limit to get all organs before pagination
-      let origSearchDataLimit = this.searchData.limit
+      const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
 
       client
@@ -519,13 +515,18 @@ export default {
           include: 2,
           'fields.tags[all]': tags
         })
-        .then(response => {
+        .then(async response => {
           this.searchData = { ...response, order: this.searchData.order }
           if (this.$route.query.type === 'organ') {
-            this.removeOrganNoDatasets()
+            this.searchData.items = await this.removeOrganNoDatasets()
+            // Reset search data values for pagination
             this.searchData.limit = origSearchDataLimit
+            this.searchData.skip == 0
+              ? this.searchData.items.length > this.searchData.limit
+                ? this.searchData.items.splice(this.searchData.limit)
+                : (this.searchData.total = this.searchData.items.length)
+              : ''
           }
-          console.log(this.searchData)
         })
         .catch(() => {
           this.searchData = clone(searchData)
@@ -536,30 +537,44 @@ export default {
     },
 
     /**
-     * Get organ datasets from discover api
+     * Get organ details from discover api
+     * @param {Object}
      * @returns {Object}
      */
-    getOrganDatasets: function(organData) {
-      let organType = pathOr('', ['fields', 'name'], organData)
-      return this.$axios.get(
-        `${
-          process.env.discover_api_host
-        }/search/datasets?query=${organType.toLowerCase()}&limit=100`
-      )
+    getOrganDetails: function(organ) {
+      const organType = pathOr('', ['fields', 'name'], organ)
+      return this.$axios
+        .get(
+          `${
+            process.env.discover_api_host
+          }/search/datasets?query=${organType.toLowerCase()}&limit=100`
+        )
+        .then(response => {
+          return response.data
+        })
     },
 
-    removeOrganNoDatasets: function() {
-      // Remove organs that do not have any associated datasets
-      this.searchData.items.forEach(async organData => {
-        let organDatasets = await this.getOrganDatasets(organData)
-        // if (organDatasets.data.datasets.length === 0) {
-        //   this.searchData.items.splice(
-        //     this.searchData.items.indexOf(organData),
-        //     1
-        //   )
-        // }
-        this.searchData.total = this.searchData.items.length
-      })
+    /**
+     * Check if an organ has datasets
+     * @param {Object}
+     * @return {Boolean}
+     */
+    hasDatasets: function(organData) {
+      return organData.totalCount > 0 ? true : false
+    },
+
+    /**
+     * Remove organs that do not have any
+     * associated datasets from the search data
+     * @returns {Array}
+     */
+    removeOrganNoDatasets: async function() {
+      const results = await Promise.all(
+        this.searchData.items.map(organ => this.getOrganDetails(organ))
+      )
+      return this.searchData.items.filter((organ, index) =>
+        this.hasDatasets(results[index])
+      )
     },
 
     /**
