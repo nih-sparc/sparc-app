@@ -73,6 +73,7 @@
             <component
               :is="searchResultsComponent"
               :table-data="tableData"
+              :title-column-width="titleColumnWidth"
               @sort-change="handleSortChange"
             />
           </div>
@@ -249,7 +250,8 @@ export default {
           },
           label: 'Home'
         }
-      ]
+      ],
+      titleColumnWidth: 300
     }
   },
 
@@ -395,6 +397,7 @@ export default {
   },
   /**
    * Check the searchType param in the route and set it if it doesn't exist
+   * Shrink the title column width if on mobile
    */
   mounted: function() {
     if (!this.$route.query.type) {
@@ -404,6 +407,7 @@ export default {
     } else {
       this.fetchResults()
     }
+    window.innerWidth <= 768 ? (this.titleColumnWidth = 150) : ''
   },
 
   methods: {
