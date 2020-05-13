@@ -84,7 +84,7 @@ export default {
     const datasets = await $axios.$get(
       `${
         process.env.discover_api_host
-      }/search/datasets?tags=${organType.toLowerCase()}&limit=100`
+      }/search/datasets?query=${organType.toLowerCase()}&limit=100`
     )
 
     const tabsData = clone(tabs)

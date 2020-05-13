@@ -510,6 +510,10 @@ export default {
 
       const tags = this.$route.query.tags || undefined
 
+      // Keep the original search data limit to get all organs before pagination
+      const origSearchDataLimit = this.searchData.limit
+      this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
+
       client
         .getEntries({
           content_type: this.$route.query.type,
@@ -520,8 +524,18 @@ export default {
           include: 2,
           'fields.tags[all]': tags
         })
-        .then(response => {
+        .then(async response => {
           this.searchData = { ...response, order: this.searchData.order }
+          if (this.$route.query.type === 'organ') {
+            this.searchData.items = await this.removeOrganNoDatasets()
+            // Reset search data values for pagination
+            this.searchData.limit = origSearchDataLimit
+            this.searchData.skip == 0
+              ? this.searchData.items.length > this.searchData.limit
+                ? this.searchData.items.splice(this.searchData.limit)
+                : (this.searchData.total = this.searchData.items.length)
+              : ''
+          }
         })
         .catch(() => {
           this.searchData = clone(searchData)
@@ -529,6 +543,47 @@ export default {
         .finally(() => {
           this.isLoadingSearch = false
         })
+    },
+
+    /**
+     * Get organ details from discover api
+     * @param {Object}
+     * @returns {Object}
+     */
+    getOrganDetails: function(organ) {
+      const organType = pathOr('', ['fields', 'name'], organ)
+      return this.$axios
+        .get(
+          `${
+            process.env.discover_api_host
+          }/search/datasets?query=${organType.toLowerCase()}&limit=1`
+        )
+        .then(response => {
+          return response.data
+        })
+    },
+
+    /**
+     * Check if an organ has datasets
+     * @param {Object}
+     * @return {Boolean}
+     */
+    hasDatasets: function(organData) {
+      return organData.totalCount > 0
+    },
+
+    /**
+     * Remove organs that do not have any
+     * associated datasets from the search data
+     * @returns {Array}
+     */
+    removeOrganNoDatasets: async function() {
+      const results = await Promise.all(
+        this.searchData.items.map(organ => this.getOrganDetails(organ))
+      )
+      return this.searchData.items.filter((organ, index) =>
+        this.hasDatasets(results[index])
+      )
     },
 
     /**
