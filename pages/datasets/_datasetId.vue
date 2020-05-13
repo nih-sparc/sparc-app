@@ -127,6 +127,11 @@
         :active-tab="activeTab"
         @set-active-tab="setActiveTab"
       >
+        <dataset-description-info
+          v-show="activeTab === 'description'"
+          :markdown="markdown"
+          :loading-markdown="loadingMarkdown"
+        />
         <dataset-about-info
           v-show="activeTab === 'about'"
           :updated-date="lastUpdatedDate"
@@ -134,11 +139,6 @@
           :doi-value="datasetInfo.doi"
           :dataset-records="datasetRecords"
           :dataset-tags="datasetTags"
-        />
-        <dataset-description-info
-          v-show="activeTab === 'description'"
-          :markdown="markdown"
-          :loading-markdown="loadingMarkdown"
         />
         <dataset-files-info
           v-show="activeTab === 'files'"
@@ -201,12 +201,12 @@ marked.setOptions({
 
 const tabs = [
   {
-    label: 'About',
-    type: 'about'
-  },
-  {
     label: 'Description',
     type: 'description'
+  },
+  {
+    label: 'About',
+    type: 'about'
   },
   {
     label: 'Files',
