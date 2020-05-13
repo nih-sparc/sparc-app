@@ -289,11 +289,6 @@ export default {
     button {
       background-color: transparent;
     }
-    .el-pager {
-      li {
-        background-color: transparent;
-      }
-    }
   }
 
   .page-wrap {
