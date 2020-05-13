@@ -5,7 +5,7 @@
       sortable="custom"
       prop="name"
       label="Title"
-      width="300"
+      :width="titleColumnWidth"
     >
       <template slot-scope="scope">
         <nuxt-link
@@ -70,6 +70,10 @@ export default {
     tableData: {
       type: Array,
       default: () => []
+    },
+    titleColumnWidth: {
+      type: Number,
+      default: () => 300
     }
   },
 
