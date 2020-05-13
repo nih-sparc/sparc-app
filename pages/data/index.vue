@@ -547,7 +547,7 @@ export default {
         .get(
           `${
             process.env.discover_api_host
-          }/search/datasets?query=${organType.toLowerCase()}&limit=100`
+          }/search/datasets?query=${organType.toLowerCase()}&limit=1`
         )
         .then(response => {
           return response.data
