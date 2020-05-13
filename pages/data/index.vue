@@ -407,7 +407,12 @@ export default {
     } else {
       this.fetchResults()
     }
-    window.innerWidth <= 768 ? (this.titleColumnWidth = 150) : ''
+    if (window.innerWidth <= 768) this.titleColumnWidth = 150
+    window.onresize = () => {
+      window.innerWidth <= 768
+        ? (this.titleColumnWidth = 150)
+        : (this.titleColumnWidth = 300)
+    }
   },
 
   methods: {
