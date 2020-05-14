@@ -120,14 +120,23 @@
               </div>
             </div>
           </div>
-          <div v-if="shouldShowSearch" class="nav-main-container__search">
-            <input
+          <div class="nav-main-container__search">
+            <el-input
               v-model="searchQuery"
               type="text"
-              class="nav-main-container__search-input"
-              placeholder="Search Datasets"
-              @keyup.enter="executeSearch"
-            />
+              class="input-with-select nav-main-container__search-input"
+              placeholder="Search"
+              @keyup.native.enter="executeSearch"
+            >
+              <el-select slot="prepend" v-model="searchSelect">
+                <el-option
+                  v-for="option in searchSelectOptions"
+                  :key="option"
+                  :label="option"
+                  :value="option"
+                />
+              </el-select>
+            </el-input>
             <button
               class="nav-main-container__search-button"
               @click="executeSearch"
@@ -183,7 +192,9 @@ export default {
     links,
     menuOpen: false,
     searchOpen: false,
-    searchQuery: ''
+    searchQuery: '',
+    searchSelect: 'Datasets',
+    searchSelectOptions: ['Datasets', 'Support Center']
   }),
 
   computed: {
@@ -271,18 +282,31 @@ export default {
     },
 
     /**
-     * Executes a search query
+     * Executes a search query based on selected
+     * option and query
      */
     executeSearch: function() {
-      this.$router.push({
-        name: 'data',
-        query: {
-          q: this.searchQuery,
-          type: 'dataset'
-        }
-      })
-
+      console.log(this.searchSelect)
+      console.log(this.$route)
+      if (this.searchSelect === 'Datasets') {
+        console.log('FINDING DATASETS')
+        this.$router.push({
+          name: 'data',
+          query: {
+            type: 'dataset',
+            q: this.searchQuery
+          }
+        })
+      } else if (this.searchSelect === 'Support Center') {
+        this.$router.push({
+          name: 'help',
+          query: {
+            search: this.searchQuery
+          }
+        })
+      }
       this.searchQuery = ''
+      this.searchSelect = 'Datasets'
     }
   }
 }
@@ -487,10 +511,11 @@ export default {
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
-  margin-top: 2px;
-  padding-left: 0.5rem;
   @media screen and (max-width: 1023px) {
     display: none;
+  }
+  .el-select {
+    width: 100px;
   }
 }
 
@@ -500,6 +525,7 @@ export default {
   height: 40px;
   border-radius: 4px;
   margin-left: 9px;
+  margin-top: 1px;
   border: none;
   @media screen and (max-width: 1023px) {
     display: none;

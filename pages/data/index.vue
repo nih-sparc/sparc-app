@@ -390,6 +390,7 @@ export default {
 
     '$route.query.q': {
       handler: function() {
+        console.log('QUERY CHANGED')
         this.searchQuery = this.$route.query.q
       },
       immediate: true
@@ -623,9 +624,14 @@ export default {
     submitSearch: function() {
       this.searchData.skip = 0
 
+      console.log(this.searchQuery, this.$route.query.q)
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      console.log('SUBMITTING')
+      console.log(this.$router)
       this.$router.replace({ query }).then(() => {
+        console.log('FETCHING')
         this.fetchResults()
+        console.log('FETCHED')
       })
     },
 
