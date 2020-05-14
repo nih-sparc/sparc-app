@@ -39,6 +39,7 @@
               @update-page-size="updateDataSearchLimit"
             />
             <el-pagination
+              v-if="resourceData.limit < resourceData.total"
               :page-size="resourceData.limit"
               :pager-count="5"
               :current-page="curSearchPage"
