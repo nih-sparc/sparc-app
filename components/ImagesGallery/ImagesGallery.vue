@@ -65,7 +65,7 @@ export default {
       startIndex: 0,
       slideAspectRatio: 0,
       slideAxis: undefined,
-      defaultImg: require('@/assets/sparc.min.svg'),
+      defaultImg: require('@/assets/logo-sparc-wave-primary.svg'),
     }
   },
   watch: {
