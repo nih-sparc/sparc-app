@@ -286,10 +286,7 @@ export default {
      * option and query
      */
     executeSearch: function() {
-      console.log(this.searchSelect)
-      console.log(this.$route)
       if (this.searchSelect === 'Datasets') {
-        console.log('FINDING DATASETS')
         this.$router.push({
           name: 'data',
           query: {
