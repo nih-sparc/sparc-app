@@ -392,6 +392,7 @@ export default {
       handler: function() {
         console.log('QUERY CHANGED')
         this.searchQuery = this.$route.query.q
+        this.fetchResults()
       },
       immediate: true
     }
@@ -628,11 +629,7 @@ export default {
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
       console.log('SUBMITTING')
       console.log(this.$router)
-      this.$router.replace({ query }).then(() => {
-        console.log('FETCHING')
-        this.fetchResults()
-        console.log('FETCHED')
-      })
+      this.$router.replace({ query })
     },
 
     /**
