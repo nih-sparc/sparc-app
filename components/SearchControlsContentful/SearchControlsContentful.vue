@@ -2,7 +2,7 @@
   <div class="search-form" @keyup.enter="submit">
     <input
       v-model="terms"
-      placeholder="Search help topics"
+      :placeholder="placeholder"
       suffix-icon="el-icon-search"
       @keyup.enter="submit"
     />
@@ -15,6 +15,17 @@
 
 <script>
 export default {
+  props: {
+    placeholder: {
+      type: String,
+      default: ''
+    },
+    path: {
+      type: String,
+      default: ''
+    }
+  },
+
   data() {
     return {
       loading: false,
@@ -30,7 +41,7 @@ export default {
 
   methods: {
     submit() {
-      this.$router.push({ path: '/help', query: { search: this.terms } })
+      this.$router.push({ path: this.path, query: { ...this.$route.query, search: this.terms } })
     }
   }
 }
