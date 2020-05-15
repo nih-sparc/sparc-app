@@ -391,6 +391,7 @@ export default {
     '$route.query.q': {
       handler: function() {
         this.searchQuery = this.$route.query.q
+        this.fetchResults()
       },
       immediate: true
     }
@@ -624,9 +625,7 @@ export default {
       this.searchData.skip = 0
 
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
+      this.$router.replace({ query })
     },
 
     /**
@@ -636,9 +635,7 @@ export default {
       this.searchData.skip = 0
 
       const query = { ...this.$route.query, q: '' }
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
+      this.$router.replace({ query })
     },
 
     /**
