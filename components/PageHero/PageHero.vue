@@ -72,7 +72,7 @@ export default {
   }
   h1,
   p {
-    background-color: #383671;
+    background-color: rgba(56, 54, 113, 0.75);
   }
   p:last-child {
     margin: 0;
