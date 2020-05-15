@@ -3,7 +3,12 @@
     <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
 
     <page-hero>
-      <search-form v-model="searchQuery" @search="submitSearch" @clear="clearSearch" :q="q" />
+      <search-form
+        v-model="searchQuery"
+        :q="q"
+        @search="submitSearch"
+        @clear="clearSearch"
+      />
 
       <ul class="search-tabs">
         <li v-for="type in searchTypes" :key="type.label">
@@ -28,8 +33,21 @@
         <el-col :span="24">
           <div class="search-heading">
             <p v-if="!isLoadingSearch && searchData.items.length">
-              {{ searchHeading }}
+              {{ searchHeading }} | Showing
+              <pagination-menu
+                :page-size="searchData.limit"
+                @update-page-size="updateDataSearchLimit"
+              />
             </p>
+            <el-pagination
+              v-if="searchData.limit < searchData.total"
+              :page-size="searchData.limit"
+              :pager-count="5"
+              :current-page="curSearchPage"
+              layout="prev, pager, next"
+              :total="searchData.total"
+              @current-change="onPaginationPageChange"
+            />
           </div>
           <div class="mb-16">
             <div class="active__filter__wrap">
@@ -52,19 +70,33 @@
             </div>
           </div>
           <div v-loading="isLoadingSearch" class="table-wrap">
-            <component :is="searchResultsComponent" :table-data="tableData" @sort-change="handleSortChange" />
-            <el-pagination
-              v-if="searchData.limit < searchData.total"
-              :page-size="searchData.limit"
-              :pager-count="5"
-              :current-page="curSearchPage"
-              layout="prev, pager, next"
-              :total="searchData.total"
-              @current-change="onPaginationPageChange"
+            <component
+              :is="searchResultsComponent"
+              :table-data="tableData"
+              :title-column-width="titleColumnWidth"
+              @sort-change="handleSortChange"
             />
           </div>
         </el-col>
       </el-row>
+      <div class="search-heading">
+        <p v-if="!isLoadingSearch && searchData.items.length">
+          {{ searchHeading }} | Showing
+          <pagination-menu
+            :page-size="searchData.limit"
+            @update-page-size="updateDataSearchLimit"
+          />
+        </p>
+        <el-pagination
+          v-if="searchData.limit < searchData.total"
+          :page-size="searchData.limit"
+          :pager-count="5"
+          :current-page="curSearchPage"
+          layout="prev, pager, next"
+          :total="searchData.total"
+          @current-change="onPaginationPageChange"
+        />
+      </div>
     </div>
     <search-filters
       v-model="filters"
@@ -96,6 +128,7 @@ import {
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
@@ -148,7 +181,7 @@ const searchData = {
   skip: 0,
   items: [],
   order: undefined,
-  ascending: false,
+  ascending: false
 }
 
 import createClient from '@/plugins/contentful.js'
@@ -194,7 +227,8 @@ export default {
     Breadcrumb,
     PageHero,
     SearchFilters,
-    SearchForm
+    SearchForm,
+    PaginationMenu
   },
 
   mixins: [],
@@ -216,7 +250,8 @@ export default {
           },
           label: 'Home'
         }
-      ]
+      ],
+      titleColumnWidth: 300
     }
   },
 
@@ -227,13 +262,11 @@ export default {
      */
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      let url = `${
-        process.env.discover_api_host}/search/${
+      let url = `${process.env.discover_api_host}/search/${
         searchType === 'simulation' ? 'dataset' : searchType
-      }s?offset=${this.searchData.skip
-      }&limit=${this.searchData.limit
-      }&orderBy=${this.searchData.order || 'date'
-      }&orderDirection=${
+      }s?offset=${this.searchData.skip}&limit=${
+        this.searchData.limit
+      }&orderBy=${this.searchData.order || 'date'}&orderDirection=${
         this.searchData.ascending ? 'asc' : 'desc'
       }&${
         searchType === 'simulation'
@@ -302,7 +335,7 @@ export default {
         find(propEq('type', this.$route.query.type))
       )(this.searchTypes)
 
-      let searchHeading = `Showing ${start}-${end} of ${this.searchData.total} ${searchTypeLabel}`
+      let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
 
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
@@ -364,6 +397,7 @@ export default {
   },
   /**
    * Check the searchType param in the route and set it if it doesn't exist
+   * Shrink the title column width if on mobile
    */
   mounted: function() {
     if (!this.$route.query.type) {
@@ -373,9 +407,29 @@ export default {
     } else {
       this.fetchResults()
     }
+    if (window.innerWidth <= 768) this.titleColumnWidth = 150
+    window.onresize = () => {
+      window.innerWidth <= 768
+        ? (this.titleColumnWidth = 150)
+        : (this.titleColumnWidth = 300)
+    }
   },
 
   methods: {
+    /**
+     * Update search limit based on pagination number selection
+     * @param {Number} limit
+     */
+    updateDataSearchLimit: function(limit) {
+      this.searchData.skip = 0
+      if (limit === 'View All') {
+        this.searchData.limit = this.searchData.total
+      } else {
+        this.searchData.limit = limit
+      }
+      this.fetchResults()
+    },
+
     /**
      * Set active filters based on the query params
      * @params {Array} filters
@@ -413,7 +467,12 @@ export default {
     },
 
     handleSortChange: function(payload) {
-      handleSortChange(this.searchType.dataSource, this.searchData, this.fetchResults, payload)
+      handleSortChange(
+        this.searchType.dataSource,
+        this.searchData,
+        this.fetchResults,
+        payload
+      )
     },
 
     /**
@@ -451,6 +510,10 @@ export default {
 
       const tags = this.$route.query.tags || undefined
 
+      // Keep the original search data limit to get all organs before pagination
+      const origSearchDataLimit = this.searchData.limit
+      this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
+
       client
         .getEntries({
           content_type: this.$route.query.type,
@@ -461,8 +524,18 @@ export default {
           include: 2,
           'fields.tags[all]': tags
         })
-        .then(response => {
+        .then(async response => {
           this.searchData = { ...response, order: this.searchData.order }
+          if (this.$route.query.type === 'organ') {
+            this.searchData.items = await this.removeOrganNoDatasets()
+            // Reset search data values for pagination
+            this.searchData.limit = origSearchDataLimit
+            this.searchData.skip == 0
+              ? this.searchData.items.length > this.searchData.limit
+                ? this.searchData.items.splice(this.searchData.limit)
+                : (this.searchData.total = this.searchData.items.length)
+              : ''
+          }
         })
         .catch(() => {
           this.searchData = clone(searchData)
@@ -470,6 +543,47 @@ export default {
         .finally(() => {
           this.isLoadingSearch = false
         })
+    },
+
+    /**
+     * Get organ details from discover api
+     * @param {Object}
+     * @returns {Object}
+     */
+    getOrganDetails: function(organ) {
+      const organType = pathOr('', ['fields', 'name'], organ)
+      return this.$axios
+        .get(
+          `${
+            process.env.discover_api_host
+          }/search/datasets?query=${organType.toLowerCase()}&limit=1`
+        )
+        .then(response => {
+          return response.data
+        })
+    },
+
+    /**
+     * Check if an organ has datasets
+     * @param {Object}
+     * @return {Boolean}
+     */
+    hasDatasets: function(organData) {
+      return organData.totalCount > 0
+    },
+
+    /**
+     * Remove organs that do not have any
+     * associated datasets from the search data
+     * @returns {Array}
+     */
+    removeOrganNoDatasets: async function() {
+      const results = await Promise.all(
+        this.searchData.items.map(organ => this.getOrganDetails(organ))
+      )
+      return this.searchData.items.filter((organ, index) =>
+        this.hasDatasets(results[index])
+      )
     },
 
     /**
@@ -673,18 +787,23 @@ export default {
   border: 1px solid rgb(228, 231, 237);
   padding: 16px;
 }
-.el-pagination {
+::v-deep .el-pagination {
   margin-top: 1.5em;
-  text-align: center;
+  text-align: right;
+  background-color: transparent;
+  button {
+    background-color: transparent;
+  }
 }
 .search-heading {
   align-items: center;
   display: flex;
   margin-bottom: 1em;
+  justify-content: space-between;
   p {
     font-size: 0.875em;
     flex-shrink: 0;
-    margin: 0 1em 0 0;
+    margin: 2em 1em 0 0;
   }
 }
 ::v-deep {
