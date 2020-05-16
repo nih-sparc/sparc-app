@@ -51,6 +51,7 @@ export default {
 @import '@/assets/_variables.scss';
 .search-form {
   display: flex;
+  min-width: 275px;
   margin: 0 0 1rem;
 }
 input {
