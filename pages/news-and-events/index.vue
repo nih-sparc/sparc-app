@@ -6,6 +6,10 @@
       <p>
         {{ heroData.fields.heroCopy }}
       </p>
+      <search-controls-contentful
+        placeholder="Search news and events"
+        path="/news-and-events"
+      />
       <img
         v-if="heroData.fields.heroImage"
         slot="image"
@@ -79,19 +83,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import TabNav from '@/components/TabNav/TabNav.vue'
-import EventListItem from '@/components/EventListItem/EventListItem.vue'
-import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
-import EventCard from '@/components/EventCard/EventCard.vue'
-import PageHero from '@/components/PageHero/PageHero.vue'
+  import Vue from 'vue';
+  import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue';
+  import TabNav from '@/components/TabNav/TabNav.vue';
+  import EventListItem from '@/components/EventListItem/EventListItem.vue';
+  import NewsListItem from '@/components/NewsListItem/NewsListItem.vue';
+  import EventCard from '@/components/EventCard/EventCard.vue';
+  import PageHero from '@/components/PageHero/PageHero.vue';
+  import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 
-import createClient from '@/plugins/contentful.js'
+  import createClient from '@/plugins/contentful.js';
 
-import { EventsEntry, HeroDataEntry, NewsEntry, Data, Computed, fetchData } from './model'
+  import { Computed, Data, fetchData, HeroDataEntry, NewsAndEventsComponent } from './model';
 
-const client = createClient()
+  const client = createClient()
 const MAX_PAST_EVENTS = 8
 
 export default Vue.extend<Data, never, Computed, never>({
@@ -103,11 +108,22 @@ export default Vue.extend<Data, never, Computed, never>({
     EventListItem,
     PageHero,
     NewsListItem,
-    TabNav
+    TabNav,
+    SearchControlsContentful
   },
 
   asyncData() {
     return fetchData(client)
+  },
+
+  watch: {
+    '$route.query': async function(this: NewsAndEventsComponent) {
+      const { upcomingEvents, pastEvents, news, heroData } = await fetchData(client, this.$route.query.search as string)
+      this.upcomingEvents = upcomingEvents;
+      this.pastEvents = pastEvents;
+      this.news = news;
+      this.heroData = heroData;
+    }
   },
 
   data: function() {
