@@ -56,7 +56,7 @@
             </div>
           </div>
 
-          <div class="mobile-navigation-wrapper" :class="[menuOpen ? 'overlay' : '']">
+          <div :class="[menuOpen ? 'overlay' : '']">
             <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
               <ul>
                 <li
@@ -510,7 +510,9 @@ export default {
 
 .nav-main-container__search {
   display: flex;
-  margin-left: auto;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 54%;
   margin-right: 1rem;
   @media (min-width: 320px) and (max-width: 1023px) {
     width: 0;
@@ -584,10 +586,6 @@ export default {
       display: block;
     }
   }
-}
-
-.mobile-navigation-wrapper {
-  display: flex;
 }
 
 .mobile-navigation {
