@@ -1,27 +1,31 @@
-import {Asset, Entry, ContentfulClientApi} from "contentful"
+import { Asset, ContentfulClientApi, Entry } from 'contentful';
+import { Route } from 'vue-router';
 
-import { Breadcrumb } from '@/components/Breadcrumb/model.ts'
+import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
 
 
-export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData | void> => {
+export const fetchData = async (client: ContentfulClientApi, query?: string) : Promise<AsyncData> => {
   try {
     const todaysDate = new Date()
 
     const upcomingEvents = await client.getEntries<Event>({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
-      'fields.startDate[gte]': todaysDate.toISOString()
+      'fields.startDate[gte]': todaysDate.toISOString(),
+      query,
     })
 
     const pastEvents = await client.getEntries<Event>({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
-      'fields.startDate[lt]': todaysDate.toISOString()
+      'fields.startDate[lt]': todaysDate.toISOString(),
+      query,
     })
 
     const news = await client.getEntries<News>({
       content_type: process.env.ctf_news_id,
-      order: '-fields.publishedDate'
+      order: '-fields.publishedDate',
+      query
     })
 
     const heroData = await client.getEntry<HeroData>(process.env.ctf_news_and_events_page_id ?? '')
@@ -34,6 +38,12 @@ export const fetchData = async (client: ContentfulClientApi) : Promise<AsyncData
     }
   } catch (e) {
     console.error(e)
+    return {
+      upcomingEvents: [],
+      pastEvents: [],
+      news: [],
+      heroData: {} as unknown as Entry<HeroData>
+    }
   }
 }
 
@@ -97,3 +107,5 @@ export interface Computed {
   pastEventsChunkMax: number,
   displayedPastEvents: EventsEntry[]
 }
+
+export type NewsAndEventsComponent = Data & Computed & { $route: Route }

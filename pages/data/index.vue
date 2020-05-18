@@ -189,37 +189,6 @@ import { handleSortChange, transformFilters } from './utils'
 
 const client = createClient()
 
-/**
- * Transform indidivual filter
- * @param {Object} filter
- */
-/*const transformIndividualFilter = filter => {
-  const category = propOr('', 'category', filter)
-  const filters = propOr([], 'tags', filter)
-
-  const transformedFilters = filters.map(filter => {
-    return {
-      label: filter.fields.name,
-      category: category,
-      key: filter.fields.slug,
-      value: false
-    }
-  })
-
-  return mergeLeft({ filters: transformedFilters }, filter)
-}*/
-
-/**
- * Transform filter response
- * @param {Object} filters
- */
-/*const transformFilters = compose(
-  flatten,
-  map(transformIndividualFilter),
-  pluck('fields'),
-  propOr([], 'filters')
-)*/
-
 export default {
   name: 'DataPage',
 
