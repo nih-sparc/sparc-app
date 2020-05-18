@@ -520,7 +520,7 @@ export default {
 }
 
 .nav-main-container__search-input {
-  width: 26vw;
+  width: 30vw;
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
@@ -528,7 +528,7 @@ export default {
     display: none;
   }
   .el-select {
-    width: 100px;
+    width: 150px;
   }
 }
 
