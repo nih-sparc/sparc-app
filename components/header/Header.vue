@@ -56,7 +56,7 @@
             </div>
           </div>
 
-          <div :class="[menuOpen ? 'overlay' : '']">
+          <div class="mobile-navigation-wrapper" :class="[menuOpen ? 'overlay' : '']">
             <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
               <ul>
                 <li
@@ -510,9 +510,7 @@ export default {
 
 .nav-main-container__search {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  width: 54%;
+  margin-left: auto;
   margin-right: 1rem;
   @media (min-width: 320px) and (max-width: 1023px) {
     width: 0;
@@ -520,7 +518,7 @@ export default {
 }
 
 .nav-main-container__search-input {
-  width: 26vw;
+  width: 30vw;
   height: 34px;
   border-radius: 4px;
   border: solid 1px $dark-gray;
@@ -528,7 +526,7 @@ export default {
     display: none;
   }
   .el-select {
-    width: 100px;
+    width: 150px;
   }
 }
 
@@ -586,6 +584,10 @@ export default {
       display: block;
     }
   }
+}
+
+.mobile-navigation-wrapper {
+  display: flex;
 }
 
 .mobile-navigation {
