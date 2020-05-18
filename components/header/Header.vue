@@ -124,7 +124,7 @@
             <el-input
               v-model="searchQuery"
               type="text"
-              class="input-with-select nav-main-container__search-input"
+              class="nav-main-container__search-input"
               placeholder="Search"
               @keyup.native.enter="executeSearch"
             >
@@ -529,6 +529,9 @@ export default {
   }
   .el-select {
     width: 150px;
+  }
+  ::v-deep .el-input__inner {
+    color: $medium-gray;
   }
 }
 
