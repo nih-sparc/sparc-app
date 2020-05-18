@@ -117,12 +117,15 @@ export default Vue.extend<Data, never, Computed, never>({
   },
 
   watch: {
-    '$route.query': async function(this: NewsAndEventsComponent) {
-      const { upcomingEvents, pastEvents, news, heroData } = await fetchData(client, this.$route.query.search as string)
-      this.upcomingEvents = upcomingEvents;
-      this.pastEvents = pastEvents;
-      this.news = news;
-      this.heroData = heroData;
+    '$route.query': {
+      handler: async function(this: NewsAndEventsComponent) {
+        const { upcomingEvents, pastEvents, news, heroData } = await fetchData(client, this.$route.query.search as string)
+        this.upcomingEvents = upcomingEvents;
+        this.pastEvents = pastEvents;
+        this.news = news;
+        this.heroData = heroData;
+      },
+      immediate: true
     }
   },
 
