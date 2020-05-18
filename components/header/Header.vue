@@ -131,9 +131,9 @@
               <el-select slot="prepend" v-model="searchSelect">
                 <el-option
                   v-for="option in searchSelectOptions"
-                  :key="option"
-                  :label="option"
-                  :value="option"
+                  :key="option.key"
+                  :label="option.label"
+                  :value="option.value"
                 />
               </el-select>
             </el-input>
@@ -193,8 +193,24 @@ export default {
     menuOpen: false,
     searchOpen: false,
     searchQuery: '',
-    searchSelect: 'Datasets',
-    searchSelectOptions: ['Datasets', 'Support Center']
+    searchSelect: 'data',
+    searchSelectOptions: [{
+      key: 'data',
+      value: 'data',
+      label: 'Datasets'
+    }, {
+      key: 'resources',
+      value: 'resources',
+      label: 'Resources'
+    }, {
+      key: 'news-and-events',
+      value: 'news-and-events',
+      label: 'News and Events'
+    }, {
+      key: 'help',
+      value: 'help',
+      label: 'Support Center'
+    }]
   }),
 
   computed: {
@@ -286,22 +302,22 @@ export default {
      * option and query
      */
     executeSearch: function() {
-      if (this.searchSelect === 'Datasets') {
-        this.$router.push({
-          name: 'data',
-          query: {
-            type: 'dataset',
-            q: this.searchQuery
-          }
-        })
-      } else if (this.searchSelect === 'Support Center') {
-        this.$router.push({
-          name: 'help',
-          query: {
-            search: this.searchQuery
-          }
-        })
-      }
+      const option = this.searchSelectOptions.find(o => o.value === this.searchSelect)
+      const searchKey = option.value === 'data' ? 'q' : 'search'
+      const type = option.value === 'data'
+        ? 'dataset'
+        : option.value === 'resources'
+            ? 'sparcPartners'
+            : undefined
+
+      this.$router.push({
+        name: option.value,
+        query: {
+          type,
+          [searchKey]: this.searchQuery
+        }
+      })
+
       this.searchQuery = ''
       this.searchSelect = 'Datasets'
     }
