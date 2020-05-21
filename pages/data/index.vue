@@ -496,7 +496,10 @@ export default {
         })
         .then(async response => {
           this.searchData = { ...response, order: this.searchData.order }
-          if (this.$route.query.type === 'organ') {
+          if (
+            this.$route.query.type === 'organ' &&
+            origSearchDataLimit !== 999
+          ) {
             this.searchData.items = await this.removeOrganNoDatasets()
             // Reset search data values for pagination
             this.searchData.limit = origSearchDataLimit
