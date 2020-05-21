@@ -13,7 +13,7 @@
       <svg-icon name="icon-calendar" height="16" width="16" />
       <p>{{ eventDate(event) }}</p>
     </div>
-    <div class="upcoming-event__detail">
+    <div v-if="event.fields.location" class="upcoming-event__detail">
       <svg-icon name="icon-map" height="16" width="16" />
       <p>{{ event.fields.location }}</p>
     </div>
@@ -59,7 +59,7 @@ export default {
     eventDate: function(event) {
       const startDate = this.formatDate(event.fields.startDate)
       const endDate = this.formatDate(event.fields.endDate)
-      return `${startDate} - ${endDate}`
+      return startDate === endDate ? startDate : `${startDate} - ${endDate}`
     }
   }
 }
