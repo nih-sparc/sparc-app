@@ -319,7 +319,7 @@ export default {
       })
 
       this.searchQuery = ''
-      this.searchSelect = 'Datasets'
+      this.searchSelect = 'data'
     }
   }
 }
