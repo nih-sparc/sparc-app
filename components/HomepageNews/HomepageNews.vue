@@ -18,7 +18,7 @@
           <div class="sparc-card__detail">
             <svg-icon name="icon-calendar" height="16" width="16" />
             <p>{{ eventDate(item) }}</p>
-            <div v-if="item.fields.location">
+            <template v-if="item.fields.location">
               <svg-icon
                 class="sparc-card__detail--location"
                 name="icon-map"
@@ -26,7 +26,7 @@
                 width="16"
               />
               <p>{{ item.fields.location }}</p>
-            </div>
+            </template>
           </div>
           <!-- eslint-disable vue/no-v-html -->
           <!-- marked will sanitize the HTML injected -->
