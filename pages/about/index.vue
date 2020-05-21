@@ -8,9 +8,12 @@
       </p>
       <p>
         Visit the
-        <a href="https://commonfund.nih.gov/sparc/" target="_blank">
-          NIH SPARC program website
-        </a>
+        <a
+          class="about-page-link"
+          href="https://commonfund.nih.gov/sparc/"
+          target="_blank"
+        >
+          NIH SPARC program website</a>
         to learn more.
       </p>
       <img
@@ -150,6 +153,14 @@ export default {
     @media screen and (max-width: 767px) {
       flex-direction: column;
     }
+  }
+}
+
+.about-page-link {
+  color: white;
+  text-decoration: underline;
+  &:hover {
+    color: #909399;
   }
 }
 
