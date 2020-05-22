@@ -80,11 +80,15 @@ export default {
     }
 
     // Get related datasets
-    const organType = pathOr('', ['fields', 'name'], pageData)
+    const projectSection = pathOr(
+      '',
+      ['fields', 'projectSection', 'fields', 'title'],
+      pageData
+    )
     const datasets = await $axios.$get(
       `${
         process.env.discover_api_host
-      }/search/datasets?query=${organType.toLowerCase()}&limit=100`
+      }/search/datasets?query=${projectSection.toLowerCase()}&limit=100`
     )
 
     const tabsData = clone(tabs)

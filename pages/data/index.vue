@@ -524,12 +524,16 @@ export default {
      * @returns {Object}
      */
     getOrganDetails: function(organ) {
-      const organType = pathOr('', ['fields', 'name'], organ)
+      const projectSection = pathOr(
+        '',
+        ['fields', 'projectSection', 'fields', 'title'],
+        organ
+      )
       return this.$axios
         .get(
           `${
             process.env.discover_api_host
-          }/search/datasets?query=${organType.toLowerCase()}&limit=1`
+          }/search/datasets?query=${projectSection.toLowerCase()}&limit=1`
         )
         .then(response => {
           return response.data
