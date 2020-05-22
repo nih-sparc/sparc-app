@@ -27,7 +27,7 @@ export default {
 
 <style lang="scss">
 .page-hero {
-  background: #383671;
+  background: #292b66;
   color: #f0f2f5;
   font-size: 1em;
   line-height: 1.5rem;
@@ -72,7 +72,7 @@ export default {
   }
   h1,
   p {
-    background-color: rgba(56, 54, 113, 0.75);
+    background-color: rgba(41, 43, 102, 0.75);
   }
   p:last-child {
     margin: 0;
