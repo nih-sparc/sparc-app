@@ -37,6 +37,10 @@ export default {
     line-height: 2rem;
     padding: 2.5rem 0;
   }
+  // Firefox hack to fix color discrepancy
+  @-moz-document url-prefix() {
+    background: #21275a;
+  }
   &__copy {
     position: relative;
     z-index: 1;
@@ -73,6 +77,11 @@ export default {
   h1,
   p {
     background-color: rgba(41, 43, 102, 0.75);
+
+    // Firefox hack to fix color discrepancy
+    @-moz-document url-prefix() {
+      background: rgba(33, 39, 90, 0.75);
+    }
   }
   p:last-child {
     margin: 0;
