@@ -118,7 +118,7 @@ export default Vue.extend<Data, Methods, never, never>({
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .page-hero {
-  background-color: #383671;
+  background-color: #292b66;
   background-image: none;
   h2 {
     font-size: 2rem;

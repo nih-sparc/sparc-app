@@ -16,12 +16,6 @@
           NIH SPARC program website</a>
         to learn more.
       </p>
-      <img
-        v-if="heroImage"
-        slot="image"
-        class="page-hero-img"
-        :src="heroImage.fields.file.url"
-      />
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
