@@ -524,8 +524,10 @@ export default {
      * @returns {Object}
      */
     getOrganDetails: function(organ) {
+      const organName = pathOr('', ['fields', 'name'], organ)
+
       const projectSection = pathOr(
-        '',
+        organName,
         ['fields', 'projectSection', 'fields', 'title'],
         organ
       )
