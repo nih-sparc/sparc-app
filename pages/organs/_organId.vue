@@ -60,6 +60,7 @@ export default {
   async asyncData({ route, $axios }) {
     // Get page content
     const pageData = await client.getEntry(route.params.organId)
+    const organName = pathOr('', ['fields', 'name'], pageData)
 
     const projectSectionId = path(
       ['fields', 'projectSection', 'sys', 'id'],
@@ -81,10 +82,11 @@ export default {
 
     // Get related datasets
     const projectSection = pathOr(
-      '',
+      organName,
       ['fields', 'projectSection', 'fields', 'title'],
       pageData
     )
+
     const datasets = await $axios.$get(
       `${
         process.env.discover_api_host
