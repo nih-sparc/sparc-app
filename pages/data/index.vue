@@ -32,7 +32,7 @@
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <div class="search-heading">
-            <p v-if="!isLoadingSearch && searchData.items.length">
+            <p v-show="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }} | Showing
               <pagination-menu
                 :page-size="searchData.limit"
