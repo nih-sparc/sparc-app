@@ -14,7 +14,6 @@
       </detail-tabs>
     </div>
   </div>
-  </div>
 </template>
 
 <script>
@@ -26,7 +25,7 @@ export default {
 
   components: {
     BiolucidaViewer,
-    DetailTabs
+    DetailTabs,
   },
 
   data: () => {
@@ -34,11 +33,11 @@ export default {
       tabs: [
         {
           label: 'Viewer',
-          type: 'viewer'
-        }
+          type: 'viewer',
+        },
       ],
       activeTab: 'viewer',
-      file: {}
+      file: {},
     }
   },
 
@@ -48,13 +47,13 @@ export default {
      * @returns {Object}
      */
     biolucidaData: function() {
-      return  {
+      return {
         biolucida_image_id: '',
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.viewer,
-        status: ''
+        status: '',
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -90,7 +89,6 @@ h1 {
 .page-heading__button {
   flex-shrink: 0;
 }
-
 
 .file-detail {
   border-bottom: 1px solid #dbdfe6;

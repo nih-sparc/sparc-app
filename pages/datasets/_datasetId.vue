@@ -154,8 +154,12 @@
         </client-only>
         <images-gallery
           v-show="activeTab === 'images'"
+          :markdown="markdown"
           :dataset-images="imagesData.dataset_images"
         />
+        <div v-show="activeTab === 'viewer'" class="viewer">
+          <biolucida-viewer :data="biolucidaData" />
+        </div>
       </detail-tabs>
     </div>
     <download-dataset
@@ -178,6 +182,8 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
+
+import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
@@ -218,6 +224,7 @@ export default {
   name: 'DatasetDetails',
 
   components: {
+    BiolucidaViewer,
     DetailsHeader,
     DetailTabs,
     ContributorItem,
@@ -249,7 +256,7 @@ export default {
 
     const imagesData = await $axios
       .$get(
-        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${route.params.datasetId}`
+        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${route.params.datasetId}`,
       )
       .catch(() => {
         return {}
@@ -338,7 +345,7 @@ export default {
       const storage = compose(
         split(' '),
         this.formatMetric,
-        propOr(0, 'size')
+        propOr(0, 'size'),
       )(this.datasetInfo)
 
       return storage.reduce((number, unit) => {
