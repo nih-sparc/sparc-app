@@ -64,4 +64,26 @@ const getThumbnail = async (id) => {
   })
 }
 
-export default { getThumbnail, getImageMapData }
+const getImageInfo = async (id) => {
+  return apiClient.get('image/' + id, {
+    // responseType: 'application/json',
+  })
+}
+
+const getCollectionInfo = async (id) => {
+  const activeToken = await getToken()
+  const headers = {
+    token: activeToken,
+  }
+  return apiClient.get('collections/' + id, {
+    headers,
+    // responseType: 'application/json',
+  })
+}
+
+export default {
+  getThumbnail,
+  getImageMapData,
+  getImageInfo,
+  getCollectionInfo,
+}
