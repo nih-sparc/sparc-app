@@ -1,6 +1,7 @@
 /* eslint-disable */
 require('./icon-about')
 require('./icon-anatomy')
+require('./icon-arrow')
 require('./icon-calendar')
 require('./icon-clear')
 require('./icon-contact')

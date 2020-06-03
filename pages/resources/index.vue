@@ -31,13 +31,34 @@
     </page-hero>
     <div class="page-wrap container">
       <div class="page-wrap__results">
-        <p>
-          Showing {{ currentResourceCount }} of
-          <strong>{{ totalResourceCount }}</strong>
-        </p>
+        <div class="resources-heading">
+          <p>
+            {{ currentResourceCount }} {{ resourceHeading }} | Showing
+            <pagination-menu
+              :page-size="resourceData.limit"
+              @update-page-size="updateDataSearchLimit"
+            />
+            <el-pagination
+              v-if="resourceData.limit < resourceData.total"
+              :page-size="resourceData.limit"
+              :pager-count="5"
+              :current-page="curSearchPage"
+              layout="prev, pager, next"
+              :total="resourceData.total"
+              @current-change="onPaginationPageChange"
+            />
+          </p>
+        </div>
       </div>
       <div v-loading="isLoadingResources" class="table-wrap">
         <resources-search-results :table-data="tableData" />
+      </div>
+      <div class="resources-heading">
+        {{ currentResourceCount }} {{ resourceHeading }} | Showing
+        <pagination-menu
+          :page-size="resourceData.limit"
+          @update-page-size="updateDataSearchLimit"
+        />
         <el-pagination
           :page-size="resourceData.limit"
           :pager-count="5"
@@ -52,10 +73,11 @@
 </template>
 
 <script>
-import { pathOr, propOr, clone, defaultTo, compose, head } from 'ramda'
+import { propOr, clone, compose, head } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
@@ -87,7 +109,8 @@ export default {
   components: {
     Breadcrumb,
     ResourcesSearchResults,
-    PageHero
+    PageHero,
+    PaginationMenu
   },
 
   asyncData() {
@@ -119,7 +142,8 @@ export default {
       tabTypes: tabTypes,
       platformItems: [],
       toolItems: [],
-      isLoadingResources: false
+      isLoadingResources: false,
+      resourceHeading: ''
     }
   },
 
@@ -134,16 +158,6 @@ export default {
         : this.resourceData.skip !== 0
         ? this.resourceData.total - this.resourceData.limit
         : this.resourceData.limit
-    },
-
-    /**
-     * Returns total number of resources
-     * @returns {Number}
-     */
-    totalResourceCount: function() {
-      return this.resourceData.total > 1
-        ? `${this.resourceData.total} resources`
-        : `${this.resourceData.total} resource`
     },
 
     /**
@@ -184,9 +198,28 @@ export default {
     } else {
       this.fetchResults()
     }
+
+    if (this.currentResourceCount > 1) {
+      this.resourceHeading = 'resources'
+    } else {
+      this.resourceHeading = 'resource'
+    }
   },
 
   methods: {
+    /**
+     * Update search limit based on pagination number selection
+     * @param {Number} limit
+     */
+    updateDataSearchLimit: function(limit) {
+      this.resourceData.skip = 0
+      if (limit === 'View All') {
+        this.resourceData.limit = this.resourceData.total
+      } else {
+        this.resourceData.limit = limit
+      }
+      this.fetchResults()
+    },
     /**
      * Fetches resource results
      */
@@ -246,9 +279,17 @@ export default {
     padding: 16px;
   }
 
-  .el-pagination {
-    margin-top: 1.5em;
-    text-align: center;
+  .resources-heading {
+    margin-top: 1rem;
+  }
+
+  ::v-deep .el-pagination {
+    margin-top: -2.5em;
+    text-align: right;
+    background-color: transparent;
+    button {
+      background-color: transparent;
+    }
   }
 
   .page-wrap {

@@ -85,11 +85,15 @@ export interface Data {
   upcomingEvents: EventsEntry[],
   pastEvents: EventsEntry[],
   isShowingAllUpcomingEvents: boolean,
+  isShowingAllPastEvents: boolean,
   news: NewsEntry[],
-  heroData: HeroDataEntry
+  heroData: HeroDataEntry,
+  pastEventChunk: number
 }
 
 
 export interface Computed {
-  displayedUpcomingEvents: EventsEntry[]
+  displayedUpcomingEvents: EventsEntry[],
+  pastEventsChunkMax: number,
+  displayedPastEvents: EventsEntry[]
 }

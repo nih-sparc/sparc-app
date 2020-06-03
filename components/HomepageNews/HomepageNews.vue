@@ -3,7 +3,7 @@
     <div class="home-container">
       <h2><nuxt-link to="/news-and-events">News &amp; Upcoming Events</nuxt-link></h2>
       <sparc-card
-        v-for="(item, idx) in news"
+        v-for="(item, idx) in upcomingNews"
         :key="item.sys.id"
         :image="getImageSrc(item)"
         :image-alt="getImageAlt(item)"
@@ -15,6 +15,17 @@
               {{ item.fields.title }}
             </a>
           </h3>
+          <div class="sparc-card__detail">
+            <svg-icon name="icon-calendar" height="16" width="16" />
+            <p>{{ eventDate(item) }}</p>
+            <svg-icon
+              class="sparc-card__detail--location"
+              name="icon-map"
+              height="16"
+              width="16"
+            />
+            <p>{{ item.fields.location }}</p>
+          </div>
           <!-- eslint-disable vue/no-v-html -->
           <!-- marked will sanitize the HTML injected -->
           <div v-html="parseMarkdown(item.fields.summary)" />
@@ -36,6 +47,8 @@ import SparcCard from '@/components/SparcCard/SparcCard.vue'
 
 import MarkedMixin from '@/mixins/marked'
 
+import FormatDate from '@/mixins/format-date'
+
 export default {
   name: 'HomepageNews',
 
@@ -43,12 +56,22 @@ export default {
     SparcCard
   },
 
-  mixins: [MarkedMixin],
+  mixins: [MarkedMixin, FormatDate],
 
   props: {
     news: {
       type: Array,
       default: () => []
+    }
+  },
+
+  computed: {
+    /**
+     * Filter news to remove past events
+     * @returns {Array}
+     */
+    upcomingNews: function() {
+      return this.news.filter(event => this.isUpcoming(event))
     }
   },
 
@@ -72,6 +95,25 @@ export default {
         ['fields', 'image', 'fields', 'file', 'description'],
         item
       )
+    },
+    /**
+     * Get event date range
+     * @returns {String}
+     */
+    eventDate: function(event) {
+      const startDate = this.formatDate(event.fields.startDate)
+      const endDate = this.formatDate(event.fields.endDate)
+      return `${startDate} - ${endDate}`
+    },
+    /**
+     * Check if an event is upcoming
+     * @param {Object} item
+     * @returns {Boolean}
+     */
+    isUpcoming: function(item) {
+      const today = new Date()
+      const eventEndDate = pathOr('', ['fields', 'endDate'], item)
+      return Date.parse(eventEndDate) > Date.parse(today) ? true : false
     }
   }
 }
@@ -98,6 +140,21 @@ h2 a:not(:hover) {
   }
   h3 {
     font-size: 1.333333333em;
+  }
+  &__detail {
+    align-items: baseline;
+    display: flex;
+    margin-bottom: 0.625rem;
+    .svg-icon {
+      flex-shrink: 0;
+      margin-right: 0.5rem;
+    }
+    p {
+      margin-bottom: 0rem;
+    }
+    &--location {
+      margin-left: 1.25rem;
+    }
   }
 }
 </style>

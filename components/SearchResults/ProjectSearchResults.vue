@@ -5,7 +5,7 @@
       sortable="custom"
       prop="fields.title"
       label="Title"
-      width="300"
+      :width="titleColumnWidth"
     >
       <template slot-scope="scope">
         <nuxt-link
@@ -19,27 +19,9 @@
         </nuxt-link>
       </template>
     </el-table-column>
-    <el-table-column label="Image" width="148">
+    <el-table-column prop="fields.description" label="Description" width="648">
       <template slot-scope="scope">
-        <nuxt-link
-          :to="{
-            name: 'projects-projectId',
-            params: { projectId: scope.row.sys.id }
-          }"
-        >
-          <img
-            class="img-project"
-            :src="getImageSrc(scope)"
-            :alt="getImageAlt(scope)"
-            height="128"
-            width="128"
-          />
-        </nuxt-link>
-      </template>
-    </el-table-column>
-    <el-table-column prop="fields.description" label="Description" width="500">
-      <template slot-scope="scope">
-        {{ truncateField(scope.row.fields.description) }}
+        {{ truncateField(scope.row.fields.description, 500) }}
       </template>
     </el-table-column>
     <el-table-column
@@ -71,6 +53,10 @@ export default {
     tableData: {
       type: Array,
       default: () => []
+    },
+    titleColumnWidth: {
+      type: Number,
+      default: () => 300
     }
   },
 

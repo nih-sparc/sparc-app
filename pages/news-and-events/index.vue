@@ -45,13 +45,26 @@
             </div>
           </template>
 
-          <div v-if="activeTab === 'past'" class="subpage">
-            <event-list-item
-              v-for="(event, index) in pastEvents"
-              :key="`${event}-${index}`"
-              :event="event"
-            />
-          </div>
+          <template v-if="activeTab === 'past'">
+            <div class="past-events">
+              <event-card
+                v-for="event in displayedPastEvents"
+                :key="event.sys.id"
+                :event="event"
+              />
+            </div>
+
+            <div class="show-more-past-events">
+              <a
+                v-if="!isShowingAllPastEvents && pastEventsChunkMax > 1"
+                class="show-more-past-events__btn"
+                href="#"
+                @click.prevent="pastEventChunk += 1"
+              >
+                View More
+              </a>
+            </div>
+          </template>
         </div>
 
         <h2>Latest News</h2>
@@ -79,6 +92,7 @@ import createClient from '@/plugins/contentful.js'
 import { EventsEntry, HeroDataEntry, NewsEntry, Data, Computed, fetchData } from './model'
 
 const client = createClient()
+const MAX_PAST_EVENTS = 8
 
 export default Vue.extend<Data, never, Computed, never>({
   name: 'EventPage',
@@ -121,8 +135,10 @@ export default Vue.extend<Data, never, Computed, never>({
       upcomingEvents: [],
       pastEvents: [],
       isShowingAllUpcomingEvents: false,
+      isShowingAllPastEvents: false,
       news: [],
-      heroData: {} as HeroDataEntry
+      heroData: {} as HeroDataEntry,
+      pastEventChunk: 1
     }
   },
 
@@ -136,6 +152,25 @@ export default Vue.extend<Data, never, Computed, never>({
       return this.isShowingAllUpcomingEvents
         ? this.upcomingEvents
         : this.upcomingEvents.slice(0, 4)
+    },
+
+    /**
+     * Compute maximum chunk value
+     * @returns {Number}
+     */
+    pastEventsChunkMax: function(this: Data) {
+      return Math.ceil(this.pastEvents.length / MAX_PAST_EVENTS)
+    },
+
+    /**
+     * Compute past events to display based on
+     * current chunk value
+     * @returns {Array}
+     */
+    displayedPastEvents: function (this: Data & Computed) {
+      if (this.pastEventChunk === this.pastEventsChunkMax) this.isShowingAllPastEvents = true;
+      const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
+      return this.pastEvents.slice().reverse().slice(0, endChunk)
     }
   }
 })
@@ -152,7 +187,7 @@ export default Vue.extend<Data, never, Computed, never>({
   margin: 1em 0;
   padding: 0;
 }
-.upcoming-events {
+.upcoming-events, .past-events {
   display: flex;
   flex-wrap: wrap;
   margin: 0 -1em;
@@ -181,6 +216,20 @@ export default Vue.extend<Data, never, Computed, never>({
   }
   .svg-icon {
     margin-left: 0.5rem;
+  }
+}
+
+.show-more-past-events {
+  text-align: center;
+  &__btn {
+    display: inline-flex;
+    border: 1px solid $dark-gray;
+    border-radius: 5px;
+    text-decoration: none;
+    padding: 8px 10px;
+    font-size: 11pt;
+    font-weight: bold;
+    color: $dark-gray;
   }
 }
 .events-wrap {
