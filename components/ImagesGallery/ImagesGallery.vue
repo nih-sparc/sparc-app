@@ -187,14 +187,11 @@ export default {
                 this.imageName = this.imageNames[index]
               }
             })
-            const base64Image = new Buffer(response.data, 'ascii').toString(
-              'base64',
-            )
             thumbnail.img =
               'data:' +
               response.headers['content-type'] +
               ';base64,' +
-              base64Image
+              response.data
             if (!this.slideAxis && this.slideAxis !== 'pending') {
               this.slideAxis = 'pending'
               let img = new Image()
@@ -214,7 +211,7 @@ export default {
                 'data:' +
                 response.headers['content-type'] +
                 ';base64,' +
-                base64Image
+                response.data
             }
             // Can I get the reference for the element now? I think so.
             if (index === this.currentIndex) {
