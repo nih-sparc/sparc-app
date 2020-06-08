@@ -53,11 +53,11 @@
                 :key="citationType.type"
               >
                 <a
-                  :title="citationType.title"
+                  :title="citationTypeTitle(citationType)"
                   :class="{
-                    'active-citation': activeCitation === citationType.type
+                    'active-citation': activeCitation.type === citationType.type
                   }"
-                  @click="handleCitationChanged(citationType.type)"
+                  @click="handleCitationChanged(citationType)"
                 >
                   {{ citationType.label }}</a>
                 |
@@ -137,23 +137,19 @@ export default {
       citationTypes: [
         {
           type: 'apa',
-          label: 'APA',
-          title: 'Format citation apa'
+          label: 'APA'
         },
         {
           type: 'chicago-note-bibliography',
-          label: 'Chicago',
-          title: 'Format citation Chicago'
+          label: 'Chicago'
         },
         {
           type: 'ieee',
-          label: 'IEEE',
-          title: 'Format citation IEEE'
+          label: 'IEEE'
         },
         {
           type: 'bibtex',
-          label: 'Bibtex',
-          title: 'Format citation Bibtex'
+          label: 'Bibtex'
         }
       ]
     }
@@ -189,7 +185,12 @@ export default {
     DOIlink: {
       handler: function(val) {
         if (val) {
-          this.handleCitationChanged('apa')
+          const initialCitationType = this.citationTypes.filter(
+            citationType => {
+              return citationType.type == 'apa'
+            }
+          )[0]
+          this.handleCitationChanged(initialCitationType)
         }
       },
       immediate: true
@@ -255,7 +256,7 @@ export default {
       this.citationLoading = true
       this.activeCitation = citationType
       // find all citation types at https://github.com/citation-style-language/style
-      const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType}&lang=en-US`
+      const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType.type}&lang=en-US`
       return fetch(url)
         .then(response => {
           return response.text()
@@ -272,17 +273,23 @@ export default {
      * Handle copy citation to clipboard
      */
     handleCitationCopy: function() {
-      const currentCitationType = this.citationTypes.filter(citationType => {
-        return citationType.type == this.activeCitation
-      })[0]
       this.$copyText(this.citationText).then(() => {
         this.$message.success(
-          `${currentCitationType.label} citation copied to clipboard.`
+          `${this.activeCitation.label} citation copied to clipboard.`
         )
       }),
         () => {
           this.$message.error('Failed to copy citation.')
         }
+    },
+
+    /**
+     * Title for citation type while hovering over link
+     * @param {Object} citationType
+     * @returns {String}
+     */
+    citationTypeTitle: function(citationType) {
+      return `Format citation ${citationType.label}`
     }
   }
 }
