@@ -48,39 +48,33 @@
             />
             <div class="dataset-about-info__container--citation-links mb-24">
               Formatted as:
-              <a
-                title="Format citation apa"
-                :class="{ 'active-citation': activeCitation === 'apa' }"
-                @click="handleCitationChanged('apa')"
+              <span
+                v-for="citationType in citationTypes"
+                :key="citationType.type"
               >
-                APA
-              </a>
-              |
-              <a
-                title="Format citation chicago"
-                :class="{
-                  'active-citation':
-                    activeCitation === 'chicago-note-bibliography'
-                }"
-                @click="handleCitationChanged('chicago-note-bibliography')"
-              >
-                Chicago
-              </a>
-              |
-              <a
-                title="Format citation ieee"
-                :class="{ 'active-citation': activeCitation === 'ieee' }"
-                @click="handleCitationChanged('ieee')"
-              >
-                IEEE
-              </a>
-              |
+                <a
+                  :title="citationType.title"
+                  :class="{
+                    'active-citation': activeCitation === citationType.type
+                  }"
+                  @click="handleCitationChanged(citationType.type)"
+                >
+                  {{ citationType.label }}</a>
+                |
+              </span>
               <a
                 :href="`https://citation.crosscite.org/?doi=${doiValue}`"
                 target="_blank"
               >
                 More on Crosscite.org
               </a>
+              <button
+                class="copy-icon"
+                title="Copy citation to clipboard"
+                @click="handleCitationCopy"
+              >
+                <svg-icon icon="icon-files" height="16" width="16" />
+              </button>
             </div>
           </el-col>
         </el-row>
@@ -139,7 +133,29 @@ export default {
       citationText: '',
       activeCitation: '',
       crosscite_host: process.env.crosscite_api_host,
-      sparcAwardNumber: ''
+      sparcAwardNumber: '',
+      citationTypes: [
+        {
+          type: 'apa',
+          label: 'APA',
+          title: 'Format citation apa'
+        },
+        {
+          type: 'chicago-note-bibliography',
+          label: 'Chicago',
+          title: 'Format citation Chicago'
+        },
+        {
+          type: 'ieee',
+          label: 'IEEE',
+          title: 'Format citation IEEE'
+        },
+        {
+          type: 'bibtex',
+          label: 'Bibtex',
+          title: 'Format citation Bibtex'
+        }
+      ]
     }
   },
 
@@ -250,6 +266,23 @@ export default {
         .finally(() => {
           this.citationLoading = false
         })
+    },
+
+    /**
+     * Handle copy citation to clipboard
+     */
+    handleCitationCopy: function() {
+      const currentCitationType = this.citationTypes.filter(citationType => {
+        return citationType.type == this.activeCitation
+      })[0]
+      this.$copyText(this.citationText).then(() => {
+        this.$message.success(
+          `${currentCitationType.label} citation copied to clipboard.`
+        )
+      }),
+        () => {
+          this.$message.error('Failed to copy citation.')
+        }
     }
   }
 }
@@ -274,11 +307,18 @@ export default {
     }
 
     &--citation {
-      height: 6.5rem;
+      height: 100%;
       background: $washed-gray;
       padding-left: 1rem;
       padding-right: 1rem;
       margin-bottom: 1.5rem;
+      .copy-icon {
+        border: none;
+        cursor: pointer;
+        outline: none;
+        margin: 0;
+        padding: 0;
+      }
     }
 
     .info-citation {
@@ -328,15 +368,6 @@ export default {
     &--doi-link {
       color: black;
       text-decoration: none;
-    }
-  }
-}
-@media screen and (max-width: 768px) {
-  .dataset-about-info {
-    &__container {
-      &--citation {
-        height: 100%;
-      }
     }
   }
 }
