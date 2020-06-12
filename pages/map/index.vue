@@ -23,6 +23,7 @@
 <script>
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import PageHero from "@/components/PageHero/PageHero.vue";
+//Only available on the client side.
 process.client
   ? import("@abi-software/mapintegratedvuer/dist/mapintegratedvuer.css")
   : null;
