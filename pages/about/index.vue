@@ -8,17 +8,14 @@
       </p>
       <p>
         Visit the
-        <a href="https://commonfund.nih.gov/sparc/" target="_blank">
-          NIH SPARC program website
-        </a>
+        <a
+          class="about-page-link"
+          href="https://commonfund.nih.gov/sparc/"
+          target="_blank"
+        >
+          NIH SPARC program website</a>
         to learn more.
       </p>
-      <img
-        v-if="heroImage"
-        slot="image"
-        class="page-hero-img"
-        :src="heroImage.fields.file.url"
-      />
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
@@ -150,6 +147,14 @@ export default {
     @media screen and (max-width: 767px) {
       flex-direction: column;
     }
+  }
+}
+
+.about-page-link {
+  color: white;
+  text-decoration: underline;
+  &:hover {
+    color: #909399;
   }
 }
 
