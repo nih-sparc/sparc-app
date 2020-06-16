@@ -9,6 +9,7 @@
         innervate. 2D and 3D maps render spatial dynamics, connectivity, and
         physiology across a range of species and nerve-organ systems.
       </div>
+      <div class="sideTextRight">THIS PAGE IS UNDER CONSTRUCTION. You may encounter some bugs.</div>
     </page-hero>
     <div class="page-wrap portalmapcontainer" ref="mappage">
       <client-only placeholder="Loading...">
@@ -70,11 +71,23 @@ export default {
     margin-left: 6em;
   }
 
+  .sideTextRight {
+    top: 0px;
+    padding-left: 8px;
+    background-color: lightblue;
+    color: black;
+    font-size: 0.8em;
+    position: absolute;
+    line-height: 1.2em;
+    left: 52em;
+    width: 15em;
+  }
+
   .portalmapcontainer {
     margin-top: 1.5rem;
     height: 90vh;
     max-width: calc(100% - 48px);
-    padding-left:24px;
+    padding-left: 24px;
   }
 
   .map-app {
