@@ -46,7 +46,7 @@ export default {
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
-    ctf_dataset_format_info_page_id: '3FXikFXC8shPRd8xZqhjVT',
+    ctf_dataset_navigation_info_page_id: 'qvEcnv56c76V0JC0KvtSd',
     ctf_project_id: 'sparcAward',
     ctf_organ_id: 'organ',
     ctf_filter_id: '6bya4tyw8399',
