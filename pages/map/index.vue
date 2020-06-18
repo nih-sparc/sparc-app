@@ -9,7 +9,11 @@
         innervate. 2D and 3D maps render spatial dynamics, connectivity, and
         physiology across a range of species and nerve-organ systems.
       </div>
-      <div class="sideTextRight">THIS PAGE IS UNDER CONSTRUCTION. You may encounter some bugs.</div>
+      <div class="sideTextRight">
+        THESE PAGES ARE UNDER CONSTRUCTION<br>
+        Currently only curated SPARC data are shown.<br>
+        Please use ? for context-dependent help
+      </div>
     </page-hero>
     <div class="page-wrap portalmapcontainer" ref="mappage">
       <client-only placeholder="Loading...">
@@ -76,11 +80,12 @@ export default {
     padding-left: 8px;
     background-color: lightblue;
     color: black;
-    font-size: 0.8em;
+    font-size: 0.7em;
     position: absolute;
     line-height: 1.2em;
-    left: 52em;
-    width: 15em;
+    left: 57em;
+    width: 23em;
+    text-align:center;
   }
 
   .portalmapcontainer {
