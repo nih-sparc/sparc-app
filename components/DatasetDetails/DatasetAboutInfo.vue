@@ -13,27 +13,6 @@
           {{ doi }}
         </a>
       </p>
-      <el-row type="flex" justify="center" class="protocol-block">
-        <el-col :span="24">
-          <h3>
-            Protocol Links
-          </h3>
-          <div v-if="datasetRecords.length !== 0">
-            <a
-              v-for="(record, index) in datasetRecords"
-              :key="`${record}-${index}`"
-              :href="record.properties.url"
-              target="_blank"
-              class="dataset-about-info__container--protocol-text"
-            >
-              {{ record.properties.url }}
-            </a>
-          </div>
-          <div v-else class="dataset-about-info__container--protocol-text-na">
-            <p>N/A</p>
-          </div>
-        </el-col>
-      </el-row>
       <h3>NIH Award</h3>
       <p>{{ getSparcAwardNumber }}</p>
       <h3>Cite This Dataset</h3>
@@ -120,11 +99,6 @@ export default {
     doiValue: {
       type: String,
       default: ''
-    },
-
-    datasetRecords: {
-      type: Array,
-      default: () => []
     },
 
     datasetTags: {
