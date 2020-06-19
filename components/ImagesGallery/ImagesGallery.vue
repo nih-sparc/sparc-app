@@ -61,15 +61,18 @@
         <span>&rsaquo;</span>
       </a>
     </div>
+    <index-indicator :count="datasetImages.length" :current="currentIndex" />
   </div>
 </template>
 
 <script>
 import biolucida from '@/services/biolucida'
 import MarkedMixin from '@/mixins/marked'
+import IndexIndicator from '@/components/ImagesGallery/IndexIndicator'
 
 export default {
   name: 'ImageGallery',
+  components: { IndexIndicator },
   mixins: [MarkedMixin],
   props: {
     datasetImages: {
