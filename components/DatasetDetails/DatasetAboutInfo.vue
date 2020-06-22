@@ -37,18 +37,18 @@
       <h3>NIH Award</h3>
       <p>{{ getSparcAwardNumber }}</p>
       <h3>Cite This Dataset</h3>
+      <p>
+        Publication Date: {{ updatedDate }}<br />
+        Platform:
+        <a href="https://discover.blackfynn.com/" target="_blank">
+          Blackfynn Discover
+        </a>
+      </p>
       <div class="dataset-about-info__container--citation">
         <el-row type="flex" justify="center">
           <el-col :span="24">
-            <div
-              v-loading="citationLoading"
-              class="info-citation"
-              aria-live="polite"
-              v-html="citationText"
-            />
-            <div class="dataset-about-info__container--citation-links mb-24">
-              Formatted as:
-              <span
+            <ul class="dataset-about-info__container--citation-links">
+              <li
                 v-for="citationType in citationTypes"
                 :key="citationType.type"
               >
@@ -61,21 +61,29 @@
                 >
                   {{ citationType.label }}</a>
                 |
-              </span>
-              <a
-                :href="`https://citation.crosscite.org/?doi=${doiValue}`"
-                target="_blank"
-              >
-                More on Crosscite.org
-              </a>
-              <button
-                class="copy-icon"
-                title="Copy citation to clipboard"
-                @click="handleCitationCopy"
-              >
-                <svg-icon icon="icon-files" height="16" width="16" />
-              </button>
-            </div>
+              </li>
+              <li>
+                <a
+                  :href="`https://citation.crosscite.org/?doi=${doiValue}`"
+                  target="_blank"
+                >
+                  More on Crosscite.org
+                </a>
+              </li>
+            </ul>
+            <div
+              v-loading="citationLoading"
+              class="info-citation"
+              aria-live="polite"
+              v-html="citationText"
+            />
+            <el-button
+              class="copy-button"
+              size="small"
+              @click="handleCitationCopy"
+            >
+              Copy Citation
+            </el-button>
           </el-col>
         </el-row>
       </div>
@@ -319,12 +327,11 @@ export default {
       padding-left: 1rem;
       padding-right: 1rem;
       margin-bottom: 1.5rem;
-      .copy-icon {
-        border: none;
-        cursor: pointer;
-        outline: none;
-        margin: 0;
-        padding: 0;
+      .copy-button {
+        border: 1px solid gray;
+        color: gray;
+        font-weight: normal;
+        margin: 30px 0 16px 0;
       }
     }
 
@@ -337,19 +344,21 @@ export default {
     }
 
     &--citation-links {
-      font-weight: bold;
-      font-size: 14px;
-      margin-top: 1rem;
-      a {
-        text-decoration: none;
-        color: $median;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 16px;
-        cursor: pointer;
-        &.active-citation {
+      border-bottom: 1px solid black;
+      display: flex;
+      list-style: none;
+      padding: 0;
+      li {
+        margin: 0 0.15rem;
+        a {
           color: black;
-          text-decoration: underline;
+          text-decoration: none;
+          cursor: pointer;
+          &.active-citation {
+            color: $median;
+            border-bottom: 1px solid $median;
+            padding-bottom: 3px;
+          }
         }
       }
     }
