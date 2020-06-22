@@ -20,7 +20,11 @@
             {{ fullDescription ? description : formatDescription(description) }}
           </p>
           <p class="details-header__container--content-description-mobile">
-            {{ formatMobileDescription(description) }}
+            {{
+              fullDescription
+                ? description
+                : formatMobileDescription(description)
+            }}
           </p>
           <slot name="meta content" />
         </div>
