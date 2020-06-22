@@ -331,7 +331,7 @@ export default {
         border: 1px solid gray;
         color: gray;
         font-weight: normal;
-        margin: 30px 0 16px 0;
+        margin: 1.875rem 0 1rem 0;
       }
     }
 
@@ -346,6 +346,7 @@ export default {
     &--citation-links {
       border-bottom: 1px solid black;
       display: flex;
+      flex-wrap: wrap;
       list-style: none;
       padding: 0;
       li {
@@ -357,7 +358,7 @@ export default {
           &.active-citation {
             color: $median;
             border-bottom: 1px solid $median;
-            padding-bottom: 3px;
+            padding-bottom: 0.188rem;
           }
         }
       }
