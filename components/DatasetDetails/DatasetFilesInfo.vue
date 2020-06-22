@@ -45,9 +45,9 @@ export default {
 @import '@/assets/_variables.scss';
 .dataset-files-info {
   .dataset-link {
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
     text-decoration: none;
   }
 }
