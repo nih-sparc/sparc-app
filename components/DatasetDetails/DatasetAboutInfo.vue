@@ -16,51 +16,53 @@
       <h3>NIH Award</h3>
       <p>{{ getSparcAwardNumber }}</p>
       <h3>Cite This Dataset</h3>
+      <p>
+        Publication Date: {{ updatedDate }}<br />
+        Platform:
+        <a href="https://discover.blackfynn.com/" target="_blank">
+          Blackfynn Discover
+        </a>
+      </p>
       <div class="dataset-about-info__container--citation">
         <el-row type="flex" justify="center">
           <el-col :span="24">
+            <ul class="dataset-about-info__container--citation-links">
+              <li
+                v-for="citationType in citationTypes"
+                :key="citationType.type"
+              >
+                <a
+                  :title="citationTypeTitle(citationType)"
+                  :class="{
+                    'active-citation': activeCitation.type === citationType.type
+                  }"
+                  @click="handleCitationChanged(citationType)"
+                >
+                  {{ citationType.label }}</a>
+                |
+              </li>
+              <li>
+                <a
+                  :href="`https://citation.crosscite.org/?doi=${doiValue}`"
+                  target="_blank"
+                >
+                  More on Crosscite.org
+                </a>
+              </li>
+            </ul>
             <div
               v-loading="citationLoading"
               class="info-citation"
               aria-live="polite"
               v-html="citationText"
             />
-            <div class="dataset-about-info__container--citation-links mb-24">
-              Formatted as:
-              <a
-                title="Format citation apa"
-                :class="{ 'active-citation': activeCitation === 'apa' }"
-                @click="handleCitationChanged('apa')"
-              >
-                APA
-              </a>
-              |
-              <a
-                title="Format citation chicago"
-                :class="{
-                  'active-citation':
-                    activeCitation === 'chicago-note-bibliography'
-                }"
-                @click="handleCitationChanged('chicago-note-bibliography')"
-              >
-                Chicago
-              </a>
-              |
-              <a
-                title="Format citation ieee"
-                :class="{ 'active-citation': activeCitation === 'ieee' }"
-                @click="handleCitationChanged('ieee')"
-              >
-                IEEE
-              </a>
-              |
-              <a
-                :href="`https://citation.crosscite.org/?doi=${doiValue}`"
-                target="_blank"
-              >
-                More on Crosscite.org
-              </a>
-            </div>
+            <el-button
+              class="copy-button"
+              size="small"
+              @click="handleCitationCopy"
+            >
+              Copy Citation
+            </el-button>
           </el-col>
         </el-row>
       </div>
@@ -113,7 +115,25 @@ export default {
       citationText: '',
       activeCitation: '',
       crosscite_host: process.env.crosscite_api_host,
-      sparcAwardNumber: ''
+      sparcAwardNumber: '',
+      citationTypes: [
+        {
+          type: 'apa',
+          label: 'APA'
+        },
+        {
+          type: 'chicago-note-bibliography',
+          label: 'Chicago'
+        },
+        {
+          type: 'ieee',
+          label: 'IEEE'
+        },
+        {
+          type: 'bibtex',
+          label: 'Bibtex'
+        }
+      ]
     }
   },
 
@@ -147,7 +167,12 @@ export default {
     DOIlink: {
       handler: function(val) {
         if (val) {
-          this.handleCitationChanged('apa')
+          const initialCitationType = this.citationTypes.filter(
+            citationType => {
+              return citationType.type == 'apa'
+            }
+          )[0]
+          this.handleCitationChanged(initialCitationType)
         }
       },
       immediate: true
@@ -213,7 +238,7 @@ export default {
       this.citationLoading = true
       this.activeCitation = citationType
       // find all citation types at https://github.com/citation-style-language/style
-      const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType}&lang=en-US`
+      const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType.type}&lang=en-US`
       return fetch(url)
         .then(response => {
           return response.text()
@@ -224,6 +249,29 @@ export default {
         .finally(() => {
           this.citationLoading = false
         })
+    },
+
+    /**
+     * Handle copy citation to clipboard
+     */
+    handleCitationCopy: function() {
+      this.$copyText(this.citationText).then(() => {
+        this.$message.success(
+          `${this.activeCitation.label} citation copied to clipboard.`
+        )
+      }),
+        () => {
+          this.$message.error('Failed to copy citation.')
+        }
+    },
+
+    /**
+     * Title for citation type while hovering over link
+     * @param {Object} citationType
+     * @returns {String}
+     */
+    citationTypeTitle: function(citationType) {
+      return `Format citation ${citationType.label}`
     }
   }
 }
@@ -248,11 +296,17 @@ export default {
     }
 
     &--citation {
-      height: 6.5rem;
+      height: 100%;
       background: $washed-gray;
       padding-left: 1rem;
       padding-right: 1rem;
       margin-bottom: 1.5rem;
+      .copy-button {
+        border: 1px solid gray;
+        color: gray;
+        font-weight: normal;
+        margin: 1.875rem 0 1rem 0;
+      }
     }
 
     .info-citation {
@@ -264,19 +318,22 @@ export default {
     }
 
     &--citation-links {
-      font-weight: bold;
-      font-size: 14px;
-      margin-top: 1rem;
-      a {
-        text-decoration: none;
-        color: $median;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 16px;
-        cursor: pointer;
-        &.active-citation {
+      border-bottom: 1px solid black;
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 0;
+      li {
+        margin: 0 0.15rem;
+        a {
           color: black;
-          text-decoration: underline;
+          text-decoration: none;
+          cursor: pointer;
+          &.active-citation {
+            color: $median;
+            border-bottom: 1px solid $median;
+            padding-bottom: 0.188rem;
+          }
         }
       }
     }
@@ -302,15 +359,6 @@ export default {
     &--doi-link {
       color: black;
       text-decoration: none;
-    }
-  }
-}
-@media screen and (max-width: 768px) {
-  .dataset-about-info {
-    &__container {
-      &--citation {
-        height: 100%;
-      }
     }
   }
 }
