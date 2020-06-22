@@ -107,17 +107,6 @@
           <button class="dataset-button" @click="isDownloadModalVisible = true">
             Get Dataset
           </button>
-          <nuxt-link
-            :to="{
-              name: 'help-helpId',
-              params: {
-                helpId: ctfDatasetFormatInfoPageId
-              }
-            }"
-            class="dataset-link"
-          >
-            SPARC Data Structure
-          </nuxt-link>
         </div>
       </div>
     </details-header>
@@ -309,8 +298,7 @@ export default {
           label: 'Find Data'
         }
       ],
-      subtitles: [],
-      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
+      subtitles: []
     }
   },
 
