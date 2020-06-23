@@ -107,17 +107,6 @@
           <button class="dataset-button" @click="isDownloadModalVisible = true">
             Get Dataset
           </button>
-          <nuxt-link
-            :to="{
-              name: 'help-helpId',
-              params: {
-                helpId: ctfDatasetFormatInfoPageId
-              }
-            }"
-            class="dataset-link"
-          >
-            SPARC Data Structure
-          </nuxt-link>
         </div>
       </div>
     </details-header>
@@ -130,6 +119,7 @@
         <dataset-description-info
           v-show="activeTab === 'description'"
           :markdown="markdown"
+          :dataset-records="datasetRecords"
           :loading-markdown="loadingMarkdown"
         />
         <dataset-about-info
@@ -137,7 +127,6 @@
           :updated-date="lastUpdatedDate"
           :doi="datasetDOI"
           :doi-value="datasetInfo.doi"
-          :dataset-records="datasetRecords"
           :dataset-tags="datasetTags"
         />
         <dataset-files-info
@@ -285,7 +274,7 @@ export default {
       isLoadingDataset: false,
       errorLoading: false,
       loadingMarkdown: false,
-      markdown: '',
+      markdown: {},
       activeTab: 'about',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
@@ -309,8 +298,7 @@ export default {
           label: 'Find Data'
         }
       ],
-      subtitles: [],
-      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
+      subtitles: []
     }
   },
 
@@ -634,7 +622,14 @@ export default {
           .then(response => response.text())
           .then(response => {
             this.loadingMarkdown = false
-            this.markdown = response
+            const splitDelim = '\n\n---'
+            const splitResponse = response.split(splitDelim)
+            this.markdown = {
+              markdownTop: splitResponse[0],
+              markdownBottom: splitResponse[1]
+                ? splitDelim + splitResponse[1]
+                : ''
+            }
           })
           .catch(error => {
             throw error

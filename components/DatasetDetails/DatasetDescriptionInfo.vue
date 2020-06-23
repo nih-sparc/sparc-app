@@ -1,9 +1,37 @@
 <template>
-  <div class="dataset-description-info">
+  <div v-loading="loadingMarkdown" class="dataset-description-info">
     <div
-      v-loading="loadingMarkdown"
       class="col-xs-12 description-container"
-      v-html="parseMarkdown(markdown)"
+      v-html="parseMarkdown(markdown.markdownTop)"
+    />
+    <div class="description-container__protocol-block">
+      <p>
+        <strong>
+          Protocol Links:
+        </strong>
+      </p>
+      <div v-if="datasetRecords.length !== 0">
+        <a
+          v-for="(record, index) in datasetRecords"
+          :key="`${record}-${index}`"
+          :href="record.properties.url"
+          target="_blank"
+          class="description-container__protocol-block--protocol-text"
+        >
+          {{ record.properties.url }}
+        </a>
+      </div>
+      <div
+        v-else
+        class="description-container__protocol-block--protocol-text-na"
+      >
+        <p>N/A</p>
+      </div>
+    </div>
+    <div
+      v-if="markdown.markdownBottom"
+      class="col-xs-12 description-container"
+      v-html="parseMarkdown(markdown.markdownBottom)"
     />
   </div>
 </template>
@@ -22,8 +50,12 @@ export default {
       default: false
     },
     markdown: {
-      type: String,
-      default: ''
+      type: Object,
+      default: () => {}
+    },
+    datasetRecords: {
+      type: Array,
+      default: () => []
     }
   }
 }
@@ -36,7 +68,6 @@ export default {
     color: #000;
     font-size: 16px;
     line-height: 24px;
-    padding-bottom: 92px;
 
     h1,
     p,
@@ -119,6 +150,24 @@ export default {
       code {
         font-weight: normal;
         font-size: 14px;
+      }
+    }
+
+    &__protocol-block {
+      margin-bottom: 16px;
+
+      p {
+        margin-bottom: 4px;
+      }
+
+      &--protocol-text {
+        color: black;
+        text-decoration: none;
+        font-size: 0.875em;
+      }
+
+      &--protocol-text-na {
+        font-size: 0.875em;
       }
     }
   }

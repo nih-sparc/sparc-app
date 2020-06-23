@@ -1,5 +1,9 @@
 <template>
-  <el-table :data="tableData" empty-text="No Results" @sort-change="onSortChange">
+  <el-table
+    :data="tableData"
+    empty-text="No Results"
+    @sort-change="onSortChange"
+  >
     <el-table-column
       :fixed="true"
       sortable="custom"
@@ -21,7 +25,7 @@
     </el-table-column>
     <el-table-column prop="fields.description" label="Description" width="648">
       <template slot-scope="scope">
-        {{ truncateField(scope.row.fields.description, 500) }}
+        {{ scope.row.fields.shortDescription || '' }}
       </template>
     </el-table-column>
     <el-table-column
@@ -29,7 +33,12 @@
       label="Institution"
       width="200"
     />
-    <el-table-column sortable="custom" prop="fields.awardId" label="NIH Award" width="150" />
+    <el-table-column
+      sortable="custom"
+      prop="fields.awardId"
+      label="NIH Award"
+      width="150"
+    />
 
     <el-table-column
       sortable="custom"
