@@ -39,7 +39,6 @@
                   @click="handleCitationChanged(citationType)"
                 >
                   {{ citationType.label }}</a>
-                |
               </li>
               <li>
                 <a
@@ -81,6 +80,8 @@
 import { compose, propOr, head } from 'ramda'
 
 import TagList from '@/components/TagList/TagList.vue'
+
+import { successMessage, failMessage } from '@/utils/notification-messages'
 export default {
   name: 'DatasetAboutInfo',
 
@@ -256,12 +257,14 @@ export default {
      */
     handleCitationCopy: function() {
       this.$copyText(this.citationText).then(() => {
-        this.$message.success(
-          `${this.activeCitation.label} citation copied to clipboard.`
+        this.$message(
+          successMessage(
+            `${this.activeCitation.label} citation copied to clipboard.`
+          )
         )
       }),
         () => {
-          this.$message.error('Failed to copy citation.')
+          this.$message(failMessage('Failed to copy citation.'))
         }
     },
 
@@ -302,10 +305,14 @@ export default {
       padding-right: 1rem;
       margin-bottom: 1.5rem;
       .copy-button {
-        border: 1px solid gray;
-        color: gray;
-        font-weight: normal;
         margin: 1.875rem 0 1rem 0;
+        background: #f9f2fc;
+        border: 1px solid $median;
+        cursor: pointer;
+        color: $median;
+        &:hover {
+          color: #1a1489;
+        }
       }
     }
 
@@ -324,15 +331,20 @@ export default {
       list-style: none;
       padding: 0;
       li {
-        margin: 0 0.15rem;
+        margin-right: 0.5rem;
+        :hover {
+          border-bottom: 2px solid $median;
+          padding-bottom: 0.094rem;
+        }
         a {
           color: black;
           text-decoration: none;
+          padding: 0 0.5rem;
           cursor: pointer;
           &.active-citation {
             color: $median;
-            border-bottom: 1px solid $median;
-            padding-bottom: 0.188rem;
+            border-bottom: 2px solid $median;
+            padding-bottom: 0.094rem;
           }
         }
       }
