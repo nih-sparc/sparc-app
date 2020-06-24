@@ -1,5 +1,9 @@
 export default {
   methods: {
+    /**
+     * Toast notification indicating success
+     * @param {String} message
+     */
     notifySuccess: function(message) {
       this.$message({
         message: message,
@@ -9,6 +13,10 @@ export default {
         duration: 5000
       })
     },
+    /**
+     * Toast notification indicating failure
+     * @param {String} message
+     */
     notifyFail: function(message) {
       this.$message({
         message: message,
