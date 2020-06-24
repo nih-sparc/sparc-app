@@ -81,15 +81,14 @@ import { compose, propOr, head } from 'ramda'
 
 import TagList from '@/components/TagList/TagList.vue'
 
-import NotifySuccess from '@/mixins/notify/index'
-import NotifyFail from '@/mixins/notify/index'
+import NotifyMixin from '@/mixins/notify/index'
 export default {
   name: 'DatasetAboutInfo',
 
   components: {
     TagList
   },
-  mixins: [NotifySuccess, NotifyFail],
+  mixins: [NotifyMixin],
   props: {
     updatedDate: {
       type: String,
