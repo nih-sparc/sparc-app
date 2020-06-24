@@ -309,6 +309,7 @@ export default {
         background: #f9f2fc;
         border: 1px solid $median;
         cursor: pointer;
+        color: $median;
       }
     }
 
