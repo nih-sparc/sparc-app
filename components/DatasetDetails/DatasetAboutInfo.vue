@@ -81,14 +81,13 @@ import { compose, propOr, head } from 'ramda'
 
 import TagList from '@/components/TagList/TagList.vue'
 
-import NotifyMixin from '@/mixins/notify/index'
+import { successMessage, failMessage } from '@/utils/notification-messages'
 export default {
   name: 'DatasetAboutInfo',
 
   components: {
     TagList
   },
-  mixins: [NotifyMixin],
   props: {
     updatedDate: {
       type: String,
@@ -258,12 +257,14 @@ export default {
      */
     handleCitationCopy: function() {
       this.$copyText(this.citationText).then(() => {
-        this.notifySuccess(
-          `${this.activeCitation.label} citation copied to clipboard.`
+        this.$message(
+          successMessage(
+            `${this.activeCitation.label} citation copied to clipboard.`
+          )
         )
       }),
         () => {
-          this.notifyFail('Failed to copy citation.')
+          this.$message(failMessage('Failed to copy citation.'))
         }
     },
 
@@ -310,9 +311,7 @@ export default {
         cursor: pointer;
         color: $median;
         &:hover {
-          color: #409eff;
-          border-color: #c6e2ff;
-          background-color: #ecf5ff;
+          color: #1a1489;
         }
       }
     }
