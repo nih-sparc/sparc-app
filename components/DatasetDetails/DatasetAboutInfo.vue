@@ -310,6 +310,11 @@ export default {
         border: 1px solid $median;
         cursor: pointer;
         color: $median;
+        &:hover {
+          color: #409eff;
+          border-color: #c6e2ff;
+          background-color: #ecf5ff;
+        }
       }
     }
 
