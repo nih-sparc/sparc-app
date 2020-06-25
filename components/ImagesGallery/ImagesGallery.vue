@@ -297,9 +297,9 @@ export default {
       let url = ''
       if (shareLinkIndex !== -1) {
         const viewerId = this.viewerId(imageInfo.share_link)
-        url = `/datasets/viewer/${this.$route.params.datasetId}?viewer=${viewerId}`
+        url = `datasets/viewer/${this.$route.params.datasetId}?viewer=${viewerId}`
       } else if (metadataFileIndex !== -1) {
-        url = `/datasets/scaffoldviewer/${this.$route.params.datasetId}?scaffold=${imageInfo.metadata_file}`
+        url = `datasets/scaffoldviewer/${this.$route.params.datasetId}?scaffold=${imageInfo.metadata_file}`
       }
 
       return url
@@ -328,7 +328,6 @@ export default {
 }
 
 .overlay {
-  position: absolute;
   position: absolute;
   right: 5px;
   top: 5px;
