@@ -156,6 +156,7 @@
           v-show="activeTab === 'images'"
           :markdown="markdown"
           :dataset-images="imagesData.dataset_images"
+          :dataset-scaffolds="scaffoldData"
         />
         <div v-show="activeTab === 'viewer'" class="viewer">
           <biolucida-viewer :data="biolucidaData" />
@@ -174,8 +175,6 @@
 <script>
 import marked from 'marked'
 import { clone, propOr, pathOr, last, head, compose, split } from 'ramda'
-import '@abi-software/scaffoldvuer'
-import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -198,6 +197,8 @@ import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 import Scaffolds from '@/static/js/scaffolds.js'
 
 import createClient from '@/plugins/contentful.js'
+
+import discover from '@/services/discover'
 
 const client = createClient()
 
@@ -256,7 +257,7 @@ export default {
 
     const imagesData = await $axios
       .$get(
-        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${route.params.datasetId}`,
+        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${datasetId}`,
       )
       .catch(() => {
         return {}
@@ -264,17 +265,29 @@ export default {
 
     const tabsData = clone(tabs)
 
-    if (imagesData.status === 'success') {
-      tabsData.push({ label: 'Images', type: 'images' })
+    const version = propOr(1, 'version', datasetDetails)
+    const derivativeFilesResponse = await discover.browse(
+      datasetId,
+      version,
+      'files/derivative',
+    )
+
+    let scaffoldData = []
+    if (derivativeFilesResponse.status === 200) {
+      derivativeFilesResponse.data.files.forEach((item) => {
+        if (item.type === 'Directory') {
+          if (item.name.toUpperCase().includes('SCAFFOLD')) {
+            scaffoldData.push({ name: item.name, path: item.path, version })
+          }
+        }
+      })
     }
 
-    // @TODO Add logic for 3D Scaffold
-    const hasScaffold = false
-    if (hasScaffold) {
-      tabsData.push({
-        label: '3D Scaffold',
-        type: '3DScaffold',
-      })
+    if (
+      imagesData.status === 'success' ||
+      derivativeFilesResponse.status === 200
+    ) {
+      tabsData.push({ label: 'Gallery', type: 'images' })
     }
 
     return {
@@ -282,6 +295,7 @@ export default {
       datasetInfo: datasetDetails,
       datasetType: route.query.type,
       imagesData,
+      scaffoldData,
       tabs: tabsData,
     }
   },

@@ -29,24 +29,20 @@
           :style="{ display: displayState(index) }"
           :class="['key-image-span', { active: currentIndex === index }]"
         >
-          <nuxt-link
-            :to="{
-              name: 'datasets-viewer-id',
-              params: {
-                id: thumbnail_image.id,
-              },
-              query: {
-                viewer: viewerId(thumbnail_image.share_link),
-              },
-            }"
-          >
+          <a target="_blank" :href="getImageLink(thumbnail_image)">
             <img
               :ref="'key_image_' + thumbnail_image.id"
               :src="thumbnail_image.img"
               alt="thumbnail missing"
               class="thumbnail thumbnail-100"
+              :height="slideNaturalHeight"
+              :width="slideNaturalWidth"
             />
-          </nuxt-link>
+          </a>
+          <div
+            class="overlay"
+            :style="`background-color: ${imageOverlayColour(index)}`"
+          />
         </span>
       </div>
       <a
@@ -61,12 +57,14 @@
         <span>&rsaquo;</span>
       </a>
     </div>
-    <index-indicator :count="datasetImages.length" :current="currentIndex" />
+    <index-indicator :count="imageCount" :current="currentIndex" />
   </div>
 </template>
 
 <script>
 import biolucida from '@/services/biolucida'
+import discover from '@/services/discover'
+
 import MarkedMixin from '@/mixins/marked'
 import IndexIndicator from '@/components/ImagesGallery/IndexIndicator'
 
@@ -76,6 +74,12 @@ export default {
   mixins: [MarkedMixin],
   props: {
     datasetImages: {
+      type: Array,
+      default: () => {
+        return []
+      },
+    },
+    datasetScaffolds: {
       type: Array,
       default: () => {
         return []
@@ -92,14 +96,15 @@ export default {
       imageName: '',
       thumbnails: [],
       imageNames: [],
+      overlayColours: [],
       currentIndex: 0,
       controlWidth: 50,
       controlHeight: 60,
-      slideAspectRatio: 0,
+      slideNaturalHeight: 0,
       slideAxis: undefined,
-      slideNaturalWidth: -1,
+      slideNaturalWidth: 0,
       numberOfImagesVisible: 0,
-      defaultImg: require('@/assets/logo-sparc-wave-primary.svg'),
+      defaultImg: require('~/assets/logo-sparc-wave-primary.svg'),
     }
   },
   computed: {
@@ -107,7 +112,10 @@ export default {
       return this.currentIndex > 0
     },
     isNextPossible() {
-      return this.currentIndex < this.datasetImages.length - 1
+      return this.currentIndex < this.imageCount - 1
+    },
+    imageCount() {
+      return this.datasetImages.length + this.datasetScaffolds.length
     },
   },
   watch: {
@@ -126,7 +134,7 @@ export default {
     },
   },
   mounted() {
-    this.currentIndex = Math.floor(this.datasetImages.length / 2 - 0.5)
+    this.currentIndex = Math.floor(this.imageCount / 2 - 0.5)
     this.getThumbnails()
   },
   methods: {
@@ -144,8 +152,8 @@ export default {
       }
       const highIndex =
         this.currentIndex + (this.numberOfImagesVisible + oddOffset) / 2
-      if (highIndex > this.datasetImages.length) {
-        offset = highIndex - this.datasetImages.length
+      if (highIndex > this.imageCount) {
+        offset = highIndex - this.imageCount
       }
       const isVisible =
         Math.abs(this.currentIndex - index) <
@@ -153,7 +161,7 @@ export default {
       return isVisible ? undefined : 'none'
     },
     goNext() {
-      if (this.currentIndex < this.datasetImages.length - 1) {
+      if (this.currentIndex < this.imageCount - 1) {
         this.currentIndex += 1
       }
     },
@@ -165,7 +173,6 @@ export default {
     getThumbnails() {
       this.thumbnails.clear
       this.slideAxis = undefined
-      this.slideAspectRatio = 1.0
       this.thumbnails = Array.from(this.datasetImages, (dataset_image) => {
         return {
           id: dataset_image.image_id,
@@ -174,18 +181,24 @@ export default {
         }
       })
       this.datasetImages.forEach((dataset_image) => {
+        const image_id = dataset_image.image_id
         biolucida
-          .getThumbnail(dataset_image.image_id)
+          .getThumbnail(image_id)
           .then((response) => {
             const index = this.thumbnails.findIndex(
-              (item) => item.id === dataset_image.image_id,
+              (item) => item.id === image_id,
             )
-            const thumbnail = this.thumbnails[index]
-            biolucida.getImageInfo(dataset_image.image_id).then((response) => {
+            let thumbnail = this.thumbnails[index]
+            biolucida.getImageInfo(image_id).then((response) => {
               const imageInfo = response.data
               let imageName = imageInfo.name
               this.imageNames[index] =
                 imageName.substring(0, imageName.lastIndexOf('.')) || imageName
+              if (imageName.toUpperCase().endsWith('JPX')) {
+                this.overlayColours[index] = 'cyan'
+              } else {
+                this.overlayColours[index] = 'violet'
+              }
               if (index === this.currentIndex) {
                 this.imageName = this.imageNames[index]
               }
@@ -205,7 +218,7 @@ export default {
                   img.naturalWidth > img.naturalHeight
                     ? 'landscape'
                     : 'portrait'
-                _this.slideAspectRatio = img.naturalHeight / img.naturalWidth
+                _this.slideNaturalHeight = img.naturalHeight
                 _this.slideNaturalWidth = img.naturalWidth
                 _this.calculateNumberOfImagesVisible()
               }
@@ -227,6 +240,44 @@ export default {
             console.log(error.message)
           })
       })
+      this.datasetScaffolds.forEach((dataset_scaffold) => {
+        const scaffold_index = this.thumbnails.length
+        this.imageNames[scaffold_index] = dataset_scaffold.name
+        this.overlayColours[scaffold_index] = 'yellow'
+        this.thumbnails.push({
+          id: dataset_scaffold.name,
+          img: this.defaultImg,
+          metadata_file: '',
+        })
+        discover
+          .browse(
+            this.$route.params.datasetId,
+            dataset_scaffold.version,
+            dataset_scaffold.path,
+          )
+          .then((response) => {
+            response.data.files.forEach((entry) => {
+              if (entry.name.toUpperCase().includes('METADATA')) {
+                console.log('matching entry')
+                console.log(entry)
+                this.thumbnails[
+                  scaffold_index
+                ].metadata_file = entry.uri.replace(
+                  's3://blackfynn-discover-use1/',
+                  '',
+                )
+                console.log(this.thumbnails[scaffold_index])
+              }
+            })
+          })
+          .catch((error) => {
+            console.log(
+              'Error fetching scaffold files: ',
+              dataset_scaffold.name,
+            )
+            console.log(error.message)
+          })
+      })
     },
     calculateNumberOfImagesVisible() {
       const imagesVisibleCount =
@@ -238,6 +289,23 @@ export default {
       const linkParts = shareLink.split(process.env.BL_SHARE_LINK_PREFIX)
 
       return linkParts[1]
+    },
+    getImageLink(imageInfo) {
+      const imageInfoKeys = Object.keys(imageInfo)
+      const shareLinkIndex = imageInfoKeys.indexOf('share_link')
+      const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')
+      let url = ''
+      if (shareLinkIndex !== -1) {
+        const viewerId = this.viewerId(imageInfo.share_link)
+        url = `/datasets/viewer/${this.$route.params.datasetId}?viewer=${viewerId}`
+      } else if (metadataFileIndex !== -1) {
+        url = `/datasets/scaffoldviewer/${this.$route.params.datasetId}?scaffold=${imageInfo.metadata_file}`
+      }
+
+      return url
+    },
+    imageOverlayColour(index) {
+      return this.overlayColours[index]
     },
   },
 }
@@ -256,6 +324,18 @@ export default {
 
 .key-image-span {
   display: flex;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 1.61em;
+  height: 1em;
+  border-radius: 3px;
+  opacity: 80%;
 }
 
 img {
@@ -298,5 +378,12 @@ a.next {
 .disabled {
   opacity: 0.2;
   cursor: default;
+}
+
+.rectangle {
+  height: 1em;
+  width: 2em;
+  border-radius: 3px;
+  background-color: #555;
 }
 </style>
