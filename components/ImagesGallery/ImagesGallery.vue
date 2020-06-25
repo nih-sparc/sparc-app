@@ -334,7 +334,7 @@ export default {
   width: 1.61em;
   height: 1em;
   border-radius: 3px;
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 img {
