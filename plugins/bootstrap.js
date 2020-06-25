@@ -9,9 +9,9 @@ import { Message } from 'element-ui'
 import '@/assets/element-variables.scss'
 import * as svgicon from 'vue-svgicon'
 import '@/static/icons-js'
+import VueClipboard from 'vue-clipboard2'
 // // import '@/assets/icons'
 // // import SocialSharing from 'vue-social-sharing'
-// // import VueClipboard from 'vue-clipboard2'
 
 import striptags from 'striptags'
 Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>
@@ -21,7 +21,7 @@ Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>
 // locale.use(lang)
 Vue.config.productionTip = false
 
-// // Vue.use(VueClipboard)
+Vue.use(VueClipboard)
 // Vue.use(Dialog)
 // Vue.use(Spinner)
 // Vue.use(Loading)

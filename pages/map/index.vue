@@ -9,6 +9,11 @@
         innervate. 2D and 3D maps render spatial dynamics, connectivity, and
         physiology across a range of species and nerve-organ systems.
       </div>
+      <div class="sideTextRight">
+        THESE PAGES ARE UNDER CONSTRUCTION<br>
+        Currently only curated SPARC data are shown.<br>
+        Please use ? for context-dependent help
+      </div>
     </page-hero>
     <div class="page-wrap portalmapcontainer" ref="mappage">
       <client-only placeholder="Loading...">
@@ -23,6 +28,7 @@
 <script>
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import PageHero from "@/components/PageHero/PageHero.vue";
+//Only available on the client side.
 process.client
   ? import("@abi-software/mapintegratedvuer/dist/mapintegratedvuer.css")
   : null;
@@ -69,11 +75,24 @@ export default {
     margin-left: 6em;
   }
 
+  .sideTextRight {
+    top: 0px;
+    padding-left: 8px;
+    background-color: lightblue;
+    color: black;
+    font-size: 0.7em;
+    position: absolute;
+    line-height: 1.2em;
+    left: 57em;
+    width: 23em;
+    text-align:center;
+  }
+
   .portalmapcontainer {
     margin-top: 1.5rem;
     height: 90vh;
     max-width: calc(100% - 48px);
-    padding-left:24px;
+    padding-left: 24px;
   }
 
   .map-app {

@@ -6,6 +6,10 @@
       <p>
         {{ fields.heroCopy }}
       </p>
+      <search-controls-contentful
+        placeholder="Search resources"
+        path="/resources"
+      />
       <ul class="resources__tabs">
         <li v-for="type in tabTypes" :key="type.label">
           <nuxt-link
@@ -14,6 +18,7 @@
             :to="{
               name: 'resources',
               query: {
+                ...$route.query,
                 type: type.type
               }
             }"
@@ -50,7 +55,7 @@
           </p>
         </div>
       </div>
-      <div v-loading="isLoadingResources" class="table-wrap">
+      <div v-loading="isLoadingSearch" class="table-wrap">
         <resources-search-results :table-data="tableData" />
       </div>
       <div class="resources-heading">
@@ -72,41 +77,47 @@
   </div>
 </template>
 
-<script>
-import { propOr, clone, compose, head } from 'ramda'
+<script lang="ts">
+import Vue from 'vue';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import createClient from '@/plugins/contentful.js'
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
+import { Computed, Data, Methods, Resource } from '~/pages/resources/model';
 
 const client = createClient()
 
-const resourceData = {
+const resourceData: Data['resourceData'] = {
   limit: 10,
   skip: 0,
-  items: []
+  items: [],
+  total: 0,
+  stringifySafe: () => '',
+  toPlainObject: () => ({})
 }
 
 const tabTypes = [
   {
     label: 'All Resources',
-    type: 'sparcPartners'
+    type: 'sparcPartners' as const
   },
   {
     label: 'Platforms',
-    type: 'Platform'
+    type: 'Platform' as const
   },
   {
     label: 'Tools',
-    type: 'Tool'
+    type: 'Tool' as const
   }
 ]
 
-export default {
+export default Vue.extend<Data, Methods, Computed, never>({
   name: 'Resources',
 
   components: {
+    SearchControlsContentful,
     Breadcrumb,
     ResourcesSearchResults,
     PageHero,
@@ -114,13 +125,11 @@ export default {
   },
 
   asyncData() {
-    return Promise.all([
       // Get page content
-      client.getEntry(process.env.ctf_resource_hero_id)
-    ])
-      .then(([page]) => {
+      return client.getEntry(process.env.ctf_resource_hero_id as string)
+      .then(({ fields }) => {
         return {
-          fields: page.fields
+          fields,
         }
       })
       .catch(console.error)
@@ -128,7 +137,6 @@ export default {
 
   data() {
     return {
-      resources: [],
       title: 'Resources',
       breadcrumb: [
         {
@@ -138,11 +146,9 @@ export default {
           label: 'Home'
         }
       ],
-      resourceData: clone(resourceData),
-      tabTypes: tabTypes,
-      platformItems: [],
-      toolItems: [],
-      isLoadingResources: false,
+      resourceData,
+      tabTypes,
+      isLoadingSearch: false,
       resourceHeading: ''
     }
   },
@@ -165,7 +171,7 @@ export default {
      * @returns {Array}
      */
     tableData: function() {
-      return propOr([], 'items', this.resourceData)
+      return this.resourceData.items
     },
 
     /**
@@ -177,12 +183,7 @@ export default {
   },
 
   watch: {
-    '$route.query.type': function() {
-      /**
-       * Clear table data so the new table that is rendered can
-       * properly render data and account for any missing data
-       */
-      this.resourceData = clone(resourceData)
+    '$route.query': function() {
       this.fetchResults()
     }
   },
@@ -192,7 +193,7 @@ export default {
    */
   mounted: function() {
     if (!this.$route.query.type) {
-      const firstTabType = compose(propOr('', 'type'), head)(tabTypes)
+      const firstTabType = tabTypes[0].type
 
       this.$router.replace({ query: { type: firstTabType } })
     } else {
@@ -213,7 +214,7 @@ export default {
      */
     updateDataSearchLimit: function(limit) {
       this.resourceData.skip = 0
-      if (limit === 'View All') {
+      if (typeof limit === 'string') {
         this.resourceData.limit = this.resourceData.total
       } else {
         this.resourceData.limit = limit
@@ -224,36 +225,28 @@ export default {
      * Fetches resource results
      */
     fetchResults: function() {
-      this.isLoadingResources = true
-      let entries = {
-        content_type: this.$route.query.type,
+      this.isLoadingSearch = true
+
+      const entries = {
+        content_type: 'sparcPartners',
         limit: this.resourceData.limit,
         skip: this.resourceData.skip,
         order: 'fields.name',
-        include: 2
-      }
-
-      if (
-        this.$route.query.type === 'Platform' ||
-        this.$route.query.type === 'Tool'
-      ) {
-        const obj = {
-          content_type: 'sparcPartners',
-          'fields.resourceType': this.$route.query.type
-        }
-        Object.assign(entries, obj)
+        include: 2,
+        query: this.$route.query.search,
+        'fields.resourceType': this.$route.query.type === 'sparcPartners'
+          ? undefined
+          : this.$route.query.type
       }
 
       client
-        .getEntries(entries)
+        .getEntries<Resource>(entries)
         .then(response => {
           this.resourceData = response
         })
-        .catch(() => {
-          this.resourceData = clone(resourceData)
-        })
+        .catch(console.error)
         .finally(() => {
-          this.isLoadingResources = false
+          this.isLoadingSearch = false
         })
     },
 
@@ -267,7 +260,7 @@ export default {
       this.fetchResults()
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

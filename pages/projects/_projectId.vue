@@ -4,6 +4,7 @@
       :subtitle="projectSection"
       :title="fields.title"
       :description="fields.description"
+      :full-description="true"
       :breadcrumb="breadcrumb"
     >
       <img

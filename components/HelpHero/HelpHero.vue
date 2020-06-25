@@ -4,7 +4,10 @@
     <p>
       {{ summary }}
     </p>
-    <HelpSearchControls />
+    <search-controls-contentful
+      placeholder="Search help topics"
+      path="/help"
+    />
 
     <img
       v-if="heroImage"
@@ -17,7 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import HelpSearchControls from '@/components/help-search-controls/HelpSearchControls.vue'
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 
 export default Vue.extend<
@@ -29,7 +32,7 @@ export default Vue.extend<
   name: 'HelpHero',
 
   components: {
-    HelpSearchControls,
+    SearchControlsContentful,
     PageHero
   },
 

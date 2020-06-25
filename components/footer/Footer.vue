@@ -50,7 +50,9 @@
             </a>
           </li>
           <li>
-            <a href="http://status.sparc.science/" target="_blank">SPARC.science Site Status</a>
+            <a href="http://status.sparc.science/" target="_blank">
+              SPARC Systems Status
+            </a>
           </li>
         </ul>
         <h3>Help us Improve</h3>

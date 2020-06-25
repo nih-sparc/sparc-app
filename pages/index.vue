@@ -17,7 +17,6 @@
         slot="image"
         class="page-hero-video"
         autoplay
-        loop
         muted
       >
         <source :src="heroImage.fields.file.url" type="video/mp4" />

@@ -32,7 +32,7 @@
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <div class="search-heading">
-            <p v-if="!isLoadingSearch && searchData.items.length">
+            <p v-show="!isLoadingSearch && searchData.items.length">
               {{ searchHeading }} | Showing
               <pagination-menu
                 :page-size="searchData.limit"
@@ -188,37 +188,6 @@ import createClient from '@/plugins/contentful.js'
 import { handleSortChange, transformFilters } from './utils'
 
 const client = createClient()
-
-/**
- * Transform indidivual filter
- * @param {Object} filter
- */
-/*const transformIndividualFilter = filter => {
-  const category = propOr('', 'category', filter)
-  const filters = propOr([], 'tags', filter)
-
-  const transformedFilters = filters.map(filter => {
-    return {
-      label: filter.fields.name,
-      category: category,
-      key: filter.fields.slug,
-      value: false
-    }
-  })
-
-  return mergeLeft({ filters: transformedFilters }, filter)
-}*/
-
-/**
- * Transform filter response
- * @param {Object} filters
- */
-/*const transformFilters = compose(
-  flatten,
-  map(transformIndividualFilter),
-  pluck('fields'),
-  propOr([], 'filters')
-)*/
 
 export default {
   name: 'DataPage',
@@ -391,6 +360,7 @@ export default {
     '$route.query.q': {
       handler: function() {
         this.searchQuery = this.$route.query.q
+        this.fetchResults()
       },
       immediate: true
     }
@@ -526,7 +496,10 @@ export default {
         })
         .then(async response => {
           this.searchData = { ...response, order: this.searchData.order }
-          if (this.$route.query.type === 'organ') {
+          if (
+            this.$route.query.type === 'organ' &&
+            origSearchDataLimit !== 999
+          ) {
             this.searchData.items = await this.removeOrganNoDatasets()
             // Reset search data values for pagination
             this.searchData.limit = origSearchDataLimit
@@ -551,12 +524,18 @@ export default {
      * @returns {Object}
      */
     getOrganDetails: function(organ) {
-      const organType = pathOr('', ['fields', 'name'], organ)
+      const organName = pathOr('', ['fields', 'name'], organ)
+
+      const projectSection = pathOr(
+        organName,
+        ['fields', 'projectSection', 'fields', 'title'],
+        organ
+      )
       return this.$axios
         .get(
           `${
             process.env.discover_api_host
-          }/search/datasets?query=${organType.toLowerCase()}&limit=1`
+          }/search/datasets?query=${projectSection.toLowerCase()}&limit=1`
         )
         .then(response => {
           return response.data
@@ -624,9 +603,7 @@ export default {
       this.searchData.skip = 0
 
       const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
+      this.$router.replace({ query })
     },
 
     /**
@@ -636,9 +613,7 @@ export default {
       this.searchData.skip = 0
 
       const query = { ...this.$route.query, q: '' }
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
+      this.$router.replace({ query })
     },
 
     /**
