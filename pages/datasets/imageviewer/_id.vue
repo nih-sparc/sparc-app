@@ -21,7 +21,7 @@ import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
 export default {
-  name: 'FileDetailPage',
+  name: 'ImageViewerPage',
 
   components: {
     BiolucidaViewer,
@@ -32,7 +32,7 @@ export default {
     return {
       tabs: [
         {
-          label: 'Viewer',
+          label: 'Image Viewer',
           type: 'viewer',
         },
       ],
@@ -49,7 +49,7 @@ export default {
     biolucidaData: function() {
       return {
         biolucida_image_id: '',
-        share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.viewer,
+        share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
         status: '',
       }
     },

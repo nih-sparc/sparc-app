@@ -38,7 +38,7 @@ export default {
     return {
       tabs: [
         {
-          label: 'Scaffold',
+          label: 'Scaffold Viewer',
           type: 'scaffold',
         },
       ],

@@ -323,7 +323,7 @@ export default {
       switch (imageType) {
         case 'biolucida':
           query = {
-            viewer: this.viewerId(imageInfo.share_link),
+            view: this.viewerId(imageInfo.share_link),
           }
           break
         case 'scaffold':
@@ -341,7 +341,7 @@ export default {
       let name = '/'
       switch (imageType) {
         case 'biolucida':
-          name = 'datasets-viewer-id'
+          name = 'datasets-imageviewer-id'
           break
         case 'scaffold':
           name = 'datasets-scaffoldviewer-id'
