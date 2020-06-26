@@ -29,16 +29,25 @@
           :style="{ display: displayState(index) }"
           :class="['key-image-span', { active: currentIndex === index }]"
         >
-          <a target="_blank" :href="getImageLink(thumbnail_image)">
-            <img
-              :ref="'key_image_' + thumbnail_image.id"
-              :src="thumbnail_image.img"
-              alt="thumbnail missing"
-              class="thumbnail thumbnail-100"
-              :height="slideNaturalHeight"
-              :width="slideNaturalWidth"
-            />
-          </a>
+          <nuxt-link
+            v-slot="{ href }"
+            :to="{
+              name: getThumbnailLinkName(thumbnail_image),
+              params: getThumbnailLinkParams(thumbnail_image),
+              query: getThumbnailLinkQuery(thumbnail_image),
+            }"
+          >
+            <a target="_blank" :href="href">
+              <img
+                :ref="'key_image_' + thumbnail_image.id"
+                :src="thumbnail_image.img"
+                alt="thumbnail missing"
+                class="thumbnail thumbnail-100"
+                :height="slideNaturalHeight"
+                :width="slideNaturalWidth"
+              />
+            </a>
+          </nuxt-link>
           <div
             class="overlay"
             :style="`background-color: ${imageOverlayColour(index)}`"
@@ -277,19 +286,70 @@ export default {
 
       return linkParts[1]
     },
-    getImageLink(imageInfo) {
+    getThumbnailLinkType(imageInfo) {
       const imageInfoKeys = Object.keys(imageInfo)
       const shareLinkIndex = imageInfoKeys.indexOf('share_link')
       const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')
-      let url = ''
+      let imageType = 'unknown'
       if (shareLinkIndex !== -1) {
-        const viewerId = this.viewerId(imageInfo.share_link)
-        url = `viewer/${this.$route.params.datasetId}?viewer=${viewerId}`
+        imageType = 'biolucida'
       } else if (metadataFileIndex !== -1) {
-        url = `scaffoldviewer/${this.$route.params.datasetId}?scaffold=${imageInfo.metadata_file}`
+        imageType = 'scaffold'
+      }
+      return imageType
+    },
+    getThumbnailLinkParams(imageInfo) {
+      const imageType = this.getThumbnailLinkType(imageInfo)
+      let params = {}
+      switch (imageType) {
+        case 'biolucida':
+          params = {
+            id: imageInfo.id,
+          }
+          break
+        case 'scaffold':
+          params = {
+            id: imageInfo.name,
+          }
+          break
+        default:
       }
 
-      return url
+      return params
+    },
+    getThumbnailLinkQuery(imageInfo) {
+      const imageType = this.getThumbnailLinkType(imageInfo)
+      let query = {}
+      switch (imageType) {
+        case 'biolucida':
+          query = {
+            viewer: this.viewerId(imageInfo.share_link),
+          }
+          break
+        case 'scaffold':
+          query = {
+            scaffold: imageInfo.metadata_file,
+          }
+          break
+        default:
+      }
+
+      return query
+    },
+    getThumbnailLinkName(imageInfo) {
+      const imageType = this.getThumbnailLinkType(imageInfo)
+      let name = '/'
+      switch (imageType) {
+        case 'biolucida':
+          name = 'datasets-viewer-id'
+          break
+        case 'scaffold':
+          name = 'datasets-scaffoldviewer-id'
+          break
+        default:
+      }
+
+      return name
     },
     imageOverlayColour(index) {
       return this.overlayColours[index]
