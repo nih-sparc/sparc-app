@@ -7,7 +7,7 @@
       </p>
       <p>
         <strong>Highlighted image:</strong>
-        {{ imageName }}
+        {{ imageNames[currentIndex] }}
       </p>
     </div>
     <div class="standard-gallery">
@@ -93,17 +93,15 @@ export default {
   data() {
     return {
       description: '',
-      imageName: '',
       thumbnails: [],
       imageNames: [],
       overlayColours: [],
       currentIndex: 0,
       controlWidth: 50,
       controlHeight: 60,
-      slideNaturalHeight: 0,
       slideAxis: undefined,
-      slideNaturalWidth: 0,
-      numberOfImagesVisible: 0,
+      slideNaturalHeight: 135,
+      slideNaturalWidth: 180,
       defaultImg: require('~/assets/logo-sparc-wave-primary.svg'),
     }
   },
@@ -117,14 +115,17 @@ export default {
     imageCount() {
       return this.datasetImages.length + this.datasetScaffolds.length
     },
+    numberOfImagesVisible() {
+      const imagesVisibleCount =
+        (this.$el.parentElement.clientWidth - 2 * this.controlWidth) /
+        this.slideNaturalWidth
+      return Math.floor(imagesVisibleCount)
+    },
   },
   watch: {
     markdown: function(text) {
-      console.log('what did I get???')
-      console.log(text)
       const html = this.parseMarkdown(text)
       const doc = new DOMParser().parseFromString(html, 'text/html')
-      console.log(doc)
       const links = doc.querySelectorAll('p')
       links.forEach((paragraph) => {
         if (paragraph.innerText.includes('Data collection:')) {
@@ -184,6 +185,7 @@ export default {
         }
       })
       this.datasetImages.forEach((dataset_image) => {
+        this.overlayColours = [...Array(this.imageCount)].map(() => 'grey')
         const image_id = dataset_image.image_id
         biolucida
           .getThumbnail(image_id)
@@ -198,12 +200,9 @@ export default {
               this.imageNames[index] =
                 imageName.substring(0, imageName.lastIndexOf('.')) || imageName
               if (imageName.toUpperCase().endsWith('JPX')) {
-                this.overlayColours[index] = 'cyan'
+                this.overlayColours.splice(index, 1, 'cyan')
               } else {
                 this.overlayColours[index] = 'violet'
-              }
-              if (index === this.currentIndex) {
-                this.imageName = this.imageNames[index]
               }
             })
             thumbnail.img =
@@ -223,7 +222,6 @@ export default {
                     : 'portrait'
                 _this.slideNaturalHeight = img.naturalHeight
                 _this.slideNaturalWidth = img.naturalWidth
-                _this.calculateNumberOfImagesVisible()
               }
 
               img.src =
@@ -231,11 +229,6 @@ export default {
                 response.headers['content-type'] +
                 ';base64,' +
                 response.data
-            }
-            // Can I get the reference for the element now? I think so.
-            if (index === this.currentIndex) {
-              const keyImageElement = this.$refs['key_image_' + thumbnail.id][0]
-              keyImageElement.parentElement.classList.add('active')
             }
           })
           .catch((error) => {
@@ -261,15 +254,12 @@ export default {
           .then((response) => {
             response.data.files.forEach((entry) => {
               if (entry.name.toUpperCase().includes('METADATA')) {
-                console.log('matching entry')
-                console.log(entry)
                 this.thumbnails[
                   scaffold_index
                 ].metadata_file = entry.uri.replace(
                   's3://blackfynn-discover-use1/',
                   '',
                 )
-                console.log(this.thumbnails[scaffold_index])
               }
             })
           })
@@ -281,12 +271,6 @@ export default {
             console.log(error.message)
           })
       })
-    },
-    calculateNumberOfImagesVisible() {
-      const imagesVisibleCount =
-        (this.$el.parentElement.clientWidth - 2 * this.controlWidth) /
-        this.slideNaturalWidth
-      this.numberOfImagesVisible = Math.floor(imagesVisibleCount)
     },
     viewerId(shareLink) {
       const linkParts = shareLink.split(process.env.BL_SHARE_LINK_PREFIX)
@@ -300,9 +284,9 @@ export default {
       let url = ''
       if (shareLinkIndex !== -1) {
         const viewerId = this.viewerId(imageInfo.share_link)
-        url = `datasets/viewer/${this.$route.params.datasetId}?viewer=${viewerId}`
+        url = `viewer/${this.$route.params.datasetId}?viewer=${viewerId}`
       } else if (metadataFileIndex !== -1) {
-        url = `datasets/scaffoldviewer/${this.$route.params.datasetId}?scaffold=${imageInfo.metadata_file}`
+        url = `scaffoldviewer/${this.$route.params.datasetId}?scaffold=${imageInfo.metadata_file}`
       }
 
       return url
