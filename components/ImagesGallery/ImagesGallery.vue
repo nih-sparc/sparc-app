@@ -112,6 +112,7 @@ export default {
       slideNaturalHeight: 135,
       slideNaturalWidth: 180,
       defaultImg: require('~/assets/logo-sparc-wave-primary.svg'),
+      defaultScaffoldImg: require('~/assets/scaffold-light.png'),
     }
   },
   computed: {
@@ -251,7 +252,7 @@ export default {
         this.overlayColours[scaffold_index] = 'yellow'
         this.thumbnails.push({
           id: dataset_scaffold.name,
-          img: this.defaultImg,
+          img: this.defaultScaffoldImg,
           metadata_file: '',
         })
         discover
