@@ -258,10 +258,7 @@ export default {
       this.$axios
         .get(url)
         .then(response => {
-          return response.data
-        })
-        .then(data => {
-          this.citationText = data
+          this.citationText = response.data
         })
         .catch(() => {
           this.hasCitationError = true
