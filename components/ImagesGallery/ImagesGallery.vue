@@ -370,8 +370,8 @@ export default {
 }
 
 .key-image-span.active {
-  transform: scale(1.1);
-  border: #8300bf solid;
+  transform: scale(1.16);
+  border: 4px #8300bf solid;
 }
 
 .key-image-span {
