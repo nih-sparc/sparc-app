@@ -207,13 +207,16 @@ export default {
             biolucida.getImageInfo(image_id).then((response) => {
               const imageInfo = response.data
               let imageName = imageInfo.name
-              this.imageNames[index] =
+              imageName =
                 imageName.substring(0, imageName.lastIndexOf('.')) || imageName
               if (imageName.toUpperCase().endsWith('JPX')) {
                 this.overlayColours.splice(index, 1, 'cyan')
+                imageName += ' - 3D image'
               } else {
                 this.overlayColours[index] = 'violet'
+                imageName += ' - 2D image'
               }
+              this.imageNames[index] = imageName
             })
             thumbnail.img =
               'data:' +
@@ -248,7 +251,8 @@ export default {
       })
       this.datasetScaffolds.forEach((dataset_scaffold) => {
         const scaffold_index = this.thumbnails.length
-        this.imageNames[scaffold_index] = dataset_scaffold.name
+        this.imageNames[scaffold_index] =
+          dataset_scaffold.name + ' - 3D scaffold'
         this.overlayColours[scaffold_index] = 'yellow'
         this.thumbnails.push({
           id: dataset_scaffold.name,
