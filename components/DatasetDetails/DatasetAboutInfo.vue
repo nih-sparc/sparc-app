@@ -50,12 +50,25 @@
               </li>
             </ul>
             <div
+              v-show="!hasCitationError"
               v-loading="citationLoading"
               class="info-citation"
               aria-live="polite"
               v-html="citationText"
             />
+            <div v-show="hasCitationError">
+              <p>
+                <strong>Internal Server Error</strong><br />
+                Sorry, something went wrong.<br />
+                The dataset citation generator
+                (<a href="https://citation.crosscite.org/" target="_blank">https://citation.crosscite.org/</a>)
+                encountered an internal error and was unable to complete your
+                request.<br />
+                Please come back later.
+              </p>
+            </div>
             <el-button
+              :disabled="hasCitationError"
               class="copy-button"
               size="small"
               @click="handleCitationCopy"
@@ -134,7 +147,8 @@ export default {
           type: 'bibtex',
           label: 'Bibtex'
         }
-      ]
+      ],
+      hasCitationError: false
     }
   },
 
@@ -237,15 +251,20 @@ export default {
         return
       }
       this.citationLoading = true
+      this.hasCitationError = false
       this.activeCitation = citationType
       // find all citation types at https://github.com/citation-style-language/style
       const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType.type}&lang=en-US`
-      return fetch(url)
+      this.$axios
+        .get(url)
         .then(response => {
-          return response.text()
+          return response.data
         })
-        .then(text => {
-          this.citationText = text
+        .then(data => {
+          this.citationText = data
+        })
+        .catch(() => {
+          this.hasCitationError = true
         })
         .finally(() => {
           this.citationLoading = false
