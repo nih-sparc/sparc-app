@@ -143,7 +143,7 @@
         </client-only>
         <images-gallery
           v-show="activeTab === 'images'"
-          :markdown="markdown"
+          :markdown="markdown.markdownTop"
           :dataset-images="imagesData.dataset_images"
           :dataset-scaffolds="scaffoldData"
         />
@@ -319,7 +319,7 @@ export default {
           label: 'Find Data',
         },
       ],
-      subtitles: []
+      subtitles: [],
     }
   },
 
@@ -649,7 +649,7 @@ export default {
               markdownTop: splitResponse[0],
               markdownBottom: splitResponse[1]
                 ? splitDelim + splitResponse[1]
-                : ''
+                : '',
             }
           })
           .catch((error) => {

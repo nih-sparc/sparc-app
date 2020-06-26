@@ -120,8 +120,11 @@ export default {
   },
   watch: {
     markdown: function(text) {
+      console.log('what did I get???')
+      console.log(text)
       const html = this.parseMarkdown(text)
       const doc = new DOMParser().parseFromString(html, 'text/html')
+      console.log(doc)
       const links = doc.querySelectorAll('p')
       links.forEach((paragraph) => {
         if (paragraph.innerText.includes('Data collection:')) {
