@@ -209,7 +209,7 @@ export default {
               let imageName = imageInfo.name
               imageName =
                 imageName.substring(0, imageName.lastIndexOf('.')) || imageName
-              if (imageName.toUpperCase().endsWith('JPX')) {
+              if (imageInfo.name.toUpperCase().endsWith('JPX')) {
                 this.overlayColours.splice(index, 1, 'cyan')
                 imageName += ' - 3D image'
               } else {
