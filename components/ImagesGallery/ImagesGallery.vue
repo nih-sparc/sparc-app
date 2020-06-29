@@ -6,7 +6,7 @@
         {{ description }}
       </p>
       <p>
-        <strong>Highlighted image:</strong>
+        <strong>Highlighted {{ imageTypes[currentIndex] }} image:</strong>
         {{ imageNames[currentIndex] }}
       </p>
     </div>
@@ -108,6 +108,7 @@ export default {
       description: '',
       thumbnails: [],
       imageNames: [],
+      imageTypes: [],
       overlayColours: [],
       currentIndex: 0,
       controlWidth: 50,
@@ -146,9 +147,6 @@ export default {
           this.description = paragraph.innerText.replace('Data collection:', '')
         }
       })
-    },
-    currentIndex: function(index) {
-      this.imageName = this.imageNames[index]
     },
   },
   mounted() {
@@ -216,14 +214,16 @@ export default {
                 imageName =
                   imageName.substring(0, imageName.lastIndexOf('.')) ||
                   imageName
+                this.imageNames[index] = imageName
+                let imageType = ''
                 if (imageInfo.name.toUpperCase().endsWith('JPX')) {
                   this.overlayColours.splice(index, 1, 'cyan')
-                  imageName += ' - 3D image'
+                  imageType += '3D'
                 } else {
                   this.overlayColours[index] = 'violet'
-                  imageName += ' - 2D image'
+                  imageType += '2D'
                 }
-                this.imageNames[index] = imageName
+                this.imageTypes[index] = imageType
               })
               .catch((error) => {
                 console.log('Error fetching image information:', image_id)
@@ -262,8 +262,8 @@ export default {
       })
       this.datasetScaffolds.forEach((dataset_scaffold) => {
         const scaffold_index = this.thumbnails.length
-        this.imageNames[scaffold_index] =
-          dataset_scaffold.name + ' - 3D scaffold'
+        this.imageNames[scaffold_index] = dataset_scaffold.name
+        this.imageTypes[scaffold_index] = 'scaffold'
         this.overlayColours[scaffold_index] = 'yellow'
         this.thumbnails.push({
           id: dataset_scaffold.name,
