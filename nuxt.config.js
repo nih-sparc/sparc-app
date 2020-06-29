@@ -80,6 +80,13 @@ export default {
    */
   router: {
     linkActiveClass: 'active-link',
+    extendRoutes(routes) {
+      // Redirects
+      routes.push({
+        path: '/submit_data.html',
+        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd'
+      })
+    }
   },
   /*
    ** Global CSS

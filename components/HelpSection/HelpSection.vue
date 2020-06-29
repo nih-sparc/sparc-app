@@ -18,6 +18,7 @@
                 v-for="(item, index) in section.fields.helpDocuments"
                 :key="`${item}-${index}`"
                 :help-item="item"
+                :search-terms="searchTerms"
               />
             </div>
           </div>
