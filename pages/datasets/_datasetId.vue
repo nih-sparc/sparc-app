@@ -262,10 +262,8 @@ export default {
       })
     }
 
-    if (
-      imagesData.status === 'success' ||
-      derivativeFilesResponse.status === 200
-    ) {
+    console.log(scaffoldData)
+    if (imagesData.status === 'success' || scaffoldData.length) {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
 
