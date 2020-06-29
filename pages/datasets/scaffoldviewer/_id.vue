@@ -71,6 +71,10 @@ export default {
   },
 
   computed: {
+    /**
+     * Get the file name from the scaffold query parameter.
+     * @returns String
+     */
     fileName: function() {
       const scaffold = this.$route.query.scaffold
       let name =
@@ -79,11 +83,21 @@ export default {
       let nameWE = name.substring(0, name.lastIndexOf('.')) || name
       return nameWE
     },
+
+    /**
+     * Get the dataset id from the scaffold query parameter.
+     * @returns Number
+     */
     datasetId: function() {
       const scaffold = this.$route.query.scaffold
       const id = scaffold.substring(0, scaffold.indexOf('/')) || ''
       return id
     },
+
+    /**
+     * Get the version number from the scaffold query parameter.
+     * @returns Number
+     */
     versionNumber: function() {
       const scaffold = this.$route.query.scaffold
       const postId =
@@ -91,13 +105,13 @@ export default {
       const version = postId.substring(0, postId.indexOf('/')) || ''
       return version
     },
+
+    /**
+     * Return the url for the scaffold metadata file.
+     * @returns String
+     */
     scaffoldUrl: function() {
       return `${process.env.sparc_api_host}/s3-resource/${this.$route.query.scaffold}`
-    },
-  },
-  methods: {
-    scaffoldSelected: function(data) {
-      console.log(data)
     },
   },
 }
