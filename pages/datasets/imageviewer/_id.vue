@@ -97,29 +97,39 @@ export default {
       }
     },
 
+    /**
+     * Return the dataset id from the route query.
+     * @returns String
+     */
     datasetId: function() {
       return this.$route.query.dataset_id
     },
 
+    /**
+     * Return the version number from the route query.
+     * @returns String
+     */
     versionNumber: function() {
       return this.$route.query.dataset_version
     },
 
+    /**
+     * Return the image name without extension from the image information.
+     * @returns String
+     */
     imageName: function() {
       let imageName = this.imageInfo.name
-      imageName =
-        imageName.substring(0, imageName.lastIndexOf('.')) || imageName
-      return imageName
+      return imageName.substring(0, imageName.lastIndexOf('.')) || imageName
     },
 
+    /**
+     * Return the type of an image.
+     * @returns String
+     */
     imageType: function() {
-      let imageType = ''
-      if (this.imageInfo.name.toUpperCase().endsWith('JPX')) {
-        imageType = '3D JPEG Image'
-      } else {
-        imageType = '2D JPEG Image'
-      }
-      return imageType
+      return this.imageInfo.name.toUpperCase().endsWith('JPX')
+        ? '3D JPEG Image'
+        : '2D JPEG Image'
     },
   },
 }

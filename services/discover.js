@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: 'https://api.blackfynn.io/discover/datasets',
+  baseURL: `${process.env.discover_api_host}/datasets`,
   withCredentials: false,
   timeout: 11005,
 })
