@@ -98,7 +98,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   :command="{
-                    type: 'requestDownloadFile',
+                    type: 'getDownloadFile',
                     scope,
                   }"
                 >
@@ -135,12 +135,14 @@ import {
   defaultTo,
   pathOr,
 } from 'ramda'
+
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
+import RequestDownloadFile from '@/mixins/request-download-file'
 
 export default {
   name: 'FilesTable',
 
-  mixins: [FormatStorage],
+  mixins: [FormatStorage, RequestDownloadFile],
 
   props: {
     datasetDetails: {
@@ -324,23 +326,11 @@ export default {
     },
 
     /**
-     * Download file
+     * Get the download file for the given scope.
      * @param {Object} scope
      */
-    requestDownloadFile: function(scope) {
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['row', 'uri']),
-      )(scope)
-
-      const fileName = pathOr('', ['row', 'name'], scope)
-
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
-      this.$axios.$get(requestUrl).then((response) => {
-        this.downloadFile(fileName, response)
-      })
+    getDownloadFile: function(scope) {
+      this.requestDownloadFile(scope.row)
     },
 
     /**
@@ -364,24 +354,6 @@ export default {
         const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
         window.open(finalURL, '_blank')
       })
-    },
-
-    /**
-     * Create an `a` tag to trigger downloading file
-     * @param {String} filename
-     * @param {String} url
-     */
-    downloadFile: function(filename, url) {
-      const el = document.createElement('a')
-      el.setAttribute('href', url)
-      el.setAttribute('download', filename)
-
-      el.style.display = 'none'
-      document.body.appendChild(el)
-
-      el.click()
-
-      document.body.removeChild(el)
     },
 
     /**

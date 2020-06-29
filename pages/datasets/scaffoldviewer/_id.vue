@@ -9,11 +9,7 @@
       >
         <client-only placeholder="Loading scaffold ...">
           <div class="scaffoldvuer-container">
-            <ScaffoldVuer
-              :url="scaffoldUrl"
-              :scaffold-selected="scaffoldSelected"
-              :traditional="true"
-            />
+            <ScaffoldVuer :url="scaffoldUrl" :traditional="true" />
           </div>
         </client-only>
       </detail-tabs>
@@ -22,6 +18,7 @@
 </template>
 
 <script>
+// :scaffold-selected="scaffoldSelected"
 import '@abi-software/scaffoldvuer'
 import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
@@ -49,24 +46,7 @@ export default {
 
   computed: {
     scaffoldUrl: function() {
-      console.log('coming here!!!!', this.$route.query.scaffold)
-      console.log(
-        'going to give url as',
-        `${process.env.sparc_api_host}/s3-resource/${this.$route.query.scaffold}`,
-      )
       return `${process.env.sparc_api_host}/s3-resource/${this.$route.query.scaffold}`
-      // return this.$route.query.scaffold
-    },
-    /**
-     * Compute biolucida data
-     * @returns {Object}
-     */
-    biolucidaData: function() {
-      return {
-        biolucida_image_id: '',
-        share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.viewer,
-        status: '',
-      }
     },
   },
   methods: {

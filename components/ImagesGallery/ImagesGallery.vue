@@ -91,6 +91,10 @@ export default {
         return []
       },
     },
+    datasetVersion: {
+      type: Number,
+      default: 1,
+    },
     markdown: {
       type: String,
       default: '',
@@ -201,20 +205,27 @@ export default {
               (item) => item.id === image_id,
             )
             let thumbnail = this.thumbnails[index]
-            biolucida.getImageInfo(image_id).then((response) => {
-              const imageInfo = response.data
-              let imageName = imageInfo.name
-              imageName =
-                imageName.substring(0, imageName.lastIndexOf('.')) || imageName
-              if (imageInfo.name.toUpperCase().endsWith('JPX')) {
-                this.overlayColours.splice(index, 1, 'cyan')
-                imageName += ' - 3D image'
-              } else {
-                this.overlayColours[index] = 'violet'
-                imageName += ' - 2D image'
-              }
-              this.imageNames[index] = imageName
-            })
+            biolucida
+              .getImageInfo(image_id)
+              .then((response) => {
+                const imageInfo = response.data
+                let imageName = imageInfo.name
+                imageName =
+                  imageName.substring(0, imageName.lastIndexOf('.')) ||
+                  imageName
+                if (imageInfo.name.toUpperCase().endsWith('JPX')) {
+                  this.overlayColours.splice(index, 1, 'cyan')
+                  imageName += ' - 3D image'
+                } else {
+                  this.overlayColours[index] = 'violet'
+                  imageName += ' - 2D image'
+                }
+                this.imageNames[index] = imageName
+              })
+              .catch((error) => {
+                console.log('Error fetching image information:', image_id)
+                console.log(error.message)
+              })
             thumbnail.img =
               'data:' +
               response.headers['content-type'] +
@@ -326,6 +337,7 @@ export default {
         case 'biolucida':
           query = {
             view: this.viewerId(imageInfo.share_link),
+            dataset_version: this.datasetVersion,
           }
           break
         case 'scaffold':

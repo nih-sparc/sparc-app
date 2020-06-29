@@ -133,23 +133,13 @@
           v-show="activeTab === 'files'"
           :dataset-details="datasetInfo"
         />
-        <client-only placeholder="Loading viewer...">
-          <div v-show="activeTab === '3DScaffold'" class="scaffold">
-            <scaffold-vuer v-if="scaffold" :url="scaffold" />
-            <p v-else>
-              No 3D scaffold available
-            </p>
-          </div>
-        </client-only>
         <images-gallery
           v-show="activeTab === 'images'"
           :markdown="markdown.markdownTop"
           :dataset-images="imagesData.dataset_images"
           :dataset-scaffolds="scaffoldData"
+          :dataset-version="getDatasetVersion"
         />
-        <div v-show="activeTab === 'viewer'" class="viewer">
-          <biolucida-viewer :data="biolucidaData" />
-        </div>
       </detail-tabs>
     </div>
     <download-dataset
@@ -170,8 +160,6 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
-
-import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
@@ -214,7 +202,6 @@ export default {
   name: 'DatasetDetails',
 
   components: {
-    BiolucidaViewer,
     DetailsHeader,
     DetailTabs,
     ContributorItem,
@@ -260,6 +247,9 @@ export default {
       version,
       'files/derivative',
     )
+
+    // Include discover dataset version into images data info.
+    imagesData['discover_dataset_version'] = version
 
     let scaffoldData = []
     if (derivativeFilesResponse.status === 200) {
@@ -332,6 +322,13 @@ export default {
       return this.datasetInfo.study.uuid || ''
     },
 
+    /**
+     * Gets dataset version
+     * @returns {Number}
+     */
+    getDatasetVersion: function() {
+      return propOr(1, 'version', this.datasetInfo)
+    },
     /**
      * Gets dataset size for download
      * @returns {Number}

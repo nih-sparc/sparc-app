@@ -1,6 +1,26 @@
 <template>
   <div class="file-detail-page">
-    <div class="page-wrap">
+    <div class="page-wrap container">
+      <div class="subpage">
+        <div class="page-heading">
+          <h1>{{ imageName }}</h1>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">File Details</strong>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Description</strong>
+          <div class="file-detail__column">
+            {{ imageInfo.description }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Type</strong>
+          <div class="file-detail__column">
+            {{ imageType }}
+          </div>
+        </div>
+      </div>
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -17,6 +37,8 @@
 </template>
 
 <script>
+import biolucida from '@/services/biolucida'
+
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
@@ -26,6 +48,15 @@ export default {
   components: {
     BiolucidaViewer,
     DetailTabs,
+  },
+
+  async asyncData({ route }) {
+    const response = await biolucida.getImageInfo(route.params.id)
+    const imageInfo = response.data
+
+    return {
+      imageInfo,
+    }
   },
 
   data: () => {
@@ -52,6 +83,23 @@ export default {
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
         status: '',
       }
+    },
+
+    imageName: function() {
+      let imageName = this.imageInfo.name
+      imageName =
+        imageName.substring(0, imageName.lastIndexOf('.')) || imageName
+      return imageName
+    },
+
+    imageType: function() {
+      let imageType = ''
+      if (this.imageInfo.name.toUpperCase().endsWith('JPX')) {
+        imageType = '3D JPEG Image'
+      } else {
+        imageType = '2D JPEG Image'
+      }
+      return imageType
     },
   },
 }
