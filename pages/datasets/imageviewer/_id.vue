@@ -3,43 +3,37 @@
     <div class="page-wrap container">
       <div class="subpage">
         <div class="page-heading">
-          <h1>{{ file.name }}</h1>
-          <div class="page-heading__button">
-            <bf-button @click="requestDownloadFile(file)">
-              Download
-            </bf-button>
-          </div>
+          <h1>{{ imageName }}</h1>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
+          <strong class="file-detail__column">Description</strong>
+          <div class="file-detail__column">
+            {{ imageInfo.description }}
+          </div>
+        </div>
+        <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
-            {{ file.fileType }}
+            {{ imageType }}
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Size</strong>
+          <strong class="file-detail__column">Dataset id</strong>
           <div class="file-detail__column">
-            {{ formatMetric(file.size) }}
+            {{ datasetId }}
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Date Created</strong>
+          <strong class="file-detail__column">Version</strong>
           <div class="file-detail__column">
-            {{ formatDate(file.createdAt) }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Location</strong>
-          <div class="file-detail__column">
-            {{ location }}
+            {{ versionNumber }}
           </div>
         </div>
       </div>
       <detail-tabs
-        v-if="hasViewer"
         :tabs="tabs"
         :active-tab="activeTab"
         class="container"
@@ -55,54 +49,33 @@
 </template>
 
 <script>
+import biolucida from '@/services/biolucida'
+
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
-
-import BfStorageMetrics from '@/mixins/bf-storage-metrics'
-import FormatDate from '@/mixins/format-date'
-import RequestDownloadFile from '@/mixins/request-download-file'
 
 export default {
-  name: 'FileDetailPage',
+  name: 'ImageViewerPage',
 
   components: {
     BiolucidaViewer,
     DetailTabs,
-    BfButton,
   },
 
-  mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile],
-
-  async asyncData({ route, $axios }) {
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.params.datasetId}/versions/${route.params.datasetVersion}/files?path=${route.params.path}`
-
-    const file = await $axios.$get(fileUrl)
-
-    const sourcePackageId = file.sourcePackageId
-    const biolucidaData = await $axios.$get(
-      `${process.env.BL_SERVER_URL}/imagemap/sharelink/${sourcePackageId}`,
-    )
-
-    const hasViewer = biolucidaData.status !== 'error'
+  async asyncData({ route }) {
+    const response = await biolucida.getImageInfo(route.params.id)
+    const imageInfo = response.data
 
     return {
-      biolucidaData,
-      file,
-      hasViewer,
+      imageInfo,
     }
   },
 
   data: () => {
     return {
-      biolucidaData: {
-        biolucida_image_id: '',
-        share_link: '',
-        status: '',
-      },
       tabs: [
         {
-          label: 'Viewer',
+          label: 'Image Viewer',
           type: 'viewer',
         },
       ],
@@ -113,11 +86,40 @@ export default {
 
   computed: {
     /**
-     * Compute location of the file
-     * @returns {String}
+     * Compute biolucida data
+     * @returns {Object}
      */
-    location: function() {
-      return this.file.path.replace(`/${this.file.name}`, '')
+    biolucidaData: function() {
+      return {
+        biolucida_image_id: '',
+        share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
+        status: '',
+      }
+    },
+
+    datasetId: function() {
+      return this.$route.query.dataset_id
+    },
+
+    versionNumber: function() {
+      return this.$route.query.dataset_version
+    },
+
+    imageName: function() {
+      let imageName = this.imageInfo.name
+      imageName =
+        imageName.substring(0, imageName.lastIndexOf('.')) || imageName
+      return imageName
+    },
+
+    imageType: function() {
+      let imageType = ''
+      if (this.imageInfo.name.toUpperCase().endsWith('JPX')) {
+        imageType = '3D JPEG Image'
+      } else {
+        imageType = '2D JPEG Image'
+      }
+      return imageType
     },
   },
 }

@@ -133,17 +133,13 @@
           v-show="activeTab === 'files'"
           :dataset-details="datasetInfo"
         />
-        <client-only placeholder="Loading viewer...">
-          <div v-show="activeTab === '3DScaffold'" class="scaffold">
-            <scaffold-vuer v-if="scaffold" :url="scaffold" />
-            <p v-else>
-              No 3D scaffold available
-            </p>
-          </div>
-        </client-only>
-        <images-table
+        <images-gallery
           v-show="activeTab === 'images'"
-          :table-data="imagesData.dataset_images"
+          :markdown="markdown.markdownTop"
+          :dataset-images="imagesData.dataset_images"
+          :dataset-scaffolds="scaffoldData"
+          :dataset-version="getDatasetVersion"
+          :dataset-id="getDatasetId"
         />
       </detail-tabs>
     </div>
@@ -159,8 +155,6 @@
 <script>
 import marked from 'marked'
 import { clone, propOr, pathOr, last, head, compose, split } from 'ramda'
-import '@abi-software/scaffoldvuer'
-import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -171,7 +165,7 @@ import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
-import ImagesTable from '@/components/ImagesTable/ImagesTable.vue'
+import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -182,25 +176,27 @@ import Scaffolds from '@/static/js/scaffolds.js'
 
 import createClient from '@/plugins/contentful.js'
 
+import discover from '@/services/discover'
+
 const client = createClient()
 
 marked.setOptions({
-  sanitize: true
+  sanitize: true,
 })
 
 const tabs = [
   {
     label: 'Description',
-    type: 'description'
+    type: 'description',
   },
   {
     label: 'About',
-    type: 'about'
+    type: 'about',
   },
   {
     label: 'Files',
-    type: 'files'
-  }
+    type: 'files',
+  },
 ]
 
 export default {
@@ -215,14 +211,14 @@ export default {
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
-    ImagesTable
+    ImagesGallery,
   },
 
   mixins: [Request, DateUtils, FormatStorage],
 
   async asyncData({ route, $axios }) {
     const organEntries = await client.getEntries({
-      content_type: process.env.ctf_organ_id
+      content_type: process.env.ctf_organ_id,
     })
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
@@ -238,7 +234,7 @@ export default {
 
     const imagesData = await $axios
       .$get(
-        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${route.params.datasetId}`
+        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${datasetId}`,
       )
       .catch(() => {
         return {}
@@ -246,17 +242,29 @@ export default {
 
     const tabsData = clone(tabs)
 
-    if (imagesData.status === 'success') {
-      tabsData.push({ label: 'Images', type: 'images' })
+    const version = propOr(1, 'version', datasetDetails)
+    const derivativeFilesResponse = await discover.browse(
+      datasetId,
+      version,
+      'files/derivative',
+    )
+
+    // Include discover dataset version into images data info.
+    imagesData['discover_dataset_version'] = version
+
+    let scaffoldData = []
+    if (derivativeFilesResponse.status === 200) {
+      derivativeFilesResponse.data.files.forEach((item) => {
+        if (item.type === 'Directory') {
+          if (item.name.toUpperCase().includes('SCAFFOLD')) {
+            scaffoldData.push({ name: item.name, path: item.path, version })
+          }
+        }
+      })
     }
 
-    // @TODO Add logic for 3D Scaffold
-    const hasScaffold = false
-    if (hasScaffold) {
-      tabsData.push({
-        label: '3D Scaffold',
-        type: '3DScaffold'
-      })
+    if (imagesData.status === 'success' || scaffoldData.length) {
+      tabsData.push({ label: 'Gallery', type: 'images' })
     }
 
     return {
@@ -264,7 +272,8 @@ export default {
       datasetInfo: datasetDetails,
       datasetType: route.query.type,
       imagesData,
-      tabs: tabsData
+      scaffoldData,
+      tabs: tabsData,
     }
   },
 
@@ -284,21 +293,21 @@ export default {
       breadcrumb: [
         {
           to: {
-            name: 'index'
+            name: 'index',
           },
-          label: 'Home'
+          label: 'Home',
         },
         {
           to: {
             name: 'data',
             query: {
-              type: this.$route.query.type
-            }
+              type: this.$route.query.type,
+            },
           },
-          label: 'Find Data'
-        }
+          label: 'Find Data',
+        },
       ],
-      subtitles: []
+      subtitles: [],
     }
   },
 
@@ -309,6 +318,22 @@ export default {
      */
     getSimulationId: function() {
       return this.datasetInfo.study.uuid || ''
+    },
+
+    /**
+     * Gets dataset version
+     * @returns {Number}
+     */
+    getDatasetVersion: function() {
+      return propOr(1, 'version', this.datasetInfo)
+    },
+
+    /**
+     * Gets dataset version
+     * @returns {Number}
+     */
+    getDatasetId: function() {
+      return propOr(0, 'id', this.datasetInfo)
     },
 
     /**
@@ -326,13 +351,13 @@ export default {
       const storage = compose(
         split(' '),
         this.formatMetric,
-        propOr(0, 'size')
+        propOr(0, 'size'),
       )(this.datasetInfo)
 
       return storage.reduce((number, unit) => {
         return {
           number,
-          unit
+          unit,
         }
       })
     },
@@ -523,7 +548,7 @@ export default {
      */
     scaffold: function() {
       return Scaffolds[this.organType.toLowerCase()]
-    }
+    },
   },
 
   watch: {
@@ -536,14 +561,14 @@ export default {
           this.getProtocolRecords()
         }
       },
-      immediate: true
+      immediate: true,
     },
 
     datasetInfo: {
       handler: function() {
         this.getMarkdown()
       },
-      immediate: true
+      immediate: true,
     },
 
     datasetContributors: {
@@ -552,13 +577,13 @@ export default {
           this.isContributorListVisible = false
         }
       },
-      immediate: true
+      immediate: true,
     },
 
     datasetTags: {
       handler: function(val) {
         if (val) {
-          this.entries.forEach(entry => {
+          this.entries.forEach((entry) => {
             const name = pathOr('', ['fields', 'name'], entry)
             if (this.datasetTags.includes(name.toLowerCase())) {
               this.subtitles.push(entry.fields.name)
@@ -566,8 +591,8 @@ export default {
           })
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
 
   mounted() {
@@ -590,7 +615,7 @@ export default {
     getProtocolRecords: function() {
       this.$axios
         .$get(this.getSearchRecordsUrl)
-        .then(response => {
+        .then((response) => {
           const records = propOr([], 'records', response)
           if (records.length !== 0) {
             // that means protocol records exist
@@ -619,8 +644,8 @@ export default {
       const readme = propOr('', 'readme', this.datasetInfo)
       if (readme !== '') {
         fetch(readme)
-          .then(response => response.text())
-          .then(response => {
+          .then((response) => response.text())
+          .then((response) => {
             this.loadingMarkdown = false
             const splitDelim = '\n\n---'
             const splitResponse = response.split(splitDelim)
@@ -628,14 +653,14 @@ export default {
               markdownTop: splitResponse[0],
               markdownBottom: splitResponse[1]
                 ? splitDelim + splitResponse[1]
-                : ''
+                : '',
             }
           })
-          .catch(error => {
+          .catch((error) => {
             throw error
           })
       }
-    }
+    },
   },
 
   head() {
@@ -643,10 +668,10 @@ export default {
     const org = [
       {
         '@type': 'Organization',
-        name: this.organizationName
-      }
+        name: this.organizationName,
+      },
     ]
-    const contributors = this.datasetContributors.map(contributor => {
+    const contributors = this.datasetContributors.map((contributor) => {
       const sameAs = contributor.orcid
         ? `http://orcid.org/${contributor.orcid}`
         : null
@@ -656,7 +681,7 @@ export default {
         sameAs,
         givenName: contributor.firstName,
         familyName: contributor.lastName,
-        name: `${contributor.firstName} ${contributor.lastName}`
+        name: `${contributor.firstName} ${contributor.lastName}`,
       }
     })
 
@@ -667,86 +692,86 @@ export default {
       meta: [
         {
           name: 'DC.type',
-          content: 'Dataset'
+          content: 'Dataset',
         },
         {
           name: 'DC.title',
-          content: this.datasetTitle
+          content: this.datasetTitle,
         },
         {
           name: 'DC.description',
-          content: this.datasetDescription
+          content: this.datasetDescription,
         },
         {
           name: 'DCTERMS.license',
-          content: this.licenseLink
+          content: this.licenseLink,
         },
         {
           property: 'og:type',
-          content: 'website'
+          content: 'website',
         },
         {
           property: 'og:title',
-          content: this.datasetTitle
+          content: this.datasetTitle,
         },
         {
           property: 'og:description',
-          content: this.datasetDescription
+          content: this.datasetDescription,
         },
         {
           property: 'og:image',
-          content: this.getDatasetImage
+          content: this.getDatasetImage,
         },
         {
           property: 'og:image:alt',
-          content: `${this.datasetTitle} Banner Image`
+          content: `${this.datasetTitle} Banner Image`,
         },
         {
           property: 'og:site_name',
-          content: 'SPARC Portal'
+          content: 'SPARC Portal',
         },
         {
           name: 'twitter:card',
-          content: 'summary'
+          content: 'summary',
         },
         {
           name: 'twitter:site',
-          content: '@sparc_science'
+          content: '@sparc_science',
         },
         {
           name: 'twitter:description',
-          content: this.datasetDescription
+          content: this.datasetDescription,
         },
         {
           name: 'twitter:image',
-          content: this.getDatasetImage
+          content: this.getDatasetImage,
         },
         {
           name: 'DC.creator',
-          content: JSON.stringify(creators)
+          content: JSON.stringify(creators),
         },
         {
           name: 'DC.identifier',
           content: this.DOIlink,
-          scheme: 'DCTERMS.URI'
+          scheme: 'DCTERMS.URI',
         },
         {
           name: 'DC.publisher',
-          content: this.organizationName
+          content: this.organizationName,
         },
         {
           name: 'DC.date',
           content: this.originallyPublishedDate,
-          scheme: 'DCTERMS.W3CDTF'
+          scheme: 'DCTERMS.W3CDTF',
         },
         {
           name: 'DC.version',
-          content: this.datasetInfo.version
+          content: this.datasetInfo.version,
         },
         {
           property: 'og:url',
-          content: process.env.siteUrl
-        }
+          content: process.env.siteUrl,
+        },
       ],
       script: [
         {
@@ -766,9 +791,9 @@ export default {
             url: process.env.siteUrl,
             citation: this.citationText,
             identifier: this.DOIlink,
-            isAccessibleForFree: true
+            isAccessibleForFree: true,
           },
-          type: 'application/ld+json'
+          type: 'application/ld+json',
         },
         {
           vmid: 'ldjson-schema',
@@ -776,13 +801,13 @@ export default {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
             url: process.env.siteUrl,
-            name: 'Blackfynn Discover'
+            name: 'Blackfynn Discover',
           },
-          type: 'application/ld+json'
-        }
-      ]
+          type: 'application/ld+json',
+        },
+      ],
     }
-  }
+  },
 }
 </script>
 
