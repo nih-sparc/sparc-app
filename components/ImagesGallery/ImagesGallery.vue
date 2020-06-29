@@ -30,20 +30,23 @@
           :class="['key-image-span', { active: currentIndex === index }]"
         >
           <nuxt-link
+            v-slot="{ href }"
             :to="{
               name: getThumbnailLinkName(thumbnail_image),
               params: getThumbnailLinkParams(thumbnail_image),
               query: getThumbnailLinkQuery(thumbnail_image),
             }"
           >
-            <img
-              :ref="'key_image_' + thumbnail_image.id"
-              :src="thumbnail_image.img"
-              alt="thumbnail missing"
-              class="thumbnail thumbnail-100"
-              :height="slideNaturalHeight"
-              :width="slideNaturalWidth"
-            />
+            <a target="_blank" :href="href" rel="noopener noreferrer">
+              <img
+                :ref="'key_image_' + thumbnail_image.id"
+                :src="thumbnail_image.img"
+                alt="thumbnail missing"
+                class="thumbnail thumbnail-100"
+                :height="slideNaturalHeight"
+                :width="slideNaturalWidth"
+              />
+            </a>
           </nuxt-link>
           <div
             class="overlay"
