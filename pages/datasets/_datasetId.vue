@@ -262,7 +262,6 @@ export default {
       })
     }
 
-    console.log(scaffoldData)
     if (imagesData.status === 'success' || scaffoldData.length) {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
