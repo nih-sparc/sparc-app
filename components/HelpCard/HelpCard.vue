@@ -7,7 +7,7 @@
         {{ helpItem.fields.title || '' }}
       </nuxt-link>
     </h3>
-    <p>{{ helpItem.fields.summary || '' }}</p>
+    <p v-html="highlightText(searchTerms, helpItem.fields.summary || '')" />
   </div>
 </template>
 
@@ -15,8 +15,15 @@
 import Vue from 'vue';
 import {HelpDocument} from "~/pages/help/model";
 
-export default Vue.extend<never, never, never, { helpItem: HelpDocument }>({
+import HighlightText from '@/mixins/highlight-text'
+
+export default Vue.extend<never, never, never, { helpItem: HelpDocument, searchTerms: string }>({
   name: 'HelpCard',
+
+  mixins: [
+    HighlightText
+  ],
+
   props: {
     helpItem: {
       type: Object,
@@ -26,6 +33,10 @@ export default Vue.extend<never, never, never, { helpItem: HelpDocument }>({
           fields: {}
         } as HelpDocument
       }
+    },
+    searchTerms: {
+      type: String,
+      default: ''
     }
   }
 })
