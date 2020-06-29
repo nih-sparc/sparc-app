@@ -139,6 +139,7 @@
           :dataset-images="imagesData.dataset_images"
           :dataset-scaffolds="scaffoldData"
           :dataset-version="getDatasetVersion"
+          :dataset-id="getDatasetId"
         />
       </detail-tabs>
     </div>
@@ -326,6 +327,15 @@ export default {
     getDatasetVersion: function() {
       return propOr(1, 'version', this.datasetInfo)
     },
+
+    /**
+     * Gets dataset version
+     * @returns {Number}
+     */
+    getDatasetId: function() {
+      return propOr(0, 'id', this.datasetInfo)
+    },
+
     /**
      * Gets dataset size for download
      * @returns {Number}

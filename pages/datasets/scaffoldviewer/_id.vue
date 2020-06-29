@@ -9,6 +9,12 @@
           <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
+          <strong class="file-detail__column">Type</strong>
+          <div class="file-detail__column">
+            3D Scaffold
+          </div>
+        </div>
+        <div class="file-detail">
           <strong class="file-detail__column">Dataset id</strong>
           <div class="file-detail__column">
             {{ datasetId }}

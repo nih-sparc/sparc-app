@@ -98,6 +98,10 @@ export default {
       type: Number,
       default: 1,
     },
+    datasetId: {
+      type: Number,
+      default: 0,
+    },
     markdown: {
       type: String,
       default: '',
@@ -341,6 +345,7 @@ export default {
           query = {
             view: this.viewerId(imageInfo.share_link),
             dataset_version: this.datasetVersion,
+            dataset_id: this.datasetId,
           }
           break
         case 'scaffold':

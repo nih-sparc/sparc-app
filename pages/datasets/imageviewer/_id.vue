@@ -20,6 +20,18 @@
             {{ imageType }}
           </div>
         </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Dataset id</strong>
+          <div class="file-detail__column">
+            {{ datasetId }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Version</strong>
+          <div class="file-detail__column">
+            {{ versionNumber }}
+          </div>
+        </div>
       </div>
       <detail-tabs
         :tabs="tabs"
@@ -83,6 +95,14 @@ export default {
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
         status: '',
       }
+    },
+
+    datasetId: function() {
+      return this.$route.query.dataset_id
+    },
+
+    versionNumber: function() {
+      return this.$route.query.dataset_version
     },
 
     imageName: function() {
