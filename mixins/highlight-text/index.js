@@ -14,9 +14,12 @@ export default {
       const regex = new RegExp(needle, 'gi')
       const matched = stack.match(regex)
       if (matched && matched.length >= 1) {
-        return stack.replace(regex, `<strong>${matched[0]}</strong>`)
+        return stack.replace(
+          regex,
+          `<span class="highlight">${matched[0]}</span>`
+        )
       }
-      return this.$sanitize(stack, ['strong'])
+      return this.$sanitize(stack, ['span'])
     }
   }
 }
