@@ -341,7 +341,7 @@ export default {
     }
 
     &--citation-links {
-      border-bottom: 1px solid black;
+      border-bottom: 1px solid #E4E7ED;
       display: flex;
       flex-wrap: wrap;
       list-style: none;
