@@ -732,7 +732,7 @@ export default {
         },
         {
           name: 'DC.publisher',
-          content: this.organizationName
+          content: 'Blackfynn Discover'
         },
         {
           name: 'DC.date',
