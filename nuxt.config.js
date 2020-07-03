@@ -11,21 +11,21 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: process.env.npm_package_description || ''
-      }
+        content: process.env.npm_package_description || '',
+      },
     ],
     link: [
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: '/favicon/favicon.ico'
+        href: '/favicon/favicon.ico',
       },
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css?family=Asap:400,400i,500,600,700&display=swap'
-      }
-    ]
+          'https://fonts.googleapis.com/css?family=Asap:400,400i,500,600,700&display=swap',
+      },
+    ],
   },
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
@@ -62,12 +62,12 @@ export default {
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
     BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
-    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c='
+    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
   },
 
   serverMiddleware: [
     // Will register redirect-ssl npm package
-    'redirect-ssl'
+    'redirect-ssl',
   ],
 
   /*
@@ -104,9 +104,9 @@ export default {
     [
       '@nuxtjs/google-analytics',
       {
-        id: 'UA-143804703-1'
-      }
-    ]
+        id: 'UA-143804703-1',
+      },
+    ],
   ],
   /*
    ** Nuxt.js modules
@@ -115,7 +115,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/robots',
     'cookie-universal-nuxt',
-    '@miyaoka/nuxt-twitter-widgets-module'
+    '@miyaoka/nuxt-twitter-widgets-module',
   ],
   /*
    ** robots.txt
@@ -126,8 +126,8 @@ export default {
       UserAgent: '*',
 
       // disallow all in all environments except production
-      Disallow: () => (process.env.DEPLOY_ENV !== 'production' ? '/' : [])
-    }
+      Disallow: () => (process.env.DEPLOY_ENV !== 'production' ? '/' : []),
+    },
   ],
   /*
    ** Build configuration
@@ -138,6 +138,10 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
-  }
+    extend(config, ctx) {},
+  },
+  server: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0', // default: localhost
+  },
 }

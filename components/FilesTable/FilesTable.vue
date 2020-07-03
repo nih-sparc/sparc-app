@@ -59,8 +59,8 @@
                       params: {
                         datasetId: datasetDetails.id,
                         datasetVersion: datasetDetails.version,
-                        path: scope.row.path
-                      }
+                        path: scope.row.path,
+                      },
                     }"
                   >
                     {{ scope.row.name }}
@@ -98,8 +98,8 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   :command="{
-                    type: 'requestDownloadFile',
-                    scope
+                    type: 'getDownloadFile',
+                    scope,
                   }"
                 >
                   Download
@@ -108,7 +108,7 @@
                   v-if="isMicrosoftFileType(scope)"
                   :command="{
                     type: 'openFile',
-                    scope
+                    scope,
                   }"
                 >
                   Open
@@ -133,22 +133,24 @@ import {
   propOr,
   last,
   defaultTo,
-  pathOr
+  pathOr,
 } from 'ramda'
+
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
+import RequestDownloadFile from '@/mixins/request-download-file'
 
 export default {
   name: 'FilesTable',
 
-  mixins: [FormatStorage],
+  mixins: [FormatStorage, RequestDownloadFile],
 
   props: {
     datasetDetails: {
       type: Object,
       default: function() {
         return {}
-      }
-    }
+      },
+    },
   },
 
   data: function() {
@@ -157,7 +159,7 @@ export default {
       data: [],
       isLoading: false,
       hasError: false,
-      limit: 500
+      limit: 500,
     }
   },
 
@@ -188,7 +190,7 @@ export default {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = propOr(1, 'version', this.datasetDetails)
       return `https://api.blackfynn.io/discover/datasets/${id}/versions/${version}`
-    }
+    },
   },
 
   watch: {
@@ -196,7 +198,7 @@ export default {
       handler: function() {
         this.getDatasetVersionNumber()
       },
-      immediate: true
+      immediate: true,
     },
 
     path: {
@@ -205,8 +207,8 @@ export default {
           this.getFiles()
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
 
   mounted: function() {},
@@ -221,7 +223,7 @@ export default {
       let parts = semverVersion.split('.')
       // make sure no part is larger than 1023 or else it won't fit
       // into 32-bit integer
-      parts.forEach(part => {
+      parts.forEach((part) => {
         if (part >= 1024) {
           throw new Error(`Version string invalid, ${part} is too large`)
         }
@@ -243,9 +245,9 @@ export default {
 
       this.$axios
         .$get(this.getFilesIdUrl)
-        .then(response => {
+        .then((response) => {
           const schemaVersion = this.convertSchemaVersionToInteger(
-            response.blackfynnSchemaVersion
+            response.blackfynnSchemaVersion,
           )
           if (schemaVersion < 4.0) {
             this.path = 'packages'
@@ -277,7 +279,7 @@ export default {
 
       this.$axios
         .$get(this.getFilesurl)
-        .then(response => {
+        .then((response) => {
           this.data = response.files
         })
         .catch(() => {
@@ -324,23 +326,11 @@ export default {
     },
 
     /**
-     * Download file
+     * Get the download file for the given scope.
      * @param {Object} scope
      */
-    requestDownloadFile: function(scope) {
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['row', 'uri'])
-      )(scope)
-
-      const fileName = pathOr('', ['row', 'name'], scope)
-
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
-      this.$axios.$get(requestUrl).then(response => {
-        this.downloadFile(fileName, response)
-      })
+    getDownloadFile: function(scope) {
+      this.requestDownloadFile(scope.row)
     },
 
     /**
@@ -353,35 +343,17 @@ export default {
         last,
         defaultTo([]),
         split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['row', 'uri'])
+        pathOr('', ['row', 'uri']),
       )(scope)
 
       const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
 
-      this.$axios.$get(requestUrl).then(response => {
+      this.$axios.$get(requestUrl).then((response) => {
         const url = response
         const encodedUrl = encodeURIComponent(url)
         const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
         window.open(finalURL, '_blank')
       })
-    },
-
-    /**
-     * Create an `a` tag to trigger downloading file
-     * @param {String} filename
-     * @param {String} url
-     */
-    downloadFile: function(filename, url) {
-      const el = document.createElement('a')
-      el.setAttribute('href', url)
-      el.setAttribute('download', filename)
-
-      el.style.display = 'none'
-      document.body.appendChild(el)
-
-      el.click()
-
-      document.body.removeChild(el)
     },
 
     /**
@@ -391,8 +363,8 @@ export default {
     isImage: function(fileType) {
       const images = ['JPG', 'PNG', 'JPEG', 'TIFF', 'GIF']
       return images.indexOf(fileType) >= 0
-    }
-  }
+    },
+  },
 }
 </script>
 
