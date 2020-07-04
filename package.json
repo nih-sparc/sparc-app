@@ -16,7 +16,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "^0.1.19",
+    "@abi-software/mapintegratedvuer": "^0.1.20",
     "@abi-software/scaffoldvuer": "^0.1.36",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
