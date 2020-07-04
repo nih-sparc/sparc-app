@@ -177,9 +177,9 @@ const links = [
     href: `/resources?type=${process.env.ctf_resource_id}`
   },
   {
-    title: 'map',
-    displayTitle: 'Map',
-    href: '/map'
+    title: 'maps',
+    displayTitle: 'Maps',
+    href: '/maps'
   },
   {
     title: 'news-and-events',

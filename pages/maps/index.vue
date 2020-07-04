@@ -1,8 +1,8 @@
 <template>
-  <div class="map">
+  <div class="maps">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
-      <h1>Map</h1>
+      <h1>Maps</h1>
       <div class="sideText">
         Interactive maps reveal the anatomy and functional
         relationships of the autonomic nerves and the organs that they
@@ -34,7 +34,7 @@ process.client
   : null;
 
 export default {
-  name: "Map",
+  name: "Maps",
 
   components: {
     Breadcrumb,
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       resources: [],
-      title: "Map",
+      title: "Maps",
       breadcrumb: [
         {
           to: {
@@ -65,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/_variables.scss";
-.map {
+.maps {
   .sideText {
     top: 0px;
     font-size: 0.8em;
