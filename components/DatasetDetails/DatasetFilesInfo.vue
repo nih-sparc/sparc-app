@@ -1,6 +1,6 @@
 <template>
   <div class="dataset-files-info">
-    <div class="dataset-link">
+    <p class="dataset-link">
       <nuxt-link
         :to="{
           name: 'help-helpId',
@@ -12,7 +12,7 @@
       >
         Learn more about navigating a SPARC dataset
       </nuxt-link>
-    </div>
+    </p>
     <files-table :dataset-details="datasetDetails" />
   </div>
 </template>
@@ -35,20 +35,9 @@ export default {
 
   data() {
     return {
-      ctfDatasetNavigationInfoPageId: process.env.ctf_dataset_navigation_info_page_id
+      ctfDatasetNavigationInfoPageId:
+        process.env.ctf_dataset_navigation_info_page_id
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-.dataset-files-info {
-  .dataset-link {
-    font-size: 0.75rem;
-    font-weight: bold;
-    margin-bottom: 0.625rem;
-    text-decoration: none;
-  }
-}
-</style>
