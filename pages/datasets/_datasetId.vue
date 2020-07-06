@@ -107,6 +107,17 @@
           <button class="dataset-button" @click="isDownloadModalVisible = true">
             Get Dataset
           </button>
+          <nuxt-link
+            :to="{
+              name: 'help-helpId',
+              params: {
+                helpId: ctfDatasetFormatInfoPageId
+              }
+            }"
+            class="dataset-link"
+          >
+            SPARC Dataset Structure
+          </nuxt-link>
         </div>
       </div>
     </details-header>
@@ -181,22 +192,22 @@ import discover from '@/services/discover'
 const client = createClient()
 
 marked.setOptions({
-  sanitize: true,
+  sanitize: true
 })
 
 const tabs = [
   {
     label: 'Description',
-    type: 'description',
+    type: 'description'
   },
   {
     label: 'About',
-    type: 'about',
+    type: 'about'
   },
   {
     label: 'Files',
-    type: 'files',
-  },
+    type: 'files'
+  }
 ]
 
 export default {
@@ -211,14 +222,14 @@ export default {
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
-    ImagesGallery,
+    ImagesGallery
   },
 
   mixins: [Request, DateUtils, FormatStorage],
 
   async asyncData({ route, $axios }) {
     const organEntries = await client.getEntries({
-      content_type: process.env.ctf_organ_id,
+      content_type: process.env.ctf_organ_id
     })
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
@@ -234,7 +245,7 @@ export default {
 
     const imagesData = await $axios
       .$get(
-        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${datasetId}`,
+        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${datasetId}`
       )
       .catch(() => {
         return {}
@@ -246,7 +257,7 @@ export default {
     const derivativeFilesResponse = await discover.browse(
       datasetId,
       version,
-      'files/derivative',
+      'files/derivative'
     )
 
     // Include discover dataset version into images data info.
@@ -254,7 +265,7 @@ export default {
 
     let scaffoldData = []
     if (derivativeFilesResponse.status === 200) {
-      derivativeFilesResponse.data.files.forEach((item) => {
+      derivativeFilesResponse.data.files.forEach(item => {
         if (item.type === 'Directory') {
           if (item.name.toUpperCase().includes('SCAFFOLD')) {
             scaffoldData.push({ name: item.name, path: item.path, version })
@@ -273,7 +284,7 @@ export default {
       datasetType: route.query.type,
       imagesData,
       scaffoldData,
-      tabs: tabsData,
+      tabs: tabsData
     }
   },
 
@@ -293,21 +304,22 @@ export default {
       breadcrumb: [
         {
           to: {
-            name: 'index',
+            name: 'index'
           },
-          label: 'Home',
+          label: 'Home'
         },
         {
           to: {
             name: 'data',
             query: {
-              type: this.$route.query.type,
-            },
+              type: this.$route.query.type
+            }
           },
-          label: 'Find Data',
-        },
+          label: 'Find Data'
+        }
       ],
       subtitles: [],
+      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
     }
   },
 
@@ -351,13 +363,13 @@ export default {
       const storage = compose(
         split(' '),
         this.formatMetric,
-        propOr(0, 'size'),
+        propOr(0, 'size')
       )(this.datasetInfo)
 
       return storage.reduce((number, unit) => {
         return {
           number,
-          unit,
+          unit
         }
       })
     },
@@ -548,7 +560,7 @@ export default {
      */
     scaffold: function() {
       return Scaffolds[this.organType.toLowerCase()]
-    },
+    }
   },
 
   watch: {
@@ -561,14 +573,14 @@ export default {
           this.getProtocolRecords()
         }
       },
-      immediate: true,
+      immediate: true
     },
 
     datasetInfo: {
       handler: function() {
         this.getMarkdown()
       },
-      immediate: true,
+      immediate: true
     },
 
     datasetContributors: {
@@ -577,13 +589,13 @@ export default {
           this.isContributorListVisible = false
         }
       },
-      immediate: true,
+      immediate: true
     },
 
     datasetTags: {
       handler: function(val) {
         if (val) {
-          this.entries.forEach((entry) => {
+          this.entries.forEach(entry => {
             const name = pathOr('', ['fields', 'name'], entry)
             if (this.datasetTags.includes(name.toLowerCase())) {
               this.subtitles.push(entry.fields.name)
@@ -591,8 +603,8 @@ export default {
           })
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
 
   mounted() {
@@ -615,7 +627,7 @@ export default {
     getProtocolRecords: function() {
       this.$axios
         .$get(this.getSearchRecordsUrl)
-        .then((response) => {
+        .then(response => {
           const records = propOr([], 'records', response)
           if (records.length !== 0) {
             // that means protocol records exist
@@ -644,8 +656,8 @@ export default {
       const readme = propOr('', 'readme', this.datasetInfo)
       if (readme !== '') {
         fetch(readme)
-          .then((response) => response.text())
-          .then((response) => {
+          .then(response => response.text())
+          .then(response => {
             this.loadingMarkdown = false
             const splitDelim = '\n\n---'
             const splitResponse = response.split(splitDelim)
@@ -653,14 +665,14 @@ export default {
               markdownTop: splitResponse[0],
               markdownBottom: splitResponse[1]
                 ? splitDelim + splitResponse[1]
-                : '',
+                : ''
             }
           })
-          .catch((error) => {
+          .catch(error => {
             throw error
           })
       }
-    },
+    }
   },
 
   head() {
@@ -668,10 +680,10 @@ export default {
     const org = [
       {
         '@type': 'Organization',
-        name: this.organizationName,
-      },
+        name: this.organizationName
+      }
     ]
-    const contributors = this.datasetContributors.map((contributor) => {
+    const contributors = this.datasetContributors.map(contributor => {
       const sameAs = contributor.orcid
         ? `http://orcid.org/${contributor.orcid}`
         : null
@@ -681,7 +693,7 @@ export default {
         sameAs,
         givenName: contributor.firstName,
         familyName: contributor.lastName,
-        name: `${contributor.firstName} ${contributor.lastName}`,
+        name: `${contributor.firstName} ${contributor.lastName}`
       }
     })
 
@@ -692,68 +704,68 @@ export default {
       meta: [
         {
           name: 'DC.type',
-          content: 'Dataset',
+          content: 'Dataset'
         },
         {
           name: 'DC.title',
-          content: this.datasetTitle,
+          content: this.datasetTitle
         },
         {
           name: 'DC.description',
-          content: this.datasetDescription,
+          content: this.datasetDescription
         },
         {
           name: 'DCTERMS.license',
-          content: this.licenseLink,
+          content: this.licenseLink
         },
         {
           property: 'og:type',
-          content: 'website',
+          content: 'website'
         },
         {
           property: 'og:title',
-          content: this.datasetTitle,
+          content: this.datasetTitle
         },
         {
           property: 'og:description',
-          content: this.datasetDescription,
+          content: this.datasetDescription
         },
         {
           property: 'og:image',
-          content: this.getDatasetImage,
+          content: this.getDatasetImage
         },
         {
           property: 'og:image:alt',
-          content: `${this.datasetTitle} Banner Image`,
+          content: `${this.datasetTitle} Banner Image`
         },
         {
           property: 'og:site_name',
-          content: 'SPARC Portal',
+          content: 'SPARC Portal'
         },
         {
           name: 'twitter:card',
-          content: 'summary',
+          content: 'summary'
         },
         {
           name: 'twitter:site',
-          content: '@sparc_science',
+          content: '@sparc_science'
         },
         {
           name: 'twitter:description',
-          content: this.datasetDescription,
+          content: this.datasetDescription
         },
         {
           name: 'twitter:image',
-          content: this.getDatasetImage,
+          content: this.getDatasetImage
         },
         {
           name: 'DC.creator',
-          content: JSON.stringify(creators),
+          content: JSON.stringify(creators)
         },
         {
           name: 'DC.identifier',
           content: this.DOIlink,
-          scheme: 'DCTERMS.URI',
+          scheme: 'DCTERMS.URI'
         },
         {
           name: 'DC.publisher',
@@ -762,16 +774,16 @@ export default {
         {
           name: 'DC.date',
           content: this.originallyPublishedDate,
-          scheme: 'DCTERMS.W3CDTF',
+          scheme: 'DCTERMS.W3CDTF'
         },
         {
           name: 'DC.version',
-          content: this.datasetInfo.version,
+          content: this.datasetInfo.version
         },
         {
           property: 'og:url',
-          content: process.env.siteUrl,
-        },
+          content: process.env.siteUrl
+        }
       ],
       script: [
         {
@@ -791,9 +803,9 @@ export default {
             url: process.env.siteUrl,
             citation: this.citationText,
             identifier: this.DOIlink,
-            isAccessibleForFree: true,
+            isAccessibleForFree: true
           },
-          type: 'application/ld+json',
+          type: 'application/ld+json'
         },
         {
           vmid: 'ldjson-schema',
@@ -801,13 +813,13 @@ export default {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
             url: process.env.siteUrl,
-            name: 'Blackfynn Discover',
+            name: 'Blackfynn Discover'
           },
-          type: 'application/ld+json',
-        },
-      ],
+          type: 'application/ld+json'
+        }
+      ]
     }
-  },
+  }
 }
 </script>
 
