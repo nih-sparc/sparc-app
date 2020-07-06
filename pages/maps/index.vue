@@ -4,22 +4,11 @@
     <page-hero>
       <h1>Maps</h1>
       <div class="sideText">
-        Interactive maps reveal the anatomy and functional
-        relationships of the autonomic nerves and the organs that they
-        innervate. 2D and 3D maps render spatial dynamics, connectivity, and
-        physiology across a range of species and nerve-organ systems.
-      </div>
-      <div class="sideTextRight">
-        <el-row>
-          <el-col :span="2" class="warning-icon-container">
-            <i class="el-icon-warning warning-icon"></i>
-          </el-col>
-          <el-col :span="20">
-            THESE PAGES ARE UNDER CONSTRUCTION<br>
-            Currently only curated SPARC data are shown.<br>
-            Please use ? for context-dependent help
-          </el-col>
-        </el-row>
+         SPARC is creating a detailed PNS map based on SPARC data and 
+         information available from the literature. The map you see 
+         represents the current state of the SPARC connectivity 
+         database and is not comprehensive. New connectivity will be 
+         added as the SPARC program progresses.
       </div>
     </page-hero>
     <div class="page-wrap portalmapcontainer" ref="mappage">
@@ -33,17 +22,8 @@
 </template>
 
 <script>
-import Vue from "vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import PageHero from "@/components/PageHero/PageHero.vue";
-import {
-  Col,
-  Icon,
-  Row
-} from "element-ui";
-Vue.use(Col);
-Vue.use(Icon);
-Vue.use(Row);
 //Only available on the client side.
 process.client
   ? import("@abi-software/mapintegratedvuer/dist/mapintegratedvuer.css")
@@ -87,16 +67,8 @@ export default {
     font-size: 0.8em;
     position: absolute;
     line-height: 1.2em;
-    width: 40em;
+    width: 50em;
     margin-left: 6em;
-  }
-  .warning-icon-container {
-    text-align: left;
-    font-size: 25px;
-    padding-top:20px;
-  }
-  .warning-icon {
-    color: #d70000;
   }
 
   .sideTextRight {
