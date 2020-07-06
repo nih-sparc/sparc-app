@@ -111,7 +111,7 @@ export default {
      * @returns String
      */
     scaffoldUrl: function() {
-      return `${process.env.sparc_api_host}/s3-resource/${this.$route.query.scaffold}`
+      return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
     },
   },
 }

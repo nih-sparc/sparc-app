@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: process.env.sparc_api_host,
+  baseURL: process.env.portal_api,
   withCredentials: false,
   timeout: 10000,
 })
