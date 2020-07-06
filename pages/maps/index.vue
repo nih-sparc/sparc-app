@@ -10,9 +10,16 @@
         physiology across a range of species and nerve-organ systems.
       </div>
       <div class="sideTextRight">
-        THESE PAGES ARE UNDER CONSTRUCTION<br>
-        Currently only curated SPARC data are shown.<br>
-        Please use ? for context-dependent help
+        <el-row>
+          <el-col :span="2" class="warning-icon-container">
+            <i class="el-icon-warning warning-icon"></i>
+          </el-col>
+          <el-col :span="20">
+            THESE PAGES ARE UNDER CONSTRUCTION<br>
+            Currently only curated SPARC data are shown.<br>
+            Please use ? for context-dependent help
+          </el-col>
+        </el-row>
       </div>
     </page-hero>
     <div class="page-wrap portalmapcontainer" ref="mappage">
@@ -26,8 +33,17 @@
 </template>
 
 <script>
+import Vue from "vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import PageHero from "@/components/PageHero/PageHero.vue";
+import {
+  Col,
+  Icon,
+  Row
+} from "element-ui";
+Vue.use(Col);
+Vue.use(Icon);
+Vue.use(Row);
 //Only available on the client side.
 process.client
   ? import("@abi-software/mapintegratedvuer/dist/mapintegratedvuer.css")
@@ -73,6 +89,14 @@ export default {
     line-height: 1.2em;
     width: 40em;
     margin-left: 6em;
+  }
+  .warning-icon-container {
+    text-align: left;
+    font-size: 25px;
+    padding-top:20px;
+  }
+  .warning-icon {
+    color: #d70000;
   }
 
   .sideTextRight {
