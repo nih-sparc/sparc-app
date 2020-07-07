@@ -248,8 +248,8 @@ export default {
     const datasetOwnerId = datasetDetails.ownerId || ''
     const datasetOwnerEmail = await $axios
       .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-      .then(response => {
-        return response.data.email
+      .then(resp => {
+        return resp.email
       })
       .catch(() => {
         return ''
