@@ -25,7 +25,7 @@
     lodash "^4.17.15"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.19":
+"@abi-software/mapintegratedvuer@^0.1.22":
   version "0.1.22"
   resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.22.tgz#b5bf181f7127d2d41d169f259d87855e91539217"
   integrity sha512-ID4+b0Le8ajMuZQ5Sa9hwNpEluw0eSic240ohAJ3pQnc5OpJGWPRL7NNHeX+LpFNF95+ivIhBjztmcnOyapNRA==
@@ -55,7 +55,7 @@
     lodash "^4.17.15"
     vue "^2.6.10"
 
-"@abi-software/scaffoldvuer@^0.1.36", "@abi-software/scaffoldvuer@^0.1.38":
+"@abi-software/scaffoldvuer@^0.1.38":
   version "0.1.38"
   resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.38.tgz#fdcd441f77198624a6435f4f3d5d2fe29bf19e0f"
   integrity sha512-PC7gjSlItzYFYvtFdwazQnTH+jDbRbzC7eAVV2jjyJxZJmboaEaQYOJyobPXS+6BhE//bymmwpw32+xnYNHvvA==

@@ -4,15 +4,11 @@
     <page-hero>
       <h1>Maps</h1>
       <div class="sideText">
-        Interactive maps reveal the anatomy and functional
-        relationships of the autonomic nerves and the organs that they
-        innervate. 2D and 3D maps render spatial dynamics, connectivity, and
-        physiology across a range of species and nerve-organ systems.
-      </div>
-      <div class="sideTextRight">
-        THESE PAGES ARE UNDER CONSTRUCTION<br>
-        Currently only curated SPARC data are shown.<br>
-        Please use ? for context-dependent help
+         SPARC is creating a detailed PNS map based on SPARC data and 
+         information available from the literature. The map you see 
+         represents the current state of the SPARC connectivity 
+         database and is not comprehensive. New connectivity will be 
+         added as the SPARC program progresses.
       </div>
     </page-hero>
     <div class="page-wrap portalmapcontainer" ref="mappage">
@@ -71,7 +67,7 @@ export default {
     font-size: 0.8em;
     position: absolute;
     line-height: 1.2em;
-    width: 40em;
+    width: 50em;
     margin-left: 6em;
   }
 
