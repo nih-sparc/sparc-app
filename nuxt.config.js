@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 export default {
   mode: 'universal',
   /*
@@ -138,6 +140,14 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
-  }
+    extend(config, ctx) {},
+  },
+  server: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0', // default: localhost
+    https: {
+      key: fs.readFileSync('.certs/sparc.science.key'),
+      cert: fs.readFileSync('.certs/sparc.science.crt'),
+    },
+  },
 }
