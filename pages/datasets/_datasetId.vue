@@ -249,7 +249,7 @@ export default {
     const datasetOwnerEmail = await $axios
       .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
       .then(response => {
-        return response.email
+        return response.data.email
       })
       .catch(() => {
         return ''
