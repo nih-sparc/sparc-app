@@ -35,7 +35,7 @@
       >
         <client-only placeholder="Loading scaffold ...">
           <div class="scaffoldvuer-container">
-            <ScaffoldVuer :url="scaffoldUrl" :traditional="true" />
+            <ScaffoldVuer :url="scaffoldUrl" :traditional="traditional" :backgroundToggle="backgroundToggle"/>
           </div>
         </client-only>
       </detail-tabs>
@@ -67,6 +67,8 @@ export default {
       ],
       activeTab: 'scaffold',
       file: {},
+      traditional: true,
+      backgroundToggle: true
     }
   },
 
@@ -111,7 +113,7 @@ export default {
      * @returns String
      */
     scaffoldUrl: function() {
-      return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
+      return `${process.env.sparc_api_host}/s3-resource/${this.$route.query.scaffold}`
     },
   },
 }
