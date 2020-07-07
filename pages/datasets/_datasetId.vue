@@ -139,6 +139,8 @@
           :doi="datasetDOI"
           :doi-value="datasetInfo.doi"
           :dataset-tags="datasetTags"
+          :dataset-owner-name="datasetOwnerName"
+          :dataset-owner-email="datasetOwnerEmail"
         />
         <dataset-files-info
           v-show="activeTab === 'files'"
@@ -242,6 +244,17 @@ export default {
     } else {
       datasetDetails = await $axios.$get(datasetUrl)
     }
+
+    const datasetOwnerId = datasetDetails.ownerId || ''
+    const datasetOwnerEmail = await $axios
+      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
+      .then(response => {
+        return response.email
+      })
+      .catch(() => {
+        return ''
+      })
+    datasetDetails.ownerEmail = datasetOwnerEmail
 
     const imagesData = await $axios
       .$get(
@@ -431,6 +444,20 @@ export default {
       return this.isContributorListVisible
         ? this.datasetContributors
         : [last(this.datasetContributors)]
+    },
+
+    /**
+     * Returns dataset owner full name
+     * @returns {String}
+     */
+    datasetOwnerName: function() {
+      const ownerFirstName = this.datasetInfo.ownerFirstName || ''
+      const ownerLastName = this.datasetInfo.ownerLastName || ''
+      return `${ownerFirstName} ${ownerLastName}`
+    },
+
+    datasetOwnerEmail: function() {
+      return this.datasetInfo.ownerEmail || ''
     },
 
     /**

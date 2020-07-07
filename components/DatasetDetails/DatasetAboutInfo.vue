@@ -3,6 +3,11 @@
     <div class="dataset-about-info__container">
       <h3>Last Updated</h3>
       <p>{{ updatedDate }}</p>
+      <h3>Contact Information</h3>
+      <p>
+        {{ datasetOwnerName }}<br />
+        {{ datasetOwnerEmail }}
+      </p>
       <h3>Dataset DOI</h3>
       <p>
         <a
@@ -120,6 +125,16 @@ export default {
     datasetTags: {
       type: Array,
       default: () => []
+    },
+
+    datasetOwnerName: {
+      type: String,
+      default: ''
+    },
+
+    datasetOwnerEmail: {
+      type: String,
+      default: ''
     }
   },
 
