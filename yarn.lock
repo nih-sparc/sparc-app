@@ -11,10 +11,10 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmapvuer@^0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.23.tgz#028d7bf0bf15614edbd261990bfd21869ef56cc1"
-  integrity sha512-+QDel8QKqutxeb0ktjyVv31VK2fIg/KUn2xMszDWTiKbxVbp/OjMjF15Oq497rEOlGzU2xRQgC5CQbXLtiZJBQ==
+"@abi-software/flatmapvuer@^0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.24.tgz#8d4cd7425fa8c638379b950f41686f28ab5bc162"
+  integrity sha512-AfLjmp/TQpfStehEyL5ekorxgeaJNiV0Dpm+wSh98k6g9AZnVJiiL37AdOf69Vg3ck4GY3dq82Zk0tSqIIN++A==
   dependencies:
     "@abi-software/maptooltip" "^0.1.10"
     "@dbrnz/flatmap-viewer" "^0.9.32"
@@ -25,14 +25,14 @@
     lodash "^4.17.15"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.19":
-  version "0.1.21"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.21.tgz#b9e4d39683b206ce04286d5f882f1523e2d32bbf"
-  integrity sha512-E2FE/Cf992yvhkFNq4BAxriOGHwYX49w7q+0sF09vAdQR+XLJns2juF/3jl19o+Uam8j+EQUqJlcbNLIPmxRrA==
+"@abi-software/mapintegratedvuer@^0.1.22":
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.22.tgz#b5bf181f7127d2d41d169f259d87855e91539217"
+  integrity sha512-ID4+b0Le8ajMuZQ5Sa9hwNpEluw0eSic240ohAJ3pQnc5OpJGWPRL7NNHeX+LpFNF95+ivIhBjztmcnOyapNRA==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.1.23"
+    "@abi-software/flatmapvuer" "^0.1.24"
     "@abi-software/maptooltip" "^0.1.10"
-    "@abi-software/scaffoldvuer" "^0.1.37"
+    "@abi-software/scaffoldvuer" "^0.1.38"
     "@tehsurfer/plotvuer" "^0.2.21"
     "@tehsurfer/vue-tour" "^1.3.4"
     core-js "^3.3.2"
@@ -55,16 +55,16 @@
     lodash "^4.17.15"
     vue "^2.6.10"
 
-"@abi-software/scaffoldvuer@^0.1.36", "@abi-software/scaffoldvuer@^0.1.37":
-  version "0.1.37"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.37.tgz#3ceab47af464511a541d18c76ff631786e56506d"
-  integrity sha512-wLxPZMhaAtICLR3awa3FcyV2cXZ15EavejlCjTSTyxHJb+sJpUsCBmdmm9UKp3Y1Y5zEjckt+E0+pJ3RemPuVw==
+"@abi-software/scaffoldvuer@^0.1.38":
+  version "0.1.38"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.38.tgz#fdcd441f77198624a6435f4f3d5d2fe29bf19e0f"
+  integrity sha512-PC7gjSlItzYFYvtFdwazQnTH+jDbRbzC7eAVV2jjyJxZJmboaEaQYOJyobPXS+6BhE//bymmwpw32+xnYNHvvA==
   dependencies:
     axios "^0.19.2"
     core-js "^3.3.2"
     element-ui "^2.13.0"
     lodash "^4.17.15"
-    physiomeportal "^0.4.18"
+    physiomeportal "^0.4.19"
     query-string "^6.11.1"
     vue "^2.6.10"
     vue-drag-resize "^1.3.2"
@@ -2522,9 +2522,9 @@
     "@babel/types" "^7.0.0"
 
 "@types/babel__traverse@*", "@types/babel__traverse@^7.0.6":
-  version "7.0.12"
-  resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.0.12.tgz#22f49a028e69465390f87bb103ebd61bd086b8f5"
-  integrity sha512-t4CoEokHTfcyfb4hUaF9oOHu9RmmNWnm1CP0YmMqOOfClKascOmvlEM736vlqeScuGvBDsHkf8R2INd4DWreQA==
+  version "7.0.13"
+  resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.0.13.tgz#1874914be974a492e1b4cb00585cabb274e8ba18"
+  integrity sha512-i+zS7t6/s9cdQvbqKDARrcbrPvtJGlbYsMkazo03nTAK3RX9FNrLllXys22uiTGJapPOTZTQ35nHh4ISph4SLQ==
   dependencies:
     "@babel/types" "^7.3.0"
 
@@ -2589,9 +2589,9 @@
     "@types/range-parser" "*"
 
 "@types/express@*":
-  version "4.17.6"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.6.tgz#6bce49e49570507b86ea1b07b806f04697fac45e"
-  integrity sha512-n/mr9tZI83kd4azlPG5y997C/M4DNABK9yErhFM6hKdym4kkmd9j0vtsJyjFIwfRBxtrxZtAfGZCNRIBMFLK5w==
+  version "4.17.7"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.7.tgz#42045be6475636d9801369cd4418ef65cdb0dd59"
+  integrity sha512-dCOT5lcmV/uC2J9k0rPafATeeyz+99xTt54ReX11/LObZgfzJqZNcW27zGhYyX+9iSEGXGt5qLPwRSvBZcLvtQ==
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
@@ -2703,9 +2703,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "14.0.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.14.tgz#24a0b5959f16ac141aeb0c5b3cd7a15b7c64cbce"
-  integrity sha512-syUgf67ZQpaJj01/tRTknkMNoBBLWJOBODF0Zm4NrXmiSuxjymFrxnTu1QVYRubhVkRcZLYZG8STTwJRdVm/WQ==
+  version "14.0.18"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.18.tgz#5111b2285659442f9f95697386a2b42b875bd7e9"
+  integrity sha512-0Z3nS5acM0cIV4JPzrj9g/GH0Et5vmADWtip3YOXOp1NpOLU8V3KoZDc8ny9c1pe/YSYYzQkAWob6dyV/EWg4g==
 
 "@types/node@8.10.21":
   version "8.10.21"
@@ -2718,14 +2718,14 @@
   integrity sha512-myMwkO2Cr82kirHY8uknNRHEVtn0wV3DTQfkrjx17jmkstDRZ24gNUdl8AHXVyVclTYI/bNjgTPTAWvWLqXqkw==
 
 "@types/node@^12.12.27":
-  version "12.12.47"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.47.tgz#5007b8866a2f9150de82335ca7e24dd1d59bdfb5"
-  integrity sha512-yzBInQFhdY8kaZmqoL2+3U5dSTMrKaYcb561VU+lDzAYvqt+2lojvBEy+hmpSNuXnPTx7m9+04CzWYOUqWME2A==
+  version "12.12.48"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.48.tgz#4135f064eeed9fcfb4756deea5ba2caa11603391"
+  integrity sha512-m3Nmo/YaDUfYzdCQlxjF5pIy7TNyDTAJhIa//xtHcF0dlgYIBKULKnmloCPtByDxtZXrWV8Pge1AKT6/lRvVWg==
 
 "@types/node@^13.1.0", "@types/node@^13.7.0":
-  version "13.13.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.12.tgz#9c72e865380a7dc99999ea0ef20fc9635b503d20"
-  integrity sha512-zWz/8NEPxoXNT9YyF2osqyA9WjssZukYpgI4UYZpOjcyqwIUqWGkcCionaEb9Ki+FULyPyvNFpg/329Kd2/pbw==
+  version "13.13.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.13.tgz#71217d90fd9c9c937e28628772d5c0b432c79355"
+  integrity sha512-UfvBE9oRCAJVzfR+3eWm/sdLFe/qroAPEXP3GPJ1SehQiEVgZT6NQZWYbPMiJ3UdcKM06v4j+S1lTcdWCmw+3g==
 
 "@types/optimize-css-assets-webpack-plugin@^5.0.1":
   version "5.0.1"
@@ -2851,9 +2851,9 @@
     source-map "^0.7.3"
 
 "@types/webpack@*", "@types/webpack@^4.41.6", "@types/webpack@^4.41.8":
-  version "4.41.19"
-  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.19.tgz#fbcacda7b6061f0e1ba0132a8617a0df89345d41"
-  integrity sha512-hBryCwAJhqf7MiYNnsr6UsPVQHF4+sUnXVG9MTVAJFtX8vJoxc2rPFcWEAUVuBOCxfTkEY5TPc7RYUer7EXTEQ==
+  version "4.41.20"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.20.tgz#aceaa606240d6897d88d70bcb9ff0e61bd691f4c"
+  integrity sha512-MBHtjttd1NTrrr3m+De5VAlnNHgkdK79Kd0zAjVpFPPOSXri+3oA9q8VvC7SDPITzaWiSS1whBrGLtN2HodM5w==
   dependencies:
     "@types/anymatch" "*"
     "@types/node" "*"
@@ -10926,10 +10926,10 @@ permutation-rank@^1.0.0:
     invert-permutation "^1.0.0"
     typedarray-pool "^1.0.0"
 
-physiomeportal@^0.4.18:
-  version "0.4.18"
-  resolved "https://registry.yarnpkg.com/physiomeportal/-/physiomeportal-0.4.18.tgz#0629d7e8284d1a878d6bdff6b0da05bb807be9a8"
-  integrity sha512-pb4qtnfbD+3bmWNhIsHjL0wwSi9gtOg5dKYa2/qYimoReDtdIfaPxmrzoIvNSkc4Cj0zBSh6Xh7lt+wloQKLKg==
+physiomeportal@^0.4.19:
+  version "0.4.19"
+  resolved "https://registry.yarnpkg.com/physiomeportal/-/physiomeportal-0.4.19.tgz#9da64be422ada9d4b25850a6adac27f9fbc17a65"
+  integrity sha512-AWwjurSV0Az0zeRjnQ9jUzclK+cA4lG/Z0eqX/NFsgqbkSHl3y6ECIT1/Hdu9zI13Wovc14SH0AT4MznsdXlvQ==
   dependencies:
     broadcast-channel "^2.1.12"
     css-element-queries "^1.2.0"
@@ -12952,9 +12952,9 @@ sass-loader@^7.1.0:
     semver "^6.3.0"
 
 sass@^1.18.0:
-  version "1.26.9"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.26.9.tgz#73c10cbb88c12b22a9e0107725bfd62296f4978f"
-  integrity sha512-t8AkRVi+xvba4yZiLWkJdgJHBFCB3Dh4johniQkPy9ywkgFHNasXFEFP+RG/F6LhQ+aoE4aX+IorIWQjS0esVw==
+  version "1.26.10"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.26.10.tgz#851d126021cdc93decbf201d1eca2a20ee434760"
+  integrity sha512-bzN0uvmzfsTvjz0qwccN1sPm2HxxpNI/Xa+7PlUEMS+nQvbyuEK7Y0qFqxlPHhiNHb1Ze8WQJtU31olMObkAMw==
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 

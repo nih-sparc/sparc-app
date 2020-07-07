@@ -34,7 +34,6 @@ export default {
     discover_api_host:
       process.env.BLACKFYNN_DISCOVER_API_HOST ||
       'https://api.blackfynn.io/discover',
-    sparc_api_host: 'http://localhost:8000',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
     ctf_resource_id: 'sparcPartners',
@@ -85,9 +84,9 @@ export default {
       // Redirects
       routes.push({
         path: '/submit_data.html',
-        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd'
+        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd',
       })
-    }
+    },
   },
   /*
    ** Global CSS
@@ -139,6 +138,6 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {},
   }
 }
