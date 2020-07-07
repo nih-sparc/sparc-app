@@ -456,6 +456,10 @@ export default {
       return `${ownerFirstName} ${ownerLastName}`
     },
 
+    /**
+     * Returns dataset owner email
+     * @returns {String}
+     */
     datasetOwnerEmail: function() {
       return this.datasetInfo.ownerEmail || ''
     },
