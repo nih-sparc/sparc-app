@@ -11,10 +11,10 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmapvuer@^0.1.25":
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.25.tgz#badcae4e55f4e0f6130b6ac4c1f89e1769019be3"
-  integrity sha512-2nuqdnMQE0CuYaxrZVohSjTXZIWjjYmuzy5eZ3xlfQkJi9cpt5z2I4vojAg0O8uKBcJWI58Pw391tAoDTp8A7w==
+"@abi-software/flatmapvuer@^0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.26.tgz#38f0d1c03bc27d983da7b5e1c4696c863d8196df"
+  integrity sha512-s7E6VoZMhmnR2ImJIrkQcE0wh18tXPj08sFWz0dQAzYX6lFLoAuyZ9clU7IQvWeoDT3Prf2ts2lkNIzP9QATIw==
   dependencies:
     "@abi-software/maptooltip" "^0.1.10"
     "@dbrnz/flatmap-viewer" "^0.9.32"
@@ -25,12 +25,12 @@
     lodash "^4.17.15"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.23.tgz#672f36dba3327ce3cd7c6ecf9a6fa00097be7a2f"
-  integrity sha512-SJAIiLpimVlBpjxKdBf0rmLQAMQaEFpbD6qo8Wmj0U4CJyxuPrPxOarJPubAlJS4PN8p/fId+FqzZUS+PWtBPw==
+"@abi-software/mapintegratedvuer@^0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.24.tgz#b5a467196a9e7985e66e528c340d9ebe066d473d"
+  integrity sha512-n/tzS4OJN4GWJFaAOrHfMbTSS4vYTsaiYEzxmGP/awMlbywMUYsFEm1T0RbajP4mPrxq+RstUVDkltrumTXm9w==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.1.25"
+    "@abi-software/flatmapvuer" "^0.1.26"
     "@abi-software/maptooltip" "^0.1.10"
     "@abi-software/scaffoldvuer" "^0.1.38"
     "@tehsurfer/plotvuer" "^0.2.21"
