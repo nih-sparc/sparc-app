@@ -47,6 +47,10 @@ export default {
     @media (min-width: 64em) {
       max-width: 53rem;
     }
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
   }
   &__image {
     display: none;
@@ -82,9 +86,6 @@ export default {
     @-moz-document url-prefix() {
       background: rgba(33, 39, 90, 0.75);
     }
-  }
-  p:last-child {
-    margin: 0;
   }
 
   .row {

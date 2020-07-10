@@ -3,9 +3,9 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
       <h1>Tools &amp; Resources</h1>
-      <p>
-        {{ fields.heroCopy }}
-      </p>
+      <!-- eslint-disable vue/no-v-html -->
+      <!-- marked will sanitize the HTML injected -->
+      <div v-html="parseMarkdown(fields.heroCopy)" />
       <search-controls-contentful
         placeholder="Search resources"
         path="/resources"
@@ -86,6 +86,7 @@ import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import createClient from '@/plugins/contentful.js'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import { Computed, Data, Methods, Resource } from '~/pages/resources/model';
+import marked from '@/mixins/marked/index'
 
 const client = createClient()
 
@@ -115,6 +116,8 @@ const tabTypes = [
 
 export default Vue.extend<Data, Methods, Computed, never>({
   name: 'Resources',
+
+  mixins: [marked],
 
   components: {
     SearchControlsContentful,

@@ -4,9 +4,9 @@
       <h1 v-if="heroHeading">
         {{ heroHeading }}
       </h1>
-      <p>
-        {{ heroCopy }}
-      </p>
+      <!-- eslint-disable vue/no-v-html -->
+      <!-- marked will sanitize the HTML injected -->
+      <div v-html="parseMarkdown(heroCopy)" />
       <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
         <el-button class="uppercase">
           {{ heroButtonLabel }}
@@ -41,6 +41,7 @@ import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTest
 import HomepageTwitter from '@/components/HomepageTwitter/HomepageTwitter.vue'
 
 import createClient from '@/plugins/contentful.js'
+import marked from '@/mixins/marked/index'
 
 const client = createClient()
 export default {
@@ -53,6 +54,8 @@ export default {
     HomepageTestimonials,
     HomepageTwitter
   },
+
+  mixins: [marked],
 
   asyncData() {
     return Promise.all([
