@@ -2,7 +2,7 @@
   <div class="resources">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
-      <h1>Resources</h1>
+      <h1>Tools &amp; Resources</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(fields.heroCopy)" />
@@ -140,7 +140,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
 
   data() {
     return {
-      title: 'Resources',
+      title: 'Tools & Resources',
       breadcrumb: [
         {
           to: {

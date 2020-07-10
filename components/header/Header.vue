@@ -173,7 +173,7 @@ const links = [
   },
   {
     title: 'resources',
-    displayTitle: 'Resources',
+    displayTitle: 'Tools & Resources',
     href: `/resources?type=${process.env.ctf_resource_id}`
   },
   {
@@ -611,7 +611,7 @@ export default {
       display: inline;
       padding-right: 5rem;
       @media screen and (min-width: 1023px) {
-        padding-right: 2rem;
+        padding-right: 0.5rem;
       }
 
       a {
