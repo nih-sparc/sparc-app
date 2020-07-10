@@ -3,19 +3,9 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
-      <p>
-        {{ heroCopy }}
-      </p>
-      <p>
-        Visit the
-        <a
-          class="about-page-link"
-          href="https://commonfund.nih.gov/sparc/"
-          target="_blank"
-        >
-          NIH SPARC program website</a>
-        to learn more.
-      </p>
+      <!-- eslint-disable vue/no-v-html -->
+      <!-- marked will sanitize the HTML injected -->
+      <div v-html="parseMarkdown(heroCopy)" />
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
