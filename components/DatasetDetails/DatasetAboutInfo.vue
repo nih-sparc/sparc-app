@@ -270,10 +270,15 @@ export default {
       this.activeCitation = citationType
       // find all citation types at https://github.com/citation-style-language/style
       const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType.type}&lang=en-US`
-      this.$axios
-        .get(url)
+      fetch(url)
         .then(response => {
-          this.citationText = response.data
+          if (response.status !== 200) {
+            throw Error
+          }
+          return response.text()
+        })
+        .then(text => {
+          this.citationText = text
         })
         .catch(() => {
           this.hasCitationError = true
