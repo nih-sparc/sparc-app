@@ -1,6 +1,6 @@
 <template>
   <div class="featured-data container">
-    <h2>Browse Data by Category</h2>
+    <h2>Find Data by Category</h2>
     <div class="data-wrap">
       <nuxt-link
         v-for="item in featuredData"
