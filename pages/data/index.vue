@@ -3,6 +3,9 @@
     <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
 
     <page-hero>
+      <h1>
+        Find Data
+      </h1>
       <search-form
         v-model="searchQuery"
         :q="q"
