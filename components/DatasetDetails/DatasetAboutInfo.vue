@@ -405,8 +405,9 @@ export default {
     }
 
     &--doi-link {
-      color: black;
+      color: $median;
       text-decoration: none;
+      font-weight: 500;
     }
   }
 }

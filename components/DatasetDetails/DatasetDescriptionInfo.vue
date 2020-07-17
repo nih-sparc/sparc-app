@@ -62,6 +62,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/_variables.scss';
 .dataset-description-info {
   // Markdown styles
   .description-container {
@@ -161,9 +162,9 @@ export default {
       }
 
       &--protocol-text {
-        color: black;
+        color: $median;
         text-decoration: none;
-        font-size: 0.875em;
+        font-weight: 500;
       }
 
       &--protocol-text-na {
