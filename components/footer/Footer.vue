@@ -58,6 +58,11 @@
               SPARC Systems Status
             </a>
           </li>
+          <li>
+            <a :href="publicationsLink" target="_blank">
+              SPARC Publications
+            </a>
+          </li>
         </ul>
         <h3>Help us Improve</h3>
         <ul>
@@ -121,7 +126,16 @@ export default {
   computed: {
     ...mapState({
       footerData: 'footerData'
-    })
+    }),
+
+    /**
+     * Computed SPARC Publications link
+     * @todo Dynamically build this url with available NIH awards
+     * @returns {String}
+     */
+    publicationsLink: function() {
+      return 'https://pubmed.ncbi.nlm.nih.gov/?term=(OD023873[gr])+OR+(OD023857[gr])+OR+(OD026580[gr])+OR+(OD025308[gr])+OR+(OD026545[gr])+OR+(TR002205[gr])+OR+(OD023854[gr])+OR+(OD025349[gr])+OR+(OD023848[gr])+OR+(OD025348[gr])+OR+(OD023850[gr])+OR+(NS113868[gr])+OR+(OD028183[gr])+OR+(OD023864[gr])+OR+(NS113873[gr])+OR+(OD028203[gr])+OR+(OD023872[gr])+OR+(OD023852[gr])+OR+(OD028191[gr])+OR+(OD024907[gr])+OR+(OD023847[gr])+OR+(DK116320[gr])+OR+(OD028201[gr])+OR+(OD026539[gr])+OR+(OD026577[gr])+OR+(OD023859[gr])+OR+(OD024899[gr])+OR+(OD025297[gr])+OR+(OD025307[gr])+OR+(TR002208[gr])+OR+(OD028190[gr])+OR+(OD024909[gr])+OR+(OD025306[gr])+OR+(DK116317[gr])+OR+(OD024898[gr])+OR+(OD023861[gr])+OR+(OD023871[gr])+OR+(DK116312[gr])+OR+(OD024912[gr])+OR+(OD025340[gr])+OR+(NS113869[gr])+OR+(OD026585[gr])+OR+(OD023860[gr])+OR+(OD025342[gr])+OR+(DK116311[gr])+OR+(OD026582[gr])+OR+(OD023867[gr])+OR+(OD023853[gr])+OR+(OD025347[gr])+OR+(OD024908[gr])+OR+(NS113871[gr])+OR+(NS113867[gr])+OR+(EB021716[gr])+OR+(EB021760[gr])+OR+(EB021780[gr])+OR+(EB021799[gr])+OR+(TR001925[gr])+OR+(18017[gr])+OR+(EB021787[gr])+OR+(EB021792[gr])+OR+(EB021759[gr])+OR+(EB021772[gr])+OR+(EB021793[gr])+OR+(TR001926[gr])+OR+(EB021790[gr])+OR+(TR001920[gr])+OR+(EB021877[gr])+OR+(OD023849[gr])+OR+(EB021789[gr])&sort='
+    }
   }
 }
 </script>
