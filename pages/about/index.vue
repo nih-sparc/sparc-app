@@ -42,6 +42,14 @@
           </div>
         </div>
       </div>
+
+      <div class="subpage">
+        <div class="row">
+          <div class="subpage-col">
+            <div class="about-page-text" v-html="parseMarkdown(futurePlans)" />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
