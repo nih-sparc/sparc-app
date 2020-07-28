@@ -99,23 +99,25 @@ export default {
       )
     },
     /**
-     * Get event date range
+     * Get event date range, if there is no end date, default to start date
      * @returns {String}
      */
     eventDate: function(event) {
-      const startDate = this.formatDate(event.fields.startDate)
-      const endDate = this.formatDate(event.fields.endDate)
-      return startDate === endDate ? startDate : `${startDate} - ${endDate}`
+      const startDate = this.formatDate(event.fields.startDate || '')
+      const endDate = this.formatDate(event.fields.endDate || '')
+      return startDate === endDate || !endDate
+        ? startDate
+        : `${startDate} - ${endDate}`
     },
     /**
-     * Check if an event is upcoming
+     * Check if an event is upcoming, if there is no end date, default to start date
      * @param {Object} item
      * @returns {Boolean}
      */
     isUpcoming: function(item) {
       const today = new Date()
-      const eventEndDate = pathOr('', ['fields', 'endDate'], item)
-      return Date.parse(eventEndDate) > Date.parse(today) ? true : false
+      const checkDate = item.fields.endDate || item.fields.startDate || ''
+      return Date.parse(checkDate) > Date.parse(today)
     }
   }
 }
