@@ -59,11 +59,9 @@ export default {
     eventDate: function(event) {
       const startDate = this.formatDate(event.fields.startDate || '')
       const endDate = this.formatDate(event.fields.endDate || '')
-      return startDate === endDate
+      return startDate === endDate || !endDate
         ? startDate
-        : endDate
-        ? `${startDate} - ${endDate}`
-        : startDate
+        : `${startDate} - ${endDate}`
     }
   }
 }
