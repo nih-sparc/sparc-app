@@ -53,13 +53,17 @@ export default {
       return pathOr('', ['fields', 'image', 'fields', 'title'], event)
     },
     /**
-     * Get event date range
+     * Get event date range, if there is no end date, default to start date
      * @returns {String}
      */
     eventDate: function(event) {
-      const startDate = this.formatDate(event.fields.startDate)
-      const endDate = this.formatDate(event.fields.endDate)
-      return startDate === endDate ? startDate : `${startDate} - ${endDate}`
+      const startDate = this.formatDate(event.fields.startDate || '')
+      const endDate = this.formatDate(event.fields.endDate || '')
+      return startDate === endDate
+        ? startDate
+        : endDate
+        ? `${startDate} - ${endDate}`
+        : startDate
     }
   }
 }
