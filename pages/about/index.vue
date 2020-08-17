@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <div class="subpage">
+      <div v-if="hasFuturePlans" class="subpage">
         <div class="row">
           <div class="subpage-col">
             <div class="about-page-text" v-html="parseMarkdown(futurePlans)" />
@@ -98,6 +98,15 @@ export default {
       ],
       projectId: process.env.ctf_project_id,
       heroImage: {}
+    }
+  },
+
+  computed: {
+    /**
+     * Compute if the future plans field is available
+     */
+    hasFuturePlans: function() {
+      return Boolean(this.futurePlans)
     }
   }
 }
