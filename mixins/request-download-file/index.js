@@ -20,7 +20,6 @@ export default {
         this._downloadFile(fileName, response)
       })
     },
-  },
   /**
    * Create an `a` tag to trigger downloading file
    * @param {String} filename
@@ -38,4 +37,5 @@ export default {
 
     document.body.removeChild(el)
   },
+}
 }
