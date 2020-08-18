@@ -2,24 +2,6 @@ import { compose, last, defaultTo, split, propOr } from 'ramda'
 
 export default {
   methods: {
-   /**
-     * Create an `a` tag to trigger downloading file
-     * @param {String} filename
-     * @param {String} url
-     */
-    _downloadFile: function(filename, url) {
-      const el = document.createElement('a')
-      el.setAttribute('href', url)
-      el.setAttribute('download', filename)
-
-      el.style.display = 'none'
-      document.body.appendChild(el)
-
-      el.click()
-
-      document.body.removeChild(el)
-    },
-    
     /**
      * Request download file via axios.
      */
@@ -38,6 +20,22 @@ export default {
         this._downloadFile(fileName, response)
       })
     },
-  },
+  /**
+   * Create an `a` tag to trigger downloading file
+   * @param {String} filename
+   * @param {String} url
+   */
+  _downloadFile: function(filename, url) {
+    const el = document.createElement('a')
+    el.setAttribute('href', url)
+    el.setAttribute('download', filename)
 
+    el.style.display = 'none'
+    document.body.appendChild(el)
+
+    el.click()
+
+    document.body.removeChild(el)
+  },
+}
 }
