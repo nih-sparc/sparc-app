@@ -107,6 +107,9 @@
           <button class="dataset-button" @click="isDownloadModalVisible = true">
             Get Dataset
           </button>
+          <el-button class="citation-button" @click="scrollToCitations">
+            Cite Dataset
+          </el-button>
           <nuxt-link
             :to="{
               name: 'help-helpId',
@@ -616,7 +619,7 @@ export default {
 
     datasetContributors: {
       handler: function(val) {
-        if (val.length > 5) {
+        if (val.length > 15) {
           this.isContributorListVisible = false
         }
       },
@@ -702,6 +705,32 @@ export default {
           .catch(error => {
             throw error
           })
+      }
+    },
+
+    /**
+     * Get the citations area in the
+     * About tab by id
+     * @returns {Object}
+     */
+    getCitationsArea: function() {
+      return document.getElementById('citationsArea')
+    },
+
+    /**
+     * Scroll to the citations area
+     * in the About tab
+     */
+    scrollToCitations: function() {
+      const aboutTabType = tabs[1].type
+      if (this.activeTab != aboutTabType) {
+        this.setActiveTab(aboutTabType)
+        this.$nextTick(() =>
+          // Wait until Vue renders the About tab
+          this.getCitationsArea().scrollIntoView()
+        )
+      } else {
+        this.getCitationsArea().scrollIntoView()
       }
     }
   },
@@ -888,7 +917,22 @@ export default {
         font-weight: 500;
         text-transform: uppercase;
       }
-
+      .citation-button {
+        margin-left: 0.5rem;
+        padding-top: 0.688rem;
+        width: 8rem;
+        background: #f9f2fc;
+        border: 1px solid $median;
+        color: $median;
+        text-transform: uppercase;
+        &:hover {
+          color: #1a1489;
+        }
+        @media (max-width: 24em) {
+          margin-top: 10px;
+          margin-left: 0;
+        }
+      }
       .dataset-link {
         text-decoration: none;
       }
