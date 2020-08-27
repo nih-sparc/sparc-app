@@ -43,7 +43,9 @@ export default {
      * Close notice and accept the policy
      */
     closeNotice: function() {
-      this.$cookies.set('GDPR:accepted', true)
+      const today = new Date()
+      const expirationDate = new Date(today.setDate(today.getDate() + 30))
+      this.$cookies.set('GDPR:accepted', true, { expires: expirationDate })
       this.$store.dispatch('setHasAcceptedGdpr', true)
     }
   }
