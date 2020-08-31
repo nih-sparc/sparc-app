@@ -38,7 +38,13 @@
       prop="fields.awardId"
       label="NIH Award"
       width="150"
-    />
+    >
+      <template slot-scope="scope">
+        <a :href="getNihReporterUrl(scope)" target="_blank">
+          {{ scope.row.fields.awardId }}
+        </a>
+      </template>
+    </el-table-column>
 
     <el-table-column
       sortable="custom"
@@ -89,6 +95,15 @@ export default {
       return scope.row.fields.institution.fields.logo
         ? scope.row.fields.institution.fields.logo.fields.file.description
         : ''
+    },
+
+    /**
+     * Get NIH RePORT Url
+     * @param {Object} scope
+     * @returns {String}
+     */
+    getNihReporterUrl: function(scope) {
+      return scope.row.fields.nihReporterUrl || '#'
     },
 
     onSortChange: function(payload) {
