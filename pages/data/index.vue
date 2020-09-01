@@ -44,8 +44,9 @@
             </p>
             <el-pagination
               v-if="searchData.limit < searchData.total"
+              :small="isMobile"
               :page-size="searchData.limit"
-              :pager-count="5"
+              :pager-count="pagerCount"
               :current-page="curSearchPage"
               layout="prev, pager, next"
               :total="searchData.total"
@@ -92,8 +93,9 @@
         </p>
         <el-pagination
           v-if="searchData.limit < searchData.total"
+          :small="isMobile"
           :page-size="searchData.limit"
-          :pager-count="5"
+          :pager-count="pagerCount"
           :current-page="curSearchPage"
           layout="prev, pager, next"
           :total="searchData.total"
@@ -223,7 +225,8 @@ export default {
           label: 'Home'
         }
       ],
-      titleColumnWidth: 300
+      titleColumnWidth: 300,
+      windowWidth: ''
     }
   },
 
@@ -347,6 +350,23 @@ export default {
 
     q: function() {
       return this.$route.query.q || ''
+    },
+
+    /**
+     * True if user is on a small screen (mobile)
+     * @returns {Boolean}
+     */
+    isMobile: function() {
+      return this.windowWidth <= 768
+    },
+
+    /**
+     * Compute the amount of pages to display
+     * based on the screen size
+     * @returns {Boolean}
+     */
+    pagerCount: function() {
+      return this.isMobile ? 2 : 5
     }
   },
 
@@ -368,6 +388,10 @@ export default {
       immediate: true
     }
   },
+
+  beforeMount: function() {
+    this.windowWidth = window.innerWidth
+  },
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    * Shrink the title column width if on mobile
@@ -381,11 +405,7 @@ export default {
       this.fetchResults()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
-    window.onresize = () => {
-      window.innerWidth <= 768
-        ? (this.titleColumnWidth = 150)
-        : (this.titleColumnWidth = 300)
-    }
+    window.onresize = () => this.onResize(window.innerWidth)
   },
 
   methods: {
@@ -696,6 +716,18 @@ export default {
         .then(() => {
           this.fetchResults()
         })
+    },
+
+    /**
+     * Adjust the Title column width when
+     * on smaller screens or mobile
+     * @param {Number} width
+     */
+    onResize: function(width) {
+      width <= 768
+        ? (this.titleColumnWidth = 150)
+        : (this.titleColumnWidth = 300)
+      this.windowWidth = width
     }
   }
 }
@@ -781,7 +813,7 @@ export default {
   p {
     font-size: 0.875em;
     flex-shrink: 0;
-    margin: 2em 1em 0 0;
+    margin: 2em 0 0 0;
   }
 }
 ::v-deep {
