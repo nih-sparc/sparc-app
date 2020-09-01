@@ -46,7 +46,7 @@
               v-if="searchData.limit < searchData.total"
               :small="isMobile"
               :page-size="searchData.limit"
-              :pager-count="pagerCount"
+              :pager-count="5"
               :current-page="curSearchPage"
               layout="prev, pager, next"
               :total="searchData.total"
@@ -95,7 +95,7 @@
           v-if="searchData.limit < searchData.total"
           :small="isMobile"
           :page-size="searchData.limit"
-          :pager-count="pagerCount"
+          :pager-count="5"
           :current-page="curSearchPage"
           layout="prev, pager, next"
           :total="searchData.total"
@@ -357,16 +357,7 @@ export default {
      * @returns {Boolean}
      */
     isMobile: function() {
-      return this.windowWidth <= 768
-    },
-
-    /**
-     * Compute the amount of pages to display
-     * based on the screen size
-     * @returns {Boolean}
-     */
-    pagerCount: function() {
-      return this.isMobile ? 2 : 5
+      return this.windowWidth <= 500
     }
   },
 
@@ -801,6 +792,13 @@ export default {
   margin-top: 1.5em;
   text-align: right;
   background-color: transparent;
+  @media screen and (max-width: 28em) {
+    margin-top: 5px;
+    padding-left: 0;
+    .btn-prev {
+      padding-left: 0;
+    }
+  }
   button {
     background-color: transparent;
   }
@@ -810,6 +808,11 @@ export default {
   display: flex;
   margin-bottom: 1em;
   justify-content: space-between;
+  @media screen and (max-width: 28em) {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
   p {
     font-size: 0.875em;
     flex-shrink: 0;
