@@ -63,6 +63,11 @@
               SPARC Publications
             </a>
           </li>
+          <li>
+            <a href="https://sparc.science/help/3vcLloyvrvmnK3Nopddrka" target="_blank">
+              SPARC Glossary
+            </a>
+          </li>
         </ul>
         <h3>Help us Improve</h3>
         <ul>
