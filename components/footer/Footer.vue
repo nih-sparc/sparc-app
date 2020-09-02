@@ -44,6 +44,11 @@
             </nuxt-link>
           </li>
           <li>
+            <a href="#" target="_blank">
+              Material Sharing Policy
+            </a>
+          </li>
+          <li>
             <a href="https://commonfund.nih.gov/sparc/awards" target="_blank">
               Funding Opportunities
             </a>
