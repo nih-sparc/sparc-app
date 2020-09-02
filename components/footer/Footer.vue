@@ -188,6 +188,7 @@ export default {
 
       a {
         color: $dark-gray;
+        display: inline-block;
       }
     }
   }
@@ -287,6 +288,7 @@ export default {
 
         a {
           color: $dark-gray;
+          display: inline-block;
         }
       }
     }
