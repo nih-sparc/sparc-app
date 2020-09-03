@@ -28,7 +28,7 @@
           Blackfynn Discover
         </a>
       </p>
-      <div class="dataset-about-info__container--citation">
+      <div id="citationsArea" class="dataset-about-info__container--citation">
         <el-row type="flex" justify="center">
           <el-col :span="24">
             <ul class="dataset-about-info__container--citation-links">
