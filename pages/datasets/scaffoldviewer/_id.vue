@@ -46,7 +46,6 @@
 <script>
 // :scaffold-selected="scaffoldSelected"
 import '@abi-software/scaffoldvuer'
-import '@abi-software/scaffoldvuer/dist/scaffoldvuer.css'
 
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
@@ -120,12 +119,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.scaffoldvuer-container {
-  margin-top: 1.5rem;
-  height: 90vh;
-  max-width: calc(100% - 48px);
-  padding-left: 24px;
-}
 
 .page {
   display: flex;
@@ -172,4 +165,13 @@ h1 {
 .file-detail__column {
   flex: 1;
 }
+</style>
+<style lang="scss">
+  .scaffoldvuer-container {
+    margin-top: 1.5rem;
+    height: 90vh;
+    max-width: calc(100% - 48px);
+    padding-left: 24px;
+    @import '~@abi-software/scaffoldvuer/dist/scaffoldvuer'
+  }
 </style>
