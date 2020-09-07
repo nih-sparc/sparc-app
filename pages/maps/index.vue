@@ -13,7 +13,7 @@
     </page-hero>
     <div class="page-wrap portalmapcontainer" ref="mappage">
       <client-only placeholder="Loading...">
-        <div class="map-app">
+        <div class="mapClass">
           <MapContent />
         </div>
       </client-only>
@@ -24,11 +24,6 @@
 <script>
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import PageHero from "@/components/PageHero/PageHero.vue";
-//Only available on the client side.
-process.client
-  ? import("@abi-software/mapintegratedvuer/dist/mapintegratedvuer.css")
-  : null;
-
 export default {
   name: "Maps",
 
@@ -62,6 +57,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/_variables.scss";
 .maps {
+
   .sideText {
     top: 0px;
     font-size: 0.8em;
@@ -91,13 +87,6 @@ export default {
     padding-left: 24px;
   }
 
-  .map-app {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border: solid 1px #dcdfe6;
-    box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
-  }
   .page-wrap {
     &__results {
       font-size: 0.875em;
@@ -117,4 +106,16 @@ export default {
     }
   }
 }
+</style>
+<style lang="scss">
+  .mapClass {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: solid 1px #dcdfe6;
+    box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
+    @import "~@abi-software/mapintegratedvuer/dist/mapintegratedvuer"
+  }
+</style>
+<style  src="@abi-software/mapintegratedvuer/assets/mapicon-species-style.css">
 </style>
