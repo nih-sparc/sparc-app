@@ -136,6 +136,7 @@ export default {
   @media screen and (max-width: 48em) {
     margin-bottom: 0;
     font-size: 0.875em;
+    -webkit-text-size-adjust: 100%;
   }
 }
 </style>
