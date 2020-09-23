@@ -44,6 +44,7 @@
             </p>
             <el-pagination
               v-if="searchData.limit < searchData.total"
+              :small="isMobile"
               :page-size="searchData.limit"
               :pager-count="5"
               :current-page="curSearchPage"
@@ -92,6 +93,7 @@
         </p>
         <el-pagination
           v-if="searchData.limit < searchData.total"
+          :small="isMobile"
           :page-size="searchData.limit"
           :pager-count="5"
           :current-page="curSearchPage"
@@ -223,7 +225,8 @@ export default {
           label: 'Home'
         }
       ],
-      titleColumnWidth: 300
+      titleColumnWidth: 300,
+      windowWidth: ''
     }
   },
 
@@ -347,6 +350,14 @@ export default {
 
     q: function() {
       return this.$route.query.q || ''
+    },
+
+    /**
+     * True if user is on a small screen (mobile)
+     * @returns {Boolean}
+     */
+    isMobile: function() {
+      return this.windowWidth <= 500
     }
   },
 
@@ -368,6 +379,10 @@ export default {
       immediate: true
     }
   },
+
+  beforeMount: function() {
+    this.windowWidth = window.innerWidth
+  },
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    * Shrink the title column width if on mobile
@@ -381,11 +396,7 @@ export default {
       this.fetchResults()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
-    window.onresize = () => {
-      window.innerWidth <= 768
-        ? (this.titleColumnWidth = 150)
-        : (this.titleColumnWidth = 300)
-    }
+    window.onresize = () => this.onResize(window.innerWidth)
   },
 
   methods: {
@@ -696,6 +707,18 @@ export default {
         .then(() => {
           this.fetchResults()
         })
+    },
+
+    /**
+     * Adjust the Title column width when
+     * on smaller screens or mobile
+     * @param {Number} width
+     */
+    onResize: function(width) {
+      width <= 768
+        ? (this.titleColumnWidth = 150)
+        : (this.titleColumnWidth = 300)
+      this.windowWidth = width
     }
   }
 }
@@ -769,6 +792,13 @@ export default {
   margin-top: 1.5em;
   text-align: right;
   background-color: transparent;
+  @media screen and (max-width: 28em) {
+    margin-top: 5px;
+    padding-left: 0;
+    .btn-prev {
+      padding-left: 0;
+    }
+  }
   button {
     background-color: transparent;
   }
@@ -778,10 +808,15 @@ export default {
   display: flex;
   margin-bottom: 1em;
   justify-content: space-between;
+  @media screen and (max-width: 28em) {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
   p {
     font-size: 0.875em;
     flex-shrink: 0;
-    margin: 2em 1em 0 0;
+    margin: 2em 0 0 0;
   }
 }
 ::v-deep {

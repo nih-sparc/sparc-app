@@ -25,7 +25,9 @@
     </el-table-column>
     <el-table-column prop="fields.description" label="Description" width="648">
       <template slot-scope="scope">
-        {{ scope.row.fields.shortDescription || '' }}
+        <p class="mobile-description">
+          {{ getShortDescription(scope) }}
+        </p>
       </template>
     </el-table-column>
     <el-table-column
@@ -106,6 +108,15 @@ export default {
       return scope.row.fields.nihReporterUrl || '#'
     },
 
+    /**
+     * Get short description for dataset
+     * @param {Object} scope
+     * @returns {String}
+     */
+    getShortDescription: function(scope) {
+      return scope.row.fields.shortDescription || ''
+    },
+
     onSortChange: function(payload) {
       onSortChange(this, payload)
     }
@@ -120,5 +131,12 @@ export default {
 .img-project {
   height: auto;
   width: 100%;
+}
+.mobile-description {
+  @media screen and (max-width: 48em) {
+    margin-bottom: 0;
+    font-size: 0.875em;
+    -webkit-text-size-adjust: 100%;
+  }
 }
 </style>

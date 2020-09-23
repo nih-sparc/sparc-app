@@ -26,8 +26,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../assets/_variables.scss';
+
 .page-hero {
-  background: #292b66;
+  background: $navy;
   color: #f0f2f5;
   font-size: 1em;
   line-height: 1.5rem;
@@ -36,10 +38,6 @@ export default {
     font-size: 1.25em;
     line-height: 2rem;
     padding: 2.5rem 0;
-  }
-  // Firefox hack to fix color discrepancy
-  @-moz-document url-prefix() {
-    background: #21275a;
   }
   &__copy {
     position: relative;
@@ -56,8 +54,9 @@ export default {
     display: none;
 
     @media (min-width: 48em) {
-      display: block;
+      display: flex;
       height: calc(100% + 5rem);
+      justify-content: flex-end;
       right: 0;
       position: absolute;
       top: -2.5rem;
@@ -80,12 +79,7 @@ export default {
   }
   h1,
   p {
-    background-color: rgba(41, 43, 102, 0.75);
-
-    // Firefox hack to fix color discrepancy
-    @-moz-document url-prefix() {
-      background: rgba(33, 39, 90, 0.75);
-    }
+    background-color: rgba(36, 36, 91, 0.75);
   }
 
   .row {
