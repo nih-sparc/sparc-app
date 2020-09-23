@@ -11,10 +11,10 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmapvuer@^0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.27.tgz#7e53d6c9c2edc202a07078568e79cebb0cbe4042"
-  integrity sha512-8lHTXrfNUj+Vy2Aw+DXZrZbKkvBRbLFVtq/4+2jFY0ktJ7lRnGlGLLS5TdNToAPOP7FpO6BVvGEUwGvjI5g9vg==
+"@abi-software/flatmapvuer@^0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.28.tgz#f6f734ea1737831f57cf80976eeafdb290b07b5a"
+  integrity sha512-zuveamM1+ZvDXqsrDfS3+eAXpVuP/FeiJAdBRvYyoPCaNrSnFcLQi8m12Cx2qa54PgxD7TIBSj+K3AnPy4Psog==
   dependencies:
     "@abi-software/maptooltip" "^0.1.10"
     "@dbrnz/flatmap-viewer" "^0.9.33"
@@ -26,15 +26,15 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.26-beta.2":
-  version "0.1.26-beta.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.26-beta.2.tgz#7c4f2af753a91f1b301c1b7dafcd60573abbda8b"
-  integrity sha512-8dGW2OXlR57Mz8cu2BPAgewIyQ6c5jkPZhwOhJc1s6ttyMJTJgZNemxaAMX6Hupiq/3eUGVgybIk6zlQDVl90g==
+"@abi-software/mapintegratedvuer@^0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.26.tgz#d557522a1eb1241eced82ccdb27c3b318a1d14a8"
+  integrity sha512-81C/ZcbjaJadtNewKmdAnOUPSdqohH1o4x85ugSY3wTfLB9ru/SO36Dl7r9XU89CqhlVCTUBCTxIj4ApxPSQRA==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.1.27"
-    "@abi-software/maptooltip" "^0.1.12"
-    "@abi-software/plotvuer" "^0.2.24"
-    "@abi-software/scaffoldvuer" "^0.1.41"
+    "@abi-software/flatmapvuer" "^0.1.28"
+    "@abi-software/maptooltip" "^0.1.13"
+    "@abi-software/plotvuer" "^0.2.25"
+    "@abi-software/scaffoldvuer" "^0.1.43"
     "@soda/get-current-script" "^1.0.2"
     core-js "^3.3.2"
     d3-time-format "^3.0.0"
@@ -48,7 +48,7 @@
     vue-draggable-resizable "2.1.0"
     webpack-node-externals "^2.5.2"
 
-"@abi-software/maptooltip@^0.1.10", "@abi-software/maptooltip@^0.1.12":
+"@abi-software/maptooltip@^0.1.10":
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/@abi-software/maptooltip/-/maptooltip-0.1.12.tgz#6b591d50a2a2fc9a7a156bf1c421ba6b898e0a4a"
   integrity sha512-noSgxQJCC3p79Mv8hAaxHWa9mlRpCFZCLO19OJ5qTP2fw1nckwtnHye0bbvuKF4UBYDFYrVFwpRBxKgwVecRFQ==
@@ -60,10 +60,22 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/plotvuer@^0.2.24":
-  version "0.2.24"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.24.tgz#384ea5c9491c6d6f8e172754788fa6d3a71173bc"
-  integrity sha512-DJpRGdEfKJlezy/hfIyQyA5/gytyVww+VyDhYqllkz7FirJLi409kSvDjNFQBdqwyWOLmGvxh/SZOqjxTwDGtg==
+"@abi-software/maptooltip@^0.1.13":
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/@abi-software/maptooltip/-/maptooltip-0.1.13.tgz#aaf873fa3cdcb4d75955461baa290a9e1f4fc684"
+  integrity sha512-Vupzy/VNLydlPSkszBRDlmDeU0lYwUv4U5b+ofOCUKMBpQ+sQDPcD6w+FgT3Vci16Yr6WNmcmyMJVheN0EBypA==
+  dependencies:
+    core-js "^3.3.2"
+    current-script-polyfill "^1.0.0"
+    element-ui "^2.13.0"
+    file-loader "^5.0.2"
+    lodash "^4.17.20"
+    vue "^2.6.10"
+
+"@abi-software/plotvuer@^0.2.25":
+  version "0.2.25"
+  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.25.tgz#86fdb27996ad28994fcb3ff6f58a1ba12691ff17"
+  integrity sha512-hmf39JKNO5XpdqBCRL4kX6gDiV0wxTW09qLk5EO3e6dOKSE0G5zpRr/anRen3VBYGYL7VBVMXx9lcbPE4HIQdA==
   dependencies:
     css-element-queries "^1.2.3"
     current-script-polyfill "^1.0.0"
@@ -74,10 +86,10 @@
     vue "^2.6.10"
     vue-draggable-resizable "^2.2.0"
 
-"@abi-software/scaffoldvuer@^0.1.41":
-  version "0.1.41"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.41.tgz#bdf3e1c3e004e40abfb564d80a083c1a3db8df96"
-  integrity sha512-V8+M6hWrWOzeTUDWhJ/CIsJhsfD/PuuTin04EXHeOR8XsnA7+/kJjZ0xoxT1lRU9HHT32DwO9PI6HZ+MM4gQzw==
+"@abi-software/scaffoldvuer@^0.1.43":
+  version "0.1.43"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.43.tgz#e649e32185d278511f1df1fcc6cc8676466920dc"
+  integrity sha512-hze652Kpbf016byS/gWpHF7+aRJ0NVrClAkSw3S8NtvEEpB1fYbP2XfXyBF3HVYVss76VVdTnsKxejhSgKeTaw==
   dependencies:
     axios "^0.19.2"
     core-js "^3.3.2"

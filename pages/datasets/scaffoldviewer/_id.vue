@@ -45,7 +45,7 @@
 
 <script>
 // :scaffold-selected="scaffoldSelected"
-import '@abi-software/scaffoldvuer'
+import { ScaffoldVuer } from '@abi-software/scaffoldvuer'
 
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
@@ -54,6 +54,7 @@ export default {
 
   components: {
     DetailTabs,
+    ScaffoldVuer
   },
 
   data: () => {
