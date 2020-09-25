@@ -31,7 +31,7 @@ export default {
     Breadcrumb,
     PageHero,
     MapContent: process.client
-      ? () => import("@/components/MapApp/MapApp")
+      ? () => import("@abi-software/mapintegratedvuer").then(m => m.MapContent)
       : null
   },
 
