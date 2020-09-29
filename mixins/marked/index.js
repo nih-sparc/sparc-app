@@ -5,10 +5,23 @@ import marked from 'marked'
  * https://github.com/markedjs/marked/pull/1371#issuecomment-434320596
  */
 const renderer = new marked.Renderer()
+const linkRenderer = renderer.link
+
+const isAnchor = str => {
+  return /(?:^|\s)(#[^ ]+)/i.test(str)
+}
+
+const isInternalLink = str => {
+  return isAnchor(str) ? true : str.includes(document.location.origin)
+}
 
 renderer.link = function(href, title, text) {
-  const link = marked.Renderer.prototype.link.apply(this, arguments)
-  return link.replace('<a', "<a target='_blank'")
+  const html = linkRenderer.call(renderer, href, title, text)
+  const isInternal = isInternalLink(href)
+
+  return isInternal
+    ? html
+    : html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
 }
 
 marked.setOptions({
