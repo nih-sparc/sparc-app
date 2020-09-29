@@ -12,7 +12,7 @@ const isAnchor = str => {
 }
 
 const isInternalLink = str => {
-  return isAnchor(str) ? true : str.includes(document.location.origin)
+  return isAnchor(str) ? true : str.includes(process.env.ROOT_URL)
 }
 
 renderer.link = function(href, title, text) {

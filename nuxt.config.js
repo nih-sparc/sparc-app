@@ -62,7 +62,8 @@ export default {
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
     BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
-    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c='
+    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
+    ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000'
   },
 
   serverMiddleware: [
@@ -84,9 +85,9 @@ export default {
       // Redirects
       routes.push({
         path: '/submit_data.html',
-        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd',
+        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd'
       })
-    },
+    }
   },
   /*
    ** Global CSS
@@ -138,6 +139,6 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {},
+    extend(config, ctx) {}
   }
 }
