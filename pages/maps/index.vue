@@ -31,7 +31,7 @@ export default {
     Breadcrumb,
     PageHero,
     MapContent: process.client
-      ? () => import("@abi-software/mapintegratedvuer").then(m => m.MapContent)
+      ? () => import("@tehsurfer/mapintegratedvuer").then(m => m.MapContent)
       : null
   },
 
@@ -114,8 +114,25 @@ export default {
     height: 100%;
     border: solid 1px #dcdfe6;
     box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
-    @import "~@abi-software/mapintegratedvuer/dist/mapintegratedvuer"
+    @import "~@tehsurfer/mapintegratedvuer/dist/mapintegratedvuer"
   }
-</style>
-<style  src="@abi-software/mapintegratedvuer/assets/mapicon-species-style.css">
+  :root {
+    --white: #f4f4f4;
+    --white: #ffffff;
+    --black: #333333;
+    --slate-grey: #606266;
+    --pale-grey: #e4e7ed;
+    --warm-purple: #9c2aa0;
+    --grape: #5e2750;
+    --very-light-pink: #cccccc;
+    --black: #000000;
+    --very-light-pink: #ebebeb;
+    --brown-grey: #afafaf;
+    --charcoal-grey: #4a4d4e;
+    --brownish-grey: #666666;
+    --brown-grey: #999999;
+    --deep-sky-blue: #007aff;
+    --turquoise-blue: #00b0ca;
+    --vibrant-purple: #8300bf;
+  }
 </style>

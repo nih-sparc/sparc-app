@@ -26,28 +26,6 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.26.tgz#d557522a1eb1241eced82ccdb27c3b318a1d14a8"
-  integrity sha512-81C/ZcbjaJadtNewKmdAnOUPSdqohH1o4x85ugSY3wTfLB9ru/SO36Dl7r9XU89CqhlVCTUBCTxIj4ApxPSQRA==
-  dependencies:
-    "@abi-software/flatmapvuer" "^0.1.28"
-    "@abi-software/maptooltip" "^0.1.13"
-    "@abi-software/plotvuer" "^0.2.25"
-    "@abi-software/scaffoldvuer" "^0.1.43"
-    "@soda/get-current-script" "^1.0.2"
-    core-js "^3.3.2"
-    d3-time-format "^3.0.0"
-    element-ui "^2.13.0"
-    lodash "^4.17.20"
-    postcss-prefix-selector "^1.7.2"
-    shepherd.js "^7.1.5"
-    splitpanes "^2.2.1"
-    vue "^2.6.10"
-    vue-cli-plugin-webpack-bundle-analyzer "^2.0.0"
-    vue-draggable-resizable "2.1.0"
-    webpack-node-externals "^2.5.2"
-
 "@abi-software/maptooltip@^0.1.10":
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/@abi-software/maptooltip/-/maptooltip-0.1.12.tgz#6b591d50a2a2fc9a7a156bf1c421ba6b898e0a4a"
@@ -2629,6 +2607,28 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@soda/get-current-script/-/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha512-T7VNNlYVM1SgQ+VsMYhnDkcGmWhQdL0bDyGm5TlQ3GBXnJscEClUUOKduWTmm2zCnvNLC1hc3JpuXjs/nFOc5w==
+
+"@tehsurfer/mapintegratedvuer@^0.1.32":
+  version "0.1.32"
+  resolved "https://registry.yarnpkg.com/@tehsurfer/mapintegratedvuer/-/mapintegratedvuer-0.1.32.tgz#96232f9c6c6d20b1eb7622bd0eb35fb3cf3c5d94"
+  integrity sha512-n5HuVI7x+3xWRcWGyEx1El0/s1w4k8GdRDJJydNbMTb7n8iG4AKA7foQaS1JdCAbRCzbQnitrRk+zNr8tARTvg==
+  dependencies:
+    "@abi-software/flatmapvuer" "^0.1.28"
+    "@abi-software/maptooltip" "^0.1.13"
+    "@abi-software/plotvuer" "^0.2.25"
+    "@abi-software/scaffoldvuer" "^0.1.43"
+    "@soda/get-current-script" "^1.0.2"
+    core-js "^3.3.2"
+    d3-time-format "^3.0.0"
+    element-ui "^2.13.0"
+    lodash "^4.17.20"
+    postcss-prefix-selector "^1.7.2"
+    shepherd.js "^7.1.5"
+    splitpanes "^2.2.1"
+    vue "^2.6.10"
+    vue-cli-plugin-webpack-bundle-analyzer "^2.0.0"
+    vue-draggable-resizable "2.1.0"
+    webpack-node-externals "^2.5.2"
 
 "@turf/area@^6.0.1":
   version "6.0.1"

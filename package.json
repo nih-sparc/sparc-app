@@ -16,12 +16,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "^0.1.26",
     "@abi-software/scaffoldvuer": "^0.1.43",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
     "@nuxtjs/robots": "^2.4.2",
+    "@tehsurfer/mapintegratedvuer": "^0.1.32",
     "babel-eslint": "^10.0.3",
     "contentful": "^7.10.0",
     "cookie-universal-nuxt": "^2.1.1",
