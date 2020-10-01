@@ -2608,10 +2608,10 @@
   resolved "https://registry.yarnpkg.com/@soda/get-current-script/-/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha512-T7VNNlYVM1SgQ+VsMYhnDkcGmWhQdL0bDyGm5TlQ3GBXnJscEClUUOKduWTmm2zCnvNLC1hc3JpuXjs/nFOc5w==
 
-"@tehsurfer/mapintegratedvuer@^0.1.32":
-  version "0.1.32"
-  resolved "https://registry.yarnpkg.com/@tehsurfer/mapintegratedvuer/-/mapintegratedvuer-0.1.32.tgz#96232f9c6c6d20b1eb7622bd0eb35fb3cf3c5d94"
-  integrity sha512-n5HuVI7x+3xWRcWGyEx1El0/s1w4k8GdRDJJydNbMTb7n8iG4AKA7foQaS1JdCAbRCzbQnitrRk+zNr8tARTvg==
+"@tehsurfer/mapintegratedvuer@^0.1.36":
+  version "0.1.36"
+  resolved "https://registry.yarnpkg.com/@tehsurfer/mapintegratedvuer/-/mapintegratedvuer-0.1.36.tgz#b4dda64258e95a2948e38be9c72618260bc4103c"
+  integrity sha512-msQdCFf27TocWkVsHPsOyYpBAtLiBs2Gi9vVc7J74t/DUePchKbls823RX3zrCYAWGcOL/kHrnzAEZmBEXu3lQ==
   dependencies:
     "@abi-software/flatmapvuer" "^0.1.28"
     "@abi-software/maptooltip" "^0.1.13"
