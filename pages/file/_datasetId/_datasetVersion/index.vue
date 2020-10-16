@@ -69,19 +69,19 @@ export default {
   components: {
     BiolucidaViewer,
     DetailTabs,
-    BfButton,
+    BfButton
   },
 
   mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile],
 
   async asyncData({ route, $axios }) {
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.params.datasetId}/versions/${route.params.datasetVersion}/files?path=${route.params.path}`
+    const fileUrl = `${process.env.discover_api_host}/datasets/${route.params.datasetId}/versions/${route.params.datasetVersion}/files?path=${route.query.path}`
 
     const file = await $axios.$get(fileUrl)
 
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(
-      `${process.env.BL_SERVER_URL}/imagemap/sharelink/${sourcePackageId}`,
+      `${process.env.BL_SERVER_URL}/imagemap/sharelink/${sourcePackageId}`
     )
 
     const hasViewer = biolucidaData.status !== 'error'
@@ -89,7 +89,7 @@ export default {
     return {
       biolucidaData,
       file,
-      hasViewer,
+      hasViewer
     }
   },
 
@@ -98,16 +98,16 @@ export default {
       biolucidaData: {
         biolucida_image_id: '',
         share_link: '',
-        status: '',
+        status: ''
       },
       tabs: [
         {
           label: 'Viewer',
-          type: 'viewer',
-        },
+          type: 'viewer'
+        }
       ],
       activeTab: 'viewer',
-      file: {},
+      file: {}
     }
   },
 
@@ -118,8 +118,8 @@ export default {
      */
     location: function() {
       return this.file.path.replace(`/${this.file.name}`, '')
-    },
-  },
+    }
+  }
 }
 </script>
 
