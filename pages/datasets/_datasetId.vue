@@ -93,15 +93,6 @@
               Run Simulation
             </a>
           </button>
-          <a
-            :href="
-              `https://discover.blackfynn.com/datasets/${$route.params.datasetId}/index.html`
-            "
-            target="_blank"
-            class="dataset-link"
-          >
-            Get Dataset
-          </a>
         </div>
         <div v-else>
           <button class="dataset-button" @click="isDownloadModalVisible = true">
