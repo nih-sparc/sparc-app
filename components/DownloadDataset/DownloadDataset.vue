@@ -155,7 +155,7 @@ export default {
      * @returns {String}
      */
     downloadUrl: function() {
-      return `https://api.blackfynn.io/discover/datasets/${this.datasetId}/versions/${this.versionId}/download`
+      return `https://api.blackfynn.net/discover/datasets/${this.datasetId}/versions/${this.versionId}/download`
     }
   },
 
