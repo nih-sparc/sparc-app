@@ -61,7 +61,7 @@ export default {
   color: $navy;
   left: 0;
   right: 0;
-  padding: 1.625em 0;
+  padding: 2rem 0;
   position: fixed;
   z-index: 9;
 }
@@ -100,7 +100,7 @@ p {
   cursor: pointer;
   padding: 0.25em;
   position: absolute;
-  right: 1em;
-  top: 1em;
+  right: 0.25rem;
+  top: 0.25rem;
 }
 </style>
