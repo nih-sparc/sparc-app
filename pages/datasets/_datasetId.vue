@@ -632,12 +632,6 @@ export default {
     }
   },
 
-  mounted() {
-    if (this.datasetType !== 'simulation') {
-      this.activeTab = 'description'
-    }
-  },
-
   methods: {
     /**
      * Sets active tab
