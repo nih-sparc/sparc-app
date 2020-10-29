@@ -1,22 +1,32 @@
 <template>
   <div class="files-table">
-    <div class="breadcrumb-list">
-      <div v-for="(item, idx) in breadcrumbs" :key="idx" class="breadcrumb">
-        <a
-          class="breadcrumb-link"
-          href="#"
-          @click.prevent="breadcrumbNavigation(idx)"
-        >
-          {{ item }}
-        </a>
+    <div class="files-table-header">
+      <div class="breadcrumb-list">
+        <div v-for="(item, idx) in breadcrumbs" :key="idx" class="breadcrumb">
+          <a
+            class="breadcrumb-link"
+            href="#"
+            @click.prevent="breadcrumbNavigation(idx)"
+          >
+            {{ item }}
+          </a>
 
-        <span
-          v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length - 1"
-          class="breadcrumb-separator"
-        >
-          /
-        </span>
+          <span
+            v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length - 1"
+            class="breadcrumb-separator"
+          >
+            /
+          </span>
+        </div>
       </div>
+
+      <bf-download-file
+        class="mb-8"
+        :selected="selected"
+        :dataset="datasetDetails"
+        :file-path="path"
+        @remove-selection="removeSelection"
+      />
     </div>
 
     <div class="files-table-table">
@@ -26,7 +36,14 @@
           Try again
         </el-button>
       </div>
-      <el-table v-else v-loading="isLoading" :data="data">
+      <el-table
+        v-else
+        ref="table"
+        v-loading="isLoading"
+        :data="data"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" fixed width="55" />
         <el-table-column fixed prop="name" label="Name" width="340" sortable>
           <template slot-scope="scope">
             <div class="file-name-wrap">
@@ -138,11 +155,17 @@ import {
   pathOr
 } from 'ramda'
 
+import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
+
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
 
 export default {
   name: 'FilesTable',
+
+  components: {
+    BfDownloadFile
+  },
 
   mixins: [FormatStorage, RequestDownloadFile],
 
@@ -161,7 +184,8 @@ export default {
       data: [],
       isLoading: false,
       hasError: false,
-      limit: 500
+      limit: 500,
+      selected: []
     }
   },
 
@@ -177,7 +201,7 @@ export default {
     getFilesurl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = propOr(1, 'version', this.datasetDetails)
-      const url = `https://api.blackfynn.io/discover/datasets/${id}/versions/${version}/files/browse`
+      const url = `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}/files/browse`
 
       return this.path
         ? `${url}?path=${this.path}&limit=${this.limit}`
@@ -191,7 +215,7 @@ export default {
     getFilesIdUrl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = propOr(1, 'version', this.datasetDetails)
-      return `https://api.blackfynn.io/discover/datasets/${id}/versions/${version}`
+      return `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}`
     }
   },
 
@@ -216,6 +240,10 @@ export default {
   mounted: function() {},
 
   methods: {
+    handleSelectionChange(val) {
+      this.selected = val
+    },
+
     /**
      * Converts a semver version string to an integer
      * @param {String} semverVersion
@@ -365,6 +393,19 @@ export default {
     isImage: function(fileType) {
       const images = ['JPG', 'PNG', 'JPEG', 'TIFF', 'GIF']
       return images.indexOf(fileType) >= 0
+    },
+
+    /**
+     * Remove selection
+     * @param {Object} row
+     */
+    removeSelection(row) {
+      this.selected = this.selected.filter(f => f.path !== row.path)
+
+      const selectedPaths = this.selected.map(s => s.path)
+      this.data.forEach(r => {
+        this.$refs.table.toggleRowSelection(r, selectedPaths.includes(r.path))
+      })
     }
   }
 }
@@ -373,14 +414,20 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .breadcrumb {
+  background: none;
+  height: auto;
+  margin-bottom: 8px;
+}
+.files-table-header {
+  align-items: center;
   display: flex;
   margin-bottom: 8px;
-  background: none;
 }
 .breadcrumb-list {
+  align-items: center;
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
-  margin-bottom: 8px;
 }
 .breadcrumb-link {
   word-break: break-word;
@@ -419,6 +466,9 @@ export default {
       font-size: 14px;
       font-weight: 500;
       line-height: 16px;
+    }
+    &.el-table-column--selection .cell {
+      padding: 0 14px;
     }
   }
 }
