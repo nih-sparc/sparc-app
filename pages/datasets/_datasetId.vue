@@ -330,7 +330,7 @@ export default {
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios, error }) {
+  async asyncData({ route, $axios }) {
     const datasetId = pathOr('', ['params', 'datasetId'], route)
 
     const organEntries = await getOrganEntries()
