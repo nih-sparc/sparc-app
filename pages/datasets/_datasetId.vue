@@ -302,7 +302,7 @@ export default {
       errorLoading: false,
       loadingMarkdown: false,
       markdown: {},
-      activeTab: 'about',
+      activeTab: 'description',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
       isContributorListVisible: true,
@@ -629,12 +629,6 @@ export default {
         }
       },
       immediate: true
-    }
-  },
-
-  mounted() {
-    if (this.datasetType !== 'simulation') {
-      this.activeTab = 'description'
     }
   },
 
