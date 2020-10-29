@@ -16,25 +16,28 @@
           class="close-icon"
         />
       </button>
-      <div v-if="!isDatasetSizeLarge" class="download-block">
-        <h1>Direct Download</h1>
-        <p>
-          You can download the raw files and metadata directly to your computer
-          as a zip archive free of charge.
-        </p>
-        <p class="dataset-size-text">
-          Dataset Size: {{ formatMetric(datasetDetails.size) }}
-        </p>
-        <div class="buttons">
-          <a :href="downloadUrl">
-            <bf-button class="download-button">Download Dataset</bf-button>
-          </a>
-          <bf-button class="secondary button-spacing" @click="closeDialog">
-            Cancel
-          </bf-button>
+      <div class="download-container">
+        <h1>Direct download</h1>
+        <div v-if="!isDatasetSizeLarge">
+          <p>You can download the raw files and metadata directly to your computer as a zip archive free of charge.</p>
+          <p class="download-container__download-dataset-size">
+            Dataset Size: {{ formatMetric(datasetDetails.size) }}
+          </p>
+          <div class="buttons">
+            <a :href="downloadUrl">
+              <bf-button class="download-button">Download</bf-button>
+            </a>
+          </div>
+        </div>
+        <div v-else>
+          <p>Direct downloads are only available free of charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded from AWS. </p>
+          <p class="aws-container__download-dataset-size">
+            Dataset Size: {{ formatMetric(datasetDetails.size) }}
+          </p>
         </div>
       </div>
-      <div v-else class="aws-container">
+      <div class="aws-container">
+        <div
         <h1>Download from AWS</h1>
         <p>
           Raw files and metadata are stored in an AWS S3 Requester Pays bucket.
@@ -53,22 +56,16 @@
         <div class="text-block aws">
           us-east-1
         </div>
-        <div class="buttons">
-          <nuxt-link
-            :to="{
-              name: 'help-helpId',
-              params: {
-                helpId: helpId
-              }
-            }"
-          >
-            <bf-button class="download-button">
-              More Information
-            </bf-button>
-          </nuxt-link>
-          <bf-button class="secondary button-spacing" @click="closeDialog">
-            Okay
+        <div class="disclosure-text-block">
+          <p>*Requester pays means that any costs associated with downloading the data will be charged to your AWS account.
+            For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS Pricing documentation.</a>
+          </p>
+          <div>
+            <bf-button class="secondary button-spacing" @click="closeDialog">
+            Close
           </bf-button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -173,11 +170,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 
-@media screen and (max-width: 767px) {
-  ::v-deep .el-dialog {
-    width: 93%;
-  }
-}
 .el-dialog__body {
   padding: 0;
 }
@@ -196,47 +188,9 @@ export default {
     display: flex;
     word-break: normal;
   }
-  .download-block {
-    padding: 40px;
 
-    img {
-      position: absolute;
-      top: 245px;
-      left: -102px;
-      opacity: 0.3;
-      width: 413px;
-      height: 402px;
-    }
-
-    p {
-      line-height: 24px;
-      color: #000;
-      font-size: 16px;
-      margin-top: 8px;
-      margin-bottom: 16px;
-    }
-
-    .size {
-      text-align: center;
-      line-height: 24px;
-      color: #ffffff;
-      font-size: 14px;
-      margin-top: 2px;
-    }
-
-    .download-button {
-      width: 178px;
-      @media screen and (max-width: 767px) {
-        width: 100%;
-      }
-    }
-
-    .dataset-size-text {
-      font-size: 18px;
-      font-weight: 500;
-      line-height: 24px;
-      margin-bottom: 32px;
-    }
+  .buttons {
+    text-align: center;
   }
 
   @media screen and (max-width: 767px) {
@@ -264,6 +218,70 @@ export default {
   .aws-container {
     margin: 40px 48px;
     margin-top: 47px;
+
+    &__download-dataset-size {
+      margin-top: 35px;
+    }
+  }
+
+  .disclosure-text-block {
+    display: flex;
+    p {
+      font-size: 12px;
+      width: 90%;
+      line-height: 16px;
+    }
+
+    ::v-deep .bf-button {
+      min-width: 80px;
+      &.secondary {
+        width: 6%;
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+
+  .download-container {
+    background-color: $median;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    color: #fff;
+    width: 316px;
+    overflow: hidden;
+    position: relative;
+    padding: 40px 40px 0;
+
+    &__download-dataset-size {
+      margin-top: 35px;
+      margin-bottom: 200px;
+    }
+
+    .download-button {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      background-color: #fff;
+      color: $median;
+      min-width: 80px;
+      @media screen and (max-width: 767px) {
+        width: 100%;
+      }
+    }
+
+    h1 {
+      line-height: 32px;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0;
+      margin-bottom: 25px;
+    }
+
+    p {
+      line-height: 24px;
+      color: #fff;
+      font-size: 16px;
+    }
   }
 
   .close-dialog {
@@ -321,17 +339,10 @@ export default {
     }
   }
 
-  .aws-block {
-    box-sizing: border-box;
-    padding: 40px 40px 0;
-  }
-
   ::v-deep .el-dialog {
     border-radius: 0;
-    width: 768px;
-    @media screen and (max-width: 767px) {
-      width: 93%;
-    }
+    width: 868px;
+
     .el-dialog__body {
       padding: 0;
     }
