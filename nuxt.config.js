@@ -34,6 +34,7 @@ export default {
     discover_api_host:
       process.env.BLACKFYNN_DISCOVER_API_HOST ||
       'https://api.blackfynn.io/discover',
+    bf_api_host: process.env.BF_API_HOST || 'https://api.blackfynn.io',
     zipit_api_host:
       process.env.ZIPIT_API_HOST || 'https://api.blackfynn.io/zipit/discover',
     ctf_event_id: 'event',
