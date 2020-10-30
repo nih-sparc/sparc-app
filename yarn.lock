@@ -26,6 +26,43 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
+"@abi-software/flatmapvuer@^0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.29.tgz#8c0b2858fc2c01b826d6ef3218239d1306621d98"
+  integrity sha512-MYvOtuKpdFdXkS7SVBoHa/ZlFBmjoE9CmiE0XND8j0h02T3FMfgqYk8/cH3JSR7g290e77uRB9WJos/C2zB1oQ==
+  dependencies:
+    "@abi-software/maptooltip" "^0.1.13"
+    "@dbrnz/flatmap-viewer" "^0.9.34"
+    core-js "^3.3.2"
+    css-element-queries "^1.2.2"
+    current-script-polyfill "^1.0.0"
+    element-ui "^2.13.0"
+    file-loader "^5.0.2"
+    lodash "^4.17.20"
+    vue "^2.6.10"
+
+"@abi-software/mapintegratedvuer@^0.1.27":
+  version "0.1.27"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.27.tgz#74a32d048d519c11369bda684b14c6dbb90bf996"
+  integrity sha512-Fx+oKku+dFj5zmtSTwVN3TeHNA7LhOfiS01ggsx7vD7aLz1ZtQcLtsOj5B10mGVHhJrcbl3ALvpIuIbWUIrvkw==
+  dependencies:
+    "@abi-software/flatmapvuer" "^0.1.29"
+    "@abi-software/maptooltip" "^0.1.13"
+    "@abi-software/plotvuer" "^0.2.25"
+    "@abi-software/scaffoldvuer" "^0.1.43"
+    "@soda/get-current-script" "^1.0.2"
+    core-js "^3.3.2"
+    d3-time-format "^3.0.0"
+    element-ui "^2.13.0"
+    lodash "^4.17.20"
+    postcss-prefix-selector "^1.7.2"
+    shepherd.js "^7.1.5"
+    splitpanes "^2.2.1"
+    vue "^2.6.10"
+    vue-cli-plugin-webpack-bundle-analyzer "^2.0.0"
+    vue-draggable-resizable "2.1.0"
+    webpack-node-externals "^2.5.2"
+
 "@abi-software/maptooltip@^0.1.10":
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/@abi-software/maptooltip/-/maptooltip-0.1.12.tgz#6b591d50a2a2fc9a7a156bf1c421ba6b898e0a4a"
@@ -899,6 +936,13 @@
     "@babel/plugin-transform-dotall-regex" "^7.4.4"
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
+
+"@babel/runtime@^7.10.4":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.1.tgz#b4116a6b6711d010b2dad3b7b6e43bf1b9954740"
+  integrity sha512-J5AIf3vPj3UwXaAzb5j1xM4WAQDX3EMgemF8rjCP3SoW09LfRKAXQKt6CoVYl230P6iWdRcBbnLDDdnqWxZSCA==
+  dependencies:
+    regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.11.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.8.4":
   version "7.11.2"
@@ -1926,6 +1970,22 @@
     minisearch "^2.2.1"
     n3 "^1.3.5"
 
+"@dbrnz/flatmap-viewer@^0.9.34":
+  version "0.9.34"
+  resolved "https://registry.yarnpkg.com/@dbrnz/flatmap-viewer/-/flatmap-viewer-0.9.34.tgz#7dedd9aba3b861ffc1ca13df218d9e42dc543d15"
+  integrity sha512-qxGj8V4aqSjapFUuz+nlyDdPTb4bFVZzVDk1gD3zpRy0MetVl72NYTs8XUmca8TXaAz76En6XOe4PuP0Bt1NpQ==
+  dependencies:
+    "@babel/runtime" "^7.10.4"
+    "@comunica/actor-init-sparql" "^1.9.1"
+    "@comunica/core" "^1.9.0"
+    "@comunica/utils-datasource" "^1.9.0"
+    "@turf/area" "^6.0.1"
+    "@turf/bbox" "^6.0.1"
+    "@turf/helpers" "^6.1.4"
+    mapbox-gl "^1.12.0"
+    minisearch "^2.2.1"
+    n3 "^1.3.5"
+
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"
@@ -2608,10 +2668,10 @@
   resolved "https://registry.yarnpkg.com/@soda/get-current-script/-/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha512-T7VNNlYVM1SgQ+VsMYhnDkcGmWhQdL0bDyGm5TlQ3GBXnJscEClUUOKduWTmm2zCnvNLC1hc3JpuXjs/nFOc5w==
 
-"@tehsurfer/mapintegratedvuer@^0.1.37":
-  version "0.1.37"
-  resolved "https://registry.yarnpkg.com/@tehsurfer/mapintegratedvuer/-/mapintegratedvuer-0.1.37.tgz#b23ca0eac4fff1ebd09baba3da62b1e88bf3330e"
-  integrity sha512-RnX62slgTgOkomyoGkQruInFQ/L31oxBi0rlI9TrlAJNJ93hHmnXmAK9JuofmEEYrmNB+FWV+7JuAbsqntvb0g==
+"@tehsurfer/mapintegratedvuer@^0.1.43":
+  version "0.1.43"
+  resolved "https://registry.yarnpkg.com/@tehsurfer/mapintegratedvuer/-/mapintegratedvuer-0.1.43.tgz#d0b6aba69bf38583acf7af6f397edc5d7cfb14b2"
+  integrity sha512-8anE+DtMo4t0lLC/CKpaFFHKtF0spk5ipoGgPfrtSj0nCRH5kRlDEv7QlUPPEmGCrutlSMaykRMqX9QW37fD8w==
   dependencies:
     "@abi-software/flatmapvuer" "^0.1.28"
     "@abi-software/maptooltip" "^0.1.13"

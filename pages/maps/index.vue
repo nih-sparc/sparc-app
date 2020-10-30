@@ -136,3 +136,5 @@ export default {
     --vibrant-purple: #8300bf;
   }
 </style>
+<style  src="@tehsurfer/mapintegratedvuer/assets/mapicon-species-style.css">
+</style>
