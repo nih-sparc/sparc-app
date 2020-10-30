@@ -3,7 +3,7 @@
     <el-button @click="onDownloadClick">
       Download
     </el-button>
-    <form id="zipForm" method="POST" :action="zipitUrl">
+    <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
       <input v-model="zipData" type="hidden" name="data" />
     </form>
     <el-dialog
@@ -86,10 +86,6 @@ export default {
       default: () => {
         return {}
       }
-    },
-    filePath: {
-      type: String,
-      default: ''
     }
   },
 
@@ -175,8 +171,6 @@ export default {
         version: this.dataset.version
       }
 
-      // const [, ...path] = this.filePath
-      // const rootPathPayload = path ? { rootPath: path.join('/') } : {}
       const archiveNamePayload =
         this.archiveName && this.selected.length > 1
           ? { archiveName: this.archiveName }
@@ -184,12 +178,12 @@ export default {
 
       const payload = {
         ...mainPayload,
-        // ...rootPathPayload,
         ...archiveNamePayload
       }
+
       this.zipData = JSON.stringify(payload, undefined)
       this.$nextTick(() => {
-        zipForm.submit() // eslint-disable-line no-undef
+        this.$refs.zipForm.submit() // eslint-disable-line no-undef
       })
       this.closeConfirmDownload()
     },
