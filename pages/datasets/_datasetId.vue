@@ -206,6 +206,113 @@ const tabs = [
   }
 ]
 
+/**
+ * Get organ entries from contentful
+ * @returns {Array}
+ */
+const getOrganEntries = async () => {
+  try {
+    const organEntries = await client.getEntries({
+      content_type: process.env.ctf_organ_id
+    })
+    return organEntries.items || []
+  } catch (error) {
+    return []
+  }
+}
+
+/**
+ * Get Dataset details
+ * @param {Number} datasetId
+ * @param {String} datasetType
+ * @param {Function} $axios
+ * @returns {Object}
+ */
+const getDatasetDetails = async (datasetId, datasetType, $axios) => {
+  const datasetUrl = `${process.env.discover_api_host}/datasets/${datasetId}`
+  const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
+
+  try {
+    const datasetDetails =
+      datasetType === 'simulation'
+        ? await $axios.$get(simulationUrl)
+        : await $axios.$get(datasetUrl)
+
+    const datasetOwnerId = datasetDetails.ownerId || ''
+    const datasetOwnerEmail = await $axios
+      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
+      .then(resp => {
+        return resp.email
+      })
+      .catch(() => {
+        return ''
+      })
+    datasetDetails.ownerEmail = datasetOwnerEmail
+
+    return datasetDetails
+  } catch (error) {
+    return {}
+  }
+}
+
+/**
+ * Get images data, if available
+ * and set the tabs accordingly
+ * @param {Number} datasetId
+ * @param {String} datasetType
+ * @param {Function} $axios
+ * @returns {Object}
+ */
+const getImagesData = async (datasetId, datasetDetails, $axios) => {
+  let scaffoldData = []
+  let tabsData = clone(tabs)
+  try {
+    const imagesData = await $axios
+      .$get(
+        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${datasetId}`
+      )
+      .catch(() => {
+        return {}
+      })
+
+    const version = propOr(1, 'version', datasetDetails)
+    const derivativeFilesResponse = await discover.browse(
+      datasetId,
+      version,
+      'files/derivative'
+    )
+
+    // Include discover dataset version into images data info.
+    imagesData['discover_dataset_version'] = version
+
+    if (derivativeFilesResponse.status === 200) {
+      derivativeFilesResponse.data.files.forEach(item => {
+        if (item.type === 'Directory') {
+          if (item.name.toUpperCase().includes('SCAFFOLD')) {
+            scaffoldData.push({ name: item.name, path: item.path, version })
+          }
+        }
+      })
+    }
+
+    if (imagesData.status === 'success' || scaffoldData.length) {
+      tabsData.push({ label: 'Gallery', type: 'images' })
+    }
+
+    return {
+      imagesData,
+      scaffoldData,
+      tabsData
+    }
+  } catch (error) {
+    return {
+      imagesData: [],
+      scaffoldData,
+      tabsData
+    }
+  }
+}
+
 export default {
   name: 'DatasetDetails',
 
@@ -224,69 +331,24 @@ export default {
   mixins: [Request, DateUtils, FormatStorage],
 
   async asyncData({ route, $axios }) {
-    const organEntries = await client.getEntries({
-      content_type: process.env.ctf_organ_id
-    })
-
     const datasetId = pathOr('', ['params', 'datasetId'], route)
-    const datasetUrl = `${process.env.discover_api_host}/datasets/${datasetId}`
-    const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
-    let datasetDetails = {}
 
-    if (route.query.type === 'simulation') {
-      datasetDetails = await $axios.$get(simulationUrl)
-    } else {
-      datasetDetails = await $axios.$get(datasetUrl)
-    }
+    const organEntries = await getOrganEntries()
 
-    const datasetOwnerId = datasetDetails.ownerId || ''
-    const datasetOwnerEmail = await $axios
-      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-      .then(resp => {
-        return resp.email
-      })
-      .catch(() => {
-        return ''
-      })
-    datasetDetails.ownerEmail = datasetOwnerEmail
-
-    const imagesData = await $axios
-      .$get(
-        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${datasetId}`
-      )
-      .catch(() => {
-        return {}
-      })
-
-    const tabsData = clone(tabs)
-
-    const version = propOr(1, 'version', datasetDetails)
-    const derivativeFilesResponse = await discover.browse(
+    const datasetDetails = await getDatasetDetails(
       datasetId,
-      version,
-      'files/derivative'
+      route.query.type,
+      $axios
     )
 
-    // Include discover dataset version into images data info.
-    imagesData['discover_dataset_version'] = version
-
-    let scaffoldData = []
-    if (derivativeFilesResponse.status === 200) {
-      derivativeFilesResponse.data.files.forEach(item => {
-        if (item.type === 'Directory') {
-          if (item.name.toUpperCase().includes('SCAFFOLD')) {
-            scaffoldData.push({ name: item.name, path: item.path, version })
-          }
-        }
-      })
-    }
-
-    if (imagesData.status === 'success' || scaffoldData.length) {
-      tabsData.push({ label: 'Gallery', type: 'images' })
-    }
+    const { imagesData, scaffoldData, tabsData } = await getImagesData(
+      datasetId,
+      datasetDetails,
+      $axios
+    )
 
     return {
-      entries: organEntries.items,
+      entries: organEntries,
       datasetInfo: datasetDetails,
       datasetType: route.query.type,
       imagesData,
