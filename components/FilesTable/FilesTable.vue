@@ -201,7 +201,7 @@ export default {
     getFilesurl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = propOr(1, 'version', this.datasetDetails)
-      const url = `https://api.blackfynn.net/discover/datasets/${id}/versions/${version}/files/browse`
+      const url = `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}/files/browse`
 
       return this.path
         ? `${url}?path=${this.path}&limit=${this.limit}`
@@ -215,7 +215,7 @@ export default {
     getFilesIdUrl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = propOr(1, 'version', this.datasetDetails)
-      return `https://api.blackfynn.net/discover/datasets/${id}/versions/${version}`
+      return `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}`
     }
   },
 

@@ -86,7 +86,7 @@ export default {
         this.value = this.defaultModel
       }
       const datasetId = propOr('', 'id', this.datasetDetails)
-      return `https://api.blackfynn.io/discover/search/records?datasetId=${datasetId}&model=${this.defaultModel}`
+      return `${process.env.bf_api_host}/discover/search/records?datasetId=${datasetId}&model=${this.defaultModel}`
     }
   },
 
