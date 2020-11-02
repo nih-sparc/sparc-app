@@ -63,7 +63,7 @@
             For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS Pricing documentation.</a>
           </p>
           <div>
-            <bf-button class="secondary button-spacing" @click="closeDialog">
+            <el-button class="secondary" @click="closeDialog">
             Close
           </bf-button>
           </div>
