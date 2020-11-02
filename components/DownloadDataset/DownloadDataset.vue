@@ -42,19 +42,21 @@
         <p>
           Raw files and metadata are stored in an AWS S3 Requester Pays bucket.
           You can learn more about downloading data from AWS on our
-          <nuxt-link :to="{ name: 'help' }">
-            Help Page.
-          </nuxt-link>
+          <a href="https://sparc.science/help/zQfzadwADutviJjT19hA5" target="_blank">Help Page</a>.
         </p>
         <h2>Resource Type</h2>
         <p>Amazon S3 Bucket (Requester Pays)</p>
         <h2>Amazon S3 Bucket</h2>
         <div class="text-block">
           {{ datasetArn }}
+          <button v-clipboard:copy="datasetArn">
+            Copy Me!
+          </button>
         </div>
         <h2>AWS Region</h2>
         <div class="text-block aws">
-          us-east-1
+          {{ awsMessage}}
+          <button v-clipboard:copy="awsMessage">Copy Me!</button>
         </div>
         <div class="disclosure-text-block">
           <p>*Requester pays means that any costs associated with downloading the data will be charged to your AWS account.
@@ -101,7 +103,7 @@ export default {
 
   data() {
     return {
-      helpId: process.env.ctf_help_aws_id
+      awsMessage: 'us-east-1'
     }
   },
 
@@ -162,6 +164,10 @@ export default {
      */
     closeDialog: function() {
       this.$emit('close-download-dialog')
+    },
+
+    onCopy: function(e) {
+      console.log("this was copied! ", e)
     }
   }
 }
