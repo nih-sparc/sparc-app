@@ -188,6 +188,17 @@ export default Vue.extend<Data, Methods, Computed, never>({
   watch: {
     '$route.query': function() {
       this.fetchResults()
+    },
+
+    currentResourceCount: {
+      handler: function(val) {
+        if (val > 1) {
+          this.resourceHeading = 'resources'
+        } else {
+          this.resourceHeading = 'resource'
+        }
+      },
+      immediate: true
     }
   },
 
@@ -201,12 +212,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.$router.replace({ query: { type: firstTabType } })
     } else {
       this.fetchResults()
-    }
-
-    if (this.currentResourceCount > 1) {
-      this.resourceHeading = 'resources'
-    } else {
-      this.resourceHeading = 'resource'
     }
   },
 
