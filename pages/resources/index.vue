@@ -17,13 +17,36 @@
         :src="fields.heroImage.fields.file.url"
       />
     </page-hero>
-    <div class="page-wrap container">
-      <div class="page-wrap__results">
+    <div class="page-wrap">
+      <div class="container">
+        <div class="page-wrap__results">
+          <div class="resources-heading">
+            <p>
+              {{ currentResourceCount }} {{ resourceHeading }} | Showing
+              <pagination-menu
+                :page-size="resourceData.limit"
+                @update-page-size="updateDataSearchLimit"
+              />
+              <el-pagination
+                v-if="resourceData.limit < resourceData.total"
+                :page-size="resourceData.limit"
+                :pager-count="5"
+                :current-page="curSearchPage"
+                layout="prev, pager, next"
+                :total="resourceData.total"
+                @current-change="onPaginationPageChange"
+              />
+            </p>
+          </div>
+        </div>
+        <div v-loading="isLoadingSearch" class="table-wrap">
+          <resources-search-results :table-data="tableData" />
+        </div>
         <div class="resources-heading">
           <tab-nav
           :tabs="tabTypes"
           :active-tab="activeTab"
-          @set-active-tab="navigateToTab($event)"
+          @set-active-tab="setActiveTab"
         />
           <p>
             {{ currentResourceCount }} {{ resourceHeading }} | Showing
@@ -41,25 +64,21 @@
               @current-change="onPaginationPageChange"
             />
           </p>
+
+          {{ currentResourceCount }} {{ resourceHeading }} | Showing
+          <pagination-menu
+            :page-size="resourceData.limit"
+            @update-page-size="updateDataSearchLimit"
+          />
+          <el-pagination
+            :page-size="resourceData.limit"
+            :pager-count="5"
+            :current-page="curSearchPage"
+            layout="prev, pager, next"
+            :total="resourceData.total"
+            @current-change="onPaginationPageChange"
+          />
         </div>
-      </div>
-      <div v-loading="isLoadingSearch" class="table-wrap">
-        <resources-search-results :table-data="tableData" />
-      </div>
-      <div class="resources-heading">
-        {{ currentResourceCount }} {{ resourceHeading }} | Showing
-        <pagination-menu
-          :page-size="resourceData.limit"
-          @update-page-size="updateDataSearchLimit"
-        />
-        <el-pagination
-          :page-size="resourceData.limit"
-          :pager-count="5"
-          :current-page="curSearchPage"
-          layout="prev, pager, next"
-          :total="resourceData.total"
-          @current-change="onPaginationPageChange"
-        />
       </div>
     </div>
   </div>
@@ -72,6 +91,7 @@ import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResult
 import PageHero from '@/components/PageHero/PageHero.vue'
 import TabNav from '@/components/TabNav/TabNav.vue';
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
+import TabNav from '@/components/TabNav/TabNav.vue'
 import createClient from '@/plugins/contentful.js'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import { Computed, Data, Methods, Resource } from '~/pages/resources/model';
@@ -143,7 +163,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
       resourceData,
       tabTypes,
       isLoadingSearch: false,
-      resourceHeading: ''
+      activeTab: 'sparcPartners'
     }
   },
 
@@ -173,13 +193,21 @@ export default Vue.extend<Data, Methods, Computed, never>({
      */
     curSearchPage: function() {
       return this.resourceData.skip / this.resourceData.limit + 1
+    },
+
+    /**
+     * Compute singular or plural resource heading based on count
+     */
+    resourceHeading: function() {
+      return this.currentResourceCount > 1 ? 'resources' : 'resource'
     }
   },
 
   watch: {
     '$route.query': function() {
       this.fetchResults()
-    }
+    },
+
   },
 
   /**
@@ -192,12 +220,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.$router.replace({ query: { type: firstTabType } })
     } else {
       this.fetchResults()
-    }
-
-    if (this.currentResourceCount > 1) {
-      this.resourceHeading = 'resources'
-    } else {
-      this.resourceHeading = 'resource'
     }
   },
 
@@ -255,12 +277,18 @@ export default Vue.extend<Data, Methods, Computed, never>({
     },
 
     /**
-     * Navigates to specific tab on resources page
+     * Set active tab
      */
-    navigateToTab: function(evt) {
-      this.activeTab = evt
-      this.$router.replace({ query: { type: this.activeTab } })
-    },
+    setActiveTab: function(tab) {
+      this.activeTab = tab
+      this.$router.push({
+        name: 'resources',
+        query: {
+          ...this.$route.query,
+          type: tab
+        }
+      })
+    }
   }
 })
 </script>
@@ -300,9 +328,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       p {
         margin-top: 1.5rem;
       }
-    }
-    @media (min-width: 48em) {
-      padding-top: 0;
     }
   }
 

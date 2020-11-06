@@ -26,16 +26,18 @@ export interface Computed {
   currentResourceCount: number;
   tableData: any[];
   curSearchPage: number;
+  resourceHeading: string;
 }
 
 export interface Methods {
   updateDataSearchLimit: (this: ResourcesComponent, limit: number | string) => void;
   fetchResults: (this: ResourcesComponent) => void;
   onPaginationPageChange: (this: ResourcesComponent, page: number) => void;
-  navigateToTab: (this: ResourcesComponent, evt: string) => void;
+  setActiveTab: (this: ResourcesComponent, tab: string) => void;
 }
 
-export type ResourcesComponent = Data & Computed & Methods & { $route: Route } & { $router: VueRouter }
+export type ResourcesComponent = Data & Computed & Methods & { $route: Route, $router: VueRouter }
+
 
 type ResourceType = 'Platform' | 'Tool' | 'sparcPartners'
 
