@@ -49,23 +49,25 @@
         <h2>Amazon S3 Bucket</h2>
         <div class="text-block">
           {{ datasetArn }}
-          <button v-clipboard:copy="datasetArn">
-            Copy Me!
+          <button class="copy-button" v-clipboard:copy="datasetArn">
+            <img src="../../static/images/copyIcon.png" />
           </button>
         </div>
         <h2>AWS Region</h2>
         <div class="text-block aws">
           {{ awsMessage}}
-          <button v-clipboard:copy="awsMessage">Copy Me!</button>
+          <button class="copy-button" v-clipboard:copy="awsMessage">
+            <img src="../../static/images/copyIcon.png" />
+          </button>
         </div>
         <div class="disclosure-text-block">
           <p>*Requester pays means that any costs associated with downloading the data will be charged to your AWS account.
             For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS Pricing documentation.</a>
           </p>
           <div>
-            <el-button class="secondary" @click="closeDialog">
+          <el-button class="secondary" @click="closeDialog">
             Close
-          </bf-button>
+          </el-button>
           </div>
 
         </div>
@@ -228,6 +230,16 @@ export default {
     &__download-dataset-size {
       margin-top: 35px;
     }
+
+    .copy-button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
   }
 
   .disclosure-text-block {
@@ -336,7 +348,7 @@ export default {
     font-family: monospace;
     font-size: 14px;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
     border-radius: 4px;
     color: #000;
 
