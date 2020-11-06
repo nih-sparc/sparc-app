@@ -196,16 +196,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.fetchResults()
     },
 
-    // currentResourceCount: {
-    //   handler: function(val) {
-    //     if (val > 1) {
-    //       this.resourceHeading = 'resources'
-    //     } else {
-    //       this.resourceHeading = 'resource'
-    //     }
-    //   },
-    //   immediate: true
-    // }
   },
 
   /**
