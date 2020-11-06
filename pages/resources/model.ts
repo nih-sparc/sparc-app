@@ -17,6 +17,7 @@ export interface Data {
   tabTypes: TabType[];
   isLoadingSearch: boolean;
   resourceHeading: string;
+  activeTab: string;
 }
 
 export interface Computed {
@@ -29,9 +30,10 @@ export interface Methods {
   updateDataSearchLimit: (this: ResourcesComponent, limit: number | string) => void;
   fetchResults: (this: ResourcesComponent) => void;
   onPaginationPageChange: (this: ResourcesComponent, page: number) => void;
+  navigateToTab: (this: ResourcesComponent, evt: string) => void;
 }
 
-export type ResourcesComponent = Data & Computed & Methods & { $route: Route }
+export type ResourcesComponent = Data & Computed & Methods & { $route: Route } & {$router: Router}
 
 type ResourceType = 'Platform' | 'Tool' | 'sparcPartners'
 

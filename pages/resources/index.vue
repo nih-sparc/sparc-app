@@ -10,7 +10,7 @@
         placeholder="Search resources"
         path="/resources"
       />
-      <ul class="resources__tabs">
+      <!-- <ul class="resources__tabs">
         <li v-for="type in tabTypes" :key="type.label">
           <nuxt-link
             class="resources__tabs--button"
@@ -26,7 +26,7 @@
             {{ type.label }}
           </nuxt-link>
         </li>
-      </ul>
+      </ul> -->
       <img
         v-if="fields.heroImage"
         slot="image"
@@ -37,6 +37,11 @@
     <div class="page-wrap container">
       <div class="page-wrap__results">
         <div class="resources-heading">
+          <tab-nav
+          :tabs="tabTypes"
+          :active-tab="activeTab"
+          @set-active-tab="navigateToTab($event)"
+        />
           <p>
             {{ currentResourceCount }} {{ resourceHeading }} | Showing
             <pagination-menu
@@ -82,6 +87,7 @@ import Vue from 'vue';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import TabNav from '@/components/TabNav/TabNav.vue';
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import createClient from '@/plugins/contentful.js'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
@@ -124,7 +130,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
     Breadcrumb,
     ResourcesSearchResults,
     PageHero,
-    PaginationMenu
+    PaginationMenu,
+    TabNav
   },
 
   asyncData() {
@@ -149,6 +156,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
           label: 'Home'
         }
       ],
+      activeTab: 'sparcPartners',
       resourceData,
       tabTypes,
       isLoadingSearch: false,
@@ -261,7 +269,12 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.resourceData.skip = offset
 
       this.fetchResults()
-    }
+    },
+
+    navigateToTab: function(evt) {
+      this.activeTab = evt
+      this.$router.replace({ query: { type: this.activeTab } })
+    },
   }
 })
 </script>
