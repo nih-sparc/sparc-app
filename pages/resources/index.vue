@@ -10,23 +10,6 @@
         placeholder="Search resources"
         path="/resources"
       />
-      <ul class="resources__tabs">
-        <li v-for="type in tabTypes" :key="type.label">
-          <nuxt-link
-            class="resources__tabs--button"
-            :class="{ active: type.type === $route.query.type }"
-            :to="{
-              name: 'resources',
-              query: {
-                ...$route.query,
-                type: type.type
-              }
-            }"
-          >
-            {{ type.label }}
-          </nuxt-link>
-        </li>
-      </ul>
       <img
         v-if="fields.heroImage"
         slot="image"
@@ -34,44 +17,51 @@
         :src="fields.heroImage.fields.file.url"
       />
     </page-hero>
-    <div class="page-wrap container">
-      <div class="page-wrap__results">
-        <div class="resources-heading">
-          <p>
-            {{ currentResourceCount }} {{ resourceHeading }} | Showing
-            <pagination-menu
-              :page-size="resourceData.limit"
-              @update-page-size="updateDataSearchLimit"
-            />
-            <el-pagination
-              v-if="resourceData.limit < resourceData.total"
-              :page-size="resourceData.limit"
-              :pager-count="5"
-              :current-page="curSearchPage"
-              layout="prev, pager, next"
-              :total="resourceData.total"
-              @current-change="onPaginationPageChange"
-            />
-          </p>
+    <div class="page-wrap">
+      <div class="container">
+        <tab-nav
+          :tabs="tabTypes"
+          :active-tab="activeTab"
+          @set-active-tab="setActiveTab"
+        />
+        <div class="page-wrap__results">
+          <div class="resources-heading">
+            <p>
+              {{ currentResourceCount }} {{ resourceHeading }} | Showing
+              <pagination-menu
+                :page-size="resourceData.limit"
+                @update-page-size="updateDataSearchLimit"
+              />
+              <el-pagination
+                v-if="resourceData.limit < resourceData.total"
+                :page-size="resourceData.limit"
+                :pager-count="5"
+                :current-page="curSearchPage"
+                layout="prev, pager, next"
+                :total="resourceData.total"
+                @current-change="onPaginationPageChange"
+              />
+            </p>
+          </div>
         </div>
-      </div>
-      <div v-loading="isLoadingSearch" class="table-wrap">
-        <resources-search-results :table-data="tableData" />
-      </div>
-      <div class="resources-heading">
-        {{ currentResourceCount }} {{ resourceHeading }} | Showing
-        <pagination-menu
-          :page-size="resourceData.limit"
-          @update-page-size="updateDataSearchLimit"
-        />
-        <el-pagination
-          :page-size="resourceData.limit"
-          :pager-count="5"
-          :current-page="curSearchPage"
-          layout="prev, pager, next"
-          :total="resourceData.total"
-          @current-change="onPaginationPageChange"
-        />
+        <div v-loading="isLoadingSearch" class="table-wrap">
+          <resources-search-results :table-data="tableData" />
+        </div>
+        <div class="resources-heading">
+          {{ currentResourceCount }} {{ resourceHeading }} | Showing
+          <pagination-menu
+            :page-size="resourceData.limit"
+            @update-page-size="updateDataSearchLimit"
+          />
+          <el-pagination
+            :page-size="resourceData.limit"
+            :pager-count="5"
+            :current-page="curSearchPage"
+            layout="prev, pager, next"
+            :total="resourceData.total"
+            @current-change="onPaginationPageChange"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -83,6 +73,7 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
+import TabNav from '@/components/TabNav/TabNav.vue'
 import createClient from '@/plugins/contentful.js'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import { Computed, Data, Methods, Resource } from '~/pages/resources/model';
@@ -124,7 +115,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
     Breadcrumb,
     ResourcesSearchResults,
     PageHero,
-    PaginationMenu
+    PaginationMenu,
+    TabNav
   },
 
   asyncData() {
@@ -151,7 +143,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
       ],
       resourceData,
       tabTypes,
-      isLoadingSearch: false
+      isLoadingSearch: false,
+      activeTab: 'sparcPartners'
     }
   },
 
@@ -262,6 +255,20 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.resourceData.skip = offset
 
       this.fetchResults()
+    },
+
+    /**
+     * Set active tab
+     */
+    setActiveTab: function(tab) {
+      this.activeTab = tab
+      this.$router.push({
+        name: 'resources',
+        query: {
+          ...this.$route.query,
+          type: tab
+        }
+      })
     }
   }
 })
@@ -302,9 +309,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       p {
         margin-top: 1.5rem;
       }
-    }
-    @media (min-width: 48em) {
-      padding-top: 0;
     }
   }
 
