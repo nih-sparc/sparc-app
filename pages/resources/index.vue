@@ -151,8 +151,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
       ],
       resourceData,
       tabTypes,
-      isLoadingSearch: false,
-      resourceHeading: ''
+      isLoadingSearch: false
     }
   },
 
@@ -182,6 +181,13 @@ export default Vue.extend<Data, Methods, Computed, never>({
      */
     curSearchPage: function() {
       return this.resourceData.skip / this.resourceData.limit + 1
+    },
+
+    /**
+     * Compute singular or plural resource heading based on count
+     */
+    resourceHeading: function() {
+      return this.currentResourceCount > 1 ? 'resources' : 'resource'
     }
   },
 
@@ -190,16 +196,16 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.fetchResults()
     },
 
-    currentResourceCount: {
-      handler: function(val) {
-        if (val > 1) {
-          this.resourceHeading = 'resources'
-        } else {
-          this.resourceHeading = 'resource'
-        }
-      },
-      immediate: true
-    }
+    // currentResourceCount: {
+    //   handler: function(val) {
+    //     if (val > 1) {
+    //       this.resourceHeading = 'resources'
+    //     } else {
+    //       this.resourceHeading = 'resource'
+    //     }
+    //   },
+    //   immediate: true
+    // }
   },
 
   /**
