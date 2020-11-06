@@ -109,6 +109,7 @@ export default {
 
   methods: {
     onSortChange: function(payload) {
+      console.log("give me payload ", payload)
       onSortChange(this, payload)
     }
   }
