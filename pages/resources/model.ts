@@ -17,14 +17,14 @@ export interface Data {
   resourceData: EntryCollection<Resource>;
   tabTypes: TabType[];
   isLoadingSearch: boolean;
-  resourceHeading: string;
-  activeTab: string
+  activeTab: string;
 }
 
 export interface Computed {
   currentResourceCount: number;
   tableData: any[];
   curSearchPage: number;
+  resourceHeading: string;
 }
 
 export interface Methods {
