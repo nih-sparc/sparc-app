@@ -1,6 +1,7 @@
 import { Entry, EntryCollection } from 'contentful';
 import { Route } from 'vue-router';
 
+
 export interface Resource {
   description: string;
   name: string;
@@ -33,7 +34,7 @@ export interface Methods {
   navigateToTab: (this: ResourcesComponent, evt: string) => void;
 }
 
-export type ResourcesComponent = Data & Computed & Methods & { $route: Route } & {$router: Router}
+export type ResourcesComponent = Data & Computed & Methods & { $route: Route } & { $router: any }
 
 type ResourceType = 'Platform' | 'Tool' | 'sparcPartners'
 
