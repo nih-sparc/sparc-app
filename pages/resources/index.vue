@@ -10,23 +10,6 @@
         placeholder="Search resources"
         path="/resources"
       />
-      <!-- <ul class="resources__tabs">
-        <li v-for="type in tabTypes" :key="type.label">
-          <nuxt-link
-            class="resources__tabs--button"
-            :class="{ active: type.type === $route.query.type }"
-            :to="{
-              name: 'resources',
-              query: {
-                ...$route.query,
-                type: type.type
-              }
-            }"
-          >
-            {{ type.label }}
-          </nuxt-link>
-        </li>
-      </ul> -->
       <img
         v-if="fields.heroImage"
         slot="image"
@@ -271,6 +254,9 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.fetchResults()
     },
 
+    /**
+     * Navigates to specific tab on resources page
+     */
     navigateToTab: function(evt) {
       this.activeTab = evt
       this.$router.replace({ query: { type: this.activeTab } })
