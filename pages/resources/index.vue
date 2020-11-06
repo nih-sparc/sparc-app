@@ -144,7 +144,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       resourceData,
       tabTypes,
       isLoadingSearch: false,
-      resourceHeading: '',
       activeTab: 'sparcPartners'
     }
   },
@@ -175,13 +174,21 @@ export default Vue.extend<Data, Methods, Computed, never>({
      */
     curSearchPage: function() {
       return this.resourceData.skip / this.resourceData.limit + 1
+    },
+
+    /**
+     * Compute singular or plural resource heading based on count
+     */
+    resourceHeading: function() {
+      return this.currentResourceCount > 1 ? 'resources' : 'resource'
     }
   },
 
   watch: {
     '$route.query': function() {
       this.fetchResults()
-    }
+    },
+
   },
 
   /**
@@ -194,12 +201,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       this.$router.replace({ query: { type: firstTabType } })
     } else {
       this.fetchResults()
-    }
-
-    if (this.currentResourceCount > 1) {
-      this.resourceHeading = 'resources'
-    } else {
-      this.resourceHeading = 'resource'
     }
   },
 

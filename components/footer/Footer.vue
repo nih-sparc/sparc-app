@@ -74,7 +74,7 @@
             </a>
           </li>
         </ul>
-        <h3>Help us Improve</h3>
+        <h3>Help Us Improve</h3>
         <ul>
           <li>
             <a
@@ -85,7 +85,7 @@
             </a>
           </li>
         </ul>
-        <h3>Stay Up-to-Date</h3>
+        <h3>Stay Updated</h3>
         <ul>
           <li>
             <a
