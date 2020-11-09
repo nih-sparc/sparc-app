@@ -957,7 +957,7 @@ export default {
       }
       .dataset-button {
         background-color: $median;
-        width: 138px;
+        width: auto;
         height: 40px;
         font-size: 14px;
         color: #ffffff;

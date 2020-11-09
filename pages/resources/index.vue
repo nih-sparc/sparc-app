@@ -19,11 +19,6 @@
     </page-hero>
     <div class="page-wrap">
       <div class="container">
-        <tab-nav
-          :tabs="tabTypes"
-          :active-tab="activeTab"
-          @set-active-tab="setActiveTab"
-        />
         <div class="page-wrap__results">
           <div class="resources-heading">
             <p>
@@ -48,6 +43,28 @@
           <resources-search-results :table-data="tableData" />
         </div>
         <div class="resources-heading">
+          <tab-nav
+          :tabs="tabTypes"
+          :active-tab="activeTab"
+          @set-active-tab="setActiveTab"
+        />
+          <p>
+            {{ currentResourceCount }} {{ resourceHeading }} | Showing
+            <pagination-menu
+              :page-size="resourceData.limit"
+              @update-page-size="updateDataSearchLimit"
+            />
+            <el-pagination
+              v-if="resourceData.limit < resourceData.total"
+              :page-size="resourceData.limit"
+              :pager-count="5"
+              :current-page="curSearchPage"
+              layout="prev, pager, next"
+              :total="resourceData.total"
+              @current-change="onPaginationPageChange"
+            />
+          </p>
+
           {{ currentResourceCount }} {{ resourceHeading }} | Showing
           <pagination-menu
             :page-size="resourceData.limit"
@@ -141,10 +158,10 @@ export default Vue.extend<Data, Methods, Computed, never>({
           label: 'Home'
         }
       ],
+      activeTab: 'sparcPartners',
       resourceData,
       tabTypes,
-      isLoadingSearch: false,
-      activeTab: 'sparcPartners'
+      isLoadingSearch: false
     }
   },
 

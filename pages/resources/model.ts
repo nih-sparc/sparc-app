@@ -1,6 +1,7 @@
 import { Entry, EntryCollection } from 'contentful';
 import { Route } from 'vue-router';
-import VueRouter from 'vue-router';
+import VueRouter from 'vue-router'
+
 
 export interface Resource {
   description: string;
@@ -35,6 +36,7 @@ export interface Methods {
 }
 
 export type ResourcesComponent = Data & Computed & Methods & { $route: Route, $router: VueRouter }
+
 
 type ResourceType = 'Platform' | 'Tool' | 'sparcPartners'
 
