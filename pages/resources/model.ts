@@ -18,7 +18,6 @@ export interface Data {
   resourceData: EntryCollection<Resource>;
   tabTypes: TabType[];
   isLoadingSearch: boolean;
-  resourceHeading: string;
   activeTab: string;
 }
 

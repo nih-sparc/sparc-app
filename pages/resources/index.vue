@@ -89,7 +89,6 @@ import Vue from 'vue';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import TabNav from '@/components/TabNav/TabNav.vue';
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import TabNav from '@/components/TabNav/TabNav.vue'
 import createClient from '@/plugins/contentful.js'
@@ -162,8 +161,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
       activeTab: 'sparcPartners',
       resourceData,
       tabTypes,
-      isLoadingSearch: false,
-      activeTab: 'sparcPartners'
+      isLoadingSearch: false
     }
   },
 
