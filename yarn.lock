@@ -11,13 +11,13 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmapvuer@^0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.28.tgz#f6f734ea1737831f57cf80976eeafdb290b07b5a"
-  integrity sha512-zuveamM1+ZvDXqsrDfS3+eAXpVuP/FeiJAdBRvYyoPCaNrSnFcLQi8m12Cx2qa54PgxD7TIBSj+K3AnPy4Psog==
+"@abi-software/flatmapvuer@^0.1.30-beta.2":
+  version "0.1.30-beta.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.30-beta.2.tgz#66bcdd6c6116fd77b5abc474798a7d2f232fb103"
+  integrity sha512-FfAH71j5/1yqaJ08GH3R3PErpdUNbsRWNJ7VgEC95nb3sU/G2+D7wVr0R8Z5zHPmkex0x2OVzXSVRxpJ/WgJFQ==
   dependencies:
-    "@abi-software/maptooltip" "^0.1.10"
-    "@dbrnz/flatmap-viewer" "^0.9.33"
+    "@abi-software/maptooltip" "^0.1.13"
+    "@dbrnz/flatmap-viewer" "^0.9.34"
     core-js "^3.3.2"
     css-element-queries "^1.2.2"
     current-script-polyfill "^1.0.0"
@@ -26,15 +26,15 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.26.tgz#d557522a1eb1241eced82ccdb27c3b318a1d14a8"
-  integrity sha512-81C/ZcbjaJadtNewKmdAnOUPSdqohH1o4x85ugSY3wTfLB9ru/SO36Dl7r9XU89CqhlVCTUBCTxIj4ApxPSQRA==
+"@abi-software/mapintegratedvuer@^0.1.28-beta-1":
+  version "0.1.28-beta-1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.28-beta-1.tgz#186cb2e1570a227bd345ec6e5fa2355e95ddc72f"
+  integrity sha512-uz7N9B/Bv8PlSqpM9jRkL9woJo0PXdQDSGkataLinaSZXfQKB9b5aD06Hnxl9fy3kS+hwgXcTHPulh1Ht52VQg==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.1.28"
+    "@abi-software/flatmapvuer" "^0.1.30-beta.2"
     "@abi-software/maptooltip" "^0.1.13"
     "@abi-software/plotvuer" "^0.2.25"
-    "@abi-software/scaffoldvuer" "^0.1.43"
+    "@abi-software/scaffoldvuer" "^0.1.44-beta.1"
     "@soda/get-current-script" "^1.0.2"
     core-js "^3.3.2"
     d3-time-format "^3.0.0"
@@ -46,19 +46,9 @@
     vue "^2.6.10"
     vue-cli-plugin-webpack-bundle-analyzer "^2.0.0"
     vue-draggable-resizable "2.1.0"
+    vue-router "^3.4.9"
+    vuex "^3.5.1"
     webpack-node-externals "^2.5.2"
-
-"@abi-software/maptooltip@^0.1.10":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@abi-software/maptooltip/-/maptooltip-0.1.12.tgz#6b591d50a2a2fc9a7a156bf1c421ba6b898e0a4a"
-  integrity sha512-noSgxQJCC3p79Mv8hAaxHWa9mlRpCFZCLO19OJ5qTP2fw1nckwtnHye0bbvuKF4UBYDFYrVFwpRBxKgwVecRFQ==
-  dependencies:
-    core-js "^3.3.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.20"
-    vue "^2.6.10"
 
 "@abi-software/maptooltip@^0.1.13":
   version "0.1.13"
@@ -102,6 +92,23 @@
     vue "^2.6.10"
     vue-drag-resize "^1.3.2"
     zincjs "^0.35.1"
+
+"@abi-software/scaffoldvuer@^0.1.44-beta.1":
+  version "0.1.44-beta.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.44-beta.1.tgz#d1f191f3886bc1e9a8d9e4782d785600c8e406c2"
+  integrity sha512-hm5BkzTJRz/rNWo5tRTBPQpkiHKDAksLPYxpBSODVPKhDxecsHU8XaZDkQFQvNOgqxCt39nSKOuJRi4orPfkOg==
+  dependencies:
+    axios "^0.19.2"
+    core-js "^3.3.2"
+    current-script-polyfill "^1.0.0"
+    element-ui "^2.13.0"
+    google-spreadsheet "^3.0.13"
+    lodash "^4.17.19"
+    physiomeportal "^0.4.24"
+    query-string "^6.11.1"
+    vue "^2.6.10"
+    vue-drag-resize "^1.3.2"
+    zincjs "^0.36.1"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4":
   version "7.10.4"
@@ -922,7 +929,14 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/runtime@^7.11.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.10.4":
+  version "7.12.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
+  integrity sha512-plcc+hbExy3McchJCEQG3knOsuh3HH+Prx1P6cLIkET/0dLuQDEnrT+s27Axgc9bqfsmNUNHfscgMUdBpC9xfg==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.11.2", "@babel/runtime@^7.6.2", "@babel/runtime@^7.8.4":
   version "7.11.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
   integrity sha512-TeWkU52so0mPtDcaCTxNBI/IHiz0pZgr8VEFqXFtZWpYD08ZB6FaSwVAS8MKRQAP3bYKiVjwysOJgMFY28o6Tw==
@@ -1932,12 +1946,12 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@dbrnz/flatmap-viewer@^0.9.33":
-  version "0.9.33"
-  resolved "https://registry.yarnpkg.com/@dbrnz/flatmap-viewer/-/flatmap-viewer-0.9.33.tgz#95164c2624d474b32f3c4344e7ac9fa5016f77c7"
-  integrity sha512-coT276zzJDTznZjjgfID8WZRdp/1A/UYTF2GEQ+FLPn6192o0bnDVgYgUMP0EEUt9YEr02t+QZS6+dP25U1gbg==
+"@dbrnz/flatmap-viewer@^0.9.34":
+  version "0.9.34"
+  resolved "https://registry.yarnpkg.com/@dbrnz/flatmap-viewer/-/flatmap-viewer-0.9.34.tgz#7dedd9aba3b861ffc1ca13df218d9e42dc543d15"
+  integrity sha512-qxGj8V4aqSjapFUuz+nlyDdPTb4bFVZzVDk1gD3zpRy0MetVl72NYTs8XUmca8TXaAz76En6XOe4PuP0Bt1NpQ==
   dependencies:
-    "@babel/runtime" "^7.5.5"
+    "@babel/runtime" "^7.10.4"
     "@comunica/actor-init-sparql" "^1.9.1"
     "@comunica/core" "^1.9.0"
     "@comunica/utils-datasource" "^1.9.0"
@@ -11303,6 +11317,21 @@ physiomeportal@^0.4.22:
     webpack-jquery-ui "^2.0.1"
     zincjs "^0.35.0"
 
+physiomeportal@^0.4.24:
+  version "0.4.24"
+  resolved "https://registry.yarnpkg.com/physiomeportal/-/physiomeportal-0.4.24.tgz#a6202ea878bff2537f0b4d27bd0d246d104e12fa"
+  integrity sha512-LZrvOqvvdWQLTwKibswM2cqq5Ei0q+AJM8Vqw7Pk4fIThGKlid3i96xzbmdR4r3biZjSn0T1mxFpFQbBabht3A==
+  dependencies:
+    broadcast-channel "^2.1.12"
+    css-element-queries "^1.2.3"
+    dialog-polyfill "^0.4.10"
+    jquery "^3.5.1"
+    lodash "^4.17.19"
+    polyfill-array-includes "^2.0.0"
+    query-string "^5.1.1"
+    webpack-jquery-ui "^2.0.1"
+    zincjs "^0.36.1"
+
 pick-by-alias@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/pick-by-alias/-/pick-by-alias-1.2.0.tgz#5f7cb2b1f21a6e1e884a0c87855aa4a37361107b"
@@ -14413,6 +14442,11 @@ three@^0.105.0:
   resolved "https://registry.yarnpkg.com/three/-/three-0.105.2.tgz#d135f1549bdcf5a9acd904ba3dbf9198a0268984"
   integrity sha512-L3Al37k4g3hVbgFFS251UVtIc25chhyN0/RvXzR0C+uIBToV6EKDG+MZzEXm9L2miGUVMK27W46/VkP6WUZXMg==
 
+three@^0.120.1:
+  version "0.120.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.120.1.tgz#dbd8894f8ab87c109f1602933e7c740c98137377"
+  integrity sha512-ktaCRFUR7JUZcKec+cBRz+oBex5pOVaJhrtxvFF2T7on53o9UkEux+/Nh1g/4zeb4t/pbxIFcADbn/ACu3LC1g==
+
 throat@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/throat/-/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
@@ -15267,6 +15301,11 @@ vue-router@^3.4.3:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.4.3.tgz#fa93768616ee338aa174f160ac965167fa572ffa"
   integrity sha512-BADg1mjGWX18Dpmy6bOGzGNnk7B/ZA0RxuA6qedY/YJwirMfKXIDzcccmHbQI0A6k5PzMdMloc0ElHfyOoX35A==
 
+vue-router@^3.4.9:
+  version "3.4.9"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.4.9.tgz#c016f42030ae2932f14e4748b39a1d9a0e250e66"
+  integrity sha512-CGAKWN44RqXW06oC+u4mPgHLQQi2t6vLD/JbGRDAXm0YpMv0bgpKuU5bBd7AvMgfTz9kXVRIWKHqRwGEb8xFkA==
+
 vue-server-renderer@^2.6.12:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/vue-server-renderer/-/vue-server-renderer-2.6.12.tgz#a8cb9c49439ef205293cb41c35d0d2b0541653a5"
@@ -15828,6 +15867,19 @@ zincjs@^0.35.0, zincjs@^0.35.1:
     lodash "^4.17.19"
     promise-polyfill "^8.1.3"
     three "^0.105.0"
+    url-loader "^2.1.0"
+    url-polyfill "^1.1.7"
+    webworkify-webpack "^2.1.5"
+
+zincjs@^0.36.1:
+  version "0.36.1"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.36.1.tgz#7dbc48bbfe6a01ba7fb8263db97d1c662329aa7d"
+  integrity sha512-eDu86Q2IdXjRNRvAXXJ27Jl9Ucjt9NerNr+nhDk95pdZZ04XQAM1NjkFCOzcdTNaqyxtj1F+H53+C6uyujZ0ew==
+  dependencies:
+    css-element-queries "^1.2.2"
+    lodash "^4.17.19"
+    promise-polyfill "^8.1.3"
+    three "^0.120.1"
     url-loader "^2.1.0"
     url-polyfill "^1.1.7"
     webworkify-webpack "^2.1.5"
