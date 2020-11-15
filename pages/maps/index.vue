@@ -54,7 +54,7 @@ export default {
   computed: {
     shareLink: function() {
       if (this.uuid)
-        return this.prefix +"?id=" + this.uuid;
+        return this.prefix +"/?id=" + this.uuid ;
       return this.prefix;
     }
   },
@@ -83,7 +83,7 @@ export default {
     }
     if (this.uuid) {
       let xmlhttp = new XMLHttpRequest();
-      let url = `${process.env.portal_api}/map/getsharelink`;
+      let url = `${process.env.portal_api}/map/getstate`;
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
       xmlhttp.setRequestHeader('Content-type', 'application/json');
