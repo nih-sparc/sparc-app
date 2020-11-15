@@ -26,10 +26,10 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.28-beta-1":
-  version "0.1.28-beta-1"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.28-beta-1.tgz#186cb2e1570a227bd345ec6e5fa2355e95ddc72f"
-  integrity sha512-uz7N9B/Bv8PlSqpM9jRkL9woJo0PXdQDSGkataLinaSZXfQKB9b5aD06Hnxl9fy3kS+hwgXcTHPulh1Ht52VQg==
+"@abi-software/mapintegratedvuer@^0.1.28-beta-2":
+  version "0.1.28-beta-2"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.28-beta-2.tgz#2cb8dd2967132ceb612970237cc74ea259657cd6"
+  integrity sha512-b3VFGE98CQp3hvTVE+luiabIf+EW4TcvkcJQ1Dt4vXS+QYG2SW7aasn7jVCYTtflBdyw4YAAqS0f9KaAUq5hFw==
   dependencies:
     "@abi-software/flatmapvuer" "^0.1.30-beta.2"
     "@abi-software/maptooltip" "^0.1.13"
