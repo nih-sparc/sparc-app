@@ -47,21 +47,21 @@ export default {
         }
       ],
       uuid: undefined,
-      prefix: "http://localhost:5679/sparc-app",
+      prefix: "/maps",
       initialState: undefined
     };
   },
   computed: {
     shareLink: function() {
       if (this.uuid)
-        return this.prefix + this.$route.path +"?id=" + this.uuid;
-      return this.prefix + this.$route.path;
+        return this.prefix +"?id=" + this.uuid;
+      return this.prefix;
     }
   },
   methods: {
     updateUUID: function() {
       let xmlhttp = new XMLHttpRequest();
-      let url = '/sparc-api/map/getsharelink';
+      let url = `${process.env.portal_api}/map/getsharelink`;
       let state = this.$refs.map.getState();
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
@@ -78,9 +78,12 @@ export default {
   },
   beforeMount: function() {
     this.uuid = this.$route.query.id;
+    if (window) {
+      this.prefix = window.location.origin + window.location.pathname;
+    }
     if (this.uuid) {
       let xmlhttp = new XMLHttpRequest();
-      let url = '/sparc-api/map/getstate';
+      let url = `${process.env.portal_api}/map/getsharelink`;
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
       xmlhttp.setRequestHeader('Content-type', 'application/json');
