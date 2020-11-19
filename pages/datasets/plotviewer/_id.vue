@@ -62,11 +62,11 @@ export default {
     return {
       tabs: [
         {
-          label: 'Scaffold Viewer',
-          type: 'scaffold',
+          label: 'Plot Viewer',
+          type: 'plot',
         },
       ],
-      activeTab: 'scaffold',
+      activeTab: 'plot',
       file: {},
       traditional: true,
       backgroundToggle: true

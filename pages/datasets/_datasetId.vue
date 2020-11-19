@@ -154,6 +154,7 @@
           :markdown="markdown.markdownTop"
           :dataset-images="imagesData.dataset_images"
           :dataset-scaffolds="scaffoldData"
+          :dataset-plots="plotData"
           :dataset-version="getDatasetVersion"
           :dataset-id="getDatasetId"
         />
@@ -189,6 +190,7 @@ import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import Scaffolds from '@/static/js/scaffolds.js'
+import Plots from '@/static/js/plots'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -290,6 +292,10 @@ export default {
       })
     }
 
+    // Plot data is not yet on blackfynn but will be soon
+    let plotData = [Plots[datasetId]]
+
+
     if (imagesData.status === 'success' || scaffoldData.length) {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
@@ -300,6 +306,7 @@ export default {
       datasetType: route.query.type,
       imagesData,
       scaffoldData,
+      plotData,
       tabs: tabsData
     }
   },

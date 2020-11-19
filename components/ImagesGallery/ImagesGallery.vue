@@ -31,15 +31,8 @@
           :style="{ display: displayState(index) }"
           :class="['key-image-span', { active: currentIndex === index }]"
         >
-          <nuxt-link
-            v-slot="{ href }"
-            :to="{
-              name: getThumbnailLinkName(thumbnail_image),
-              params: getThumbnailLinkParams(thumbnail_image),
-              query: getThumbnailLinkQuery(thumbnail_image),
-            }"
-          >
-            <a target="_blank" :href="href" rel="noopener noreferrer">
+          <nuxt-link :to="getLink(thumbnail_image)">
+            <a rel="noopener noreferrer">
               <img
                 :ref="'key_image_' + thumbnail_image.id"
                 :src="thumbnail_image.img"
@@ -75,13 +68,12 @@
 <script>
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
-import {PlotVuer} from '@abi-software/plotvuer'
 import MarkedMixin from '@/mixins/marked'
 import IndexIndicator from '@/components/ImagesGallery/IndexIndicator'
 
 export default {
   name: 'ImageGallery',
-  components: { IndexIndicator, PlotVuer },
+  components: { IndexIndicator },
   mixins: [MarkedMixin],
   props: {
     datasetImages: {
@@ -91,6 +83,12 @@ export default {
       },
     },
     datasetScaffolds: {
+      type: Array,
+      default: () => {
+        return []
+      },
+    },
+    datasetPlots: {
       type: Array,
       default: () => {
         return []
@@ -124,6 +122,7 @@ export default {
       slideNaturalWidth: 180,
       defaultImg: require('~/assets/logo-sparc-wave-primary.svg'),
       defaultScaffoldImg: require('~/assets/scaffold-light.png'),
+      defaultPlotImg: require('~/assets/data-icon.png')
     }
   },
   computed: {
@@ -160,6 +159,15 @@ export default {
     this.getThumbnails()
   },
   methods: {
+    getLink(thumbnail_image){
+      let link = {
+        name: this.getThumbnailLinkName(thumbnail_image),
+        params: this.getThumbnailLinkParams(thumbnail_image),
+        query: this.getThumbnailLinkQuery(thumbnail_image),
+      }
+      console.log('link', link)
+      return link
+    },
     displayState(index) {
       let offset = 0
       const oddImagesVisible = this.numberOfImagesVisible % 2 === 1
@@ -302,6 +310,14 @@ export default {
             console.log(error.message)
           })
       })
+      for (let i in this.datasetPlots) {
+        this.thumbnails.push({
+          id: 77,
+          img: this.defaultPlotImg,
+          plot_file:
+            'https://mapcore-bucket1.s3-us-west-2.amazonaws.com/ISAN/csv-data/use-case-4/RNA_Seq.csv'
+        })
+      }
     },
     viewerId(shareLink) {
       const linkParts = shareLink.split(process.env.BL_SHARE_LINK_PREFIX)
@@ -313,11 +329,14 @@ export default {
       const imageInfoKeys = Object.keys(imageInfo)
       const shareLinkIndex = imageInfoKeys.indexOf('share_link')
       const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')
+      const plotFileIndex = imageInfoKeys.indexOf('plot_file') 
       let imageType = 'unknown'
       if (shareLinkIndex !== -1) {
         imageType = 'biolucida'
       } else if (metadataFileIndex !== -1) {
         imageType = 'scaffold'
+      } else if (plotFileIndex !== -1) {
+        imageType = 'plot'
       }
       return imageType
     },
@@ -370,6 +389,9 @@ export default {
           break
         case 'scaffold':
           name = 'datasets-scaffoldviewer-id'
+          break
+        case 'plot':
+          name = 'datasets-plotviewer-id'
           break
         default:
       }
