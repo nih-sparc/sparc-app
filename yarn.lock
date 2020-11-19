@@ -56,11 +56,12 @@
     lodash "^4.17.15"
     vue "^2.6.10"
 
-"@abi-software/plotvuer@^0.2.25":
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.25.tgz#86fdb27996ad28994fcb3ff6f58a1ba12691ff17"
-  integrity sha512-hmf39JKNO5XpdqBCRL4kX6gDiV0wxTW09qLk5EO3e6dOKSE0G5zpRr/anRen3VBYGYL7VBVMXx9lcbPE4HIQdA==
+"@abi-software/plotvuer@^0.2.26":
+  version "0.2.26"
+  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.26.tgz#58f251223b6f99a82099c0697a72b27f0a6628ba"
+  integrity sha512-EtedVuxpY3P3ZJ9tZz+ysBjnsjJzt9JZ82HSMBXfDa3zofCVv6P0lqAwoxTDg2fBDbJA6r4V4YLOjCOqnY+3Sg==
   dependencies:
+    core-js "^3.7.0"
     css-element-queries "^1.2.3"
     current-script-polyfill "^1.0.0"
     d3-time-format "^3.0.0"
@@ -3547,11 +3548,6 @@ async-limiter@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
-
-async-validator@1.11.5:
-  version "1.11.5"
-  resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-1.11.5.tgz#9d43cf49ef6bb76be5442388d19fb9a6e47597ea"
-  integrity sha512-XNtCsMAeAH1pdLMEg1z8/Bb3a8cdCbui9QbJATRFHHHW5kT6+NPI3zSVQUXgikTFITzsg+kYY5NTWhM2Orwt9w==
 
 async-validator@~1.8.1:
   version "1.8.5"
