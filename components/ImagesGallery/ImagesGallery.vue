@@ -1,6 +1,7 @@
 <template>
   <div class="biolucida-image-gallery full-size">
     <div class="description-info">
+      <nuxt-link :to="{name: 'datasets-plotviewer-id'}">Open plot</nuxt-link>
       <p>
         <strong>Data collection:</strong>
         {{ description }}
@@ -10,6 +11,7 @@
         {{ imageNames[currentIndex] }}
       </p>
     </div>
+
     <div class="standard-gallery">
       <a
         href="#"
@@ -73,13 +75,13 @@
 <script>
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
-
+import {PlotVuer} from '@abi-software/plotvuer'
 import MarkedMixin from '@/mixins/marked'
 import IndexIndicator from '@/components/ImagesGallery/IndexIndicator'
 
 export default {
   name: 'ImageGallery',
-  components: { IndexIndicator },
+  components: { IndexIndicator, PlotVuer },
   mixins: [MarkedMixin],
   props: {
     datasetImages: {
@@ -307,6 +309,7 @@ export default {
       return linkParts[1]
     },
     getThumbnailLinkType(imageInfo) {
+      window.imageInfo = imageInfo
       const imageInfoKeys = Object.keys(imageInfo)
       const shareLinkIndex = imageInfoKeys.indexOf('share_link')
       const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')

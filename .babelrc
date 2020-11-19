@@ -9,7 +9,8 @@
               "node": "current"
             }
           }
-        ]
+        ],
+        [ "@vue/app", { "useBuiltIns": "entry" } ] 
       ]
     }
   }
