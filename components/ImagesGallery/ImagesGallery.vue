@@ -354,6 +354,11 @@ export default {
             id: imageInfo.name,
           }
           break
+        case 'plot':
+          params = {
+            id: imageInfo.name,
+          }
+          break
         default:
       }
 
@@ -373,6 +378,12 @@ export default {
         case 'scaffold':
           query = {
             scaffold: imageInfo.metadata_file,
+          }
+          break
+        case 'plot':
+          query = {
+            dataset_version: this.datasetVersion,
+            dataset_id: this.datasetId,
           }
           break
         default:

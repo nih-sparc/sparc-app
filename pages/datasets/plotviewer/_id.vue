@@ -11,7 +11,7 @@
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
-            3D Scaffold
+            Genome Viewer
           </div>
         </div>
         <div class="file-detail">
@@ -73,50 +73,39 @@ export default {
     }
   },
 
-//   computed: {
-//     /**
-//      * Get the file name from the scaffold query parameter.
-//      * @returns String
-//      */
-//     fileName: function() {
-//       const scaffold = this.$route.query.scaffold
-//       let name =
-//         scaffold.substring(scaffold.lastIndexOf('/') + 1, scaffold.length) ||
-//         scaffold
-//       let nameWE = name.substring(0, name.lastIndexOf('.')) || name
-//       return nameWE
-//     },
+  computed: {
+    /**
+     * Get the file name from the scaffold query parameter.
+     * @returns String
+     */
+    fileName: function() {
+      return this.$route.query.id
+    },
 
-//     /**
-//      * Get the dataset id from the scaffold query parameter.
-//      * @returns Number
-//      */
-//     datasetId: function() {
-//       const scaffold = this.$route.query.scaffold
-//       const id = scaffold.substring(0, scaffold.indexOf('/')) || ''
-//       return id
-//     },
+    /**
+     * Get the dataset id from the scaffold query parameter.
+     * @returns Number
+     */
+    datasetId: function() {
+      return this.$route.query.dataset_id
+    },
 
-//     /**
-//      * Get the version number from the scaffold query parameter.
-//      * @returns Number
-//      */
-//     versionNumber: function() {
-//       const scaffold = this.$route.query.scaffold
-//       const postId =
-//         scaffold.substring(scaffold.indexOf('/') + 1, scaffold.length) || ''
-//       const version = postId.substring(0, postId.indexOf('/')) || ''
-//       return version
-//     },
+    /**
+     * Get the version number from the scaffold query parameter.
+     * @returns Number
+     */
+    versionNumber: function() {
+      return this.$route.query.dataset_version
+    },
 
-//     /**
-//      * Return the url for the scaffold metadata file.
-//      * @returns String
-//      */
-//     scaffoldUrl: function() {
-//       return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
-//     },
-//   },
+    /**
+     * Return the url for the scaffold metadata file.
+     * @returns String
+     */
+    scaffoldUrl: function() {
+      return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
+    },
+  },
 }
 </script>
 
