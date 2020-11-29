@@ -41,7 +41,7 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.25":
+"@abi-software/mapintegratedvuer@^0.1.26":
   version "0.1.27"
   resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.27.tgz#74a32d048d519c11369bda684b14c6dbb90bf996"
   integrity sha512-Fx+oKku+dFj5zmtSTwVN3TeHNA7LhOfiS01ggsx7vD7aLz1ZtQcLtsOj5B10mGVHhJrcbl3ALvpIuIbWUIrvkw==
@@ -117,7 +117,7 @@
     vue "^2.6.10"
     vue-draggable-resizable "^2.2.0"
 
-"@abi-software/scaffoldvuer@^0.1.40", "@abi-software/scaffoldvuer@^0.1.43":
+"@abi-software/scaffoldvuer@^0.1.43":
   version "0.1.43"
   resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.43.tgz#e649e32185d278511f1df1fcc6cc8676466920dc"
   integrity sha512-hze652Kpbf016byS/gWpHF7+aRJ0NVrClAkSw3S8NtvEEpB1fYbP2XfXyBF3HVYVss76VVdTnsKxejhSgKeTaw==
@@ -5235,6 +5235,11 @@ core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
   integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
+
+core-js@^2.5.7:
+  version "2.6.12"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
+  integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.3.2:
   version "3.6.5"
