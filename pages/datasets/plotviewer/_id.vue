@@ -45,7 +45,6 @@
 
 <script>
 // :scaffold-selected="scaffoldSelected"
-import {PlotVuer} from '@abi-software/plotvuer'
 
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
@@ -54,7 +53,9 @@ export default {
 
   components: {
     DetailTabs,
-    PlotVuer
+    PlotVuer: process.client
+      ? () => import("@abi-software/plotvuer").then(m => m.PlotVuer)
+      : null
   },
 
   data: () => {
