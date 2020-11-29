@@ -33,10 +33,9 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
-        <client-only placeholder="Loading scaffold ...">
+        <client-only placeholder="Loading plot ...">
           <div class="scaffoldvuer-container">
-                <PlotVuer :url="'https://mapcore-bucket1.s3-us-west-2.amazonaws.com/ISAN/csv-data/use-case-4/RNA_Seq.csv'"
-      :plotType="'heatmap'" :helpMode="false" style="height: 200px"></PlotVuer>
+            <PlotVuer :url="plotUrl" :plotType="'heatmap'" :helpMode="false" style="height: 200px"></PlotVuer>
           </div>
         </client-only>
       </detail-tabs>
@@ -102,8 +101,8 @@ export default {
      * Return the url for the scaffold metadata file.
      * @returns String
      */
-    scaffoldUrl: function() {
-      return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
+    plotUrl: function() {
+      return `${process.env.portal_api}/s3-resource/${this.$route.query.file_path}`
     },
   },
 }

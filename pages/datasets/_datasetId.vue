@@ -292,9 +292,12 @@ export default {
       })
     }
 
-    // Plot data is not yet on blackfynn but will be soon
-    let plotData = [Plots[datasetId]]
-
+    // This data can be found via scicrunch. Currently is hardcoded while waiting for 
+    // ImageGallery.vue to start making scicrunch calls
+    let plotData = Plots[datasetId]
+    if (plotData) {
+      plotData = [plotData]
+    }
 
     if (imagesData.status === 'success' || scaffoldData.length) {
       tabsData.push({ label: 'Gallery', type: 'images' })

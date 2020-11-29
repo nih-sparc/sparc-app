@@ -1,7 +1,6 @@
 <template>
   <div class="biolucida-image-gallery full-size">
     <div class="description-info">
-      <nuxt-link :to="{name: 'datasets-plotviewer-id'}">Open plot</nuxt-link>
       <p>
         <strong>Data collection:</strong>
         {{ description }}
@@ -165,7 +164,6 @@ export default {
         params: this.getThumbnailLinkParams(thumbnail_image),
         query: this.getThumbnailLinkQuery(thumbnail_image),
       }
-      console.log('link', link)
       return link
     },
     displayState(index) {
@@ -312,10 +310,9 @@ export default {
       })
       for (let i in this.datasetPlots) {
         this.thumbnails.push({
-          id: 77,
+          id: this.datasetId,
           img: this.defaultPlotImg,
-          plot_file:
-            'https://mapcore-bucket1.s3-us-west-2.amazonaws.com/ISAN/csv-data/use-case-4/RNA_Seq.csv'
+          plot_file: this.datasetPlots[i].file_path
         })
       }
     },
@@ -325,7 +322,6 @@ export default {
       return linkParts[1]
     },
     getThumbnailLinkType(imageInfo) {
-      window.imageInfo = imageInfo
       const imageInfoKeys = Object.keys(imageInfo)
       const shareLinkIndex = imageInfoKeys.indexOf('share_link')
       const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')
@@ -384,6 +380,7 @@ export default {
           query = {
             dataset_version: this.datasetVersion,
             dataset_id: this.datasetId,
+            file_path: imageInfo.plot_file
           }
           break
         default:
