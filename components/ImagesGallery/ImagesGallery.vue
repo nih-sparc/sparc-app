@@ -95,6 +95,12 @@ export default {
         return []
       },
     },
+    datasetVideos: {
+      type: Array,
+      default: () => {
+        return []
+      },
+    },
     datasetVersion: {
       type: Number,
       default: 1,
@@ -123,7 +129,8 @@ export default {
       slideNaturalWidth: 180,
       defaultImg: require('~/assets/logo-sparc-wave-primary.svg'),
       defaultScaffoldImg: require('~/assets/scaffold-light.png'),
-      defaultPlotImg: require('~/assets/data-icon.png')
+      defaultPlotImg: require('~/assets/data-icon.png'),
+      defaultVideoImg: require('~/assets/video-default.png')
     }
   },
   computed: {
@@ -317,6 +324,13 @@ export default {
           plot_file: this.datasetPlots[i].file_path
         })
       }
+      for (let i in this.datasetVideos) {
+        this.thumbnails.push({
+          id: this.datasetId,
+          img: this.defaultVideoImg,
+          file_path: this.datasetVideos[i].file_path
+        })
+      }
     },
     viewerId(shareLink) {
       const linkParts = shareLink.split(process.env.BL_SHARE_LINK_PREFIX)
@@ -328,6 +342,7 @@ export default {
       const shareLinkIndex = imageInfoKeys.indexOf('share_link')
       const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')
       const plotFileIndex = imageInfoKeys.indexOf('plot_file') 
+      const videoFileIndex = imageInfoKeys.indexOf('file_path') 
       let imageType = 'unknown'
       if (shareLinkIndex !== -1) {
         imageType = 'biolucida'
@@ -335,6 +350,8 @@ export default {
         imageType = 'scaffold'
       } else if (plotFileIndex !== -1) {
         imageType = 'plot'
+      } else if (videoFileIndex !== -1) {
+        imageType = 'video'
       }
       return imageType
     },
@@ -352,7 +369,12 @@ export default {
             id: imageInfo.name,
           }
           break
-        case 'plot':
+        case 'plt':
+          params = {
+            id: imageInfo.name,
+          }
+          break
+        case 'video':
           params = {
             id: imageInfo.name,
           }
@@ -385,6 +407,13 @@ export default {
             file_path: imageInfo.plot_file
           }
           break
+        case 'video':
+          query = {
+            dataset_version: this.datasetVersion,
+            dataset_id: this.datasetId,
+            file_path: imageInfo.file_path
+          }
+          break
         default:
       }
 
@@ -402,6 +431,9 @@ export default {
           break
         case 'plot':
           name = 'datasets-plotviewer-id'
+          break
+        case 'video':
+          name = 'datasets-videoviewer-id'
           break
         default:
       }

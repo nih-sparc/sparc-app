@@ -155,6 +155,7 @@
           :dataset-images="imagesData.dataset_images"
           :dataset-scaffolds="scaffoldData"
           :dataset-plots="plotData"
+          :dataset-videos="videoData"
           :dataset-version="getDatasetVersion"
           :dataset-id="getDatasetId"
         />
@@ -191,6 +192,7 @@ import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import Scaffolds from '@/static/js/scaffolds.js'
 import Plots from '@/static/js/plots'
+import Videos from '@/static/js/videos'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -299,7 +301,14 @@ export default {
       plotData = [plotData]
     }
 
-    if (imagesData.status === 'success' || scaffoldData.length) {
+    // This data can be found via scicrunch. Currently is hardcoded while waiting for 
+    // ImageGallery.vue to start making scicrunch calls
+    let videoData = Videos[datasetId]
+    if (videoData) {
+      videoData = [videoData]
+    }
+
+    if (imagesData.status === 'success' || scaffoldData.length || plotData || videoData) {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
 
@@ -310,6 +319,7 @@ export default {
       imagesData,
       scaffoldData,
       plotData,
+      videoData,
       tabs: tabsData
     }
   },
