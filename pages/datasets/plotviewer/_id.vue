@@ -11,7 +11,7 @@
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
-            Genome Viewer
+            {{ plotType }} plot
           </div>
         </div>
         <div class="file-detail">
