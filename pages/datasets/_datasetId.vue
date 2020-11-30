@@ -299,7 +299,7 @@ export default {
       plotData = [plotData]
     }
 
-    if (imagesData.status === 'success' || scaffoldData.length) {
+    if (imagesData.status === 'success' || scaffoldData.length || plotData) {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
 

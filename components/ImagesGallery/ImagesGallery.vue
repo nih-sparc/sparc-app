@@ -312,7 +312,8 @@ export default {
         this.thumbnails.push({
           id: this.datasetId,
           img: this.defaultPlotImg,
-          plot_file: this.datasetPlots[i].file_path
+          plot_file: this.datasetPlots[i].file_path,
+          plot_type: this.datasetPlots[i].plot_type
         })
       }
     },
@@ -380,7 +381,8 @@ export default {
           query = {
             dataset_version: this.datasetVersion,
             dataset_id: this.datasetId,
-            file_path: imageInfo.plot_file
+            file_path: imageInfo.plot_file,
+            plot_type: imageInfo.plot_type
           }
           break
         default:

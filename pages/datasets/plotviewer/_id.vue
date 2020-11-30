@@ -35,7 +35,7 @@
       >
         <client-only placeholder="Loading plot ...">
           <div class="plotvuer-container">
-            <PlotVuer :url="plotUrl" :plotType="'heatmap'" :helpMode="false" style="height: 200px"></PlotVuer>
+            <PlotVuer :url="plotUrl" :plotType="plotType" :helpMode="false" style="height: 200px"></PlotVuer>
           </div>
         </client-only>
       </detail-tabs>
@@ -94,6 +94,10 @@ export default {
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
+    },
+
+    plotType: function(){
+      return this.$route.query.plot_type
     },
 
     /**
