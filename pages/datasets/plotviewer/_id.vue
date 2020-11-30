@@ -1,5 +1,5 @@
 <template>
-  <div class="scaffold-viewer-page">
+  <div class="plot-viewer-page">
     <div class="page-wrap container">
       <div class="subpage">
         <div class="page-heading">
@@ -34,7 +34,7 @@
         @set-active-tab="activeTab = $event"
       >
         <client-only placeholder="Loading plot ...">
-          <div class="scaffoldvuer-container">
+          <div class="plotvuer-container">
             <PlotVuer :url="plotUrl" :plotType="'heatmap'" :helpMode="false" style="height: 200px"></PlotVuer>
           </div>
         </client-only>
@@ -44,8 +44,6 @@
 </template>
 
 <script>
-// :scaffold-selected="scaffoldSelected"
-
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
 export default {
@@ -75,7 +73,7 @@ export default {
 
   computed: {
     /**
-     * Get the file name from the scaffold query parameter.
+     * Get the file name from the query parameter.
      * @returns String
      */
     fileName: function() {
@@ -83,7 +81,7 @@ export default {
     },
 
     /**
-     * Get the dataset id from the scaffold query parameter.
+     * Get the dataset id from the query parameter.
      * @returns Number
      */
     datasetId: function() {
@@ -91,7 +89,7 @@ export default {
     },
 
     /**
-     * Get the version number from the scaffold query parameter.
+     * Get the version number from the query parameter.
      * @returns Number
      */
     versionNumber: function() {
@@ -99,7 +97,7 @@ export default {
     },
 
     /**
-     * Return the url for the scaffold metadata file.
+     * Return the url for the file to plot.
      * @returns String
      */
     plotUrl: function() {
@@ -158,7 +156,7 @@ h1 {
 }
 </style>
 <style lang="scss">
-  .scaffoldvuer-container {
+  .plotvuer-container {
     margin-top: 1.5rem;
     height: 90vh;
     max-width: calc(100% - 48px);
