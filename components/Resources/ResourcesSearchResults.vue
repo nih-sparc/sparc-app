@@ -15,6 +15,24 @@
         <p class="resources-search-results__items--content-date">
           {{ formatDate(data.sys.updatedAt) }}
         </p>
+
+        <template v-if="data.fields.owner">
+          <h3 class="metadata-title">
+            Owner
+          </h3>
+          <p>
+            <a
+              v-if="data.fields.contactEmail"
+              :href="`mailto:${data.fields.contactEmail}`"
+            >
+              {{ data.fields.owner }}
+            </a>
+            <template v-else>
+              {{ data.fields.owner }}
+            </template>
+          </p>
+        </template>
+
         <p class="resources-search-results__items--content-description">
           {{ data.fields.description }}
         </p>
@@ -54,17 +72,12 @@ export default {
 @import '@/assets/_variables.scss';
 .resources-search-results {
   &__items {
-    height: 9.375rem;
     display: flex;
     flex-direction: row;
     border-bottom: solid 1px $light-grey;
     padding: 1.25em 0;
     @media screen and (max-width: 768px) {
-      height: 100%;
       display: block;
-    }
-    @media screen and (max-width: 1024px) {
-      height: 100%;
     }
     h2 {
       font-size: 1em;
@@ -106,5 +119,13 @@ export default {
       color: $dark-sky;
     }
   }
+}
+.metadata-title {
+  color: $dark-sky;
+  font-size: 1em;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 0.375rem;
+  text-transform: uppercase;
 }
 </style>
