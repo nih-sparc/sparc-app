@@ -14,7 +14,7 @@
     <div class="page-wrap portalmapcontainer" ref="mappage">
       <client-only placeholder="Loading...">
         <div class="mapClass">
-          <MapContent ref="map" :initialState="initialState" :shareLink="shareLink" @updateShareLinkRequested="updateUUID" />
+          <MapContent ref="map" :state="state" :api="api" :shareLink="shareLink" @updateShareLinkRequested="updateUUID" />
         </div>
       </client-only>
     </div>
@@ -48,20 +48,21 @@ export default {
       ],
       uuid: undefined,
       prefix: "/maps",
-      initialState: undefined
+      state: undefined,
+      api: process.env.portal_api,
     };
   },
   computed: {
     shareLink: function() {
       if (this.uuid)
-        return this.prefix +"/?id=" + this.uuid ;
+        return this.prefix +"?id=" + this.uuid ;
       return this.prefix;
     }
   },
   methods: {
     updateUUID: function() {
       let xmlhttp = new XMLHttpRequest();
-      let url = `${process.env.portal_api}/map/getsharelink`;
+      let url = this.api + `/map/getsharelink`;
       let state = this.$refs.map.getState();
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
@@ -83,14 +84,14 @@ export default {
     }
     if (this.uuid) {
       let xmlhttp = new XMLHttpRequest();
-      let url = `${process.env.portal_api}/map/getstate`;
+      let url = this.api + `map/getstate`;
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
       xmlhttp.setRequestHeader('Content-type', 'application/json');
       xmlhttp.onreadystatechange = () => {//Call a function when the state changes.
           if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             let state = JSON.parse(xmlhttp.responseText);
-            this.initialState = state.state[0];
+            this.state = state.state[0];
           }
       }
       xmlhttp.send(JSON.stringify({"uuid": this.uuid}));
