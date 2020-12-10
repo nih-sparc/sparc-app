@@ -12,10 +12,8 @@
         <a :href="data.fields.url" target="blank">
           <h2>{{ data.fields.name }}</h2>
         </a>
-        <p class="resources-search-results__items--content-date">
-          {{ formatDate(data.sys.updatedAt) }}
-        </p>
 
+        <p v-if="data.fields.developedBySparc" class="resource-category">SPARC</p>
         <template v-if="data.fields.owner">
           <h3 class="metadata-title">
             Owner
@@ -32,6 +30,7 @@
             </template>
           </p>
         </template>
+
 
         <p class="resources-search-results__items--content-description">
           {{ data.fields.description }}
@@ -127,5 +126,17 @@ export default {
   line-height: 1.2;
   margin-bottom: 0.375rem;
   text-transform: uppercase;
+}
+
+.resource-category {
+  background: $median;
+  border-radius: 15px;
+  color: #fff;
+  font-size: .875rem;
+  top: 10px;
+  padding: 0 .65rem;
+  right: 14px;
+  width: fit-content;
+  margin-bottom: 10px;
 }
 </style>
