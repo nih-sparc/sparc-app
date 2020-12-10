@@ -96,12 +96,20 @@ const tabTypes = [
     type: 'sparcPartners' as const
   },
   {
-    label: 'Platforms',
-    type: 'Platform' as const
+    label: 'Devices',
+    type: 'Device' as const
   },
   {
-    label: 'Tools',
-    type: 'Tool' as const
+    label: 'Digital Repositories',
+    type: 'Digital Repositories' as const
+  },
+  {
+    label: 'Software',
+    type: 'Software' as const
+  },
+  {
+    label: 'Biologicals',
+    type: 'Biologicals' as const
   }
 ]
 
