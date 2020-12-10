@@ -91,7 +91,7 @@ export default {
       xmlhttp.onreadystatechange = () => {//Call a function when the state changes.
           if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             let state = JSON.parse(xmlhttp.responseText);
-            this.state = state.state[0];
+            this.state = state.state;
           }
       }
       xmlhttp.send(JSON.stringify({"uuid": this.uuid}));
