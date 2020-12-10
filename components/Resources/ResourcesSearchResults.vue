@@ -12,9 +12,6 @@
         <a :href="data.fields.url" target="blank">
           <h2>{{ data.fields.name }}</h2>
         </a>
-        <p class="resources-search-results__items--content-date">
-          {{ formatDate(data.sys.updatedAt) }}
-        </p>
 
         <template v-if="data.fields.owner">
           <h3 class="metadata-title">
