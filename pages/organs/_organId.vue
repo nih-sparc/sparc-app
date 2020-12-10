@@ -18,6 +18,7 @@
       <dataset-search-results
         v-show="activeTab === 'datasets'"
         :table-data="datasets"
+        @sort-change="onDatasetSortChange"
       />
       <project-search-results
         v-show="activeTab === 'projects'"
@@ -38,6 +39,8 @@ import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResult
 
 import createClient from '@/plugins/contentful.js'
 
+import toQueryParams from '@/utils/toQueryParams.js'
+
 const client = createClient()
 
 const tabs = [
@@ -46,6 +49,38 @@ const tabs = [
     type: 'datasets'
   }
 ]
+
+const datasetsOrder = {
+  orderBy: 'date',
+  orderDirection: 'asc',
+  limit: '100'
+}
+
+/**
+ * Get datasets with sorting
+ * @param {Object} pageData
+ * @param {Object} $axios
+ * @param {Object} orderBy
+ * @returns {Array}
+ */
+const getDatasets = async (pageData, orderBy, $axios) => {
+  const organName = pathOr('', ['fields', 'name'], pageData)
+
+  const projectSection = pathOr(
+    organName,
+    ['fields', 'projectSection', 'fields', 'title'],
+    pageData
+  )
+
+  const queryParams = toQueryParams({
+    query: projectSection.toLowerCase(),
+    ...orderBy
+  })
+
+  return await $axios.$get(
+    `${process.env.discover_api_host}/search/datasets?${queryParams}`
+  )
+}
 
 export default {
   name: 'OrganDetails',
@@ -60,7 +95,6 @@ export default {
   async asyncData({ route, $axios }) {
     // Get page content
     const pageData = await client.getEntry(route.params.organId)
-    const organName = pathOr('', ['fields', 'name'], pageData)
 
     const projectSectionId = path(
       ['fields', 'projectSection', 'sys', 'id'],
@@ -81,17 +115,7 @@ export default {
     }
 
     // Get related datasets
-    const projectSection = pathOr(
-      organName,
-      ['fields', 'projectSection', 'fields', 'title'],
-      pageData
-    )
-
-    const datasets = await $axios.$get(
-      `${
-        process.env.discover_api_host
-      }/search/datasets?query=${projectSection.toLowerCase()}&limit=100&orderBy=date`
-    )
+    const datasets = await getDatasets(pageData, datasetsOrder, $axios)
 
     const tabsData = clone(tabs)
 
@@ -116,6 +140,7 @@ export default {
     return {
       tabs: [],
       activeTab: 'datasets',
+      datasetsOrder: { ...datasetsOrder },
       breadcrumb: [
         {
           to: {
@@ -169,6 +194,29 @@ export default {
      */
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
+    },
+
+    /**
+     * Set sort for datasets and get new datsets
+     * @param {Object} sortData
+     */
+    onDatasetSortChange: async function(sortData) {
+      const orderDirection = sortData.order === 'ascending' ? 'asc' : 'desc'
+      const orderBy = sortData.prop === 'createdAt' ? 'date' : sortData.prop
+
+      this.datasetsOrder = {
+        ...this.datasetsOrder,
+        orderDirection,
+        orderBy
+      }
+
+      const datasets = await getDatasets(
+        this.pageData,
+        this.datasetsOrder,
+        this.$axios
+      )
+
+      this.datasets = datasets.datasets
     }
   }
 }

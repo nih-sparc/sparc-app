@@ -9,6 +9,7 @@
       sortable="custom"
       prop="name"
       label="Title"
+      :sort-orders="sortOrders"
       :width="titleColumnWidth"
     >
       <template slot-scope="scope">
@@ -55,6 +56,7 @@
       label="Last Published"
       width="200"
       sortable="custom"
+      :sort-orders="sortOrders"
     >
       <template slot-scope="scope">
         {{ formatDate(scope.row.createdAt) }}
@@ -66,6 +68,7 @@
       label="Size"
       width="150"
       sortable="custom"
+      :sort-orders="sortOrders"
     >
       <template slot-scope="scope">
         {{ formatMetric(scope.row.size) }}
@@ -93,6 +96,12 @@ export default {
     titleColumnWidth: {
       type: Number,
       default: () => 300
+    }
+  },
+
+  data() {
+    return {
+      sortOrders: ['ascending', 'descending']
     }
   },
 
