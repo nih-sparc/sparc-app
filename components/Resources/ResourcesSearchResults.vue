@@ -13,9 +13,7 @@
           <h2>{{ data.fields.name }}</h2>
         </a>
 
-        <template v-if="data.fields.developedBySparc">
-          <p class="resource-category">SPARC</p>
-        </template>
+        <p v-if="data.fields.developedBySparc" class="resource-category">SPARC</p>
         <template v-if="data.fields.owner">
           <h3 class="metadata-title">
             Owner
