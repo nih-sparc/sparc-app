@@ -90,7 +90,7 @@ export default {
     const datasets = await $axios.$get(
       `${
         process.env.discover_api_host
-      }/search/datasets?query=${projectSection.toLowerCase()}&limit=100`
+      }/search/datasets?query=${projectSection.toLowerCase()}&limit=100&orderBy=date`
     )
 
     const tabsData = clone(tabs)
