@@ -14,7 +14,7 @@
     <div class="page-wrap portalmapcontainer" ref="mappage">
       <client-only placeholder="Loading...">
         <div class="mapClass">
-          <MapContent />
+          <MapContent ref="map" :state="state" :api="api" :shareLink="shareLink" @updateShareLinkRequested="updateUUID" />
         </div>
       </client-only>
     </div>
@@ -24,9 +24,9 @@
 <script>
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import PageHero from "@/components/PageHero/PageHero.vue";
+
 export default {
   name: "Maps",
-
   components: {
     Breadcrumb,
     PageHero,
@@ -34,7 +34,6 @@ export default {
       ? () => import("@abi-software/mapintegratedvuer").then(m => m.MapContent)
       : null
   },
-
   data() {
     return {
       resources: [],
@@ -46,11 +45,58 @@ export default {
           },
           label: "Home"
         }
-      ]
+      ],
+      uuid: undefined,
+      prefix: "/maps",
+      state: undefined,
+      api: process.env.portal_api,
     };
   },
+  computed: {
+    shareLink: function() {
+      if (this.uuid)
+        return this.prefix +"?id=" + this.uuid ;
+      return this.prefix;
+    }
+  },
+  methods: {
+    updateUUID: function() {
+      let xmlhttp = new XMLHttpRequest();
+      let url = this.api + `/map/getsharelink`;
+      let state = this.$refs.map.getState();
+      xmlhttp.open('POST', url, true);
+      //Send the proper header information along with the request
+      xmlhttp.setRequestHeader('Content-type', 'application/json');
+      xmlhttp.onreadystatechange = () => {//Call a function when the state changes.
+          if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            let state = JSON.parse(xmlhttp.responseText);
+            this.uuid = state.uuid;
+          }
+      }
+      xmlhttp.send(JSON.stringify({"state": state}));
 
-  methods: {}
+    }
+  },
+  beforeMount: function() {
+    this.uuid = this.$route.query.id;
+    if (window) {
+      this.prefix = window.location.origin + window.location.pathname;
+    }
+    if (this.uuid) {
+      let xmlhttp = new XMLHttpRequest();
+      let url = this.api + `map/getstate`;
+      xmlhttp.open('POST', url, true);
+      //Send the proper header information along with the request
+      xmlhttp.setRequestHeader('Content-type', 'application/json');
+      xmlhttp.onreadystatechange = () => {//Call a function when the state changes.
+          if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            let state = JSON.parse(xmlhttp.responseText);
+            this.state = state.state;
+          }
+      }
+      xmlhttp.send(JSON.stringify({"uuid": this.uuid}));
+    }
+  },
 };
 </script>
 
