@@ -166,10 +166,6 @@ export default {
      */
     closeDialog: function() {
       this.$emit('close-download-dialog')
-    },
-
-    onCopy: function(e) {
-      console.log("this was copied! ", e)
     }
   }
 }
