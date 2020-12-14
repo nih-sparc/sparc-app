@@ -17,7 +17,7 @@
       <p>We welcome your feedback on the accessibility of SPARC Portal.
       Please let us know if you encounter accessibility barriers on SPARC Portal:</p>
         <ul>
-            <li>Email: support@sparc.science</li>
+            <li>Email: <a href="mailto:support@sparc.science">support@sparc.science</a></li>
         </ul>
      <p>We try to respond to feedback within 3-5 business days.</p>
     </div>
