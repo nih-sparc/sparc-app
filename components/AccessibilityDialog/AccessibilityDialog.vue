@@ -53,6 +53,10 @@
 </script>
 
 <style lang="scss" scoped>
+
+::v-deep .el-dialog {
+  width: 50%;
+}
 .bf-dialog-header {
     text-align: center;
 }
