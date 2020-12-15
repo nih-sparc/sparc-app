@@ -55,7 +55,7 @@
 <style lang="scss" scoped>
 
 ::v-deep .el-dialog {
-  width: 50%;
+  width: 75%;
 }
 .bf-dialog-header {
     text-align: center;
