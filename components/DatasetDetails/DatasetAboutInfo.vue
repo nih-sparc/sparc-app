@@ -43,7 +43,8 @@
                   }"
                   @click="handleCitationChanged(citationType)"
                 >
-                  {{ citationType.label }}</a>
+                  {{ citationType.label }}
+                </a>
               </li>
               <li>
                 <a
@@ -65,9 +66,10 @@
               <p>
                 <strong>Internal Server Error</strong><br />
                 Sorry, something went wrong.<br />
-                The dataset citation generator
-                (<a href="https://citation.crosscite.org/" target="_blank">https://citation.crosscite.org/</a>)
-                encountered an internal error and was unable to complete your
+                The dataset citation generator (<a
+                  href="https://citation.crosscite.org/"
+                  target="_blank"
+                >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
                 request.<br />
                 Please come back later.
               </p>
@@ -361,7 +363,7 @@ export default {
     }
 
     &--citation-links {
-      border-bottom: 1px solid #E4E7ED;
+      border-bottom: 1px solid #e4e7ed;
       display: flex;
       flex-wrap: wrap;
       list-style: none;

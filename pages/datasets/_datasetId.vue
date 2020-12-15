@@ -564,7 +564,8 @@ export default {
      * @return {String}
      */
     lastUpdatedDate: function() {
-      const date = propOr('', 'updatedAt', this.datasetInfo)
+      const date =
+        this.datasetInfo.revisedAt || this.datasetInfo.versionPublishedAt
       return this.formatDate(date)
     },
     /**
@@ -903,7 +904,7 @@ export default {
             name: this.datasetName,
             creator: creators,
             datePublished: this.datasetInfo.createdAt,
-            dateModified: this.datasetInfo.updatedAt,
+            dateModified: this.datasetInfo.revisedAt,
             description: this.datasetDescription,
             license: this.licenseLink,
             version: this.datasetInfo.version,
