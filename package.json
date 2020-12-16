@@ -17,7 +17,7 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "^0.1.28-beta-7",
+    "@abi-software/mapintegratedvuer": "^0.1.28-beta-8",
     "@abi-software/scaffoldvuer": "^0.1.44-beta.3",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
