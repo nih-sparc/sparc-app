@@ -13,7 +13,8 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
     "generate-icons": "vsvg -s ./static/icons-svg -t ./static/icons-js",
-    "test": "jest"
+    "test": "jest",
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "@abi-software/mapintegratedvuer": "^0.1.26",
@@ -51,7 +52,7 @@
   "devDependencies": {
     "@nuxt/typescript-build": "^0.5.6",
     "@types/node": "^13.7.0",
-    "@vue/test-utils": "^1.0.0-beta.27",
+    "@vue/test-utils": "1.1.0",
     "babel-jest": "^24.1.0",
     "jest": "^24.1.0",
     "sass": "^1.18.0",

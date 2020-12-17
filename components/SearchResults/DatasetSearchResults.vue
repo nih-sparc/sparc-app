@@ -1,10 +1,15 @@
 <template>
-  <el-table :data="tableData" empty-text="No Results" @sort-change="onSortChange">
+  <el-table
+    :data="tableData"
+    empty-text="No Results"
+    @sort-change="onSortChange"
+  >
     <el-table-column
       :fixed="true"
       sortable="custom"
       prop="name"
       label="Title"
+      :sort-orders="sortOrders"
       :width="titleColumnWidth"
     >
       <template slot-scope="scope">
@@ -41,13 +46,30 @@
         </nuxt-link>
       </template>
     </el-table-column>
-    <el-table-column prop="description" label="Description" :width="areSimulationResults ? 550 : 400" />
-    <el-table-column prop="createdAt" label="Last Published" width="200" sortable="custom">
+    <el-table-column
+      prop="description"
+      label="Description"
+      :width="areSimulationResults ? 550 : 400"
+    />
+    <el-table-column
+      prop="createdAt"
+      label="Last Published"
+      width="200"
+      sortable="custom"
+      :sort-orders="sortOrders"
+    >
       <template slot-scope="scope">
-        {{ formatDate(scope.row.updatedAt) }}
+        {{ formatDate(scope.row.createdAt) }}
       </template>
     </el-table-column>
-    <el-table-column v-if="!areSimulationResults" prop="size" label="Size" width="150" sortable="custom">
+    <el-table-column
+      v-if="!areSimulationResults"
+      prop="size"
+      label="Size"
+      width="150"
+      sortable="custom"
+      :sort-orders="sortOrders"
+    >
       <template slot-scope="scope">
         {{ formatMetric(scope.row.size) }}
       </template>
@@ -74,6 +96,12 @@ export default {
     titleColumnWidth: {
       type: Number,
       default: () => 300
+    }
+  },
+
+  data() {
+    return {
+      sortOrders: ['ascending', 'descending']
     }
   },
 

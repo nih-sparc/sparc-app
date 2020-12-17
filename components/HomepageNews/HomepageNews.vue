@@ -1,7 +1,11 @@
 <template>
   <div class="featured-datasets container">
     <div class="home-container">
-      <h2><nuxt-link to="/news-and-events">News &amp; Upcoming Events</nuxt-link></h2>
+      <h2>
+        <nuxt-link to="/news-and-events">
+          News &amp; Upcoming Events
+        </nuxt-link>
+      </h2>
       <sparc-card
         v-for="(item, idx) in upcomingNews"
         :key="item.sys.id"
@@ -117,7 +121,7 @@ export default {
     isUpcoming: function(item) {
       const today = new Date()
       const checkDate = item.fields.endDate || item.fields.startDate || ''
-      return Date.parse(checkDate) > Date.parse(today)
+      return checkDate ? Date.parse(checkDate) > Date.parse(today) : true
     }
   }
 }

@@ -1,7 +1,10 @@
 <template>
-  <!-- eslint-disable vue/no-v-html -->
-  <!-- marked will sanitize the HTML injected -->
-  <div v-html="parseMarkdown(markdown)" />
+  <div>
+    <!-- eslint-disable vue/no-v-html -->
+    <!-- marked will sanitize the HTML injected -->
+    <div id="externalWrap" v-html="parseMarkdown(markdown)" />
+    <div id="anchorWrap" v-html="parseMarkdown(markdownAnchor)" />
+  </div>
 </template>
 
 <script>
@@ -14,8 +17,8 @@ export default {
 
   data() {
     return {
-      markdown: `[go to SPARC](https://sparc.science) \n # This is a heading
-      `
+      markdown: `[go to SPARC](https://sparc.science) \n # This is a heading`,
+      markdownAnchor: `[Link to section](#foo) \n # Foo`
     }
   }
 }

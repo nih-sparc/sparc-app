@@ -11,15 +11,15 @@
         </strong>
       </p>
       <div v-if="datasetRecords.length !== 0">
-        <a
-          v-for="(record, index) in datasetRecords"
-          :key="`${record}-${index}`"
-          :href="record.properties.url"
-          target="_blank"
-          class="description-container__protocol-block--protocol-text"
-        >
-          {{ record.properties.url }}
-        </a>
+        <p v-for="record in datasetRecords" :key="record.properties.id">
+          <a
+            :href="record.properties.url"
+            target="_blank"
+            class="description-container__protocol-block--protocol-text"
+          >
+            {{ record.properties.url }}
+          </a>
+        </p>
       </div>
       <div
         v-else
