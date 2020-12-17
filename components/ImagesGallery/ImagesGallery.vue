@@ -10,9 +10,6 @@
         {{ imageNames[currentIndex] }}
       </p>
     </div>
-
-    <nuxt-link :to="{ name: 'datasets-videoviewer-id'}">test video</nuxt-link>
-
     <div class="standard-gallery">
       <a
         href="#"

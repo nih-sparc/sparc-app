@@ -1,5 +1,5 @@
 <template>
-  <div class="scaffold-viewer-page">
+  <div class="video-viewer-page">
     <div class="page-wrap container">
       <div class="subpage">
         <div class="page-heading">
@@ -33,7 +33,7 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
-        <client-only placeholder="Loading scaffold ...">
+        <client-only placeholder="Loading video ...">
           <div class="video-container">
             <video class="video" ref="vid" controls crossorigin playsinline>
               <source :src="video_src" type="video/mp4" size="1080">
@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     /**
-     * Get the file name from the scaffold query parameter.
+     * Get the file name from the query parameter.
      * @returns String
      */
     fileName: function() {
@@ -81,7 +81,7 @@ export default {
     },
 
     /**
-     * Get the dataset id from the scaffold query parameter.
+     * Get the dataset id from the query parameter.
      * @returns Number
      */
     datasetId: function() {
@@ -89,7 +89,7 @@ export default {
     },
 
     /**
-     * Get the version number from the scaffold query parameter.
+     * Get the version number from the query parameter.
      * @returns Number
      */
     versionNumber: function() {
