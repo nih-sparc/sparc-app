@@ -7,15 +7,18 @@ export default {
      * Request download file via axios.
      */
     requestDownloadFile: function(downloadInfo) {
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split('s3://blackfynn-discover-use1/'),
-        propOr('', 'uri'),
-      )(downloadInfo)
 
       const fileName = propOr('', 'name', downloadInfo)
+      const datasetVersionRegexp = /s3:\/\/blackfynn-discover-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/;
+      const matches = downloadInfo.uri.match(datasetVersionRegexp)
 
+      const payload = {
+        data: {
+          paths: [matches.groups.filePath],
+          datasetId: matches.groups.datasetId,
+          version: matches.groups.version
+        }
+      }
       this.$axios.$post(process.env.zipit_api_host, payload).then((response) => {
         FileDownload(response, fileName)
       })
