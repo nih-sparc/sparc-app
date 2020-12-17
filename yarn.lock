@@ -11,21 +11,6 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmapvuer@^0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.28.tgz#f6f734ea1737831f57cf80976eeafdb290b07b5a"
-  integrity sha512-zuveamM1+ZvDXqsrDfS3+eAXpVuP/FeiJAdBRvYyoPCaNrSnFcLQi8m12Cx2qa54PgxD7TIBSj+K3AnPy4Psog==
-  dependencies:
-    "@abi-software/maptooltip" "^0.1.10"
-    "@dbrnz/flatmap-viewer" "^0.9.33"
-    core-js "^3.3.2"
-    css-element-queries "^1.2.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.20"
-    vue "^2.6.10"
-
 "@abi-software/flatmapvuer@^0.1.29":
   version "0.1.29"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.1.29.tgz#8c0b2858fc2c01b826d6ef3218239d1306621d98"
@@ -62,18 +47,6 @@
     vue-cli-plugin-webpack-bundle-analyzer "^2.0.0"
     vue-draggable-resizable "2.1.0"
     webpack-node-externals "^2.5.2"
-
-"@abi-software/maptooltip@^0.1.10":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@abi-software/maptooltip/-/maptooltip-0.1.12.tgz#6b591d50a2a2fc9a7a156bf1c421ba6b898e0a4a"
-  integrity sha512-noSgxQJCC3p79Mv8hAaxHWa9mlRpCFZCLO19OJ5qTP2fw1nckwtnHye0bbvuKF4UBYDFYrVFwpRBxKgwVecRFQ==
-  dependencies:
-    core-js "^3.3.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.20"
-    vue "^2.6.10"
 
 "@abi-software/maptooltip@^0.1.13":
   version "0.1.13"
@@ -960,7 +933,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.11.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.11.2", "@babel/runtime@^7.6.2", "@babel/runtime@^7.8.4":
   version "7.11.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
   integrity sha512-TeWkU52so0mPtDcaCTxNBI/IHiz0pZgr8VEFqXFtZWpYD08ZB6FaSwVAS8MKRQAP3bYKiVjwysOJgMFY28o6Tw==
@@ -1970,22 +1943,6 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@dbrnz/flatmap-viewer@^0.9.33":
-  version "0.9.33"
-  resolved "https://registry.yarnpkg.com/@dbrnz/flatmap-viewer/-/flatmap-viewer-0.9.33.tgz#95164c2624d474b32f3c4344e7ac9fa5016f77c7"
-  integrity sha512-coT276zzJDTznZjjgfID8WZRdp/1A/UYTF2GEQ+FLPn6192o0bnDVgYgUMP0EEUt9YEr02t+QZS6+dP25U1gbg==
-  dependencies:
-    "@babel/runtime" "^7.5.5"
-    "@comunica/actor-init-sparql" "^1.9.1"
-    "@comunica/core" "^1.9.0"
-    "@comunica/utils-datasource" "^1.9.0"
-    "@turf/area" "^6.0.1"
-    "@turf/bbox" "^6.0.1"
-    "@turf/helpers" "^6.1.4"
-    mapbox-gl "^1.12.0"
-    minisearch "^2.2.1"
-    n3 "^1.3.5"
-
 "@dbrnz/flatmap-viewer@^0.9.34":
   version "0.9.34"
   resolved "https://registry.yarnpkg.com/@dbrnz/flatmap-viewer/-/flatmap-viewer-0.9.34.tgz#7dedd9aba3b861ffc1ca13df218d9e42dc543d15"
@@ -2683,28 +2640,6 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@soda/get-current-script/-/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha512-T7VNNlYVM1SgQ+VsMYhnDkcGmWhQdL0bDyGm5TlQ3GBXnJscEClUUOKduWTmm2zCnvNLC1hc3JpuXjs/nFOc5w==
-
-"@tehsurfer/mapintegratedvuer@^0.1.60":
-  version "0.1.60"
-  resolved "https://registry.yarnpkg.com/@tehsurfer/mapintegratedvuer/-/mapintegratedvuer-0.1.60.tgz#7e419a05f003fa500625e2c600a165c64484660f"
-  integrity sha512-NNto7kGkqcdXtgAMaLdRTPrEDHW5K6Ny8iyGsgEfSGvxSY9JzMPST9S14AdAr+iXE9OwdTkmzS4uMipdneCZrg==
-  dependencies:
-    "@abi-software/flatmapvuer" "^0.1.28"
-    "@abi-software/maptooltip" "^0.1.13"
-    "@abi-software/plotvuer" "^0.2.25"
-    "@abi-software/scaffoldvuer" "^0.1.43"
-    "@soda/get-current-script" "^1.0.2"
-    core-js "^3.3.2"
-    d3-time-format "^3.0.0"
-    element-ui "^2.13.0"
-    lodash "^4.17.20"
-    postcss-prefix-selector "^1.7.2"
-    shepherd.js "^7.1.5"
-    splitpanes "^2.2.1"
-    vue "^2.6.10"
-    vue-cli-plugin-webpack-bundle-analyzer "^2.0.0"
-    vue-draggable-resizable "2.1.0"
-    webpack-node-externals "^2.5.2"
 
 "@turf/area@^6.0.1":
   version "6.0.1"
