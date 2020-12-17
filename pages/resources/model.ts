@@ -1,5 +1,7 @@
 import { Entry, EntryCollection } from 'contentful';
 import { Route } from 'vue-router';
+import VueRouter from 'vue-router'
+
 
 export interface Resource {
   description: string;
@@ -16,24 +18,27 @@ export interface Data {
   resourceData: EntryCollection<Resource>;
   tabTypes: TabType[];
   isLoadingSearch: boolean;
-  resourceHeading: string;
+  activeTab: string;
 }
 
 export interface Computed {
   currentResourceCount: number;
   tableData: any[];
   curSearchPage: number;
+  resourceHeading: string;
 }
 
 export interface Methods {
   updateDataSearchLimit: (this: ResourcesComponent, limit: number | string) => void;
   fetchResults: (this: ResourcesComponent) => void;
   onPaginationPageChange: (this: ResourcesComponent, page: number) => void;
+  setActiveTab: (this: ResourcesComponent, tab: string) => void;
 }
 
-export type ResourcesComponent = Data & Computed & Methods & { $route: Route }
+export type ResourcesComponent = Data & Computed & Methods & { $route: Route, $router: VueRouter }
 
-type ResourceType = 'Platform' | 'Tool' | 'sparcPartners'
+
+type ResourceType = 'Device' | 'Digital Repositories' | 'Software' | 'Biologicals' | 'sparcPartners'
 
 interface TabType {
   label: string,

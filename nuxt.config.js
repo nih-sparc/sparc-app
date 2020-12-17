@@ -34,6 +34,9 @@ export default {
     discover_api_host:
       process.env.BLACKFYNN_DISCOVER_API_HOST ||
       'https://api.blackfynn.io/discover',
+    bf_api_host: process.env.BF_API_HOST || 'https://api.blackfynn.io',
+    zipit_api_host:
+      process.env.ZIPIT_API_HOST || 'https://api.blackfynn.io/zipit/discover',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
     ctf_resource_id: 'sparcPartners',
@@ -62,7 +65,9 @@ export default {
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
     BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
-    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c='
+    BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
+    ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
+    max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000')
   },
 
   serverMiddleware: [
@@ -84,9 +89,9 @@ export default {
       // Redirects
       routes.push({
         path: '/submit_data.html',
-        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd',
+        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd'
       })
-    },
+    }
   },
   /*
    ** Global CSS
@@ -138,6 +143,10 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {},
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    }
   }
 }

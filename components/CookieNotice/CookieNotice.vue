@@ -15,6 +15,7 @@
             By closing this banner or clicking accept, you agree to the use of
             cookies.
           </p>
+          <a href="#" @click.prevent="openAccessibilityDialog">Accessibility Standards</a>
         </div>
         <div>
           <bf-button class="primary" @click="closeNotice">
@@ -26,16 +27,28 @@
     <button class="btn-close" @click="closeNotice">
       <svg-icon name="icon-remove" height="10" width="10" />
     </button>
+    <accessibility-dialog
+      :visible.sync="accessibilityDialogVisible"
+      @close="closeAccessibilityDialog"
+    />
   </div>
 </template>
 
 <script>
+import AccessibilityDialog from '@/components/AccessibilityDialog/AccessibilityDialog.vue'
 import BfButton from '@/components/shared/BfButton/BfButton'
 export default {
   name: 'CookieNotice',
 
   components: {
-    BfButton
+    BfButton,
+    AccessibilityDialog
+  },
+
+  data() {
+    return {
+      accessibilityDialogVisible: false
+    }
   },
 
   methods: {
@@ -47,6 +60,20 @@ export default {
       const expirationDate = new Date(today.setDate(today.getDate() + 30))
       this.$cookies.set('GDPR:accepted', true, { expires: expirationDate })
       this.$store.dispatch('setHasAcceptedGdpr', true)
+    },
+
+    /**
+     * Opens Accessibility Dialog
+     */
+    openAccessibilityDialog: function() {
+      this.accessibilityDialogVisible = true
+    },
+
+     /**
+      * Closes Accessibility Dialog
+      */
+    closeAccessibilityDialog: function() {
+      this.accessibilityDialogVisible = false
     }
   }
 }
@@ -61,7 +88,7 @@ export default {
   color: $navy;
   left: 0;
   right: 0;
-  padding: 1.625em 0;
+  padding: 2rem 0;
   position: fixed;
   z-index: 9;
 }
@@ -89,6 +116,9 @@ h2 {
     font-size: 1.5em;
   }
 }
+a {
+  font-size: 1em;
+}
 p {
   font-size: 0.875em;
   line-height: 1.2;
@@ -100,7 +130,7 @@ p {
   cursor: pointer;
   padding: 0.25em;
   position: absolute;
-  right: 1em;
-  top: 1em;
+  right: 0.25rem;
+  top: 0.25rem;
 }
 </style>
