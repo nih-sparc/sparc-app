@@ -320,13 +320,17 @@ const getImagesData = async (datasetId, datasetDetails, $axios) => {
     return {
       imagesData,
       scaffoldData,
-      tabsData
+      tabsData,
+      plotData,
+      videoData
     }
   } catch (error) {
     return {
       imagesData: [],
       scaffoldData,
-      tabsData
+      tabsData,
+      plotData: [],
+      videoData: []
     }
   }
 }
@@ -359,11 +363,13 @@ export default {
       $axios
     )
 
-    const { imagesData, scaffoldData, tabsData } = await getImagesData(
-      datasetId,
-      datasetDetails,
-      $axios
-    )
+    const {
+      imagesData,
+      scaffoldData,
+      tabsData,
+      plotData,
+      videoData
+    } = await getImagesData(datasetId, datasetDetails, $axios)
 
     return {
       entries: organEntries,
