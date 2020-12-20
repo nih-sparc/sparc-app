@@ -138,7 +138,8 @@ export default {
       return this.currentIndex < this.imageCount - 1
     },
     imageCount() {
-      return this.datasetImages.length + this.datasetScaffolds.length
+      return this.datasetImages.length + this.datasetScaffolds.length +
+        this.datasetPlots.length + this.datasetVideos.length;
     },
     numberOfImagesVisible() {
       const imagesVisibleCount =
