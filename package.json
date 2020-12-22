@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@abi-software/mapintegratedvuer": "^0.1.26",
-    "@abi-software/plotvuer": "^0.2.26",
+    "@abi-software/plotvuer": "^0.2.31",
     "@abi-software/scaffoldvuer": "^0.1.43",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
