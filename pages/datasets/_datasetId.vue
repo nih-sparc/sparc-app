@@ -145,6 +145,8 @@
           :markdown="markdown.markdownTop"
           :dataset-images="imagesData.dataset_images"
           :dataset-scaffolds="scaffoldData"
+          :dataset-plots="plotData"
+          :dataset-videos="videoData"
           :dataset-version="getDatasetVersion"
           :dataset-id="getDatasetId"
         />
@@ -180,6 +182,8 @@ import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import Scaffolds from '@/static/js/scaffolds.js'
+import Plots from '@/static/js/plots'
+import Videos from '@/static/js/videos'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -295,20 +299,38 @@ const getImagesData = async (datasetId, datasetDetails, $axios) => {
       })
     }
 
-    if (imagesData.status === 'success' || scaffoldData.length) {
+    // This data can be found via scicrunch. Currently is hardcoded while waiting for 
+    // ImageGallery.vue to start making scicrunch calls
+    let plotData = Plots[datasetId]
+    if (plotData) {
+      plotData = [plotData]
+    }
+
+    // This data can be found via scicrunch. Currently is hardcoded while waiting for 
+    // ImageGallery.vue to start making scicrunch calls
+    let videoData = Videos[datasetId]
+    if (videoData) {
+      videoData = [videoData]
+    }
+
+    if (imagesData.status === 'success' || scaffoldData.length || plotData || videoData) {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
 
     return {
       imagesData,
       scaffoldData,
-      tabsData
+      tabsData,
+      plotData,
+      videoData
     }
   } catch (error) {
     return {
       imagesData: [],
       scaffoldData,
-      tabsData
+      tabsData,
+      plotData: [],
+      videoData: []
     }
   }
 }
@@ -341,11 +363,13 @@ export default {
       $axios
     )
 
-    const { imagesData, scaffoldData, tabsData } = await getImagesData(
-      datasetId,
-      datasetDetails,
-      $axios
-    )
+    const {
+      imagesData,
+      scaffoldData,
+      tabsData,
+      plotData,
+      videoData
+    } = await getImagesData(datasetId, datasetDetails, $axios)
 
     return {
       entries: organEntries,
@@ -353,6 +377,8 @@ export default {
       datasetType: route.query.type,
       imagesData,
       scaffoldData,
+      plotData,
+      videoData,
       tabs: tabsData
     }
   },
