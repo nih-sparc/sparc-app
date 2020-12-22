@@ -75,10 +75,10 @@
     vue "^2.6.10"
     vue-draggable-resizable "^2.2.0"
 
-"@abi-software/plotvuer@^0.2.26":
-  version "0.2.26"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.26.tgz#58f251223b6f99a82099c0697a72b27f0a6628ba"
-  integrity sha512-EtedVuxpY3P3ZJ9tZz+ysBjnsjJzt9JZ82HSMBXfDa3zofCVv6P0lqAwoxTDg2fBDbJA6r4V4YLOjCOqnY+3Sg==
+"@abi-software/plotvuer@^0.2.31":
+  version "0.2.31"
+  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.31.tgz#b31c6a72b46ff34171e09b0a80331d0163b05b52"
+  integrity sha512-kTCqoDJUhc2qL7vQuKl5U/LPgfQrfkZaUBiTHLwI6fodYY4eAOBRvkInMCpvBxKik9DAFAwTOysrPsHNWLvO/A==
   dependencies:
     core-js "^3.7.0"
     css-element-queries "^1.2.3"
