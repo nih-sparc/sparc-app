@@ -60,7 +60,19 @@ export default {
       client.getEntry(process.env.ctf_home_page_id)
     ])
       .then(([homepage]) => {
-        return { ...homepage.fields }
+        const fields = homepage.fields || {}
+
+        return {
+          heroHeading: fields.heroHeading || '',
+          heroCopy: fields.heroCopy || '',
+          heroButtonLabel: fields.heroButtonLabel || '',
+          heroImage: fields.heroImage || {},
+          heroButtonLink: fields.heroButtonLink || '',
+          featuredData: fields.featuredData || [],
+          newsAndEvents: fields.newsAndEvents || [],
+          testimonials: fields.testimonials || [],
+          title: fields.title || ''
+        }
       })
       .catch(console.error)
   },
