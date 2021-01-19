@@ -13,24 +13,22 @@
           <h2>{{ data.fields.name }}</h2>
         </a>
 
-        <p v-if="data.fields.developedBySparc" class="resource-category">SPARC</p>
-        <template v-if="data.fields.owner">
+        <p v-if="data.fields.developedBySparc" class="resource-category">
+          SPARC
+        </p>
+        <template v-if="data.fields.contactEmail">
           <h3 class="metadata-title">
-            Owner
+            Support Contact
           </h3>
           <p>
             <a
               v-if="data.fields.contactEmail"
               :href="`mailto:${data.fields.contactEmail}`"
             >
-              {{ data.fields.owner }}
+              {{ data.fields.contactEmail }}
             </a>
-            <template v-else>
-              {{ data.fields.owner }}
-            </template>
           </p>
         </template>
-
 
         <p class="resources-search-results__items--content-description">
           {{ data.fields.description }}
@@ -132,9 +130,9 @@ export default {
   background: $median;
   border-radius: 15px;
   color: #fff;
-  font-size: .875rem;
+  font-size: 0.875rem;
   top: 10px;
-  padding: 0 .65rem;
+  padding: 0 0.65rem;
   right: 14px;
   width: fit-content;
   margin-bottom: 10px;

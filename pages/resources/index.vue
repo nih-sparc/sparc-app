@@ -5,7 +5,7 @@
       <h1>Tools &amp; Resources</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(fields.heroCopy)" />
+      <div v-html="parseMarkdown(fields.heroCopyLong)" />
       <search-controls-contentful
         placeholder="Search resources"
         path="/resources"

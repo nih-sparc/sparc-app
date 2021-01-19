@@ -69,7 +69,8 @@
                 The dataset citation generator (<a
                   href="https://citation.crosscite.org/"
                   target="_blank"
-                >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
+                  >https://citation.crosscite.org/</a
+                >) encountered an internal error and was unable to complete your
                 request.<br />
                 Please come back later.
               </p>
@@ -92,6 +93,18 @@
       <div v-else>
         <p>N/A</p>
       </div>
+
+      <div v-if="externalPublications.length" class="row mt-24">
+        <div class="col-xs-12">
+          <h3>References</h3>
+          <external-publication-list-item
+            v-for="publication in externalPublications"
+            :key="publication.doi"
+            class="mb-16"
+            :publication="publication"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -99,6 +112,7 @@
 <script>
 import { compose, propOr, head } from 'ramda'
 
+import ExternalPublicationListItem from '@/components/ExternalPublicationListItem/ExternalPublicationListItem.vue'
 import TagList from '@/components/TagList/TagList.vue'
 
 import { successMessage, failMessage } from '@/utils/notification-messages'
@@ -106,6 +120,7 @@ export default {
   name: 'DatasetAboutInfo',
 
   components: {
+    ExternalPublicationListItem,
     TagList
   },
   props: {
@@ -137,6 +152,11 @@ export default {
     datasetOwnerEmail: {
       type: String,
       default: ''
+    },
+
+    externalPublications: {
+      type: Array,
+      default: () => []
     }
   },
 
