@@ -29,15 +29,8 @@
           :style="{ display: displayState(index) }"
           :class="['key-image-span', { active: currentIndex === index }]"
         >
-          <nuxt-link
-            v-slot="{ href }"
-            :to="{
-              name: getThumbnailLinkName(thumbnail_image),
-              params: getThumbnailLinkParams(thumbnail_image),
-              query: getThumbnailLinkQuery(thumbnail_image),
-            }"
-          >
-            <a target="_blank" :href="href" rel="noopener noreferrer">
+          <nuxt-link :to="getLink(thumbnail_image)">
+            <a rel="noopener noreferrer">
               <img
                 :ref="'key_image_' + thumbnail_image.id"
                 :src="thumbnail_image.img"
@@ -73,7 +66,6 @@
 <script>
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
-
 import MarkedMixin from '@/mixins/marked'
 import IndexIndicator from '@/components/ImagesGallery/IndexIndicator'
 
@@ -89,6 +81,18 @@ export default {
       },
     },
     datasetScaffolds: {
+      type: Array,
+      default: () => {
+        return []
+      },
+    },
+    datasetPlots: {
+      type: Array,
+      default: () => {
+        return []
+      },
+    },
+    datasetVideos: {
       type: Array,
       default: () => {
         return []
@@ -122,6 +126,8 @@ export default {
       slideNaturalWidth: 180,
       defaultImg: require('~/assets/logo-sparc-wave-primary.svg'),
       defaultScaffoldImg: require('~/assets/scaffold-light.png'),
+      defaultPlotImg: require('~/assets/data-icon.png'),
+      defaultVideoImg: require('~/assets/video-default.png')
     }
   },
   computed: {
@@ -132,7 +138,8 @@ export default {
       return this.currentIndex < this.imageCount - 1
     },
     imageCount() {
-      return this.datasetImages.length + this.datasetScaffolds.length
+      return this.datasetImages.length + this.datasetScaffolds.length +
+        this.datasetPlots.length + this.datasetVideos.length;
     },
     numberOfImagesVisible() {
       const imagesVisibleCount =
@@ -158,6 +165,14 @@ export default {
     this.getThumbnails()
   },
   methods: {
+    getLink(thumbnail_image){
+      let link = {
+        name: this.getThumbnailLinkName(thumbnail_image),
+        params: this.getThumbnailLinkParams(thumbnail_image),
+        query: this.getThumbnailLinkQuery(thumbnail_image),
+      }
+      return link
+    },
     displayState(index) {
       let offset = 0
       const oddImagesVisible = this.numberOfImagesVisible % 2 === 1
@@ -300,6 +315,21 @@ export default {
             console.log(error.message)
           })
       })
+      for (let i in this.datasetPlots) {
+        this.thumbnails.push({
+          id: this.datasetId,
+          img: this.defaultPlotImg,
+          plot_file: this.datasetPlots[i].file_path,
+          plot_type: this.datasetPlots[i].plot_type
+        })
+      }
+      for (let i in this.datasetVideos) {
+        this.thumbnails.push({
+          id: this.datasetId,
+          img: this.defaultVideoImg,
+          file_path: this.datasetVideos[i].file_path
+        })
+      }
     },
     viewerId(shareLink) {
       const linkParts = shareLink.split(process.env.BL_SHARE_LINK_PREFIX)
@@ -310,11 +340,17 @@ export default {
       const imageInfoKeys = Object.keys(imageInfo)
       const shareLinkIndex = imageInfoKeys.indexOf('share_link')
       const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')
+      const plotFileIndex = imageInfoKeys.indexOf('plot_file') 
+      const videoFileIndex = imageInfoKeys.indexOf('file_path') 
       let imageType = 'unknown'
       if (shareLinkIndex !== -1) {
         imageType = 'biolucida'
       } else if (metadataFileIndex !== -1) {
         imageType = 'scaffold'
+      } else if (plotFileIndex !== -1) {
+        imageType = 'plot'
+      } else if (videoFileIndex !== -1) {
+        imageType = 'video'
       }
       return imageType
     },
@@ -328,6 +364,16 @@ export default {
           }
           break
         case 'scaffold':
+          params = {
+            id: imageInfo.name,
+          }
+          break
+        case 'plt':
+          params = {
+            id: imageInfo.name,
+          }
+          break
+        case 'video':
           params = {
             id: imageInfo.name,
           }
@@ -353,6 +399,21 @@ export default {
             scaffold: imageInfo.metadata_file,
           }
           break
+        case 'plot':
+          query = {
+            dataset_version: this.datasetVersion,
+            dataset_id: this.datasetId,
+            file_path: imageInfo.plot_file,
+            plot_type: imageInfo.plot_type
+          }
+          break
+        case 'video':
+          query = {
+            dataset_version: this.datasetVersion,
+            dataset_id: this.datasetId,
+            file_path: imageInfo.file_path
+          }
+          break
         default:
       }
 
@@ -367,6 +428,12 @@ export default {
           break
         case 'scaffold':
           name = 'datasets-scaffoldviewer-id'
+          break
+        case 'plot':
+          name = 'datasets-plotviewer-id'
+          break
+        case 'video':
+          name = 'datasets-videoviewer-id'
           break
         default:
       }
