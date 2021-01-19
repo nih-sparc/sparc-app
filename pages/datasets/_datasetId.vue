@@ -135,6 +135,7 @@
           :dataset-tags="datasetTags"
           :dataset-owner-name="datasetOwnerName"
           :dataset-owner-email="datasetOwnerEmail"
+          :external-publications="externalPublications"
         />
         <dataset-files-info
           v-show="activeTab === 'files'"
@@ -299,21 +300,26 @@ const getImagesData = async (datasetId, datasetDetails, $axios) => {
       })
     }
 
-    // This data can be found via scicrunch. Currently is hardcoded while waiting for 
+    // This data can be found via scicrunch. Currently is hardcoded while waiting for
     // ImageGallery.vue to start making scicrunch calls
     let plotData = Plots[datasetId]
     if (plotData) {
       plotData = [plotData]
     }
 
-    // This data can be found via scicrunch. Currently is hardcoded while waiting for 
+    // This data can be found via scicrunch. Currently is hardcoded while waiting for
     // ImageGallery.vue to start making scicrunch calls
     let videoData = Videos[datasetId]
     if (videoData) {
       videoData = [videoData]
     }
 
-    if (imagesData.status === 'success' || scaffoldData.length || plotData || videoData) {
+    if (
+      imagesData.status === 'success' ||
+      scaffoldData.length ||
+      plotData ||
+      videoData
+    ) {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
 
@@ -600,6 +606,13 @@ export default {
      */
     datasetTags: function() {
       return propOr([], 'tags', this.datasetInfo)
+    },
+    /**
+     * Returns list of external publications for dataset
+     * @returns {Array}
+     */
+    externalPublications: function() {
+      return propOr([], 'externalPublications', this.datasetInfo)
     },
     /**
      * Returns the current location href from the window object
