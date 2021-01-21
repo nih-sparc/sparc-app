@@ -1,0 +1,165 @@
+<template>
+  <div>
+    <breadcrumb :breadcrumb="breadcrumb" :title="page.fields.title" />
+    <page-hero>
+      <h1>{{ page.fields.title }}</h1>
+      <p>
+        {{ page.fields.summary }}
+      </p>
+    </page-hero>
+    <div class="page-wrap container">
+      <div class="subpage">
+        <!-- eslint-disable vue/no-v-html -->
+        <!-- marked will sanitize the HTML injected -->
+        <el-row :gutter="32">
+          <el-col :xs="24" :sm="{ span: 12, push: 12 }" class="details">
+            <img :src="newsImage" :alt="newsImageAlt" />
+            <hr />
+            <h3>Published Date</h3>
+            <p>{{ publishedDate }}</p>
+
+            <h3>External Link</h3>
+            <p>
+              <a :href="page.fields.url" target="_blank">
+                {{ page.fields.title }}
+              </a>
+            </p>
+
+            <h3>Share</h3>
+          </el-col>
+          <el-col :xs="24" :sm="{ span: 12, pull: 12 }">
+            <div class="content" v-html="parseMarkdown(htmlContent)" />
+          </el-col>
+        </el-row>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { pathOr } from 'ramda'
+
+import MarkedMixin from '@/mixins/marked'
+import FormatDate from '@/mixins/format-date'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
+import PageHero from '@/components/PageHero/PageHero'
+
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
+
+export default {
+  name: 'NewsPage',
+
+  components: {
+    Breadcrumb,
+    PageHero
+  },
+
+  mixins: [FormatDate, MarkedMixin],
+
+  async asyncData({ route }) {
+    try {
+      const page = await client.getEntry(route.params.id)
+      return { page }
+    } catch (error) {
+      return {
+        page: {
+          fields: []
+        }
+      }
+    }
+  },
+
+  data() {
+    return {
+      breadcrumb: [
+        {
+          label: 'Home',
+          to: {
+            name: 'index'
+          }
+        },
+        {
+          label: 'News & Events',
+          to: {
+            name: 'news-and-events'
+          }
+        }
+      ]
+    }
+  },
+
+  computed: {
+    /**
+     * Get news and event image
+     * @returns {String}
+     */
+    newsImage: function() {
+      return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], this.page)
+    },
+
+    /**
+     * Get news and event image alt tag
+     * @returns {String}
+     */
+    newsImageAlt: function() {
+      return pathOr('', ['fields', 'image', 'fields', 'title'], this.page)
+    },
+
+    /**
+     * Compute HTML Content for the page
+     * @returns {String}
+     */
+    htmlContent() {
+      return this.page.fields.copy || ''
+    },
+
+    /**
+     * Compute and formate start date
+     * @returns {String}
+     */
+    publishedDate: function() {
+      return this.formatDate(this.page.fields.publishedDate)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/_variables.scss';
+
+.content {
+  & ::v-deep {
+    color: $vestibular;
+  }
+  & ::v-deep p {
+    margin-bottom: 1em;
+  }
+  & ::v-deep img {
+    height: auto;
+    margin: 0.5em 0;
+    max-width: 100%;
+  }
+}
+
+.header {
+  margin-bottom: 3em;
+  .updated {
+    color: #aaa;
+  }
+}
+.details {
+  font-size: 0.875rem;
+  h3 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5rem;
+    text-transform: uppercase;
+  }
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+}
+</style>
