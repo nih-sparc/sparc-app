@@ -1,76 +1,25 @@
 <template>
-  <div>
-    <breadcrumb :breadcrumb="breadcrumb" :title="page.fields.title" />
-    <page-hero>
-      <h1>{{ page.fields.title }}</h1>
-      <p>
-        {{ page.fields.summary }}
-      </p>
-    </page-hero>
-    <div class="page-wrap container">
-      <div class="subpage">
-        <!-- eslint-disable vue/no-v-html -->
-        <!-- marked will sanitize the HTML injected -->
-        <el-row :gutter="32">
-          <el-col :xs="24" :sm="{ span: 12, push: 12 }" class="details">
-            <img :src="newsImage" :alt="newsImageAlt" />
-            <hr />
-            <h3>Published Date</h3>
-            <p>{{ publishedDate }}</p>
+  <news-events-page :page="page">
+    <img :src="newsImage" :alt="newsImageAlt" />
+    <hr />
+    <h3>Published Date</h3>
+    <p>{{ publishedDate }}</p>
 
-            <h3>External Link</h3>
-            <p>
-              <a :href="page.fields.url" target="_blank">
-                {{ page.fields.title }}
-              </a>
-            </p>
-
-            <h3>Share</h3>
-            <share-network
-              class="btn-share"
-              network="facebook"
-              tag="button"
-              :url="pageUrl"
-              :title="page.fields.title"
-              :description="page.fields.summary"
-            >
-              Share on Facebook
-            </share-network>
-            <share-network
-              class="btn-share"
-              network="twitter"
-              tag="button"
-              :url="pageUrl"
-              :title="page.fields.title"
-            >
-              Share on Twitter
-            </share-network>
-            <share-network
-              class="btn-share"
-              network="linkedin"
-              tag="button"
-              :url="pageUrl"
-              :title="page.fields.title"
-            >
-              Share on LinkedIn
-            </share-network>
-          </el-col>
-          <el-col :xs="24" :sm="{ span: 12, pull: 12 }">
-            <div class="content" v-html="parseMarkdown(htmlContent)" />
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-  </div>
+    <h3>External Link</h3>
+    <p>
+      <a :href="page.fields.url" target="_blank">
+        {{ page.fields.title }}
+      </a>
+    </p>
+  </news-events-page>
 </template>
 
 <script>
 import { pathOr } from 'ramda'
 
-import MarkedMixin from '@/mixins/marked'
+import NewsEventsPage from '@/components/NewsEventsPage/NewsEventsPage'
+
 import FormatDate from '@/mixins/format-date'
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
-import PageHero from '@/components/PageHero/PageHero'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -80,11 +29,10 @@ export default {
   name: 'NewsPage',
 
   components: {
-    Breadcrumb,
-    PageHero
+    NewsEventsPage
   },
 
-  mixins: [FormatDate, MarkedMixin],
+  mixins: [FormatDate],
 
   async asyncData({ route }) {
     try {
@@ -96,25 +44,6 @@ export default {
           fields: []
         }
       }
-    }
-  },
-
-  data() {
-    return {
-      breadcrumb: [
-        {
-          label: 'Home',
-          to: {
-            name: 'index'
-          }
-        },
-        {
-          label: 'News & Events',
-          to: {
-            name: 'news-and-events'
-          }
-        }
-      ]
     }
   },
 
@@ -136,72 +65,12 @@ export default {
     },
 
     /**
-     * Compute HTML Content for the page
-     * @returns {String}
-     */
-    htmlContent() {
-      return this.page.fields.copy || ''
-    },
-
-    /**
      * Compute and formate start date
      * @returns {String}
      */
     publishedDate: function() {
       return this.formatDate(this.page.fields.publishedDate)
-    },
-
-    /**
-     * Compute the full URL of the page
-     * @returns {String}
-     */
-    pageUrl: function() {
-      return `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-
-.content {
-  & ::v-deep {
-    color: $vestibular;
-  }
-  & ::v-deep p {
-    margin-bottom: 1em;
-  }
-  & ::v-deep img {
-    height: auto;
-    margin: 0.5em 0;
-    max-width: 100%;
-  }
-}
-
-.header {
-  margin-bottom: 3em;
-  .updated {
-    color: #aaa;
-  }
-}
-.details {
-  font-size: 0.875rem;
-  h3 {
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.5rem;
-    text-transform: uppercase;
-  }
-  img {
-    height: auto;
-    max-width: 100%;
-  }
-}
-.btn-share {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-</style>
