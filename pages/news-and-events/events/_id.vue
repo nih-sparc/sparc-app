@@ -1,16 +1,16 @@
 <template>
-  <news-events-page :page="page" :content="page.fields.copy">
+  <news-events-page :page="page" :content="page.fields.description">
     <img :src="newsImage" :alt="newsImageAlt" />
     <hr />
-    <h3>Published Date</h3>
-    <p>{{ publishedDate }}</p>
 
-    <h3>External Link</h3>
-    <p>
-      <a :href="page.fields.url" target="_blank">
-        {{ page.fields.title }}
-      </a>
-    </p>
+    <h3>Type</h3>
+    <p>{{ page.fields.eventType }}</p>
+
+    <h3>Date</h3>
+    <p>{{ eventDate }}</p>
+
+    <h3>Location</h3>
+    <p>{{ page.fields.location }}</p>
   </news-events-page>
 </template>
 
@@ -65,11 +65,15 @@ export default {
     },
 
     /**
-     * Compute and formate start date
+     * Get event date range, if there is no end date, default to start date
      * @returns {String}
      */
-    publishedDate: function() {
-      return this.formatDate(this.page.fields.publishedDate)
+    eventDate: function() {
+      const startDate = this.formatDate(this.page.fields.startDate || '')
+      const endDate = this.formatDate(this.page.fields.endDate || '')
+      return startDate === endDate || !endDate
+        ? startDate
+        : `${startDate} - ${endDate}`
     }
   }
 }

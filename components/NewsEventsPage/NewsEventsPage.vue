@@ -82,6 +82,10 @@ export default {
       default: () => {
         return {}
       }
+    },
+    content: {
+      type: String,
+      default: ''
     }
   },
 
@@ -110,7 +114,7 @@ export default {
      * @returns {String}
      */
     htmlContent() {
-      return this.page.fields.copy || ''
+      return this.content || ''
     },
 
     /**
