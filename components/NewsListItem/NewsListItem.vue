@@ -1,14 +1,14 @@
 <template>
   <div class="news-list-item">
     <h3>
-      <router-link
+      <nuxt-link
         :to="{
           name: 'news-and-events-news-id',
           params: { id: item.sys.id }
         }"
       >
         {{ item.fields.title }}
-      </router-link>
+      </nuxt-link>
     </h3>
     <p>{{ item.fields.summary }}</p>
     <p class="news-list-item__date">

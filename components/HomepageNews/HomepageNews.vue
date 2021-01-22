@@ -15,14 +15,14 @@
       >
         <div>
           <h3>
-            <router-link
+            <nuxt-link
               :to="{
                 name: 'news-and-events-news-id',
                 params: { id: item.sys.id }
               }"
             >
               {{ item.fields.title }}
-            </router-link>
+            </nuxt-link>
           </h3>
           <div class="sparc-card__detail">
             <svg-icon name="icon-calendar" height="16" width="16" />
@@ -41,7 +41,7 @@
           <!-- marked will sanitize the HTML injected -->
           <div v-html="parseMarkdown(item.fields.summary)" />
         </div>
-        <router-link
+        <nuxt-link
           :to="{
             name: 'news-and-events-news-id',
             params: { id: item.sys.id }
@@ -50,7 +50,7 @@
           <el-button size="medium">
             Learn More
           </el-button>
-        </router-link>
+        </nuxt-link>
       </sparc-card>
     </div>
   </div>

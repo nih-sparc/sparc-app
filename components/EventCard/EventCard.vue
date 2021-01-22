@@ -5,14 +5,14 @@
       <span>{{ event.fields.eventType }}</span>
     </div>
     <h3>
-      <router-link
+      <nuxt-link
         :to="{
           name: 'news-and-events-events-id',
           params: { id: event.sys.id }
         }"
       >
         {{ event.fields.title }}
-      </router-link>
+      </nuxt-link>
     </h3>
     <div class="upcoming-event__detail">
       <svg-icon name="icon-calendar" height="16" width="16" />
