@@ -17,9 +17,8 @@
 
             <h3>Share</h3>
             <share-network
-              class="btn-share"
               network="facebook"
-              tag="button"
+              tag="el-button"
               :url="pageUrl"
               :title="page.fields.title"
               :description="page.fields.summary"
@@ -27,18 +26,16 @@
               Share on Facebook
             </share-network>
             <share-network
-              class="btn-share"
               network="twitter"
-              tag="button"
+              tag="el-button"
               :url="pageUrl"
               :title="page.fields.title"
             >
               Share on Twitter
             </share-network>
             <share-network
-              class="btn-share"
               network="linkedin"
-              tag="button"
+              tag="el-button"
               :url="pageUrl"
               :title="page.fields.title"
             >
@@ -158,11 +155,5 @@ export default {
     height: auto;
     max-width: 100%;
   }
-}
-.btn-share {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
 }
 </style>
