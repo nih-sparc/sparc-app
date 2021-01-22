@@ -1,7 +1,10 @@
 <template>
   <news-events-page :page="page" :content="page.fields.copy">
-    <img :src="newsImage" :alt="newsImageAlt" />
-    <hr />
+    <template v-if="newsImage">
+      <img :src="newsImage" :alt="newsImageAlt" />
+      <hr />
+    </template>
+
     <h3>Published Date</h3>
     <p>{{ publishedDate }}</p>
 
