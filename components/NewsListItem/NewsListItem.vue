@@ -1,7 +1,14 @@
 <template>
   <div class="news-list-item">
     <h3>
-      <a :href="item.fields.url" target="_blank">{{ item.fields.title }}</a>
+      <router-link
+        :to="{
+          name: 'news-and-events-news-id',
+          params: { id: item.sys.id }
+        }"
+      >
+        {{ item.fields.title }}
+      </router-link>
     </h3>
     <p>{{ item.fields.summary }}</p>
     <p class="news-list-item__date">
@@ -31,7 +38,7 @@ export default {
      * @returns {String}
      */
     publishedDate: function() {
-      return this.formatDate(this.item.fields.publishedDate)
+      return this.formatDate(this.item.fields.publishedDate || '')
     }
   }
 }
