@@ -55,16 +55,10 @@
 </template>
 
 <script>
-import { pathOr } from 'ramda'
-
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import PageHero from '@/components/PageHero/PageHero'
-
-import createClient from '@/plugins/contentful.js'
-
-const client = createClient()
 
 export default {
   name: 'NewsEventsPage',
@@ -138,7 +132,8 @@ export default {
   & ::v-deep p {
     margin-bottom: 1em;
   }
-  & ::v-deep img {
+  & ::v-deep img,
+  & ::v-deep video {
     height: auto;
     margin: 0.5em 0;
     max-width: 100%;
