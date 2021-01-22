@@ -26,6 +26,34 @@
             </p>
 
             <h3>Share</h3>
+            <share-network
+              class="btn-share"
+              network="facebook"
+              tag="button"
+              :url="pageUrl"
+              :title="page.fields.title"
+              :description="page.fields.summary"
+            >
+              Share on Facebook
+            </share-network>
+            <share-network
+              class="btn-share"
+              network="twitter"
+              tag="button"
+              :url="pageUrl"
+              :title="page.fields.title"
+            >
+              Share on Twitter
+            </share-network>
+            <share-network
+              class="btn-share"
+              network="linkedin"
+              tag="button"
+              :url="pageUrl"
+              :title="page.fields.title"
+            >
+              Share on LinkedIn
+            </share-network>
           </el-col>
           <el-col :xs="24" :sm="{ span: 12, pull: 12 }">
             <div class="content" v-html="parseMarkdown(htmlContent)" />
@@ -121,6 +149,14 @@ export default {
      */
     publishedDate: function() {
       return this.formatDate(this.page.fields.publishedDate)
+    },
+
+    /**
+     * Compute the full URL of the page
+     * @returns {String}
+     */
+    pageUrl: function() {
+      return `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
   }
 }
@@ -161,5 +197,11 @@ export default {
     height: auto;
     max-width: 100%;
   }
+}
+.btn-share {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 </style>
