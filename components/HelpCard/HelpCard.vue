@@ -2,7 +2,7 @@
   <div class="help-card">
     <h3>
       <nuxt-link class="help-link"
-        :to="{ name: 'help-helpId', params: { helpId: helpItem.sys.id } }"
+        :to="{ name: 'help-helpId', params: { helpId: helpItem.fields.slug || helpItem.sys.id } }"
       >
         {{ helpItem.fields.title || '' }}
       </nuxt-link>
