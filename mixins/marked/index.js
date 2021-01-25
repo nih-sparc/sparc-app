@@ -31,6 +31,18 @@ renderer.table = function(header, body) {
   return `<div class="markdown-table-wrap">${html}</div>`
 }
 
+renderer.oldImage = renderer.image
+
+renderer.image = function(href, title, text) {
+  const videos = ['webm', 'mp4', 'mov']
+  const filetype = href.split('.').pop()
+  if (videos.indexOf(filetype) > -1) {
+    return `<video alt="${text}" controls><source src="${href}" type="video/${filetype}"></video>`
+  } else {
+    return renderer.oldImage(href, title, text)
+  }
+}
+
 marked.setOptions({
   sanitize: true,
   renderer

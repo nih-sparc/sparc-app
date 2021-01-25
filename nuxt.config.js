@@ -120,7 +120,8 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/robots',
     'cookie-universal-nuxt',
-    '@miyaoka/nuxt-twitter-widgets-module'
+    '@miyaoka/nuxt-twitter-widgets-module',
+    'vue-social-sharing/nuxt'
   ],
   /*
    ** robots.txt
