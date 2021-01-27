@@ -23,6 +23,7 @@
       <project-search-results
         v-show="activeTab === 'projects'"
         :table-data="projectTableData"
+        @sort-change="onProjectsSortChange"
       />
     </detail-tabs>
   </div>
@@ -56,6 +57,12 @@ const datasetsOrder = {
   limit: '100'
 }
 
+const projectsOrder = {
+  orderBy: 'fields.title',
+  orderDirection: 'asc',
+  limit: '100'
+}
+
 /**
  * Get datasets with sorting
  * @param {Object} pageData
@@ -82,6 +89,41 @@ const getDatasets = async (pageData, orderBy, $axios) => {
   )
 }
 
+/**
+ * Get projects with sorting
+ * @param {Object} pageData
+ * @param {Object} projectsOrder
+ * @returns {Array}
+ */
+const getProjects = async (pageData, projectsOrder) => {
+  try {
+    const projectSectionId = path(
+      ['fields', 'projectSection', 'sys', 'id'],
+      pageData
+    )
+
+    const order =
+      projectsOrder.orderDirection === 'asc'
+        ? projectsOrder.orderBy
+        : `-${projectsOrder.orderBy}`
+
+    // Get related projects
+    return projectSectionId
+      ? await client
+          .getEntries({
+            content_type: process.env.ctf_project_id,
+            order,
+            links_to_entry: projectSectionId
+          })
+          .catch(() => {
+            return []
+          })
+      : []
+  } catch (error) {
+    return []
+  }
+}
+
 export default {
   name: 'OrganDetails',
 
@@ -96,23 +138,8 @@ export default {
     // Get page content
     const pageData = await client.getEntry(route.params.organId)
 
-    const projectSectionId = path(
-      ['fields', 'projectSection', 'sys', 'id'],
-      pageData
-    )
-
     // Get related projects
-    let projects = []
-    if (projectSectionId) {
-      projects = await client
-        .getEntries({
-          content_type: process.env.ctf_project_id,
-          links_to_entry: projectSectionId
-        })
-        .catch(() => {
-          return []
-        })
-    }
+    const projects = await getProjects(pageData, projectsOrder)
 
     // Get related datasets
     const datasets = await getDatasets(pageData, datasetsOrder, $axios)
@@ -141,6 +168,7 @@ export default {
       tabs: [],
       activeTab: 'datasets',
       datasetsOrder: { ...datasetsOrder },
+      projectsOrder: { ...projectsOrder },
       breadcrumb: [
         {
           to: {
@@ -217,6 +245,25 @@ export default {
       )
 
       this.datasets = datasets.datasets
+    },
+
+    /**
+     * Set sort for projects and get new projects
+     * @param {Object} sortData
+     */
+    onProjectsSortChange: async function(sortData) {
+      const orderDirection = sortData.order === 'ascending' ? 'asc' : 'desc'
+      const orderBy = sortData.prop === 'createdAt' ? 'date' : sortData.prop
+
+      this.projectsOrder = {
+        ...this.onProjectSortChange,
+        orderDirection,
+        orderBy
+      }
+
+      const projects = await getProjects(this.pageData, this.projectsOrder)
+
+      this.projectTableData = projects.items || []
     }
   }
 }

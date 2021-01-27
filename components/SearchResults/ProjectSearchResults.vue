@@ -9,6 +9,7 @@
       sortable="custom"
       prop="fields.title"
       label="Title"
+      :sort-orders="sortOrders"
       :width="titleColumnWidth"
     >
       <template slot-scope="scope">
@@ -74,6 +75,12 @@ export default {
     titleColumnWidth: {
       type: Number,
       default: () => 300
+    }
+  },
+
+  data() {
+    return {
+      sortOrders: ['ascending', 'descending']
     }
   },
 
