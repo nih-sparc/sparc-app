@@ -59,11 +59,20 @@ export default {
 
   mixins: [MarkedMixin],
 
-  async asyncData({ params }) {
+  async asyncData({ params, redirect }) {
+    const helpItem = await getHelpItem(params.helpId)
+
+    // Redirect to the friendly URL page, if this page has a slug
+    if (helpItem.fields.slug) {
+      redirect({
+        name: 'help-helpId',
+        params: { helpId: helpItem.fields.slug }
+      })
+    }
+
     const allHelpData = await client.getEntry(process.env.ctf_support_page_id, {
       include: 2
     })
-    const helpItem = await getHelpItem(params.helpId)
 
     return {
       helpHeroData: allHelpData.fields,
