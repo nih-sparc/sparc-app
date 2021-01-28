@@ -63,10 +63,11 @@ export default {
     const helpItem = await getHelpItem(params.helpId)
 
     // Redirect to the friendly URL page, if this page has a slug
-    if (helpItem.fields.slug) {
+    const slug = helpItem.fields.slug
+    if (slug && params.helpId !== slug) {
       redirect({
         name: 'help-helpId',
-        params: { helpId: helpItem.fields.slug }
+        params: { helpId: slug }
       })
     }
 
