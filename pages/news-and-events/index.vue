@@ -74,7 +74,9 @@
         <h2>Latest News</h2>
         <div class="subpage">
           <div>
-            <news-list-item v-for="newsItem in news" :key="newsItem.sys.id" :item="newsItem" />
+            <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
+
+            <button v-if="news.total > news.items.length" class="btn-load-more mt-16" @click="getAllNews">View All News &gt;</button>
           </div>
         </div>
 
@@ -116,12 +118,12 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, fetchData, HeroDataEntry, NewsAndEventsComponent } from './model';
+import { Computed, Data, Methods, fetchData, fetchNews, HeroDataEntry, NewsAndEventsComponent, NewsCollection } from './model';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
 
-export default Vue.extend<Data, never, Computed, never>({
+export default Vue.extend<Data, Methods, Computed, never>({
   name: 'EventPage',
 
   components: {
@@ -177,7 +179,7 @@ export default Vue.extend<Data, never, Computed, never>({
       pastEvents: [],
       isShowingAllUpcomingEvents: false,
       isShowingAllPastEvents: false,
-      news: [],
+      news: {} as NewsCollection,
       heroData: {} as HeroDataEntry,
       pastEventChunk: 1
     }
@@ -212,6 +214,16 @@ export default Vue.extend<Data, never, Computed, never>({
       if (this.pastEventChunk === this.pastEventsChunkMax) this.isShowingAllPastEvents = true;
       const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
       return this.pastEvents.slice().reverse().slice(0, endChunk)
+    }
+  },
+
+  methods: {
+    /**
+     * Get all news
+     */
+    getAllNews: async function() {
+      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 4)
+      this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     }
   }
 })
@@ -305,6 +317,20 @@ h3 {
 .twitter-wrap {
   @media (min-width: 48em) {
     border-left: 2px solid #d8d8d8;
+  }
+}
+
+.btn-load-more {
+  background: none;
+  border: none;
+  color: $navy;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  &:hover,
+  &:active {
+    text-decoration: underline;
   }
 }
 </style>
