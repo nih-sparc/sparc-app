@@ -84,8 +84,9 @@
         <div class="subpage">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
-              <h3>Sign up to the SPARC Newsletter</h3>
-              <p>Keep up to date with all the latest news and events from the SPARC portal.</p>
+              <h3 class="mb-24">Sign up to the SPARC Newsletter</h3>
+              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC portal.</p>
+              <newsletter-form />
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
               <div v-twitter-widgets>
@@ -115,6 +116,7 @@ import NewsListItem from '@/components/NewsListItem/NewsListItem.vue';
 import EventCard from '@/components/EventCard/EventCard.vue';
 import PageHero from '@/components/PageHero/PageHero.vue';
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
+import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 
 import createClient from '@/plugins/contentful.js';
 
@@ -133,7 +135,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
     PageHero,
     NewsListItem,
     TabNav,
-    SearchControlsContentful
+    SearchControlsContentful,
+    NewsletterForm
   },
 
   asyncData() {
@@ -238,12 +241,13 @@ h2 {
 }
 
 h3 {
+  color: $navy;
   font-size: 1.375rem;
   line-height: 2rem;
 }
 .subpage {
   @media (min-width: 48em) {
-    margin: 2rem 0;
+    margin: 3rem 0;
   }
 }
 .event-card {
@@ -313,6 +317,13 @@ h3 {
 .newsletter-wrap {
   font-size: 1.125rem;
   line-height: 1.5rem;
+  margin-bottom: 2rem;
+  @media (min-width: 48em) {
+    margin-bottom: 0;
+  }
+  p {
+    color: $navy
+  }
 }
 .twitter-wrap {
   @media (min-width: 48em) {
