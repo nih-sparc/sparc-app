@@ -78,12 +78,14 @@
           </div>
         </div>
 
+        <h2>Stay Connected</h2>
         <div class="subpage">
           <el-row :gutter="32">
-            <el-col :xs="24" :sm="{ span: 12, push: 12 }">
-
+            <el-col :xs="24" :sm="12" class="newsletter-wrap">
+              <h3>Sign up to the SPARC Newsletter</h3>
+              <p>Keep up to date with all the latest news and events from the SPARC portal.</p>
             </el-col>
-            <el-col :xs="24" :sm="{ span: 12, push: 12 }">
+            <el-col :xs="24" :sm="12" class="twitter-wrap">
               <div v-twitter-widgets>
                 <a
                   class="twitter-timeline"
@@ -97,8 +99,6 @@
             </el-col>
           </el-row>
         </div>
-
-
       </div>
     </div>
   </div>
@@ -219,6 +219,21 @@ export default Vue.extend<Data, never, Computed, never>({
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  font-size: 1.375rem;
+  line-height: 2rem;
+}
+.subpage {
+  @media (min-width: 48em) {
+    margin: 2rem 0;
+  }
+}
 .event-card {
   margin-bottom: 2em;
 }
@@ -281,6 +296,15 @@ export default Vue.extend<Data, never, Computed, never>({
   padding: 1.5em 0;
   &:first-child {
     padding-top: 0;
+  }
+}
+.newsletter-wrap {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
+.twitter-wrap {
+  @media (min-width: 48em) {
+    border-left: 2px solid #d8d8d8;
   }
 }
 </style>
