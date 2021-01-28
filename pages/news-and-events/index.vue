@@ -77,6 +77,28 @@
             <news-list-item v-for="newsItem in news" :key="newsItem.sys.id" :item="newsItem" />
           </div>
         </div>
+
+        <div class="subpage">
+          <el-row :gutter="32">
+            <el-col :xs="24" :sm="{ span: 12, push: 12 }">
+
+            </el-col>
+            <el-col :xs="24" :sm="{ span: 12, push: 12 }">
+              <div v-twitter-widgets>
+                <a
+                  class="twitter-timeline"
+                  href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw"
+                  data-height="500"
+                  target="_blank"
+                >
+                  Tweets by sparc_science
+                </a>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+
+
       </div>
     </div>
   </div>
