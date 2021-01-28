@@ -1,4 +1,5 @@
 <template>
+  <!-- Generated from MailChimp. Docs: https://mailchimp.com/help/add-a-signup-form-to-your-website/ -->
   <div id="mc_embed_signup">
     <form
       id="mc-embedded-subscribe-form"
