@@ -29,7 +29,7 @@ export const actions = {
     try {
       const client = createClient()
       const response = await client.getEntry(process.env.ctf_footer_copy_id)
-      commit('SET_FOOTER_DATA', response.fields.copy)
+      commit('SET_FOOTER_DATA', response.fields)
 
       // Load GDPR cookie info
       const hasAcceptedGDPR = this.$cookies.get('GDPR:accepted')
