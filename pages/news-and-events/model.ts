@@ -1,4 +1,4 @@
-import { Asset, ContentfulClientApi, Entry } from 'contentful';
+import { Asset, ContentfulClientApi, Entry, EntryCollection } from 'contentful';
 import { Route } from 'vue-router';
 
 import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
@@ -22,18 +22,14 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       query,
     })
 
-    const news = await client.getEntries<News>({
-      content_type: process.env.ctf_news_id,
-      order: '-fields.publishedDate',
-      query
-    })
+    const news = await fetchNews(client, query, 4)
 
     const heroData = await client.getEntry<HeroData>(process.env.ctf_news_and_events_page_id ?? '')
 
     return {
       upcomingEvents: upcomingEvents.items,
       pastEvents: pastEvents.items,
-      news: news.items,
+      news,
       heroData
     }
   } catch (e) {
@@ -41,9 +37,24 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
     return {
       upcomingEvents: [],
       pastEvents: [],
-      news: [],
+      news: {} as unknown as NewsCollection,
       heroData: {} as unknown as Entry<HeroData>
     }
+  }
+}
+
+export const fetchNews = async (client: ContentfulClientApi, query?: string, limit?: number,  skip?: number) : Promise<NewsCollection> => {
+  try {
+    return await client.getEntries<NewsEntry>({
+      content_type: process.env.ctf_news_id,
+      order: '-fields.publishedDate',
+      query,
+      limit,
+      skip
+    })
+  } catch (e) {
+    console.error(e)
+    return {} as unknown as NewsCollection
   }
 }
 
@@ -82,6 +93,8 @@ export interface News {
 
 export type NewsEntry = Entry<News>
 
+export type NewsCollection = EntryCollection<NewsEntry>
+
 export interface Tab {
   label: string;
   type: string;
@@ -96,7 +109,7 @@ export interface Data {
   pastEvents: EventsEntry[],
   isShowingAllUpcomingEvents: boolean,
   isShowingAllPastEvents: boolean,
-  news: NewsEntry[],
+  news: NewsCollection,
   heroData: HeroDataEntry,
   pastEventChunk: number
 }
@@ -107,5 +120,8 @@ export interface Computed {
   pastEventsChunkMax: number,
   displayedPastEvents: EventsEntry[]
 }
+export interface Methods {
+  getAllNews: (this: NewsAndEventsComponent) => void;
+}
 
-export type NewsAndEventsComponent = Data & Computed & { $route: Route }
+export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }

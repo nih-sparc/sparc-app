@@ -25,8 +25,6 @@
     <homepage-news :news="newsAndEvents" />
 
     <homepage-testimonials :testimonials="testimonials" />
-
-    <homepage-twitter />
   </div>
 </template>
 
@@ -35,7 +33,6 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTestimonials.vue'
-import HomepageTwitter from '@/components/HomepageTwitter/HomepageTwitter.vue'
 
 import createClient from '@/plugins/contentful.js'
 import marked from '@/mixins/marked/index'
@@ -49,8 +46,7 @@ export default {
     PageHero,
     FeaturedData,
     HomepageNews,
-    HomepageTestimonials,
-    HomepageTwitter
+    HomepageTestimonials
   },
 
   mixins: [marked],
