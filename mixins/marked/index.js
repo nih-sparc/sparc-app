@@ -8,12 +8,19 @@ const renderer = new marked.Renderer()
 const linkRenderer = renderer.link
 const tableRenderer = renderer.table
 
-const isAnchor = str => {
+export const isAnchor = str => {
   return /(?:^|\s)(#[^ ]+)/i.test(str)
 }
 
-const isInternalLink = str => {
-  return isAnchor(str) ? true : str.includes(process.env.ROOT_URL)
+/**
+ * Compute if the link is an external link
+ * @param {String} str
+ * @returns {Boolean}
+ */
+export const isInternalLink = str => {
+  return isAnchor(str)
+    ? true
+    : str.includes(process.env.ROOT_URL) || str.startsWith('/')
 }
 
 renderer.link = function(href, title, text) {
