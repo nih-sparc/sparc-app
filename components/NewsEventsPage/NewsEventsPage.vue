@@ -16,31 +16,35 @@
             <slot />
 
             <h3>Share</h3>
-            <share-network
-              network="facebook"
-              tag="el-button"
-              :url="pageUrl"
-              :title="page.fields.title"
-              :description="page.fields.summary"
-            >
-              Share on Facebook
-            </share-network>
-            <share-network
-              network="twitter"
-              tag="el-button"
-              :url="pageUrl"
-              :title="page.fields.title"
-            >
-              Share on Twitter
-            </share-network>
-            <share-network
-              network="linkedin"
-              tag="el-button"
-              :url="pageUrl"
-              :title="page.fields.title"
-            >
-              Share on LinkedIn
-            </share-network>
+            <div class="share-links">
+              <share-network
+                network="facebook"
+                :url="pageUrl"
+                :title="page.fields.title"
+                :description="page.fields.summary"
+              >
+                <svg-icon name="icon-share-facebook" height="28" width="28" />
+                <span class="visuallyhidden">Share on Facebook</span>
+              </share-network>
+              <share-network
+                network="twitter"
+                class="ml-8"
+                :url="pageUrl"
+                :title="page.fields.title"
+              >
+                <svg-icon name="icon-share-twitter" height="28" width="28" />
+                <span class="visuallyhidden">Share on Twitter</span>
+              </share-network>
+              <share-network
+                network="linkedin"
+                class="ml-8"
+                :url="pageUrl"
+                :title="page.fields.title"
+              >
+                <svg-icon name="icon-share-linked" height="28" width="28" />
+                <span class="visuallyhidden">Share on Linkedin</span>
+              </share-network>
+            </div>
           </el-col>
           <el-col :xs="24" :sm="{ span: 12, pull: 12 }">
             <div class="content" v-html="parseMarkdown(htmlContent)" />
@@ -155,5 +159,8 @@ export default {
     height: auto;
     max-width: 100%;
   }
+}
+.share-links {
+  display: flex;
 }
 </style>
