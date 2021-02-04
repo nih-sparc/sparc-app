@@ -14,7 +14,7 @@
     <div class="page-wrap portalmapcontainer" ref="mappage">
       <client-only placeholder="Loading...">
         <div class="mapClass">
-          <MapContent ref="map" :state="state" :api="api" :shareLink="shareLink" @updateShareLinkRequested="updateUUID" />
+          <MapContent ref="map" :state="state" :api="api" :flatmapAPI="flatmapAPI" :shareLink="shareLink" @updateShareLinkRequested="updateUUID" />
         </div>
       </client-only>
     </div>
@@ -50,6 +50,7 @@ export default {
       prefix: "/maps",
       state: undefined,
       api: process.env.portal_api,
+      flatmapAPI: process.env.flatmap_api,
     };
   },
   computed: {
