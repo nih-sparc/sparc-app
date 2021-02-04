@@ -17,8 +17,9 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "^0.1.28-beta-8",
-    "@abi-software/scaffoldvuer": "^0.1.44-beta.3",
+    "@abi-software/mapintegratedvuer": "^0.1.28",
+    "@abi-software/scaffoldvuer": "^0.1.44",
+    "@abi-software/plotvuer": "^0.2.31",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
@@ -34,8 +35,10 @@
     "eslint-loader": "^3.0.3",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-vue": "^6.1.2",
+    "js-file-download": "^0.4.12",
     "marked": "^0.7.0",
     "nuxt": "^2.12.1",
+    "plyr": "^3.6.3",
     "prettier": "^1.19.1",
     "ramda": "^0.26.1",
     "redirect-ssl": "^1.4.1",

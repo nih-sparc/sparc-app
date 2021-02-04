@@ -6,6 +6,7 @@ import marked from 'marked'
  */
 const renderer = new marked.Renderer()
 const linkRenderer = renderer.link
+const tableRenderer = renderer.table
 
 const isAnchor = str => {
   return /(?:^|\s)(#[^ ]+)/i.test(str)
@@ -22,6 +23,12 @@ renderer.link = function(href, title, text) {
   return isInternal
     ? html
     : html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
+}
+
+renderer.table = function(header, body) {
+  const html = tableRenderer.call(renderer, header, body)
+
+  return `<div class="markdown-table-wrap">${html}</div>`
 }
 
 marked.setOptions({

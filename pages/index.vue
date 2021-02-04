@@ -39,6 +39,7 @@ import HomepageTwitter from '@/components/HomepageTwitter/HomepageTwitter.vue'
 
 import createClient from '@/plugins/contentful.js'
 import marked from '@/mixins/marked/index'
+import getHomepageFields from '@/utils/homepageFields'
 
 const client = createClient()
 export default {
@@ -60,7 +61,7 @@ export default {
       client.getEntry(process.env.ctf_home_page_id)
     ])
       .then(([homepage]) => {
-        return { ...homepage.fields }
+        return getHomepageFields(homepage.fields)
       })
       .catch(console.error)
   },

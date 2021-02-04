@@ -12,9 +12,24 @@
         <a :href="data.fields.url" target="blank">
           <h2>{{ data.fields.name }}</h2>
         </a>
-        <p class="resources-search-results__items--content-date">
-          {{ formatDate(data.sys.updatedAt) }}
+
+        <p v-if="data.fields.developedBySparc" class="resource-category">
+          SPARC
         </p>
+        <template v-if="data.fields.contactEmail">
+          <h3 class="metadata-title">
+            Support Contact
+          </h3>
+          <p>
+            <a
+              v-if="data.fields.contactEmail"
+              :href="`mailto:${data.fields.contactEmail}`"
+            >
+              {{ data.fields.contactEmail }}
+            </a>
+          </p>
+        </template>
+
         <p class="resources-search-results__items--content-description">
           {{ data.fields.description }}
         </p>
@@ -54,17 +69,12 @@ export default {
 @import '@/assets/_variables.scss';
 .resources-search-results {
   &__items {
-    height: 9.375rem;
     display: flex;
     flex-direction: row;
     border-bottom: solid 1px $light-grey;
     padding: 1.25em 0;
     @media screen and (max-width: 768px) {
-      height: 100%;
       display: block;
-    }
-    @media screen and (max-width: 1024px) {
-      height: 100%;
     }
     h2 {
       font-size: 1em;
@@ -106,5 +116,25 @@ export default {
       color: $dark-sky;
     }
   }
+}
+.metadata-title {
+  color: $dark-sky;
+  font-size: 1em;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 0.375rem;
+  text-transform: uppercase;
+}
+
+.resource-category {
+  background: $median;
+  border-radius: 15px;
+  color: #fff;
+  font-size: 0.875rem;
+  top: 10px;
+  padding: 0 0.65rem;
+  right: 14px;
+  width: fit-content;
+  margin-bottom: 10px;
 }
 </style>

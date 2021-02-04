@@ -5,7 +5,7 @@
       <h1>Tools &amp; Resources</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(fields.heroCopy)" />
+      <div v-html="parseMarkdown(fields.heroCopyLong)" />
       <search-controls-contentful
         placeholder="Search resources"
         path="/resources"
@@ -96,12 +96,20 @@ const tabTypes = [
     type: 'sparcPartners' as const
   },
   {
-    label: 'Platforms',
-    type: 'Platform' as const
+    label: 'Devices',
+    type: 'Device' as const
   },
   {
-    label: 'Tools',
-    type: 'Tool' as const
+    label: 'Digital Repositories',
+    type: 'Digital Repositories' as const
+  },
+  {
+    label: 'Software',
+    type: 'Software' as const
+  },
+  {
+    label: 'Biologicals',
+    type: 'Biologicals' as const
   }
 ]
 
