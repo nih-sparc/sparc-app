@@ -35,7 +35,11 @@
       >
         <client-only placeholder="Loading scaffold ...">
           <div class="scaffoldvuer-container">
-            <ScaffoldVuer :url="scaffoldUrl" :traditional="traditional" :backgroundToggle="backgroundToggle"/>
+            <ScaffoldVuer
+              :url="scaffoldUrl"
+              :traditional="traditional"
+              :background-toggle="backgroundToggle"
+            />
           </div>
         </client-only>
       </detail-tabs>
@@ -62,8 +66,8 @@ export default {
       tabs: [
         {
           label: 'Scaffold Viewer',
-          type: 'scaffold',
-        },
+          type: 'scaffold'
+        }
       ],
       activeTab: 'scaffold',
       file: {},
@@ -114,13 +118,12 @@ export default {
      */
     scaffoldUrl: function() {
       return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
-    },
-  },
+    }
+  }
 }
 </script>
 
 <style scoped lang="scss">
-
 .page {
   display: flex;
   margin-top: 7rem;
@@ -168,11 +171,11 @@ h1 {
 }
 </style>
 <style lang="scss">
-  .scaffoldvuer-container {
-    margin-top: 1.5rem;
-    height: 90vh;
-    max-width: calc(100% - 48px);
-    padding-left: 24px;
-    @import '~@abi-software/scaffoldvuer/dist/scaffoldvuer'
-  }
+.scaffoldvuer-container {
+  margin-top: 1.5rem;
+  height: 90vh;
+  max-width: calc(100% - 48px);
+  padding-left: 24px;
+  @import '~@abi-software/scaffoldvuer/dist/scaffoldvuer';
+}
 </style>
