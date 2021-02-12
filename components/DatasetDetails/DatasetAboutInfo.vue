@@ -3,7 +3,7 @@
     <div class="dataset-about-info__container">
       <h3>Last Updated</h3>
       <p>{{ updatedDate }}</p>
-      <h3>Contact Information</h3>
+      <h3>Corresponding Author</h3>
       <p>
         {{ datasetOwnerName }}<br />
         {{ datasetOwnerEmail }}
@@ -69,8 +69,7 @@
                 The dataset citation generator (<a
                   href="https://citation.crosscite.org/"
                   target="_blank"
-                  >https://citation.crosscite.org/</a
-                >) encountered an internal error and was unable to complete your
+                >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
                 request.<br />
                 Please come back later.
               </p>

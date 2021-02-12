@@ -33,6 +33,22 @@ import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
 
+const getHelpItem = async id => {
+  try {
+    const isSlug = id.split('-').length > 1
+
+    const item = isSlug
+      ? await client.getEntries({
+          content_type: process.env.ctf_help_id,
+          'fields.slug': id
+        })
+      : await client.getEntry(id)
+    return isSlug ? item.items[0] : item
+  } catch (error) {
+    return {}
+  }
+}
+
 export default {
   name: 'EventPage',
 
@@ -43,34 +59,40 @@ export default {
 
   mixins: [MarkedMixin],
 
-  asyncData(env) {
-    return Promise.all([
-      client.getEntry(process.env.ctf_support_page_id, { include: 2 }),
-      client.getEntry(env.params.helpId)
-    ])
-      .then(([allHelpData, helpItem]) => {
-        return {
-          helpHeroData: allHelpData.fields,
-          helpItem: helpItem,
-          breadcrumb: [
-            {
-              label: 'Home',
-              to: {
-                name: 'index'
-              }
-            },
-            {
-              label: allHelpData.fields.title,
-              to: {
-                name: 'help'
-              }
-            }
-          ]
+  async asyncData({ params, redirect }) {
+    const helpItem = await getHelpItem(params.helpId)
+
+    // Redirect to the friendly URL page, if this page has a slug
+    const slug = helpItem.fields.slug
+    if (slug && params.helpId !== slug) {
+      redirect({
+        name: 'help-helpId',
+        params: { helpId: slug }
+      })
+    }
+
+    const allHelpData = await client.getEntry(process.env.ctf_support_page_id, {
+      include: 2
+    })
+
+    return {
+      helpHeroData: allHelpData.fields,
+      helpItem: helpItem,
+      breadcrumb: [
+        {
+          label: 'Home',
+          to: {
+            name: 'index'
+          }
+        },
+        {
+          label: allHelpData.fields.title,
+          to: {
+            name: 'help'
+          }
         }
-      })
-      .catch(() => {
-        throw Error
-      })
+      ]
+    }
   },
 
   computed: {
