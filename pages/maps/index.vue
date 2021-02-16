@@ -21,19 +21,10 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
-import PageHero from "@/components/PageHero/PageHero.vue";
-
-export default {
-  name: "Maps",
-=======
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 export default {
   name: 'MapsPage',
-
->>>>>>> 106998ca6d11ccc5bb3170cfcd2e1e26c8eaf21f
   components: {
     Breadcrumb,
     PageHero,
@@ -52,18 +43,13 @@ export default {
           },
           label: 'Home'
         }
-<<<<<<< HEAD
       ],
       uuid: undefined,
       prefix: "/maps",
       state: undefined,
       api: process.env.portal_api,
       flatmapAPI: process.env.flatmap_api,
-    };
-=======
-      ]
     }
->>>>>>> 106998ca6d11ccc5bb3170cfcd2e1e26c8eaf21f
   },
   computed: {
     shareLink: function() {
@@ -88,7 +74,6 @@ export default {
       }
       xmlhttp.send(JSON.stringify({"state": state}));
 
-<<<<<<< HEAD
     }
   },
   beforeMount: function() {
@@ -112,10 +97,6 @@ export default {
     }
   },
 };
-=======
-  methods: {}
-}
->>>>>>> 106998ca6d11ccc5bb3170cfcd2e1e26c8eaf21f
 </script>
 
 <style lang="scss" scoped>

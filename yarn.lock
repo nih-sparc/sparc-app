@@ -82,21 +82,6 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/plotvuer@^0.2.31":
-  version "0.2.31"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.31.tgz#b31c6a72b46ff34171e09b0a80331d0163b05b52"
-  integrity sha512-kTCqoDJUhc2qL7vQuKl5U/LPgfQrfkZaUBiTHLwI6fodYY4eAOBRvkInMCpvBxKik9DAFAwTOysrPsHNWLvO/A==
-  dependencies:
-    core-js "^3.7.0"
-    css-element-queries "^1.2.3"
-    current-script-polyfill "^1.0.0"
-    d3-time-format "^3.0.0"
-    element-ui "^2.13.0"
-    papaparse "^5.3.0"
-    plotly.js "^1.55.2"
-    vue "^2.6.10"
-    vue-draggable-resizable "^2.2.0"
-
 "@abi-software/plotvuer@^0.2.33":
   version "0.2.33"
   resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.33.tgz#ff2c9d0b633fc0e90c9d8e762098f0c7e2baa26a"
