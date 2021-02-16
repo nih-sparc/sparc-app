@@ -63,7 +63,7 @@ export default {
   methods: {
     updateUUID: function() {
       let xmlhttp = new XMLHttpRequest();
-      let url = this.api + `/map/getsharelink`;
+      let url = this.api + `/map/getshareid`;
       let state = this.$refs.map.getState();
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
