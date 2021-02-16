@@ -393,6 +393,17 @@ export default {
 
       this.$router.replace({ query: { type: firstTabType } })
     } else {
+      /**
+       * Set the searchData from query params
+       * Need to convert skip and limit from strings to numbers
+       */
+      const queryParams = {
+        skip: Number(this.$route.query.skip || searchData.skip),
+        limit: Number(this.$route.query.limit || searchData.limit),
+        q: this.$route.query.q || ''
+      }
+
+      this.searchData = { ...this.searchData, ...queryParams }
       this.fetchResults()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -406,11 +417,13 @@ export default {
      */
     updateDataSearchLimit: function(limit) {
       this.searchData.skip = 0
-      if (limit === 'View All') {
-        this.searchData.limit = this.searchData.total
-      } else {
-        this.searchData.limit = limit
-      }
+
+      const newLimit = limit === 'View All' ? this.searchData.total : limit
+
+      this.searchData.limit = newLimit
+      this.$router.replace({
+        query: { ...this.$route.query, limit: newLimit, skip: 0 }
+      })
       this.fetchResults()
     },
 
@@ -606,6 +619,10 @@ export default {
     onPaginationPageChange: function(page) {
       const offset = (page - 1) * this.searchData.limit
       this.searchData.skip = offset
+
+      this.$router.replace({
+        query: { ...this.$route.query, skip: offset }
+      })
 
       this.fetchResults()
     },

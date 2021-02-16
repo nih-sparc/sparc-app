@@ -5,9 +5,14 @@
       <span>{{ event.fields.eventType }}</span>
     </div>
     <h3>
-      <a :href="event.fields.url" target="_blank">
+      <nuxt-link
+        :to="{
+          name: 'news-and-events-events-id',
+          params: { id: event.sys.id }
+        }"
+      >
         {{ event.fields.title }}
-      </a>
+      </nuxt-link>
     </h3>
     <div class="upcoming-event__detail">
       <svg-icon name="icon-calendar" height="16" width="16" />

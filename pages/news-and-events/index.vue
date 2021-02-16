@@ -74,8 +74,33 @@
         <h2>Latest News</h2>
         <div class="subpage">
           <div>
-            <news-list-item v-for="newsItem in news" :key="newsItem.sys.id" :item="newsItem" />
+            <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
+
+            <button v-if="news.total > news.items.length" class="btn-load-more mt-16" @click="getAllNews">View All News &gt;</button>
           </div>
+        </div>
+
+        <h2>Stay Connected</h2>
+        <div class="subpage">
+          <el-row :gutter="32">
+            <el-col :xs="24" :sm="12" class="newsletter-wrap">
+              <h3 class="mb-24">Sign up to the SPARC Newsletter</h3>
+              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC portal.</p>
+              <newsletter-form />
+            </el-col>
+            <el-col :xs="24" :sm="12" class="twitter-wrap">
+              <div v-twitter-widgets>
+                <a
+                  class="twitter-timeline"
+                  href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw"
+                  data-height="500"
+                  target="_blank"
+                >
+                  Tweets by sparc_science
+                </a>
+              </div>
+            </el-col>
+          </el-row>
         </div>
       </div>
     </div>
@@ -91,15 +116,16 @@ import NewsListItem from '@/components/NewsListItem/NewsListItem.vue';
 import EventCard from '@/components/EventCard/EventCard.vue';
 import PageHero from '@/components/PageHero/PageHero.vue';
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
+import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, fetchData, HeroDataEntry, NewsAndEventsComponent } from './model';
+import { Computed, Data, Methods, fetchData, fetchNews, HeroDataEntry, NewsAndEventsComponent, NewsCollection } from './model';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
 
-export default Vue.extend<Data, never, Computed, never>({
+export default Vue.extend<Data, Methods, Computed, never>({
   name: 'EventPage',
 
   components: {
@@ -109,7 +135,8 @@ export default Vue.extend<Data, never, Computed, never>({
     PageHero,
     NewsListItem,
     TabNav,
-    SearchControlsContentful
+    SearchControlsContentful,
+    NewsletterForm
   },
 
   asyncData() {
@@ -155,7 +182,7 @@ export default Vue.extend<Data, never, Computed, never>({
       pastEvents: [],
       isShowingAllUpcomingEvents: false,
       isShowingAllPastEvents: false,
-      news: [],
+      news: {} as NewsCollection,
       heroData: {} as HeroDataEntry,
       pastEventChunk: 1
     }
@@ -191,12 +218,38 @@ export default Vue.extend<Data, never, Computed, never>({
       const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
       return this.pastEvents.slice().reverse().slice(0, endChunk)
     }
+  },
+
+  methods: {
+    /**
+     * Get all news
+     */
+    getAllNews: async function() {
+      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 4)
+      this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
+    }
   }
 })
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+}
+
+h3 {
+  color: $navy;
+  font-size: 1.375rem;
+  line-height: 2rem;
+}
+.subpage {
+  @media (min-width: 48em) {
+    margin: 3rem 0;
+  }
+}
 .event-card {
   margin-bottom: 2em;
 }
@@ -259,6 +312,36 @@ export default Vue.extend<Data, never, Computed, never>({
   padding: 1.5em 0;
   &:first-child {
     padding-top: 0;
+  }
+}
+.newsletter-wrap {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  margin-bottom: 2rem;
+  @media (min-width: 48em) {
+    margin-bottom: 0;
+  }
+  p {
+    color: $navy
+  }
+}
+.twitter-wrap {
+  @media (min-width: 48em) {
+    border-left: 2px solid #d8d8d8;
+  }
+}
+
+.btn-load-more {
+  background: none;
+  border: none;
+  color: $navy;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  &:hover,
+  &:active {
+    text-decoration: underline;
   }
 }
 </style>
