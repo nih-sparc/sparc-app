@@ -43,15 +43,15 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.28.tgz#60d212ded96840546e002d846832b4bc5e2f2049"
-  integrity sha512-xdA0OTWNBoH9a6MbRSj9nouHRRjdbh1Y7f1io67tqcfymIpRTxU90zYBOunOHWJibk+o4+NYZKKoXKR1ZGZHrw==
+"@abi-software/mapintegratedvuer@^0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.29.tgz#3648432659a172b7f3b8f123151bc466e21a6105"
+  integrity sha512-rBLj9nILHiS/ZnNZhzzDMrQfqnpxlWmdlyD2DmiTSOnmclzDzV6ma9NgZQSVABDY/D1+9xxJX5cSbtFa/W1G7w==
   dependencies:
     "@abi-software/flatmapvuer" "^0.1.30"
     "@abi-software/maptooltip" "^0.1.13"
     "@abi-software/plotvuer" "^0.2.33"
-    "@abi-software/scaffoldvuer" "^0.1.44"
+    "@abi-software/scaffoldvuer" "^0.1.45"
     "@abi-software/svg-sprite" "^0.1.11"
     "@soda/get-current-script" "^1.0.2"
     core-js "^3.3.2"
@@ -97,12 +97,12 @@
     vue "^2.6.10"
     vue-draggable-resizable "^2.2.0"
 
-"@abi-software/scaffoldvuer@^0.1.44":
-  version "0.1.44"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.44.tgz#1b083d6a856d717d39fe58c2f3ed2d0952a18d38"
-  integrity sha512-Euyu0W5IJM8MJoqEzzOs4+4ygD4GhGSzs+D9el/mRWqmSXspYLWHH05xPg88CJ4FgLO3Pjg5kifCJdgQxGmYdA==
+"@abi-software/scaffoldvuer@^0.1.45":
+  version "0.1.45"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.45.tgz#7471f6e73c6712c5e04c59d0336326718c2f3e3b"
+  integrity sha512-WshuB4hiCNj8OoQ+EXfGDhFAyueJFnCSvhs29JSWicW/d5VQPN3l0NBPhfJYJXdlNmyTGpNEGUkcAwvW6bPM/Q==
   dependencies:
-    "@abi-software/svg-sprite" "^0.1.10"
+    "@abi-software/svg-sprite" "^0.1.11"
     axios "^0.21.1"
     core-js "^3.3.2"
     current-script-polyfill "^1.0.0"
@@ -113,9 +113,9 @@
     query-string "^6.11.1"
     vue "^2.6.10"
     vue-drag-resize "^1.3.2"
-    zincjs "^0.36.2"
+    zincjs "^0.36.4"
 
-"@abi-software/svg-sprite@^0.1.10", "@abi-software/svg-sprite@^0.1.11":
+"@abi-software/svg-sprite@^0.1.11":
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.1.11.tgz#3526b6d03985548a28b45356fda0aeba95c93176"
   integrity sha512-STUfkxm0C/bUM7zk/XCxp+zAfTryLT4faj8KD22Xe7RY6bm9ZtSjXKkKMQ8EekpyBHcybidEbfUBdPgXgJlPoQ==
@@ -15922,10 +15922,10 @@ zincjs@^0.36.1:
     url-polyfill "^1.1.7"
     webworkify-webpack "^2.1.5"
 
-zincjs@^0.36.2:
-  version "0.36.2"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.36.2.tgz#7172d9019ea5f9835c387a7b464213e97d602f21"
-  integrity sha512-OkBrrJ3nJuo4OCQYRyjOHvCzYRgjiLnazHTlXIXqu9/kLejztagj3cwTaTvgma0ozD3eiLwiRHrn7XtMQY9BHA==
+zincjs@^0.36.4:
+  version "0.36.4"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.36.4.tgz#da3d5d99de6cd5aac2f86fb7ad3b1093ca66be25"
+  integrity sha512-zz+LnSmeW7xTEuabee101CeHnllT0wlMTP5Lmhfngjxi71JJBXG3YzNDaf0gpV1jJaTVekc8jmbC4EomCtWPdA==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
