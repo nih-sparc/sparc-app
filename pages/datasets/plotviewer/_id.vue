@@ -10,9 +10,7 @@
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
-            {{ plotType }} plot
-          </div>
+          <div class="file-detail__column">{{ plotType }} plot</div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Dataset id</strong>
@@ -35,7 +33,12 @@
       >
         <client-only placeholder="Loading plot ...">
           <div class="plotvuer-container">
-            <PlotVuer :url="plotUrl" :plotType="plotType" :helpMode="false" style="height: 200px"></PlotVuer>
+            <PlotVuer
+              :url="plotUrl"
+              :plot-type="plotType"
+              :help-mode="false"
+              style="height: 200px"
+            />
           </div>
         </client-only>
       </detail-tabs>
@@ -52,7 +55,7 @@ export default {
   components: {
     DetailTabs,
     PlotVuer: process.client
-      ? () => import("@abi-software/plotvuer").then(m => m.PlotVuer)
+      ? () => import('@abi-software/plotvuer').then(m => m.PlotVuer)
       : null
   },
 
@@ -61,8 +64,8 @@ export default {
       tabs: [
         {
           label: 'Plot Viewer',
-          type: 'plot',
-        },
+          type: 'plot'
+        }
       ],
       activeTab: 'plot',
       file: {},
@@ -96,7 +99,7 @@ export default {
       return this.$route.query.dataset_version
     },
 
-    plotType: function(){
+    plotType: function() {
       return this.$route.query.plot_type
     },
 
@@ -106,13 +109,12 @@ export default {
      */
     plotUrl: function() {
       return `${process.env.portal_api}/s3-resource/${this.$route.query.file_path}`
-    },
-  },
+    }
+  }
 }
 </script>
 
 <style scoped lang="scss">
-
 .page {
   display: flex;
   margin-top: 7rem;
@@ -160,10 +162,10 @@ h1 {
 }
 </style>
 <style lang="scss">
-  .plotvuer-container {
-    margin-top: 1.5rem;
-    height: 90vh;
-    max-width: calc(100% - 48px);
-    @import '~@abi-software/plotvuer/dist/plotvuer'
-  }
+.plotvuer-container {
+  margin-top: 1.5rem;
+  height: 90vh;
+  max-width: calc(100% - 48px);
+  @import '~@abi-software/plotvuer/dist/plotvuer';
+}
 </style>
