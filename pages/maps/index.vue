@@ -61,7 +61,7 @@ export default {
   methods: {
     updateUUID: function() {
       let xmlhttp = new XMLHttpRequest();
-      let url = this.api + `/map/getshareid`;
+      let url = this.api + `map/getshareid`;
       let state = this.$refs.map.getState();
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
@@ -77,6 +77,11 @@ export default {
     }
   },
   beforeMount: function() {
+    this.api = process.env.portal_api;
+    let lastChar = this.api.substr(-1);
+    if (lastChar != '/') {
+      this.api = this.api + '/';
+    }
     this.uuid = this.$route.query.id;
     if (window) {
       this.prefix = window.location.origin + window.location.pathname;
