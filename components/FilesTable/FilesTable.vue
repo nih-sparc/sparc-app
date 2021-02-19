@@ -132,6 +132,13 @@
                 >
                   Open
                 </el-dropdown-item>
+                <nuxt-link v-if="hasScaffold" :to="getScaffoldLink()">
+                  <a rel="noopener noreferrer">
+                    <el-dropdown-item v-if="isScaffoldFileType(scope)">
+                      Open Scaffold
+                    </el-dropdown-item>
+                  </a>
+                </nuxt-link>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -183,6 +190,7 @@ export default {
       path: '',
       data: [],
       isLoading: false,
+      hasScaffold: false,
       hasError: false,
       limit: 500,
       selected: []
@@ -237,7 +245,9 @@ export default {
     }
   },
 
-  mounted: function() {},
+  mounted: function() {
+    this.scaffoldMetaFile(file => {this.hasScaffold = file})
+  },
 
   methods: {
     handleSelectionChange(val) {
@@ -346,9 +356,11 @@ export default {
      * @param {Object} evt
      */
     onCommandClick: function(evt) {
+      window.evt = evt
       const scope = propOr({}, 'scope', evt)
       const type = propOr({}, 'type', evt)
       const handler = this[type]
+      window.handler = handler
 
       if (typeof handler === 'function') {
         handler(scope)
@@ -384,6 +396,69 @@ export default {
         const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
         window.open(finalURL, '_blank')
       })
+    },
+
+    getFilesEndpoint: function(path) {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = propOr(1, 'version', this.datasetDetails)
+      const url = `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}/files/browse`
+      return `${url}?path=${path}&limit=${this.limit}`
+    },
+
+    scaffoldMetaFile: function(){ 
+      return new Promise(resolve => {
+        this.$axios
+          .$get(this.getFilesEndpoint('files/derivative'))
+          .then(response => {
+            for (let i in response.files){
+              if (response.files[i].name.toLowerCase().includes('scaffold')){
+                this.$axios
+                  .$get(this.getFilesEndpoint(`files/derivative/${response.files[i].name}`))
+                  .then( rep2 =>{
+                    for (let j in rep2.files){
+                      if (this.isScaffoldMetaFile(rep2.files[j].path)){
+                        console.log('path found!!', rep2.files[j].path)
+                        this.hasScaffold = rep2.files[j].path
+                        resolve(rep2.files[j].path)
+                      }
+                    }
+                  })
+              }
+            }
+          })
+          .catch(() => {
+            resolve(false)
+          })
+      });
+    },
+
+    getScaffoldLink: function() {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = propOr(1, 'version', this.datasetDetails)
+      let s3Path = `${id}/${version}/${this.hasScaffold}`
+      return {
+        name: 'datasets-scaffoldviewer-id',
+        params: {},
+        query: { scaffold: s3Path }
+      }
+    },
+
+     /**
+     * Checks if file is MS Word, MS Excel, or MS Powerpoint
+     * @param {Object} scope
+     */
+    isScaffoldFileType: function(scope) {
+      window.data = this.data
+      console.log(scope)
+      let path = scope.row.path.toLowerCase()
+      let isMetaFile = this.isScaffoldMetaFile(path)
+      let fileType = scope.row.name.split('.').pop()
+      return fileType === 'vtk' || isMetaFile
+    },
+
+    isScaffoldMetaFile: function(pathInput){
+      let path = pathInput.toLowerCase()
+      return path.includes('scaffold') && path.includes('meta') && path.includes('json')
     },
 
     /**
