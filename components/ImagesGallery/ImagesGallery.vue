@@ -1,65 +1,26 @@
 <template>
-  <div class="biolucida-image-gallery full-size">
-    <div class="description-info">
+  <div class="full-size">
+    <div v-if="hasDescription" class="description-info">
       <p>
         <strong>Data collection:</strong>
         {{ description }}
       </p>
-      <p>
+      <!-- <p>
         <strong>Highlighted {{ imageTypes[currentIndex] }} image:</strong>
         {{ imageNames[currentIndex] }}
-      </p>
+      </p> -->
     </div>
-    <div class="standard-gallery">
-      <a
-        href="#"
-        class="prev"
-        :class="{ disabled: !isPrevPossible }"
-        :style="
-          `width: ${controlWidth}px; height: ${controlHeight}px; line-height: ${controlHeight}px; margin-right: auto;`
-        "
-        @click.prevent="goPrev"
-      >
-        <span>&lsaquo;</span>
-      </a>
-      <div class="image-line">
-        <span
-          v-for="(thumbnail_image, index) in thumbnails"
-          :key="'thumbnail_' + index"
-          :style="{ display: displayState(index) }"
-          :class="['key-image-span', { active: currentIndex === index }]"
-        >
-          <nuxt-link :to="getLink(thumbnail_image)">
-            <a rel="noopener noreferrer">
-              <img
-                :ref="'key_image_' + thumbnail_image.id"
-                :src="thumbnail_image.img"
-                alt="thumbnail missing"
-                class="thumbnail thumbnail-100"
-                :height="slideNaturalHeight"
-                :width="slideNaturalWidth"
-              />
-            </a>
-          </nuxt-link>
-          <div
-            class="overlay"
-            :style="`background-color: ${imageOverlayColour(index)}`"
-          />
-        </span>
+    <client-only placeholder="Loading gallery ...">
+      <div class="gallery-container">
+        <gallery
+          :items="galleryItems"
+          :max-width="maxWidth"
+          :show-indicator-bar="true"
+          :show-card-details="true"
+          :highlight-active="true"
+        />
       </div>
-      <a
-        href="#"
-        class="next"
-        :class="{ disabled: !isNextPossible }"
-        :style="
-          `width: ${controlWidth}px; height: ${controlHeight}px; line-height: ${controlHeight}px; margin-left: auto;`
-        "
-        @click.prevent="goNext"
-      >
-        <span>&rsaquo;</span>
-      </a>
-    </div>
-    <index-indicator :count="imageCount" :current="currentIndex" />
+    </client-only>
   </div>
 </template>
 
@@ -67,54 +28,63 @@
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
 import MarkedMixin from '@/mixins/marked'
-import IndexIndicator from '@/components/ImagesGallery/IndexIndicator'
+
+import { plotTypeMap } from '@/static/js/plots'
 
 export default {
   name: 'ImageGallery',
-  components: { IndexIndicator },
+  // components: { Gallery },
+  components: {
+    Gallery: process.client
+      ? () => import('@abi-software/gallery').then(gallery => gallery)
+      : null
+  },
   mixins: [MarkedMixin],
   props: {
+    datasetScicrunch: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
+    datasetBiolucida: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
     datasetImages: {
       type: Array,
       default: () => {
         return []
-      },
+      }
     },
     datasetScaffolds: {
       type: Array,
       default: () => {
         return []
-      },
+      }
     },
     datasetPlots: {
       type: Array,
       default: () => {
         return []
-      },
+      }
     },
     datasetVideos: {
       type: Array,
       default: () => {
         return []
-      },
-    },
-    datasetVersion: {
-      type: Number,
-      default: 1,
-    },
-    datasetId: {
-      type: Number,
-      default: 0,
+      }
     },
     markdown: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
   data() {
     return {
       description: '',
-      thumbnails: [],
       imageNames: [],
       imageTypes: [],
       overlayColours: [],
@@ -127,7 +97,11 @@ export default {
       defaultImg: require('~/assets/logo-sparc-wave-primary.svg'),
       defaultScaffoldImg: require('~/assets/scaffold-light.png'),
       defaultPlotImg: require('~/assets/data-icon.png'),
-      defaultVideoImg: require('~/assets/video-default.png')
+      defaultVideoImg: require('~/assets/video-default.png'),
+      ro: null,
+      maxWidth: 3,
+      scicrunchItems: [],
+      biolucidaItems: []
     }
   },
   computed: {
@@ -138,8 +112,12 @@ export default {
       return this.currentIndex < this.imageCount - 1
     },
     imageCount() {
-      return this.datasetImages.length + this.datasetScaffolds.length +
-        this.datasetPlots.length + this.datasetVideos.length;
+      return (
+        this.datasetImages.length +
+        this.datasetScaffolds.length +
+        this.datasetPlots.length +
+        this.datasetVideos.length
+      )
     },
     numberOfImagesVisible() {
       const imagesVisibleCount =
@@ -147,29 +125,188 @@ export default {
         this.slideNaturalWidth
       return Math.floor(imagesVisibleCount)
     },
+    thumbnails() {
+      return this.datasetThumbnailData
+    },
+    galleryItems() {
+      return this.biolucidaItems.concat(this.scicrunchItems)
+    },
+    hasDescription() {
+      return this.description !== ''
+    }
   },
   watch: {
     markdown: function(text) {
       const html = this.parseMarkdown(text)
       const doc = new DOMParser().parseFromString(html, 'text/html')
       const links = doc.querySelectorAll('p')
-      links.forEach((paragraph) => {
+      links.forEach(paragraph => {
         if (paragraph.innerText.includes('Data collection:')) {
           this.description = paragraph.innerText.replace('Data collection:', '')
         }
       })
     },
+    datasetScicrunch: {
+      deep: true,
+      immediate: true,
+      handler: function(scicrunchData) {
+        let items = []
+        console.log('here we go')
+        console.log(scicrunchData)
+        let datasetId = -1
+        let datasetVersion = -1
+        if ('discover_dataset' in scicrunchData) {
+          datasetId = scicrunchData.discover_dataset.id
+          datasetVersion = scicrunchData.discover_dataset.version
+        }
+        if ('scaffolds' in scicrunchData && scicrunchData.scaffolds) {
+          console.log('have scaffolds')
+          items.push(
+            ...Array.from(scicrunchData.scaffolds, scaffold => {
+              console.log(scaffold, datasetId, datasetVersion)
+              // https://api.sparc.science/s3-resource/29/6/files/derivative/HB-ICN-NegDDCT-data.csv
+              const metaFilePath = encodeURIComponent(scaffold.meta_file.path)
+              const thumbnailFilePath = encodeURIComponent(
+                scaffold.thumbnail.path
+              )
+              discover
+                .fetch(datasetId, datasetVersion, thumbnailFilePath)
+                .then(response => {
+                  console.log('thumbnail response :', response)
+                })
+                .catch(e => {
+                  console.log('thumbnail error:', e.message)
+                })
+              // https://sparc.science/datasets/scaffoldviewer?scaffold=95%2F1%2Ffiles%2Fderivative%2FScaffold%2FhumanColon_metadata.json
+              let linkUrl =
+                '/datasets/scaffoldviewer' +
+                '?scaffold=' +
+                `${datasetId}/${datasetVersion}/files/${metaFilePath}`
+              console.log(linkUrl)
+              return {
+                id: scaffold.meta_file.path,
+                title: scaffold.file.name,
+                type: 'Scaffold',
+                thumbnail: this.defaultScaffoldImg,
+                link: linkUrl
+              }
+            })
+          )
+        }
+        if ('mp4' in scicrunchData) {
+          items.push(
+            ...Array.from(scicrunchData.mp4, videoFile => {
+              console.log(videoFile)
+              const filePath = this.getS3FilePath(
+                datasetId,
+                datasetVersion,
+                videoFile.dataset.path
+              )
+              const linkUrl = `/datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}`
+              return {
+                title: videoFile.file.name,
+                type: 'Video',
+                thumbnail: this.defaultVideoImg,
+                link: linkUrl
+              }
+            })
+          )
+        }
+        if ('csv' in scicrunchData) {
+          console.log('have plot data')
+          items.push(
+            ...Array.from(scicrunchData.csv, csvFile => {
+              console.log('csv file:', csvFile)
+              console.log(plotTypeMap)
+              const plotTypeName = plotTypeMap.get(csvFile.file.name)
+              const filePath = this.getS3FilePath(
+                datasetId,
+                datasetVersion,
+                csvFile.dataset.path
+              )
+              // https://sparc.science/datasets/plotviewer?dataset_version=6&dataset_id=29&file_path=29%2F6%2Ffiles%2Fderivative%2FHB-ICN-NegDDCT-data.csv&plot_type=heatmap
+              let linkUrl = `/datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&plot_type=${plotTypeName}`
+              return {
+                title: csvFile.file.name,
+                type: plotTypeName ? plotTypeName : 'CSV',
+                thumbnail: this.defaultPlotImg,
+                link: linkUrl
+              }
+            })
+          )
+          items = items.filter(item => item.type !== 'CSV')
+        }
+        if ('generic-image' in scicrunchData) {
+          console.log('have png/tiff/jpeg image')
+        }
+        this.scicrunchItems = items
+      }
+    },
+    datasetBiolucida: {
+      deep: true,
+      immediate: true,
+      handler: function(biolucidaData) {
+        let items = []
+        if ('dataset_images' in biolucidaData) {
+          items.push(
+            ...Array.from(biolucidaData.dataset_images, dataset_image => {
+              this.getThumbnailFromBiolucida(items, dataset_image.image_id)
+              this.getImageInfoFromBiolucida(items, dataset_image.image_id)
+              const viewEncoding = dataset_image.share_link.replace(
+                process.env.BL_SHARE_LINK_PREFIX,
+                ''
+              )
+              // https://sparc.science/datasets/imageviewer/2724?view=MjcyNC1jb2wtMTA4&dataset_version=5&dataset_id=43
+              let linkUrl =
+                '/datasets/biolucidaviewer/' +
+                dataset_image.image_id +
+                '?view=' +
+                viewEncoding +
+                '&dataset_version=' +
+                biolucidaData.discover_dataset_version +
+                '&dataset_id=' +
+                biolucidaData.discover_dataset_id
+
+              return {
+                id: dataset_image.image_id,
+                title: null,
+                type: 'XD Image',
+                thumbnail: null,
+                link: linkUrl
+              }
+            })
+          )
+        }
+        this.biolucidaItems = items
+      }
+    }
   },
   mounted() {
-    this.currentIndex = Math.floor(this.imageCount / 2 - 0.5)
-    this.getThumbnails()
+    this.ro = new ResizeObserver(this.onResize).observe(this.$el)
+  },
+  destroyed() {
+    delete this.ro
   },
   methods: {
-    getLink(thumbnail_image){
+    getS3FilePath(datasetId, datasetVersion, filePath) {
+      const encodedFilePath = encodeURIComponent(filePath)
+      return `${datasetId}/${datasetVersion}/files/${encodedFilePath}`
+    },
+    getBiolucidaImageType(name) {
+      let imageType = ''
+      if (name.toUpperCase().endsWith('JPX')) {
+        imageType += '3D'
+      } else {
+        imageType += '2D'
+      }
+
+      return imageType + ' Image'
+    },
+    getLink(thumbnail_image) {
       let link = {
         name: this.getThumbnailLinkName(thumbnail_image),
         params: this.getThumbnailLinkParams(thumbnail_image),
-        query: this.getThumbnailLinkQuery(thumbnail_image),
+        query: this.getThumbnailLinkQuery(thumbnail_image)
       }
       return link
     },
@@ -205,29 +342,71 @@ export default {
         this.currentIndex -= 1
       }
     },
+    getThumbnailFromBiolucida(items, image_id) {
+      biolucida.getThumbnail(image_id).then(
+        response => {
+          let item = items.find(x => x.id === image_id)
+
+          this.$set(item, 'thumbnail', 'data:image/png;base64,' + response.data)
+        },
+        reason => {
+          if (
+            reason.message.includes('timeout') &&
+            reason.message.includes('exceeded')
+          ) {
+            this.getThumbnailFromBiolucida(items, image_id)
+          }
+        }
+      )
+    },
+    getImageInfoFromBiolucida(items, image_id) {
+      biolucida.getImageInfo(image_id).then(
+        response => {
+          let item = items.find(x => x.id === image_id)
+          const name = response.name
+          if (name) {
+            const extension = name.substring(
+              name.lastIndexOf('.') + 1,
+              name.length
+            )
+            this.$set(item, 'title', name.substring(0, name.lastIndexOf('.')))
+            this.$set(item, 'type', this.getBiolucidaImageType(extension))
+          }
+        },
+        reason => {
+          if (
+            reason.message.includes('timeout') &&
+            reason.message.includes('exceeded')
+          ) {
+            this.getImageInfoFromBiolucida(items, image_id)
+          }
+        }
+      )
+    },
     getThumbnails() {
-      this.thumbnails.clear
+      console.log('nobody comes here?')
+      let localThumbnails = []
       this.slideAxis = undefined
-      this.thumbnails = Array.from(this.datasetImages, (dataset_image) => {
+      localThumbnails = Array.from(this.datasetImages, dataset_image => {
         return {
           id: dataset_image.image_id,
           img: this.defaultImg,
-          share_link: dataset_image.share_link,
+          share_link: dataset_image.share_link
         }
       })
-      this.datasetImages.forEach((dataset_image) => {
+      this.datasetImages.forEach(dataset_image => {
         this.overlayColours = [...Array(this.imageCount)].map(() => 'grey')
         const image_id = dataset_image.image_id
         biolucida
           .getThumbnail(image_id)
-          .then((response) => {
-            const index = this.thumbnails.findIndex(
-              (item) => item.id === image_id,
+          .then(response => {
+            const index = localThumbnails.findIndex(
+              item => item.id === image_id
             )
-            let thumbnail = this.thumbnails[index]
+            let thumbnail = localThumbnails[index]
             biolucida
               .getImageInfo(image_id)
-              .then((response) => {
+              .then(response => {
                 const imageInfo = response.data
                 let imageName = imageInfo.name
                 imageName =
@@ -244,7 +423,7 @@ export default {
                 }
                 this.imageTypes[index] = imageType
               })
-              .catch((error) => {
+              .catch(error => {
                 console.log('Error fetching image information:', image_id)
                 console.log(error.message)
               })
@@ -274,49 +453,50 @@ export default {
                 response.data
             }
           })
-          .catch((error) => {
+          .catch(error => {
             console.log('Error fetching thumbnail: ', dataset_image.image_id)
             console.log(error.message)
           })
       })
-      this.datasetScaffolds.forEach((dataset_scaffold) => {
-        const scaffold_index = this.thumbnails.length
+      this.datasetScaffolds.forEach(dataset_scaffold => {
+        const localThumbnails = []
+        const scaffold_index = localThumbnails.length
         this.imageNames[scaffold_index] = dataset_scaffold.name
         this.imageTypes[scaffold_index] = 'scaffold'
         this.overlayColours[scaffold_index] = 'yellow'
-        this.thumbnails.push({
+        localThumbnails.push({
           id: dataset_scaffold.name,
           img: this.defaultScaffoldImg,
-          metadata_file: '',
+          metadata_file: ''
         })
         discover
           .browse(
             this.$route.params.datasetId,
             dataset_scaffold.version,
-            dataset_scaffold.path,
+            dataset_scaffold.path
           )
-          .then((response) => {
-            response.data.files.forEach((entry) => {
+          .then(response => {
+            response.data.files.forEach(entry => {
               if (entry.name.toUpperCase().includes('METADATA')) {
-                this.thumbnails[
+                localThumbnails[
                   scaffold_index
                 ].metadata_file = entry.uri.replace(
                   's3://blackfynn-discover-use1/',
-                  '',
+                  ''
                 )
               }
             })
           })
-          .catch((error) => {
+          .catch(error => {
             console.log(
               'Error fetching scaffold files: ',
-              dataset_scaffold.name,
+              dataset_scaffold.name
             )
             console.log(error.message)
           })
       })
       for (let i in this.datasetPlots) {
-        this.thumbnails.push({
+        localThumbnails.push({
           id: this.datasetId,
           img: this.defaultPlotImg,
           plot_file: this.datasetPlots[i].file_path,
@@ -324,7 +504,7 @@ export default {
         })
       }
       for (let i in this.datasetVideos) {
-        this.thumbnails.push({
+        localThumbnails.push({
           id: this.datasetId,
           img: this.defaultVideoImg,
           file_path: this.datasetVideos[i].file_path
@@ -340,8 +520,8 @@ export default {
       const imageInfoKeys = Object.keys(imageInfo)
       const shareLinkIndex = imageInfoKeys.indexOf('share_link')
       const metadataFileIndex = imageInfoKeys.indexOf('metadata_file')
-      const plotFileIndex = imageInfoKeys.indexOf('plot_file') 
-      const videoFileIndex = imageInfoKeys.indexOf('file_path') 
+      const plotFileIndex = imageInfoKeys.indexOf('plot_file')
+      const videoFileIndex = imageInfoKeys.indexOf('file_path')
       let imageType = 'unknown'
       if (shareLinkIndex !== -1) {
         imageType = 'biolucida'
@@ -360,22 +540,22 @@ export default {
       switch (imageType) {
         case 'biolucida':
           params = {
-            id: imageInfo.id,
+            id: imageInfo.id
           }
           break
         case 'scaffold':
           params = {
-            id: imageInfo.name,
+            id: imageInfo.name
           }
           break
         case 'plt':
           params = {
-            id: imageInfo.name,
+            id: imageInfo.name
           }
           break
         case 'video':
           params = {
-            id: imageInfo.name,
+            id: imageInfo.name
           }
           break
         default:
@@ -391,12 +571,12 @@ export default {
           query = {
             view: this.viewerId(imageInfo.share_link),
             dataset_version: this.datasetVersion,
-            dataset_id: this.datasetId,
+            dataset_id: this.datasetId
           }
           break
         case 'scaffold':
           query = {
-            scaffold: imageInfo.metadata_file,
+            scaffold: imageInfo.metadata_file
           }
           break
         case 'plot':
@@ -443,7 +623,11 @@ export default {
     imageOverlayColour(index) {
       return this.overlayColours[index]
     },
-  },
+    onResize() {
+      this.maxWidth = this.$el.clientWidth
+      // this.$emit('resize', this.$el.clientWidth)
+    }
+  }
 }
 </script>
 

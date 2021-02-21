@@ -4,19 +4,23 @@
       href="#"
       class="prev"
       :class="{ disabled: !parent.isPrevPossible }"
-      :style="`width: ${width}px; height: ${height}px; line-height: ${height}px;`"
+      :style="
+        `width: ${width}px; height: ${height}px; line-height: ${height}px;`
+      "
       @click.prevent="parent.goPrev()"
     >
-      <span v-html="prevHtml"></span>
+      <span v-html="prevHtml" />
     </a>
     <a
       href="#"
       class="next"
       :class="{ disabled: !parent.isNextPossible }"
-      :style="`width: ${width}px; height: ${height}px; line-height: ${height}px;`"
+      :style="
+        `width: ${width}px; height: ${height}px; line-height: ${height}px;`
+      "
       @click.prevent="parent.goNext()"
     >
-      <span v-html="nextHtml"></span>
+      <span v-html="nextHtml" />
     </a>
   </div>
 </template>
@@ -30,35 +34,35 @@ export default {
      */
     width: {
       type: [String, Number],
-      default: 50,
+      default: 50
     },
     /**
      * Height in pixels of the navigation buttons
      */
     height: {
       type: [String, Number],
-      default: 60,
+      default: 60
     },
     /**
      * Text content of the navigation prev button
      */
     prevHtml: {
       type: String,
-      default: '&lsaquo;',
+      default: '&lsaquo;'
     },
     /**
      * Text content of the navigation next button
      */
     nextHtml: {
       type: String,
-      default: '&rsaquo;',
-    },
+      default: '&rsaquo;'
+    }
   },
   data() {
     return {
-      parent: this.$parent,
+      parent: this.$parent
     }
-  },
+  }
 }
 </script>
 

@@ -144,12 +144,8 @@
         <images-gallery
           v-show="activeTab === 'images'"
           :markdown="markdown.markdownTop"
-          :dataset-images="imagesData.dataset_images"
-          :dataset-scaffolds="scaffoldData"
-          :dataset-plots="plotData"
-          :dataset-videos="videoData"
-          :dataset-version="getDatasetVersion"
-          :dataset-id="getDatasetId"
+          :dataset-biolucida="biolucidaImageData"
+          :dataset-scicrunch="scicrunchData"
         />
       </detail-tabs>
     </div>
@@ -183,12 +179,11 @@ import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import Scaffolds from '@/static/js/scaffolds.js'
-import Plots from '@/static/js/plots'
-import Videos from '@/static/js/videos'
 
 import createClient from '@/plugins/contentful.js'
 
-import discover from '@/services/discover'
+import biolucida from '@/services/biolucida'
+import scicrunch from '@/services/scicrunch'
 
 const client = createClient()
 
@@ -260,84 +255,53 @@ const getDatasetDetails = async (datasetId, datasetType, $axios) => {
   }
 }
 
+const getBiolucidaData = async datasetId => {
+  try {
+    return biolucida.searchDataset(datasetId)
+  } catch (e) {
+    console.log('error here', e)
+    return {}
+  }
+}
+
 /**
- * Get images data, if available
- * and set the tabs accordingly
+ * Get thumbnail data, if available.
  * @param {Number} datasetId
  * @param {String} datasetType
- * @param {Function} $axios
- * @returns {Object}
  */
-const getImagesData = async (datasetId, datasetDetails, $axios) => {
-  let scaffoldData = []
-  let tabsData = clone(tabs)
+const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
+  let biolucidaImageData = {}
+  let scicrunchData = {}
   try {
-    const imagesData = await $axios
-      .$get(
-        `${process.env.BL_SERVER_URL}/imagemap/search_dataset/discover/${datasetId}`
-      )
-      .catch(() => {
-        return {}
-      })
-
-    const version = propOr(1, 'version', datasetDetails)
-    const derivativeFilesResponse = await discover.browse(
-      datasetId,
-      version,
-      'files/derivative'
-    )
-
-    // Include discover dataset version into images data info.
-    imagesData['discover_dataset_version'] = version
-
-    if (derivativeFilesResponse.status === 200) {
-      derivativeFilesResponse.data.files.forEach(item => {
-        if (item.type === 'Directory') {
-          if (item.name.toUpperCase().includes('SCAFFOLD')) {
-            scaffoldData.push({ name: item.name, path: item.path, version })
-          }
-        }
-      })
+    biolucidaImageData = await getBiolucidaData(datasetId)
+    if (Object.getOwnPropertyNames(biolucidaImageData).length > 0) {
+      if (biolucidaImageData.status === 'success') {
+        biolucidaImageData['discover_dataset_version'] = datasetVersion
+      } else {
+        biolucidaImageData = {}
+      }
     }
-
-    // This data can be found via scicrunch. Currently is hardcoded while waiting for
-    // ImageGallery.vue to start making scicrunch calls
-    let plotData = Plots[datasetId]
-    if (plotData) {
-      plotData = [plotData]
+    const scicrunchResponse = await scicrunch.getDatasetInfoFromDOI(datasetDoi)
+    console.log('doi', datasetDoi)
+    console.log(scicrunchResponse.data)
+    if (scicrunchResponse.data.numberOfHits === 1) {
+      scicrunchData = scicrunchResponse.data.results[0]
+      scicrunchData.discover_dataset = {
+        id: Number(datasetId),
+        version: datasetVersion
+      }
+      // console.log(scicrunchData)
     }
-
-    // This data can be found via scicrunch. Currently is hardcoded while waiting for
-    // ImageGallery.vue to start making scicrunch calls
-    let videoData = Videos[datasetId]
-    if (videoData) {
-      videoData = [videoData]
-    }
-
-    if (
-      imagesData.status === 'success' ||
-      scaffoldData.length ||
-      plotData ||
-      videoData
-    ) {
-      tabsData.push({ label: 'Gallery', type: 'images' })
-    }
-
+  } catch (e) {
+    console.log('error', e)
     return {
-      imagesData,
-      scaffoldData,
-      tabsData,
-      plotData,
-      videoData
+      biolucidaImageData: {},
+      scicrunchData: {}
     }
-  } catch (error) {
-    return {
-      imagesData: [],
-      scaffoldData,
-      tabsData,
-      plotData: [],
-      videoData: []
-    }
+  }
+  return {
+    biolucidaImageData,
+    scicrunchData
   }
 }
 
@@ -359,6 +323,8 @@ export default {
   mixins: [Request, DateUtils, FormatStorage],
 
   async asyncData({ route, $axios }) {
+    let tabsData = clone(tabs)
+
     const datasetId = pathOr('', ['params', 'datasetId'], route)
 
     const organEntries = await getOrganEntries()
@@ -369,22 +335,25 @@ export default {
       $axios
     )
 
-    const {
-      imagesData,
-      scaffoldData,
-      tabsData,
-      plotData,
-      videoData
-    } = await getImagesData(datasetId, datasetDetails, $axios)
+    const { biolucidaImageData, scicrunchData } = await getThumbnailData(
+      datasetDetails.doi,
+      datasetId,
+      datasetDetails.version
+    )
+
+    if (
+      Object.getOwnPropertyNames(biolucidaImageData).length > 0 ||
+      Object.getOwnPropertyNames(scicrunchData).length > 0
+    ) {
+      tabsData.push({ label: 'Gallery', type: 'images' })
+    }
 
     return {
       entries: organEntries,
       datasetInfo: datasetDetails,
       datasetType: route.query.type,
-      imagesData,
-      scaffoldData,
-      plotData,
-      videoData,
+      biolucidaImageData,
+      scicrunchData,
       tabs: tabsData
     }
   },
