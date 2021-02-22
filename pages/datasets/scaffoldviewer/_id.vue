@@ -35,7 +35,7 @@
       >
         <client-only placeholder="Loading scaffold ...">
           <div class="scaffoldvuer-container">
-            <ScaffoldVuer :url="scaffoldUrl" :traditional="traditional" :backgroundToggle="backgroundToggle"/>
+            <ScaffoldVuer :displayMarkers="displayMarkers" :url="scaffoldUrl" :traditional="traditional" :backgroundToggle="backgroundToggle"/>
           </div>
         </client-only>
       </detail-tabs>
@@ -68,6 +68,7 @@ export default {
       activeTab: 'scaffold',
       file: {},
       traditional: true,
+      displayMarkers: false,
       backgroundToggle: true
     }
   },
