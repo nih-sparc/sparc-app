@@ -171,7 +171,6 @@ export default {
         params: this.getThumbnailLinkParams(thumbnail_image),
         query: this.getThumbnailLinkQuery(thumbnail_image),
       }
-      window.link = link
       return link
     },
     displayState(index) {

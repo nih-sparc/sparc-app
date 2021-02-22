@@ -191,7 +191,6 @@ export default {
       path: '',
       data: [],
       isLoading: false,
-      hasScaffold: false,
       hasError: false,
       limit: 500,
       selected: []
@@ -353,11 +352,9 @@ export default {
      * @param {Object} evt
      */
     onCommandClick: function(evt) {
-      window.evt = evt
       const scope = propOr({}, 'scope', evt)
       const type = propOr({}, 'type', evt)
       const handler = this[type]
-      window.handler = handler
 
       if (typeof handler === 'function') {
         handler(scope)
