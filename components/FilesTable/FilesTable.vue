@@ -69,6 +69,13 @@
                     {{ scope.row.name }}
                   </a>
                 </div>
+                <div v-else-if="isScaffoldMetaFile(scope)">
+                  <nuxt-link
+                    :to="getScaffoldLink(scope)"
+                  >
+                    {{ scope.row.name }}
+                  </nuxt-link>
+                </div>
                 <div v-else>
                   <nuxt-link
                     :to="{
@@ -132,14 +139,14 @@
                 >
                   Open
                 </el-dropdown-item>
-                <nuxt-link
-                  v-if="isScaffoldMetaFile(scope)"
-                  :to="getScaffoldLink(scope)"
+                <el-dropdown-item v-if="isScaffoldMetaFile(scope)"
+                  :command="{
+                    type: 'openScaffold',
+                    scope
+                  }"
                 >
-                  <el-dropdown-item v-if="isScaffoldMetaFile(scope)">
-                    Open Scaffold
-                  </el-dropdown-item>
-                </nuxt-link>
+                  Open Scaffold
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -414,6 +421,14 @@ export default {
       }
     },
 
+    /**
+     * Open scaffold
+     * @param {Object} scope
+     */
+    openScaffold: function(scope) {
+      this.$router.push(this.getScaffoldLink(scope))
+    },
+    
     /**
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
