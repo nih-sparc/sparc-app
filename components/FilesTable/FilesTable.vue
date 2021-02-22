@@ -132,12 +132,13 @@
                 >
                   Open
                 </el-dropdown-item>
-                <nuxt-link v-if="hasScaffold" :to="getScaffoldLink()">
-                  <a rel="noopener noreferrer">
-                    <el-dropdown-item v-if="isScaffoldFileType(scope)">
-                      Open Scaffold
-                    </el-dropdown-item>
-                  </a>
+                <nuxt-link
+                  v-if="isScaffoldMetaFile(scope)"
+                  :to="getScaffoldLink(scope)"
+                >
+                  <el-dropdown-item v-if="isScaffoldMetaFile(scope)">
+                    Open Scaffold
+                  </el-dropdown-item>
                 </nuxt-link>
               </el-dropdown-menu>
             </el-dropdown>
@@ -243,10 +244,6 @@ export default {
       },
       immediate: true
     }
-  },
-
-  mounted: function() {
-    this.scaffoldMetaFile(file => {this.hasScaffold = file})
   },
 
   methods: {
@@ -405,37 +402,14 @@ export default {
       return `${url}?path=${path}&limit=${this.limit}`
     },
 
-    scaffoldMetaFile: function(){ 
-      return new Promise(resolve => {
-        this.$axios
-          .$get(this.getFilesEndpoint('files/derivative'))
-          .then(response => {
-            for (let i in response.files){
-              if (response.files[i].name.toLowerCase().includes('scaffold')){
-                this.$axios
-                  .$get(this.getFilesEndpoint(`files/derivative/${response.files[i].name}`))
-                  .then( rep2 =>{
-                    for (let j in rep2.files){
-                      if (this.isScaffoldMetaFile(rep2.files[j].path)){
-                        console.log('path found!!', rep2.files[j].path)
-                        this.hasScaffold = rep2.files[j].path
-                        resolve(rep2.files[j].path)
-                      }
-                    }
-                  })
-              }
-            }
-          })
-          .catch(() => {
-            resolve(false)
-          })
-      });
-    },
-
-    getScaffoldLink: function() {
+    /**
+     * Create nuxt-link object for opening a scaffold.
+     * @param {Object} scope
+     */
+    getScaffoldLink: function(scope) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = propOr(1, 'version', this.datasetDetails)
-      let s3Path = `${id}/${version}/${this.hasScaffold}`
+      let s3Path = `${id}/${version}/${scope.row.path}`
       return {
         name: 'datasets-scaffoldviewer-id',
         params: {},
@@ -443,21 +417,12 @@ export default {
       }
     },
 
-     /**
-     * Checks if file is MS Word, MS Excel, or MS Powerpoint
+    /**
+     * Checks if file is openable by scaffold viewer
      * @param {Object} scope
      */
-    isScaffoldFileType: function(scope) {
-      window.data = this.data
-      console.log(scope)
+    isScaffoldMetaFile: function(scope) {
       let path = scope.row.path.toLowerCase()
-      let isMetaFile = this.isScaffoldMetaFile(path)
-      let fileType = scope.row.name.split('.').pop()
-      return fileType === 'vtk' || isMetaFile
-    },
-
-    isScaffoldMetaFile: function(pathInput){
-      let path = pathInput.toLowerCase()
       return path.includes('scaffold') && path.includes('meta') && path.includes('json')
     },
 
