@@ -153,6 +153,7 @@ export default {
         let items = []
         console.log('here we go')
         console.log(scicrunchData)
+        const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
         let datasetVersion = -1
         if ('discover_dataset' in scicrunchData) {
@@ -179,7 +180,8 @@ export default {
                 })
               // https://sparc.science/datasets/scaffoldviewer?scaffold=95%2F1%2Ffiles%2Fderivative%2FScaffold%2FhumanColon_metadata.json
               let linkUrl =
-                '/datasets/scaffoldviewer' +
+                baseRoute +
+                'datasets/scaffoldviewer' +
                 '?scaffold=' +
                 `${datasetId}/${datasetVersion}/files/${metaFilePath}`
               console.log(linkUrl)
@@ -202,7 +204,7 @@ export default {
                 datasetVersion,
                 videoFile.dataset.path
               )
-              const linkUrl = `/datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}`
+              const linkUrl = `${baseRoute}datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}`
               return {
                 title: videoFile.file.name,
                 type: 'Video',
@@ -225,7 +227,7 @@ export default {
                 csvFile.dataset.path
               )
               // https://sparc.science/datasets/plotviewer?dataset_version=6&dataset_id=29&file_path=29%2F6%2Ffiles%2Fderivative%2FHB-ICN-NegDDCT-data.csv&plot_type=heatmap
-              let linkUrl = `/datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&plot_type=${plotTypeName}`
+              let linkUrl = `${baseRoute}datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&plot_type=${plotTypeName}`
               return {
                 title: csvFile.file.name,
                 type: plotTypeName ? plotTypeName : 'CSV',
@@ -247,6 +249,7 @@ export default {
       immediate: true,
       handler: function(biolucidaData) {
         let items = []
+        const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
           items.push(
             ...Array.from(biolucidaData.dataset_images, dataset_image => {
@@ -257,8 +260,8 @@ export default {
                 ''
               )
               // https://sparc.science/datasets/imageviewer/2724?view=MjcyNC1jb2wtMTA4&dataset_version=5&dataset_id=43
-              let linkUrl =
-                '/datasets/biolucidaviewer/' +
+              let linkUrl = baseRoute
+              'datasets/biolucidaviewer/' +
                 dataset_image.image_id +
                 '?view=' +
                 viewEncoding +
