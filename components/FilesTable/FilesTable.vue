@@ -69,6 +69,13 @@
                     {{ scope.row.name }}
                   </a>
                 </div>
+                <div v-else-if="isScaffoldMetaFile(scope)">
+                  <nuxt-link
+                    :to="getScaffoldLink(scope)"
+                  >
+                    {{ scope.row.name }}
+                  </nuxt-link>
+                </div>
                 <div v-else>
                   <nuxt-link
                     :to="{
@@ -131,6 +138,14 @@
                   }"
                 >
                   Open
+                </el-dropdown-item>
+                <el-dropdown-item v-if="isScaffoldMetaFile(scope)"
+                  :command="{
+                    type: 'openScaffold',
+                    scope
+                  }"
+                >
+                  Open Scaffold
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -236,8 +251,6 @@ export default {
       immediate: true
     }
   },
-
-  mounted: function() {},
 
   methods: {
     handleSelectionChange(val) {
@@ -384,6 +397,38 @@ export default {
         const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
         window.open(finalURL, '_blank')
       })
+    },
+
+    /**
+     * Create nuxt-link object for opening a scaffold.
+     * @param {Object} scope
+     */
+    getScaffoldLink: function(scope) {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = propOr(1, 'version', this.datasetDetails)
+      let s3Path = `${id}/${version}/${scope.row.path}`
+      return {
+        name: 'datasets-scaffoldviewer-id',
+        params: {},
+        query: { scaffold: s3Path }
+      }
+    },
+
+    /**
+     * Open scaffold
+     * @param {Object} scope
+     */
+    openScaffold: function(scope) {
+      this.$router.push(this.getScaffoldLink(scope))
+    },
+
+    /**
+     * Checks if file is openable by scaffold viewer
+     * @param {Object} scope
+     */
+    isScaffoldMetaFile: function(scope) {
+      let path = scope.row.path.toLowerCase()
+      return path.includes('scaffold') && path.includes('meta') && path.includes('json')
     },
 
     /**
