@@ -132,6 +132,11 @@
                 >
                   Open
                 </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="hasOsparcViewer(scope)"
+                >
+                  Open in oSPARC
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -299,6 +304,21 @@ export default {
         scope.row.fileType === 'MSExcel' ||
         scope.row.fileType === 'PowerPoint'
       )
+    },
+    /**
+     * Checks if file has a viewer in oSPARC
+     * @param {Object} scope
+     */
+    hasOsparcViewer(scope) {
+      if (this.$route.query.type !== 'simulation') {
+        return false
+      }
+      const fileType = scope.row.fileType.toLowerCase()
+      const viewersFileTypes = pathOr(null, ['osparc_data', 'file_viewers'], this.datasetDetails)
+      if (viewersFileTypes) {
+        return viewersFileTypes.map(viewer => viewer['file_type'].toLowerCase()).includes(fileType)
+      }
+      return false
     },
     /**
      * Get contents of directory
