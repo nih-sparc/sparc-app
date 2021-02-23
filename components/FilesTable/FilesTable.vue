@@ -399,13 +399,6 @@ export default {
       })
     },
 
-    getFilesEndpoint: function(path) {
-      const id = pathOr('', ['params', 'datasetId'], this.$route)
-      const version = propOr(1, 'version', this.datasetDetails)
-      const url = `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}/files/browse`
-      return `${url}?path=${path}&limit=${this.limit}`
-    },
-
     /**
      * Create nuxt-link object for opening a scaffold.
      * @param {Object} scope
@@ -428,7 +421,7 @@ export default {
     openScaffold: function(scope) {
       this.$router.push(this.getScaffoldLink(scope))
     },
-    
+
     /**
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
