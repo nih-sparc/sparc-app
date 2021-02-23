@@ -260,8 +260,9 @@ export default {
                 ''
               )
               // https://sparc.science/datasets/imageviewer/2724?view=MjcyNC1jb2wtMTA4&dataset_version=5&dataset_id=43
-              let linkUrl = baseRoute
-              'datasets/biolucidaviewer/' +
+              let linkUrl =
+                baseRoute +
+                'datasets/biolucidaviewer/' +
                 dataset_image.image_id +
                 '?view=' +
                 viewEncoding +
