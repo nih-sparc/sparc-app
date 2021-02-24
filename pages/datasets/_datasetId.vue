@@ -13,12 +13,16 @@
         <div class="dataset-meta">
           <div class="dataset-updated-date">
             Last updated on {{ lastUpdatedDate }}
-            <template v-if="datasetType === 'dataset'">
-              (<a
+            <template v-if="datasetType !== 'simulation'">
+              (
+              <a
                 href="#"
                 class="version-link"
                 @click.prevent="isVersionModalVisible = true"
-                >{{ versionRevisionText }}</a>)
+              >
+                {{ versionRevisionText }}
+              </a>
+              )
             </template>
           </div>
         </div>
@@ -1088,6 +1092,7 @@ export default {
 }
 
 .details-header__container--content-links .version-link {
+  display: inline-block;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1rem;
