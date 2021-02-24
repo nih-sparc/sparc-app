@@ -32,7 +32,7 @@ export default {
     this.uuid = this.$route.query.id;
     if (this.uuid) {
       let url = this.api + `map/getstate`;
-      fetch(url, {
+      await fetch(url, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -106,8 +106,10 @@ export default {
     if (lastChar != '/') {
       this.api = this.api + '/';
     }
-    if (window)
-      this.prefix = window.location.origin + window.location.pathname;
+    if (process.client) {
+      if (window)
+        this.prefix = window.location.origin + window.location.pathname;
+    }
   },
 };
 </script>
