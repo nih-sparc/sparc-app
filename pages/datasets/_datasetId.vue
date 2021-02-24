@@ -140,6 +140,7 @@
         <dataset-files-info
           v-show="activeTab === 'files'"
           :dataset-details="datasetInfo"
+          :osparc-viewers="osparcViewers"
         />
         <images-gallery
           v-show="activeTab === 'images'"
@@ -377,6 +378,14 @@ export default {
       videoData
     } = await getImagesData(datasetId, datasetDetails, $axios)
 
+    // Get oSPARC file viewers
+    const osparcViewers = await $axios
+      .$get(`${process.env.portal_api}/get_osparc_data`)
+      .then(osparcData => osparcData['file_viewers'])
+      .catch(() => {
+        return []
+      })
+
     return {
       entries: organEntries,
       datasetInfo: datasetDetails,
@@ -385,7 +394,8 @@ export default {
       scaffoldData,
       plotData,
       videoData,
-      tabs: tabsData
+      tabs: tabsData,
+      osparcViewers
     }
   },
 

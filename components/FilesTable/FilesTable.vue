@@ -134,6 +134,9 @@
                 </el-dropdown-item>
                 <el-dropdown-item
                   v-if="hasOsparcViewer(scope)"
+                  :command="{
+                    type: 'openOsparcViewersDialog'
+                  }"
                 >
                   Open in oSPARC
                 </el-dropdown-item>
@@ -142,6 +145,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <osparc-file-viewers-dialog :open="isOsparcViewersDialogVisible" :onClose="closeOsparcViewersDialog"/>
     </div>
   </div>
 </template>
@@ -165,11 +169,14 @@ import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
 
+import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
+
 export default {
   name: 'FilesTable',
 
   components: {
-    BfDownloadFile
+    BfDownloadFile,
+    OsparcFileViewersDialog
   },
 
   mixins: [FormatStorage, RequestDownloadFile],
@@ -180,6 +187,9 @@ export default {
       default: function() {
         return {}
       }
+    },
+    osparcViewers: {
+      type: Array
     }
   },
 
@@ -190,7 +200,8 @@ export default {
       isLoading: false,
       hasError: false,
       limit: 500,
-      selected: []
+      selected: [],
+      isOsparcViewersDialogVisible: false
     }
   },
 
@@ -310,15 +321,8 @@ export default {
      * @param {Object} scope
      */
     hasOsparcViewer(scope) {
-      if (this.$route.query.type !== 'simulation') {
-        return false
-      }
       const fileType = scope.row.fileType.toLowerCase()
-      const viewersFileTypes = pathOr(null, ['osparc_data', 'file_viewers'], this.datasetDetails)
-      if (viewersFileTypes) {
-        return viewersFileTypes.map(viewer => viewer['file_type'].toLowerCase()).includes(fileType)
-      }
-      return false
+      return this.osparcViewers.map(viewer => viewer['file_type'].toLowerCase()).includes(fileType)
     },
     /**
      * Get contents of directory
@@ -376,6 +380,20 @@ export default {
     },
 
     /**
+     * Shows the oSPARC viewers selector
+     */
+    openOsparcViewersDialog: function() {
+      this.isOsparcViewersDialogVisible = true;
+    },
+
+    /**
+     * Hides the oSPARC viewers selector
+     */
+    closeOsparcViewersDialog: function() {
+      this.isOsparcViewersDialogVisible = false;
+    },
+
+    /**
      * Get the download file for the given scope.
      * @param {Object} scope
      */
@@ -404,6 +422,25 @@ export default {
         const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
         window.open(finalURL, '_blank')
       })
+    },
+
+    /**
+     * Opens file in oSPARC
+     * @param {Object} scope
+     */
+    openInOsparc: function(scope) {
+      if (this.hasOsparcViewer(scope)) {
+        const fileType = scope.row.fileType.toLowerCase()
+        const fileSize = scope.row.size
+        const downloadLink = scope.row.uri.toLowerCase()
+        const viewer = this.osparcViewers.find(viewer => viewer["file_type"].toLowerCase() === fileType)
+        const redirectionUrl = new URL(viewer['redirection_url'])
+
+        redirectionUrl.searchParams.append('download_link', downloadLink);
+        redirectionUrl.searchParams.append('file_size', fileSize);
+
+        window.open(redirectionUrl, '_blank')
+      }
     },
 
     /**
