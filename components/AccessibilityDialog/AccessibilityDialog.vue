@@ -23,7 +23,7 @@
           do not fully conform to the accessibility standard.
         </p>
         <p>
-          We welcome your feedback on the accessibility of SPARC Portal. Please
+          We welcome your feedback on the accessibility of SPARC Portal.
           Please let us know if you encounter accessibility barriers on SPARC
           Portal:
         </p>
