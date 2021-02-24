@@ -18,8 +18,7 @@
                 href="#"
                 class="version-link"
                 @click.prevent="isVersionModalVisible = true"
-              >{{ versionRevisionText }}</a
-              >)
+                >{{ versionRevisionText }}</a>)
             </template>
           </div>
         </div>
@@ -1088,7 +1087,10 @@ export default {
   }
 }
 
-.version-link {
+.details-header__container--content-links .version-link {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1rem;
   margin: 0 !important;
 }
 .dataset-updated-date {
