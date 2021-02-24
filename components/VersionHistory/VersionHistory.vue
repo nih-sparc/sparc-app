@@ -110,28 +110,20 @@ export default {
 .version-history-dialog {
   .version-history-container {
     height: 290px;
+    font-size: 0.875rem;
+    line-height: 1rem;
 
     .table-header {
       background-color: #f9f9f9;
-      height: 40px;
-      // width: 616px;
-      padding-left: 24px;
       color: #404554;
       font-weight: 600;
-      font-size: 14px;
-      line-height: 16px;
-      padding-top: 12px;
+      padding: 0.75rem 1.5rem;
       margin-left: 0px !important;
     }
 
     .table-rows {
-      height: 40px;
-      // width: 616px;
-      padding-left: 24px;
       color: #000000;
-      font-size: 14px;
-      line-height: 16px;
-      padding-top: 14px;
+      padding: 0.75rem 1.5rem;
       border-top: solid 1px #dadada;
       margin-left: 0px !important;
 
@@ -150,28 +142,28 @@ export default {
     height: 350px;
     .el-dialog__header {
       background-color: #f1f1f3;
-      padding-top: 16px;
-      border-radius: 4px 4px 0px 0px;
-      padding-bottom: 8px;
+      padding-top: 1rem;
+      border-radius: 0.25rem 0.25rem 0px 0px;
+      padding-bottom: 0.5rem;
 
       .bf-dialog-header {
         .bf-dialog-header-title {
-          font-size: 14px;
+          font-size: 0.875rem;
           font-weight: bold;
-          line-height: 16px;
+          line-height: 1rem;
         }
 
         .icon-close {
-          margin-bottom: 5px;
+          margin-bottom: 0.3125rem;
           .svg-icon {
-            width: 16px !important;
-            height: 16px !important;
+            width: 1rem !important;
+            height: 1rem !important;
           }
         }
       }
     }
     .el-dialog__body {
-      padding: 0px 0px;
+      padding: 0;
       overflow: scroll;
     }
   }
