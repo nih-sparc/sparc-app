@@ -13,6 +13,14 @@
         <div class="dataset-meta">
           <div class="dataset-updated-date">
             Last updated on {{ lastUpdatedDate }}
+            <template v-if="datasetType === 'dataset'">
+              (<a
+                href="#"
+                class="version-link"
+                @click.prevent="isVersionModalVisible = true"
+              >{{ versionRevisionText }}</a
+              >)
+            </template>
           </div>
         </div>
         <div class="dataset-owners">
@@ -159,6 +167,13 @@
       :download-size="getDownloadSize"
       @close-download-dialog="isDownloadModalVisible = false"
     />
+    <version-history
+      :visible.sync="isVersionModalVisible"
+      :dataset-id="datasetInfo.id"
+      :latest-version="datasetInfo.latestVersion"
+      :versions="versions"
+      @close-version-dialog="closeVersionModal"
+    />
   </div>
 </template>
 
@@ -176,6 +191,7 @@ import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
+import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -229,12 +245,15 @@ const getOrganEntries = async () => {
 /**
  * Get Dataset details
  * @param {Number} datasetId
+ * @param {Number} version
  * @param {String} datasetType
  * @param {Function} $axios
  * @returns {Object}
  */
-const getDatasetDetails = async (datasetId, datasetType, $axios) => {
-  const datasetUrl = `${process.env.discover_api_host}/datasets/${datasetId}`
+const getDatasetDetails = async (datasetId, version, datasetType, $axios) => {
+  const url = `${process.env.discover_api_host}/datasets/${datasetId}`
+  const datasetUrl = version ? `${url}/versions/${version}` : url
+
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
   try {
@@ -257,6 +276,23 @@ const getDatasetDetails = async (datasetId, datasetType, $axios) => {
     return datasetDetails
   } catch (error) {
     return {}
+  }
+}
+
+/**
+ * Get all the versions of the datasets
+ * @param {Number} datasetId
+ * @param {Object} $axios
+ * @returns {Array}
+ */
+const getDatasetVersions = (datasetId, $axios) => {
+  try {
+    const url = `${process.env.discover_api_host}/datasets/${datasetId}/versions`
+    return $axios.$get(url).then(response => {
+      return response.sort((a, b) => a.verson - b.version)
+    })
+  } catch (error) {
+    return []
   }
 }
 
@@ -353,7 +389,8 @@ export default {
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
-    ImagesGallery
+    ImagesGallery,
+    VersionHistory
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -365,9 +402,12 @@ export default {
 
     const datasetDetails = await getDatasetDetails(
       datasetId,
+      route.params.version,
       route.query.type,
       $axios
     )
+
+    const versions = await getDatasetVersions(datasetId, $axios)
 
     const {
       imagesData,
@@ -385,7 +425,8 @@ export default {
       scaffoldData,
       plotData,
       videoData,
-      tabs: tabsData
+      tabs: tabsData,
+      versions
     }
   },
 
@@ -420,7 +461,8 @@ export default {
         }
       ],
       subtitles: [],
-      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id
+      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
+      isVersionModalVisible: false
     }
   },
 
@@ -687,6 +729,18 @@ export default {
      */
     scaffold: function() {
       return Scaffolds[this.organType.toLowerCase()]
+    },
+
+    /**
+     * computes the right text based on the version and revision
+     * @returns {String}
+     */
+    versionRevisionText() {
+      const versionText = `Version ${this.datasetInfo.version}`
+      const revisionText = this.datasetInfo.revision
+        ? `, Revision ${this.datasetInfo.revision}`
+        : ''
+      return versionText + revisionText
     }
   },
 
@@ -819,6 +873,13 @@ export default {
       } else {
         this.getCitationsArea().scrollIntoView()
       }
+    },
+
+    /**
+     * Closes the version history modal
+     */
+    closeVersionModal: function() {
+      this.isVersionModalVisible = false
     }
   },
 
@@ -1027,6 +1088,9 @@ export default {
   }
 }
 
+.version-link {
+  margin: 0 !important;
+}
 .dataset-updated-date {
   line-height: 24px;
   color: black;
