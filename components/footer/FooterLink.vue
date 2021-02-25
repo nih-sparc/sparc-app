@@ -1,5 +1,9 @@
 <template>
-  <nuxt-link v-if="isInternalLink(link.fields.url || '')" :to="link.fields.url">
+  <nuxt-link
+    v-if="isInternalLink(link.fields.url || '')"
+    :to="link.fields.url"
+    data-jest="nuxt-link"
+  >
     {{ link.fields.title }}
   </nuxt-link>
   <a v-else :href="link.fields.longUrl || link.fields.url" target="_blank">
@@ -16,7 +20,12 @@ export default {
   props: {
     link: {
       type: Object,
-      default: () => {}
+      default: () => {
+        return {
+          sys: {},
+          fields: {}
+        }
+      }
     }
   },
 
