@@ -22,6 +22,8 @@
             :value="option.value"
           />
         </el-select>
+
+        <general-form v-if="formType === 'general'" />
       </div>
     </div>
   </div>
@@ -30,6 +32,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import GeneralForm from '@/components/ContactUsForms/GeneralForm/GeneralForm.vue'
 
 import MarkedMixin from '@/mixins/marked'
 import createClient from '@/plugins/contentful.js'
@@ -41,7 +44,8 @@ export default {
 
   components: {
     Breadcrumb,
-    PageHero
+    PageHero,
+    GeneralForm
   },
 
   mixins: [MarkedMixin],

@@ -11,4 +11,9 @@
     border: 1px solid $app-primary-color;
     color: $app-primary-color;
   }
+  &.primary{
+    background: $app-primary-color;
+    border: 1px solid $app-primary-color;
+    color: #fff;
+  }
 }
