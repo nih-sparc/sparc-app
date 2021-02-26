@@ -26,36 +26,46 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item prop="message" label="Your question or comment:*">
+    <el-form-item
+      prop="reproduceExample"
+      label="Provide a short description of what you were doing.*"
+    >
       <el-input
-        v-model="form.message"
+        v-model="form.reproduceExample"
+        placeholder="(Example: When I click <this button>, <this happens>.)"
+      />
+    </el-form-item>
+
+    <el-form-item prop="description" label="Provide a detailed description*">
+      <el-input
+        v-model="form.description"
+        type="textarea"
+        :rows="3"
+        placeholder="Please provide specific steps so our team can reproduce your experience in order to resolve the issue."
+      />
+    </el-form-item>
+
+    <el-form-item
+      prop="howToImprove"
+      label="How would you like this experience to improve?*"
+    >
+      <el-input
+        v-model="form.howToImprove"
         type="textarea"
         :rows="3"
         placeholder="Description here"
       />
     </el-form-item>
 
-    <el-form-item prop="shouldSendCopy">
-      <el-checkbox v-model="form.shouldSendCopy">
-        Please send me a copy of this message
+    <el-form-item prop="shouldFollowUp" class="mb-0">
+      <el-checkbox v-model="form.shouldFollowUp">
+        Let me know when you resolve this issue
       </el-checkbox>
     </el-form-item>
 
-    <el-form-item prop="firstName" label="First Name">
-      <el-input v-model="form.firstName" placeholder="First name here" />
-    </el-form-item>
-
-    <el-form-item prop="lastName" label="Last Name">
-      <el-input v-model="form.lastName" placeholder="Last name here" />
-    </el-form-item>
-
-    <el-form-item prop="email" label="Email">
-      <el-input v-model="form.email" placeholder="Email here" type="email" />
-    </el-form-item>
-
-    <el-form-item prop="shouldSubscribe">
-      <el-checkbox v-model="form.shouldSubscribe">
-        Subscribe to the SPARC Newsletter
+    <el-form-item prop="shouldSendCopy">
+      <el-checkbox v-model="form.shouldSendCopy">
+        Please send me a copy of this message
       </el-checkbox>
     </el-form-item>
 
@@ -76,12 +86,11 @@ export default {
       form: {
         sparcInvestigator: '',
         pageOrResource: '',
-        message: '',
+        reproduceExample: '',
+        description: '',
+        howToImprove: '',
         shouldSendCopy: false,
-        firstName: '',
-        lastName: '',
-        email: '',
-        shouldSubscribe: false
+        shouldFollowUp: false
       },
       formRules: {
         sparcInvestigator: [
@@ -101,10 +110,26 @@ export default {
           }
         ],
 
-        message: [
+        reproduceExample: [
           {
             required: true,
-            message: 'Please enter a message',
+            message: 'Please enter a description',
+            trigger: 'change'
+          }
+        ],
+
+        description: [
+          {
+            required: true,
+            message: 'Please enter a description',
+            trigger: 'change'
+          }
+        ],
+
+        howToImprove: [
+          {
+            required: true,
+            message: 'Please enter a description',
             trigger: 'change'
           }
         ]
