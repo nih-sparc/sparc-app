@@ -27,11 +27,11 @@
     </el-form-item>
 
     <el-form-item
-      prop="reproduceExample"
+      prop="title"
       label="Provide a short description of what you were doing.*"
     >
       <el-input
-        v-model="form.reproduceExample"
+        v-model="form.title"
         placeholder="(Example: When I click <this button>, <this happens>.)"
       />
     </el-form-item>
@@ -70,7 +70,7 @@
     </el-form-item>
 
     <el-form-item>
-      <el-button class="primary" @click="onSubmit">
+      <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
       </el-button>
     </el-form-item>
@@ -79,19 +79,20 @@
 
 <script>
 export default {
-  name: 'Form',
+  name: 'BugForm',
 
   data() {
     return {
       form: {
         sparcInvestigator: '',
         pageOrResource: '',
-        reproduceExample: '',
+        title: '',
         description: '',
         howToImprove: '',
         shouldSendCopy: false,
         shouldFollowUp: false
       },
+      isSubmitting: false,
       formRules: {
         sparcInvestigator: [
           {
@@ -110,7 +111,7 @@ export default {
           }
         ],
 
-        reproduceExample: [
+        title: [
           {
             required: true,
             message: 'Please enter a description',
@@ -159,7 +160,32 @@ export default {
      * Send form to endpoint
      */
     sendForm() {
-      console.log('sent!')
+      this.isSubmitting = true
+
+      this.$axios
+        .post(`${process.env.portal_api}/tasks`, {
+          title: this.form.title,
+          description: `
+            Are you a SPARC investigator?<br>${this.form.sparcInvestigator}
+            <br><br>Is this about a specific page or resource?
+            <br>${this.form.pageOrResource}
+            <br><br>Description
+            <br>${this.form.description}
+            <br><br>How would you like this experience to improve?
+            <br>${this.form.howToImprove}
+            <br><br>Let me know when you resolve this issue
+            <br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
+          `
+        })
+        .then(() => {
+          this.$emit('submit')
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+        .finally(() => {
+          this.isSubmitting = false
+        })
     }
   }
 }

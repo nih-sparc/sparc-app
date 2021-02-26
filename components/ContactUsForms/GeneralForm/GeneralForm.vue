@@ -69,7 +69,7 @@
 
 <script>
 export default {
-  name: 'Form',
+  name: 'GeneralForm',
 
   data() {
     return {

@@ -9,24 +9,35 @@
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
-        <h2>Let us know why you’re contacting us:</h2>
-        <el-select
-          v-model="formType"
-          class="input-reason"
-          placeholder="Select a reason"
-        >
-          <el-option
-            v-for="option in formTypeOptions"
-            :key="option.key"
-            :label="option.label"
-            :value="option.value"
-          />
-        </el-select>
+        <template v-if="!isBugSubmitted">
+          <h2>Let us know why you’re contacting us:</h2>
+          <el-select
+            v-model="formType"
+            class="input-reason"
+            placeholder="Select a reason"
+          >
+            <el-option
+              v-for="option in formTypeOptions"
+              :key="option.key"
+              :label="option.label"
+              :value="option.value"
+            />
+          </el-select>
 
-        <hr v-if="formType !== ''" class="mt-32 mb-32" />
+          <hr v-if="formType !== ''" class="mt-32 mb-32" />
 
-        <general-form v-if="formType === 'general'" />
-        <bug-form v-if="formType === 'bug'" />
+          <general-form v-if="formType === 'general'" />
+          <bug-form v-if="formType === 'bug'" @submit="isBugSubmitted = true" />
+        </template>
+
+        <template v-if="isBugSubmitted">
+          <p>
+            Thank you for letting us know about this error or technical issue.
+            If you requested a response, a member of the SPARC team will contact
+            you within two business days.
+          </p>
+          <a href="#" @click="resetForms">Submit another inquiry</a>
+        </template>
       </div>
     </div>
   </div>
@@ -87,7 +98,18 @@ export default {
           label: 'I want to report an error or a technical issue',
           value: 'bug'
         }
-      ]
+      ],
+      isBugSubmitted: false
+    }
+  },
+
+  methods: {
+    /**
+     * Reset all form data
+     */
+    resetForms: function() {
+      this.isBugSubmitted = false
+      this.formType = ''
     }
   }
 }
