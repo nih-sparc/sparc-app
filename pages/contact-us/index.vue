@@ -23,6 +23,8 @@
           />
         </el-select>
 
+        <hr v-if="formType !== ''" class="mt-32 mb-32" />
+
         <general-form v-if="formType === 'general'" />
         <bug-form v-if="formType === 'bug'" />
       </div>
