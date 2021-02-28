@@ -135,7 +135,8 @@
                 <el-dropdown-item
                   v-if="hasOsparcViewer(scope)"
                   :command="{
-                    type: 'openOsparcViewersDialog'
+                    type: 'setDialogSelectedFile',
+                    scope
                   }"
                 >
                   Open in oSPARC
@@ -145,7 +146,12 @@
           </template>
         </el-table-column>
       </el-table>
-      <osparc-file-viewers-dialog :open="isOsparcViewersDialogVisible" :onClose="closeOsparcViewersDialog"/>
+      <osparc-file-viewers-dialog
+        :open="dialogSelectedFile !== null"
+        :onClose="() => setDialogSelectedFile(null)"
+        :viewers="viewers"
+        :selectedFile="dialogSelectedFile"
+      />
     </div>
   </div>
 </template>
@@ -201,7 +207,21 @@ export default {
       hasError: false,
       limit: 500,
       selected: [],
-      isOsparcViewersDialogVisible: false
+      viewers: [
+        {
+          name: 'JSON viewer 1',
+          redirection_url: 'http://osparc.io'
+        },
+        {
+          name: 'JSON viewer 2',
+          redirection_url: 'http://osparc.io'
+        },
+        {
+          name: 'JSON viewer 3',
+          redirection_url: 'http://osparc.io'
+        }
+      ],
+      dialogSelectedFile: null
     }
   },
 
@@ -382,15 +402,8 @@ export default {
     /**
      * Shows the oSPARC viewers selector
      */
-    openOsparcViewersDialog: function() {
-      this.isOsparcViewersDialogVisible = true;
-    },
-
-    /**
-     * Hides the oSPARC viewers selector
-     */
-    closeOsparcViewersDialog: function() {
-      this.isOsparcViewersDialogVisible = false;
+    setDialogSelectedFile: function(scope) {
+      this.dialogSelectedFile = scope ? scope.row : null;
     },
 
     /**
@@ -422,25 +435,6 @@ export default {
         const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
         window.open(finalURL, '_blank')
       })
-    },
-
-    /**
-     * Opens file in oSPARC
-     * @param {Object} scope
-     */
-    openInOsparc: function(scope) {
-      if (this.hasOsparcViewer(scope)) {
-        const fileType = scope.row.fileType.toLowerCase()
-        const fileSize = scope.row.size
-        const downloadLink = scope.row.uri.toLowerCase()
-        const viewer = this.osparcViewers.find(viewer => viewer["file_type"].toLowerCase() === fileType)
-        const redirectionUrl = new URL(viewer['redirection_url'])
-
-        redirectionUrl.searchParams.append('download_link', downloadLink);
-        redirectionUrl.searchParams.append('file_size', fileSize);
-
-        window.open(redirectionUrl, '_blank')
-      }
     },
 
     /**

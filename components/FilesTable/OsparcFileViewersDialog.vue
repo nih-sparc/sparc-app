@@ -6,15 +6,19 @@
   >
     <bf-dialog-header slot="title" title="Select a viewer" />
     <dialog-body>
-      <template>
-        Text in dialog
-      </template>
-    </dialog-body>
-    <div slot="footer" class="dialog-footer">
-      <bf-button>
+      <el-select v-model="selectedViewer" placeholder="Select a viewer...">
+        <el-option
+          v-for="viewer in viewers"
+          :key="viewer.name"
+          :value="viewer.name"
+          :label="viewer.name"
+        >
+        </el-option>
+      </el-select>
+      <bf-button @click="openFile" :disabled="selectedViewer === ''">
         View in oSPARC
       </bf-button>
-    </div>
+    </dialog-body>
   </el-dialog>
 </template>
 
@@ -27,6 +31,9 @@ export default {
   name: 'OsparcFileViewersDialog',
   components: { BfButton, BfDialogHeader, DialogBody },
   props: {
+    selectedFile: {
+      type: Object
+    },
     viewers: {
       type: Array
     },
@@ -36,6 +43,28 @@ export default {
     onClose: {
       type: Function
     }
-  }  
+  },
+  data() {
+    return {
+      selectedViewer: ''
+    }
+  },
+  methods: {
+    openFile() {
+      const fileType = this.selectedFile.fileType.toLowerCase()
+      const fileSize = this.selectedFile.size
+      const downloadLink = this.selectedFile.uri.toLowerCase()
+
+      const redirectionUrl = new URL(process.env.osparc_host)
+
+      redirectionUrl.searchParams.append('download_link', downloadLink);
+      redirectionUrl.searchParams.append('file_size', fileSize);
+      redirectionUrl.searchParams.append('file_type', fileType);
+
+      window.open(redirectionUrl, '_blank')
+
+      this.onClose()
+    }
+  }
 }
 </script>
