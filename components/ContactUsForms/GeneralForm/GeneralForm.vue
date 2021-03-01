@@ -140,7 +140,7 @@ export default {
         if (!valid) {
           return
         }
-        this.sendForm()
+        this.subscribeToNewsletter()
       })
     },
 
@@ -149,6 +149,27 @@ export default {
      */
     sendForm() {
       console.log('sent!')
+    },
+
+    /**
+     * Subscribe to Newsletter
+     */
+    subscribeToNewsletter() {
+      this.isSubmitting = true
+
+      this.$axios
+        .post(`${process.env.portal_api}/mailchimp`, {
+          email_address: this.form.email
+        })
+        .then(() => {
+          this.$emit('submit')
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+        .finally(() => {
+          this.isSubmitting = false
+        })
     }
   }
 }
