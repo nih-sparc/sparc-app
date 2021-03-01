@@ -15,6 +15,8 @@
             v-model="formType"
             class="input-reason"
             placeholder="Select a reason"
+            aria-placeholder="Select a reason"
+            :popper-append-to-body="false"
           >
             <el-option
               v-for="option in formTypeOptions"
@@ -173,8 +175,9 @@ h2 {
     width: 100%;
   }
   .el-input,
-  .el-textarea {
-    font-size: 1.125rem;
+  .el-textarea,
+  .el-select-dropdown__item {
+    font-size: 1rem;
     ::placeholder {
       color: $medium-gray;
     }

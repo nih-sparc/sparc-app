@@ -7,12 +7,9 @@
           About SPARC
         </nuxt-link>
         <svg-icon icon="icon-contact" width="18" height="18" />
-        <a
-          href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji"
-          target="_blank"
-        >
+        <nuxt-link to="/contact-us">
           Contact Us
-        </a>
+        </nuxt-link>
         <svg-icon icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
           Need Help?
@@ -199,23 +196,28 @@ export default {
     searchOpen: false,
     searchQuery: '',
     searchSelect: 'data',
-    searchSelectOptions: [{
-      key: 'data',
-      value: 'data',
-      label: 'Datasets'
-    }, {
-      key: 'resources',
-      value: 'resources',
-      label: 'Resources'
-    }, {
-      key: 'news-and-events',
-      value: 'news-and-events',
-      label: 'News and Events'
-    }, {
-      key: 'help',
-      value: 'help',
-      label: 'Support Center'
-    }]
+    searchSelectOptions: [
+      {
+        key: 'data',
+        value: 'data',
+        label: 'Datasets'
+      },
+      {
+        key: 'resources',
+        value: 'resources',
+        label: 'Resources'
+      },
+      {
+        key: 'news-and-events',
+        value: 'news-and-events',
+        label: 'News and Events'
+      },
+      {
+        key: 'help',
+        value: 'help',
+        label: 'Support Center'
+      }
+    ]
   }),
 
   computed: {
@@ -307,13 +309,16 @@ export default {
      * option and query
      */
     executeSearch: function() {
-      const option = this.searchSelectOptions.find(o => o.value === this.searchSelect)
+      const option = this.searchSelectOptions.find(
+        o => o.value === this.searchSelect
+      )
       const searchKey = option.value === 'data' ? 'q' : 'search'
-      const type = option.value === 'data'
-        ? 'dataset'
-        : option.value === 'resources'
-            ? 'sparcPartners'
-            : undefined
+      const type =
+        option.value === 'data'
+          ? 'dataset'
+          : option.value === 'resources'
+          ? 'sparcPartners'
+          : undefined
 
       this.$router.push({
         name: option.value,

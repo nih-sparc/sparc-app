@@ -10,7 +10,11 @@
       prop="sparcInvestigator"
       label="Are you a SPARC investigator?*"
     >
-      <el-select v-model="form.sparcInvestigator" aria-placeholder="Select one">
+      <el-select
+        v-model="form.sparcInvestigator"
+        aria-placeholder="Select one"
+        :popper-append-to-body="false"
+      >
         <el-option
           v-for="sparcInvestigatorOption in questionOptions.sparcInvestigator"
           :key="sparcInvestigatorOption"
@@ -24,7 +28,11 @@
       prop="pageOrResource"
       label="Is this about a specific page or resource?"
     >
-      <el-select v-model="form.pageOrResource" aria-placeholder="Select one">
+      <el-select
+        v-model="form.pageOrResource"
+        aria-placeholder="Select one"
+        :popper-append-to-body="false"
+      >
         <el-option
           v-for="pageOrResource in questionOptions.pageOrResource"
           :key="pageOrResource"
