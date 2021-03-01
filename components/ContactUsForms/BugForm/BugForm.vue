@@ -56,6 +56,7 @@
     <el-form-item
       prop="howToImprove"
       label="How would you like this experience to improve?*"
+      class="mb-0"
     >
       <el-input
         v-model="form.howToImprove"
@@ -86,7 +87,7 @@
         <el-input v-model="form.lastName" placeholder="Last name here" />
       </el-form-item>
 
-      <el-form-item prop="email" label="Email">
+      <el-form-item prop="email" label="Email" class="mb-0">
         <el-input v-model="form.email" placeholder="Email here" type="email" />
       </el-form-item>
 

@@ -153,11 +153,47 @@ h2 {
   font-size: 1.5rem;
   line-height: 2rem;
 }
-.input-reason {
-  max-width: 36rem;
-  width: 100%;
-  ::placeholder {
-    color: $dark-sky;
+</style>
+
+<style lang="scss">
+@import '@/assets/_variables.scss';
+.contact-us-page {
+  .el-form-item:not(.mb-0) {
+    margin-bottom: 3.25rem;
+  }
+  .el-form-item__label {
+    color: #000;
+    font-size: 1.625rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    padding-bottom: 0;
+  }
+  .el-select {
+    max-width: 20rem;
+    width: 100%;
+  }
+  .el-input,
+  .el-textarea {
+    font-size: 1.125rem;
+    ::placeholder {
+      color: $medium-gray;
+    }
+  }
+  .el-input__inner,
+  .el-textarea__inner {
+    border-color: $medium-gray;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+  }
+  .el-textarea__inner {
+    font-family: inherit;
+  }
+  .input-reason {
+    max-width: 36rem;
+    width: 100%;
+    ::placeholder {
+      color: $dark-sky;
+    }
   }
 }
 </style>
