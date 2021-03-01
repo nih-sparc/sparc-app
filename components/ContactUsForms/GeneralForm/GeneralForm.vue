@@ -97,7 +97,7 @@ export default {
             required: true,
             message: 'Please enter your email',
             type: 'email',
-            trigger: 'change'
+            trigger: 'blur'
           }
         ],
 

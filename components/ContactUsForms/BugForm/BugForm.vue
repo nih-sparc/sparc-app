@@ -69,6 +69,26 @@
       </el-checkbox>
     </el-form-item>
 
+    <template v-if="form.shouldSendCopy || form.shouldFollowUp">
+      <el-form-item prop="firstName" label="First Name">
+        <el-input v-model="form.firstName" placeholder="First name here" />
+      </el-form-item>
+
+      <el-form-item prop="lastName" label="Last Name">
+        <el-input v-model="form.lastName" placeholder="Last name here" />
+      </el-form-item>
+
+      <el-form-item prop="email" label="Email">
+        <el-input v-model="form.email" placeholder="Email here" type="email" />
+      </el-form-item>
+
+      <el-form-item prop="shouldSubscribe">
+        <el-checkbox v-model="form.shouldSubscribe">
+          Subscribe to the SPARC Newsletter
+        </el-checkbox>
+      </el-form-item>
+    </template>
+
     <el-form-item>
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
@@ -90,7 +110,11 @@ export default {
         description: '',
         howToImprove: '',
         shouldSendCopy: false,
-        shouldFollowUp: false
+        shouldFollowUp: false,
+        firstName: '',
+        lastName: '',
+        email: '',
+        shouldSubscribe: false
       },
       isSubmitting: false,
       formRules: {
@@ -107,7 +131,7 @@ export default {
             required: true,
             message: 'Please enter your email',
             type: 'email',
-            trigger: 'change'
+            trigger: 'blur'
           }
         ],
 
@@ -176,6 +200,31 @@ export default {
             <br><br>Let me know when you resolve this issue
             <br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
           `
+        })
+        .then(() => {
+          if (this.form.shouldSubscribe) {
+            this.subscribeToNewsletter()
+          } else {
+            this.$emit('submit')
+          }
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+        .finally(() => {
+          this.isSubmitting = false
+        })
+    },
+
+    /**
+     * Subscribe to Newsletter
+     */
+    subscribeToNewsletter() {
+      this.isSubmitting = true
+
+      this.$axios
+        .post(`${process.env.portal_api}/mailchimp`, {
+          email_address: this.form.email
         })
         .then(() => {
           this.$emit('submit')
