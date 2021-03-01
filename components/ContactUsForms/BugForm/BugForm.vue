@@ -11,8 +11,12 @@
       label="Are you a SPARC investigator?*"
     >
       <el-select v-model="form.sparcInvestigator" aria-placeholder="Select one">
-        <el-option label="Yes" value="Yes" />
-        <el-option label="No" value="No" />
+        <el-option
+          v-for="sparcInvestigatorOption in questionOptions.sparcInvestigator"
+          :key="sparcInvestigatorOption"
+          :label="sparcInvestigatorOption"
+          :value="sparcInvestigatorOption"
+        />
       </el-select>
     </el-form-item>
 
@@ -21,8 +25,12 @@
       label="Is this about a specific page or resource?"
     >
       <el-select v-model="form.pageOrResource" aria-placeholder="Select one">
-        <el-option label="Yes" value="Yes" />
-        <el-option label="No" value="No" />
+        <el-option
+          v-for="pageOrResource in questionOptions.pageOrResource"
+          :key="pageOrResource"
+          :label="pageOrResource"
+          :value="pageOrResource"
+        />
       </el-select>
     </el-form-item>
 
@@ -98,6 +106,7 @@
 </template>
 
 <script>
+import { sparcInvestigator, pageOrResource } from '../questions'
 export default {
   name: 'BugForm',
 
@@ -115,6 +124,10 @@ export default {
         lastName: '',
         email: '',
         shouldSubscribe: false
+      },
+      questionOptions: {
+        sparcInvestigator,
+        pageOrResource
       },
       isSubmitting: false,
       formRules: {
@@ -199,6 +212,8 @@ export default {
             <br>${this.form.howToImprove}
             <br><br>Let me know when you resolve this issue
             <br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
+            <br><br>Email
+            <br>${this.form.email}
           `
         })
         .then(() => {
