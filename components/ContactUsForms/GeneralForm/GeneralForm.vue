@@ -148,7 +148,11 @@ export default {
      * Send form to endpoint
      */
     sendForm() {
-      console.log('sent!')
+      if (this.form.shouldSubscribe) {
+        this.subscribeToNewsletter()
+      } else {
+        this.$emit('submit', this.form.firstName)
+      }
     },
 
     /**
@@ -162,7 +166,7 @@ export default {
           email_address: this.form.email
         })
         .then(() => {
-          this.$emit('submit')
+          this.$emit('submit', this.form.firstName)
         })
         .catch(() => {
           this.hasError = true

@@ -9,7 +9,7 @@
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
-        <template v-if="!isBugSubmitted">
+        <template v-if="!isBugSubmitted && !isGeneralSubmitted">
           <h2>Let us know why you’re contacting us:</h2>
           <el-select
             v-model="formType"
@@ -26,8 +26,20 @@
 
           <hr v-if="formType !== ''" class="mt-32 mb-32" />
 
-          <general-form v-if="formType === 'general'" />
+          <general-form
+            v-if="formType === 'general'"
+            @submit="onGeneralFormSubmit($event)"
+          />
           <bug-form v-if="formType === 'bug'" @submit="isBugSubmitted = true" />
+        </template>
+
+        <template v-if="isGeneralSubmitted">
+          <p>{{ firstName }},</p>
+          <p>
+            Thank you for your inquiry. A member of the SPARC team will contact
+            you within two business days.
+          </p>
+          <a href="#" @click="resetForms">Submit another inquiry</a>
         </template>
 
         <template v-if="isBugSubmitted">
@@ -99,7 +111,8 @@ export default {
           value: 'bug'
         }
       ],
-      isBugSubmitted: false
+      isBugSubmitted: false,
+      isGeneralSubmitted: false
     }
   },
 
@@ -109,7 +122,18 @@ export default {
      */
     resetForms: function() {
       this.isBugSubmitted = false
+      this.isGeneralSubmitted = false
       this.formType = ''
+      this.firstName = ''
+    },
+
+    /**
+     * On general form meetings
+     * @param {String} firstName
+     */
+    onGeneralFormSubmit: function(firstName) {
+      this.firstName = firstName
+      this.isGeneralSubmitted = true
     }
   }
 }
