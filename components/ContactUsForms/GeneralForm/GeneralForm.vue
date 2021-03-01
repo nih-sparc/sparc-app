@@ -68,7 +68,7 @@
     </el-form-item>
 
     <el-form-item>
-      <el-button class="primary" @click="onSubmit">
+      <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
       </el-button>
     </el-form-item>
@@ -97,6 +97,7 @@ export default {
         sparcInvestigator,
         pageOrResource
       },
+      isSubmitting: false,
       formRules: {
         sparcInvestigator: [
           {
@@ -140,7 +141,7 @@ export default {
         if (!valid) {
           return
         }
-        this.subscribeToNewsletter()
+        this.sendForm()
       })
     },
 
@@ -148,11 +149,33 @@ export default {
      * Send form to endpoint
      */
     sendForm() {
-      if (this.form.shouldSubscribe) {
-        this.subscribeToNewsletter()
-      } else {
-        this.$emit('submit', this.form.firstName)
-      }
+      this.isSubmitting = true
+
+      this.$axios
+        .post(`${process.env.portal_api}/contact`, {
+          name: `${this.form.firstName} ${this.form.lastName}`,
+          email: this.form.email,
+          message: `
+            Are you a SPARC investigator?<br>${this.form.sparcInvestigator}
+            <br><br>Is this about a specific page or resource?
+            <br>${this.form.pageOrResource}
+            <br><br>Message
+            <br>${this.form.message}
+          `
+        })
+        .then(() => {
+          if (this.form.shouldSubscribe) {
+            this.subscribeToNewsletter()
+          } else {
+            this.$emit('submit')
+          }
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+        .finally(() => {
+          this.isSubmitting = false
+        })
     },
 
     /**
