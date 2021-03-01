@@ -35,23 +35,23 @@
           <bug-form v-if="formType === 'bug'" @submit="isBugSubmitted = true" />
         </template>
 
-        <template v-if="isGeneralSubmitted">
+        <div v-if="isGeneralSubmitted" class="msg-success">
           <p>{{ firstName }},</p>
           <p>
             Thank you for your inquiry. A member of the SPARC team will contact
             you within two business days.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
-        </template>
+        </div>
 
-        <template v-if="isBugSubmitted">
+        <div v-if="isBugSubmitted" class="msg-success">
           <p>
             Thank you for letting us know about this error or technical issue.
             If you requested a response, a member of the SPARC team will contact
             you within two business days.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
-        </template>
+        </div>
       </div>
     </div>
   </div>
@@ -152,6 +152,10 @@ export default {
   }
 }
 h2 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.msg-success {
   font-size: 1.5rem;
   line-height: 2rem;
 }
