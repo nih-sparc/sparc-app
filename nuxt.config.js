@@ -29,7 +29,8 @@ export default {
   },
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
-    flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/flatmaps/',
+    flatmap_api:
+      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/flatmaps/',
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
@@ -91,6 +92,11 @@ export default {
       routes.push({
         path: '/submit_data.html',
         redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd'
+      })
+      routes.push({
+        name: 'version',
+        path: '/datasets/:datasetId/version/:version',
+        component: '@/pages/datasets/_datasetId.vue'
       })
     }
   },
