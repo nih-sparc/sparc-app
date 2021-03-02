@@ -383,7 +383,7 @@ export default {
       .$get(`${process.env.portal_api}/get_osparc_data`)
       .then(osparcData => osparcData['file_viewers'])
       .catch(() => {
-        return []
+        return {}
       })
 
     return {

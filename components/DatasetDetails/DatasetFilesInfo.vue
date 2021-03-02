@@ -32,7 +32,7 @@ export default {
       default: () => {}
     },
     osparcViewers: {
-      type: Array
+      type: Object
     }
   },
 

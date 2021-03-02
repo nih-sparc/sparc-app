@@ -149,7 +149,7 @@
       <osparc-file-viewers-dialog
         :open="dialogSelectedFile !== null"
         :onClose="() => setDialogSelectedFile(null)"
-        :viewers="viewers"
+        :viewers="osparcViewers"
         :selectedFile="dialogSelectedFile"
       />
     </div>
@@ -176,6 +176,7 @@ import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
 
 import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
+import { extractExtension } from '~/pages/data/utils'
 
 export default {
   name: 'FilesTable',
@@ -195,7 +196,7 @@ export default {
       }
     },
     osparcViewers: {
-      type: Array
+      type: Object
     }
   },
 
@@ -207,20 +208,6 @@ export default {
       hasError: false,
       limit: 500,
       selected: [],
-      viewers: [
-        {
-          name: 'JSON viewer 1',
-          redirection_url: 'http://osparc.io'
-        },
-        {
-          name: 'JSON viewer 2',
-          redirection_url: 'http://osparc.io'
-        },
-        {
-          name: 'JSON viewer 3',
-          redirection_url: 'http://osparc.io'
-        }
-      ],
       dialogSelectedFile: null
     }
   },
@@ -341,8 +328,8 @@ export default {
      * @param {Object} scope
      */
     hasOsparcViewer(scope) {
-      const fileType = scope.row.fileType.toLowerCase()
-      return this.osparcViewers.map(viewer => viewer['file_type'].toLowerCase()).includes(fileType)
+      const fileType = extractExtension(scope.row.path)
+      return Object.keys(this.osparcViewers).includes(fileType);
     },
     /**
      * Get contents of directory
