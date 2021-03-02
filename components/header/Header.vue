@@ -80,12 +80,9 @@
                 </li>
                 <li>
                   <svg-icon icon="icon-contact" width="18" height="18" />
-                  <a
-                    href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjI2NzEzMn0JNDcyNTk5ODQyNjYyOAllODRhYTBkZWQ2ODY2Y2U3OWNhZWI5ODkyZWMwNjgyNTBiZjExMDIzMjk4MGMxZGM1MGNhYzY0ZmQxOGMxN2Ji"
-                    target="_blank"
-                  >
+                  <nuxt-link to="/contact-us">
                     Contact Us
-                  </a>
+                  </nuxt-link>
                 </li>
                 <li>
                   <svg-icon icon="icon-help" width="18" height="18" />
