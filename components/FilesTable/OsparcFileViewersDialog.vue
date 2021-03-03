@@ -16,7 +16,7 @@
         >
         </el-option>
       </el-select>
-      <bf-button @click="openFile" :disabled="selectedViewer === ''">
+      <bf-button @click="openFile" :disabled="selectedViewer === ''" :processing="isFetching">
         View in oSPARC
       </bf-button>
     </dialog-body>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { compose, split, last, defaultTo, pathOr } from 'ramda'
 import BfDialogHeader from '@/components/bf-dialog-header/BfDialogHeader.vue'
 import DialogBody from '@/components/dialog-body/DialogBody.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
@@ -59,23 +60,37 @@ export default {
   },
   data() {
     return {
-      selectedViewer: ''
+      selectedViewer: '',
+      isFetching: false
     }
   },
   methods: {
     openFile() {
       const fileSize = this.selectedFile.size
-      const downloadLink = this.selectedFile.uri.toLowerCase()
+      const filePath = compose(
+        last,
+        defaultTo([]),
+        split('s3://blackfynn-discover-use1/'),
+        pathOr('', ['uri'])
+      )(this.selectedFile)
 
-      const redirectionUrl = new URL(this.selectedViewer['view_url'])
+      this.isFetching = true;
 
-      redirectionUrl.searchParams.append('download_link', downloadLink);
-      redirectionUrl.searchParams.append('file_size', fileSize);
+      this.$axios.$get(`${process.env.portal_api}/download?key=${filePath}`).
+        then(fileUrl => {
+          const redirectionUrl = new URL(this.selectedViewer['view_url'])
+    
+          redirectionUrl.searchParams.append('download_link', fileUrl)
+          redirectionUrl.searchParams.append('file_size', fileSize)
 
-      window.open(redirectionUrl, '_blank')
-
-      this.selectedViewer = ''
-      this.onClose()
+          window.open(redirectionUrl, '_blank')
+    
+          this.selectedViewer = ''
+          this.onClose()
+        })
+        .finally(() => {
+          this.isFetching = false;
+        })
     },
     beforeClose(done) {
       this.selectedViewer = ''
