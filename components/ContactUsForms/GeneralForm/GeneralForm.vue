@@ -55,11 +55,11 @@
       />
     </el-form-item>
 
-    <el-form-item prop="shouldSendCopy">
+    <!-- <el-form-item prop="shouldSendCopy">
       <el-checkbox v-model="form.shouldSendCopy">
         Please send me a copy of this message
       </el-checkbox>
-    </el-form-item>
+    </el-form-item> -->
 
     <el-form-item prop="firstName" label="First Name">
       <el-input v-model="form.firstName" placeholder="First name here" />
