@@ -33,9 +33,18 @@
     </el-table-column>
     <el-table-column
       prop="fields.institution.fields.name"
-      label="Institution"
+      label="Lead Institution"
       width="200"
-    />
+    >
+      <template slot-scope="scope">
+        <img
+          class="img-project"
+          :src="getImageSrc(scope)"
+          :alt="getImageAlt(scope)"
+        />
+        {{ scope.row.fields.institution.fields.name }}
+      </template>
+    </el-table-column>
     <el-table-column
       sortable="custom"
       prop="fields.awardId"
@@ -103,7 +112,7 @@ export default {
     getImageAlt: function(scope) {
       return scope.row.fields.institution.fields.logo
         ? scope.row.fields.institution.fields.logo.fields.file.description
-        : ''
+        : `Logo for ${scope.row.fields.institution.fields.name}`
     },
 
     /**
