@@ -104,14 +104,21 @@
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
       </el-button>
+      <p v-if="hasError" class="error">
+        An error has occurred, please try again.
+      </p>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
 import { sparcInvestigator, pageOrResource } from '../questions'
+import NewsletterMixin from '../NewsletterMixin'
+
 export default {
   name: 'BugForm',
+
+  mixins: [NewsletterMixin],
 
   data() {
     return {
@@ -150,6 +157,24 @@ export default {
           }
         ],
 
+        firstName: [
+          {
+            required: true,
+            message: 'Please enter your first name',
+            trigger: 'blur',
+            validator: this.validateForNewsletter
+          }
+        ],
+
+        lastName: [
+          {
+            required: true,
+            message: 'Please enter your last name',
+            trigger: 'blur',
+            validator: this.validateForNewsletter
+          }
+        ],
+
         title: [
           {
             required: true,
@@ -180,6 +205,7 @@ export default {
   mounted() {
     // Reset form fields when showing the form
     this.$refs.contactForm.resetFields()
+    this.hasError = false
   },
 
   methods: {
@@ -187,6 +213,7 @@ export default {
      * Submit the form and validate
      */
     onSubmit() {
+      this.hasError = false
       this.$refs.contactForm.validate(valid => {
         if (!valid) {
           return
@@ -231,30 +258,15 @@ export default {
         .finally(() => {
           this.isSubmitting = false
         })
-    },
-
-    /**
-     * Subscribe to Newsletter
-     */
-    subscribeToNewsletter() {
-      this.isSubmitting = true
-
-      this.$axios
-        .post(`${process.env.portal_api}/mailchimp`, {
-          email_address: this.form.email
-        })
-        .then(() => {
-          this.$emit('submit')
-        })
-        .catch(() => {
-          this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
     }
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '../../../assets/_variables.scss';
+
+.error {
+  color: $facial;
+}
+</style>
