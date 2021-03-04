@@ -26,7 +26,7 @@
             />
           </el-select>
 
-          <hr v-if="formType !== ''" class="mt-32 mb-32" />
+          <hr v-if="formType" class="mt-32 mb-32" />
 
           <general-form
             v-if="formType === 'general'"
@@ -118,6 +118,27 @@ export default {
       isBugSubmitted: false,
       isGeneralSubmitted: false,
       firstName: ''
+    }
+  },
+
+  watch: {
+    /**
+     * Set formType data based on query param
+     * @param {Object} to
+     */
+    $route: {
+      handler(to) {
+        this.formType = to.query.type
+      },
+      immediate: true
+    },
+
+    /**
+     * Set query param based on formType data
+     * @param {String} val
+     */
+    formType(val) {
+      this.$router.push({ query: { type: val } })
     }
   },
 
