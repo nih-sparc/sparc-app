@@ -116,7 +116,8 @@ export default {
         }
       ],
       isBugSubmitted: false,
-      isGeneralSubmitted: false
+      isGeneralSubmitted: false,
+      firstName: ''
     }
   },
 
