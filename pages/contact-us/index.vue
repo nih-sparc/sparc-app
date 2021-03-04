@@ -36,7 +36,9 @@
         </template>
 
         <div v-if="isGeneralSubmitted" class="msg-success">
-          <p>{{ firstName }},</p>
+          <template v-if="firstName">
+            <p>{{ firstName }},</p>
+          </template>
           <p>
             Thank you for your inquiry. A member of the SPARC team will contact
             you within two business days.
