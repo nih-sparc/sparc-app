@@ -42,11 +42,7 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item
-      class="mb-0"
-      prop="message"
-      label="Your question or comment:*"
-    >
+    <el-form-item prop="message" label="Your question or comment:*">
       <el-input
         v-model="form.message"
         type="textarea"
@@ -172,7 +168,7 @@ export default {
           if (this.form.shouldSubscribe) {
             this.subscribeToNewsletter()
           } else {
-            this.$emit('submit')
+            this.$emit('submit', this.form.firstName)
           }
         })
         .catch(() => {
