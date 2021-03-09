@@ -3,7 +3,7 @@
     <h2>Find Data by Category</h2>
     <div class="data-wrap">
       <nuxt-link
-        v-for="item in featuredData"
+        v-for="item in visibleFeaturedData"
         :key="item.sys.id"
         class="featured-data__item"
         :to="item.fields.link"
@@ -17,6 +17,14 @@
         </p>
       </nuxt-link>
     </div>
+
+    <el-button
+      v-if="!viewMore && featuredData.length > 6"
+      class="btn-view-more mt-32"
+      @click="viewMore = true"
+    >
+      View more
+    </el-button>
   </div>
 </template>
 
@@ -30,6 +38,23 @@ export default {
     featuredData: {
       type: Array,
       default: () => []
+    }
+  },
+
+  data() {
+    return {
+      viewMore: false
+    }
+  },
+
+  computed: {
+    /**
+     * Compute how many items of featured data are shown
+     * Whether the user wants to "see more" or not
+     * @returns {Array}
+     */
+    visibleFeaturedData: function() {
+      return this.viewMore ? this.featuredData : this.featuredData.slice(0, 6)
     }
   },
 
@@ -68,12 +93,12 @@ h2 {
 }
 .featured-data__item {
   color: #000;
-  margin: 19px;
+  margin: 1rem 2rem;
   text-decoration: none;
   width: 70px;
   @media (min-width: 768px) {
     width: 128px;
-    margin: 1.5625em 3.5625rem;
+    margin: 1.5625em 2rem;
   }
   &:hover,
   &:focus {
