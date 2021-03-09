@@ -36,6 +36,7 @@
         <client-only placeholder="Loading scaffold ...">
           <div class="scaffoldvuer-container">
             <ScaffoldVuer
+              :display-markers="displayMarkers"
               :url="scaffoldUrl"
               :traditional="traditional"
               :background-toggle="backgroundToggle"
@@ -49,8 +50,6 @@
 
 <script>
 // :scaffold-selected="scaffoldSelected"
-import { ScaffoldVuer } from '@abi-software/scaffoldvuer'
-
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
 export default {
@@ -58,7 +57,9 @@ export default {
 
   components: {
     DetailTabs,
-    ScaffoldVuer
+    ScaffoldVuer: process.client
+      ? () => import('@abi-software/scaffoldvuer').then(m => m.ScaffoldVuer)
+      : null
   },
 
   data: () => {
@@ -72,6 +73,7 @@ export default {
       activeTab: 'scaffold',
       file: {},
       traditional: true,
+      displayMarkers: false,
       backgroundToggle: true
     }
   },
