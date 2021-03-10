@@ -32,8 +32,7 @@ import MarkedMixin from '@/mixins/marked'
 import { plotTypeMap } from '@/static/js/plots'
 
 export default {
-  name: 'ImageGallery',
-  // components: { Gallery },
+  name: 'ImagesGallery',
   components: {
     Gallery: process.client
       ? () => import('@abi-software/gallery').then(gallery => gallery)
