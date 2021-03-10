@@ -151,8 +151,6 @@ export default {
       immediate: true,
       handler: function(scicrunchData) {
         let items = []
-        console.log('here we go')
-        console.log(scicrunchData)
         const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
         let datasetVersion = -1
@@ -161,11 +159,8 @@ export default {
           datasetVersion = scicrunchData.discover_dataset.version
         }
         if ('scaffolds' in scicrunchData && scicrunchData.scaffolds) {
-          console.log('have scaffolds')
           items.push(
             ...Array.from(scicrunchData.scaffolds, scaffold => {
-              console.log(scaffold, datasetId, datasetVersion)
-              // https://api.sparc.science/s3-resource/29/6/files/derivative/HB-ICN-NegDDCT-data.csv
               const metaFilePath = encodeURIComponent(scaffold.meta_file.path)
               const thumbnailFilePath = encodeURIComponent(
                 scaffold.thumbnail.path
@@ -178,13 +173,11 @@ export default {
                 .catch(e => {
                   console.log('thumbnail error:', e.message)
                 })
-              // https://sparc.science/datasets/scaffoldviewer?scaffold=95%2F1%2Ffiles%2Fderivative%2FScaffold%2FhumanColon_metadata.json
               let linkUrl =
                 baseRoute +
                 'datasets/scaffoldviewer' +
                 '?scaffold=' +
                 `${datasetId}/${datasetVersion}/files/${metaFilePath}`
-              console.log(linkUrl)
               return {
                 id: scaffold.meta_file.path,
                 title: scaffold.file.name,
@@ -198,7 +191,6 @@ export default {
         if ('mp4' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData.mp4, videoFile => {
-              console.log(videoFile)
               const filePath = this.getS3FilePath(
                 datasetId,
                 datasetVersion,
@@ -215,18 +207,14 @@ export default {
           )
         }
         if ('csv' in scicrunchData) {
-          console.log('have plot data')
           items.push(
             ...Array.from(scicrunchData.csv, csvFile => {
-              console.log('csv file:', csvFile)
-              console.log(plotTypeMap)
               const plotTypeName = plotTypeMap.get(csvFile.file.name)
               const filePath = this.getS3FilePath(
                 datasetId,
                 datasetVersion,
                 csvFile.dataset.path
               )
-              // https://sparc.science/datasets/plotviewer?dataset_version=6&dataset_id=29&file_path=29%2F6%2Ffiles%2Fderivative%2FHB-ICN-NegDDCT-data.csv&plot_type=heatmap
               let linkUrl = `${baseRoute}datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&plot_type=${plotTypeName}`
               return {
                 title: csvFile.file.name,
@@ -238,9 +226,8 @@ export default {
           )
           items = items.filter(item => item.type !== 'CSV')
         }
-        if ('generic-image' in scicrunchData) {
-          console.log('have png/tiff/jpeg image')
-        }
+        // if ('generic-image' in scicrunchData) {
+        // }
         this.scicrunchItems = items
       }
     },
