@@ -281,7 +281,6 @@ const getBiolucidaData = async datasetId => {
   try {
     return biolucida.searchDataset(datasetId)
   } catch (e) {
-    console.log('error here', e)
     return {}
   }
 }
@@ -304,18 +303,14 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
       }
     }
     const scicrunchResponse = await scicrunch.getDatasetInfoFromDOI(datasetDoi)
-    console.log('doi', datasetDoi)
-    console.log(scicrunchResponse.data)
     if (scicrunchResponse.data.numberOfHits === 1) {
       scicrunchData = scicrunchResponse.data.results[0]
       scicrunchData.discover_dataset = {
         id: Number(datasetId),
         version: datasetVersion
       }
-      // console.log(scicrunchData)
     }
   } catch (e) {
-    console.log('error', e)
     return {
       biolucidaImageData: {},
       scicrunchData: {}
