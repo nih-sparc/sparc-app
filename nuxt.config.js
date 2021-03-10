@@ -1,5 +1,3 @@
-const fs = require('fs')
-
 export default {
   /*
    ** Headers of the page
@@ -156,13 +154,6 @@ export default {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
       }
-    }
-  },
-  server: {
-    host: 'localhost',
-    https: {
-      key: fs.readFileSync('.certs/sparc.science.key'),
-      cert: fs.readFileSync('.certs/sparc.science.crt')
     }
   }
 }
