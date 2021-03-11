@@ -2,12 +2,12 @@
   <div class="help-card">
     <h3>
       <nuxt-link class="help-link"
-        :to="{ name: 'help-helpId', params: { helpId: helpItem.fields.slug || helpItem.sys.id } }"
+        :to="{ name: 'help-helpId', params: { helpId: helpItem.fields ? helpItem.fields.slug : helpItem.sys.id } }"
       >
-        {{ helpItem.fields.title || '' }}
+        {{ helpItem.fields ? helpItem.fields.title : '' }}
       </nuxt-link>
     </h3>
-    <p v-html="highlightText(searchTerms, helpItem.fields.summary || '')" />
+    <p v-html="highlightText(searchTerms, helpItem.fields ? helpItem.fields.summary : '')" />
   </div>
 </template>
 
