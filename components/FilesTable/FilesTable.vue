@@ -64,10 +64,15 @@
                   class="file-icon el-icon-picture-outline"
                 />
                 <i v-else class="file-icon el-icon-document" />
-                <div v-if="isMicrosoftFileType(scope)">
+                <div v-if="isFileOpenable(scope)">
                   <a href="#" @click.prevent="openFile(scope)">
                     {{ scope.row.name }}
                   </a>
+                </div>
+                <div v-else-if="isScaffoldMetaFile(scope)">
+                  <nuxt-link :to="getScaffoldLink(scope)">
+                    {{ scope.row.name }}
+                  </nuxt-link>
                 </div>
                 <div v-else>
                   <nuxt-link
@@ -124,13 +129,22 @@
                   Download
                 </el-dropdown-item>
                 <el-dropdown-item
-                  v-if="isMicrosoftFileType(scope)"
+                  v-if="isFileOpenable(scope)"
                   :command="{
                     type: 'openFile',
                     scope
                   }"
                 >
                   Open
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="isScaffoldMetaFile(scope)"
+                  :command="{
+                    type: 'openScaffold',
+                    scope
+                  }"
+                >
+                  Open Scaffold
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -159,6 +173,15 @@ import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
+
+const contentTypes = {
+  pdf: 'application/pdf',
+  text: 'text/plain',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  svg: 'img/svg+xml',
+  mp4: 'video/mp4'
+}
 
 export default {
   name: 'FilesTable',
@@ -237,9 +260,24 @@ export default {
     }
   },
 
-  mounted: function() {},
-
   methods: {
+    /**
+     * Check if the file is openable
+     * MS Office files and native browser files
+     * - Documents (pdf, text)
+     * - Images (jpg, png)
+     * - Video (MP4)
+     * - Vector Drawings (svg)
+     */
+    isFileOpenable(scope) {
+      const allowableExtensions = Object.keys(contentTypes).map(key => key)
+      const fileType = scope.row.fileType.toLowerCase()
+      return (
+        this.isMicrosoftFileType(scope) ||
+        allowableExtensions.includes(fileType)
+      )
+    },
+
     handleSelectionChange(val) {
       this.selected = val
     },
@@ -376,14 +414,55 @@ export default {
         pathOr('', ['row', 'uri'])
       )(scope)
 
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
+      const fileType = scope.row.fileType.toLowerCase()
+      const contentType = contentTypes[fileType]
+
+      const requestUrl = `${process.env.portal_api}/download?key=${filePath}&contentType=${contentType}`
 
       this.$axios.$get(requestUrl).then(response => {
         const url = response
         const encodedUrl = encodeURIComponent(url)
-        const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
+        const finalURL = this.isMicrosoftFileType(scope)
+          ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
+          : url
         window.open(finalURL, '_blank')
       })
+    },
+
+    /**
+     * Create nuxt-link object for opening a scaffold.
+     * @param {Object} scope
+     */
+    getScaffoldLink: function(scope) {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = propOr(1, 'version', this.datasetDetails)
+      let s3Path = `${id}/${version}/${scope.row.path}`
+      return {
+        name: 'datasets-scaffoldviewer-id',
+        params: {},
+        query: { scaffold: s3Path }
+      }
+    },
+
+    /**
+     * Open scaffold
+     * @param {Object} scope
+     */
+    openScaffold: function(scope) {
+      this.$router.push(this.getScaffoldLink(scope))
+    },
+
+    /**
+     * Checks if file is openable by scaffold viewer
+     * @param {Object} scope
+     */
+    isScaffoldMetaFile: function(scope) {
+      let path = scope.row.path.toLowerCase()
+      return (
+        path.includes('scaffold') &&
+        path.includes('meta') &&
+        path.includes('json')
+      )
     },
 
     /**

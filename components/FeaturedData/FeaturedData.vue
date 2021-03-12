@@ -17,6 +17,12 @@
         </p>
       </nuxt-link>
     </div>
+
+    <nuxt-link :to="{ name: 'data', query: { type: 'organ' } }">
+      <el-button class="btn-view-more mt-32">
+        View more
+      </el-button>
+    </nuxt-link>
   </div>
 </template>
 
@@ -68,12 +74,12 @@ h2 {
 }
 .featured-data__item {
   color: #000;
-  margin: 19px;
+  margin: 1rem 2rem;
   text-decoration: none;
   width: 70px;
   @media (min-width: 768px) {
     width: 128px;
-    margin: 1.5625em 3.5625rem;
+    margin: 1.5625em 2rem;
   }
   &:hover,
   &:focus {
