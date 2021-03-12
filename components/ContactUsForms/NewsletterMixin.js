@@ -20,7 +20,8 @@ export default {
           last_name: this.form.lastName
         })
         .then(response => {
-          if (response.data.status > 200) {
+          const { title } = response.data
+          if (response.data.status > 200 && title !== 'Member Exists') {
             this.hasError = true
           } else {
             this.$emit('submit', this.form.firstName)
