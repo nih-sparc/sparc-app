@@ -1,28 +1,30 @@
 <template>
   <div class="help-card">
     <h3>
-      <nuxt-link class="help-link"
-        :to="{ name: 'help-helpId', params: { helpId: helpItem.fields ? helpItem.fields.slug : helpItem.sys.id } }"
-      >
+      <nuxt-link class="help-link" :to="helpLink">
         {{ helpItem.fields ? helpItem.fields.title : '' }}
       </nuxt-link>
     </h3>
-    <p v-html="highlightText(searchTerms, helpItem.fields ? helpItem.fields.summary : '')" />
+    <p
+      v-html="
+        highlightText(
+          searchTerms,
+          helpItem.fields ? helpItem.fields.summary : ''
+        )
+      "
+    />
   </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
-import {HelpDocument} from "~/pages/help/model";
+<script>
+import { pathOr } from 'ramda'
 
 import HighlightText from '@/mixins/highlight-text'
 
-export default Vue.extend<never, never, never, { helpItem: HelpDocument, searchTerms: string }>({
+export default {
   name: 'HelpCard',
 
-  mixins: [
-    HighlightText
-  ],
+  mixins: [HighlightText],
 
   props: {
     helpItem: {
@@ -31,15 +33,29 @@ export default Vue.extend<never, never, never, { helpItem: HelpDocument, searchT
         return {
           sys: {},
           fields: {}
-        } as HelpDocument
+        }
       }
     },
     searchTerms: {
       type: String,
       default: ''
     }
+  },
+
+  computed: {
+    /**
+     * Compute the link to the help article
+     * This will use the slug if available, and fallback
+     * to the ID of the entry if not
+     * @returns {Object}
+     */
+    helpLink() {
+      const sysId = pathOr('', ['sys', 'id'], this.helpItem)
+      const helpId = pathOr(sysId, ['fields', 'slug'], this.helpItem)
+      return { name: 'help-helpId', params: { helpId } }
+    }
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>
