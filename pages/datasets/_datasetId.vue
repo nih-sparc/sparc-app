@@ -177,6 +177,12 @@
       :versions="versions"
       @close-version-dialog="closeVersionModal"
     />
+
+    <dataset-version-message
+      v-if="!isLatestVersion"
+      :current-version="datasetInfo.version"
+      :dataset-details="datasetInfo"
+    />
   </div>
 </template>
 
@@ -195,6 +201,7 @@ import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescripti
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
+import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -393,7 +400,8 @@ export default {
     DatasetDescriptionInfo,
     DatasetFilesInfo,
     ImagesGallery,
-    VersionHistory
+    VersionHistory,
+    DatasetVersionMessage
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -470,6 +478,19 @@ export default {
   },
 
   computed: {
+    /**
+     * Compute if the dataset is the latest version
+     * @returns {Boolean}
+     */
+    isLatestVersion() {
+      if (this.versions.length) {
+        const latestVersion = compose(propOr(1, 'version'), head)(this.versions)
+        return this.datasetInfo.version === latestVersion
+      }
+
+      return true
+    },
+
     /**
      * Returns simulation id for run simulation button
      * @returns {String}
