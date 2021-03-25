@@ -52,6 +52,10 @@
             </template>
           </div>
         </div>
+        <p v-if="datasetInfo.embargo" class="embargo-release-date">
+          Release date: {{ formatDate(datasetInfo.embargoReleaseDate) }}
+        </p>
+
         <template v-if="datasetInfo.embargo === false">
           <div class="header-stats-section">
             <div class="header-stats-block">
@@ -1223,5 +1227,9 @@ export default {
   img {
     display: block;
   }
+}
+.embargo-release-date {
+  font-size: 0.875rem;
+  margin: 1.5rem 0 0;
 }
 </style>
