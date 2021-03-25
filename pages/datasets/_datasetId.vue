@@ -6,8 +6,11 @@
       :description="datasetDescription"
       :breadcrumb="breadcrumb"
     >
-      <div slot="banner image">
+      <div slot="banner image" class="img-dataset">
         <dataset-banner-image :src="getDatasetImage" />
+        <sparc-pill v-if="datasetInfo.embargo">
+          Embargoed
+        </sparc-pill>
       </div>
       <div slot="meta content" class="details-header__container--content-links">
         <div class="dataset-meta">
@@ -202,6 +205,7 @@ import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -401,7 +405,8 @@ export default {
     DatasetFilesInfo,
     ImagesGallery,
     VersionHistory,
-    DatasetVersionMessage
+    DatasetVersionMessage,
+    SparcPill
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -1182,5 +1187,19 @@ export default {
 }
 .scaffold {
   height: 500px;
+}
+
+.img-dataset {
+  display: block;
+  position: relative;
+  .sparc-pill {
+    font-size: 0.75rem;
+    position: absolute;
+    right: 0.25rem;
+    top: 0.5rem;
+  }
+  img {
+    display: block;
+  }
 }
 </style>
