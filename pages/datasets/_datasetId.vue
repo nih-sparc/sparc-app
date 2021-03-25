@@ -109,9 +109,12 @@
           </button>
         </div>
         <div v-else>
-          <button class="dataset-button" @click="isDownloadModalVisible = true">
+          <el-button
+            class="dataset-button"
+            @click="isDownloadModalVisible = true"
+          >
             Get Dataset
-          </button>
+          </el-button>
           <el-button class="citation-button" @click="scrollToCitations">
             Cite Dataset
           </el-button>
