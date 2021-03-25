@@ -26,7 +26,7 @@
         </nuxt-link>
       </template>
     </el-table-column>
-    <el-table-column prop="banner" label="Image" width="148">
+    <el-table-column prop="banner" label="Image" width="160">
       <template slot-scope="scope">
         <nuxt-link
           :to="{
@@ -36,6 +36,7 @@
               type: $route.query.type
             }
           }"
+          class="img-dataset"
         >
           <img
             :src="scope.row.banner"
@@ -43,6 +44,9 @@
             height="128"
             width="128"
           />
+          <sparc-pill v-if="scope.row.embargo">
+            Embargoed
+          </sparc-pill>
         </nuxt-link>
       </template>
     </el-table-column>
@@ -78,6 +82,7 @@
 </template>
 
 <script>
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 import { onSortChange } from '@/pages/data/utils'
@@ -85,6 +90,8 @@ import { pathOr } from 'ramda'
 
 export default {
   name: 'DatasetSearchResults',
+
+  components: { SparcPill },
 
   mixins: [FormatDate, StorageMetrics],
 
@@ -127,5 +134,18 @@ export default {
 <style lang="scss" scoped>
 .el-table {
   width: 100%;
+}
+.img-dataset {
+  display: block;
+  position: relative;
+  .sparc-pill {
+    font-size: 0.75rem;
+    position: absolute;
+    right: 0.25rem;
+    top: 0.5rem;
+  }
+  img {
+    display: block;
+  }
 }
 </style>
