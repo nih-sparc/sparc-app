@@ -52,87 +52,100 @@
             </template>
           </div>
         </div>
-        <div class="header-stats-section">
-          <div class="header-stats-block">
-            <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
-            <div>
-              <template v-if="datasetFiles > 0">
-                <strong>
-                  {{ datasetFiles }}
-                </strong>
-                Files
-              </template>
+        <template v-if="datasetInfo.embargo === false">
+          <div class="header-stats-section">
+            <div class="header-stats-block">
+              <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
+              <div>
+                <template v-if="datasetFiles > 0">
+                  <strong>
+                    {{ datasetFiles }}
+                  </strong>
+                  Files
+                </template>
 
-              <template v-else>
-                No Files
-              </template>
+                <template v-else>
+                  No Files
+                </template>
+              </div>
             </div>
-          </div>
-          <div v-if="datasetType !== 'simulation'" class="header-stats-block">
-            <svg-icon class="mr-8" name="icon-storage" height="20" width="20" />
-            <div>
-              <strong>{{ datasetStorage.number }}</strong>
-              {{ datasetStorage.unit }}
+            <div v-if="datasetType !== 'simulation'" class="header-stats-block">
+              <svg-icon
+                class="mr-8"
+                name="icon-storage"
+                height="20"
+                width="20"
+              />
+              <div>
+                <strong>{{ datasetStorage.number }}</strong>
+                {{ datasetStorage.unit }}
+              </div>
             </div>
-          </div>
-          <div class="header-stats-block">
-            <svg-icon class="mr-8" name="icon-license" height="20" width="20" />
-            <div>
-              <template v-if="datasetLicense">
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  :content="datasetLicenseName"
-                  placement="top"
-                  :visible-arrow="false"
-                >
-                  <a :href="licenseLink" target="_blank">
-                    {{ datasetLicense }}
-                  </a>
-                </el-tooltip>
-              </template>
+            <div class="header-stats-block">
+              <svg-icon
+                class="mr-8"
+                name="icon-license"
+                height="20"
+                width="20"
+              />
+              <div>
+                <template v-if="datasetLicense">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="datasetLicenseName"
+                    placement="top"
+                    :visible-arrow="false"
+                  >
+                    <a :href="licenseLink" target="_blank">
+                      {{ datasetLicense }}
+                    </a>
+                  </el-tooltip>
+                </template>
 
-              <template v-else>
-                No License Selected
-              </template>
+                <template v-else>
+                  No License Selected
+                </template>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="datasetType === 'simulation'">
-          <button class="dataset-button">
+          <div v-if="datasetType === 'simulation'">
             <a
               :href="`https://osparc.io/study/${getSimulationId}`"
               target="_blank"
+              class="dataset-button-link"
             >
-              Run Simulation
+              <el-button class="dataset-button">
+                Run Simulation
+              </el-button>
             </a>
-          </button>
-        </div>
-        <div v-else>
-          <el-button
-            class="dataset-button"
-            @click="isDownloadModalVisible = true"
-          >
-            Get Dataset
-          </el-button>
-          <el-button class="citation-button" @click="scrollToCitations">
-            Cite Dataset
-          </el-button>
-          <nuxt-link
-            :to="{
-              name: 'help-helpId',
-              params: {
-                helpId: ctfDatasetFormatInfoPageId
-              }
-            }"
-            class="dataset-link"
-          >
-            SPARC Dataset Structure
-          </nuxt-link>
-        </div>
+          </div>
+          <div v-else>
+            <el-button
+              class="dataset-button"
+              @click="isDownloadModalVisible = true"
+            >
+              Get Dataset
+            </el-button>
+            <el-button class="citation-button" @click="scrollToCitations">
+              Cite Dataset
+            </el-button>
+            <nuxt-link
+              :to="{
+                name: 'help-helpId',
+                params: {
+                  helpId: ctfDatasetFormatInfoPageId
+                }
+              }"
+              class="dataset-link"
+            >
+              SPARC Dataset Structure
+            </nuxt-link>
+          </div>
+        </template>
       </div>
     </details-header>
-    <div class="container">
+    <div v-if="datasetInfo.embargo === false" class="container">
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -1096,6 +1109,12 @@ export default {
         color: #ffffff;
         font-weight: 500;
         text-transform: uppercase;
+        a {
+          color: #fff;
+        }
+      }
+      .dataset-button-link {
+        margin: 0;
       }
       .citation-button {
         margin-left: 0.5rem;
