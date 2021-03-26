@@ -12,7 +12,7 @@
         <!-- eslint-disable vue/no-v-html -->
         <!-- marked will sanitize the HTML injected -->
         <el-row :gutter="32">
-          <el-col :xs="24" :sm="{ span: 12, push: 12 }" class="details">
+          <el-col :xs="24" :sm="firstCol" class="details">
             <slot />
 
             <h3>Share</h3>
@@ -46,7 +46,7 @@
               </share-network>
             </div>
           </el-col>
-          <el-col :xs="24" :sm="{ span: 12, pull: 12 }">
+          <el-col :xs="24" :sm="secondCol">
             <div class="content" v-html="parseMarkdown(htmlContent)" />
           </el-col>
         </el-row>
@@ -118,6 +118,26 @@ export default {
      */
     pageUrl: function() {
       return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    },
+
+    /**
+     * Compute the first column's attributes
+     * @returns {Object}
+     */
+    firstCol() {
+      return this.page.sys.contentType.sys.id === 'event'
+        ? { span: 12 }
+        : { span: 12, push: 12 }
+    },
+
+    /**
+     * Compute the first column's attributes
+     * @returns {Object}
+     */
+    secondCol() {
+      return this.page.sys.contentType.sys.id === 'event'
+        ? { span: 12 }
+        : { span: 12, pull: 12 }
     }
   }
 }
