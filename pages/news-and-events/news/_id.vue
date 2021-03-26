@@ -1,5 +1,5 @@
 <template>
-  <news-events-page :page="page" :content="page.fields.copy">
+  <news-events-page :page="page" :content="page.fields.copy" type="news">
     <template v-if="newsImage">
       <img :src="newsImage" :alt="newsImageAlt" />
       <hr />

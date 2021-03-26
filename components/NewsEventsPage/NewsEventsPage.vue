@@ -58,11 +58,17 @@
           </el-col>
         </el-row>
       </div>
+
+      <nuxt-link class="back-link" :to="{ name: backLink }">
+        {{ backCopy }}
+      </nuxt-link>
     </div>
   </div>
 </template>
 
 <script>
+import { pathEq } from 'ramda'
+
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
@@ -86,6 +92,10 @@ export default {
       }
     },
     content: {
+      type: String,
+      default: ''
+    },
+    type: {
       type: String,
       default: ''
     }
@@ -132,9 +142,7 @@ export default {
      * @returns {Object}
      */
     firstCol() {
-      return this.page.sys.contentType.sys.id === 'event'
-        ? { span: 12 }
-        : { span: 12, push: 12 }
+      return this.type === 'event' ? { span: 12 } : { span: 12, push: 12 }
     },
 
     /**
@@ -142,9 +150,27 @@ export default {
      * @returns {Object}
      */
     secondCol() {
-      return this.page.sys.contentType.sys.id === 'event'
-        ? { span: 12 }
-        : { span: 12, pull: 12 }
+      return this.type === 'event' ? { span: 12 } : { span: 12, pull: 12 }
+    },
+
+    /**
+     * Compute back link, depending on the content type
+     * @returns {String}
+     */
+    backLink() {
+      return this.type === 'event'
+        ? 'news-and-events-events'
+        : 'news-and-events-news'
+    },
+
+    /**
+     * Compute back link copy, depending on the content type
+     * @returns {String}
+     */
+    backCopy() {
+      const name = this.type === 'event' ? 'Events' : 'News'
+
+      return `View All ${name} >`
     }
   }
 }
@@ -199,5 +225,9 @@ export default {
   &:active {
     outline: none;
   }
+}
+.back-link {
+  color: $navy;
+  font-weight: 700;
 }
 </style>

@@ -1,5 +1,9 @@
 <template>
-  <news-events-page :page="page" :content="page.fields.description">
+  <news-events-page
+    :page="page"
+    :content="page.fields.description"
+    type="event"
+  >
     <img :src="newsImage" :alt="newsImageAlt" />
     <hr />
 
