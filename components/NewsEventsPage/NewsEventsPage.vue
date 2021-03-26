@@ -44,6 +44,13 @@
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>
               </share-network>
+              <button
+                v-clipboard:copy="pageUrl"
+                class="ml-8 btn-copy-permalink"
+              >
+                <svg-icon name="icon-permalink" height="28" width="28" />
+                <span class="visuallyhidden">Copy permalink</span>
+              </button>
             </div>
           </el-col>
           <el-col :xs="24" :sm="secondCol">
@@ -182,5 +189,15 @@ export default {
 }
 .share-links {
   display: flex;
+}
+.btn-copy-permalink {
+  border: none;
+  background: none;
+  color: $median;
+  cursor: pointer;
+  padding: 0;
+  &:active {
+    outline: none;
+  }
 }
 </style>
