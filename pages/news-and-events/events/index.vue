@@ -86,6 +86,10 @@ import createClient from '@/plugins/contentful.js'
 const client = createClient()
 const MAX_PAST_EVENTS = 8
 
+/**
+ * Get featured event from the News and Events page
+ * @returns {Object}
+ */
 const getFeaturedEvent = async () => {
   try {
     const newsAndEventsPage = await client.getEntry({
@@ -98,24 +102,49 @@ const getFeaturedEvent = async () => {
   }
 }
 
-const getEvents = async () => {
+/**
+ * Get upcoming events
+ * @param {Object} featuredEvent
+ * @returns {Array}
+ */
+const getUpcomingEvents = async featuredEvent => {
   try {
     const todaysDate = new Date()
-
-    const featuredEvent = await getFeaturedEvent()
-
-    const upcomingEvents = await client.getEntries({
+    return await client.getEntries({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
       'fields.startDate[gte]': todaysDate.toISOString(),
       'sys.id[nin]': pathOr(null, ['sys', 'id'], featuredEvent)
     })
+  } catch (error) {
+    return []
+  }
+}
 
-    const pastEvents = await client.getEntries({
+/**
+ * Get upcoming events
+ * @returns {Array}
+ */
+const getPastEvents = async () => {
+  try {
+    const todaysDate = new Date()
+    return await client.getEntries({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString()
     })
+  } catch (error) {
+    return []
+  }
+}
+
+const getEvents = async () => {
+  try {
+    const featuredEvent = await getFeaturedEvent()
+
+    const upcomingEvents = await getUpcomingEvents(featuredEvent)
+
+    const pastEvents = await getPastEvents()
 
     return {
       upcomingEvents: upcomingEvents.items,
