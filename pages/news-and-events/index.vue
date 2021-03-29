@@ -37,15 +37,15 @@
             </div>
 
             <div class="show-all-upcoming-events">
-              <a
-                v-if="!isShowingAllUpcomingEvents"
+              <nuxt-link
                 class="show-all-upcoming-events__btn"
-                href="#"
-                @click.prevent="isShowingAllUpcomingEvents = true"
+                :to="{
+                  name: 'news-and-events-events'
+                }"
               >
                 Show All ({{ upcomingEvents.length }}) Upcoming Events
                 <svg-icon name="icon-sort-desc" height="10" width="10" />
-              </a>
+              </nuxt-link>
             </div>
           </template>
 

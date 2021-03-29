@@ -1,5 +1,9 @@
 <template>
-  <news-events-page :page="page" :content="page.fields.description">
+  <news-events-page
+    :page="page"
+    :content="page.fields.description"
+    :breadcrumb="breadcrumb"
+  >
     <img :src="newsImage" :alt="newsImageAlt" />
     <hr />
 
@@ -44,6 +48,31 @@ export default {
           fields: []
         }
       }
+    }
+  },
+
+  data() {
+    return {
+      breadcrumb: [
+        {
+          label: 'Home',
+          to: {
+            name: 'index'
+          }
+        },
+        {
+          label: 'News & Events',
+          to: {
+            name: 'news-and-events'
+          }
+        },
+        {
+          label: 'Events',
+          to: {
+            name: 'news-and-events-events'
+          }
+        }
+      ]
     }
   },
 

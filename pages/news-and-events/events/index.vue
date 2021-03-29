@@ -139,13 +139,19 @@ export default {
 
   data: function() {
     return {
-      title: 'News & Events',
+      title: 'Events',
       breadcrumb: [
         {
           to: {
             name: 'index'
           },
           label: 'Home'
+        },
+        {
+          to: {
+            name: 'news-and-events'
+          },
+          label: 'News & Events'
         }
       ],
       activeTab: 'upcoming',

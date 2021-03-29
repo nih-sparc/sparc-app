@@ -81,25 +81,12 @@ export default {
     content: {
       type: String,
       default: ''
-    }
-  },
-
-  data() {
-    return {
-      breadcrumb: [
-        {
-          label: 'Home',
-          to: {
-            name: 'index'
-          }
-        },
-        {
-          label: 'News & Events',
-          to: {
-            name: 'news-and-events'
-          }
-        }
-      ]
+    },
+    breadcrumb: {
+      type: Array,
+      default: () => {
+        return []
+      }
     }
   },
 

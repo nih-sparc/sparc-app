@@ -1,5 +1,9 @@
 <template>
-  <news-events-page :page="page" :content="page.fields.copy">
+  <news-events-page
+    :page="page"
+    :content="page.fields.copy"
+    :breadcrumb="breadcrumb"
+  >
     <template v-if="newsImage">
       <img :src="newsImage" :alt="newsImageAlt" />
       <hr />
@@ -47,6 +51,25 @@ export default {
           fields: []
         }
       }
+    }
+  },
+
+  data() {
+    return {
+      breadcrumb: [
+        {
+          label: 'Home',
+          to: {
+            name: 'index'
+          }
+        },
+        {
+          label: 'News & Events',
+          to: {
+            name: 'news-and-events'
+          }
+        }
+      ]
     }
   },
 
