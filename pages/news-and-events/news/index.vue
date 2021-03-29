@@ -41,13 +41,6 @@ import { fetchNews, NewsCollection } from "../model";
 const client = createClient();
 const MAX_PAST_EVENTS = 8;
 
-const getMoreNews = async () => {
-  try {
-    return await fetchNews(client, '', 10, 10)
-  } catch (error) {
-    console.log('hello!')
-  }
-}
 
 export default {
   name: "News",
@@ -85,7 +78,8 @@ export default {
         },
       ],
       news: {} as NewsCollection,
-      offset: 0
+      offset: 0,
+      page: 1
     }
   },
 
