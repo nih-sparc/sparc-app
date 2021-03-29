@@ -22,6 +22,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       query,
     })
 
+
     const news = await fetchNews(client, query, 4)
 
     const heroData = await client.getEntry<HeroData>(process.env.ctf_news_and_events_page_id ?? '')

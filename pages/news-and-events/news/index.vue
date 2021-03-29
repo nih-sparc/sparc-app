@@ -9,7 +9,7 @@
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
-        <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
+        <news-list-item v-for="item in this.items" :key="item.sys.id" :item="item" />
       </div>
     </div>
 </div>
@@ -23,7 +23,7 @@ import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 
 import createClient from '@/plugins/contentful.js';
 
-import { fetchData, fetchNews, HeroDataEntry, NewsAndEventsComponent, NewsCollection } from '../model';
+import { fetchData, fetchNews, NewsCollection } from '../model';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
@@ -37,9 +37,7 @@ const MAX_PAST_EVENTS = 8
         },
 
          asyncData() {
-            return fetchData(client)
-            //  const news = fetchNews(client, this.$route.query.search as string, this.news.total, 4)
-            //  this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
+            return fetchNews(client, '', 10)
         },
 
         data() {
