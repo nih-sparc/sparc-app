@@ -92,7 +92,7 @@ export default {
   methods: {
      getMoreNews: async function() {
         this.offset = this.offset + this.limit
-        const response = await fetchNews(client, "", 10, this.offset)
+        const response = await fetchNews(client, "", this.limit, this.offset)
         this.items = response.items
     }
   },
