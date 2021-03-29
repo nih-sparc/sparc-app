@@ -42,7 +42,10 @@
 
             <div class="show-all-upcoming-events">
               <a
-                v-if="!isShowingAllUpcomingEvents"
+                v-if="
+                  !isShowingAllUpcomingEvents &&
+                    upcomingEvents.length != displayedUpcomingEvents.length
+                "
                 class="show-all-upcoming-events__btn"
                 href="#"
                 @click.prevent="isShowingAllUpcomingEvents = true"
