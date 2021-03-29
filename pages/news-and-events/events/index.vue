@@ -2,20 +2,10 @@
   <div class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
-      <!-- <h1>{{ heroData.fields.page_title }}</h1>
+      <h1>Events</h1>
       <p>
-        {{ heroData.fields.heroCopy }}
+        Check out the latest events associated with the SPARC portal
       </p>
-      <search-controls-contentful
-        placeholder="Search news and events"
-        path="/news-and-events"
-      />
-      <img
-        v-if="heroData.fields.heroImage"
-        slot="image"
-        class="page-hero-img"
-        :src="heroData.fields.heroImage.fields.file.url"
-      /> -->
     </page-hero>
     <div class="page-wrap">
       <div class="container">
