@@ -19,6 +19,11 @@
     </page-hero>
     <div class="page-wrap">
       <div class="container">
+        <div v-if="Object.keys(featuredEvent).length" class="mb-40">
+          <h2>Featured Event</h2>
+          <featured-event :event="featuredEvent" />
+        </div>
+
         <h2>Events</h2>
         <tab-nav
           :tabs="eventsTabs"
@@ -81,22 +86,36 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import EventCard from '@/components/EventCard/EventCard'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import TabNav from '@/components/TabNav/TabNav.vue'
-
-import FormatDate from '@/mixins/format-date'
+import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue'
 
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
 
+const getFeaturedEvent = async () => {
+  try {
+    const newsAndEventsPage = await client.getEntry({
+      id: process.env.ctf_news_and_events_page_id
+    })
+
+    return pathOr({}, ['fields', 'featuredEvent'], newsAndEventsPage)
+  } catch (error) {
+    return {}
+  }
+}
+
 const getEvents = async () => {
   try {
     const todaysDate = new Date()
 
+    const featuredEvent = await getFeaturedEvent()
+
     const upcomingEvents = await client.getEntries({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
-      'fields.startDate[gte]': todaysDate.toISOString()
+      'fields.startDate[gte]': todaysDate.toISOString(),
+      'sys.id[nin]': pathOr(null, ['sys', 'id'], featuredEvent)
     })
 
     const pastEvents = await client.getEntries({
@@ -107,12 +126,14 @@ const getEvents = async () => {
 
     return {
       upcomingEvents: upcomingEvents.items,
-      pastEvents: pastEvents.items
+      pastEvents: pastEvents.items,
+      featuredEvent
     }
   } catch {
     return {
       upcomingEvents: [],
-      pastEvents: []
+      pastEvents: [],
+      featuredEvent: []
     }
   }
 }
@@ -124,10 +145,9 @@ export default {
     Breadcrumb,
     EventCard,
     PageHero,
-    TabNav
+    TabNav,
+    FeaturedEvent
   },
-
-  mixins: [FormatDate],
 
   async asyncData() {
     const events = await getEvents()
