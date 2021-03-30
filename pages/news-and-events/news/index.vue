@@ -17,12 +17,22 @@
         />
       </div>
       <div class="metadata-table-pagination">
-        <pagination
+        <!-- <pagination
           :selected="this.page"
           :page-size="this.limit"
           :total-count="this.total"
           @select-page="getMoreNews"
-        />
+        /> -->
+        <el-pagination
+              v-if="searchData.limit < searchData.total"
+              :small="isMobile"
+              :page-size="searchData.limit"
+              :pager-count="5"
+              :current-page="curSearchPage"
+              layout="prev, pager, next"
+              :total="searchData.total"
+              @current-change="onPaginationPageChange"
+            />
       </div>
     </div>
   </div>
