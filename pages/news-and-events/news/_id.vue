@@ -3,6 +3,7 @@
     :page="page"
     :content="page.fields.copy"
     :breadcrumb="breadcrumb"
+    type="news"
   >
     <template v-if="newsImage">
       <img :src="newsImage" :alt="newsImageAlt" />
