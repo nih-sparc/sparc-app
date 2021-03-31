@@ -114,12 +114,22 @@ export interface Data {
   page: PageEntry
 }
 
-
 export interface Computed {
   featuredEvent: Entry<Event>
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
 }
+export interface NewsData {
+  breadcrumb: Breadcrumb[]
+}
+export interface NewsComputed {
+  curSearchPage: number
+}
+
+export interface NewsMethods {
+  onPaginationPageChange: (page: number) => void
+}
 
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }
+export type NewsPage = NewsData & NewsComputed & NewsMethods & { $route: Route }

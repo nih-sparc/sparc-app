@@ -1,6 +1,6 @@
 <template>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" :title="page.fields.title" />
+    <breadcrumb :breadcrumb="breadcrumb" />
     <page-hero>
       <h1>{{ page.fields.title }}</h1>
       <p>
