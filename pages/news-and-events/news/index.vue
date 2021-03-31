@@ -9,7 +9,7 @@
       </p>
     </page-hero>
     <div class="page-wrap container">
-      <div class="subpage">
+      <div ref="newsWrap" class="subpage">
         <news-list-item
           v-for="item in news.items"
           :key="item.sys.id"
@@ -100,6 +100,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
       const offset = (page - 1) * limit
       const response = await fetchNews(client, '', limit, offset)
       this.news = response
+      this.$refs.newsWrap.scrollIntoView()
     }
   }
 })
