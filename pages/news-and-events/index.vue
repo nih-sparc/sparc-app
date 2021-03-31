@@ -28,7 +28,7 @@
         <el-row :gutter="32">
           <el-col :sm="12">
             <h2>Latest News</h2>
-            <div class="subpage">
+            <div class="subpage news-wrap">
               <div>
                 <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
 
@@ -231,6 +231,11 @@ h3 {
   @media (min-width: 48em) {
     margin: 3rem 0;
   }
+  &.news-wrap {
+    @media (min-width: 48em) {
+      margin: 2rem 0 0;
+    }
+  }
 }
 .event-card {
   margin-bottom: 2em;
@@ -247,7 +252,7 @@ h3 {
   margin: 0 -1em;
 }
 .upcoming-event {
-  margin: 0 1em 2em;
+  margin: 0 1rem 1rem;
   width: 100%;
   @media (min-width: 48em) {
     width: calc(50% - 4.125em); // Account for the margins and the border
