@@ -1,6 +1,6 @@
 <template>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" />
+    <breadcrumb :breadcrumb="breadcrumb" title="News" />
     <page-hero>
       <h1>Latest News</h1>
       <p>
@@ -11,105 +11,119 @@
     <div class="page-wrap container">
       <div class="subpage">
         <news-list-item
-          v-for="item in this.items"
+          v-for="item in news.items"
           :key="item.sys.id"
           :item="item"
         />
       </div>
       <div class="metadata-table-pagination">
-        <!-- <pagination
-          :selected="this.page"
-          :page-size="this.limit"
-          :total-count="this.total"
-          @select-page="getMoreNews"
-        /> -->
-        <el-pagination
-              v-if="searchData.limit < searchData.total"
-              :small="isMobile"
-              :page-size="searchData.limit"
-              :pager-count="5"
-              :current-page="curSearchPage"
-              layout="prev, pager, next"
-              :total="searchData.total"
-              @current-change="onPaginationPageChange"
-            />
+        <pagination
+          :selected="curSearchPage"
+          :page-size="news.limit"
+          :total-count="news.total"
+          @select-page="onPaginationPageChange"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
-import PageHero from "@/components/PageHero/PageHero";
-import NewsListItem from "@/components/NewsListItem/NewsListItem.vue";
-import Pagination from "@/components/Pagination/Pagination.vue";
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
+import PageHero from '@/components/PageHero/PageHero'
+import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
-import createClient from "@/plugins/contentful.js";
+import createClient from '@/plugins/contentful.js'
 
-import { fetchNews, NewsCollection } from "../model";
+import { fetchNews, NewsCollection } from '../model'
 
-const client = createClient();
-const MAX_PAST_EVENTS = 8;
-
+const client = createClient()
+const MAX_NEWS_ITEMS = 10
 
 export default {
-  name: "News",
+  name: 'NewsPage',
+
   components: {
     Breadcrumb,
     PageHero,
     NewsListItem,
-    Pagination,
+    Pagination
   },
 
-  asyncData() {
-    return fetchNews(client, "", 10);
+  async asyncData() {
+    const news = await fetchNews(client, '', MAX_NEWS_ITEMS)
+
+    return {
+      news
+    }
   },
 
   data() {
     return {
       breadcrumb: [
         {
-          label: "Home",
+          label: 'Home',
           to: {
-            name: "index",
-          },
+            name: 'index'
+          }
         },
         {
-          label: "News & Events",
+          label: 'News & Events',
           to: {
-            name: "news-and-events",
-          },
-        },
-        {
-          label: "News",
-          to: {
-            name: "news",
-          },
-        },
-      ],
-      news: {} as NewsCollection,
-      offset: 0,
-      page: 1
+            name: 'news-and-events'
+          }
+        }
+      ]
+    }
+  },
+
+  computed: {
+    /**
+     * Compute the current page based off the limit and the offset
+     * @returns {Number}
+     */
+    curSearchPage: function() {
+      return this.news.skip / this.news.limit + 1
     }
   },
 
   methods: {
-     getMoreNews: async function() {
-        this.offset = this.offset + this.limit
-        const response = await fetchNews(client, "", this.limit, this.offset)
-        this.items = response.items
+    /**
+     * Get more news for the new page
+     * @param {Number} page
+     */
+    async onPaginationPageChange(page) {
+      const { limit } = this.news
+      const offset = (page - 1) * limit
+      const response = await fetchNews(client, '', limit, offset)
+      this.news = response
     }
-  },
-
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .news-list-item {
-  border-bottom: 2px solid #d8d8d8;
+  border-top: 2px solid #d8d8d8;
   padding: 1.5em 0;
   &:first-child {
+    border: none;
     padding-top: 0;
+  }
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+.subpage {
+  margin-bottom: 1.5rem;
+}
+.page-wrap {
+  margin-bottom: 2.5rem;
+}
+::v-deep {
+  .page-hero__copy {
+    max-width: none;
   }
 }
 </style>
