@@ -2,24 +2,29 @@
   <div class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
-      <h1>{{ heroData.fields.page_title }}</h1>
+      <h1>{{ page.fields.page_title }}</h1>
       <p>
-        {{ heroData.fields.heroCopy }}
+        {{ page.fields.heroCopy }}
       </p>
       <search-controls-contentful
         placeholder="Search news and events"
         path="/news-and-events"
       />
       <img
-        v-if="heroData.fields.heroImage"
+        v-if="page.fields.heroImage"
         slot="image"
         class="page-hero-img"
-        :src="heroData.fields.heroImage.fields.file.url"
+        :src="page.fields.heroImage.fields.file.url"
       />
     </page-hero>
 
     <div class="page-wrap">
       <div class="container">
+        <div v-if="Object.keys(featuredEvent).length" class="mb-40">
+          <h2>Featured Event</h2>
+          <featured-event :event="featuredEvent" />
+        </div>
+
         <h2>Events</h2>
         <tab-nav
           :tabs="eventsTabs"
@@ -117,10 +122,11 @@ import EventCard from '@/components/EventCard/EventCard.vue';
 import PageHero from '@/components/PageHero/PageHero.vue';
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
+import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, Methods, fetchData, fetchNews, HeroDataEntry, NewsAndEventsComponent, NewsCollection } from './model';
+import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection } from './model';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
@@ -136,7 +142,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
     NewsListItem,
     TabNav,
     SearchControlsContentful,
-    NewsletterForm
+    NewsletterForm,
+    FeaturedEvent
   },
 
   asyncData() {
@@ -146,11 +153,11 @@ export default Vue.extend<Data, Methods, Computed, never>({
   watch: {
     '$route.query': {
       handler: async function(this: NewsAndEventsComponent) {
-        const { upcomingEvents, pastEvents, news, heroData } = await fetchData(client, this.$route.query.search as string)
+        const { upcomingEvents, pastEvents, news, page } = await fetchData(client, this.$route.query.search as string)
         this.upcomingEvents = upcomingEvents;
         this.pastEvents = pastEvents;
         this.news = news;
-        this.heroData = heroData;
+        this.page = page;
       },
       immediate: true
     }
@@ -183,12 +190,20 @@ export default Vue.extend<Data, Methods, Computed, never>({
       isShowingAllUpcomingEvents: false,
       isShowingAllPastEvents: false,
       news: {} as NewsCollection,
-      heroData: {} as HeroDataEntry,
+      page: {} as PageEntry,
       pastEventChunk: 1
     }
   },
 
   computed: {
+    /**
+     * Compute featured event
+     * @returns {Object}
+     */
+    featuredEvent: function() {
+      return this.page.fields.featuredEvent || {}
+    },
+
     /**
      * Compute upcoming events
      * Used to display four events in the upcoming tab

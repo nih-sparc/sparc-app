@@ -24,13 +24,13 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
 
     const news = await fetchNews(client, query, 4)
 
-    const heroData = await client.getEntry<HeroData>(process.env.ctf_news_and_events_page_id ?? '')
+    const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
     return {
       upcomingEvents: upcomingEvents.items,
       pastEvents: pastEvents.items,
       news,
-      heroData
+      page
     }
   } catch (e) {
     console.error(e)
@@ -38,7 +38,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       upcomingEvents: [],
       pastEvents: [],
       news: {} as unknown as NewsCollection,
-      heroData: {} as unknown as Entry<HeroData>
+      page: {} as unknown as PageEntry
     }
   }
 }
@@ -58,15 +58,16 @@ export const fetchNews = async (client: ContentfulClientApi, query?: string, lim
   }
 }
 
-export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "heroData">
+export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "page">
 
-export interface HeroData {
+export interface PageData {
+  featuredEvent?: Entry<Event>;
   page_title?: string;
   heroCopy?: string;
   heroImage?: Asset;
 }
 
-export type HeroDataEntry = Entry<HeroData>
+export type PageEntry = Entry<PageData>
 
 
 export interface Event {
@@ -110,7 +111,7 @@ export interface Data {
   isShowingAllUpcomingEvents: boolean,
   isShowingAllPastEvents: boolean,
   news: NewsCollection,
-  heroData: HeroDataEntry,
+  page: PageEntry,
   pastEventChunk: number
 }
 
@@ -118,7 +119,8 @@ export interface Data {
 export interface Computed {
   displayedUpcomingEvents: EventsEntry[],
   pastEventsChunkMax: number,
-  displayedPastEvents: EventsEntry[]
+  displayedPastEvents: EventsEntry[],
+  featuredEvent: Entry<Event>
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
