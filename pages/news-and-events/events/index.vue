@@ -92,9 +92,9 @@ const MAX_PAST_EVENTS = 8
  */
 const getFeaturedEvent = async () => {
   try {
-    const newsAndEventsPage = await client.getEntry({
-      id: process.env.ctf_news_and_events_page_id
-    })
+    const newsAndEventsPage = await client.getEntry(
+      process.env.ctf_news_and_events_page_id
+    )
 
     return pathOr({}, ['fields', 'featuredEvent'], newsAndEventsPage)
   } catch (error) {
