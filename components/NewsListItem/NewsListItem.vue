@@ -2,7 +2,7 @@
   <div class="news-list-item">
     <h3>
       <nuxt-link
-        v-if="item.fields.copy"
+        v-if="item.fields.requiresADetailsPage"
         :to="{
           name: 'news-and-events-news-id',
           params: { id: item.sys.id }
