@@ -2,83 +2,88 @@
   <div class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
-      <h1>{{ heroData.fields.page_title }}</h1>
+      <h1>{{ page.fields.page_title }}</h1>
       <p>
-        {{ heroData.fields.heroCopy }}
+        {{ page.fields.heroCopy }}
       </p>
       <search-controls-contentful
         placeholder="Search news and events"
         path="/news-and-events"
       />
       <img
-        v-if="heroData.fields.heroImage"
+        v-if="page.fields.heroImage"
         slot="image"
         class="page-hero-img"
-        :src="heroData.fields.heroImage.fields.file.url"
+        :src="page.fields.heroImage.fields.file.url"
       />
     </page-hero>
 
     <div class="page-wrap">
       <div class="container">
-        <h2>Events</h2>
-        <tab-nav
-          :tabs="eventsTabs"
-          :active-tab="activeTab"
-          @set-active-tab="activeTab = $event"
-        />
-        <div class="events-wrap">
-          <template v-if="activeTab === 'upcoming'">
-            <div class="upcoming-events">
-              <event-card
-                v-for="event in displayedUpcomingEvents"
-                :key="event.sys.id"
-                :event="event"
-              />
-            </div>
-
-            <div class="show-all-upcoming-events">
-              <nuxt-link
-                class="show-all-upcoming-events__btn"
-                :to="{
-                  name: 'news-and-events-events'
-                }"
-              >
-                Show All ({{ upcomingEvents.length }}) Upcoming Events
-                <svg-icon name="icon-sort-desc" height="10" width="10" />
-              </nuxt-link>
-            </div>
-          </template>
-
-          <template v-if="activeTab === 'past'">
-            <div class="past-events">
-              <event-card
-                v-for="event in displayedPastEvents"
-                :key="event.sys.id"
-                :event="event"
-              />
-            </div>
-
-            <div class="show-more-past-events">
-              <a
-                v-if="!isShowingAllPastEvents && pastEventsChunkMax > 1"
-                class="show-more-past-events__btn"
-                href="#"
-                @click.prevent="pastEventChunk += 1"
-              >
-                View More
-              </a>
-            </div>
-          </template>
+        <div v-if="Object.keys(featuredEvent).length" class="mb-48">
+          <h2>Featured Event</h2>
+          <featured-event :event="featuredEvent" />
         </div>
 
-        <h2>Latest News</h2>
-        <div class="subpage">
-          <div>
-            <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
+        <el-row :gutter="32">
+          <el-col :sm="12">
+            <h2>Latest News</h2>
+            <div class="subpage news-wrap">
+              <div>
+                <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
 
-            <button v-if="news.total > news.items.length" class="btn-load-more mt-16" @click="getAllNews">View All News &gt;</button>
-          </div>
-        </div>
+                <nuxt-link
+                  class="btn-load-more mt-16"
+                  :to="{
+                    name: 'news-and-events-news'
+                  }"
+                >
+                  View All News &gt;
+                </nuxt-link>
+              </div>
+            </div>
+          </el-col>
+          <el-col :sm="12">
+            <h2>Events</h2>
+            <tab-nav
+              :tabs="eventsTabs"
+              :active-tab="activeTab"
+              @set-active-tab="activeTab = $event"
+            />
+            <div class="events-wrap">
+              <template v-if="activeTab === 'upcoming'">
+                <div class="upcoming-events">
+                  <event-card
+                    v-for="event in upcomingEvents"
+                    :key="event.sys.id"
+                    :event="event"
+                  />
+                </div>
+
+                <div class="show-all-upcoming-events">
+                  <nuxt-link
+                    class="show-all-upcoming-events__btn"
+                    :to="{
+                      name: 'news-and-events-events'
+                    }"
+                  >
+                    Show All Events
+                  </nuxt-link>
+                </div>
+              </template>
+
+              <template v-if="activeTab === 'past'">
+                <div class="past-events">
+                  <event-card
+                    v-for="event in pastEvents"
+                    :key="event.sys.id"
+                    :event="event"
+                  />
+                </div>
+              </template>
+            </div>
+          </el-col>
+        </el-row>
 
         <h2>Stay Connected</h2>
         <div class="subpage">
@@ -117,10 +122,11 @@ import EventCard from '@/components/EventCard/EventCard.vue';
 import PageHero from '@/components/PageHero/PageHero.vue';
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
+import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, Methods, fetchData, fetchNews, HeroDataEntry, NewsAndEventsComponent, NewsCollection } from './model';
+import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection } from './model';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
@@ -136,21 +142,22 @@ export default Vue.extend<Data, Methods, Computed, never>({
     NewsListItem,
     TabNav,
     SearchControlsContentful,
-    NewsletterForm
+    NewsletterForm,
+    FeaturedEvent
   },
 
   asyncData() {
-    return fetchData(client)
+    return fetchData(client, '', 2)
   },
 
   watch: {
     '$route.query': {
       handler: async function(this: NewsAndEventsComponent) {
-        const { upcomingEvents, pastEvents, news, heroData } = await fetchData(client, this.$route.query.search as string)
+        const { upcomingEvents, pastEvents, news, page } = await fetchData(client, this.$route.query.search as string, 2)
         this.upcomingEvents = upcomingEvents;
         this.pastEvents = pastEvents;
         this.news = news;
-        this.heroData = heroData;
+        this.page = page;
       },
       immediate: true
     }
@@ -180,43 +187,18 @@ export default Vue.extend<Data, Methods, Computed, never>({
       ],
       upcomingEvents: [],
       pastEvents: [],
-      isShowingAllUpcomingEvents: false,
-      isShowingAllPastEvents: false,
       news: {} as NewsCollection,
-      heroData: {} as HeroDataEntry,
-      pastEventChunk: 1
+      page: {} as PageEntry
     }
   },
 
   computed: {
     /**
-     * Compute upcoming events
-     * Used to display four events in the upcoming tab
-     * @returns {Array}
+     * Compute featured event
+     * @returns {Object}
      */
-    displayedUpcomingEvents: function(this: Data) {
-      return this.isShowingAllUpcomingEvents
-        ? this.upcomingEvents
-        : this.upcomingEvents.slice(0, 4)
-    },
-
-    /**
-     * Compute maximum chunk value
-     * @returns {Number}
-     */
-    pastEventsChunkMax: function(this: Data) {
-      return Math.ceil(this.pastEvents.length / MAX_PAST_EVENTS)
-    },
-
-    /**
-     * Compute past events to display based on
-     * current chunk value
-     * @returns {Array}
-     */
-    displayedPastEvents: function (this: Data & Computed) {
-      if (this.pastEventChunk === this.pastEventsChunkMax) this.isShowingAllPastEvents = true;
-      const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
-      return this.pastEvents.slice().reverse().slice(0, endChunk)
+    featuredEvent: function() {
+      return this.page.fields.featuredEvent || {}
     }
   },
 
@@ -225,7 +207,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
      * Get all news
      */
     getAllNews: async function() {
-      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 4)
+      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     }
   }
@@ -249,6 +231,11 @@ h3 {
   @media (min-width: 48em) {
     margin: 3rem 0;
   }
+  &.news-wrap {
+    @media (min-width: 48em) {
+      margin: 2rem 0 0;
+    }
+  }
 }
 .event-card {
   margin-bottom: 2em;
@@ -265,12 +252,10 @@ h3 {
   margin: 0 -1em;
 }
 .upcoming-event {
-  margin: 0 1em 2em;
+  margin: 0 1rem 1rem;
+  width: 100%;
   @media (min-width: 48em) {
     width: calc(50% - 4.125em); // Account for the margins and the border
-  }
-  @media (min-width: 64em) {
-    width: calc(25% - 4.125em); // Account for the margins and the border
   }
 }
 .show-all-upcoming-events {
@@ -336,6 +321,7 @@ h3 {
   border: none;
   color: $navy;
   cursor: pointer;
+  display: block;
   font-size: 1rem;
   font-weight: 700;
   padding: 0;

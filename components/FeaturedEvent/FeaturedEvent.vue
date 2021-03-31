@@ -3,6 +3,7 @@
     <div>
       <h3>
         <nuxt-link
+          v-if="event.fields.description"
           :to="{
             name: 'news-and-events-events-id',
             params: { id: event.sys.id }
@@ -10,6 +11,14 @@
         >
           {{ event.fields.title }}
         </nuxt-link>
+        <template v-else>
+          <a v-if="event.fields.url" :href="event.fields.url" target="_blank">
+            {{ event.fields.title }}
+          </a>
+          <div v-else>
+            {{ event.fields.title }}
+          </div>
+        </template>
       </h3>
       <div class="sparc-card__detail">
         <svg-icon name="icon-calendar" height="16" width="16" />
@@ -29,6 +38,7 @@
       <div v-html="parseMarkdown(event.fields.summary)" />
     </div>
     <nuxt-link
+      v-if="event.fields.description"
       :to="{
         name: 'news-and-events-events-id',
         params: { id: event.sys.id }
@@ -39,6 +49,12 @@
         Learn More
       </el-button>
     </nuxt-link>
+
+    <a v-else :href="event.fields.url" target="_blank" class="btn-permalink">
+      <el-button size="medium">
+        Learn More
+      </el-button>
+    </a>
   </sparc-card>
 </template>
 
