@@ -31,8 +31,8 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
-import PageHero from '@/components/PageHero/PageHero'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 import Pagination from '@/components/Pagination/Pagination.vue'
 
