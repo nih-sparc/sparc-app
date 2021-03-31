@@ -115,7 +115,6 @@ export interface Data {
   pastEventChunk: number
 }
 
-
 export interface Computed {
   displayedUpcomingEvents: EventsEntry[],
   pastEventsChunkMax: number,
@@ -124,5 +123,16 @@ export interface Computed {
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
 }
+export interface NewsData {
+  breadcrumb: Breadcrumb[]
+}
+export interface NewsComputed {
+  curSearchPage: number
+}
+
+export interface NewsMethods {
+  onPaginationPageChange: (page: number) => void
+}
 
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }
+export type NewsPage = NewsData & NewsComputed & NewsMethods & { $route: Route }

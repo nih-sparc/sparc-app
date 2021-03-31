@@ -29,6 +29,8 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
+
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import PageHero from '@/components/PageHero/PageHero'
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
@@ -36,12 +38,12 @@ import Pagination from '@/components/Pagination/Pagination.vue'
 
 import createClient from '@/plugins/contentful.js'
 
-import { fetchNews, NewsCollection } from '../model'
+import { fetchNews, NewsData, NewsComputed, NewsMethods } from '../model'
 
 const client = createClient()
 const MAX_NEWS_ITEMS = 10
 
-export default {
+export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
   name: 'NewsPage',
 
   components: {
@@ -100,7 +102,7 @@ export default {
       this.news = response
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
