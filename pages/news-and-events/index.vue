@@ -20,70 +20,70 @@
 
     <div class="page-wrap">
       <div class="container">
-        <div v-if="Object.keys(featuredEvent).length" class="mb-40">
+        <div v-if="Object.keys(featuredEvent).length" class="mb-48">
           <h2>Featured Event</h2>
           <featured-event :event="featuredEvent" />
         </div>
 
-        <h2>Events</h2>
-        <tab-nav
-          :tabs="eventsTabs"
-          :active-tab="activeTab"
-          @set-active-tab="activeTab = $event"
-        />
-        <div class="events-wrap">
-          <template v-if="activeTab === 'upcoming'">
-            <div class="upcoming-events">
-              <event-card
-                v-for="event in displayedUpcomingEvents"
-                :key="event.sys.id"
-                :event="event"
-              />
+        <el-row :gutter="32">
+          <el-col :span="12">
+            <h2>Latest News</h2>
+            <div class="subpage">
+              <div>
+                <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
+
+                <nuxt-link
+                  class="btn-load-more mt-16"
+                  :to="{
+                    name: 'news-and-events-news'
+                  }"
+                >
+                  View All News &gt;
+                </nuxt-link>
+              </div>
             </div>
+          </el-col>
+          <el-col :span="12">
+            <h2>Events</h2>
+            <tab-nav
+              :tabs="eventsTabs"
+              :active-tab="activeTab"
+              @set-active-tab="activeTab = $event"
+            />
+            <div class="events-wrap">
+              <template v-if="activeTab === 'upcoming'">
+                <div class="upcoming-events">
+                  <event-card
+                    v-for="event in upcomingEvents"
+                    :key="event.sys.id"
+                    :event="event"
+                  />
+                </div>
 
-            <div class="show-all-upcoming-events">
-              <nuxt-link
-                class="show-all-upcoming-events__btn"
-                :to="{
-                  name: 'news-and-events-events'
-                }"
-              >
-                Show All ({{ upcomingEvents.length }}) Upcoming Events
-                <svg-icon name="icon-sort-desc" height="10" width="10" />
-              </nuxt-link>
+                <div class="show-all-upcoming-events">
+                  <nuxt-link
+                    class="show-all-upcoming-events__btn"
+                    :to="{
+                      name: 'news-and-events-events'
+                    }"
+                  >
+                    Show All Events
+                  </nuxt-link>
+                </div>
+              </template>
+
+              <template v-if="activeTab === 'past'">
+                <div class="past-events">
+                  <event-card
+                    v-for="event in pastEvents"
+                    :key="event.sys.id"
+                    :event="event"
+                  />
+                </div>
+              </template>
             </div>
-          </template>
-
-          <template v-if="activeTab === 'past'">
-            <div class="past-events">
-              <event-card
-                v-for="event in displayedPastEvents"
-                :key="event.sys.id"
-                :event="event"
-              />
-            </div>
-
-            <div class="show-more-past-events">
-              <a
-                v-if="!isShowingAllPastEvents && pastEventsChunkMax > 1"
-                class="show-more-past-events__btn"
-                href="#"
-                @click.prevent="pastEventChunk += 1"
-              >
-                View More
-              </a>
-            </div>
-          </template>
-        </div>
-
-        <h2>Latest News</h2>
-        <div class="subpage">
-          <div>
-            <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
-
-            <button v-if="news.total > news.items.length" class="btn-load-more mt-16" @click="getAllNews">View All News &gt;</button>
-          </div>
-        </div>
+          </el-col>
+        </el-row>
 
         <h2>Stay Connected</h2>
         <div class="subpage">
@@ -147,13 +147,13 @@ export default Vue.extend<Data, Methods, Computed, never>({
   },
 
   asyncData() {
-    return fetchData(client)
+    return fetchData(client, '', 2)
   },
 
   watch: {
     '$route.query': {
       handler: async function(this: NewsAndEventsComponent) {
-        const { upcomingEvents, pastEvents, news, page } = await fetchData(client, this.$route.query.search as string)
+        const { upcomingEvents, pastEvents, news, page } = await fetchData(client, this.$route.query.search as string, 2)
         this.upcomingEvents = upcomingEvents;
         this.pastEvents = pastEvents;
         this.news = news;
@@ -187,11 +187,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
       ],
       upcomingEvents: [],
       pastEvents: [],
-      isShowingAllUpcomingEvents: false,
-      isShowingAllPastEvents: false,
       news: {} as NewsCollection,
-      page: {} as PageEntry,
-      pastEventChunk: 1
+      page: {} as PageEntry
     }
   },
 
@@ -202,36 +199,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
      */
     featuredEvent: function() {
       return this.page.fields.featuredEvent || {}
-    },
-
-    /**
-     * Compute upcoming events
-     * Used to display four events in the upcoming tab
-     * @returns {Array}
-     */
-    displayedUpcomingEvents: function(this: Data) {
-      return this.isShowingAllUpcomingEvents
-        ? this.upcomingEvents
-        : this.upcomingEvents.slice(0, 4)
-    },
-
-    /**
-     * Compute maximum chunk value
-     * @returns {Number}
-     */
-    pastEventsChunkMax: function(this: Data) {
-      return Math.ceil(this.pastEvents.length / MAX_PAST_EVENTS)
-    },
-
-    /**
-     * Compute past events to display based on
-     * current chunk value
-     * @returns {Array}
-     */
-    displayedPastEvents: function (this: Data & Computed) {
-      if (this.pastEventChunk === this.pastEventsChunkMax) this.isShowingAllPastEvents = true;
-      const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
-      return this.pastEvents.slice().reverse().slice(0, endChunk)
     }
   },
 
@@ -240,7 +207,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
      * Get all news
      */
     getAllNews: async function() {
-      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 4)
+      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     }
   }
@@ -283,9 +250,6 @@ h3 {
   margin: 0 1em 2em;
   @media (min-width: 48em) {
     width: calc(50% - 4.125em); // Account for the margins and the border
-  }
-  @media (min-width: 64em) {
-    width: calc(25% - 4.125em); // Account for the margins and the border
   }
 }
 .show-all-upcoming-events {
@@ -351,6 +315,7 @@ h3 {
   border: none;
   color: $navy;
   cursor: pointer;
+  display: block;
   font-size: 1rem;
   font-weight: 700;
   padding: 0;

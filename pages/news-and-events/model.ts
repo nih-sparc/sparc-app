@@ -4,7 +4,7 @@ import { Route } from 'vue-router';
 import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
 
 
-export const fetchData = async (client: ContentfulClientApi, query?: string) : Promise<AsyncData> => {
+export const fetchData = async (client: ContentfulClientApi, query?: string, limit?: number) : Promise<AsyncData> => {
   try {
     const todaysDate = new Date()
 
@@ -13,6 +13,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       order: 'fields.startDate',
       'fields.startDate[gte]': todaysDate.toISOString(),
       query,
+      limit
     })
 
     const pastEvents = await client.getEntries<Event>({
@@ -20,9 +21,10 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       order: 'fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString(),
       query,
+      limit
     })
 
-    const news = await fetchNews(client, query, 4)
+    const news = await fetchNews(client, query, limit)
 
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
@@ -108,18 +110,12 @@ export interface Data {
   eventsTabs: Tab[],
   upcomingEvents: EventsEntry[],
   pastEvents: EventsEntry[],
-  isShowingAllUpcomingEvents: boolean,
-  isShowingAllPastEvents: boolean,
   news: NewsCollection,
-  page: PageEntry,
-  pastEventChunk: number
+  page: PageEntry
 }
 
 
 export interface Computed {
-  displayedUpcomingEvents: EventsEntry[],
-  pastEventsChunkMax: number,
-  displayedPastEvents: EventsEntry[],
   featuredEvent: Entry<Event>
 }
 export interface Methods {
