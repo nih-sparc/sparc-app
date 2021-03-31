@@ -91,6 +91,7 @@ export default {
   padding: 1em;
   &__image {
     margin-bottom: 1rem;
+    overflow: hidden;
     padding-top: 100%;
     position: relative;
     img {

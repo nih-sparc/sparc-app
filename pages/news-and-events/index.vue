@@ -26,7 +26,7 @@
         </div>
 
         <el-row :gutter="32">
-          <el-col :span="12">
+          <el-col :sm="12">
             <h2>Latest News</h2>
             <div class="subpage">
               <div>
@@ -43,7 +43,7 @@
               </div>
             </div>
           </el-col>
-          <el-col :span="12">
+          <el-col :sm="12">
             <h2>Events</h2>
             <tab-nav
               :tabs="eventsTabs"
@@ -248,6 +248,7 @@ h3 {
 }
 .upcoming-event {
   margin: 0 1em 2em;
+  width: 100%;
   @media (min-width: 48em) {
     width: calc(50% - 4.125em); // Account for the margins and the border
   }
