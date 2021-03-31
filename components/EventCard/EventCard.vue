@@ -6,7 +6,7 @@
     </div>
     <h3>
       <nuxt-link
-        v-if="event.fields.description"
+        v-if="event.fields.requiresADetailsPage"
         :to="{
           name: 'news-and-events-events-id',
           params: { id: event.sys.id }
