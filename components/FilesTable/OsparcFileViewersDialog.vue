@@ -3,11 +3,12 @@
     :show-close="false"
     :visible="open"
     @close="onClose"
+    @opened="openedHandler"
     :before-close="beforeClose"
   >
     <bf-dialog-header slot="title" title="Select a viewer" />
     <dialog-body>
-      <el-select v-model="selectedViewer" placeholder="Select a viewer...">
+      <el-select v-model="selectedViewer" value-key="title" placeholder="Select a viewer...">
         <el-option
           v-for="viewer in viewersForFile"
           :key="viewer.title"
@@ -24,14 +25,14 @@
 </template>
 
 <script>
-import { compose, split, last, defaultTo, pathOr } from 'ramda'
-import BfDialogHeader from '@/components/bf-dialog-header/BfDialogHeader.vue'
-import DialogBody from '@/components/dialog-body/DialogBody.vue'
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
-import { extractExtension } from '~/pages/data/utils'
+import { compose, split, last, defaultTo, pathOr } from "ramda"
+import BfDialogHeader from "@/components/bf-dialog-header/BfDialogHeader.vue"
+import DialogBody from "@/components/dialog-body/DialogBody.vue"
+import BfButton from "@/components/shared/BfButton/BfButton.vue"
+import { extractExtension } from "~/pages/data/utils"
 
 export default {
-  name: 'OsparcFileViewersDialog',
+  name: "OsparcFileViewersDialog",
   components: { BfButton, BfDialogHeader, DialogBody },
   props: {
     selectedFile: {
@@ -60,7 +61,7 @@ export default {
   },
   data() {
     return {
-      selectedViewer: '',
+      selectedViewer: "",
       isFetching: false
     }
   },
@@ -70,22 +71,22 @@ export default {
       const filePath = compose(
         last,
         defaultTo([]),
-        split('s3://blackfynn-discover-use1/'),
-        pathOr('', ['uri'])
+        split("s3://blackfynn-discover-use1/"),
+        pathOr("", ["uri"])
       )(this.selectedFile)
 
       this.isFetching = true;
 
-      this.$axios.$get(`${process.env.portal_api}/download?key=${filePath}`).
-        then(fileUrl => {
-          const redirectionUrl = new URL(this.selectedViewer['view_url'])
+      this.$axios.$get(`${process.env.portal_api}/download?key=${filePath}`)
+        .then(fileUrl => {
+          const redirectionUrl = new URL(this.selectedViewer["view_url"])
     
-          redirectionUrl.searchParams.append('download_link', fileUrl)
-          redirectionUrl.searchParams.append('file_size', fileSize)
+          redirectionUrl.searchParams.append("download_link", fileUrl)
+          redirectionUrl.searchParams.append("file_size", fileSize)
 
-          window.open(redirectionUrl, '_blank')
+          window.open(redirectionUrl, "_blank")
     
-          this.selectedViewer = ''
+          this.selectedViewer = ""
           this.onClose()
         })
         .finally(() => {
@@ -93,8 +94,11 @@ export default {
         })
     },
     beforeClose(done) {
-      this.selectedViewer = ''
+      this.selectedViewer = ""
       done()
+    },
+    openedHandler() {
+      this.selectedViewer = this.viewersForFile[0]
     }
   }
 }
