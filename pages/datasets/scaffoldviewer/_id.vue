@@ -172,8 +172,10 @@ h1 {
   .scaffoldvuer-container {
     margin-top: 1.5rem;
     height: 90vh;
-    max-width: calc(100% - 48px);
-    padding-left: 24px;
+    width: calc(100% - 48px);
+    left: 24px;
+    overflow: hidden;
+    position:relative;
     @import '~@abi-software/scaffoldvuer/dist/scaffoldvuer'
   }
 </style>
