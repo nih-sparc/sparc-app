@@ -144,7 +144,7 @@
                     scope
                   }"
                 >
-                  Open in oSPARC
+                  Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;<a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank"><svg-icon icon="icon-help" width="18" height="18"/></a>
                 </el-dropdown-item>
                 <el-dropdown-item
                   v-if="isScaffoldMetaFile(scope)"
