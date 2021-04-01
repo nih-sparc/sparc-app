@@ -73,14 +73,42 @@
               </div>
             </div>
           </div>
-          <div v-loading="isLoadingSearch" class="table-wrap">
-            <component
-              :is="searchResultsComponent"
-              :table-data="tableData"
-              :title-column-width="titleColumnWidth"
-              @sort-change="handleSortChange"
-            />
-          </div>
+          <el-row :gutter="32">
+            <el-col
+              v-if="searchType.type === 'dataset'"
+              :sm="24"
+              :md="6"
+              :lg="4"
+            >
+              <div class="dataset-filters table-wrap">
+                <h2>Refine datasets by:</h2>
+                <h3>Status</h3>
+                <div class="dataset-filters__filter-group">
+                  <el-checkbox-group
+                    v-model="datasetFilters"
+                    @change="setDatasetFilter"
+                  >
+                    <el-checkbox label="Public" />
+                    <el-checkbox label="Embargoed" />
+                  </el-checkbox-group>
+                </div>
+              </div>
+            </el-col>
+            <el-col
+              :sm="searchColSpan('sm')"
+              :md="searchColSpan('md')"
+              :lg="searchColSpan('lg')"
+            >
+              <div v-loading="isLoadingSearch" class="table-wrap">
+                <component
+                  :is="searchResultsComponent"
+                  :table-data="tableData"
+                  :title-column-width="titleColumnWidth"
+                  @sort-change="handleSortChange"
+                />
+              </div>
+            </el-col>
+          </el-row>
         </el-col>
       </el-row>
       <div class="search-heading">
@@ -189,6 +217,19 @@ const searchData = {
   ascending: false
 }
 
+const datasetFilters = ['Public']
+
+const shouldGetEmbargoed = (searchType, datasetFilters) => {
+  const filters = Array.isArray(datasetFilters)
+    ? datasetFilters
+    : [datasetFilters]
+  return (
+    filters.includes('Embargoed') &&
+    !filters.includes('Public') &&
+    searchType === 'dataset'
+  )
+}
+
 import createClient from '@/plugins/contentful.js'
 import { handleSortChange, transformFilters } from './utils'
 
@@ -226,7 +267,8 @@ export default {
         }
       ],
       titleColumnWidth: 300,
-      windowWidth: ''
+      windowWidth: '',
+      datasetFilters: [...datasetFilters]
     }
   },
 
@@ -237,6 +279,12 @@ export default {
      */
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
+
+      const embargoed = shouldGetEmbargoed(
+        searchType,
+        this.$route.query.datasetFilters
+      )
+
       let url = `${process.env.discover_api_host}/search/${
         searchType === 'simulation' ? 'dataset' : searchType
       }s?offset=${this.searchData.skip}&limit=${
@@ -247,7 +295,7 @@ export default {
         searchType === 'simulation'
           ? `organization=IT'IS%20Foundation`
           : 'organization=SPARC%20Consortium'
-      }`
+      }${embargoed ? `&embargo=true` : ''}`
 
       const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
@@ -362,21 +410,35 @@ export default {
   },
 
   watch: {
-    '$route.query.type': function() {
+    '$route.query.type': function(val) {
+      /**
+       * Clear table data so the new table that is rendered can
+       * properly render data and account for any missing data
+       */
+      this.searchData = clone(searchData)
+      if (val === 'dataset' && !this.$route.query.datasetFilters) {
+        this.datasetFilters = [...datasetFilters]
+      }
+      this.fetchResults()
+    },
+
+    '$route.query.q': {
+      handler: function(val) {
+        if (val) {
+          this.searchQuery = this.$route.query.q
+          this.fetchResults()
+        }
+      },
+      immediate: true
+    },
+
+    '$route.query.datasetFilters': function() {
       /**
        * Clear table data so the new table that is rendered can
        * properly render data and account for any missing data
        */
       this.searchData = clone(searchData)
       this.fetchResults()
-    },
-
-    '$route.query.q': {
-      handler: function() {
-        this.searchQuery = this.$route.query.q
-        this.fetchResults()
-      },
-      immediate: true
     }
   },
 
@@ -404,6 +466,10 @@ export default {
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
+      console.log('mounted', this.$route.query.datasetFilters)
+      this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
+        ? this.$route.query.datasetFilters
+        : [this.$route.query.datasetFilters]
       this.fetchResults()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -736,6 +802,30 @@ export default {
         ? (this.titleColumnWidth = 150)
         : (this.titleColumnWidth = 300)
       this.windowWidth = width
+    },
+
+    /**
+     * Compute search column span
+     * Determined if the searchType === 'dataset'
+     */
+    searchColSpan(viewport) {
+      const isDataset = this.searchType.type === 'dataset'
+      const viewports = {
+        sm: isDataset ? 24 : 24,
+        md: isDataset ? 18 : 24,
+        lg: isDataset ? 20 : 24
+      }
+
+      return viewports[viewport] || 24
+    },
+
+    /**
+     * Set datset filters
+     */
+    setDatasetFilter() {
+      this.$router.replace({
+        query: { ...this.$route.query, datasetFilters: this.datasetFilters }
+      })
     }
   }
 }
@@ -876,5 +966,31 @@ export default {
 }
 .filter__wrap {
   padding-right: 1em;
+}
+
+.dataset-filters {
+  padding: 0.5rem 1rem 1rem;
+  h2,
+  h3 {
+    font-size: 1.125rem;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+  h2 {
+    border-bottom: 1px solid #dbdfe6;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  h3 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+  }
+  ::v-deep .el-checkbox-group {
+    display: flex;
+    flex-direction: column;
+  }
+  ::v-deep .el-checkbox__label {
+    color: $median;
+  }
 }
 </style>

@@ -23,7 +23,7 @@
               />
             </a>
             <a
-              href="https://www.youtube.com/results?search_query=sparc+nih"
+              href="https://www.youtube.com/channel/UCCmUx4tOSlTAwlUrjSGz2mw"
               target="_blank"
             >
               <svg-icon

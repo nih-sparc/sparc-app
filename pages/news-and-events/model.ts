@@ -4,7 +4,7 @@ import { Route } from 'vue-router';
 import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
 
 
-export const fetchData = async (client: ContentfulClientApi, query?: string) : Promise<AsyncData> => {
+export const fetchData = async (client: ContentfulClientApi, query?: string, limit?: number) : Promise<AsyncData> => {
   try {
     const todaysDate = new Date()
 
@@ -13,6 +13,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       order: 'fields.startDate',
       'fields.startDate[gte]': todaysDate.toISOString(),
       query,
+      limit
     })
 
     const pastEvents = await client.getEntries<Event>({
@@ -20,17 +21,18 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       order: 'fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString(),
       query,
+      limit
     })
 
-    const news = await fetchNews(client, query, 4)
+    const news = await fetchNews(client, query, limit)
 
-    const heroData = await client.getEntry<HeroData>(process.env.ctf_news_and_events_page_id ?? '')
+    const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
     return {
       upcomingEvents: upcomingEvents.items,
       pastEvents: pastEvents.items,
       news,
-      heroData
+      page
     }
   } catch (e) {
     console.error(e)
@@ -38,7 +40,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string) : P
       upcomingEvents: [],
       pastEvents: [],
       news: {} as unknown as NewsCollection,
-      heroData: {} as unknown as Entry<HeroData>
+      page: {} as unknown as PageEntry
     }
   }
 }
@@ -58,15 +60,16 @@ export const fetchNews = async (client: ContentfulClientApi, query?: string, lim
   }
 }
 
-export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "heroData">
+export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "page">
 
-export interface HeroData {
+export interface PageData {
+  featuredEvent?: Entry<Event>;
   page_title?: string;
   heroCopy?: string;
   heroImage?: Asset;
 }
 
-export type HeroDataEntry = Entry<HeroData>
+export type PageEntry = Entry<PageData>
 
 
 export interface Event {
@@ -107,21 +110,26 @@ export interface Data {
   eventsTabs: Tab[],
   upcomingEvents: EventsEntry[],
   pastEvents: EventsEntry[],
-  isShowingAllUpcomingEvents: boolean,
-  isShowingAllPastEvents: boolean,
   news: NewsCollection,
-  heroData: HeroDataEntry,
-  pastEventChunk: number
+  page: PageEntry
 }
 
-
 export interface Computed {
-  displayedUpcomingEvents: EventsEntry[],
-  pastEventsChunkMax: number,
-  displayedPastEvents: EventsEntry[]
+  featuredEvent: Entry<Event>
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
 }
+export interface NewsData {
+  breadcrumb: Breadcrumb[]
+}
+export interface NewsComputed {
+  curSearchPage: number
+}
+
+export interface NewsMethods {
+  onPaginationPageChange: (page: number) => void
+}
 
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }
+export type NewsPage = NewsData & NewsComputed & NewsMethods & { $route: Route }
