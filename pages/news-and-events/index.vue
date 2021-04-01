@@ -3,9 +3,9 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
       <h1>{{ page.fields.page_title }}</h1>
-      <p>
-        {{ page.fields.heroCopy }}
-      </p>
+      <!-- eslint-disable vue/no-v-html -->
+      <!-- marked will sanitize the HTML injected -->
+      <div v-html="parseMarkdown(page.fields.heroCopy)" />
       <search-controls-contentful
         placeholder="Search news and events"
         path="/news-and-events"
@@ -124,6 +124,8 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
 
+import MarkedMixin from '@/mixins/marked'
+
 import createClient from '@/plugins/contentful.js';
 
 import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection } from './model';
@@ -133,6 +135,10 @@ const MAX_PAST_EVENTS = 8
 
 export default Vue.extend<Data, Methods, Computed, never>({
   name: 'EventPage',
+
+  mixins: [
+    MarkedMixin
+  ],
 
   components: {
     Breadcrumb,
