@@ -55,14 +55,18 @@
               />
             </div>
 
-            <div class="show-more-past-events">
+            <div class="show-all-upcoming-events">
               <a
-                v-if="!isShowingAllPastEvents && pastEventsChunkMax > 1"
-                class="show-more-past-events__btn"
+                v-if="
+                  !isShowingAllPastEvents &&
+                    pastEvents.length != displayedPastEvents.length
+                "
+                class="show-all-upcoming-events__btn"
                 href="#"
-                @click.prevent="pastEventChunk += 1"
+                @click.prevent="isShowingAllPastEvents = true"
               >
-                View More
+                Show All ({{ pastEvents.length }}) Past Events
+                <svg-icon name="icon-sort-desc" height="10" width="10" />
               </a>
             </div>
           </template>
@@ -210,8 +214,7 @@ export default {
       upcomingEvents: [],
       pastEvents: [],
       isShowingAllUpcomingEvents: false,
-      isShowingAllPastEvents: false,
-      pastEventChunk: 1
+      isShowingAllPastEvents: false
     }
   },
 
@@ -228,26 +231,14 @@ export default {
     },
 
     /**
-     * Compute maximum chunk value
-     * @returns {Number}
-     */
-    pastEventsChunkMax: function() {
-      return Math.ceil(this.pastEvents.length / MAX_PAST_EVENTS)
-    },
-
-    /**
      * Compute past events to display based on
      * current chunk value
      * @returns {Array}
      */
     displayedPastEvents: function() {
-      if (this.pastEventChunk === this.pastEventsChunkMax)
-        this.isShowingAllPastEvents = true
-      const endChunk = this.pastEventChunk * MAX_PAST_EVENTS
-      return this.pastEvents
-        .slice()
-        .reverse()
-        .slice(0, endChunk)
+      return this.isShowingAllPastEvents
+        ? this.pastEvents
+        : this.pastEvents.slice(0, 4)
     }
   },
 
@@ -325,19 +316,6 @@ h3 {
   }
 }
 
-.show-more-past-events {
-  text-align: center;
-  &__btn {
-    display: inline-flex;
-    border: 1px solid $dark-gray;
-    border-radius: 5px;
-    text-decoration: none;
-    padding: 8px 10px;
-    font-size: 11pt;
-    font-weight: bold;
-    color: $dark-gray;
-  }
-}
 .events-wrap {
   margin-bottom: 2.625em;
 }
