@@ -1,5 +1,6 @@
 import { Asset, ContentfulClientApi, Entry, EntryCollection } from 'contentful';
 import { Route } from 'vue-router';
+import { sub } from 'date-fns'
 
 import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
 
@@ -20,6 +21,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString(),
+      'fields.startDate[gte]': sub(todaysDate, { years: 2 }).toISOString(),
       query,
       limit
     })
