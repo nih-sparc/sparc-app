@@ -54,7 +54,7 @@
               <template v-if="activeTab === 'upcoming'">
                 <div class="upcoming-events">
                   <event-card
-                    v-for="event in upcomingEvents"
+                    v-for="event in upcomingEvents.items"
                     :key="event.sys.id"
                     :event="event"
                   />
@@ -67,7 +67,7 @@
                       name: 'news-and-events-events'
                     }"
                   >
-                    Show All Events
+                    Show All ({{ upcomingEvents.total }}) Events
                   </nuxt-link>
                 </div>
               </template>
@@ -75,10 +75,21 @@
               <template v-if="activeTab === 'past'">
                 <div class="past-events">
                   <event-card
-                    v-for="event in pastEvents"
+                    v-for="event in pastEvents.items"
                     :key="event.sys.id"
                     :event="event"
                   />
+                </div>
+
+                <div class="show-all-upcoming-events">
+                  <nuxt-link
+                    class="show-all-upcoming-events__btn"
+                    :to="{
+                      name: 'news-and-events-events'
+                    }"
+                  >
+                    Show All ({{ pastEvents.total }}) Past Events
+                  </nuxt-link>
                 </div>
               </template>
             </div>
@@ -128,13 +139,13 @@ import MarkedMixin from '@/mixins/marked'
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection } from './model';
+import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection } from './model';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
 
 export default Vue.extend<Data, Methods, Computed, never>({
-  name: 'EventPage',
+  name: 'NewsAndEventPage',
 
   mixins: [
     MarkedMixin
@@ -191,8 +202,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
           type: 'past'
         }
       ],
-      upcomingEvents: [],
-      pastEvents: [],
+      upcomingEvents: {} as EventsCollection,
+      pastEvents: {} as EventsCollection,
       news: {} as NewsCollection,
       page: {} as PageEntry
     }
