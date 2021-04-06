@@ -85,7 +85,10 @@
                   <nuxt-link
                     class="show-all-upcoming-events__btn"
                     :to="{
-                      name: 'news-and-events-events'
+                      name: 'news-and-events-events',
+                      query: {
+                        tab: 'past'
+                      }
                     }"
                   >
                     Show All ({{ pastEvents.total }}) Past Events

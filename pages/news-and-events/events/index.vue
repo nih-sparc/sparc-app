@@ -18,7 +18,7 @@
         <tab-nav
           :tabs="eventsTabs"
           :active-tab="activeTab"
-          @set-active-tab="activeTab = $event"
+          @set-active-tab="setActiveTab"
         />
         <div class="events-wrap">
           <template v-if="activeTab === 'upcoming'">
@@ -248,6 +248,29 @@ export default {
         .slice()
         .reverse()
         .slice(0, endChunk)
+    }
+  },
+
+  watch: {
+    '$route.query.tab': {
+      handler(val) {
+        if (val) {
+          this.activeTab = val
+        }
+      },
+      immediate: true
+    }
+  },
+
+  methods: {
+    /**
+     * Set active tab by changing the router query param
+     * @param {String} tab
+     */
+    setActiveTab(tab) {
+      this.$router.push({
+        query: { tab }
+      })
     }
   }
 }
