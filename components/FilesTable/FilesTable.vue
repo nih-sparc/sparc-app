@@ -190,7 +190,7 @@ import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDi
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
 
-import { extractExtension } from '~/pages/data/utils'
+import { extractExtension } from '@/pages/data/utils'
 
 const contentTypes = {
   pdf: 'application/pdf',
