@@ -32,7 +32,8 @@ export default {
       default: () => {}
     },
     osparcViewers: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
   },
 
