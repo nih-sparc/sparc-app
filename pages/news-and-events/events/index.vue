@@ -4,7 +4,7 @@
     <page-hero>
       <h1>Events</h1>
       <p>
-        Check out the latest events associated with the SPARC portal
+        Check out the latest events associated with the SPARC Portal
       </p>
     </page-hero>
     <div class="page-wrap">

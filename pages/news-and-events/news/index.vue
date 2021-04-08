@@ -4,7 +4,7 @@
     <page-hero>
       <h1>Latest News</h1>
       <p>
-        Check out the latest announcements about the SPARC portal and the latest
+        Check out the latest announcements about the SPARC Portal and the latest
         news about the SPARC program.
       </p>
     </page-hero>
