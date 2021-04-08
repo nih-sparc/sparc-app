@@ -36,10 +36,12 @@ export default {
   components: { BfButton, BfDialogHeader, DialogBody },
   props: {
     selectedFile: {
-      type: Object
+      type: Object,
+      default: () => {}
     },
     viewers: {
-      type: Object
+      type: Object,
+      default: () => {}
     },
     open: {
       type: Boolean
