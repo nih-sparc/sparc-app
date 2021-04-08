@@ -146,6 +146,15 @@
                 >
                   Open Scaffold
                 </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="scope.row.uri"
+                  :command="{
+                    type: 'copyS3Url',
+                    scope
+                  }"
+                >
+                  Copy URL to Clipboard
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -173,6 +182,7 @@ import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
+import { successMessage, failMessage } from '@/utils/notification-messages'
 
 const contentTypes = {
   pdf: 'application/pdf',
@@ -485,6 +495,21 @@ export default {
       this.data.forEach(r => {
         this.$refs.table.toggleRowSelection(r, selectedPaths.includes(r.path))
       })
+    },
+
+    /**
+     * Copy file URL to clipboard
+     * @param {Object} scope
+     */
+    copyS3Url(scope) {
+      this.$copyText(scope.row.uri).then(
+        () => {
+          this.$message(successMessage(`File URL copied to clipboard.`))
+        },
+        () => {
+          this.$message(failMessage(`Cannot copy to clipboard.`))
+        }
+      )
     }
   }
 }
