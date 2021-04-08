@@ -1,5 +1,6 @@
 import { Asset, ContentfulClientApi, Entry, EntryCollection } from 'contentful';
 import { Route } from 'vue-router';
+import { sub } from 'date-fns'
 
 import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
 
@@ -8,7 +9,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
   try {
     const todaysDate = new Date()
 
-    const upcomingEvents = await client.getEntries<Event>({
+    const upcomingEvents = await client.getEntries<EventsEntry>({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
       'fields.startDate[gte]': todaysDate.toISOString(),
@@ -16,10 +17,11 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
       limit
     })
 
-    const pastEvents = await client.getEntries<Event>({
+    const pastEvents = await client.getEntries<EventsEntry>({
       content_type: process.env.ctf_event_id,
       order: 'fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString(),
+      'fields.startDate[gte]': sub(todaysDate, { years: 2 }).toISOString(),
       query,
       limit
     })
@@ -29,16 +31,16 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
     return {
-      upcomingEvents: upcomingEvents.items,
-      pastEvents: pastEvents.items,
+      upcomingEvents,
+      pastEvents,
       news,
       page
     }
   } catch (e) {
     console.error(e)
     return {
-      upcomingEvents: [],
-      pastEvents: [],
+      upcomingEvents: {} as unknown as EventsCollection,
+      pastEvents: {} as unknown as EventsCollection,
       news: {} as unknown as NewsCollection,
       page: {} as unknown as PageEntry
     }
@@ -63,7 +65,7 @@ export const fetchNews = async (client: ContentfulClientApi, query?: string, lim
 export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "page">
 
 export interface PageData {
-  featuredEvent?: Entry<Event>;
+  featuredEvent?: EventsEntry;
   page_title?: string;
   heroCopy?: string;
   heroImage?: Asset;
@@ -86,6 +88,7 @@ export interface Event {
 }
 
 export type EventsEntry = Entry<Event>
+export type EventsCollection = EntryCollection<EventsEntry>
 
 export interface News {
   publishedDate?: string;
@@ -104,18 +107,18 @@ export interface Tab {
 }
 
 export interface Data {
-  title: string
-  breadcrumb: Breadcrumb[],
-  activeTab: string,
-  eventsTabs: Tab[],
-  upcomingEvents: EventsEntry[],
-  pastEvents: EventsEntry[],
-  news: NewsCollection,
-  page: PageEntry
+  title: string;
+  breadcrumb: Breadcrumb[];
+  activeTab: string;
+  eventsTabs: Tab[];
+  upcomingEvents: EventsCollection;
+  pastEvents: EventsCollection;
+  news: NewsCollection;
+  page: PageEntry;
 }
 
 export interface Computed {
-  featuredEvent: Entry<Event>
+  featuredEvent: EventsEntry
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
