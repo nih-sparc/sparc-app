@@ -162,7 +162,7 @@
       </el-table>
       <osparc-file-viewers-dialog
         :open="dialogSelectedFile !== null"
-        :onClose="() => setDialogSelectedFile(null)"
+        @close="() => setDialogSelectedFile(null)"
         :viewers="osparcViewers"
         :selectedFile="dialogSelectedFile"
       />

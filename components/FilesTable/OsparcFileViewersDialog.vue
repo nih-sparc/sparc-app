@@ -2,7 +2,7 @@
   <el-dialog
     :show-close="false"
     :visible="open"
-    @close="onClose"
+    @close="closeHandler"
     @opened="openedHandler"
     :before-close="beforeClose"
   >
@@ -101,6 +101,9 @@ export default {
     },
     openedHandler() {
       this.selectedViewer = this.viewersForFile[0]
+    },
+    closeHandler() {
+      this.$emit('close')
     }
   }
 }
