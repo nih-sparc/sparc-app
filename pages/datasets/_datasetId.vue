@@ -6,8 +6,11 @@
       :description="datasetDescription"
       :breadcrumb="breadcrumb"
     >
-      <div slot="banner image">
+      <div slot="banner image" class="img-dataset">
         <dataset-banner-image :src="getDatasetImage" />
+        <sparc-pill v-if="datasetInfo.embargo">
+          Embargoed
+        </sparc-pill>
       </div>
       <div slot="meta content" class="details-header__container--content-links">
         <div class="dataset-meta">
@@ -49,84 +52,104 @@
             </template>
           </div>
         </div>
-        <div class="header-stats-section">
-          <div class="header-stats-block">
-            <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
-            <div>
-              <template v-if="datasetFiles > 0">
-                <strong>
-                  {{ datasetFiles }}
-                </strong>
-                Files
-              </template>
+        <p v-if="datasetInfo.embargo" class="embargo-release-date">
+          Release date: {{ formatDate(datasetInfo.embargoReleaseDate) }}
+        </p>
 
-              <template v-else>
-                No Files
-              </template>
-            </div>
-          </div>
-          <div v-if="datasetType !== 'simulation'" class="header-stats-block">
-            <svg-icon class="mr-8" name="icon-storage" height="20" width="20" />
-            <div>
-              <strong>{{ datasetStorage.number }}</strong>
-              {{ datasetStorage.unit }}
-            </div>
-          </div>
-          <div class="header-stats-block">
-            <svg-icon class="mr-8" name="icon-license" height="20" width="20" />
-            <div>
-              <template v-if="datasetLicense">
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  :content="datasetLicenseName"
-                  placement="top"
-                  :visible-arrow="false"
-                >
-                  <a :href="licenseLink" target="_blank">
-                    {{ datasetLicense }}
-                  </a>
-                </el-tooltip>
-              </template>
+        <template v-if="datasetInfo.embargo === false">
+          <div class="header-stats-section">
+            <div class="header-stats-block">
+              <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
+              <div>
+                <template v-if="datasetFiles > 0">
+                  <strong>
+                    {{ datasetFiles }}
+                  </strong>
+                  Files
+                </template>
 
-              <template v-else>
-                No License Selected
-              </template>
+                <template v-else>
+                  No Files
+                </template>
+              </div>
+            </div>
+            <div v-if="datasetType !== 'simulation'" class="header-stats-block">
+              <svg-icon
+                class="mr-8"
+                name="icon-storage"
+                height="20"
+                width="20"
+              />
+              <div>
+                <strong>{{ datasetStorage.number }}</strong>
+                {{ datasetStorage.unit }}
+              </div>
+            </div>
+            <div class="header-stats-block">
+              <svg-icon
+                class="mr-8"
+                name="icon-license"
+                height="20"
+                width="20"
+              />
+              <div>
+                <template v-if="datasetLicense">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="datasetLicenseName"
+                    placement="top"
+                    :visible-arrow="false"
+                  >
+                    <a :href="licenseLink" target="_blank">
+                      {{ datasetLicense }}
+                    </a>
+                  </el-tooltip>
+                </template>
+
+                <template v-else>
+                  No License Selected
+                </template>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="datasetType === 'simulation'">
-          <button class="dataset-button">
+          <div v-if="datasetType === 'simulation'">
             <a
               :href="`https://osparc.io/study/${getSimulationId}`"
               target="_blank"
+              class="dataset-button-link"
             >
-              Run Simulation
+              <el-button class="dataset-button">
+                Run Simulation
+              </el-button>
             </a>
-          </button>
-        </div>
-        <div v-else>
-          <button class="dataset-button" @click="isDownloadModalVisible = true">
-            Get Dataset
-          </button>
-          <el-button class="citation-button" @click="scrollToCitations">
-            Cite Dataset
-          </el-button>
-          <nuxt-link
-            :to="{
-              name: 'help-helpId',
-              params: {
-                helpId: ctfDatasetFormatInfoPageId
-              }
-            }"
-            class="dataset-link"
-          >
-            SPARC Dataset Structure
-          </nuxt-link>
-        </div>
+          </div>
+          <div v-else>
+            <el-button
+              class="dataset-button"
+              @click="isDownloadModalVisible = true"
+            >
+              Get Dataset
+            </el-button>
+            <el-button class="citation-button" @click="scrollToCitations">
+              Cite Dataset
+            </el-button>
+            <nuxt-link
+              :to="{
+                name: 'help-helpId',
+                params: {
+                  helpId: ctfDatasetFormatInfoPageId
+                }
+              }"
+              class="dataset-link"
+            >
+              SPARC Dataset Structure
+            </nuxt-link>
+          </div>
+        </template>
       </div>
     </details-header>
-    <div class="container">
+    <div v-if="datasetInfo.embargo === false" class="container">
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -202,6 +225,7 @@ import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -401,7 +425,8 @@ export default {
     DatasetFilesInfo,
     ImagesGallery,
     VersionHistory,
-    DatasetVersionMessage
+    DatasetVersionMessage,
+    SparcPill
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -1088,6 +1113,12 @@ export default {
         color: #ffffff;
         font-weight: 500;
         text-transform: uppercase;
+        a {
+          color: #fff;
+        }
+      }
+      .dataset-button-link {
+        margin: 0;
       }
       .citation-button {
         margin-left: 0.5rem;
@@ -1182,5 +1213,23 @@ export default {
 }
 .scaffold {
   height: 500px;
+}
+
+.img-dataset {
+  display: block;
+  position: relative;
+  .sparc-pill {
+    font-size: 0.75rem;
+    position: absolute;
+    right: 0.25rem;
+    top: 0.5rem;
+  }
+  img {
+    display: block;
+  }
+}
+.embargo-release-date {
+  font-size: 0.875rem;
+  margin: 1.5rem 0 0;
 }
 </style>

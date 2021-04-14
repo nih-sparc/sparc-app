@@ -1,5 +1,10 @@
 <template>
-  <news-events-page :page="page" :content="page.fields.description">
+  <news-events-page
+    :page="page"
+    :content="page.fields.description"
+    :breadcrumb="breadcrumb"
+    type="event"
+  >
     <img :src="newsImage" :alt="newsImageAlt" />
     <hr />
 
@@ -11,6 +16,11 @@
 
     <h3>Location</h3>
     <p>{{ page.fields.location }}</p>
+
+    <h3>External Link</h3>
+    <p>
+      <a :href="page.fields.url" target="_blank">{{ page.fields.url }}</a>
+    </p>
   </news-events-page>
 </template>
 
@@ -26,7 +36,7 @@ import createClient from '@/plugins/contentful.js'
 const client = createClient()
 
 export default {
-  name: 'NewsPage',
+  name: 'EventPage',
 
   components: {
     NewsEventsPage
@@ -44,6 +54,31 @@ export default {
           fields: []
         }
       }
+    }
+  },
+
+  data() {
+    return {
+      breadcrumb: [
+        {
+          label: 'Home',
+          to: {
+            name: 'index'
+          }
+        },
+        {
+          label: 'News & Events',
+          to: {
+            name: 'news-and-events'
+          }
+        },
+        {
+          label: 'Events',
+          to: {
+            name: 'news-and-events-events'
+          }
+        }
+      ]
     }
   },
 
