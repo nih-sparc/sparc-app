@@ -2,6 +2,7 @@
   <div class="news-list-item">
     <h3>
       <nuxt-link
+        v-if="item.fields.requiresADetailsPage"
         :to="{
           name: 'news-and-events-news-id',
           params: { id: item.sys.id }
@@ -9,6 +10,13 @@
       >
         {{ item.fields.title }}
       </nuxt-link>
+      <a
+        v-else
+        :href="item.fields.url"
+        :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
+      >
+        {{ item.fields.title }}
+      </a>
     </h3>
     <p>{{ item.fields.summary }}</p>
     <p class="news-list-item__date">
@@ -19,6 +27,8 @@
 
 <script>
 import FormatDate from '@/mixins/format-date'
+
+import { isInternalLink } from '@/mixins/marked/index'
 
 export default {
   name: 'NewsListItem',
@@ -40,6 +50,10 @@ export default {
     publishedDate: function() {
       return this.formatDate(this.item.fields.publishedDate || '')
     }
+  },
+
+  methods: {
+    isInternalLink
   }
 }
 </script>

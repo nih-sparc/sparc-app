@@ -64,15 +64,13 @@
                   class="file-icon el-icon-picture-outline"
                 />
                 <i v-else class="file-icon el-icon-document" />
-                <div v-if="isMicrosoftFileType(scope)">
+                <div v-if="isFileOpenable(scope)">
                   <a href="#" @click.prevent="openFile(scope)">
                     {{ scope.row.name }}
                   </a>
                 </div>
                 <div v-else-if="isScaffoldMetaFile(scope)">
-                  <nuxt-link
-                    :to="getScaffoldLink(scope)"
-                  >
+                  <nuxt-link :to="getScaffoldLink(scope)">
                     {{ scope.row.name }}
                   </nuxt-link>
                 </div>
@@ -131,7 +129,7 @@
                   Download
                 </el-dropdown-item>
                 <el-dropdown-item
-                  v-if="isMicrosoftFileType(scope)"
+                  v-if="isFileOpenable(scope)"
                   :command="{
                     type: 'openFile',
                     scope
@@ -139,13 +137,23 @@
                 >
                   Open
                 </el-dropdown-item>
-                <el-dropdown-item v-if="isScaffoldMetaFile(scope)"
+                <el-dropdown-item
+                  v-if="isScaffoldMetaFile(scope)"
                   :command="{
                     type: 'openScaffold',
                     scope
                   }"
                 >
                   Open Scaffold
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="scope.row.uri"
+                  :command="{
+                    type: 'copyS3Url',
+                    scope
+                  }"
+                >
+                  Copy URL to Clipboard
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -174,6 +182,16 @@ import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
+import { successMessage, failMessage } from '@/utils/notification-messages'
+
+const contentTypes = {
+  pdf: 'application/pdf',
+  text: 'text/plain',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  svg: 'img/svg+xml',
+  mp4: 'video/mp4'
+}
 
 export default {
   name: 'FilesTable',
@@ -253,6 +271,23 @@ export default {
   },
 
   methods: {
+    /**
+     * Check if the file is openable
+     * MS Office files and native browser files
+     * - Documents (pdf, text)
+     * - Images (jpg, png)
+     * - Video (MP4)
+     * - Vector Drawings (svg)
+     */
+    isFileOpenable(scope) {
+      const allowableExtensions = Object.keys(contentTypes).map(key => key)
+      const fileType = scope.row.fileType.toLowerCase()
+      return (
+        this.isMicrosoftFileType(scope) ||
+        allowableExtensions.includes(fileType)
+      )
+    },
+
     handleSelectionChange(val) {
       this.selected = val
     },
@@ -389,12 +424,17 @@ export default {
         pathOr('', ['row', 'uri'])
       )(scope)
 
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}`
+      const fileType = scope.row.fileType.toLowerCase()
+      const contentType = contentTypes[fileType]
+
+      const requestUrl = `${process.env.portal_api}/download?key=${filePath}&contentType=${contentType}`
 
       this.$axios.$get(requestUrl).then(response => {
         const url = response
         const encodedUrl = encodeURIComponent(url)
-        const finalURL = `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
+        const finalURL = this.isMicrosoftFileType(scope)
+          ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
+          : url
         window.open(finalURL, '_blank')
       })
     },
@@ -428,7 +468,11 @@ export default {
      */
     isScaffoldMetaFile: function(scope) {
       let path = scope.row.path.toLowerCase()
-      return path.includes('scaffold') && path.includes('meta') && path.includes('json')
+      return (
+        path.includes('scaffold') &&
+        path.includes('meta') &&
+        path.includes('json')
+      )
     },
 
     /**
@@ -451,6 +495,21 @@ export default {
       this.data.forEach(r => {
         this.$refs.table.toggleRowSelection(r, selectedPaths.includes(r.path))
       })
+    },
+
+    /**
+     * Copy file URL to clipboard
+     * @param {Object} scope
+     */
+    copyS3Url(scope) {
+      this.$copyText(scope.row.uri).then(
+        () => {
+          this.$message(successMessage(`File URL copied to clipboard.`))
+        },
+        () => {
+          this.$message(failMessage(`Cannot copy to clipboard.`))
+        }
+      )
     }
   }
 }

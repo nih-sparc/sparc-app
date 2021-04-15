@@ -1,5 +1,4 @@
 export default {
-  mode: 'universal',
   /*
    ** Headers of the page
    */
@@ -47,6 +46,7 @@ export default {
     ctf_help_list_id: 'helpSection',
     ctf_help_aws_id: 'zQfzadwADutviJjT19hA5',
     ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
+    ctf_contact_us_page_id: '7t2GZ5F74AdNRqBau4mp8S',
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
