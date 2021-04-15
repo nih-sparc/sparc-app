@@ -34,10 +34,10 @@ export default {
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
       process.env.BLACKFYNN_DISCOVER_API_HOST ||
-      'https://api.blackfynn.io/discover',
-    bf_api_host: process.env.BF_API_HOST || 'https://api.blackfynn.io',
+      'https://api.pennsieve.io/discover',
+    bf_api_host: process.env.BF_API_HOST || 'https://api.pennsieve.io',
     zipit_api_host:
-      process.env.ZIPIT_API_HOST || 'https://api.blackfynn.io/zipit/discover',
+      process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
     ctf_resource_id: 'sparcPartners',
