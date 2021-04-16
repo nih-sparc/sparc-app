@@ -16,19 +16,20 @@ module.exports = {
     'plugin:prettier/recommended'
   ],
   // required to lint *.vue files
-  plugins: [
-    'vue'
-  ],
+  plugins: ['vue', 'prettier'],
   // add your custom rules here
   rules: {
-    'semi': [2, 'never'],
+    semi: [2, 'never'],
     'no-console': 'off',
     'vue/max-attributes-per-line': 'off',
-    'vue/html-self-closing': ['error', {
-      "html": {
-        "void": "always"
+    'vue/html-self-closing': [
+      'error',
+      {
+        html: {
+          void: 'always'
+        }
       }
-    }],
-    'prettier/prettier': ['error', { 'semi': false, 'singleQuote': true }]
+    ],
+    'prettier/prettier': ['error', { semi: false, singleQuote: true }]
   }
 }

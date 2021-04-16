@@ -13,7 +13,14 @@
     <div ref="mappage" class="page-wrap portalmapcontainer">
       <client-only placeholder="Loading...">
         <div class="mapClass">
-          <MapContent ref="map" :state="state" :api="api" :flatmapAPI="flatmapAPI" :shareLink="shareLink" @updateShareLinkRequested="updateUUID" />
+          <MapContent
+            ref="map"
+            :state="state"
+            :api="api"
+            :flatmap-a-p-i="flatmapAPI"
+            :share-link="shareLink"
+            @updateShareLinkRequested="updateUUID"
+          />
         </div>
       </client-only>
     </div>
@@ -25,33 +32,29 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 export default {
   name: 'MapsPage',
-  watch: {
-    '$route.query': '$fetch'
-  },
-  async fetch() {
-    this.uuid = this.$route.query.id;
-    if (this.uuid) {
-      let url = this.api + `map/getstate`;
-      await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({"uuid": this.uuid})
-      })
-      .then(response => response.json())
-      .then(data => {
-        this.state = data.state;
-      })
-    }
-  },
-  fetchOnServer: false,
   components: {
     Breadcrumb,
     PageHero,
     MapContent: process.client
       ? () => import('@abi-software/mapintegratedvuer').then(m => m.MapContent)
       : null
+  },
+  async fetch() {
+    this.uuid = this.$route.query.id
+    if (this.uuid) {
+      let url = this.api + `map/getstate`
+      await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ uuid: this.uuid })
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.state = data.state
+        })
+    }
   },
   data() {
     return {
@@ -66,52 +69,54 @@ export default {
         }
       ],
       uuid: undefined,
-      prefix: "/maps",
+      prefix: '/maps',
       state: undefined,
       api: process.env.portal_api,
-      flatmapAPI: process.env.flatmap_api,
+      flatmapAPI: process.env.flatmap_api
     }
   },
   computed: {
     shareLink: function() {
-      if (this.uuid)
-        return this.prefix +"?id=" + this.uuid ;
-      return this.prefix;
+      if (this.uuid) return this.prefix + '?id=' + this.uuid
+      return this.prefix
+    }
+  },
+  watch: {
+    '$route.query': '$fetch'
+  },
+  fetchOnServer: false,
+  created: function() {
+    this.api = process.env.portal_api
+    let lastChar = this.api.substr(-1)
+    if (lastChar != '/') {
+      this.api = this.api + '/'
+    }
+    if (process.client) {
+      if (window)
+        this.prefix = window.location.origin + window.location.pathname
     }
   },
   methods: {
     updateUUID: function() {
-      let xmlhttp = new XMLHttpRequest();
-      let url = this.api + `map/getshareid`;
-      let state = this.$refs.map.getState();
+      let url = this.api + `map/getshareid`
+      let state = this.$refs.map.getState()
       fetch(url, {
         method: 'POST',
         headers: {
-          'Content-type': 'application/json',
+          'Content-type': 'application/json'
         },
-        body: JSON.stringify({"state": state})
+        body: JSON.stringify({ state: state })
       })
-      .then(response => response.json())
-      .then(data => {
-        this.uuid = data.uuid;
-      })
-      .catch((error) => {
-        this.uuid = undefined;
-      });
+        .then(response => response.json())
+        .then(data => {
+          this.uuid = data.uuid
+        })
+        .catch(() => {
+          this.uuid = undefined
+        })
     }
-  },
-  created: function() {
-    this.api = process.env.portal_api;
-    let lastChar = this.api.substr(-1);
-    if (lastChar != '/') {
-      this.api = this.api + '/';
-    }
-    if (process.client) {
-      if (window)
-        this.prefix = window.location.origin + window.location.pathname;
-    }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss" scoped>

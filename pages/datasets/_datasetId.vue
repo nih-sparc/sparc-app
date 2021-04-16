@@ -150,6 +150,12 @@
       </div>
     </details-header>
     <div v-if="datasetInfo.embargo === false" class="container">
+      <citation-details
+        :doi-value="datasetInfo.doi"
+        :updated-date="lastUpdatedDate"
+      />
+    </div>
+    <div v-if="datasetInfo.embargo === false" class="container">
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -165,7 +171,6 @@
           v-show="activeTab === 'about'"
           :updated-date="lastUpdatedDate"
           :doi="datasetDOI"
-          :doi-value="datasetInfo.doi"
           :dataset-tags="datasetTags"
           :dataset-owner-name="datasetOwnerName"
           :dataset-owner-email="datasetOwnerEmail"
@@ -239,6 +244,7 @@ import Videos from '@/static/js/videos'
 import createClient from '@/plugins/contentful.js'
 
 import discover from '@/services/discover'
+import CitationDetails from '~/components/CitationDetails/CitationDetails.vue'
 
 const client = createClient()
 
@@ -417,6 +423,7 @@ export default {
   components: {
     DetailsHeader,
     DetailTabs,
+    CitationDetails,
     ContributorItem,
     DatasetBannerImage,
     DownloadDataset,
