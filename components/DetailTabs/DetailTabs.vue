@@ -5,14 +5,13 @@
         <el-col :span="24">
           <ul class="details-tabs__container--types">
             <li v-for="tab in tabs" :key="tab.label">
-              <a
+              <nuxt-link
                 class="details-tabs__container--button"
                 :class="{ active: tab.type === activeTab }"
-                href="#"
-                @click.prevent="$emit('set-active-tab', tab.type)"
+                :to="{ query: { ...$route.query, tab: tab.type } }"
               >
                 {{ tab.label }}
-              </a>
+              </nuxt-link>
             </li>
           </ul>
         </el-col>
@@ -34,7 +33,7 @@ export default {
     },
     activeTab: {
       type: String,
-      default: 'datasets'
+      default: ''
     }
   }
 }
@@ -75,8 +74,8 @@ export default {
       outline: none;
       padding: 0.5rem;
       text-decoration: none;
+      border-bottom: 2px solid transparent;
       &:hover,
-      &:focus,
       &.active {
         color: $median;
         border-bottom: 2px solid $median;
