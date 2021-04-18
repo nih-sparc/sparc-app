@@ -466,7 +466,6 @@ export default {
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
-      console.log('mounted', this.$route.query.datasetFilters)
       this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
         ? this.$route.query.datasetFilters
         : [this.$route.query.datasetFilters]

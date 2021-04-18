@@ -798,6 +798,13 @@ export default {
 
   watchQuery(newQuery) {
     this.activeTab = newQuery.tab ? newQuery.tab : this.activeTab
+    if (this.activeTab !== 'files') {
+      let query = newQuery
+      if ('path' in query) {
+        delete query['path']
+        this.$router.push({ query })
+      }
+    }
   },
 
   watch: {
@@ -912,18 +919,7 @@ export default {
      * in the About tab
      */
     scrollToCitations: function() {
-      const aboutTabType = tabs[1].type
-      if (this.activeTab !== aboutTabType) {
-        this.$router.push({
-          query: { ...this.$route.query, tab: aboutTabType }
-        })
-        this.$nextTick(() => {
-          // Wait until Vue renders the About tab
-          this.getCitationsArea().scrollIntoView()
-        })
-      } else {
-        this.getCitationsArea().scrollIntoView()
-      }
+      this.getCitationsArea().scrollIntoView()
     },
 
     /**
