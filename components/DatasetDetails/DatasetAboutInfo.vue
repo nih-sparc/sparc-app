@@ -22,13 +22,11 @@
       <p>{{ getSparcAwardNumber }}</p>
       <template v-if="externalPublications.length">
         <h3>Associated Publication{{s}}</h3>
-        <p>
-          <external-pub-link 
-            v-for="(pub, i) in externalPublications"
-            :key="i"
-            :publication="externalPublications[i]"
-          />
-        </p>
+        <external-pub-link
+          v-for="pub in externalPublications"
+          :key="pub.doi"
+          :publication="pub"
+        />
       </template>
       <h3>Tags</h3>
       <div v-if="datasetTags.length !== 0">

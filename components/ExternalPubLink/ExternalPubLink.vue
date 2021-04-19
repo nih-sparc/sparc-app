@@ -37,9 +37,9 @@ export default {
 
   methods: {
     /**
-     * Get the DOI from doi.org
+     * Get the Title from doi.org
      */
-    async getTitle() {
+    getTitle() {
       fetch(this.linkFromDoi(this.publication.doi), {
         method: 'GET',
         headers: { Accept: 'application/json'}
@@ -56,6 +56,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>
