@@ -28,6 +28,7 @@
           :publication="pub"
         />
       </template>
+      <p />
       <h3>Tags</h3>
       <div v-if="datasetTags.length !== 0">
         <tag-list :tags="datasetTags" />
