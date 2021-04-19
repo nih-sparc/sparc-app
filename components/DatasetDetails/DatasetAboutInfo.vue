@@ -20,6 +20,15 @@
       </p>
       <h3>NIH Award</h3>
       <p>{{ getSparcAwardNumber }}</p>
+      <template v-if="externalPublications.length">
+        <h3>{{ associatedPublications }}</h3>
+        <external-pub-link
+          v-for="pub in externalPublications"
+          :key="pub.doi"
+          :publication="pub"
+        />
+      </template>
+      <p />
       <h3>Tags</h3>
       <div v-if="datasetTags.length !== 0">
         <tag-list :tags="datasetTags" />
@@ -47,6 +56,7 @@
 import { compose, propOr, head } from 'ramda'
 
 import ExternalPublicationListItem from '@/components/ExternalPublicationListItem/ExternalPublicationListItem.vue'
+import ExternalPubLink from '@/components/ExternalPubLink/ExternalPubLink'
 import TagList from '@/components/TagList/TagList.vue'
 
 export default {
@@ -54,6 +64,7 @@ export default {
 
   components: {
     ExternalPublicationListItem,
+    ExternalPubLink,
     TagList
   },
   props: {
@@ -109,6 +120,11 @@ export default {
      */
     getRecordsUrl: function() {
       return `${process.env.discover_api_host}/search/records?datasetId=${this.$route.params.datasetId}`
+    },
+    associatedPublications: function() {
+      return this.externalPublications.length > 0
+        ? 'Associated Publications'
+        : 'Associated Publication'
     }
   },
 
