@@ -138,6 +138,15 @@
                   Open
                 </el-dropdown-item>
                 <el-dropdown-item
+                  v-if="hasOsparcViewer(scope)"
+                  :command="{
+                    type: 'setDialogSelectedFile',
+                    scope
+                  }"
+                >
+                  Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;<a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank"><svg-icon icon="icon-help" width="18" height="18"/></a>
+                </el-dropdown-item>
+                <el-dropdown-item
                   v-if="isScaffoldMetaFile(scope)"
                   :command="{
                     type: 'openScaffold',
@@ -160,6 +169,12 @@
           </template>
         </el-table-column>
       </el-table>
+      <osparc-file-viewers-dialog
+        :open="dialogSelectedFile !== null"
+        @close="() => setDialogSelectedFile(null)"
+        :viewers="osparcViewers"
+        :selectedFile="dialogSelectedFile"
+      />
     </div>
   </div>
 </template>
@@ -179,10 +194,13 @@ import {
 } from 'ramda'
 
 import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
+import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import { successMessage, failMessage } from '@/utils/notification-messages'
+
+import { extractExtension } from '@/pages/data/utils'
 
 const contentTypes = {
   pdf: 'application/pdf',
@@ -197,7 +215,8 @@ export default {
   name: 'FilesTable',
 
   components: {
-    BfDownloadFile
+    BfDownloadFile,
+    OsparcFileViewersDialog
   },
 
   mixins: [FormatStorage, RequestDownloadFile],
@@ -208,6 +227,9 @@ export default {
       default: function() {
         return {}
       }
+    },
+    osparcViewers: {
+      type: Object
     }
   },
 
@@ -218,7 +240,8 @@ export default {
       isLoading: false,
       hasError: false,
       limit: 500,
-      selected: []
+      selected: [],
+      dialogSelectedFile: null
     }
   },
 
@@ -349,6 +372,14 @@ export default {
       )
     },
     /**
+     * Checks if file has a viewer in oSPARC
+     * @param {Object} scope
+     */
+    hasOsparcViewer(scope) {
+      const fileType = extractExtension(scope.row.path)
+      return Object.keys(this.osparcViewers).includes(fileType);
+    },
+    /**
      * Get contents of directory
      */
     getFiles: function() {
@@ -401,6 +432,13 @@ export default {
       if (typeof handler === 'function') {
         handler(scope)
       }
+    },
+
+    /**
+     * Shows the oSPARC viewers selector
+     */
+    setDialogSelectedFile: function(scope) {
+      this.dialogSelectedFile = scope ? scope.row : null;
     },
 
     /**

@@ -38,6 +38,7 @@ export default {
     bf_api_host: process.env.BF_API_HOST || 'https://api.blackfynn.io',
     zipit_api_host:
       process.env.ZIPIT_API_HOST || 'https://api.blackfynn.io/zipit/discover',
+    osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
     ctf_resource_id: 'sparcPartners',
