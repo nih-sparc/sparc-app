@@ -35,10 +35,10 @@
       >
         <client-only placeholder="Loading video ...">
           <div class="video-container">
-            <video class="video" ref="vid" controls crossorigin playsinline>
-              <source :src="video_src" type="video/mp4" size="1080">
+            <video ref="vid" class="video" controls crossorigin playsinline>
+              <source :src="video_src" type="video/mp4" size="1080" />
             </video>
-        </div>
+          </div>
         </client-only>
       </detail-tabs>
     </div>
@@ -54,7 +54,7 @@ export default {
   name: 'VideoViewerPage',
 
   components: {
-    DetailTabs,
+    DetailTabs
   },
 
   data: () => {
@@ -62,8 +62,8 @@ export default {
       tabs: [
         {
           label: 'Video Viewer',
-          type: 'video',
-        },
+          type: 'video'
+        }
       ],
       activeTab: 'video',
       file: {},
@@ -96,18 +96,17 @@ export default {
       return this.$route.query.dataset_version
     },
 
-    video_src: function(){
+    video_src: function() {
       return `${process.env.portal_api}/s3-resource/${this.$route.query.file_path}`
     }
   },
   mounted() {
     this.player = new Plyr(this.$refs.vid)
-  },
+  }
 }
 </script>
 
 <style scoped lang="scss">
-
 .page {
   display: flex;
   margin-top: 7rem;
@@ -155,10 +154,10 @@ h1 {
 }
 </style>
 <style lang="scss">
-  .video-container {
-    padding-top: 8px;
-  }
-  .video{
-    width: 100%
-  }
+.video-container {
+  padding-top: 8px;
+}
+.video {
+  width: 100%;
+}
 </style>

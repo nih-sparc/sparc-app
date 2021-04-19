@@ -59,7 +59,7 @@ export default {
 
   components: {
     BiolucidaViewer,
-    DetailTabs,
+    DetailTabs
   },
 
   async asyncData({ route }) {
@@ -67,7 +67,7 @@ export default {
     const imageInfo = response.data
 
     return {
-      imageInfo,
+      imageInfo
     }
   },
 
@@ -76,11 +76,11 @@ export default {
       tabs: [
         {
           label: 'Image Viewer',
-          type: 'viewer',
-        },
+          type: 'viewer'
+        }
       ],
       activeTab: 'viewer',
-      file: {},
+      file: {}
     }
   },
 
@@ -93,7 +93,7 @@ export default {
       return {
         biolucida_image_id: '',
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
-        status: '',
+        status: ''
       }
     },
 
@@ -130,8 +130,8 @@ export default {
       return this.imageInfo.name.toUpperCase().endsWith('JPX')
         ? '3D JPEG Image'
         : '2D JPEG Image'
-    },
-  },
+    }
+  }
 }
 </script>
 
