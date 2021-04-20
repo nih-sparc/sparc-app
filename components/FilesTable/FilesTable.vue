@@ -94,7 +94,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="360">
+        <el-table-column prop="fileType" label="File type" width="280">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -108,64 +108,50 @@
         <el-table-column
           prop="size"
           label="Size"
-          width="360"
+          width="220"
           :formatter="formatStorage"
         />
         <el-table-column label="Operation" width="200">
           <template v-if="scope.row.type === 'File'" slot-scope="scope">
-            <el-dropdown trigger="click" @command="onCommandClick">
-              <el-button
-                icon="el-icon-more"
-                size="small"
-                class="operation-button"
-              />
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  :command="{
-                    type: 'getDownloadFile',
-                    scope
-                  }"
-                >
-                  Download
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="isFileOpenable(scope)"
-                  :command="{
-                    type: 'openFile',
-                    scope
-                  }"
-                >
-                  Open
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="hasOsparcViewer(scope)"
-                  :command="{
-                    type: 'setDialogSelectedFile',
-                    scope
-                  }"
-                >
-                  Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;<a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank"><svg-icon icon="icon-help" width="18" height="18"/></a>
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="isScaffoldMetaFile(scope)"
-                  :command="{
-                    type: 'openScaffold',
-                    scope
-                  }"
-                >
-                  Open Scaffold
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="scope.row.uri"
-                  :command="{
-                    type: 'copyS3Url',
-                    scope
-                  }"
-                >
-                  Copy URL to Clipboard
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <el-button
+              icon="el-icon-download"
+              size="small"
+              class="operation-button"
+              @click="getDownloadFile(scope)"
+            />
+            <el-button
+              v-if="isFileOpenable(scope)"
+              icon="el-icon-view"
+              size="small"
+              class="operation-button"
+              @click="openFile(scope)"
+            />
+            <el-button
+              v-if="isScaffoldMetaFile(scope)"
+              icon="el-icon-coin"
+              size="small"
+              class="operation-button"
+              @click="openScaffold(scope)"
+            />
+            <el-button
+              v-if="hasOsparcViewer(scope)"
+              icon="el-icon-odometer"
+              size="small"
+              class="operation-button"
+              @click="setDialogSelectedFile(scope)"
+            >
+              Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;
+              <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
+                <svg-icon icon="icon-help" width="18" height="18"/>
+              </a>
+            </el-button>
+            <el-button
+              v-if="scope.row.uri"
+              icon="el-icon-link"
+              size="small"
+              class="operation-button"
+              @click="copyS3Url(scope)"
+            />
           </template>
         </el-table-column>
       </el-table>
