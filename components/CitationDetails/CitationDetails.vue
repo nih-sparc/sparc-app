@@ -3,7 +3,7 @@
     <div class="citation-details__container">
       <h3>Cite This Dataset</h3>
       <p>
-        Publication Date: {{ updatedDate }}<br />
+        Publication Date: {{ publishedDate }}<br />
         Platform:
         <a href="https://discover.blackfynn.com/" target="_blank">
           Blackfynn Discover
@@ -77,7 +77,7 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 export default {
   name: 'CitationDetails',
   props: {
-    updatedDate: {
+    publishedDate: {
       type: String,
       default: ''
     },
