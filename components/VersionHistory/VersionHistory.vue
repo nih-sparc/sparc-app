@@ -46,7 +46,7 @@
           </router-link>
         </el-col>
         <el-col :span="6">
-          {{ formatDate(version.updatedAt) }}
+          {{ formatDate(version.createdAt) }}
         </el-col>
         <el-col :span="10" :push="2">
           {{ version.doi }}
