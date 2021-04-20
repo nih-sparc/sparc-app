@@ -100,8 +100,12 @@ const tabTypes = [
     type: 'Device' as const
   },
   {
-    label: 'Digital Repositories',
-    type: 'Digital Repositories' as const
+    label: 'Databases',
+    type: 'Databases' as const
+  },
+  {
+    label: 'Information Services',
+    type: 'Information Services' as const
   },
   {
     label: 'Software',

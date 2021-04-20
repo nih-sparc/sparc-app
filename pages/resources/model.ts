@@ -38,7 +38,7 @@ export interface Methods {
 export type ResourcesComponent = Data & Computed & Methods & { $route: Route, $router: VueRouter }
 
 
-type ResourceType = 'Device' | 'Digital Repositories' | 'Software' | 'Biologicals' | 'sparcPartners'
+type ResourceType = 'Device' | 'Information Services' | 'Databases' | 'Software' | 'Biologicals' | 'sparcPartners'
 
 interface TabType {
   label: string,

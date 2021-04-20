@@ -1,10 +1,10 @@
 <template>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero>
-      <h1>{{ page.fields.title }}</h1>
+      <h1>{{ heroTitle }}</h1>
       <p>
-        {{ page.fields.summary }}
+        {{ heroSummary }}
       </p>
     </page-hero>
     <div class="page-wrap container">
@@ -20,8 +20,8 @@
               <share-network
                 network="facebook"
                 :url="pageUrl"
-                :title="page.fields.title"
-                :description="page.fields.summary"
+                :title="heroTitle"
+                :description="heroSummary"
               >
                 <svg-icon name="icon-share-facebook" height="28" width="28" />
                 <span class="visuallyhidden">Share on Facebook</span>
@@ -30,7 +30,7 @@
                 network="twitter"
                 class="ml-8"
                 :url="pageUrl"
-                :title="page.fields.title"
+                :title="heroTitle"
               >
                 <svg-icon name="icon-share-twitter" height="28" width="28" />
                 <span class="visuallyhidden">Share on Twitter</span>
@@ -39,7 +39,7 @@
                 network="linkedin"
                 class="ml-8"
                 :url="pageUrl"
-                :title="page.fields.title"
+                :title="heroTitle"
               >
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>
@@ -96,6 +96,14 @@ export default {
       default: ''
     },
     type: {
+      type: String,
+      default: ''
+    },
+    heroTitle: {
+      type: String,
+      default: ''
+    },
+    heroSummary: {
       type: String,
       default: ''
     },

@@ -3,6 +3,8 @@
     :page="page"
     :content="page.fields.description"
     :breadcrumb="breadcrumb"
+    :hero-title="page.fields.title"
+    :hero-summary="page.fields.summary"
     type="event"
   >
     <img :src="newsImage" :alt="newsImageAlt" />
