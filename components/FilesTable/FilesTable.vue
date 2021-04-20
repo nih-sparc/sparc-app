@@ -407,20 +407,6 @@ export default {
     },
 
     /**
-     * On command click callback for dropdown
-     * @param {Object} evt
-     */
-    onCommandClick: function(evt) {
-      const scope = propOr({}, 'scope', evt)
-      const type = propOr({}, 'type', evt)
-      const handler = this[type]
-
-      if (typeof handler === 'function') {
-        handler(scope)
-      }
-    },
-
-    /**
      * Shows the oSPARC viewers selector
      */
     setDialogSelectedFile: function(scope) {
