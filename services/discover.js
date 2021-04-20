@@ -3,7 +3,7 @@ import axios from 'axios'
 const apiClient = axios.create({
   baseURL: `${process.env.discover_api_host}/datasets`,
   withCredentials: false,
-  timeout: 11005,
+  timeout: 11005
 })
 
 const browse = async (id, version, path = undefined) => {
@@ -12,8 +12,8 @@ const browse = async (id, version, path = undefined) => {
     config = {
       params: {
         path: path,
-        limit: 253,
-      },
+        limit: 253
+      }
     }
   }
 
@@ -21,5 +21,5 @@ const browse = async (id, version, path = undefined) => {
 }
 
 export default {
-  browse,
+  browse
 }

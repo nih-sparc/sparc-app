@@ -150,6 +150,12 @@
       </div>
     </details-header>
     <div v-if="datasetInfo.embargo === false" class="container">
+      <citation-details
+        :doi-value="datasetInfo.doi"
+        :published-date="originallyPublishedDate"
+      />
+    </div>
+    <div v-if="datasetInfo.embargo === false" class="container">
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -165,7 +171,6 @@
           v-show="activeTab === 'about'"
           :updated-date="lastUpdatedDate"
           :doi="datasetDOI"
-          :doi-value="datasetInfo.doi"
           :dataset-tags="datasetTags"
           :dataset-owner-name="datasetOwnerName"
           :dataset-owner-email="datasetOwnerEmail"
@@ -174,6 +179,7 @@
         <dataset-files-info
           v-show="activeTab === 'files'"
           :dataset-details="datasetInfo"
+          :osparc-viewers="osparcViewers"
         />
         <images-gallery
           v-show="activeTab === 'images'"
@@ -239,6 +245,7 @@ import Videos from '@/static/js/videos'
 import createClient from '@/plugins/contentful.js'
 
 import discover from '@/services/discover'
+import CitationDetails from '~/components/CitationDetails/CitationDetails.vue'
 
 const client = createClient()
 
@@ -417,6 +424,7 @@ export default {
   components: {
     DetailsHeader,
     DetailTabs,
+    CitationDetails,
     ContributorItem,
     DatasetBannerImage,
     DownloadDataset,
@@ -453,6 +461,14 @@ export default {
       videoData
     } = await getImagesData(datasetId, datasetDetails, $axios)
 
+    // Get oSPARC file viewers
+    const osparcViewers = await $axios
+      .$get(`${process.env.portal_api}/get_osparc_data`)
+      .then(osparcData => osparcData['file_viewers'])
+      .catch(() => {
+        return {}
+      })
+
     return {
       entries: organEntries,
       datasetInfo: datasetDetails,
@@ -462,6 +478,7 @@ export default {
       plotData,
       videoData,
       tabs: tabsData,
+      osparcViewers,
       versions
     }
   },
@@ -682,6 +699,7 @@ export default {
       const date = propOr('', 'createdAt', this.datasetInfo)
       return this.formatDate(date)
     },
+
     /**
      * Get formatted last updated date
      * @return {String}

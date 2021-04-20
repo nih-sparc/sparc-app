@@ -13,7 +13,7 @@
         Learn more about navigating a SPARC dataset
       </nuxt-link>
     </p>
-    <files-table :dataset-details="datasetDetails" />
+    <files-table :dataset-details="datasetDetails" :osparc-viewers="osparcViewers" />
   </div>
 </template>
 
@@ -28,6 +28,10 @@ export default {
 
   props: {
     datasetDetails: {
+      type: Object,
+      default: () => {}
+    },
+    osparcViewers: {
       type: Object,
       default: () => {}
     }

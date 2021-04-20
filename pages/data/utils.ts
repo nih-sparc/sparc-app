@@ -135,3 +135,19 @@ export const handleSortChange = (
 
   fetchResults()
 }
+
+/**
+ * Gets the file extension for a file or path
+ * @param path Path or filename
+ * @returns String containing the file extension
+ */
+export const extractExtension = (
+  path : string
+): string => {
+  const split = path.split('.')
+  if (split.length > 1) {
+    const ext = split.pop()
+    return ext || ''
+  }
+  return ''
+}
