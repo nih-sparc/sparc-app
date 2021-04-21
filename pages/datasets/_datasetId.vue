@@ -797,7 +797,7 @@ export default {
   },
 
   watchQuery(newQuery) {
-    this.activeTab = newQuery.tab ? newQuery.tab : this.activeTab
+    this.activeTab = newQuery.tab ? newQuery.tab : 'description'
     if (this.activeTab !== 'files') {
       let query = newQuery
       if ('path' in query) {
