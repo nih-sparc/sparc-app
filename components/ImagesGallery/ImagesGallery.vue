@@ -301,7 +301,7 @@ export default {
                 this.thumbnails[
                   scaffold_index
                 ].metadata_file = entry.uri.replace(
-                  's3://blackfynn-discover-use1/',
+                  's3://pennsieve-prod-discover-publish-use1/',
                   '',
                 )
               }
