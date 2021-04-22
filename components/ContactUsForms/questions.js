@@ -2,7 +2,7 @@ export const sparcInvestigator = ['No', 'Yes', 'Other']
 
 export const pageOrResource = [
   'About',
-  'Blackfynn Discover',
+  'Pennsieve Discover',
   'Datasets',
   'Find Data',
   'Help or documentation',
