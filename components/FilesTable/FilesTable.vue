@@ -144,7 +144,12 @@
                     scope
                   }"
                 >
-                  Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;<a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank"><svg-icon icon="icon-help" width="18" height="18"/></a>
+                  Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;<a
+                    href="/help/4EFMev665H4i6tQHfoq5NM"
+                    target="_blank"
+                  >
+                    <svg-icon icon="icon-help" width="18" height="18" />
+                  </a>
                 </el-dropdown-item>
                 <el-dropdown-item
                   v-if="isScaffoldMetaFile(scope)"
@@ -171,9 +176,9 @@
       </el-table>
       <osparc-file-viewers-dialog
         :open="dialogSelectedFile !== null"
-        @close="() => setDialogSelectedFile(null)"
         :viewers="osparcViewers"
-        :selectedFile="dialogSelectedFile"
+        :selected-file="dialogSelectedFile"
+        @close="() => setDialogSelectedFile(null)"
       />
     </div>
   </div>
@@ -377,7 +382,7 @@ export default {
      */
     hasOsparcViewer(scope) {
       const fileType = extractExtension(scope.row.path)
-      return Object.keys(this.osparcViewers).includes(fileType);
+      return Object.keys(this.osparcViewers).includes(fileType)
     },
     /**
      * Get contents of directory
@@ -438,7 +443,7 @@ export default {
      * Shows the oSPARC viewers selector
      */
     setDialogSelectedFile: function(scope) {
-      this.dialogSelectedFile = scope ? scope.row : null;
+      this.dialogSelectedFile = scope ? scope.row : null
     },
 
     /**
@@ -458,7 +463,7 @@ export default {
       const filePath = compose(
         last,
         defaultTo([]),
-        split('s3://blackfynn-discover-use1/'),
+        split('s3://pennsieve-prod-discover-publish-use1/'),
         pathOr('', ['row', 'uri'])
       )(scope)
 
