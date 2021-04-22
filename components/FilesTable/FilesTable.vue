@@ -353,7 +353,7 @@ export default {
         .$get(this.getFilesIdUrl)
         .then(response => {
           const schemaVersion = this.convertSchemaVersionToInteger(
-            response.blackfynnSchemaVersion
+            response.pennsieveSchemaVersion
           )
           if (schemaVersion < 4.0) {
             this.path = 'packages'
