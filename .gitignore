@@ -108,3 +108,5 @@ sw.*
 # Certifact files
 .certs/
 
+
+test.env
