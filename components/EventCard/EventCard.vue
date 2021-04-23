@@ -1,7 +1,24 @@
 <template>
   <div class="upcoming-event">
     <div class="upcoming-event__image">
-      <img :src="eventImage(event)" :alt="eventAlt(event)" />
+      <nuxt-link
+        v-if="event.fields.requiresADetailsPage"
+        :to="{
+          name: 'news-and-events-events-id',
+          params: { id: event.sys.id }
+        }"
+      >
+        <img :src="eventImage(event)" :alt="eventAlt(event)" />
+      </nuxt-link>
+      <template v-else>
+        <a v-if="event.fields.url" :href="event.fields.url" target="_blank">
+          <img :src="eventImage(event)" :alt="eventAlt(event)" />
+        </a>
+        <div v-else>
+          <img :src="eventImage(event)" :alt="eventAlt(event)" />
+        </div>
+      </template>
+
       <span>{{ event.fields.eventType }}</span>
     </div>
     <h3>
