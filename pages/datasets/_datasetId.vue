@@ -388,6 +388,16 @@ const getImagesData = async (datasetId, datasetDetails, $axios) => {
     // ImageGallery.vue to start making scicrunch calls
     let videoData = Videos[datasetId]
     if (videoData) {
+      let cors = ''
+      // let cors = 'https://cors-anywhere.herokuapp.com/'
+      let presigned_url = await $axios.$get(
+        process.env.portal_api +
+          '/download?' +
+          new URLSearchParams({
+            key: videoData.file_path
+          })
+      )
+      videoData.presigned_url = cors + presigned_url
       videoData = [videoData]
     }
 

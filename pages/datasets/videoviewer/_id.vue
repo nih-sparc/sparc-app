@@ -36,7 +36,7 @@
         <client-only placeholder="Loading video ...">
           <div class="video-container">
             <video ref="vid" class="video" controls crossorigin playsinline>
-              <source :src="video_src" type="video/mp4" size="1080" />
+              <source :src="videoSrc" type="video/mp4" size="1080" />
             </video>
           </div>
         </client-only>
@@ -96,8 +96,8 @@ export default {
       return this.$route.query.dataset_version
     },
 
-    video_src: function() {
-      return `${process.env.portal_api}/s3-resource/${this.$route.query.file_path}`
+    videoSrc: function() {
+      return this.$route.query.presigned_url
     }
   },
   mounted() {

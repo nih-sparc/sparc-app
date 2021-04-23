@@ -327,7 +327,8 @@ export default {
         this.thumbnails.push({
           id: this.datasetId,
           img: this.defaultVideoImg,
-          file_path: this.datasetVideos[i].file_path
+          file_path: this.datasetVideos[i].file_path,
+          presigned_url: this.datasetVideos[i].presigned_url
         })
       }
     },
@@ -411,7 +412,8 @@ export default {
           query = {
             dataset_version: this.datasetVersion,
             dataset_id: this.datasetId,
-            file_path: imageInfo.file_path
+            file_path: imageInfo.file_path,
+            presigned_url: imageInfo.presigned_url
           }
           break
         default:
