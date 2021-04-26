@@ -9,10 +9,51 @@
       <sparc-card
         v-for="(item, idx) in upcomingNews"
         :key="item.sys.id"
-        :image="getImageSrc(item)"
-        :image-alt="getImageAlt(item)"
         :image-align="idx % 2 ? 'right' : ''"
       >
+        <template slot="image">
+          <nuxt-link
+            v-if="item.fields.requiresADetailsPage"
+            :to="{
+              name: 'news-and-events-events-id',
+              params: { id: item.sys.id }
+            }"
+            class="sparc-card__image"
+            :style="`background-image: url(${getImageSrc(item)})`"
+          >
+            <img
+              class="visuallyhidden"
+              :src="getImageSrc(item)"
+              :alt="getImageAlt(item)"
+            />
+          </nuxt-link>
+          <template v-else>
+            <a
+              v-if="item.fields.url"
+              :href="item.fields.url"
+              target="_blank"
+              class="sparc-card__image"
+              :style="`background-image: url(${getImageSrc(item)})`"
+            >
+              <img
+                class="visuallyhidden"
+                :src="getImageSrc(item)"
+                :alt="getImageAlt(item)"
+              />
+            </a>
+            <div
+              v-else
+              class="sparc-card__image"
+              :style="`background-image: url(${getImageSrc(item)})`"
+            >
+              <img
+                class="visuallyhidden"
+                :src="getImageSrc(item)"
+                :alt="getImageAlt(item)"
+              />
+            </div>
+          </template>
+        </template>
         <div>
           <h3>
             <nuxt-link

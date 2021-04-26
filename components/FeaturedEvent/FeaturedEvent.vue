@@ -1,5 +1,37 @@
 <template>
-  <sparc-card :image="imageSrc" :image-alt="imageAlt">
+  <sparc-card>
+    <template slot="image">
+      <nuxt-link
+        v-if="event.fields.requiresADetailsPage"
+        :to="{
+          name: 'news-and-events-events-id',
+          params: { id: event.sys.id }
+        }"
+        class="sparc-card__image"
+        :style="`background-image: url(${imageSrc})`"
+      >
+        <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
+      </nuxt-link>
+      <template v-else>
+        <a
+          v-if="event.fields.url"
+          :href="event.fields.url"
+          target="_blank"
+          class="sparc-card__image"
+          :style="`background-image: url(${imageSrc})`"
+        >
+          <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
+        </a>
+        <div
+          v-else
+          class="sparc-card__image"
+          :style="`background-image: url(${imageSrc})`"
+        >
+          <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
+        </div>
+      </template>
+    </template>
+
     <div>
       <h3>
         <nuxt-link
