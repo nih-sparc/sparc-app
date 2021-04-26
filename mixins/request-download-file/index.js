@@ -7,9 +7,8 @@ export default {
      * Request download file via axios.
      */
     requestDownloadFile: function(downloadInfo) {
-
       const fileName = propOr('', 'name', downloadInfo)
-      const datasetVersionRegexp = /s3:\/\/blackfynn-discover-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/;
+      const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
       const matches = downloadInfo.uri.match(datasetVersionRegexp)
 
       const payload = {
@@ -19,9 +18,9 @@ export default {
           version: matches.groups.version
         }
       }
-      this.$axios.$post(process.env.zipit_api_host, payload).then((response) => {
+      this.$axios.$post(process.env.zipit_api_host, payload).then(response => {
         FileDownload(response, fileName)
       })
-    },
-}
+    }
+  }
 }
