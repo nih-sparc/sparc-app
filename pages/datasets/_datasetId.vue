@@ -1044,7 +1044,7 @@ export default {
         },
         {
           name: 'DC.publisher',
-          content: 'Blackfynn Discover'
+          content: 'Pennsieve Discover'
         },
         {
           name: 'DC.date',
@@ -1088,7 +1088,7 @@ export default {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
             url: process.env.siteUrl,
-            name: 'Blackfynn Discover'
+            name: 'Pennsieve Discover'
           },
           type: 'application/ld+json'
         }

@@ -3,9 +3,14 @@
     class="sparc-card"
     :class="{ 'sparc-card--image-right': imageAlign === 'right' }"
   >
-    <div class="sparc-card__image" :style="`background-image: url(${image})`">
+    <div
+      v-if="!$slots.image"
+      class="sparc-card__image"
+      :style="`background-image: url(${image})`"
+    >
       <img class="visuallyhidden" :src="image" :alt="imageAlt" />
     </div>
+    <slot name="image" class="sparc-card__image" />
 
     <div class="sparc-card__content-wrap">
       <div class="sparc-card__content-wrap__content">
