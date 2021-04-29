@@ -14,10 +14,7 @@
         <template slot="image">
           <nuxt-link
             v-if="item.fields.requiresADetailsPage"
-            :to="{
-              name: 'news-and-events-events-id',
-              params: { id: item.sys.id }
-            }"
+            :to="nuxtLink(item)"
             class="sparc-card__image"
             :style="`background-image: url(${getImageSrc(item)})`"
           >
