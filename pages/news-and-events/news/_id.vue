@@ -98,7 +98,9 @@ export default {
      * @returns {String}
      */
     publishedDate: function() {
-      return this.formatDate(this.page.fields.publishedDate)
+      return this.page.fields.publishedDate
+        ? this.formatDate(this.page.fields.publishedDate)
+        : ''
     }
   }
 }
