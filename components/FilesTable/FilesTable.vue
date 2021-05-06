@@ -531,6 +531,7 @@ export default {
 .files-table-header {
   align-items: center;
   display: flex;
+  margin-bottom: 8px;
 }
 .breadcrumb-list {
   align-items: center;
