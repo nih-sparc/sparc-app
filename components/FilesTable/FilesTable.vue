@@ -114,55 +114,25 @@
         <el-table-column label="Operation" width="200">
           <template v-if="scope.row.type === 'File'" slot-scope="scope">
             <div class="circle" @click="getDownloadFile(scope)">
-              <svg-icon name="icon-download" height="2em" width="2em" />
+              <svg-icon name="icon-download" height="1.5rem" width="1.5rem" />
             </div>
             <div
               v-if="isFileOpenable(scope)"
               class="circle"
               @click="openFile(scope)"
             >
-              <svg-icon name="icon-view" height="2em" width="2em" />
+              <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
             </div>
             <div
               v-if="isScaffoldMetaFile(scope)"
               class="circle"
               @click="openScaffold(scope)"
             >
-              <svg-icon name="icon-view" height="2em" width="2em" />
+              <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
             </div>
-            <el-button
-              v-if="isFileOpenable(scope)"
-              icon="el-icon-view"
-              size="small"
-              class="operation-button"
-              @click="openFile(scope)"
-            />
-            <el-button
-              v-if="isScaffoldMetaFile(scope)"
-              icon="el-icon-coin"
-              size="small"
-              class="operation-button"
-              @click="openScaffold(scope)"
-            />
-            <el-button
-              v-if="hasOsparcViewer(scope)"
-              icon="el-icon-odometer"
-              size="small"
-              class="operation-button"
-              @click="setDialogSelectedFile(scope)"
-            >
-              Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;
-              <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
-                <svg-icon icon="icon-help" width="18" height="18"/>
-              </a>
-            </el-button>
-            <el-button
-              v-if="scope.row.uri"
-              icon="el-icon-link"
-              size="small"
-              class="operation-button"
-              @click="copyS3Url(scope)"
-            />
+            <div v-if="scope.row.uri" class="circle" @click="copyS3Url(scope)">
+              <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -546,7 +516,6 @@ export default {
 .files-table-header {
   align-items: center;
   display: flex;
-  margin-bottom: 8px;
 }
 .breadcrumb-list {
   align-items: center;
@@ -586,12 +555,13 @@ export default {
 
 .circle {
   display: inline-flex;
-  height: 2em;
-  width: 2em;
-  line-height: 2em;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5em;
+  margin-right: 4px;
 
-  -moz-border-radius: 1em; /* or 50% */
-  border-radius: 1em; /* or 50% */
+  -moz-border-radius: 0.75em; /* or 50% */
+  border-radius: 0.75em; /* or 50% */
 
   background-color: #8300bf;
   color: #fff;
