@@ -113,12 +113,23 @@
         />
         <el-table-column label="Operation" width="200">
           <template v-if="scope.row.type === 'File'" slot-scope="scope">
-            <el-button
-              icon="el-icon-download"
-              size="small"
-              class="operation-button"
-              @click="getDownloadFile(scope)"
-            />
+            <div class="circle" @click="getDownloadFile(scope)">
+              <svg-icon name="icon-download" height="2em" width="2em" />
+            </div>
+            <div
+              v-if="isFileOpenable(scope)"
+              class="circle"
+              @click="openFile(scope)"
+            >
+              <svg-icon name="icon-view" height="2em" width="2em" />
+            </div>
+            <div
+              v-if="isScaffoldMetaFile(scope)"
+              class="circle"
+              @click="openScaffold(scope)"
+            >
+              <svg-icon name="icon-view" height="2em" width="2em" />
+            </div>
             <el-button
               v-if="isFileOpenable(scope)"
               icon="el-icon-view"
@@ -571,6 +582,21 @@ export default {
   font-size: 16px;
   flex-shrink: 0;
   margin: 3px 8px 0 0;
+}
+
+.circle {
+  display: inline-flex;
+  height: 2em;
+  width: 2em;
+  line-height: 2em;
+
+  -moz-border-radius: 1em; /* or 50% */
+  border-radius: 1em; /* or 50% */
+
+  background-color: #8300bf;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
 }
 
 ::v-deep .el-table {
