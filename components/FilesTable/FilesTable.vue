@@ -112,38 +112,42 @@
           :formatter="formatStorage"
         />
         <el-table-column label="Operation" width="200">
-          <template v-if="scope.row.type === 'File'" slot-scope="scope">
-            <div class="circle" @click="getDownloadFile(scope)">
-              <svg-icon name="icon-download" height="1.5rem" width="1.5rem" />
-            </div>
-            <div
-              v-if="isFileOpenable(scope)"
-              class="circle"
-              @click="openFile(scope)"
-            >
-              <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
-            </div>
-            <div
-              v-if="isScaffoldMetaFile(scope)"
-              class="circle"
-              @click="openScaffold(scope)"
-            >
-              <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
-            </div>
-            <div
-              v-if="true"
-              class="circle"
-              @click="setDialogSelectedFile(scope)"
-            > 
-              <a class="osparc-help" href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
-                <svg-icon icon="icon-help" width="18" height="18" />
-              </a>
-              <svg-icon name="icon-view" height="1.5em" width="1.5em" />
-            </div>
-            
-            <div v-if="scope.row.uri" class="circle" @click="copyS3Url(scope)">
-              <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
-            </div>
+          <template slot-scope="scope">
+            <template v-if="scope.row.type === 'File'" >
+              <div class="circle" @click="getDownloadFile(scope)">
+                <svg-icon name="icon-download" height="1.5rem" width="1.5rem" />
+              </div>
+              <div
+                v-if="isFileOpenable(scope)"
+                class="circle"
+                @click="openFile(scope)"
+              >
+                <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
+              </div>
+              <div
+                v-if="isScaffoldMetaFile(scope)"
+                class="circle"
+                @click="openScaffold(scope)"
+              >
+                <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
+              </div>
+              <div
+                v-if="hasOsparcViewer(scope)"
+                class="circle"
+                @click="setDialogSelectedFile(scope)"
+              >
+                <a class="osparc-help" href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
+                  <svg-icon icon="icon-help" width="18" height="18" />
+                </a>
+                <svg-icon name="icon-view" height="1.5em" width="1.5em" />
+              </div>
+              <div v-if="scope.row.uri" class="circle" @click="copyS3Url(scope)">
+                <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+              </div>
+            </template>
+            <template v-else>
+              -
+            </template>
           </template>
         </el-table-column>
       </el-table>
