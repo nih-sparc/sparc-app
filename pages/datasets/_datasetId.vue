@@ -152,7 +152,7 @@
     <div v-if="datasetInfo.embargo === false" class="container">
       <citation-details
         :doi-value="datasetInfo.doi"
-        :updated-date="lastUpdatedDate"
+        :published-date="originallyPublishedDate"
       />
     </div>
     <div v-if="datasetInfo.embargo === false" class="container">
@@ -699,6 +699,7 @@ export default {
       const date = propOr('', 'createdAt', this.datasetInfo)
       return this.formatDate(date)
     },
+
     /**
      * Get formatted last updated date
      * @return {String}
@@ -1043,7 +1044,7 @@ export default {
         },
         {
           name: 'DC.publisher',
-          content: 'Blackfynn Discover'
+          content: 'Pennsieve Discover'
         },
         {
           name: 'DC.date',
@@ -1087,7 +1088,7 @@ export default {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
             url: process.env.siteUrl,
-            name: 'Blackfynn Discover'
+            name: 'Pennsieve Discover'
           },
           type: 'application/ld+json'
         }

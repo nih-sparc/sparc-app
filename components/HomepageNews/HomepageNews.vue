@@ -9,20 +9,63 @@
       <sparc-card
         v-for="(item, idx) in upcomingNews"
         :key="item.sys.id"
-        :image="getImageSrc(item)"
-        :image-alt="getImageAlt(item)"
         :image-align="idx % 2 ? 'right' : ''"
       >
+        <template slot="image">
+          <nuxt-link
+            v-if="item.fields.requiresADetailsPage"
+            :to="nuxtLink(item)"
+            class="sparc-card__image"
+            :style="`background-image: url(${getImageSrc(item)})`"
+          >
+            <img
+              class="visuallyhidden"
+              :src="getImageSrc(item)"
+              :alt="getImageAlt(item)"
+            />
+          </nuxt-link>
+          <template v-else>
+            <a
+              v-if="item.fields.url"
+              :href="item.fields.url"
+              target="_blank"
+              class="sparc-card__image"
+              :style="`background-image: url(${getImageSrc(item)})`"
+            >
+              <img
+                class="visuallyhidden"
+                :src="getImageSrc(item)"
+                :alt="getImageAlt(item)"
+              />
+            </a>
+            <div
+              v-else
+              class="sparc-card__image"
+              :style="`background-image: url(${getImageSrc(item)})`"
+            >
+              <img
+                class="visuallyhidden"
+                :src="getImageSrc(item)"
+                :alt="getImageAlt(item)"
+              />
+            </div>
+          </template>
+        </template>
         <div>
           <h3>
             <nuxt-link
-              :to="{
-                name: 'news-and-events-news-id',
-                params: { id: item.sys.id }
-              }"
+              v-if="item.fields.requiresADetailsPage"
+              :to="nuxtLink(item)"
             >
               {{ item.fields.title }}
             </nuxt-link>
+            <a
+              v-else
+              :href="item.fields.url"
+              :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
+            >
+              {{ item.fields.title }}
+            </a>
           </h3>
           <div class="sparc-card__detail">
             <svg-icon name="icon-calendar" height="16" width="16" />
@@ -41,16 +84,20 @@
           <!-- marked will sanitize the HTML injected -->
           <div v-html="parseMarkdown(item.fields.summary)" />
         </div>
-        <nuxt-link
-          :to="{
-            name: 'news-and-events-news-id',
-            params: { id: item.sys.id }
-          }"
-        >
+        <nuxt-link v-if="item.fields.requiresADetailsPage" :to="nuxtLink(item)">
           <el-button size="medium">
             Learn More
           </el-button>
         </nuxt-link>
+        <a
+          v-else
+          :href="item.fields.url"
+          :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
+        >
+          <el-button size="medium">
+            Learn More
+          </el-button>
+        </a>
       </sparc-card>
     </div>
   </div>
@@ -62,8 +109,8 @@ import { pathOr } from 'ramda'
 import SparcCard from '@/components/SparcCard/SparcCard.vue'
 
 import MarkedMixin from '@/mixins/marked'
-
 import FormatDate from '@/mixins/format-date'
+import { isInternalLink } from '@/mixins/marked/index'
 
 export default {
   name: 'HomepageNews',
@@ -92,6 +139,8 @@ export default {
   },
 
   methods: {
+    isInternalLink,
+
     /**
      * Get image source
      * @param {Object} item
@@ -132,6 +181,22 @@ export default {
       const today = new Date()
       const checkDate = item.fields.endDate || item.fields.startDate || ''
       return checkDate ? Date.parse(checkDate) > Date.parse(today) : true
+    },
+
+    /**
+     * Create nuxt link based on type
+     * @param {Object} item
+     * @returns {Object}
+     */
+    nuxtLink: function(item) {
+      const name =
+        item.sys.contentType.sys.id === 'news'
+          ? 'news-and-events-news-id'
+          : 'news-and-events-events-id'
+      return {
+        name,
+        params: { id: item.sys.id }
+      }
     }
   }
 }

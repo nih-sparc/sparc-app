@@ -20,13 +20,9 @@
       </p>
       <h3>NIH Award</h3>
       <p>{{ getSparcAwardNumber }}</p>
-      <template v-if="externalPublications.length">
-        <h3>{{ associatedPublications }}</h3>
-        <external-pub-link
-          v-for="pub in externalPublications"
-          :key="pub.doi"
-          :publication="pub"
-        />
+      <template v-if="primaryPublication">
+        <h3> Primary Publication</h3>
+        <external-pub-link :publication="primaryPublication" />
       </template>
       <p />
       <h3>Tags</h3>
@@ -121,11 +117,12 @@ export default {
     getRecordsUrl: function() {
       return `${process.env.discover_api_host}/search/records?datasetId=${this.$route.params.datasetId}`
     },
-    associatedPublications: function() {
-      return this.externalPublications.length > 0
-        ? 'Associated Publications'
-        : 'Associated Publication'
-    }
+    primaryPublication: function() {
+	      const valObj = this.externalPublications.filter(function(elem) {
+	        return elem.relationshipType == 'IsDescribedBy'
+	      })
+	      return valObj.length > 0 ? valObj[0] : null
+	    }
   },
 
   watch: {
