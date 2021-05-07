@@ -136,10 +136,15 @@
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
-                <a class="osparc-help" href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
-                  <svg-icon icon="icon-help" width="18" height="18" />
-                </a>
-                <svg-icon name="icon-view" height="1.5em" width="1.5em" />
+                <el-tooltip enterable effect="light" placement="top">
+                  <div slot="content">
+                    Open in oSPARC. More info on oSPARC can be found
+                    <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
+                      <u>here</u>
+                    </a>
+                  </div>
+                  <svg-icon name="icon-view" height="1.5em" width="1.5em" />
+                </el-tooltip>
               </div>
               <div v-if="scope.row.uri" class="circle" @click="copyS3Url(scope)">
                 <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
@@ -583,11 +588,6 @@ export default {
   color: #fff;
   text-align: center;
   cursor: pointer;
-}
-
-.osparc-help {
-  position: absolute;
-  top: 3px;
 }
 
 ::v-deep .el-table {
