@@ -48,7 +48,8 @@
     "vue-infinite-loading": "^2.4.4",
     "vue-meta": "^2.3.2",
     "vue-social-sharing": "^3.0.4",
-    "vue-svgicon": "^3.2.6"
+    "vue-svgicon": "^3.2.6",
+    "zincjs": "0.37.0"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.5.6",

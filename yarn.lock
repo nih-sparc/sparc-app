@@ -14499,6 +14499,11 @@ three@^0.120.1:
   resolved "https://registry.yarnpkg.com/three/-/three-0.120.1.tgz#dbd8894f8ab87c109f1602933e7c740c98137377"
   integrity sha512-ktaCRFUR7JUZcKec+cBRz+oBex5pOVaJhrtxvFF2T7on53o9UkEux+/Nh1g/4zeb4t/pbxIFcADbn/ACu3LC1g==
 
+three@^0.126.0:
+  version "0.126.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.126.1.tgz#cf4e4e52060fd952f6f0d5440cbd422c66bc4be7"
+  integrity sha512-eOEXnZeE1FDV0XgL1u08auIP13jxdN9LQBAEmlErYzMxtIIfuGIAZbijOyookALUhqVzVOx0Tywj6n192VM+nQ==
+
 throat@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/throat/-/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
@@ -15919,6 +15924,19 @@ zero-crossings@^1.0.0:
   integrity sha1-xWK9MRNkPzRDokXRJAa4i2m5qf8=
   dependencies:
     cwise-compiler "^1.0.0"
+
+zincjs@0.37.0:
+  version "0.37.0"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.37.0.tgz#d1004039dd9927dd4b7e8642c0c0e75d6bcbc6bc"
+  integrity sha512-YdAFLlwUDn3PKMoVh2kiF1DJ6W1kB2i3Bs6mvNuoSJ1F8c50eUGIJyLvNGV8HfcHZ0+FAUhadHiSX91BAWaFCQ==
+  dependencies:
+    css-element-queries "^1.2.2"
+    lodash "^4.17.19"
+    promise-polyfill "^8.1.3"
+    three "^0.126.0"
+    url-loader "^2.1.0"
+    url-polyfill "^1.1.7"
+    webworkify-webpack "^2.1.5"
 
 zincjs@^0.36.1:
   version "0.36.1"
