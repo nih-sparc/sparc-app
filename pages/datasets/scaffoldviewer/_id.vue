@@ -80,7 +80,6 @@ export default {
   },
   async fetch() {
     let uuid = this.$route.query.id;
-    this.currentId = uuid;
     if (uuid && (this.currentId != uuid)) {
       this.currentId = uuid;
       let url = this.api + `scaffold/getstate`
