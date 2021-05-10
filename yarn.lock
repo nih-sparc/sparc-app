@@ -108,6 +108,24 @@
     vue "^2.6.10"
     vue-draggable-resizable "^2.2.0"
 
+"@abi-software/scaffoldvuer@0.1.46-beta-1":
+  version "0.1.46-beta-1"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.46-beta-1.tgz#55c3e493a8ba2bd14a8f8790c585252f3f4fdf8f"
+  integrity sha512-Db6/p/S1FGb0i7rFJ3k+3bJK8rrnah5LtbGD61JiGtj8O+HdOTiUTFV2SPdMl186WNaqik0f9+0abLwTjpyjgg==
+  dependencies:
+    "@abi-software/svg-sprite" "^0.1.11"
+    axios "^0.21.1"
+    core-js "^3.3.2"
+    current-script-polyfill "^1.0.0"
+    element-ui "^2.13.0"
+    google-spreadsheet "^3.1.15"
+    lodash "^4.17.19"
+    physiomeportal "^0.4.25"
+    query-string "^6.11.1"
+    vue "^2.6.10"
+    vue-drag-resize "^1.3.2"
+    zincjs "^0.37.0"
+
 "@abi-software/scaffoldvuer@^0.1.45":
   version "0.1.45"
   resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.45.tgz#7471f6e73c6712c5e04c59d0336326718c2f3e3b"
@@ -11357,6 +11375,21 @@ physiomeportal@^0.4.24:
     webpack-jquery-ui "^2.0.1"
     zincjs "^0.36.1"
 
+physiomeportal@^0.4.25:
+  version "0.4.25"
+  resolved "https://registry.yarnpkg.com/physiomeportal/-/physiomeportal-0.4.25.tgz#da0c9571782d60619560e009c08b2df224c0225a"
+  integrity sha512-pHP119cahakEUamWHxkzt8LFswd2vd4wY7V5MIM+/ROBzY9m+SYXJSfhEK+xxvV/+fQlZtwmHqc4ug2gVnOMnw==
+  dependencies:
+    broadcast-channel "^2.1.12"
+    css-element-queries "^1.2.3"
+    dialog-polyfill "^0.4.10"
+    jquery "^3.5.1"
+    lodash "^4.17.19"
+    polyfill-array-includes "^2.0.0"
+    query-string "^5.1.1"
+    webpack-jquery-ui "^2.0.1"
+    zincjs "^0.37.0"
+
 pick-by-alias@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/pick-by-alias/-/pick-by-alias-1.2.0.tgz#5f7cb2b1f21a6e1e884a0c87855aa4a37361107b"
@@ -15925,7 +15958,7 @@ zero-crossings@^1.0.0:
   dependencies:
     cwise-compiler "^1.0.0"
 
-zincjs@0.37.0:
+zincjs@0.37.0, zincjs@^0.37.0:
   version "0.37.0"
   resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.37.0.tgz#d1004039dd9927dd4b7e8642c0c0e75d6bcbc6bc"
   integrity sha512-YdAFLlwUDn3PKMoVh2kiF1DJ6W1kB2i3Bs6mvNuoSJ1F8c50eUGIJyLvNGV8HfcHZ0+FAUhadHiSX91BAWaFCQ==
