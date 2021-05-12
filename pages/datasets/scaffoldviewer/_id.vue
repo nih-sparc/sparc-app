@@ -33,6 +33,19 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
+        <el-row :gutter="16">
+          <el-col :xs="24" :offset=22 :sm="firstCol" class="details">
+            <div>
+              <button
+                @click="copyLink"
+                class="ml-8 btn-copy-permalink-solid"
+              >
+                <svg-icon name="icon-permalink" height="28" width="28" />
+                <span class="visuallyhidden">Copy permalink</span>
+              </button>
+            </div>
+          </el-col>
+        </el-row>  
         <client-only placeholder="Loading scaffold ...">
           <div class="scaffoldvuer-container">
             <ScaffoldVuer
@@ -45,20 +58,6 @@
             />
           </div>
         </client-only>
-        <el-row :gutter="32">
-          <el-col :xs="24" :sm="firstCol" class="details">
-            <h3>Share</h3>
-            <div>
-              <button
-                @click="copyLink"
-                class="ml-8 btn-copy-permalink"
-              >
-                <svg-icon name="icon-permalink" height="28" width="28" />
-                <span class="visuallyhidden">Copy permalink</span>
-              </button>
-            </div>
-          </el-col>
-        </el-row>          
       </detail-tabs>
     </div>
   </div>
@@ -244,6 +243,19 @@ h1 {
   flex-shrink: 0;
 }
 
+.btn-copy-permalink-solid {
+  border-radius:30px;
+  background: #8300bf;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  transform: scale(0.9);
+  svg {
+    transform: scale(1.25);
+  }
+}
+
 .file-detail {
   border-bottom: 1px solid #dbdfe6;
   flex-direction: column;
@@ -284,7 +296,6 @@ h1 {
 </style>
 <style lang="scss">
 .scaffoldvuer-container {
-  margin-top: 1.5rem;
   height: 90vh;
   max-width: calc(100% - 48px);
   left: 24px;
