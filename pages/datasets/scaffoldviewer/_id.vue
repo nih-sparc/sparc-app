@@ -34,16 +34,14 @@
         @set-active-tab="activeTab = $event"
       >
         <el-row :gutter="16">
-          <el-col :xs="24" :offset=22 :sm="firstCol" class="details">
-            <div>
-              <button
-                @click="copyLink"
-                class="ml-8 btn-copy-permalink-solid"
-              >
-                <svg-icon name="icon-permalink" height="28" width="28" />
-                <span class="visuallyhidden">Copy permalink</span>
-              </button>
-            </div>
+          <el-col :offset=22 :span=4 :sm="firstCol" class="details">
+            <button
+              @click="copyLink"
+              class="ml-8 btn-copy-permalink-solid"
+            >
+              <svg-icon name="icon-permalink" height="28" width="28" />
+              <span class="visuallyhidden">Copy permalink</span>
+            </button>
           </el-col>
         </el-row>  
         <client-only placeholder="Loading scaffold ...">
