@@ -115,28 +115,43 @@
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'File'" >
               <div class="circle" @click="getDownloadFile(scope)">
-                <svg-icon name="icon-download" height="1.5rem" width="1.5rem" />
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    Download file
+                  </div>
+                  <svg-icon name="icon-download" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
               </div>
               <div
                 v-if="isFileOpenable(scope)"
                 class="circle"
                 @click="openFile(scope)"
               >
-                <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    View file in web viewer
+                  </div>
+                  <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
               </div>
               <div
                 v-if="isScaffoldMetaFile(scope)"
                 class="circle"
                 @click="openScaffold(scope)"
               >
-                <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    Open as 3d scaffold
+                  </div>
+                  <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
               </div>
               <div
                 v-if="hasOsparcViewer(scope)"
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
-                <el-tooltip enterable effect="light" placement="top">
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
                   <div slot="content">
                     Open in oSPARC. More info on oSPARC can be found
                     <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
@@ -147,7 +162,12 @@
                 </el-tooltip>
               </div>
               <div v-if="scope.row.uri" class="circle" @click="copyS3Url(scope)">
-                <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    Copy link
+                  </div>
+                  <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
               </div>
             </template>
             <template v-else>
@@ -224,6 +244,7 @@ export default {
     return {
       path: '',
       data: [],
+      tooltipDelay: 300,
       isLoading: false,
       hasError: false,
       limit: 500,
