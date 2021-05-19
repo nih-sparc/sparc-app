@@ -8,7 +8,7 @@
               <nuxt-link
                 class="details-tabs__container--button"
                 :class="{ active: tab.type === activeTab }"
-                :to="{ query: { ...$route.query, tab: tab.type } }"
+                :to="{ query: queryParams(tab.type) }"
               >
                 {{ tab.label }}
               </nuxt-link>
@@ -34,6 +34,22 @@ export default {
     activeTab: {
       type: String,
       default: ''
+    },
+    defaultTab: {
+      type: String,
+      default: ''
+    }
+  },
+  methods: {
+    queryParams(tabType) {
+      const query = { ...this.$route.query }
+      if (tabType === this.defaultTab && 'tab' in query) {
+        delete query.tab
+      } else if (tabType !== this.defaultTab) {
+        query['tab'] = tabType
+      }
+
+      return query
     }
   }
 }

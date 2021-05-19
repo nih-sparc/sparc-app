@@ -233,7 +233,10 @@ export default {
       }
     },
     osparcViewers: {
-      type: Object
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
 
@@ -297,18 +300,11 @@ export default {
   },
 
   watch: {
-    getFilesIdUrl: {
-      handler: function() {
-        this.getDatasetVersionNumber()
-      },
-      immediate: true
-    },
+    '$route.query.path': 'pathQueryChanged'
+  },
 
-    $route() {
-      if (this.previousPath !== this.path) {
-        this.getFiles()
-      }
-    }
+  created: function() {
+    this.getFiles()
   },
 
   methods: {
@@ -415,6 +411,13 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
+    },
+
+    /**
+     * When the path query changes get files.
+     */
+    pathQueryChanged: function() {
+      this.getFiles()
     },
 
     /**

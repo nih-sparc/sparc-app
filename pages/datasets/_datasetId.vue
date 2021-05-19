@@ -156,7 +156,11 @@
       />
     </div>
     <div v-if="datasetInfo.embargo === false" class="container">
-      <detail-tabs :tabs="tabs" :active-tab="activeTab">
+      <detail-tabs
+        :tabs="tabs"
+        :active-tab="activeTab"
+        default-tab="description"
+      >
         <dataset-description-info
           v-show="activeTab === 'description'"
           :markdown="markdown"
@@ -516,6 +520,9 @@ export default {
   },
 
   computed: {
+    defaultTab() {
+      return this.tabs[0].type
+    },
     /**
      * Compute if the dataset is the latest version
      * @returns {Boolean}
@@ -807,18 +814,8 @@ export default {
     }
   },
 
-  watchQuery(newQuery) {
-    this.activeTab = newQuery.tab ? newQuery.tab : 'description'
-    if (this.activeTab !== 'files') {
-      let query = newQuery
-      if ('path' in query) {
-        delete query['path']
-        this.$router.push({ query })
-      }
-    }
-  },
-
   watch: {
+    '$route.query': 'queryChanged',
     /**
      * Watcher for getSearchRecordsUrl
      */
@@ -861,7 +858,6 @@ export default {
       immediate: true
     }
   },
-
   methods: {
     /**
      * Returns protocol records in a dataset's model if they exist
@@ -880,6 +876,15 @@ export default {
           // handle error
           this.errorLoading = true
         })
+    },
+
+    /**
+     * Set the active tab to match the current query values.
+     */
+    queryChanged: function() {
+      this.activeTab = this.$route.query.tab
+        ? this.$route.query.tab
+        : this.defaultTab
     },
 
     /**
