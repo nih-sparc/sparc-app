@@ -1,10 +1,10 @@
 <template>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero>
-      <h1>{{ page.fields.title }}</h1>
+      <h1>{{ heroTitle }}</h1>
       <p>
-        {{ page.fields.summary }}
+        {{ heroSummary }}
       </p>
     </page-hero>
     <div class="page-wrap container">
@@ -20,8 +20,8 @@
               <share-network
                 network="facebook"
                 :url="pageUrl"
-                :title="page.fields.title"
-                :description="page.fields.summary"
+                :title="heroTitle"
+                :description="heroSummary"
               >
                 <svg-icon name="icon-share-facebook" height="28" width="28" />
                 <span class="visuallyhidden">Share on Facebook</span>
@@ -30,7 +30,7 @@
                 network="twitter"
                 class="ml-8"
                 :url="pageUrl"
-                :title="page.fields.title"
+                :title="heroTitle"
               >
                 <svg-icon name="icon-share-twitter" height="28" width="28" />
                 <span class="visuallyhidden">Share on Twitter</span>
@@ -39,13 +39,13 @@
                 network="linkedin"
                 class="ml-8"
                 :url="pageUrl"
-                :title="page.fields.title"
+                :title="heroTitle"
               >
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>
               </share-network>
               <button
-                v-clipboard:copy="pageUrl"
+                @click="copyLink"
                 class="ml-8 btn-copy-permalink"
               >
                 <svg-icon name="icon-permalink" height="28" width="28" />
@@ -68,7 +68,7 @@
 
 <script>
 import { pathEq } from 'ramda'
-
+import { successMessage, failMessage } from '@/utils/notification-messages'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
@@ -84,6 +84,17 @@ export default {
 
   mixins: [FormatDate, MarkedMixin],
 
+  methods: {
+    copyLink: function() {
+      this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
+        () => {
+          this.$message(successMessage('Share link copied to clipboard.'))
+      }, () => {
+          this.$message(failMessage('Failed to copy share link.'))
+      });
+    },
+  },
+
   props: {
     page: {
       type: Object,
@@ -96,6 +107,14 @@ export default {
       default: ''
     },
     type: {
+      type: String,
+      default: ''
+    },
+    heroTitle: {
+      type: String,
+      default: ''
+    },
+    heroSummary: {
       type: String,
       default: ''
     },
@@ -114,14 +133,6 @@ export default {
      */
     htmlContent() {
       return this.content || ''
-    },
-
-    /**
-     * Compute the full URL of the page
-     * @returns {String}
-     */
-    pageUrl: function() {
-      return `${process.env.ROOT_URL}${this.$route.fullPath}`
     },
 
     /**

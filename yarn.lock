@@ -43,12 +43,22 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.1.30":
-  version "0.1.30"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.30.tgz#89c16735dd2944cf81f6ea3f2c8fd6c84459ebd8"
-  integrity sha512-jqk7cAl1VfilKT/xpaa1JSqTDB8Wdje6APu5B7dYIge6hVMzUFblxgfjpoIsKcL08TCnaMPlovmnZwXQbVg5Mg==
+"@abi-software/map-side-bar@^1.0.0-hotfix-1":
+  version "1.0.0-hotfix-1"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.0.0-hotfix-1.tgz#31581d8bda69f2774e91244db1622b404b200649"
+  integrity sha512-DCUsVKnqBMFyjVfeSH2/L9Kb37qAPrQ1MPgZowng9OSxeYXhD7mISIcZvAKhzGiqyehXlGBW4Miv8WxLbZdJRg==
+  dependencies:
+    "@abi-software/svg-sprite" "^0.1.12"
+    element-ui "^2.13.0"
+    vue "^2.6.10"
+
+"@abi-software/mapintegratedvuer@0.1.30-hotfix-1":
+  version "0.1.30-hotfix-1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.30-hotfix-1.tgz#79a27172fa5589cebc82c56c97f8b6a8549ee34e"
+  integrity sha512-8PDa2EsZDfVuhsqzvcGp5x5KL88QD5ylRKqligdSuW57KjR1utMTXSBh3uStqgX7EDtkK8R8tsOpUrbyLF12NQ==
   dependencies:
     "@abi-software/flatmapvuer" "^0.1.30"
+    "@abi-software/map-side-bar" "^1.0.0-hotfix-1"
     "@abi-software/maptooltip" "^0.1.13"
     "@abi-software/plotvuer" "^0.2.41"
     "@abi-software/scaffoldvuer" "^0.1.45"
@@ -82,7 +92,7 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/plotvuer@^0.2.42":
+"@abi-software/plotvuer@^0.2.41", "@abi-software/plotvuer@^0.2.42":
   version "0.2.42"
   resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.42.tgz#700f2ad1458722ebf919353df2e2584bc3e6979c"
   integrity sha512-qZATgX+G7/Y2vfL03RaihY5GFFrzqiyFrk2YepiXOeh8HUJXx7ZrUNPsDX7Q3PhjTxVhJwdWULNabU3+A3Lgtg==
@@ -97,7 +107,7 @@
     plotly.js "^1.55.2"
     vue "^2.6.10"
     vue-draggable-resizable "^2.2.0"
-    
+
 "@abi-software/scaffoldvuer@^0.1.45":
   version "0.1.45"
   resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.45.tgz#7471f6e73c6712c5e04c59d0336326718c2f3e3b"
@@ -116,16 +126,7 @@
     vue-drag-resize "^1.3.2"
     zincjs "^0.36.4"
 
-"@abi-software/svg-sprite@^0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.1.11.tgz#3526b6d03985548a28b45356fda0aeba95c93176"
-  integrity sha512-STUfkxm0C/bUM7zk/XCxp+zAfTryLT4faj8KD22Xe7RY6bm9ZtSjXKkKMQ8EekpyBHcybidEbfUBdPgXgJlPoQ==
-  dependencies:
-    core-js "^3.6.5"
-    svg-inline-loader "^0.8.2"
-    vue "^2.6.11"
-
-"@abi-software/svg-sprite@^0.1.11":
+"@abi-software/svg-sprite@^0.1.11", "@abi-software/svg-sprite@^0.1.12":
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.1.12.tgz#ad902d356b6304014ac239ffdd5c0c44d4704fda"
   integrity sha512-aLS45qN+3OnPcSl5zNRHXChTmom1QgphYPOWGyWPra+Cdn8bv0+e5KnkarEV6vBcPf5I3u+gSUGHEGCex9vvnQ==
@@ -13955,9 +13956,9 @@ sshpk@^1.7.0:
     tweetnacl "~0.14.0"
 
 ssri@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/ssri/-/ssri-6.0.1.tgz#2a3c41b28dd45b62b63676ecb74001265ae9edd8"
-  integrity sha512-3Wge10hNcT1Kur4PDFwEieXSCMCJs/7WvSACcrMYrNp+b8kDL1/0wJch5Ni2WrtwEa2IO8OsVfeKIciKCDx/QA==
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/ssri/-/ssri-6.0.2.tgz#157939134f20464e7301ddba3e90ffa8f7728ac5"
+  integrity sha512-cepbSq/neFK7xB6A50KHN0xHDotYzq58wWCa5LeWqnPrHG8GzfEjO/4O8kpmcGW+oaxkvhEJCWgbgNk4/ZV93Q==
   dependencies:
     figgy-pudding "^3.5.1"
 

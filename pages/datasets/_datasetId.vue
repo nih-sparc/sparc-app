@@ -152,7 +152,7 @@
     <div v-if="datasetInfo.embargo === false" class="container">
       <citation-details
         :doi-value="datasetInfo.doi"
-        :updated-date="lastUpdatedDate"
+        :published-date="originallyPublishedDate"
       />
     </div>
     <div v-if="datasetInfo.embargo === false" class="container">
@@ -175,6 +175,7 @@
         <dataset-files-info
           v-show="activeTab === 'files'"
           :dataset-details="datasetInfo"
+          :osparc-viewers="osparcViewers"
         />
         <images-gallery
           v-show="activeTab === 'images'"
@@ -456,6 +457,14 @@ export default {
       videoData
     } = await getImagesData(datasetId, datasetDetails, $axios)
 
+    // Get oSPARC file viewers
+    const osparcViewers = await $axios
+      .$get(`${process.env.portal_api}/get_osparc_data`)
+      .then(osparcData => osparcData['file_viewers'])
+      .catch(() => {
+        return {}
+      })
+
     return {
       entries: organEntries,
       datasetInfo: datasetDetails,
@@ -465,6 +474,7 @@ export default {
       plotData,
       videoData,
       tabs: tabsData,
+      osparcViewers,
       versions
     }
   },
@@ -685,6 +695,7 @@ export default {
       const date = propOr('', 'createdAt', this.datasetInfo)
       return this.formatDate(date)
     },
+
     /**
      * Get formatted last updated date
      * @return {String}
@@ -1024,7 +1035,7 @@ export default {
         },
         {
           name: 'DC.publisher',
-          content: 'Blackfynn Discover'
+          content: 'Pennsieve Discover'
         },
         {
           name: 'DC.date',
@@ -1068,7 +1079,7 @@ export default {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
             url: process.env.siteUrl,
-            name: 'Blackfynn Discover'
+            name: 'Pennsieve Discover'
           },
           type: 'application/ld+json'
         }

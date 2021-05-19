@@ -3,10 +3,10 @@
     <div class="citation-details__container">
       <h3>Cite This Dataset</h3>
       <p>
-        Publication Date: {{ updatedDate }}<br />
+        Publication Date: {{ publishedDate }}<br />
         Platform:
         <a href="https://discover.blackfynn.com/" target="_blank">
-          Blackfynn Discover
+          Pennsieve Discover
         </a>
       </p>
       <div id="citationsArea" class="citation-details__container--citation">
@@ -50,8 +50,7 @@
                 The dataset citation generator (<a
                   href="https://citation.crosscite.org/"
                   target="_blank"
-                  >https://citation.crosscite.org/</a
-                >) encountered an internal error and was unable to complete your
+                >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
                 request.<br />
                 Please come back later.
               </p>
@@ -77,7 +76,7 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 export default {
   name: 'CitationDetails',
   props: {
-    updatedDate: {
+    publishedDate: {
       type: String,
       default: ''
     },

@@ -280,10 +280,7 @@ export default {
     blackfynnApiUrl: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
 
-      const embargoed = shouldGetEmbargoed(
-        searchType,
-        this.$route.query.datasetFilters
-      )
+      const embargoed = shouldGetEmbargoed(searchType, this.datasetFilters)
 
       let url = `${process.env.discover_api_host}/search/${
         searchType === 'simulation' ? 'dataset' : searchType
@@ -430,15 +427,6 @@ export default {
         }
       },
       immediate: true
-    },
-
-    '$route.query.datasetFilters': function() {
-      /**
-       * Clear table data so the new table that is rendered can
-       * properly render data and account for any missing data
-       */
-      this.searchData = clone(searchData)
-      this.fetchResults()
     }
   },
 
@@ -466,9 +454,13 @@ export default {
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
-      this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
-        ? this.$route.query.datasetFilters
-        : [this.$route.query.datasetFilters]
+
+      if (this.$route.query.datasetFilters) {
+        this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
+          ? this.$route.query.datasetFilters
+          : [this.$route.query.datasetFilters]
+      }
+
       this.fetchResults()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -823,8 +815,21 @@ export default {
      */
     setDatasetFilter() {
       this.$router.replace({
-        query: { ...this.$route.query, datasetFilters: this.datasetFilters }
+        query: {
+          type: 'dataset',
+          q: this.$route.query.q,
+          datasetFilters: this.datasetFilters,
+          skip: 0,
+          limit: 10
+        }
       })
+
+      /**
+       * Clear table data so the new table that is rendered can
+       * properly render data and account for any missing data
+       */
+      this.searchData = clone(searchData)
+      this.fetchResults()
     }
   }
 }

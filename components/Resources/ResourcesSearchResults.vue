@@ -9,10 +9,18 @@
         <img v-show="data.fields.logo" :src="getBannerImage(data)" />
       </div>
       <div class="resources-search-results__items--content">
-        <a :href="data.fields.url" target="blank">
+        <router-link
+          v-if="data.fields.requiresDetailsPage"
+          :to="{
+            name: 'resources-resourceId',
+            params: { resourceId: data.sys.id }
+          }"
+        >
+          <h2>{{ data.fields.name }}</h2>
+        </router-link>
+        <a v-else :href="data.fields.url" target="blank">
           <h2>{{ data.fields.name }}</h2>
         </a>
-
         <p v-if="data.fields.developedBySparc" class="resource-category">
           SPARC
         </p>

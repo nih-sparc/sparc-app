@@ -3,6 +3,8 @@
     :page="page"
     :content="page.fields.copy"
     :breadcrumb="breadcrumb"
+    :hero-title="page.fields.title"
+    :hero-summary="page.fields.summary"
     type="news"
   >
     <template v-if="newsImage">
@@ -96,7 +98,9 @@ export default {
      * @returns {String}
      */
     publishedDate: function() {
-      return this.formatDate(this.page.fields.publishedDate)
+      return this.page.fields.publishedDate
+        ? this.formatDate(this.page.fields.publishedDate)
+        : ''
     }
   }
 }
