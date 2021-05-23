@@ -347,7 +347,10 @@ export default {
      * @returns {String}
      */
     searchHeading: function() {
+      const start = this.searchData.skip + 1;
       const pageRange = this.searchData.limit * this.curSearchPage;
+      const end =
+        pageRange < this.searchData.total ? pageRange : this.searchData.total;
       const query = pathOr("", ["query", "q"], this.$route);
 
       const searchTypeLabel = compose(

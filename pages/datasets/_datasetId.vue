@@ -138,8 +138,8 @@
               :to="{
                 name: 'help-helpId',
                 params: {
-                  helpId: ctfDatasetFormatInfoPageId
-                }
+                  helpId: ctfDatasetFormatInfoPageId,
+                },
               }"
               class="dataset-link"
             >
@@ -212,60 +212,56 @@
 </template>
 
 <script>
-import marked from 'marked'
-import { clone, propOr, pathOr, last, head, compose, split } from 'ramda'
+import marked from "marked";
+import { clone, propOr, pathOr, last, head, compose, split } from "ramda";
 
-import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
-import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
-import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
-import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
+import DetailsHeader from "@/components/DetailsHeader/DetailsHeader.vue";
+import DetailTabs from "@/components/DetailTabs/DetailTabs.vue";
+import ContributorItem from "@/components/ContributorItem/ContributorItem.vue";
+import DatasetBannerImage from "@/components/DatasetBannerImage/DatasetBannerImage.vue";
+import DownloadDataset from "@/components/DownloadDataset/DownloadDataset.vue";
 
-import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
-import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
-import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
-import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
-import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
-import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
-import SparcPill from '@/components/SparcPill/SparcPill.vue'
+import DatasetAboutInfo from "@/components/DatasetDetails/DatasetAboutInfo.vue";
+import DatasetDescriptionInfo from "@/components/DatasetDetails/DatasetDescriptionInfo.vue";
+import DatasetFilesInfo from "@/components/DatasetDetails/DatasetFilesInfo.vue";
+import ImagesGallery from "@/components/ImagesGallery/ImagesGallery.vue";
+import VersionHistory from "@/components/VersionHistory/VersionHistory.vue";
+import DatasetVersionMessage from "@/components/DatasetVersionMessage/DatasetVersionMessage.vue";
+import SparcPill from "@/components/SparcPill/SparcPill.vue";
 
-import Request from '@/mixins/request'
-import DateUtils from '@/mixins/format-date'
-import FormatStorage from '@/mixins/bf-storage-metrics'
-import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
+import Request from "@/mixins/request";
+import DateUtils from "@/mixins/format-date";
+import FormatStorage from "@/mixins/bf-storage-metrics";
+import { getLicenseLink, getLicenseAbbr } from "@/static/js/license-util";
 
-import Scaffolds from '@/static/js/scaffolds.js'
+import Scaffolds from "@/static/js/scaffolds.js";
 
-import createClient from '@/plugins/contentful.js'
+import createClient from "@/plugins/contentful.js";
 
-<<<<<<< HEAD
-import biolucida from '@/services/biolucida'
-import scicrunch from '@/services/scicrunch'
-=======
-import discover from '@/services/discover'
-import CitationDetails from '~/components/CitationDetails/CitationDetails.vue'
->>>>>>> main
+import biolucida from "@/services/biolucida";
+import scicrunch from "@/services/scicrunch";
+import CitationDetails from "~/components/CitationDetails/CitationDetails.vue";
 
-const client = createClient()
+const client = createClient();
 
 marked.setOptions({
-  sanitize: true
-})
+  sanitize: true,
+});
 
 const tabs = [
   {
-    label: 'Description',
-    type: 'description'
+    label: "Description",
+    type: "description",
   },
   {
-    label: 'About',
-    type: 'about'
+    label: "About",
+    type: "about",
   },
   {
-    label: 'Files',
-    type: 'files'
-  }
-]
+    label: "Files",
+    type: "files",
+  },
+];
 
 /**
  * Get organ entries from contentful
@@ -274,13 +270,13 @@ const tabs = [
 const getOrganEntries = async () => {
   try {
     const organEntries = await client.getEntries({
-      content_type: process.env.ctf_organ_id
-    })
-    return organEntries.items || []
+      content_type: process.env.ctf_organ_id,
+    });
+    return organEntries.items || [];
   } catch (error) {
-    return []
+    return [];
   }
-}
+};
 
 /**
  * Get Dataset details
@@ -291,41 +287,41 @@ const getOrganEntries = async () => {
  * @returns {Object}
  */
 const getDatasetDetails = async (datasetId, version, datasetType, $axios) => {
-  const url = `${process.env.discover_api_host}/datasets/${datasetId}`
-  const datasetUrl = version ? `${url}/versions/${version}` : url
+  const url = `${process.env.discover_api_host}/datasets/${datasetId}`;
+  const datasetUrl = version ? `${url}/versions/${version}` : url;
 
-  const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
+  const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`;
 
   try {
     const datasetDetails =
-      datasetType === 'simulation'
+      datasetType === "simulation"
         ? await $axios.$get(simulationUrl)
-        : await $axios.$get(datasetUrl)
+        : await $axios.$get(datasetUrl);
 
-    const datasetOwnerId = datasetDetails.ownerId || ''
+    const datasetOwnerId = datasetDetails.ownerId || "";
     const datasetOwnerEmail = await $axios
       .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
       .then(resp => {
-        return resp.email
+        return resp.email;
       })
       .catch(() => {
-        return ''
-      })
-    datasetDetails.ownerEmail = datasetOwnerEmail
+        return "";
+      });
+    datasetDetails.ownerEmail = datasetOwnerEmail;
 
-    return datasetDetails
+    return datasetDetails;
   } catch (error) {
-    return {}
+    return {};
   }
-}
+};
 
 const getBiolucidaData = async datasetId => {
   try {
-    return biolucida.searchDataset(datasetId)
+    return biolucida.searchDataset(datasetId);
   } catch (e) {
-    return {}
+    return {};
   }
-}
+};
 
 /**
  * Get thumbnail data, if available.
@@ -333,39 +329,39 @@ const getBiolucidaData = async datasetId => {
  * @param {String} datasetType
  */
 const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
-  let biolucidaImageData = {}
-  let scicrunchData = {}
+  let biolucidaImageData = {};
+  let scicrunchData = {};
   try {
-    biolucidaImageData = await getBiolucidaData(datasetId)
+    biolucidaImageData = await getBiolucidaData(datasetId);
     if (Object.getOwnPropertyNames(biolucidaImageData).length > 0) {
-      if (biolucidaImageData.status === 'success') {
-        biolucidaImageData['discover_dataset_version'] = datasetVersion
+      if (biolucidaImageData.status === "success") {
+        biolucidaImageData["discover_dataset_version"] = datasetVersion;
       } else {
-        biolucidaImageData = {}
+        biolucidaImageData = {};
       }
     }
-    const scicrunchResponse = await scicrunch.getDatasetInfoFromDOI(datasetDoi)
+    const scicrunchResponse = await scicrunch.getDatasetInfoFromDOI(datasetDoi);
     if (scicrunchResponse.data.numberOfHits === 1) {
-      scicrunchData = scicrunchResponse.data.results[0]
+      scicrunchData = scicrunchResponse.data.results[0];
       scicrunchData.discover_dataset = {
         id: Number(datasetId),
-        version: datasetVersion
-      }
+        version: datasetVersion,
+      };
     }
   } catch (e) {
     return {
       biolucidaImageData: {},
-      scicrunchData: {}
-    }
+      scicrunchData: {},
+    };
   }
   return {
     biolucidaImageData,
-    scicrunchData
-  }
-}
+    scicrunchData,
+  };
+};
 
 export default {
-  name: 'DatasetDetails',
+  name: "DatasetDetails",
 
   components: {
     DetailsHeader,
@@ -380,64 +376,54 @@ export default {
     ImagesGallery,
     VersionHistory,
     DatasetVersionMessage,
-    SparcPill
+    SparcPill,
   },
 
   mixins: [Request, DateUtils, FormatStorage],
 
   async asyncData({ route, $axios }) {
-    let tabsData = clone(tabs)
+    let tabsData = clone(tabs);
 
-    const datasetId = pathOr('', ['params', 'datasetId'], route)
+    const datasetId = pathOr("", ["params", "datasetId"], route);
 
-    const organEntries = await getOrganEntries()
+    const organEntries = await getOrganEntries();
 
     const datasetDetails = await getDatasetDetails(
       datasetId,
       route.params.version,
       route.query.type,
       $axios
-    )
+    );
 
     const { biolucidaImageData, scicrunchData } = await getThumbnailData(
       datasetDetails.doi,
       datasetId,
       datasetDetails.version
-    )
+    );
 
     if (
       Object.getOwnPropertyNames(biolucidaImageData).length > 0 ||
       Object.getOwnPropertyNames(scicrunchData).length > 0
     ) {
-      tabsData.push({ label: 'Gallery', type: 'images' })
+      tabsData.push({ label: "Gallery", type: "images" });
     }
 
     // Get oSPARC file viewers
     const osparcViewers = await $axios
       .$get(`${process.env.portal_api}/get_osparc_data`)
-      .then(osparcData => osparcData['file_viewers'])
+      .then(osparcData => osparcData["file_viewers"])
       .catch(() => {
-        return {}
-      })
+        return {};
+      });
 
     return {
       entries: organEntries,
       datasetInfo: datasetDetails,
       datasetType: route.query.type,
-<<<<<<< HEAD
       biolucidaImageData,
       scicrunchData,
-      tabs: tabsData
-=======
-      imagesData,
-      scaffoldData,
-      plotData,
-      videoData,
       tabs: tabsData,
-      osparcViewers,
-      versions
->>>>>>> main
-    }
+    };
   },
 
   data() {
@@ -447,7 +433,7 @@ export default {
       errorLoading: false,
       loadingMarkdown: false,
       markdown: {},
-      activeTab: 'description',
+      activeTab: "description",
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
       isContributorListVisible: true,
@@ -456,24 +442,24 @@ export default {
       breadcrumb: [
         {
           to: {
-            name: 'index'
+            name: "index",
           },
-          label: 'Home'
+          label: "Home",
         },
         {
           to: {
-            name: 'data',
+            name: "data",
             query: {
-              type: this.$route.query.type
-            }
+              type: this.$route.query.type,
+            },
           },
-          label: 'Find Data'
-        }
+          label: "Find Data",
+        },
       ],
       subtitles: [],
       ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
-      isVersionModalVisible: false
-    }
+      isVersionModalVisible: false,
+    };
   },
 
   computed: {
@@ -483,11 +469,14 @@ export default {
      */
     isLatestVersion() {
       if (this.versions.length) {
-        const latestVersion = compose(propOr(1, 'version'), head)(this.versions)
-        return this.datasetInfo.version === latestVersion
+        const latestVersion = compose(
+          propOr(1, "version"),
+          head
+        )(this.versions);
+        return this.datasetInfo.version === latestVersion;
       }
 
-      return true
+      return true;
     },
 
     /**
@@ -495,7 +484,7 @@ export default {
      * @returns {String}
      */
     getSimulationId: function() {
-      return this.datasetInfo.study.uuid || ''
+      return this.datasetInfo.study.uuid || "";
     },
 
     /**
@@ -503,7 +492,7 @@ export default {
      * @returns {Number}
      */
     getDatasetVersion: function() {
-      return propOr(1, 'version', this.datasetInfo)
+      return propOr(1, "version", this.datasetInfo);
     },
 
     /**
@@ -511,7 +500,7 @@ export default {
      * @returns {Number}
      */
     getDatasetId: function() {
-      return propOr(0, 'id', this.datasetInfo)
+      return propOr(0, "id", this.datasetInfo);
     },
 
     /**
@@ -519,7 +508,7 @@ export default {
      * @returns {Number}
      */
     getDownloadSize: function() {
-      return propOr(0, 'size', this.datasetInfo)
+      return propOr(0, "size", this.datasetInfo);
     },
     /**
      * Returns the dataset storage count
@@ -527,17 +516,17 @@ export default {
      */
     datasetStorage: function() {
       const storage = compose(
-        split(' '),
+        split(" "),
         this.formatMetric,
-        propOr(0, 'size')
-      )(this.datasetInfo)
+        propOr(0, "size")
+      )(this.datasetInfo);
 
       return storage.reduce((number, unit) => {
         return {
           number,
-          unit
-        }
-      })
+          unit,
+        };
+      });
     },
 
     /**
@@ -545,7 +534,7 @@ export default {
      * @returns {String}
      */
     datasetFiles: function() {
-      return propOr('', 'fileCount', this.datasetInfo)
+      return propOr("", "fileCount", this.datasetInfo);
     },
 
     /**
@@ -553,7 +542,7 @@ export default {
      * @returns {String}
      */
     licenseLink: function() {
-      return getLicenseLink(this.datasetLicense)
+      return getLicenseLink(this.datasetLicense);
     },
 
     /**
@@ -561,8 +550,8 @@ export default {
      * @returns {String}
      */
     datasetLicense: function() {
-      const licenseKey = propOr('', 'license', this.datasetInfo)
-      return getLicenseAbbr(licenseKey)
+      const licenseKey = propOr("", "license", this.datasetInfo);
+      return getLicenseAbbr(licenseKey);
     },
 
     /**
@@ -570,7 +559,7 @@ export default {
      * @returns {String}
      */
     datasetLicenseName: function() {
-      return propOr('', 'license', this.datasetInfo)
+      return propOr("", "license", this.datasetInfo);
     },
 
     /**
@@ -578,7 +567,7 @@ export default {
      * @returns {String}
      */
     getDatasetImage: function() {
-      return propOr('', 'banner', this.datasetInfo)
+      return propOr("", "banner", this.datasetInfo);
     },
 
     /**
@@ -586,7 +575,7 @@ export default {
      * @returns {String}
      */
     datasetContributors: function() {
-      return propOr([], 'contributors', this.datasetInfo)
+      return propOr([], "contributors", this.datasetInfo);
     },
     /**
      * Compute contributors list based
@@ -596,7 +585,7 @@ export default {
     datasetContributorsList: function() {
       return this.isContributorListVisible
         ? this.datasetContributors
-        : [last(this.datasetContributors)]
+        : [last(this.datasetContributors)];
     },
 
     /**
@@ -604,9 +593,9 @@ export default {
      * @returns {String}
      */
     datasetOwnerName: function() {
-      const ownerFirstName = this.datasetInfo.ownerFirstName || ''
-      const ownerLastName = this.datasetInfo.ownerLastName || ''
-      return `${ownerFirstName} ${ownerLastName}`
+      const ownerFirstName = this.datasetInfo.ownerFirstName || "";
+      const ownerLastName = this.datasetInfo.ownerLastName || "";
+      return `${ownerFirstName} ${ownerLastName}`;
     },
 
     /**
@@ -614,7 +603,7 @@ export default {
      * @returns {String}
      */
     datasetOwnerEmail: function() {
-      return this.datasetInfo.ownerEmail || ''
+      return this.datasetInfo.ownerEmail || "";
     },
 
     /**
@@ -622,14 +611,14 @@ export default {
      * @returns {String}
      */
     firstContributor: function() {
-      return head(this.datasetContributors)
+      return head(this.datasetContributors);
     },
     /**
      * Returns the dataset title
      * @returns {String}
      */
     datasetTitle: function() {
-      return propOr('', 'name', this.datasetInfo)
+      return propOr("", "name", this.datasetInfo);
     },
 
     /**
@@ -637,7 +626,7 @@ export default {
      * @returns {String}
      */
     getSearchRecordsUrl: function() {
-      return `${this.discover_host}/search/records?datasetId=${this.datasetId}&model=protocol`
+      return `${this.discover_host}/search/records?datasetId=${this.datasetId}&model=protocol`;
     },
 
     /**
@@ -645,16 +634,16 @@ export default {
      * @returns {String}
      */
     datasetDOI: function() {
-      const doi = propOr('', 'doi', this.datasetInfo)
-      return `https://doi.org/${doi}`
+      const doi = propOr("", "doi", this.datasetInfo);
+      return `https://doi.org/${doi}`;
     },
     /**
      * Get formatted originally published date
      * @return {String}
      */
     originallyPublishedDate: function() {
-      const date = propOr('', 'createdAt', this.datasetInfo)
-      return this.formatDate(date)
+      const date = propOr("", "createdAt", this.datasetInfo);
+      return this.formatDate(date);
     },
 
     /**
@@ -663,22 +652,22 @@ export default {
      */
     lastUpdatedDate: function() {
       const date =
-        this.datasetInfo.revisedAt || this.datasetInfo.versionPublishedAt
-      return this.formatDate(date)
+        this.datasetInfo.revisedAt || this.datasetInfo.versionPublishedAt;
+      return this.formatDate(date);
     },
     /**
      * Returns list of tags for dataset
      * @returns {Array}
      */
     datasetTags: function() {
-      return propOr([], 'tags', this.datasetInfo)
+      return propOr([], "tags", this.datasetInfo);
     },
     /**
      * Returns list of external publications for dataset
      * @returns {Array}
      */
     externalPublications: function() {
-      return propOr([], 'externalPublications', this.datasetInfo)
+      return propOr([], "externalPublications", this.datasetInfo);
     },
     /**
      * Returns the current location href from the window object
@@ -686,15 +675,15 @@ export default {
      */
     thisUrl: function() {
       // return ""
-      return this.$route.fullPath
+      return this.$route.fullPath;
     },
     /**
      * Return DOI link
      * @returns {String}
      */
     DOIlink: function() {
-      const doi = propOr('', 'doi', this.datasetInfo)
-      return doi ? `https://doi.org/${doi}` : ''
+      const doi = propOr("", "doi", this.datasetInfo);
+      return doi ? `https://doi.org/${doi}` : "";
     },
 
     /**
@@ -702,7 +691,7 @@ export default {
      * @returns {String}
      */
     datasetDescription: function() {
-      return propOr('', 'description', this.datasetInfo)
+      return propOr("", "description", this.datasetInfo);
     },
 
     /**
@@ -710,7 +699,7 @@ export default {
      * @returns {String}
      */
     datasetName: function() {
-      return propOr('', 'name', this.datasetInfo)
+      return propOr("", "name", this.datasetInfo);
     },
 
     /**
@@ -718,7 +707,7 @@ export default {
      * @returns {String}
      */
     organizationName: function() {
-      return propOr('', 'organizationName', this.datasetInfo)
+      return propOr("", "organizationName", this.datasetInfo);
     },
 
     /**
@@ -726,7 +715,7 @@ export default {
      * @returns {String}
      */
     getDatasetUrl: function() {
-      return `${this.discover_host}/datasets/${this.datasetId}`
+      return `${this.discover_host}/datasets/${this.datasetId}`;
     },
 
     /**
@@ -734,7 +723,7 @@ export default {
      * @returns {String}
      */
     datasetId: function() {
-      return pathOr('', ['params', 'datasetId'], this.$route)
+      return pathOr("", ["params", "datasetId"], this.$route);
     },
 
     /**
@@ -744,7 +733,7 @@ export default {
      * @returns {String}
      */
     organType: function() {
-      return this.subtitles[0] || ''
+      return this.subtitles[0] || "";
     },
 
     /**
@@ -752,7 +741,7 @@ export default {
      * @returns {String}
      */
     scaffold: function() {
-      return Scaffolds[this.organType.toLowerCase()]
+      return Scaffolds[this.organType.toLowerCase()];
     },
 
     /**
@@ -760,12 +749,12 @@ export default {
      * @returns {String}
      */
     versionRevisionText() {
-      const versionText = `Version ${this.datasetInfo.version}`
+      const versionText = `Version ${this.datasetInfo.version}`;
       const revisionText = this.datasetInfo.revision
         ? `, Revision ${this.datasetInfo.revision}`
-        : ''
-      return versionText + revisionText
-    }
+        : "";
+      return versionText + revisionText;
+    },
   },
 
   watch: {
@@ -775,41 +764,41 @@ export default {
     getSearchRecordsUrl: {
       handler: function(val) {
         if (val) {
-          this.getProtocolRecords()
+          this.getProtocolRecords();
         }
       },
-      immediate: true
+      immediate: true,
     },
 
     datasetInfo: {
       handler: function() {
-        this.getMarkdown()
+        this.getMarkdown();
       },
-      immediate: true
+      immediate: true,
     },
 
     datasetContributors: {
       handler: function(val) {
         if (val.length > 15) {
-          this.isContributorListVisible = false
+          this.isContributorListVisible = false;
         }
       },
-      immediate: true
+      immediate: true,
     },
 
     datasetTags: {
       handler: function(val) {
         if (val) {
           this.entries.forEach(entry => {
-            const name = pathOr('', ['fields', 'name'], entry)
+            const name = pathOr("", ["fields", "name"], entry);
             if (this.datasetTags.includes(name.toLowerCase())) {
-              this.subtitles.push(entry.fields.name)
+              this.subtitles.push(entry.fields.name);
             }
-          })
+          });
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
 
   methods: {
@@ -818,7 +807,7 @@ export default {
      * @param {String} activeLabel
      */
     setActiveTab: function(activeLabel) {
-      this.activeTab = activeLabel
+      this.activeTab = activeLabel;
     },
     /**
      * Returns protocol records in a dataset's model if they exist
@@ -827,16 +816,16 @@ export default {
       this.$axios
         .$get(this.getSearchRecordsUrl)
         .then(response => {
-          const records = propOr([], 'records', response)
+          const records = propOr([], "records", response);
           if (records.length !== 0) {
             // that means protocol records exist
-            this.datasetRecords = records
+            this.datasetRecords = records;
           }
         })
         .catch(() => {
           // handle error
-          this.errorLoading = true
-        })
+          this.errorLoading = true;
+        });
     },
 
     /**
@@ -844,32 +833,32 @@ export default {
      * and sets boolean to true
      */
     onCopySuccess: function() {
-      this.showCopySuccess = true
+      this.showCopySuccess = true;
     },
 
     /**
      * Get markdown logic from details response
      */
     getMarkdown: function() {
-      this.loadingMarkdown = true
-      const readme = propOr('', 'readme', this.datasetInfo)
-      if (readme !== '') {
+      this.loadingMarkdown = true;
+      const readme = propOr("", "readme", this.datasetInfo);
+      if (readme !== "") {
         fetch(readme)
           .then(response => response.text())
           .then(response => {
-            this.loadingMarkdown = false
-            const splitDelim = '\n\n---'
-            const splitResponse = response.split(splitDelim)
+            this.loadingMarkdown = false;
+            const splitDelim = "\n\n---";
+            const splitResponse = response.split(splitDelim);
             this.markdown = {
               markdownTop: splitResponse[0],
               markdownBottom: splitResponse[1]
                 ? splitDelim + splitResponse[1]
-                : ''
-            }
+                : "",
+            };
           })
           .catch(error => {
-            throw error
-          })
+            throw error;
+          });
       }
     },
 
@@ -879,7 +868,7 @@ export default {
      * @returns {Object}
      */
     getCitationsArea: function() {
-      return document.getElementById('citationsArea')
+      return document.getElementById("citationsArea");
     },
 
     /**
@@ -887,15 +876,15 @@ export default {
      * in the About tab
      */
     scrollToCitations: function() {
-      const aboutTabType = tabs[1].type
+      const aboutTabType = tabs[1].type;
       if (this.activeTab != aboutTabType) {
-        this.setActiveTab(aboutTabType)
+        this.setActiveTab(aboutTabType);
         this.$nextTick(() =>
           // Wait until Vue renders the About tab
           this.getCitationsArea().scrollIntoView()
-        )
+        );
       } else {
-        this.getCitationsArea().scrollIntoView()
+        this.getCitationsArea().scrollIntoView();
       }
     },
 
@@ -903,127 +892,127 @@ export default {
      * Closes the version history modal
      */
     closeVersionModal: function() {
-      this.isVersionModalVisible = false
-    }
+      this.isVersionModalVisible = false;
+    },
   },
 
   head() {
     // Creator data
     const org = [
       {
-        '@type': 'Organization',
-        name: this.organizationName
-      }
-    ]
+        "@type": "Organization",
+        name: this.organizationName,
+      },
+    ];
     const contributors = this.datasetContributors.map(contributor => {
       const sameAs = contributor.orcid
         ? `http://orcid.org/${contributor.orcid}`
-        : null
+        : null;
 
       return {
-        '@type': 'Person',
+        "@type": "Person",
         sameAs,
         givenName: contributor.firstName,
         familyName: contributor.lastName,
-        name: `${contributor.firstName} ${contributor.lastName}`
-      }
-    })
+        name: `${contributor.firstName} ${contributor.lastName}`,
+      };
+    });
 
-    const creators = contributors.concat(org)
+    const creators = contributors.concat(org);
 
     return {
       title: `${this.datasetTitle} - SPARC Portal`,
       meta: [
         {
-          name: 'DC.type',
-          content: 'Dataset'
+          name: "DC.type",
+          content: "Dataset",
         },
         {
-          name: 'DC.title',
-          content: this.datasetTitle
+          name: "DC.title",
+          content: this.datasetTitle,
         },
         {
-          name: 'DC.description',
-          content: this.datasetDescription
+          name: "DC.description",
+          content: this.datasetDescription,
         },
         {
-          name: 'DCTERMS.license',
-          content: this.licenseLink
+          name: "DCTERMS.license",
+          content: this.licenseLink,
         },
         {
-          property: 'og:type',
-          content: 'website'
+          property: "og:type",
+          content: "website",
         },
         {
-          property: 'og:title',
-          content: this.datasetTitle
+          property: "og:title",
+          content: this.datasetTitle,
         },
         {
-          property: 'og:description',
-          content: this.datasetDescription
+          property: "og:description",
+          content: this.datasetDescription,
         },
         {
-          property: 'og:image',
-          content: this.getDatasetImage
+          property: "og:image",
+          content: this.getDatasetImage,
         },
         {
-          property: 'og:image:alt',
-          content: `${this.datasetTitle} Banner Image`
+          property: "og:image:alt",
+          content: `${this.datasetTitle} Banner Image`,
         },
         {
-          property: 'og:site_name',
-          content: 'SPARC Portal'
+          property: "og:site_name",
+          content: "SPARC Portal",
         },
         {
-          name: 'twitter:card',
-          content: 'summary'
+          name: "twitter:card",
+          content: "summary",
         },
         {
-          name: 'twitter:site',
-          content: '@sparc_science'
+          name: "twitter:site",
+          content: "@sparc_science",
         },
         {
-          name: 'twitter:description',
-          content: this.datasetDescription
+          name: "twitter:description",
+          content: this.datasetDescription,
         },
         {
-          name: 'twitter:image',
-          content: this.getDatasetImage
+          name: "twitter:image",
+          content: this.getDatasetImage,
         },
         {
-          name: 'DC.creator',
-          content: JSON.stringify(creators)
+          name: "DC.creator",
+          content: JSON.stringify(creators),
         },
         {
-          name: 'DC.identifier',
+          name: "DC.identifier",
           content: this.DOIlink,
-          scheme: 'DCTERMS.URI'
+          scheme: "DCTERMS.URI",
         },
         {
-          name: 'DC.publisher',
-          content: 'Pennsieve Discover'
+          name: "DC.publisher",
+          content: "Pennsieve Discover",
         },
         {
-          name: 'DC.date',
+          name: "DC.date",
           content: this.originallyPublishedDate,
-          scheme: 'DCTERMS.W3CDTF'
+          scheme: "DCTERMS.W3CDTF",
         },
         {
-          name: 'DC.version',
-          content: this.datasetInfo.version
+          name: "DC.version",
+          content: this.datasetInfo.version,
         },
         {
-          property: 'og:url',
-          content: process.env.siteUrl
-        }
+          property: "og:url",
+          content: process.env.siteUrl,
+        },
       ],
       script: [
         {
-          vmid: 'ldjson-schema',
+          vmid: "ldjson-schema",
           json: {
-            '@context': 'http://schema.org',
-            '@type': 'Dataset',
-            '@id': this.DOIlink,
+            "@context": "http://schema.org",
+            "@type": "Dataset",
+            "@id": this.DOIlink,
             sameAs: this.getDatasetUrl,
             name: this.datasetName,
             creator: creators,
@@ -1035,29 +1024,29 @@ export default {
             url: process.env.siteUrl,
             citation: this.citationText,
             identifier: this.DOIlink,
-            isAccessibleForFree: true
+            isAccessibleForFree: true,
           },
-          type: 'application/ld+json'
+          type: "application/ld+json",
         },
         {
-          vmid: 'ldjson-schema',
+          vmid: "ldjson-schema",
           json: {
-            '@context': 'http://schema.org',
-            '@type': 'WebSite',
+            "@context": "http://schema.org",
+            "@type": "WebSite",
             url: process.env.siteUrl,
-            name: 'Pennsieve Discover'
+            name: "Pennsieve Discover",
           },
-          type: 'application/ld+json'
-        }
-      ]
-    }
-  }
-}
+          type: "application/ld+json",
+        },
+      ],
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_spacing.scss';
-@import '@/assets/_variables.scss';
+@import "@/assets/_spacing.scss";
+@import "@/assets/_variables.scss";
 .details-header {
   &__container {
     &--content-links {
