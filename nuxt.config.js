@@ -33,7 +33,7 @@ export default {
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
-      process.env.BLACKFYNN_DISCOVER_API_HOST ||
+      process.env.PENNSIEVE_DISCOVER_API_HOST ||
       'https://api.pennsieve.io/discover',
     bf_api_host: process.env.BF_API_HOST || 'https://api.pennsieve.io',
     zipit_api_host:
