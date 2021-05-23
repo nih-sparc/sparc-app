@@ -43,10 +43,10 @@
     lodash "^4.17.20"
     vue "^2.6.10"
 
-"@abi-software/gallery@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.1.4.tgz#77bd400650de4edccb40a1da3dd4a600972e1acc"
-  integrity sha512-Uh8ayOO8pFF6mKEH8MYwVHtbMvOFhbVun3KwAsY1pKrc38A/sARAHQso21lpLZUqk5sfvZsH65CgUasqlYZh/Q==
+"@abi-software/gallery@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.1.5.tgz#f2ebeb513a46a77e7562015e9e18f057e89aa0a3"
+  integrity sha512-Q+EAi6lyby+bjN9A14VouvfMxSXPT3SymqWqw+DCjKxkVMLFdKtFzEBJhWLAXo03RCiaz/1/dlM47w/+Bc41Ug==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.11"
     "@babel/code-frame" "^7.12.11"
