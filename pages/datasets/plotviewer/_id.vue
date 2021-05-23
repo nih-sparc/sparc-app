@@ -33,12 +33,7 @@
       >
         <client-only placeholder="Loading plot ...">
           <div class="plotvuer-container">
-            <PlotVuer
-              :url="plotUrl"
-              :plot-type="plotType"
-              :help-mode="false"
-              style="height: 200px"
-            />
+            <PlotVuer :url="plotUrl" :plot-type="plotType" :help-mode="false" />
           </div>
         </client-only>
       </detail-tabs>

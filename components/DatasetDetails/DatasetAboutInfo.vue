@@ -12,7 +12,7 @@
       <p>
         <a
           class="dataset-about-info__container--doi-link mb-16"
-          :href="DOIlink"
+          :href="doi"
           target="_blank"
         >
           {{ doi }}
@@ -20,71 +20,11 @@
       </p>
       <h3>NIH Award</h3>
       <p>{{ getSparcAwardNumber }}</p>
-      <h3>Cite This Dataset</h3>
-      <p>
-        Publication Date: {{ updatedDate }}<br />
-        Platform:
-        <a href="https://discover.blackfynn.com/" target="_blank">
-          Blackfynn Discover
-        </a>
-      </p>
-      <div id="citationsArea" class="dataset-about-info__container--citation">
-        <el-row type="flex" justify="center">
-          <el-col :span="24">
-            <ul class="dataset-about-info__container--citation-links">
-              <li
-                v-for="citationType in citationTypes"
-                :key="citationType.type"
-              >
-                <a
-                  :title="citationTypeTitle(citationType)"
-                  :class="{
-                    'active-citation': activeCitation.type === citationType.type
-                  }"
-                  @click="handleCitationChanged(citationType)"
-                >
-                  {{ citationType.label }}
-                </a>
-              </li>
-              <li>
-                <a
-                  :href="`https://citation.crosscite.org/?doi=${doiValue}`"
-                  target="_blank"
-                >
-                  More on Crosscite.org
-                </a>
-              </li>
-            </ul>
-            <div
-              v-show="!hasCitationError"
-              v-loading="citationLoading"
-              class="info-citation"
-              aria-live="polite"
-              v-html="citationText"
-            />
-            <div v-show="hasCitationError">
-              <p>
-                <strong>Internal Server Error</strong><br />
-                Sorry, something went wrong.<br />
-                The dataset citation generator (<a
-                  href="https://citation.crosscite.org/"
-                  target="_blank"
-                >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
-                request.<br />
-                Please come back later.
-              </p>
-            </div>
-            <el-button
-              :disabled="hasCitationError"
-              class="copy-button"
-              size="small"
-              @click="handleCitationCopy"
-            >
-              Copy Citation
-            </el-button>
-          </el-col>
-        </el-row>
-      </div>
+      <template v-if="primaryPublication">
+        <h3> Primary Publication</h3>
+        <external-pub-link :publication="primaryPublication" />
+      </template>
+      <p />
       <h3>Tags</h3>
       <div v-if="datasetTags.length !== 0">
         <tag-list :tags="datasetTags" />
@@ -112,14 +52,15 @@
 import { compose, propOr, head } from 'ramda'
 
 import ExternalPublicationListItem from '@/components/ExternalPublicationListItem/ExternalPublicationListItem.vue'
+import ExternalPubLink from '@/components/ExternalPubLink/ExternalPubLink'
 import TagList from '@/components/TagList/TagList.vue'
 
-import { successMessage, failMessage } from '@/utils/notification-messages'
 export default {
   name: 'DatasetAboutInfo',
 
   components: {
     ExternalPublicationListItem,
+    ExternalPubLink,
     TagList
   },
   props: {
@@ -129,11 +70,6 @@ export default {
     },
 
     doi: {
-      type: String,
-      default: ''
-    },
-
-    doiValue: {
       type: String,
       default: ''
     },
@@ -161,30 +97,7 @@ export default {
 
   data() {
     return {
-      citationLoading: false,
-      citationText: '',
-      activeCitation: '',
-      crosscite_host: process.env.crosscite_api_host,
-      sparcAwardNumber: '',
-      citationTypes: [
-        {
-          type: 'apa',
-          label: 'APA'
-        },
-        {
-          type: 'chicago-note-bibliography',
-          label: 'Chicago'
-        },
-        {
-          type: 'ieee',
-          label: 'IEEE'
-        },
-        {
-          type: 'bibtex',
-          label: 'Bibtex'
-        }
-      ],
-      hasCitationError: false
+      sparcAwardNumber: ''
     }
   },
 
@@ -198,37 +111,21 @@ export default {
     },
 
     /**
-     * Return DOI link
-     * @returns {String}
-     */
-    DOIlink: function() {
-      return this.doiValue ? `https://doi.org/${this.doiValue}` : ''
-    },
-
-    /**
      * Url to get records for model
      * @returns {String}
      */
     getRecordsUrl: function() {
       return `${process.env.discover_api_host}/search/records?datasetId=${this.$route.params.datasetId}`
-    }
+    },
+    primaryPublication: function() {
+	      const valObj = this.externalPublications.filter(function(elem) {
+	        return elem.relationshipType == 'IsDescribedBy'
+	      })
+	      return valObj.length > 0 ? valObj[0] : null
+	    }
   },
 
   watch: {
-    DOIlink: {
-      handler: function(val) {
-        if (val) {
-          const initialCitationType = this.citationTypes.filter(
-            citationType => {
-              return citationType.type == 'apa'
-            }
-          )[0]
-          this.handleCitationChanged(initialCitationType)
-        }
-      },
-      immediate: true
-    },
-
     getRecordsUrl: {
       handler: function(val) {
         if (val) {
@@ -276,62 +173,6 @@ export default {
       } catch (e) {
         console.error(e)
       }
-    },
-
-    /**
-     * gets bibiolography based on citation type for current DOI
-     * @param {String} citationType
-     */
-    handleCitationChanged: function(citationType) {
-      if (citationType === this.activeCitation) {
-        return
-      }
-      this.citationLoading = true
-      this.hasCitationError = false
-      this.activeCitation = citationType
-      // find all citation types at https://github.com/citation-style-language/style
-      const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType.type}&lang=en-US`
-      fetch(url)
-        .then(response => {
-          if (response.status !== 200) {
-            throw Error
-          }
-          return response.text()
-        })
-        .then(text => {
-          this.citationText = text
-        })
-        .catch(() => {
-          this.hasCitationError = true
-        })
-        .finally(() => {
-          this.citationLoading = false
-        })
-    },
-
-    /**
-     * Handle copy citation to clipboard
-     */
-    handleCitationCopy: function() {
-      this.$copyText(this.citationText).then(() => {
-        this.$message(
-          successMessage(
-            `${this.activeCitation.label} citation copied to clipboard.`
-          )
-        )
-      }),
-        () => {
-          this.$message(failMessage('Failed to copy citation.'))
-        }
-    },
-
-    /**
-     * Title for citation type while hovering over link
-     * @param {Object} citationType
-     * @returns {String}
-     */
-    citationTypeTitle: function(citationType) {
-      return `Format citation ${citationType.label}`
     }
   }
 }
