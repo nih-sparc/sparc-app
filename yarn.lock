@@ -108,10 +108,10 @@
     vue "^2.6.10"
     vue-draggable-resizable "^2.2.0"
 
-"@abi-software/scaffoldvuer@0.1.46":
-  version "0.1.46"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.46.tgz#7a147c07f2444ae42a65ef2519e40522a3ce1365"
-  integrity sha512-td2vlT2oNBh4rqrhqSU7T46cYOAD4zxtNEvlO2+N46wdfVL86QU5YlDc3ywt5RYK+XaGgUT+R6+TmpDIkASZpw==
+"@abi-software/scaffoldvuer@0.1.46-beta.3":
+  version "0.1.46-beta.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.46-beta.3.tgz#5750b931639fc7b1caab5d59fdf336cec7ef8ab8"
+  integrity sha512-0KtdJ/BW6NE7P2wbhjyFAUSuSRIgmusDEH34Xy/gLmh8yMhtuMMX+2rP31uZU12JBrN2cMLcTXaBIv8rV+LFQw==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.11"
     axios "^0.21.1"
@@ -120,12 +120,12 @@
     element-ui "^2.13.0"
     google-spreadsheet "^3.1.15"
     lodash "^4.17.21"
-    physiomeportal "^0.4.25"
+    physiomeportal "^0.4.26"
     query-string "^6.11.1"
     vue "^2.6.10"
     vue-drag-resize "^1.3.2"
     vue-router "^3.5.1"
-    zincjs "^0.37.0"
+    zincjs "^0.38.0"
 
 "@abi-software/scaffoldvuer@^0.1.45":
   version "0.1.45"
@@ -11381,20 +11381,20 @@ physiomeportal@^0.4.24:
     webpack-jquery-ui "^2.0.1"
     zincjs "^0.36.1"
 
-physiomeportal@^0.4.25:
-  version "0.4.25"
-  resolved "https://registry.yarnpkg.com/physiomeportal/-/physiomeportal-0.4.25.tgz#da0c9571782d60619560e009c08b2df224c0225a"
-  integrity sha512-pHP119cahakEUamWHxkzt8LFswd2vd4wY7V5MIM+/ROBzY9m+SYXJSfhEK+xxvV/+fQlZtwmHqc4ug2gVnOMnw==
+physiomeportal@^0.4.26:
+  version "0.4.26"
+  resolved "https://registry.yarnpkg.com/physiomeportal/-/physiomeportal-0.4.26.tgz#8f7fec441308f32e71a095341cf5370088764aea"
+  integrity sha512-+YstZPZCm0oBNX71tpjHcuo2KujSp9GbKe3E+WNdWRw9p6ANT9FYSztkgUzf4Mc2NXKbVEBIOHUERYT7VmExKw==
   dependencies:
     broadcast-channel "^2.1.12"
     css-element-queries "^1.2.3"
     dialog-polyfill "^0.4.10"
     jquery "^3.5.1"
-    lodash "^4.17.19"
+    lodash "^4.17.21"
     polyfill-array-includes "^2.0.0"
     query-string "^5.1.1"
     webpack-jquery-ui "^2.0.1"
-    zincjs "^0.37.0"
+    zincjs "^0.38.0"
 
 pick-by-alias@^1.2.0:
   version "1.2.0"
@@ -15969,7 +15969,7 @@ zero-crossings@^1.0.0:
   dependencies:
     cwise-compiler "^1.0.0"
 
-zincjs@0.37.0, zincjs@^0.37.0:
+zincjs@0.37.0:
   version "0.37.0"
   resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.37.0.tgz#d1004039dd9927dd4b7e8642c0c0e75d6bcbc6bc"
   integrity sha512-YdAFLlwUDn3PKMoVh2kiF1DJ6W1kB2i3Bs6mvNuoSJ1F8c50eUGIJyLvNGV8HfcHZ0+FAUhadHiSX91BAWaFCQ==
@@ -16004,6 +16004,19 @@ zincjs@^0.36.4:
     lodash "^4.17.19"
     promise-polyfill "^8.1.3"
     three "^0.120.1"
+    url-loader "^2.1.0"
+    url-polyfill "^1.1.7"
+    webworkify-webpack "^2.1.5"
+
+zincjs@^0.38.0:
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.38.0.tgz#7203a924dd6275b25420146208b4f339fc8617f4"
+  integrity sha512-wF4l5ZOpeefJPj6YW4wpVZzEuI2PDWzJsi4vBrYnoIG6uXBkaLPCRdOvItipSztY10VddpLQshYjbeJkFayN3Q==
+  dependencies:
+    css-element-queries "^1.2.2"
+    lodash "^4.17.19"
+    promise-polyfill "^8.1.3"
+    three "^0.126.0"
     url-loader "^2.1.0"
     url-polyfill "^1.1.7"
     webworkify-webpack "^2.1.5"
