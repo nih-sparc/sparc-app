@@ -123,8 +123,8 @@ export default {
   },
 
   computed: {
-    /**    console.log()
-     * Get the file name from the scaffold que    console.log()ry parameter.
+    /**
+     * Get the file name from the scaffold query parameter.
      * @returns String
      */
     fileName: function() {
@@ -147,8 +147,8 @@ export default {
     },
 
     /**
-     * Get the versionmapscaffold query parameter.
-     * @returns Numbermap
+     * Get the version scaffold query parameter.
+     * @returns Number
      */
     versionNumber: function() {
       const scaffold = this.$route.query.scaffold
@@ -171,6 +171,7 @@ export default {
       this.$message(successMessage('Share link is being generated.'))
       let url = this.api + `scaffold/getshareid`;
       let state = this.$refs.scaffoldvuer.getState();
+      // Dont need the url here
       if (state && state.url)
         delete state["url"];
       fetch(url, {
@@ -180,25 +181,25 @@ export default {
         },
         body: JSON.stringify({ state: state })
       })
-        .then(response => response.json())
-        .then(data => {
-          if (data.uuid) {
-            this.currentId = data.uuid;
-            this.$router.replace(
-              {query: {...this.$route.query, id: data.uuid}},
-              () => {
-                this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
-                  () => {
-                    this.$message(successMessage('Share link copied to clipboard.'))
-                }, () => {
-                    this.$message(failMessage('Failed to copy share link.'))
-                });
-              }
-            );
-          }
-        })
-        .catch(() => {
-          this.$message(failMessage('Failed to get a share link.'))
+      .then(response => response.json())
+      .then(data => {
+        if (data.uuid) {
+          this.currentId = data.uuid;
+          this.$router.replace(
+            {query: {...this.$route.query, id: data.uuid}},
+            () => {
+              this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`)
+              .then(() => {
+                this.$message(successMessage('Share link copied to clipboard.'))
+              }, () => {
+                this.$message(failMessage('Failed to copy share link.'))
+              });
+            }
+          );
+        }
+      })
+      .catch(() => {
+        this.$message(failMessage('Failed to get a share link.'))
       })
     },
   }
