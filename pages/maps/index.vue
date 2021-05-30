@@ -101,6 +101,7 @@ export default {
       })
       .then(response => response.json())
       .then(data => {
+        this.uuid = data.uuid;
         this.$router.replace(
             {query: {...this.$route.query, id: data.uuid}},
             () => {
