@@ -22,8 +22,8 @@
               name: 'data',
               query: {
                 type: type.type,
-                q: $route.query.q,
-              },
+                q: $route.query.q
+              }
             }"
           >
             {{ type.label }}
@@ -152,105 +152,104 @@ import {
   find,
   filter,
   head,
-  map,
   mergeLeft,
   pathOr,
   propEq,
   propOr,
-  pluck,
-} from "ramda";
-import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
-import PageHero from "@/components/PageHero/PageHero.vue";
-import PaginationMenu from "@/components/Pagination/PaginationMenu.vue";
-import SearchFilters from "@/components/SearchFilters/SearchFilters.vue";
-import SearchForm from "@/components/SearchForm/SearchForm.vue";
+  pluck
+} from 'ramda'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import PageHero from '@/components/PageHero/PageHero.vue'
+import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
+import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
+import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
-  import("@/components/SearchResults/ProjectSearchResults.vue");
+  import('@/components/SearchResults/ProjectSearchResults.vue')
 const EventSearchResults = () =>
-  import("@/components/SearchResults/EventSearchResults.vue");
+  import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
-  import("@/components/SearchResults/DatasetSearchResults.vue");
+  import('@/components/SearchResults/DatasetSearchResults.vue')
 const OrganSearchResults = () =>
-  import("@/components/SearchResults/OrganSearchResults.vue");
+  import('@/components/SearchResults/OrganSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   event: EventSearchResults,
   organ: OrganSearchResults,
-  simulation: DatasetSearchResults,
-};
+  simulation: DatasetSearchResults
+}
 
 const searchTypes = [
   {
-    label: "Datasets",
-    type: "dataset",
+    label: 'Datasets',
+    type: 'dataset',
     filterId: process.env.ctf_filters_dataset_id,
-    dataSource: "blackfynn",
+    dataSource: 'blackfynn'
   },
   {
-    label: "Organs",
+    label: 'Organs',
     type: process.env.ctf_organ_id,
     filterId: process.env.ctf_filters_organ_id,
-    dataSource: "contentful",
+    dataSource: 'contentful'
   },
   {
-    label: "Projects",
+    label: 'Projects',
     type: process.env.ctf_project_id,
     filterId: process.env.ctf_filters_project_id,
-    dataSource: "contentful",
+    dataSource: 'contentful'
   },
   {
-    label: "Simulations",
-    type: "simulation",
+    label: 'Simulations',
+    type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: "blackfynn",
-  },
-];
+    dataSource: 'blackfynn'
+  }
+]
 
 const searchData = {
   limit: 10,
   skip: 0,
   items: [],
   order: undefined,
-  ascending: false,
-};
+  ascending: false
+}
 
-const datasetFilters = ["Public"];
+const datasetFilters = ['Public']
 
 const shouldGetEmbargoed = (searchType, datasetFilters) => {
   const filters = Array.isArray(datasetFilters)
     ? datasetFilters
-    : [datasetFilters];
+    : [datasetFilters]
   return (
-    filters.includes("Embargoed") &&
-    !filters.includes("Public") &&
-    searchType === "dataset"
-  );
-};
+    filters.includes('Embargoed') &&
+    !filters.includes('Public') &&
+    searchType === 'dataset'
+  )
+}
 
-import createClient from "@/plugins/contentful.js";
-import { handleSortChange, transformFilters } from "./utils";
+import createClient from '@/plugins/contentful.js'
+import { handleSortChange, transformFilters } from './utils'
 
-const client = createClient();
+const client = createClient()
 
 export default {
-  name: "DataPage",
+  name: 'DataPage',
 
   components: {
     Breadcrumb,
     PageHero,
     SearchFilters,
     SearchForm,
-    PaginationMenu,
+    PaginationMenu
   },
 
   mixins: [],
 
   data: () => {
     return {
-      searchQuery: "",
+      searchQuery: '',
       filters: [],
       searchTypes,
       searchData: clone(searchData),
@@ -261,15 +260,15 @@ export default {
       breadcrumb: [
         {
           to: {
-            name: "index",
+            name: 'index'
           },
-          label: "Home",
-        },
+          label: 'Home'
+        }
       ],
       titleColumnWidth: 300,
-      windowWidth: "",
-      datasetFilters: [...datasetFilters],
-    };
+      windowWidth: '',
+      datasetFilters: [...datasetFilters]
+    }
   },
 
   computed: {
@@ -278,33 +277,33 @@ export default {
      * @returns {String}
      */
     blackfynnApiUrl: function() {
-      const searchType = pathOr("", ["query", "type"], this.$route);
+      const searchType = pathOr('', ['query', 'type'], this.$route)
 
-      const embargoed = shouldGetEmbargoed(searchType, this.datasetFilters);
+      const embargoed = shouldGetEmbargoed(searchType, this.datasetFilters)
 
       let url = `${process.env.discover_api_host}/search/${
-        searchType === "simulation" ? "dataset" : searchType
+        searchType === 'simulation' ? 'dataset' : searchType
       }s?offset=${this.searchData.skip}&limit=${
         this.searchData.limit
-      }&orderBy=${this.searchData.order || "date"}&orderDirection=${
-        this.searchData.ascending ? "asc" : "desc"
+      }&orderBy=${this.searchData.order || 'date'}&orderDirection=${
+        this.searchData.ascending ? 'asc' : 'desc'
       }&${
-        searchType === "simulation"
+        searchType === 'simulation'
           ? `organization=IT'IS%20Foundation`
-          : "organization=SPARC%20Consortium"
-      }${embargoed ? `&embargo=true` : ""}`;
+          : 'organization=SPARC%20Consortium'
+      }${embargoed ? `&embargo=true` : ''}`
 
-      const query = pathOr("", ["query", "q"], this.$route);
+      const query = pathOr('', ['query', 'q'], this.$route)
       if (query) {
-        url += `&query=${query}`;
+        url += `&query=${query}`
       }
 
-      const tags = this.$route.query.tags || "";
+      const tags = this.$route.query.tags || ''
       if (tags) {
-        url += `&tags=${tags}`;
+        url += `&tags=${tags}`
       }
 
-      return url;
+      return url
     },
 
     /**
@@ -312,17 +311,14 @@ export default {
      * @returns {String}
      */
     searchType: function() {
-      const searchTypeQuery = pathOr("", ["query", "type"], this.$route);
-      const searchType = find(
-        propEq("type", searchTypeQuery),
-        this.searchTypes
-      );
+      const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
+      const searchType = find(propEq('type', searchTypeQuery), this.searchTypes)
 
-      return defaultTo(head(this.searchTypes), searchType);
+      return defaultTo(head(this.searchTypes), searchType)
     },
 
     tableData: function() {
-      return propOr([], "items", this.searchData);
+      return propOr([], 'items', this.searchData)
     },
 
     /**
@@ -330,14 +326,14 @@ export default {
      * @returns {Function}
      */
     searchResultsComponent: function() {
-      return defaultTo("", searchResultsComponents[this.$route.query.type]);
+      return defaultTo('', searchResultsComponents[this.$route.query.type])
     },
 
     /**
      * Compute the current search page based off the limit and the offset
      */
     curSearchPage: function() {
-      return this.searchData.skip / this.searchData.limit + 1;
+      return this.searchData.skip / this.searchData.limit + 1
     },
 
     /**
@@ -347,20 +343,16 @@ export default {
      * @returns {String}
      */
     searchHeading: function() {
-      const start = this.searchData.skip + 1;
-      const pageRange = this.searchData.limit * this.curSearchPage;
-      const end =
-        pageRange < this.searchData.total ? pageRange : this.searchData.total;
-      const query = pathOr("", ["query", "q"], this.$route);
+      const query = pathOr('', ['query', 'q'], this.$route)
 
       const searchTypeLabel = compose(
-        propOr("", "label"),
-        find(propEq("type", this.$route.query.type))
-      )(this.searchTypes);
+        propOr('', 'label'),
+        find(propEq('type', this.$route.query.type))
+      )(this.searchTypes)
 
-      let searchHeading = `${this.searchData.total} ${searchTypeLabel}`;
+      let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
 
-      return query === "" ? searchHeading : `${searchHeading} for “${query}”`;
+      return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
 
     /**
@@ -369,10 +361,10 @@ export default {
      */
     selectedFilters: function() {
       return compose(
-        filter(propEq("value", true)),
+        filter(propEq('value', true)),
         flatten,
-        pluck("items")
-      )(this.filters);
+        pluck('items')
+      )(this.filters)
     },
 
     /**
@@ -381,10 +373,10 @@ export default {
      */
     activeFilters: function() {
       return compose(
-        filter(propEq("value", true)),
+        filter(propEq('value', true)),
         flatten,
-        pluck("filters")
-      )(this.filters);
+        pluck('filters')
+      )(this.filters)
     },
 
     /**
@@ -392,12 +384,12 @@ export default {
      * @returns {String}
      */
     activeFiltersLabel: function() {
-      const activeFilterLength = this.activeFilters.length;
-      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`;
+      const activeFilterLength = this.activeFilters.length
+      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     },
 
     q: function() {
-      return this.$route.query.q || "";
+      return this.$route.query.q || ''
     },
 
     /**
@@ -405,36 +397,36 @@ export default {
      * @returns {Boolean}
      */
     isMobile: function() {
-      return this.windowWidth <= 500;
-    },
+      return this.windowWidth <= 500
+    }
   },
 
   watch: {
-    "$route.query.type": function(val) {
+    '$route.query.type': function(val) {
       /**
        * Clear table data so the new table that is rendered can
        * properly render data and account for any missing data
        */
-      this.searchData = clone(searchData);
-      if (val === "dataset" && !this.$route.query.datasetFilters) {
-        this.datasetFilters = [...datasetFilters];
+      this.searchData = clone(searchData)
+      if (val === 'dataset' && !this.$route.query.datasetFilters) {
+        this.datasetFilters = [...datasetFilters]
       }
-      this.fetchResults();
+      this.fetchResults()
     },
 
-    "$route.query.q": {
+    '$route.query.q': {
       handler: function(val) {
         if (val) {
-          this.searchQuery = this.$route.query.q;
-          this.fetchResults();
+          this.searchQuery = this.$route.query.q
+          this.fetchResults()
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
 
   beforeMount: function() {
-    this.windowWidth = window.innerWidth;
+    this.windowWidth = window.innerWidth
   },
   /**
    * Check the searchType param in the route and set it if it doesn't exist
@@ -442,9 +434,9 @@ export default {
    */
   mounted: function() {
     if (!this.$route.query.type) {
-      const firstTabType = compose(propOr("", "type"), head)(searchTypes);
+      const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
 
-      this.$router.replace({ query: { type: firstTabType } });
+      this.$router.replace({ query: { type: firstTabType } })
     } else {
       /**
        * Set the searchData from query params
@@ -453,21 +445,21 @@ export default {
       const queryParams = {
         skip: Number(this.$route.query.skip || searchData.skip),
         limit: Number(this.$route.query.limit || searchData.limit),
-        q: this.$route.query.q || "",
-      };
+        q: this.$route.query.q || ''
+      }
 
-      this.searchData = { ...this.searchData, ...queryParams };
+      this.searchData = { ...this.searchData, ...queryParams }
 
       if (this.$route.query.datasetFilters) {
         this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
           ? this.$route.query.datasetFilters
-          : [this.$route.query.datasetFilters];
+          : [this.$route.query.datasetFilters]
       }
 
-      this.fetchResults();
+      this.fetchResults()
     }
-    if (window.innerWidth <= 768) this.titleColumnWidth = 150;
-    window.onresize = () => this.onResize(window.innerWidth);
+    if (window.innerWidth <= 768) this.titleColumnWidth = 150
+    window.onresize = () => this.onResize(window.innerWidth)
   },
 
   methods: {
@@ -476,15 +468,15 @@ export default {
      * @param {Number} limit
      */
     updateDataSearchLimit: function(limit) {
-      this.searchData.skip = 0;
+      this.searchData.skip = 0
 
-      const newLimit = limit === "View All" ? this.searchData.total : limit;
+      const newLimit = limit === 'View All' ? this.searchData.total : limit
 
-      this.searchData.limit = newLimit;
+      this.searchData.limit = newLimit
       this.$router.replace({
-        query: { ...this.$route.query, limit: newLimit, skip: 0 },
-      });
-      this.fetchResults();
+        query: { ...this.$route.query, limit: newLimit, skip: 0 }
+      })
+      this.fetchResults()
     },
 
     /**
@@ -493,17 +485,17 @@ export default {
      * @returns {Array}
      */
     setActiveFilters: function(filters) {
-      const tags = (this.$route.query.tags || "").toLowerCase().split(",");
+      const tags = (this.$route.query.tags || '').toLowerCase().split(',')
 
       return filters.map(category => {
         category.filters.map(filter => {
-          const hasTag = tags.indexOf(filter.key.toLowerCase());
-          filter.value = hasTag >= 0;
-          return filter;
-        });
+          const hasTag = tags.indexOf(filter.key.toLowerCase())
+          filter.value = hasTag >= 0
+          return filter
+        })
 
-        return category;
-      });
+        return category
+      })
     },
 
     /**
@@ -511,15 +503,15 @@ export default {
      * type of search
      */
     fetchResults: function() {
-      const source = propOr("contentful", "dataSource", this.searchType);
+      const source = propOr('contentful', 'dataSource', this.searchType)
 
       const searchSources = {
         contentful: this.fetchFromContentful,
-        blackfynn: this.fetchFromBlackfynn,
-      };
+        blackfynn: this.fetchFromBlackfynn
+      }
 
-      if (typeof searchSources[source] === "function") {
-        searchSources[source]();
+      if (typeof searchSources[source] === 'function') {
+        searchSources[source]()
       }
     },
 
@@ -529,7 +521,7 @@ export default {
         this.searchData,
         this.fetchResults,
         payload
-      );
+      )
     },
 
     /**
@@ -537,25 +529,25 @@ export default {
      * This is using fetch from the Blackfynn API
      */
     fetchFromBlackfynn: function() {
-      this.isLoadingSearch = true;
+      this.isLoadingSearch = true
 
       this.$axios
         .$get(this.blackfynnApiUrl)
         .then(response => {
-          const searchType = pathOr("", ["query", "type"], this.$route);
+          const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
             skip: response.offset,
             items:
               response[
-                `${searchType === "simulation" ? "dataset" : searchType}s`
+                `${searchType === 'simulation' ? 'dataset' : searchType}s`
               ],
-            total: response.totalCount,
-          };
-          this.searchData = mergeLeft(searchData, this.searchData);
+            total: response.totalCount
+          }
+          this.searchData = mergeLeft(searchData, this.searchData)
         })
         .finally(() => {
-          this.isLoadingSearch = false;
-        });
+          this.isLoadingSearch = false
+        })
     },
 
     /**
@@ -563,13 +555,13 @@ export default {
      * This is using the contentful.js client
      */
     fetchFromContentful: function() {
-      this.isLoadingSearch = true;
+      this.isLoadingSearch = true
 
-      const tags = this.$route.query.tags || undefined;
+      const tags = this.$route.query.tags || undefined
 
       // Keep the original search data limit to get all organs before pagination
-      const origSearchDataLimit = this.searchData.limit;
-      this.$route.query.type === "organ" ? (this.searchData.limit = 999) : "";
+      const origSearchDataLimit = this.searchData.limit
+      this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
 
       client
         .getEntries({
@@ -579,30 +571,30 @@ export default {
           skip: this.searchData.skip,
           order: this.searchData.order,
           include: 2,
-          "fields.tags[all]": tags,
+          'fields.tags[all]': tags
         })
         .then(async response => {
-          this.searchData = { ...response, order: this.searchData.order };
+          this.searchData = { ...response, order: this.searchData.order }
           if (
-            this.$route.query.type === "organ" &&
+            this.$route.query.type === 'organ' &&
             origSearchDataLimit !== 999
           ) {
-            this.searchData.items = await this.removeOrganNoDatasets();
+            this.searchData.items = await this.removeOrganNoDatasets()
             // Reset search data values for pagination
-            this.searchData.limit = origSearchDataLimit;
+            this.searchData.limit = origSearchDataLimit
             this.searchData.skip == 0
               ? this.searchData.items.length > this.searchData.limit
                 ? this.searchData.items.splice(this.searchData.limit)
                 : (this.searchData.total = this.searchData.items.length)
-              : "";
+              : ''
           }
         })
         .catch(() => {
-          this.searchData = clone(searchData);
+          this.searchData = clone(searchData)
         })
         .finally(() => {
-          this.isLoadingSearch = false;
-        });
+          this.isLoadingSearch = false
+        })
     },
 
     /**
@@ -611,13 +603,13 @@ export default {
      * @returns {Object}
      */
     getOrganDetails: function(organ) {
-      const organName = pathOr("", ["fields", "name"], organ);
+      const organName = pathOr('', ['fields', 'name'], organ)
 
       const projectSection = pathOr(
         organName,
-        ["fields", "projectSection", "fields", "title"],
+        ['fields', 'projectSection', 'fields', 'title'],
         organ
-      );
+      )
       return this.$axios
         .get(
           `${
@@ -625,8 +617,8 @@ export default {
           }/search/datasets?query=${projectSection.toLowerCase()}&limit=1`
         )
         .then(response => {
-          return response.data;
-        });
+          return response.data
+        })
     },
 
     /**
@@ -635,7 +627,7 @@ export default {
      * @return {Boolean}
      */
     hasDatasets: function(organData) {
-      return organData.totalCount > 0;
+      return organData.totalCount > 0
     },
 
     /**
@@ -646,65 +638,65 @@ export default {
     removeOrganNoDatasets: async function() {
       const results = await Promise.all(
         this.searchData.items.map(organ => this.getOrganDetails(organ))
-      );
+      )
       return this.searchData.items.filter((organ, index) =>
         this.hasDatasets(results[index])
-      );
+      )
     },
 
     /**
      * Get filters based on the search type
      */
     fetchFilters: function() {
-      this.filters = [];
-      this.isLoadingFilters = true;
+      this.filters = []
+      this.isLoadingFilters = true
 
       client
         .getEntry(this.searchType.filterId, { include: 2 })
         .then(response => {
-          const filters = transformFilters(response.fields);
-          this.filters = this.setActiveFilters(filters);
+          const filters = transformFilters(response.fields)
+          this.filters = this.setActiveFilters(filters)
         })
         .catch(() => {
-          this.filters = [];
+          this.filters = []
         })
         .finally(() => {
-          this.isLoadingFilters = false;
-        });
+          this.isLoadingFilters = false
+        })
     },
 
     /**
      * Update offset
      */
     onPaginationPageChange: function(page) {
-      const offset = (page - 1) * this.searchData.limit;
-      this.searchData.skip = offset;
+      const offset = (page - 1) * this.searchData.limit
+      this.searchData.skip = offset
 
       this.$router.replace({
-        query: { ...this.$route.query, skip: offset },
-      });
+        query: { ...this.$route.query, skip: offset }
+      })
 
-      this.fetchResults();
+      this.fetchResults()
     },
 
     /**
      * Submit search
      */
     submitSearch: function() {
-      this.searchData.skip = 0;
+      this.searchData.skip = 0
 
-      const query = mergeLeft({ q: this.searchQuery }, this.$route.query);
-      this.$router.replace({ query });
+      const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      this.$router.replace({ query })
     },
 
     /**
      * Submit search
      */
     clearSearch: function() {
-      this.searchData.skip = 0;
+      this.searchData.skip = 0
 
-      const query = { ...this.$route.query, q: "" };
-      this.$router.replace({ query });
+      const query = { ...this.$route.query, q: '' }
+      this.$router.replace({ query })
     },
 
     /**
@@ -714,12 +706,12 @@ export default {
      */
     clearFilter: function(filterIdx, itemIdx) {
       const filters = assocPath(
-        [filterIdx, "filters", itemIdx, "value"],
+        [filterIdx, 'filters', itemIdx, 'value'],
         false,
         this.filters
-      );
-      this.filters = filters;
-      this.setTagsQuery();
+      )
+      this.filters = filters
+      this.setTagsQuery()
     },
 
     /**
@@ -727,20 +719,20 @@ export default {
      */
     setTagsQuery: function() {
       const filterVals = this.activeFilters.map(filter => {
-        return filter.key;
-      });
+        return filter.key
+      })
 
-      const queryParamTags = pathOr("", ["query", "tags"], this.$route);
-      if (equals(filterVals, queryParamTags.split(","))) {
-        return;
+      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
+      if (equals(filterVals, queryParamTags.split(','))) {
+        return
       }
 
-      const tags = { tags: filterVals.join(",") };
+      const tags = { tags: filterVals.join(',') }
 
-      const query = { ...this.$route.query, ...tags };
+      const query = { ...this.$route.query, ...tags }
       this.$router.replace({ query }).then(() => {
-        this.fetchResults();
-      });
+        this.fetchResults()
+      })
     },
 
     /**
@@ -748,18 +740,18 @@ export default {
      * @param {String} label
      */
     onMapClick: function(label) {
-      const { query } = this.$route;
-      const labelKey = label.toLowerCase();
+      const { query } = this.$route
+      const labelKey = label.toLowerCase()
 
       // short circuit if nothing has changed
       if (
         query.tags === labelKey ||
-        find(t => t === labelKey, (query.tags || "").split(","))
+        find(t => t === labelKey, (query.tags || '').split(','))
       ) {
-        return;
+        return
       }
 
-      const newTags = query.tags ? [query.tags, labelKey].join(",") : labelKey;
+      const newTags = query.tags ? [query.tags, labelKey].join(',') : labelKey
 
       this.filters = this.filters.map(f => ({
         ...f,
@@ -767,23 +759,23 @@ export default {
           if (subFilter.label === label) {
             return {
               ...subFilter,
-              value: true,
-            };
+              value: true
+            }
           }
-          return subFilter;
-        }),
-      }));
+          return subFilter
+        })
+      }))
 
       this.$router
         .replace({
           query: {
             ...query,
-            tags: newTags,
-          },
+            tags: newTags
+          }
         })
         .then(() => {
-          this.fetchResults();
-        });
+          this.fetchResults()
+        })
     },
 
     /**
@@ -794,8 +786,8 @@ export default {
     onResize: function(width) {
       width <= 768
         ? (this.titleColumnWidth = 150)
-        : (this.titleColumnWidth = 300);
-      this.windowWidth = width;
+        : (this.titleColumnWidth = 300)
+      this.windowWidth = width
     },
 
     /**
@@ -803,14 +795,14 @@ export default {
      * Determined if the searchType === 'dataset'
      */
     searchColSpan(viewport) {
-      const isDataset = this.searchType.type === "dataset";
+      const isDataset = this.searchType.type === 'dataset'
       const viewports = {
         sm: isDataset ? 24 : 24,
         md: isDataset ? 18 : 24,
-        lg: isDataset ? 20 : 24,
-      };
+        lg: isDataset ? 20 : 24
+      }
 
-      return viewports[viewport] || 24;
+      return viewports[viewport] || 24
     },
 
     /**
@@ -819,27 +811,27 @@ export default {
     setDatasetFilter() {
       this.$router.replace({
         query: {
-          type: "dataset",
+          type: 'dataset',
           q: this.$route.query.q,
           datasetFilters: this.datasetFilters,
           skip: 0,
-          limit: 10,
-        },
-      });
+          limit: 10
+        }
+      })
 
       /**
        * Clear table data so the new table that is rendered can
        * properly render data and account for any missing data
        */
-      this.searchData = clone(searchData);
-      this.fetchResults();
-    },
-  },
-};
+      this.searchData = clone(searchData)
+      this.fetchResults()
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">
-@import "../../assets/_variables.scss";
+@import '../../assets/_variables.scss';
 
 .page-hero {
   padding-bottom: 1.3125em;
