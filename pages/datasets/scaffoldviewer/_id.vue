@@ -34,16 +34,13 @@
         @set-active-tab="activeTab = $event"
       >
         <el-row :gutter="16">
-          <el-col :offset=22 :span=4 :sm="firstCol" class="details">
-            <button
-              @click="copyLink"
-              class="ml-8 btn-copy-permalink-solid"
-            >
+          <el-col :offset="22" :span="4" :sm="firstCol" class="details">
+            <button class="ml-8 btn-copy-permalink-solid" @click="copyLink">
               <svg-icon name="icon-permalink" height="28" width="28" />
               <span class="visuallyhidden">Copy permalink</span>
             </button>
           </el-col>
-        </el-row>  
+        </el-row>
         <client-only placeholder="Loading scaffold ...">
           <div class="scaffoldvuer-container">
             <ScaffoldVuer
@@ -51,8 +48,9 @@
               :state="state"
               :display-markers="displayMarkers"
               :url="scaffoldUrl"
-              :traditional="traditional"
               :background-toggle="backgroundToggle"
+              :region="region"
+              :view-u-r-l="viewURL"
             />
           </div>
         </client-only>
@@ -76,33 +74,29 @@ export default {
       : null
   },
   async fetch() {
-    let uuid = this.$route.query.id;
-    if (uuid && (this.currentId != uuid)) {
-      this.currentId = uuid;
-      let url = this.api + `scaffold/getstate`
-      await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ uuid: uuid })
-      })
-      .then(response => response.json())
-      .then(data => {
-        this.state = data.state
-      })
-    }
-  },
-  watch: {
-    '$route.query': '$fetch'
-  },
-  fetchOnServer: false,
-  created: function() {
-    this.currentId = undefined;
-    this.api = process.env.portal_api
-    let lastChar = this.api.substr(-1)
-    if (lastChar != '/') {
-      this.api = this.api + '/'
+    //Get id for retrieving state on the server,
+    //Id is prioritized before viewURL and region.
+    let uuid = this.$route.query.id
+    if (uuid) {
+      if (this.currentId != uuid) {
+        this.currentId = uuid
+        let url = this.api + `scaffold/getstate`
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({ uuid: uuid })
+        })
+          .then(response => response.json())
+          .then(data => {
+            this.state = data.state
+          })
+      }
+    } else if (this.$route.query.viewURL) {
+      this.viewURL = this.$route.query.viewURL
+    } else if (this.$route.query.region) {
+      this.region = this.$route.query.region
     }
   },
   data: () => {
@@ -115,10 +109,11 @@ export default {
       ],
       activeTab: 'scaffold',
       file: {},
-      traditional: true,
       displayMarkers: false,
       backgroundToggle: true,
       state: undefined,
+      region: '',
+      viewURL: ''
     }
   },
 
@@ -145,7 +140,6 @@ export default {
       const id = scaffold.substring(0, scaffold.indexOf('/')) || ''
       return id
     },
-
     /**
      * Get the version scaffold query parameter.
      * @returns Number
@@ -166,14 +160,25 @@ export default {
       return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
     }
   },
+  watch: {
+    '$route.query': '$fetch'
+  },
+  fetchOnServer: false,
+  created: function() {
+    this.currentId = undefined
+    this.api = process.env.portal_api
+    let lastChar = this.api.substr(-1)
+    if (lastChar != '/') {
+      this.api = this.api + '/'
+    }
+  },
   methods: {
     copyLink: function() {
       this.$message(successMessage('Share link is being generated.'))
-      let url = this.api + `scaffold/getshareid`;
-      let state = this.$refs.scaffoldvuer.getState();
+      let url = this.api + `scaffold/getshareid`
+      let state = this.$refs.scaffoldvuer.getState()
       // Dont need the url here
-      if (state && state.url)
-        delete state["url"];
+      if (state && state.url) delete state['url']
       fetch(url, {
         method: 'POST',
         headers: {
@@ -181,29 +186,40 @@ export default {
         },
         body: JSON.stringify({ state: state })
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.uuid) {
-          this.currentId = data.uuid;
-          this.$router.replace(
-            {query: {...this.$route.query, id: data.uuid}},
-            () => {
-              this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`)
-              .then(() => {
-                this.$message(successMessage('Share link copied to clipboard.'))
-              }, () => {
-                this.$message(failMessage('Failed to copy share link.'))
-              });
-            }
-          );
-        }
-      })
-      .catch(() => {
-        this.$message(failMessage('Failed to get a share link.'))
-      })
-    },
+        .then(response => response.json())
+        .then(data => {
+          if (data.uuid) {
+            //Remove other scaffold queries
+            delete this.$route.query['viewURL']
+            delete this.$route.query['region']
+            this.currentId = data.uuid
+            //Update and copy the url
+            this.$router.replace(
+              { query: { ...this.$route.query, id: data.uuid } },
+              //Callback once the router replace is done, essential
+              //for copying the correct url.
+              () => {
+                this.$copyText(
+                  `${process.env.ROOT_URL}${this.$route.fullPath}`
+                ).then(
+                  () => {
+                    this.$message(
+                      successMessage('Share link copied to clipboard.')
+                    )
+                  },
+                  () => {
+                    this.$message(failMessage('Failed to copy share link.'))
+                  }
+                )
+              }
+            )
+          }
+        })
+        .catch(() => {
+          this.$message(failMessage('Failed to get a share link.'))
+        })
+    }
   }
-
 }
 </script>
 
@@ -243,7 +259,7 @@ h1 {
 }
 
 .btn-copy-permalink-solid {
-  border-radius:30px;
+  border-radius: 30px;
   background: #8300bf;
   color: white;
   cursor: pointer;
@@ -285,7 +301,7 @@ h1 {
     font-weight: 500;
     line-height: 1.5rem;
     text-transform: uppercase;
-    margin-top:16px;
+    margin-top: 16px;
   }
   img {
     height: auto;
@@ -299,7 +315,7 @@ h1 {
   max-width: calc(100% - 48px);
   left: 24px;
   overflow: hidden;
-  position:relative;
+  position: relative;
   @import '~@abi-software/scaffoldvuer/dist/scaffoldvuer';
 }
 </style>
