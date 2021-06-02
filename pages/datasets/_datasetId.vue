@@ -358,8 +358,8 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
       }
     }
     const scicrunchResponse = await scicrunch.getDatasetInfoFromDOI(datasetDoi)
-    if (scicrunchResponse.data.numberOfHits === 1) {
-      scicrunchData = scicrunchResponse.data.results[0]
+    if (scicrunchResponse.data.result.length > 0) {
+      scicrunchData = scicrunchResponse.data.result[0]
       scicrunchData.discover_dataset = {
         id: Number(datasetId),
         version: datasetVersion

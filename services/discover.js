@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: `${process.env.discover_api_host}/datasets`,
+  baseURL: process.env.portal_api,
   withCredentials: false,
   timeout: 11005
 })
