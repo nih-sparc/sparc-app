@@ -9,15 +9,15 @@
           <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Description</strong>
-          <div class="file-detail__column">
-            {{ imageInfo.description }}
-          </div>
-        </div>
-        <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
             {{ imageType }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Size</strong>
+          <div class="file-detail__column">
+            {{ imageSize }}
           </div>
         </div>
         <div class="file-detail">
@@ -39,9 +39,12 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
-        <biolucida-viewer
+        <img
           v-show="activeTab === 'viewer'"
-          :data="biolucidaData"
+          ref="img"
+          :src="imageSrc"
+          class="image-viewer"
+          @load="imageLoaded"
         />
       </detail-tabs>
     </div>
@@ -49,21 +52,31 @@
 </template>
 
 <script>
-import biolucida from '@/services/biolucida'
-
-import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import discover from '@/services/discover'
+
+import { baseName } from '@/utils/common'
 
 export default {
   name: 'ImageViewerPage',
 
   components: {
-    BiolucidaViewer,
     DetailTabs
   },
 
   async asyncData({ route }) {
-    const imageInfo = await biolucida.getImageInfo(route.params.id)
+    const response = await discover.fetch(
+      route.query.dataset_id,
+      route.query.dataset_version,
+      route.query.file_path
+    )
+
+    const imageInfo = {
+      description: 'image description',
+      name: baseName(route.query.file_path),
+      src: `data:${route.query.mimetype};base64,${response.data}`,
+      size: 'XxY'
+    }
 
     return {
       imageInfo
@@ -84,18 +97,6 @@ export default {
   },
 
   computed: {
-    /**
-     * Compute biolucida data
-     * @returns {Object}
-     */
-    biolucidaData: function() {
-      return {
-        biolucida_image_id: '',
-        share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
-        status: ''
-      }
-    },
-
     /**
      * Return the dataset id from the route query.
      * @returns String
@@ -126,9 +127,28 @@ export default {
      * @returns String
      */
     imageType: function() {
-      return this.imageInfo.name.toUpperCase().endsWith('JPX')
-        ? '3D JPEG Image'
-        : '2D JPEG Image'
+      return this.$route.query.mimetype
+    },
+
+    /**
+     * Return a string that descripes the size of the image.
+     * @returns String
+     */
+    imageSize: function() {
+      return this.imageInfo.size
+    },
+
+    /**
+     * Return the image src as a base64 description.
+     * @returns String
+     */
+    imageSrc: function() {
+      return this.imageInfo.src
+    }
+  },
+  methods: {
+    imageLoaded() {
+      this.imageInfo.size = `${this.$refs.img.naturalWidth}x${this.$refs.img.naturalHeight}`
     }
   }
 }
@@ -179,5 +199,9 @@ h1 {
 }
 .file-detail__column {
   flex: 1;
+}
+.image-viewer {
+  max-height: 100%;
+  max-width: 100%;
 }
 </style>

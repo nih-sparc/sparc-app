@@ -29,15 +29,9 @@ import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
 import MarkedMixin from '@/mixins/marked'
 
-import { plotTypeMap } from '@/static/js/plots'
+import { baseName } from '@/utils/common'
 
-var baseName = function(str) {
-  return str
-    .split('\\')
-    .pop()
-    .split('/')
-    .pop()
-}
+import { plotTypeMap } from '@/static/js/plots'
 
 export default {
   name: 'ImagesGallery',
@@ -241,11 +235,11 @@ export default {
         if ('common-images' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['common-images'], generic_image => {
-              const filePath = this.getS3FilePath(
-                datasetId,
-                datasetVersion,
-                generic_image.dataset.path
-              )
+              // const filePath = this.getS3FilePath(
+              //   datasetId,
+              //   datasetVersion,
+              //   generic_image.dataset.path
+              // )
               const imageFilePath = encodeURIComponent(
                 generic_image.dataset.path
               )
@@ -257,7 +251,7 @@ export default {
                 imageFilePath,
                 mimetype: generic_image.mimetype
               })
-              const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
+              const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${imageFilePath}&mimetype=${generic_image.mimetype}`
               return {
                 id,
                 title: baseName(generic_image.dataset.path),
