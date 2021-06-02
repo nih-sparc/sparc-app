@@ -80,7 +80,7 @@ export default {
     if (uuid) {
       if (this.currentId != uuid) {
         this.currentId = uuid
-        let url = this.api + `scaffold/getstate`
+        let url = this.api + 'scaffold/getstate'
         await fetch(url, {
           method: 'POST',
           headers: {
@@ -318,4 +318,30 @@ h1 {
   position: relative;
   @import '~@abi-software/scaffoldvuer/dist/scaffoldvuer';
 }
+
+.time-slider-container .el-tabs__content {
+  height: 40px;
+}
+
+.time-slider-container .el-slider__marks-text {
+  margin-top: 6px!important;
+}
+
+.time-slider-tooltip {
+  padding: 6px 4px !important;
+  font-family: "Asap", sans-serif;
+  font-size: 12px !important;
+  color: rgb(48, 49, 51) !important;
+  background-color: #f3ecf6 !important;
+  border: 1px solid #8300bf !important;
+  white-space: nowrap !important;
+  min-width: unset !important;
+}
+
+.scaffold_viewer_dropdown .el-select-dropdown__item {
+  white-space: nowrap;
+  text-align: left;
+  font-family: "Asap", sans-serif;
+}
+
 </style>
