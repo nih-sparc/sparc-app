@@ -3,7 +3,7 @@
     <div class="page-wrap container">
       <div class="subpage">
         <div class="page-heading">
-          <h1>{{ imageName }}</h1>
+          <h1>{{ segmentationName }}</h1>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">File Details</strong>
@@ -11,13 +11,13 @@
         <div class="file-detail">
           <strong class="file-detail__column">Description</strong>
           <div class="file-detail__column">
-            {{ imageInfo.description }}
+            {{ segmentationDescription }}
           </div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
-            {{ imageType }}
+            {{ segmentationType }}
           </div>
         </div>
         <div class="file-detail">
@@ -39,9 +39,9 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
-        <biolucida-viewer
+        <segmentation-viewer
           v-show="activeTab === 'viewer'"
-          :data="biolucidaData"
+          :data="segmentationData"
         />
       </detail-tabs>
     </div>
@@ -49,24 +49,25 @@
 </template>
 
 <script>
-import biolucida from '@/services/biolucida'
-
-import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
+import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import { baseName } from '~/utils/common'
 
 export default {
-  name: 'BiolucidaViewerPage',
+  name: 'SegmentationViewerPage',
 
   components: {
-    BiolucidaViewer,
+    SegmentationViewer,
     DetailTabs
   },
 
   async asyncData({ route }) {
-    const imageInfo = await biolucida.getImageInfo(route.params.id)
+    const segmentationInfo = {
+      name: baseName(route.query.file_path)
+    }
 
     return {
-      imageInfo
+      segmentationInfo
     }
   },
 
@@ -74,24 +75,25 @@ export default {
     return {
       tabs: [
         {
-          label: 'Image Viewer',
+          label: 'Segmentation Viewer',
           type: 'viewer'
         }
       ],
-      activeTab: 'viewer',
-      file: {}
+      activeTab: 'viewer'
     }
   },
 
   computed: {
     /**
-     * Compute biolucida data
+     * Compute segmentation data
      * @returns {Object}
      */
-    biolucidaData: function() {
+    segmentationData: function() {
+      const datasetId = this.$route.query.dataset_id
+      const version = this.$route.query.dataset_version
+      const path = this.$route.query.file_path
       return {
-        biolucida_image_id: '',
-        share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
+        share_link: `${process.env.NL_LINK_PREFIX}/dataviewer?datasetId=${datasetId}&version=${version}&path=${path}`,
         status: ''
       }
     },
@@ -113,22 +115,27 @@ export default {
     },
 
     /**
-     * Return the image name without extension from the image information.
+     * Return the segmentation name without extension from the segmentation information.
      * @returns String
      */
-    imageName: function() {
-      let imageName = this.imageInfo.name
-      return imageName.substring(0, imageName.lastIndexOf('.')) || imageName
+    segmentationName: function() {
+      let name = this.segmentationInfo.name
+      return name.substring(0, name.lastIndexOf('.')) || name
     },
 
     /**
-     * Return the type of an image.
+     * Return the description for the segmentation.
      * @returns String
      */
-    imageType: function() {
-      return this.imageInfo.name.toUpperCase().endsWith('JPX')
-        ? '3D JPEG Image'
-        : '2D JPEG Image'
+    segmentationDescription: function() {
+      return 'description about segmentation.'
+    },
+    /**
+     * Return the type of an segmentation.
+     * @returns String
+     */
+    segmentationType: function() {
+      return 'application/vnd.mbfbioscience.neurolucida+xml'
     }
   }
 }

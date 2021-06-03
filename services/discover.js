@@ -24,7 +24,12 @@ const fetch = async (id, version, path) => {
   return await apiClient.get(`/s3-resource/${id}/${version}/files/${path}`)
 }
 
+const fetchEmbeddedThumbnail = async (id, version, path) => {
+  return await apiClient.get(`/xml-thumbnail/${id}/${version}/files/${path}`)
+}
+
 export default {
   browse,
-  fetch
+  fetch,
+  fetchEmbeddedThumbnail
 }

@@ -232,14 +232,34 @@ export default {
           )
           items = items.filter(item => item.type !== 'CSV')
         }
+        if ('mbf-segmentation' in scicrunchData) {
+          items.push(
+            ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
+              const segmentationFilePath = encodeURIComponent(
+                segmentation.dataset.path
+              )
+              const id = segmentation.remote.id
+              this.getSegmentationThumbnail(items, {
+                id,
+                datasetId,
+                datasetVersion,
+                segmentationFilePath
+              })
+              const linkUrl = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${segmentationFilePath}`
+              return {
+                id,
+                fetchAttempts: 0,
+                title: baseName(segmentation.dataset.path),
+                type: 'Segmentation',
+                thumbnail: null,
+                link: linkUrl
+              }
+            })
+          )
+        }
         if ('common-images' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['common-images'], generic_image => {
-              // const filePath = this.getS3FilePath(
-              //   datasetId,
-              //   datasetVersion,
-              //   generic_image.dataset.path
-              // )
               const imageFilePath = encodeURIComponent(
                 generic_image.dataset.path
               )
@@ -336,6 +356,34 @@ export default {
       if (0 < this.currentIndex) {
         this.currentIndex -= 1
       }
+    },
+    getSegmentationThumbnail(items, segmentation_info) {
+      discover
+        .fetchEmbeddedThumbnail(
+          segmentation_info.datasetId,
+          segmentation_info.datasetVersion,
+          segmentation_info.segmentationFilePath
+        )
+        .then(
+          response => {
+            let item = items.find(x => x.id === segmentation_info.id)
+            this.$set(item, 'thumbnail', response.data)
+          },
+          reason => {
+            if (
+              reason.message.includes('timeout') &&
+              reason.message.includes('exceeded') &&
+              segmentation_info.fetchAttempts < 3
+            ) {
+              segmentation_info.fetchAttempts += 1
+              this.getSegmentationThumbnail(items, segmentation_info)
+            }
+          }
+        )
+        .catch(() => {
+          let item = items.find(x => x.id === segmentation_info.id)
+          this.$set(item, 'thumbnail', this.defaultImg)
+        })
     },
     getImageFromS3(items, image_info) {
       discover
