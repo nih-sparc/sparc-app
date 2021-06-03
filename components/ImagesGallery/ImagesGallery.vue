@@ -236,12 +236,10 @@ export default {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
               const filePath = segmentation.dataset.path
-              // encodeURIComponent(
-              // segmentation.dataset.path
-              // )
               const id = segmentation.remote.id
               this.getSegmentationThumbnail(items, {
                 id,
+                fetchAttempts: 0,
                 datasetId,
                 datasetVersion,
                 segmentationFilePath: filePath
@@ -249,7 +247,6 @@ export default {
               const linkUrl = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
               return {
                 id,
-                fetchAttempts: 0,
                 title: baseName(filePath),
                 type: 'Segmentation',
                 thumbnail: null,
@@ -261,9 +258,7 @@ export default {
         if ('common-images' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['common-images'], generic_image => {
-              const filePath = generic_image.dataset.path //encodeURIComponent(
-              // generic_image.dataset.path
-              // )
+              const filePath = generic_image.dataset.path
               const id = generic_image.remote.id
               this.getImageFromS3(items, {
                 id,
@@ -368,7 +363,10 @@ export default {
         .then(
           response => {
             let item = items.find(x => x.id === segmentation_info.id)
-            this.$set(item, 'thumbnail', response.data)
+            this.scaleThumbnailImage(item, {
+              mimetype: 'image/png',
+              data: response.data
+            })
           },
           reason => {
             if (
@@ -386,6 +384,40 @@ export default {
           this.$set(item, 'thumbnail', this.defaultImg)
         })
     },
+    scaleThumbnailImage(item, image_info) {
+      let img = document.createElement('img')
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const this_ = this
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0)
+
+        const MAX_WIDTH = 180
+        const MAX_HEIGHT = 135
+        let width = img.width
+        let height = img.height
+
+        if (width > height) {
+          height *= MAX_WIDTH / width
+          width = MAX_WIDTH
+        } else {
+          width *= MAX_HEIGHT / height
+          height = MAX_HEIGHT
+        }
+        canvas.width = width
+        canvas.height = height
+        let new_ctx = canvas.getContext('2d')
+        new_ctx.drawImage(img, 0, 0, width, height)
+
+        const dataurl = canvas.toDataURL(image_info.mimetype)
+        this_.$set(item, 'thumbnail', dataurl)
+      }
+      if (image_info.data.startsWith('data:')) {
+        img.src = image_info.data
+      } else {
+        img.src = `data:${image_info.mimetype};base64,${image_info.data}`
+      }
+    },
     getImageFromS3(items, image_info) {
       discover
         .fetch(
@@ -395,38 +427,10 @@ export default {
         )
         .then(response => {
           let item = items.find(x => x.id === image_info.id)
-          let img = document.createElement('img')
-          const canvas = document.createElement('canvas')
-          const ctx = canvas.getContext('2d')
-          const this_ = this
-          img.onload = function() {
-            ctx.drawImage(img, 0, 0)
-
-            const MAX_WIDTH = 180
-            const MAX_HEIGHT = 135
-            let width = img.width
-            let height = img.height
-
-            if (width > height) {
-              if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width
-                width = MAX_WIDTH
-              }
-            } else {
-              if (height > MAX_HEIGHT) {
-                width *= MAX_HEIGHT / height
-                height = MAX_HEIGHT
-              }
-            }
-            canvas.width = width
-            canvas.height = height
-            let new_ctx = canvas.getContext('2d')
-            new_ctx.drawImage(img, 0, 0, width, height)
-
-            const dataurl = canvas.toDataURL(image_info.mimetype)
-            this_.$set(item, 'thumbnail', dataurl)
-          }
-          img.src = `data:${image_info.mimetype};base64,${response.data}`
+          this.scaleThumbnailImage(item, {
+            mimetype: image_info.mimetype,
+            data: response.data
+          })
         })
         .catch(() => {
           let item = items.find(x => x.id === image_info.id)
