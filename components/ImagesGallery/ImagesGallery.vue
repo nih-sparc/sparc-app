@@ -235,21 +235,22 @@ export default {
         if ('mbf-segmentation' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
-              const segmentationFilePath = encodeURIComponent(
-                segmentation.dataset.path
-              )
+              const filePath = segmentation.dataset.path
+              // encodeURIComponent(
+              // segmentation.dataset.path
+              // )
               const id = segmentation.remote.id
               this.getSegmentationThumbnail(items, {
                 id,
                 datasetId,
                 datasetVersion,
-                segmentationFilePath
+                segmentationFilePath: filePath
               })
-              const linkUrl = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${segmentationFilePath}`
+              const linkUrl = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
               return {
                 id,
                 fetchAttempts: 0,
-                title: baseName(segmentation.dataset.path),
+                title: baseName(filePath),
                 type: 'Segmentation',
                 thumbnail: null,
                 link: linkUrl
@@ -260,21 +261,21 @@ export default {
         if ('common-images' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['common-images'], generic_image => {
-              const imageFilePath = encodeURIComponent(
-                generic_image.dataset.path
-              )
+              const filePath = generic_image.dataset.path //encodeURIComponent(
+              // generic_image.dataset.path
+              // )
               const id = generic_image.remote.id
               this.getImageFromS3(items, {
                 id,
                 datasetId,
                 datasetVersion,
-                imageFilePath,
+                imageFilePath: filePath,
                 mimetype: generic_image.mimetype
               })
-              const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${imageFilePath}&mimetype=${generic_image.mimetype}`
+              const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&mimetype=${generic_image.mimetype}`
               return {
                 id,
-                title: baseName(generic_image.dataset.path),
+                title: baseName(filePath),
                 type: 'Image',
                 thumbnail: null,
                 link: linkUrl
