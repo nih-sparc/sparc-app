@@ -1,9 +1,9 @@
 <template>
   <div class="search-form" @keyup.enter="$emit('search')">
     <div class="input-wrap">
-      <input :value="value" @input="$emit('input', $event.target.value)" />
-      <button v-if="q" class="btn-clear-search" @click="$emit('clear')">
-        <svg-icon
+      <input :value="value" placeholder="Enter search criteria" @input="$emit('input', $event.target.value)" />
+      <button v-if="q" class="btn-clear-search" @click="$emit('clear')">    
+          <svg-icon
           name="icon-clear"
           stroke="red"
           color="#909399 #fff"
@@ -12,7 +12,8 @@
         />
       </button>
     </div>
-    <el-button class="mr-8 btn-submit-search" @click="$emit('search')">
+    <el-button class="btn-submit-search" @click="$emit('search')">
+        <font-awesome-icon icon="search"/>
       Search
     </el-button>
   </div>
@@ -40,20 +41,19 @@ export default {
 
 .search-form {
   display: flex;
-  margin: 0 0 1rem;
+  width: 100%;
 }
 .input-wrap {
   display: flex;
-  margin-right: 0.5rem;
   position: relative;
-  @media (min-width: 768px) {
-    width: 28.0625rem;
-  }
+  width: 100%;
+  border: .05rem solid black;
+  border-radius: .2rem;
+  margin-left: .5rem;
 }
 input {
   background: #fff;
-  border: 1px solid #909399;
-  border-radius: 4px;
+  border-radius: .2rem;
   box-sizing: border-box;
   border: none;
   color: #909399;
@@ -84,15 +84,17 @@ input {
     opacity: 0.75;
   }
 }
-.btn-submit-search {
-  background: #f9f2fc;
-  border: 1px solid $median;
-  border-radius: 4px;
-  cursor: pointer;
-  height: 2.5rem;
-  padding-left: 1.6875rem;
-  padding-right: 1.6875rem;
-}
+    .btn-submit-search {
+        background: $median;
+        color: $purple-gray;
+        border: 1px solid $median;
+        border-radius: 4px;
+        cursor: pointer;
+        height: 2.5rem;
+        padding-left: 1.6875rem;
+        padding-right: 1.6875rem;
+        margin: 0 2rem;
+    }
 
 .clear-search {
   background-color: transparent;
