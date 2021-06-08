@@ -1,36 +1,37 @@
 <template>
   <div class="data-page">
     <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
-
-    <page-hero>
-      <h1>
-        Find Data
-      </h1>
-      <search-form
-        v-model="searchQuery"
-        :q="q"
-        @search="submitSearch"
-        @clear="clearSearch"
-      />
-
-      <ul class="search-tabs">
-        <li v-for="type in searchTypes" :key="type.label">
-          <nuxt-link
-            class="search-tabs__button"
-            :class="{ active: type.type === $route.query.type }"
-            :to="{
-              name: 'data',
-              query: {
-                type: type.type,
-                q: $route.query.q
-              }
-            }"
-          >
-            {{ type.label }}
-          </nuxt-link>
-        </li>
-      </ul>
-    </page-hero>
+    <div class="container">
+      <div class="search-tabs__container">
+        <h3>
+          Browse categories
+        </h3>
+        <ul class="search-tabs">
+          <li v-for="type in searchTypes" :key="type.label">
+            <nuxt-link class="search-tabs__button"
+                      :class="{ active: type.type === $route.query.type }"
+                      :to="{
+                          name: 'data',
+                          query: {
+                          type: type.type,
+                          q: $route.query.q
+                        }
+                      }">
+                  {{ type.label }}
+            </nuxt-link>
+          </li>
+        </ul>
+      </div>
+      <div class="search-bar__container">
+        <h5>
+          Search within category
+        </h5>
+        <search-form v-model="searchQuery"
+                    :q="q"
+                    @search="submitSearch"
+                    @clear="clearSearch" />
+      </div>
+    </div>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
@@ -841,51 +842,66 @@ export default {
 .page-hero {
   padding-bottom: 1.3125em;
 }
+.search-tabs__container {
+  margin-top: 2rem;
+  padding-top: .5rem;
+  background-color: white;
+  border: .1rem solid $purple-gray;
+  h3 {
+    padding-left: .75rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+}
+.search-bar__container {
+  margin-top: 1em;
+  padding: .75rem;
+  border: .1rem solid $purple-gray;
+  background: white;
+  h5 {
+    line-height: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+}
 .search-tabs {
   display: flex;
   list-style: none;
   overflow: auto;
-  margin: 0 -2rem 0 0;
-  padding: 0 1rem;
-  @media (min-width: 48em) {
-    margin: 0;
-    padding: 0;
-  }
+  margin: 0 0 0 0;
+  padding: 0 0;
+  outline: .1rem solid $median;
   li {
-    margin: 0 0.625em;
-    @media (min-width: 48em) {
-      margin: 0 2.25em;
-    }
-    &:first-child {
-      margin-left: 0;
-    }
+    width: 100%;
+    text-align: center;
+    color: $median;
+  }
+  li:last-child > a {
+    border-right: none;
   }
 }
 .search-tabs__button {
-  background: none;
-  border-bottom: 2px solid transparent;
-  color: #fff;
-  cursor: pointer;
+  background: $light-purple;
   display: block;
-  font-size: 0.75em;
+  font-size: 0.75rem;
   font-weight: 500;
   outline: none;
   padding: 0;
   text-decoration: none;
   text-transform: uppercase;
+  border-right: .1rem solid $median;
+  line-height: 3.5rem;
   @media (min-width: 48em) {
-    font-size: 1em;
-    font-weight: 400;
+    font-size: 1.25rem;
+    font-weight: 600;
     text-transform: none;
   }
-  &:hover,
-  &:focus,
-  &.active {
-    border-bottom-color: #fff;
+  &:hover, &:focus, &.active {
+    color: white;
+    background-color: $median;
     font-weight: 500;
   }
 }
-
 .page-wrap {
   padding-bottom: 1em;
   padding-top: 1em;
