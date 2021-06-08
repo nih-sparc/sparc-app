@@ -6,12 +6,12 @@
     @close="closeHandler"
     @opened="openedHandler"
   >
-    <bf-dialog-header slot="title" title="Select a viewer" />
+    <bf-dialog-header slot="title" title="Select a service" />
     <dialog-body>
       <el-select
         v-model="selectedViewer"
         value-key="title"
-        placeholder="Select a viewer..."
+        placeholder="Select a service..."
       >
         <el-option
           v-for="viewer in viewersForFile"
