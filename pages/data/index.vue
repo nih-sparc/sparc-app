@@ -1,37 +1,36 @@
 <template>
   <div class="data-page">
     <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
-
     <div class="container">
-        <div class="search-tabs__container">
-            <h3>
-                Browse categories
-            </h3>
-            <ul class="search-tabs">
-                <li v-for="type in searchTypes" :key="type.label">
-                    <nuxt-link class="search-tabs__button"
-                               :class="{ active: type.type === $route.query.type }"
-                               :to="{
-                                name: 'data',
-                                query: {
-                                type: type.type,
-                                q: $route.query.q
-                                }
-                            }">
-                        {{ type.label }}
-                    </nuxt-link>
-                </li>
-            </ul>
-        </div>
-        <div class="search-bar__container">
-            <h5>
-                Search within category
-            </h5>
-            <search-form v-model="searchQuery"
-                         :q="q"
-                         @search="submitSearch"
-                         @clear="clearSearch" />
-        </div>
+      <div class="search-tabs__container">
+        <h3>
+          Browse categories
+        </h3>
+        <ul class="search-tabs">
+          <li v-for="type in searchTypes" :key="type.label">
+            <nuxt-link class="search-tabs__button"
+                      :class="{ active: type.type === $route.query.type }"
+                      :to="{
+                          name: 'data',
+                          query: {
+                          type: type.type,
+                          q: $route.query.q
+                        }
+                      }">
+                  {{ type.label }}
+            </nuxt-link>
+          </li>
+        </ul>
+      </div>
+      <div class="search-bar__container">
+        <h5>
+          Search within category
+        </h5>
+        <search-form v-model="searchQuery"
+                    :q="q"
+                    @search="submitSearch"
+                    @clear="clearSearch" />
+      </div>
     </div>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
@@ -843,7 +842,6 @@ export default {
 .page-hero {
   padding-bottom: 1.3125em;
 }
-
 .search-tabs__container {
   margin-top: 2rem;
   padding-top: .5rem;
@@ -855,7 +853,6 @@ export default {
     font-size: 1.5rem;
   }
 }
-
 .search-bar__container {
   margin-top: 1em;
   padding: .75rem;
@@ -867,7 +864,6 @@ export default {
     font-size: 1rem;
   }
 }
-
 .search-tabs {
   display: flex;
   list-style: none;
@@ -880,12 +876,10 @@ export default {
     text-align: center;
     color: $median;
   }
-
   li:last-child > a {
     border-right: none;
   }
 }
-
 .search-tabs__button {
   background: $light-purple;
   display: block;
@@ -897,20 +891,17 @@ export default {
   text-transform: uppercase;
   border-right: .1rem solid $median;
   line-height: 3.5rem;
-
   @media (min-width: 48em) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
   }
-
   &:hover, &:focus, &.active {
     color: white;
     background-color: $median;
     font-weight: 500;
   }
 }
-
 .page-wrap {
   padding-bottom: 1em;
   padding-top: 1em;
