@@ -45,7 +45,7 @@
                 <span class="visuallyhidden">Share on Linkedin</span>
               </share-network>
               <button
-                v-clipboard:copy="pageUrl"
+                @click="copyLink"
                 class="ml-8 btn-copy-permalink"
               >
                 <svg-icon name="icon-permalink" height="28" width="28" />
@@ -68,7 +68,7 @@
 
 <script>
 import { pathEq } from 'ramda'
-
+import { successMessage, failMessage } from '@/utils/notification-messages'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
@@ -83,6 +83,17 @@ export default {
   },
 
   mixins: [FormatDate, MarkedMixin],
+
+  methods: {
+    copyLink: function() {
+      this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
+        () => {
+          this.$message(successMessage('Share link copied to clipboard.'))
+      }, () => {
+          this.$message(failMessage('Failed to copy share link.'))
+      });
+    },
+  },
 
   props: {
     page: {
@@ -122,14 +133,6 @@ export default {
      */
     htmlContent() {
       return this.content || ''
-    },
-
-    /**
-     * Compute the full URL of the page
-     * @returns {String}
-     */
-    pageUrl: function() {
-      return `${process.env.ROOT_URL}${this.$route.fullPath}`
     },
 
     /**

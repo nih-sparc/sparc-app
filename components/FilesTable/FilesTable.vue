@@ -3,14 +3,14 @@
     <div class="files-table-header">
       <div class="breadcrumb-list">
         <div v-for="(item, idx) in breadcrumbs" :key="idx" class="breadcrumb">
-          <a
+          <nuxt-link
             class="breadcrumb-link"
-            href="#"
-            @click.prevent="breadcrumbNavigation(idx)"
+            :to="{
+              query: { ...$route.query, path: breadcrumbNavigation(idx) }
+            }"
           >
             {{ item }}
-          </a>
-
+          </nuxt-link>
           <span
             v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length - 1"
             class="breadcrumb-separator"
@@ -49,13 +49,12 @@
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
                 <i class="file-icon el-icon-folder" />
-                <a
+                <nuxt-link
                   class="file-name"
-                  href="#"
-                  @click.prevent="path = scope.row.path"
+                  :to="{ query: { ...$route.query, path: scope.row.path } }"
                 >
                   {{ scope.row.name }}
-                </a>
+                </nuxt-link>
               </template>
 
               <template v-else>
@@ -94,7 +93,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="360">
+        <el-table-column prop="fileType" label="File type" width="280">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -108,69 +107,71 @@
         <el-table-column
           prop="size"
           label="Size"
-          width="360"
+          width="220"
           :formatter="formatStorage"
         />
         <el-table-column label="Operation" width="200">
-          <template v-if="scope.row.type === 'File'" slot-scope="scope">
-            <el-dropdown trigger="click" @command="onCommandClick">
-              <el-button
-                icon="el-icon-more"
-                size="small"
-                class="operation-button"
-              />
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  :command="{
-                    type: 'getDownloadFile',
-                    scope
-                  }"
-                >
-                  Download
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="isFileOpenable(scope)"
-                  :command="{
-                    type: 'openFile',
-                    scope
-                  }"
-                >
-                  Open
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="hasOsparcViewer(scope)"
-                  :command="{
-                    type: 'setDialogSelectedFile',
-                    scope
-                  }"
-                >
-                  Open in oSPARC&nbsp;&nbsp;&nbsp;&nbsp;<a
-                    href="/help/4EFMev665H4i6tQHfoq5NM"
-                    target="_blank"
-                  >
-                    <svg-icon icon="icon-help" width="18" height="18" />
-                  </a>
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="isScaffoldMetaFile(scope)"
-                  :command="{
-                    type: 'openScaffold',
-                    scope
-                  }"
-                >
-                  Open Scaffold
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="scope.row.uri"
-                  :command="{
-                    type: 'copyS3Url',
-                    scope
-                  }"
-                >
-                  Copy URL to Clipboard
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+          <template slot-scope="scope">
+            <template v-if="scope.row.type === 'File'" >
+              <div class="circle" @click="getDownloadFile(scope)">
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    Download file
+                  </div>
+                  <svg-icon name="icon-download" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
+              </div>
+              <div
+                v-if="isFileOpenable(scope)"
+                class="circle"
+                @click="openFile(scope)"
+              >
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    View file in web viewer
+                  </div>
+                  <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
+              </div>
+              <div
+                v-if="isScaffoldMetaFile(scope)"
+                class="circle"
+                @click="openScaffold(scope)"
+              >
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    Open as 3d scaffold
+                  </div>
+                  <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
+              </div>
+              <div
+                v-if="hasOsparcViewer(scope)"
+                class="circle"
+                @click="setDialogSelectedFile(scope)"
+              >
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    Open in oSPARC. More info on oSPARC can be found
+                    <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
+                      <u>here</u>
+                    </a>
+                  </div>
+                  <svg-icon name="icon-view" height="1.5em" width="1.5em" />
+                </el-tooltip>
+              </div>
+              <div v-if="scope.row.uri" class="circle" @click="copyS3Url(scope)">
+                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                  <div slot="content">
+                    Copy link
+                  </div>
+                  <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+                </el-tooltip>
+              </div>
+            </template>
+            <template v-else>
+              -
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -234,14 +235,19 @@ export default {
       }
     },
     osparcViewers: {
-      type: Object
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
 
   data: function() {
     return {
-      path: '',
+      previousPath: '',
+      schemaRootPath: 'files',
       data: [],
+      tooltipDelay: 300,
       isLoading: false,
       hasError: false,
       limit: 500,
@@ -251,6 +257,16 @@ export default {
   },
 
   computed: {
+    /**
+     * Compute the current path for the dataset's files.
+     * @returns {String}
+     */
+    path: function() {
+      return this.$route.query.path
+        ? this.$route.query.path
+        : this.schemaRootPath
+    },
+
     breadcrumbs: function() {
       return compose(reject(isEmpty), split('/'))(this.path)
     },
@@ -261,12 +277,10 @@ export default {
      */
     getFilesurl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
-      const version = propOr(1, 'version', this.datasetDetails)
+      const version = this.datasetVersion
       const url = `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}/files/browse`
 
-      return this.path
-        ? `${url}?path=${this.path}&limit=${this.limit}`
-        : `${url}?limit=${this.limit}`
+      return `${url}?path=${this.path}&limit=${this.limit}`
     },
 
     /**
@@ -275,27 +289,25 @@ export default {
      */
     getFilesIdUrl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
-      const version = propOr(1, 'version', this.datasetDetails)
+      const version = this.datasetVersion
       return `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}`
+    },
+
+    /**
+     * Compute the version of this dataset.
+     * @returns {String}
+     */
+    datasetVersion: function() {
+      return propOr(1, 'version', this.datasetDetails)
     }
   },
 
   watch: {
-    getFilesIdUrl: {
-      handler: function() {
-        this.getDatasetVersionNumber()
-      },
-      immediate: true
-    },
+    '$route.query.path': 'pathQueryChanged'
+  },
 
-    path: {
-      handler: function(val) {
-        if (val !== '') {
-          this.getFiles()
-        }
-      },
-      immediate: true
-    }
+  created: function() {
+    this.getFiles()
   },
 
   methods: {
@@ -356,10 +368,9 @@ export default {
             response.pennsieveSchemaVersion
           )
           if (schemaVersion < 4.0) {
-            this.path = 'packages'
-          } else {
-            this.path = 'files'
+            this.schemaRootPath = 'packages'
           }
+          this.getFiles()
         })
         .catch(() => {
           this.hasError = true
@@ -390,6 +401,7 @@ export default {
     getFiles: function() {
       this.hasError = false
       this.isLoading = true
+      this.previousPath = this.path
 
       this.$axios
         .$get(this.getFilesurl)
@@ -405,13 +417,20 @@ export default {
     },
 
     /**
+     * When the path query changes get files.
+     */
+    pathQueryChanged: function() {
+      this.getFiles()
+    },
+
+    /**
      * Navigate to another directory via breadcrumb
      * @param {Integer} idx
      */
     breadcrumbNavigation: function(idx) {
       const itemIdx = idx + 1
 
-      this.path = compose(join('/'), slice(0, itemIdx))(this.breadcrumbs)
+      return compose(join('/'), slice(0, itemIdx))(this.breadcrumbs)
     },
 
     /**
@@ -423,20 +442,6 @@ export default {
      */
     formatStorage: function(row, column, cellValue) {
       return this.formatMetric(cellValue)
-    },
-
-    /**
-     * On command click callback for dropdown
-     * @param {Object} evt
-     */
-    onCommandClick: function(evt) {
-      const scope = propOr({}, 'scope', evt)
-      const type = propOr({}, 'type', evt)
-      const handler = this[type]
-
-      if (typeof handler === 'function') {
-        handler(scope)
-      }
     },
 
     /**
@@ -488,7 +493,7 @@ export default {
      */
     getScaffoldLink: function(scope) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
-      const version = propOr(1, 'version', this.datasetDetails)
+      const version = this.datasetVersion
       let s3Path = `${id}/${version}/${scope.row.path}`
       return {
         name: 'datasets-scaffoldviewer-id',
@@ -604,6 +609,22 @@ export default {
   font-size: 16px;
   flex-shrink: 0;
   margin: 3px 8px 0 0;
+}
+
+.circle {
+  display: inline-flex;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5em;
+  margin-right: 4px;
+
+  -moz-border-radius: 0.75em; /* or 50% */
+  border-radius: 0.75em; /* or 50% */
+
+  background-color: #8300bf;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
 }
 
 ::v-deep .el-table {

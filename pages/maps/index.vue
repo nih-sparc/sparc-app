@@ -40,20 +40,22 @@ export default {
       : null
   },
   async fetch() {
-    this.uuid = this.$route.query.id
-    if (this.uuid) {
-      let url = this.api + `map/getstate`
-      await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ uuid: this.uuid })
-      })
-        .then(response => response.json())
-        .then(data => {
-          this.state = data.state
+    if (this.uuid != this.$route.query.id) {
+      this.uuid = this.$route.query.id
+      if (this.uuid) {
+        let url = this.api + `map/getstate`
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({ uuid: this.uuid })
         })
+          .then(response => response.json())
+          .then(data => {
+            this.state = data.state
+          })
+      }
     }
   },
   data() {
@@ -69,16 +71,10 @@ export default {
         }
       ],
       uuid: undefined,
-      prefix: '/maps',
       state: undefined,
       api: process.env.portal_api,
-      flatmapAPI: process.env.flatmap_api
-    }
-  },
-  computed: {
-    shareLink: function() {
-      if (this.uuid) return this.prefix + '?id=' + this.uuid
-      return this.prefix
+      flatmapAPI: process.env.flatmap_api,
+      shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
   },
   watch: {
@@ -90,10 +86,6 @@ export default {
     let lastChar = this.api.substr(-1)
     if (lastChar != '/') {
       this.api = this.api + '/'
-    }
-    if (process.client) {
-      if (window)
-        this.prefix = window.location.origin + window.location.pathname
     }
   },
   methods: {
@@ -110,9 +102,12 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.uuid = data.uuid
-        })
-        .catch(() => {
-          this.uuid = undefined
+          this.$router.replace(
+            { query: { ...this.$route.query, id: data.uuid } },
+            () => {
+              this.shareLink = `${process.env.ROOT_URL}${this.$route.fullPath}`
+            }
+          )
         })
     }
   }
