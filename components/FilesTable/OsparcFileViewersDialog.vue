@@ -25,7 +25,7 @@
         :processing="isFetching"
         @click="openFile"
       >
-        View in oSPARC
+        Open in oSPARC
       </bf-button>
     </dialog-body>
   </el-dialog>
