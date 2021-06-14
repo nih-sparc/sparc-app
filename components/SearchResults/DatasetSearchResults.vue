@@ -1,31 +1,9 @@
 <template>
   <el-table
     :data="tableData"
+    :show-header="false"
     empty-text="No Results"
-    @sort-change="onSortChange"
   >
-    <el-table-column
-      :fixed="true"
-      sortable="custom"
-      prop="name"
-      label="Title"
-      :sort-orders="sortOrders"
-      :width="titleColumnWidth"
-    >
-      <template slot-scope="scope">
-        <nuxt-link
-          :to="{
-            name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id },
-            query: {
-              type: $route.query.type
-            }
-          }"
-        >
-          {{ scope.row.name }}
-        </nuxt-link>
-      </template>
-    </el-table-column>
     <el-table-column prop="banner" label="Image" width="160">
       <template slot-scope="scope">
         <nuxt-link
@@ -51,31 +29,24 @@
       </template>
     </el-table-column>
     <el-table-column
-      prop="description"
-      label="Description"
-      :width="areSimulationResults ? 550 : 400"
-    />
-    <el-table-column
-      prop="createdAt"
-      label="Last Published"
-      width="200"
       sortable="custom"
-      :sort-orders="sortOrders"
+      min-width="400"
     >
       <template slot-scope="scope">
-        {{ formatDate(scope.row.createdAt) }}
-      </template>
-    </el-table-column>
-    <el-table-column
-      v-if="!areSimulationResults"
-      prop="size"
-      label="Size"
-      width="150"
-      sortable="custom"
-      :sort-orders="sortOrders"
-    >
-      <template slot-scope="scope">
-        {{ formatMetric(scope.row.size) }}
+        <nuxt-link
+          :to="{
+            name: 'datasets-datasetId',
+            params: { datasetId: scope.row.id },
+            query: {
+              type: $route.query.type
+            }
+          }"
+        >
+          {{ scope.row.name }}
+        </nuxt-link>
+        <div class="mt-8 mb-8">
+          {{ scope.row.description }}
+        </div>
       </template>
     </el-table-column>
   </el-table>
@@ -85,7 +56,6 @@
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
-import { onSortChange } from '@/pages/data/utils'
 import { pathOr } from 'ramda'
 
 export default {
@@ -100,10 +70,6 @@ export default {
       type: Array,
       default: () => []
     },
-    titleColumnWidth: {
-      type: Number,
-      default: () => 300
-    }
   },
 
   data() {
@@ -120,12 +86,6 @@ export default {
     areSimulationResults: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
       return searchType === 'simulation'
-    }
-  },
-
-  methods: {
-    onSortChange: function(payload) {
-      onSortChange(this, payload)
     }
   }
 }

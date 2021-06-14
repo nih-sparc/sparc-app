@@ -105,7 +105,6 @@
                   :is="searchResultsComponent"
                   :table-data="tableData"
                   :title-column-width="titleColumnWidth"
-                  @sort-change="handleSortChange"
                 />
               </div>
             </el-col>
@@ -782,9 +781,9 @@ export default {
         .then(() => {
           this.fetchResults()
         })
-    },
+    },  
 
-    /**
+/**
      * Adjust the Title column width when
      * on smaller screens or mobile
      * @param {Number} width
@@ -904,10 +903,8 @@ export default {
 }
 .page-wrap {
   padding-bottom: 1em;
-  padding-top: 1em;
   @media (min-width: 48em) {
     padding-bottom: 3em;
-    padding-top: 3em;
   }
 }
 .table-wrap {
