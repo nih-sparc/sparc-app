@@ -105,6 +105,7 @@
                   :is="searchResultsComponent"
                   :table-data="tableData"
                   :title-column-width="titleColumnWidth"
+                  @sort-change="handleSortChange"
                 />
               </div>
             </el-col>

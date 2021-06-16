@@ -3,6 +3,7 @@
     :data="tableData"
     :show-header="false"
     empty-text="No Results"
+    @sort-change="onSortChange"
   >
     <el-table-column prop="banner" label="Image" width="160">
       <template slot-scope="scope">
@@ -29,8 +30,9 @@
       </template>
     </el-table-column>
     <el-table-column
-    sortable="custom"
       min-width="400"
+      sortable="custom"
+      :sort-orders="sortOrders"
     >
       <template slot-scope="scope">
         <nuxt-link
@@ -68,6 +70,7 @@
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
+import { onSortChange } from '@/pages/data/utils'
 import { pathOr } from 'ramda'
 
 export default {
@@ -105,6 +108,12 @@ export default {
     areSimulationResults: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
       return searchType === 'simulation'
+    }
+  },
+
+  methods: {
+    onSortChange: function(payload) {
+      onSortChange(this, payload)
     }
   }
 }
