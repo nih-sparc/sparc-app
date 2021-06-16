@@ -782,9 +782,9 @@ export default {
         .then(() => {
           this.fetchResults()
         })
-    },  
+    },
 
-/**
+    /**
      * Adjust the Title column width when
      * on smaller screens or mobile
      * @param {Number} width
