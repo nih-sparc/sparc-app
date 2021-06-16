@@ -29,7 +29,7 @@
       </template>
     </el-table-column>
     <el-table-column
-      sortable="custom"
+    sortable="custom"
       min-width="400"
     >
       <template slot-scope="scope">
@@ -47,6 +47,18 @@
         <div class="mt-8 mb-8">
           {{ scope.row.description }}
         </div>
+        <table class="property-table">
+          <tr v-for="(property, index) in PROPERTY_DATA" :key=index>
+            <td class="property-name-column">
+              {{property.displayName}}
+            </td>
+            <td>
+              {{`${property.propName === "createdAt" ? 
+                  formatDate(scope.row[`${property.propName}`]) + " (Last updated " + formatDate(scope.row.updatedAt) + ")" :  
+                  scope.row[`${property.propName}`]}`}}
+            </td>
+          </tr>
+        </table>
       </template>
     </el-table-column>
   </el-table>
@@ -78,6 +90,13 @@ export default {
     }
   },
 
+  created() {
+    this.PROPERTY_DATA = [{
+        displayName: 'Publication Date',
+        propName: "createdAt",
+      }]
+  },
+
   computed: {
     /**
      * Compute if the search results are for simulations
@@ -107,5 +126,21 @@ export default {
   img {
     display: block;
   }
+}
+.property-table {
+  td {
+    padding: .25rem 0 0 0;
+    border: none;
+  }
+  border: none;
+  padding: 0;
+}
+ // The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
+table:not([class^=el-table__])::before {
+  display: none;
+}
+.property-name-column {
+  width: 160px;
+  font-weight: 500;
 }
 </style>
