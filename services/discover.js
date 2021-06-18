@@ -25,7 +25,12 @@ const fetch = async (id, version, path) => {
 }
 
 const fetchEmbeddedThumbnail = async (id, version, path) => {
-  return await apiClient.get(`/xml-thumbnail/${id}/${version}/files/${path}`)
+  const config = {
+    params: {
+      path: `${id}/${version}/files/${path}`
+    }
+  }
+  return await apiClient.get('/thumbnail/segmentation', config)
 }
 
 export default {
