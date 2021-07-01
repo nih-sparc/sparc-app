@@ -20,6 +20,17 @@
       <div class="story-description">
         {{ story.fields.summary }}
       </div>
+      <br />
+      <nuxt-link
+        :to="{
+          name: 'news-and-events-community-spotlight-id',
+          params: { id: story.fields.storyRoute }
+        }"
+      >
+        <el-button size="small" class="secondary-button">
+          Learn More
+        </el-button>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -88,5 +99,18 @@ export default {
   font-size: 18px;
   font-weight: normal;
   line-height: 24px;
+}
+
+.secondary-button {
+  background: #f9f2fc;
+  color: rgb(131, 0, 191);
+  font-family: Asap;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid $median;
+  color: $median;
+  &:hover {
+    color: #1a1489;
+  }
 }
 </style>
