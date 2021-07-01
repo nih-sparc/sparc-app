@@ -20,7 +20,7 @@ const getDatasetInfoFromDOI = async doi => {
       doi
     }
   }
-  return apiClient.get('dataset_info_from_doi/', config)
+  return apiClient.get('dataset_info/using_doi', config)
 }
 
 const getImageInfo = async id => {
