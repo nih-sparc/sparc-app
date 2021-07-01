@@ -24,7 +24,7 @@
       <nuxt-link
         :to="{
           name: 'news-and-events-community-spotlight-id',
-          params: { id: story.fields.storyRoute }
+          params: { id: story.fields.storyRoute, story: story.fields.story }
         }"
       >
         <el-button size="small" class="secondary-button">

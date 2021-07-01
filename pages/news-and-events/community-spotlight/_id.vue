@@ -1,17 +1,27 @@
 <template>
   <div class="events-page">
-    hello! {{id}}
+    <div class="page-wrap container">
+      <div class="subpage">
+        hello! {{id}}
+        <div class="content" v-html="renderedStory" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+
 export default {
   name: 'StoryPage',
-
   async asyncData({ route }) {
     try {
       console.log('in id page!')
-      return { id : route.params.id}
+      console.log(route.params.story)
+      return {
+        id: route.params.id,
+        story: route.params.story
+      }
     } catch (error) {
       return {
         page: {
@@ -22,14 +32,27 @@ export default {
   },
   data: function(){
     return {
-      id: ''
+      id: '',
+      story: ''
     }
-  }
+  },
+  computed:{
+    renderedStory: function(){
+      if (this.story){
+        return documentToHtmlString(this.story)
+      }
+      return ''
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
+
+.page-wrap {
+  width: 1035px;
+}
 
 .content {
   & ::v-deep {
