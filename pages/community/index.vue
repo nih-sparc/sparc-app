@@ -1,6 +1,6 @@
 <template>
   <div class="help-page">
-    <breadcrumb :breadcrumb="breadcrumb" :title="allHelpData.title" />
+    <breadcrumb :breadcrumb="breadcrumb" title="community" />
     <page-hero>
       <h1>Success Stories</h1>
       <br />
@@ -9,33 +9,7 @@
       </p>
     </page-hero>
     <div class="page-wrap container">
-      <div class="subpage">
-        <div v-for="(item, index) in story" :key="index">
-          <div class="story-result">
-            <client-only placeholder="Loading video ...">
-              <div class="plyr__video-embed video" id="player">
-                <iframe
-                  class="video"
-                  :src="videoSrc"
-                  allowfullscreen
-                  allowtransparency
-                  allow="autoplay"
-                />
-              </div>
-            </client-only>
-            <div class="story-text">
-              <div class="story-title">
-                {{ item.fields.storyTitle }}
-              </div>
-              <br />
-              <div class="story-description">
-                {{ item.fields.summary }}
-              </div>
-            </div>
-          </div>
-          <div v-if="index !== story.length - 1" class="seperator-path" />
-        </div>
-      </div>
+      <community-spotlight-listings :stories="stories" />
     </div>
     <div class="pagination">
       <el-pagination
@@ -53,8 +27,7 @@ import Vue from 'vue';
 import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import func from 'vue-editor-bridge';
-import Plyr from 'plyr'
+import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue'
 
 const client = createClient()
 
@@ -63,31 +36,22 @@ export default {
 
   components: {
     Breadcrumb,
-    PageHero
+    PageHero,
+    CommunitySpotlightListings
   },
 
   async asyncData() {
     const successData = await client.getEntries({
       content_type: 'successStory'
     })
-    //window.successDatafasd = successData
-    // const successData = await client.getEntry('1W2BabYIEBIMq12Pg2WAtB', {
-    //   include: 2
-    // })
-    let vid = successData.items[0].fields.youtubeUrl
-    let id = vid.split('=').pop()
-    let embedUrl = 'https://www.youtube.com/embed/' + id
-    console.log(successData)
     return {
-      story: successData.items,
-      videoSrc: `${embedUrl}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`
+      stories: successData.items
     }
   },
 
   data() {
     return {
-      allHelpData: {},
-      story: {},
+      stories: [],
       videoSrc: '',
       isLoadingSearch: false,
       breadcrumb: [
