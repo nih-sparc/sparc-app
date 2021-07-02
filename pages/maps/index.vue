@@ -41,7 +41,7 @@ export default {
   },
   async fetch() {
     if (this.uuid != this.$route.query.id) {
-      this.uuid = this.$route.query.id;
+      this.uuid = this.$route.query.id
       if (this.uuid) {
         let url = this.api + `map/getstate`
         await fetch(url, {
@@ -99,18 +99,19 @@ export default {
         },
         body: JSON.stringify({ state: state })
       })
-      .then(response => response.json())
-      .then(data => {
-        this.$router.replace(
-            {query: {...this.$route.query, id: data.uuid}},
+        .then(response => response.json())
+        .then(data => {
+          this.uuid = data.uuid
+          this.$router.replace(
+            { query: { ...this.$route.query, id: data.uuid } },
             () => {
               this.shareLink = `${process.env.ROOT_URL}${this.$route.fullPath}`
             }
-        );
-      })
+          )
+        })
     }
   }
-} 
+}
 </script>
 
 <style lang="scss" scoped>

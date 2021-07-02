@@ -159,7 +159,7 @@
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
-        @set-active-tab="setActiveTab"
+        default-tab="description"
       >
         <dataset-description-info
           v-show="activeTab === 'description'"
@@ -454,7 +454,7 @@ export default {
       errorLoading: false,
       loadingMarkdown: false,
       markdown: {},
-      activeTab: 'description',
+      activeTab: this.$route.query.tab ? this.$route.query.tab : 'description',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
       isContributorListVisible: true,
@@ -484,6 +484,9 @@ export default {
   },
 
   computed: {
+    defaultTab() {
+      return this.tabs[0].type
+    },
     /**
      * Compute if the dataset is the latest version
      * @returns {Boolean}
@@ -776,6 +779,7 @@ export default {
   },
 
   watch: {
+    '$route.query': 'queryChanged',
     /**
      * Watcher for getSearchRecordsUrl
      */
@@ -818,15 +822,7 @@ export default {
       immediate: true
     }
   },
-
   methods: {
-    /**
-     * Sets active tab
-     * @param {String} activeLabel
-     */
-    setActiveTab: function(activeLabel) {
-      this.activeTab = activeLabel
-    },
     /**
      * Returns protocol records in a dataset's model if they exist
      */
@@ -844,6 +840,15 @@ export default {
           // handle error
           this.errorLoading = true
         })
+    },
+
+    /**
+     * Set the active tab to match the current query values.
+     */
+    queryChanged: function() {
+      this.activeTab = this.$route.query.tab
+        ? this.$route.query.tab
+        : this.defaultTab
     },
 
     /**
@@ -894,16 +899,7 @@ export default {
      * in the About tab
      */
     scrollToCitations: function() {
-      const aboutTabType = tabs[1].type
-      if (this.activeTab != aboutTabType) {
-        this.setActiveTab(aboutTabType)
-        this.$nextTick(() =>
-          // Wait until Vue renders the About tab
-          this.getCitationsArea().scrollIntoView()
-        )
-      } else {
-        this.getCitationsArea().scrollIntoView()
-      }
+      this.getCitationsArea().scrollIntoView()
     },
 
     /**

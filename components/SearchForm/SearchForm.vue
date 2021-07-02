@@ -1,7 +1,7 @@
 <template>
   <div class="search-form" @keyup.enter="$emit('search')">
     <div class="input-wrap">
-      <input :value="value" @input="$emit('input', $event.target.value)" />
+      <input :value="value" placeholder="Enter search criteria" @input="$emit('input', $event.target.value)" />
       <button v-if="q" class="btn-clear-search" @click="$emit('clear')">
         <svg-icon
           name="icon-clear"
@@ -12,8 +12,16 @@
         />
       </button>
     </div>
-    <el-button class="mr-8 btn-submit-search" @click="$emit('search')">
-      Search
+    <el-button class="btn-submit-search" @click="$emit('search')">
+      <svg-icon
+        icon="icon-magnifying-glass"
+        height="25"
+        width="25"
+        dir="left"
+      />
+      <span>
+        Search
+      </span>
     </el-button>
   </div>
 </template>
@@ -40,20 +48,19 @@ export default {
 
 .search-form {
   display: flex;
-  margin: 0 0 1rem;
+  width: 100%;
 }
 .input-wrap {
   display: flex;
-  margin-right: 0.5rem;
   position: relative;
-  @media (min-width: 768px) {
-    width: 28.0625rem;
-  }
+  width: 100%;
+  border: .05rem solid black;
+  border-radius: .2rem;
+  margin: 0 .5rem;
 }
 input {
   background: #fff;
-  border: 1px solid #909399;
-  border-radius: 4px;
+  border-radius: .2rem;
   box-sizing: border-box;
   border: none;
   color: #909399;
@@ -85,15 +92,20 @@ input {
   }
 }
 .btn-submit-search {
-  background: #f9f2fc;
+  background: $median;
+  color: white;
   border: 1px solid $median;
   border-radius: 4px;
   cursor: pointer;
   height: 2.5rem;
-  padding-left: 1.6875rem;
-  padding-right: 1.6875rem;
+  padding: 0 1.5rem;
+  @media screen and (max-width: 28rem) {
+    padding: 0 .5rem;
+    span {
+      display: none;
+    }
+  }
 }
-
 .clear-search {
   background-color: transparent;
   display: inline-block;

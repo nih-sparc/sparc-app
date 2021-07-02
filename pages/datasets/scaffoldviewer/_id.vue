@@ -48,8 +48,9 @@
               :state="state"
               :display-markers="displayMarkers"
               :url="scaffoldUrl"
-              :traditional="traditional"
               :background-toggle="backgroundToggle"
+              :region="region"
+              :view-u-r-l="viewURL"
             />
           </div>
         </client-only>
@@ -73,21 +74,29 @@ export default {
       : null
   },
   async fetch() {
+    //Get id for retrieving state on the server,
+    //Id is prioritized before viewURL and region.
     let uuid = this.$route.query.id
-    if (uuid && this.currentId != uuid) {
-      this.currentId = uuid
-      let url = this.api + `scaffold/getstate`
-      await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ uuid: uuid })
-      })
-        .then(response => response.json())
-        .then(data => {
-          this.state = data.state
+    if (uuid) {
+      if (this.currentId != uuid) {
+        this.currentId = uuid
+        let url = this.api + 'scaffold/getstate'
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({ uuid: uuid })
         })
+          .then(response => response.json())
+          .then(data => {
+            this.state = data.state
+          })
+      }
+    } else if (this.$route.query.viewURL) {
+      this.viewURL = this.$route.query.viewURL
+    } else if (this.$route.query.region) {
+      this.region = this.$route.query.region
     }
   },
   data: () => {
@@ -100,10 +109,11 @@ export default {
       ],
       activeTab: 'scaffold',
       file: {},
-      traditional: true,
       displayMarkers: false,
       backgroundToggle: true,
-      state: undefined
+      state: undefined,
+      region: '',
+      viewURL: ''
     }
   },
 
@@ -130,7 +140,6 @@ export default {
       const id = scaffold.substring(0, scaffold.indexOf('/')) || ''
       return id
     },
-
     /**
      * Get the version scaffold query parameter.
      * @returns Number
@@ -180,9 +189,15 @@ export default {
         .then(response => response.json())
         .then(data => {
           if (data.uuid) {
+            //Remove other scaffold queries
+            delete this.$route.query['viewURL']
+            delete this.$route.query['region']
             this.currentId = data.uuid
+            //Update and copy the url
             this.$router.replace(
               { query: { ...this.$route.query, id: data.uuid } },
+              //Callback once the router replace is done, essential
+              //for copying the correct url.
               () => {
                 this.$copyText(
                   `${process.env.ROOT_URL}${this.$route.fullPath}`
@@ -303,4 +318,30 @@ h1 {
   position: relative;
   @import '~@abi-software/scaffoldvuer/dist/scaffoldvuer';
 }
+
+.time-slider-container .el-tabs__content {
+  height: 40px;
+}
+
+.time-slider-container .el-slider__marks-text {
+  margin-top: 6px!important;
+}
+
+.time-slider-tooltip {
+  padding: 6px 4px !important;
+  font-family: "Asap", sans-serif;
+  font-size: 12px !important;
+  color: rgb(48, 49, 51) !important;
+  background-color: #f3ecf6 !important;
+  border: 1px solid #8300bf !important;
+  white-space: nowrap !important;
+  min-width: unset !important;
+}
+
+.scaffold_viewer_dropdown .el-select-dropdown__item {
+  white-space: nowrap;
+  text-align: left;
+  font-family: "Asap", sans-serif;
+}
+
 </style>
