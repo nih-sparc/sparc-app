@@ -24,6 +24,77 @@
                 frameBorder="0"
               />
             </div>
+            <div class="seperator-path" />
+            <div class="story-bold-field">
+              Author
+            </div>
+            <div class="story-field">
+              {{ entry.name }}
+            </div>
+            <br />
+            <div class="story-bold-field">
+              Published Date
+            </div>
+            <div class="story-field">
+              {{ entry.publishDate }}
+            </div>
+            <br />
+            <div class="story-bold-field">
+              Team Members
+            </div>
+            <div
+              v-for="(item, index) in entry.teamMemberNames"
+              :key="index"
+              class="story-field"
+            >
+              {{ item }} ({{ entry.teamMemberOrcidIds[index] }})
+            </div>
+            <br />
+            <div class="story-bold-field">
+              Supporting information
+            </div>
+            <div
+              v-for="(item, index) in entry.references"
+              :key="index"
+              class="story-field"
+            >
+              {{ item }}
+            </div>
+            <br />
+            <div class="story-bold-field">
+              Share
+            </div>
+            <div class="share-links">
+              <share-network
+                network="facebook"
+                :url="pageUrl"
+                title="heroTitle"
+              >
+                <svg-icon name="icon-share-facebook" height="28" width="28" />
+                <span class="visuallyhidden">Share on Facebook</span>
+              </share-network>
+              <share-network
+                network="twitter"
+                class="ml-8"
+                :url="pageUrl"
+                title="heroTitle"
+              >
+                <svg-icon name="icon-share-twitter" height="28" width="28" />
+                <span class="visuallyhidden">Share on Twitter</span>
+              </share-network>
+              <share-network
+                network="linkedin"
+                class="ml-8"
+                :url="pageUrl"
+                title="heroTitle"
+              >
+                <svg-icon name="icon-share-linked" height="28" width="28" />
+                <span class="visuallyhidden">Share on Linkedin</span>
+              </share-network>
+                <svg-icon name="icon-permalink" class="ml-8" height="28" width="28" />
+                <span class="visuallyhidden">Copy permalink</span>
+              </button>
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -66,7 +137,8 @@ export default {
   data: function() {
     return {
       entry: {},
-      slug: ''
+      slug: '',
+      pageUrl: 'https://sparc.science'
     }
   },
   computed: {
@@ -92,7 +164,7 @@ export default {
 
 .video {
   width: 100%;
-  height: 300px;
+  height: 285px;
 }
 
 .content {
@@ -107,6 +179,23 @@ export default {
     margin: 0.5em 0;
     max-width: 100%;
   }
+}
+
+.seperator-path {
+  width: 100%;
+  height: 2px;
+  background: rgb(216, 216, 216);
+  border-radius: 0px;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.story-bold-field {
+  color: rgb(0, 0, 0);
+  font-family: Asap;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .header {
