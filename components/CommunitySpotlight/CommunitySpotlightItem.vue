@@ -24,7 +24,7 @@
       <nuxt-link
         :to="{
           name: 'news-and-events-community-spotlight-id',
-          params: { id: story.fields.storyRoute, story: story.fields.story }
+          params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
         }"
       >
         <el-button size="small" class="secondary-button">
@@ -35,7 +35,7 @@
   </div>
 </template>
 <script>
-const youtubeEmbedParams = '?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1'
+import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
 
 export default {
   name: 'CommunitySpotlightItem',
@@ -47,20 +47,7 @@ export default {
   },
   computed: {
     embeddedVideoSrc: function() {
-      // parse the two ways of sharing links on youtube
-      if (!this.story.fields.youtubeUrl) return ''
-      if (this.story.fields.youtubeUrl.includes('watch')){
-        let id = this.story.fields.youtubeUrl.split('=').pop()
-        let embedUrl = 'https://www.youtube.com/embed/' + id + youtubeEmbedParams
-        return embedUrl
-      } else if (this.story.fields.youtubeUrl.includes('youtu.be')) {
-        let id = this.story.fields.youtubeUrl.split('/').pop()
-        let embedUrl = 'https://www.youtube.com/embed/' + id + youtubeEmbedParams
-        return embedUrl
-      } else {
-        console.log("Error: can't parse youtube url")
-        return ''
-      }
+      return youtubeEmbeddedSource(this.story.fields.youtubeUrl)
     }
   }
 }
