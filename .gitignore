@@ -108,3 +108,8 @@ sw.*
 
 # Certifact files
 .certs/
+<<<<<<< Updated upstream
+=======
+
+.prettierrc
+>>>>>>> Stashed changes
