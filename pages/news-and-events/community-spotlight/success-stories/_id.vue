@@ -56,7 +56,10 @@
                 :key="index"
                 class="story-field"
               >
-                {{ item }} ({{ entry.teamMemberOrcidIds[index] }})
+                {{ item }}
+                <template v-if="entry.teamMemberOrcidIds && entry.teamMemberOrcidIds.length - 1 > index">
+                  {{ entry.teamMemberOrcidIds[index] }}
+                </template>
               </div>
               <br />
             </template>
