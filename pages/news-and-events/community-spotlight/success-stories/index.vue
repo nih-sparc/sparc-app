@@ -10,24 +10,25 @@
       </p>
     </page-hero>
     <div class="page-wrap container">
-      <community-spotlight-listings :stories="stories" />
+      <community-spotlight-listings :stories="shownStories" />
     </div>
-    <div class="pagination">
-      <el-pagination
-        :page-size="3"
-        :total="10"
-        layout="prev, pager, next"
-      />
-    </div>
+    <pagination
+      v-if="allStories.length > pageSize"
+      :page-size="pageSize"
+      :total-count="allStories.length"
+      layout="prev, pager, next"
+      @select-page="pageChange"
+    />
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue';
 //import { Route } from 'vue-router';
 import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue'
 
 const client = createClient()
@@ -38,7 +39,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    CommunitySpotlightListings
+    CommunitySpotlightListings,
+    Pagination
   },
 
   async asyncData() {
@@ -46,13 +48,21 @@ export default {
       content_type: 'successStory'
     })
     return {
-      stories: successData.items
+      allStories: successData.items
+    }
+  },
+
+  methods: {
+    pageChange: function(val) {
+      this.page = val
     }
   },
 
   data() {
     return {
-      stories: [],
+      allStories: [],
+      pageSize: 4,
+      page: 1,
       videoSrc: '',
       isLoadingSearch: false,
       breadcrumb: [
@@ -75,6 +85,15 @@ export default {
           }
         }
       ]
+    }
+  },
+
+  computed: {
+    shownStories: function() {
+      return this.allStories.slice(
+        (this.page - 1) * this.pageSize,
+        this.page * this.pageSize
+      )
     }
   },
 
@@ -132,10 +151,6 @@ export default {
 
 .subpage{
   margin-bottom: 20px;
-}
-
-.pagination {
-  text-align: center;
 }
 
 ::v-deep h2 {
