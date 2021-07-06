@@ -1,17 +1,22 @@
 <template>
   <div class="story-result">
-    <client-only placeholder="Loading video ...">
-      <div class="plyr__video-embed video" id="player">
-        <iframe
-          class="video"
-          :src="embeddedVideoSrc"
-          allowfullscreen
-          allowtransparency
-          allow="autoplay"
-          frameBorder="0"
-        />
-      </div>
-    </client-only>
+    <template v-if="story.fields.youtubeUrl">
+      <client-only placeholder="Loading video ...">
+        <div  class="plyr__video-embed banner-asset" id="player">
+          <iframe
+            class="banner-asset"
+            :src="embeddedVideoSrc"
+            allowfullscreen
+            allowtransparency
+            allow="autoplay"
+            frameBorder="0"
+          />
+        </div>
+      </client-only>
+    </template>
+    <template v-else-if="story.fields.files">
+      <img class="banner-asset" :src="story.fields.files[0].fields.file.url" :alt="story.fields.files[0].description"/>
+    </template>
     <div class="story-text">
       <div class="story-title">
         {{ story.fields.storyTitle }}
@@ -23,7 +28,7 @@
       <br />
       <nuxt-link
         :to="{
-          name: 'news-and-events-community-spotlight-id',
+          name: 'news-and-events-community-spotlight-success-stories-id',
           params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
         }"
       >
@@ -56,7 +61,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/_variables.scss";
 
-.video {
+.banner-asset {
   height: 237px;
   width: 420px;
   flex: 1;

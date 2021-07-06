@@ -2,7 +2,17 @@
   <div class="subpage">
     <div v-for="(item, index) in stories" :key="index">
       <community-spotlight-item :story="item" />
-      <div v-if="index !== stories.length - 1" class="seperator-path" />
+      <div v-if="index !== stories.length - 1 || inNews" class="seperator-path" />
+    </div>
+    <div v-if="inNews" class="show-all-upcoming-events">
+      <nuxt-link
+        class="community-link mt-16"
+        :to="{
+          name: 'news-and-events-community-spotlight',
+        }"
+      >
+        View All Community Spotlight &gt;
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -19,6 +29,10 @@ export default {
     stories: {
       type: Array,
       default: () => []
+    },
+    inNews: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -37,5 +51,20 @@ export default {
 
 .subpage {
   margin-bottom: 20px;
+}
+
+.community-link {
+  background: none;
+  border: none;
+  color: $navy;
+  cursor: pointer;
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  &:hover,
+  &:active {
+    text-decoration: underline;
+  }
 }
 </style>

@@ -14,16 +14,21 @@
             <div class="content" v-html="renderedStory" />
           </el-col>
           <el-col :sm="12">
-            <div class="plyr__video-embed video" id="player">
-              <iframe
-                class="video"
-                :src="embeddedVideoSrc"
-                allowfullscreen
-                allowtransparency
-                allow="autoplay"
-                frameBorder="0"
-              />
-            </div>
+            <template v-if="entry.youtubeUrl">
+              <div class="plyr__video-embed banner-asset" id="player">
+                <iframe
+                  class="banner-asset"
+                  :src="embeddedVideoSrc"
+                  allowfullscreen
+                  allowtransparency
+                  allow="autoplay"
+                  frameBorder="0"
+                />
+              </div>
+            </template>
+            <template v-else-if="entry.files">
+              <img class="banner-asset" :src="entry.files[0].fields.file.url" :alt="entry.files[0].description"/>
+            </template>
             <div class="seperator-path" />
             <div class="story-bold-field">
               Author
@@ -32,35 +37,41 @@
               {{ entry.name }}
             </div>
             <br />
-            <div class="story-bold-field">
-              Published Date
-            </div>
-            <div class="story-field">
-              {{ entry.publishDate }}
-            </div>
-            <br />
-            <div class="story-bold-field">
-              Team Members
-            </div>
-            <div
-              v-for="(item, index) in entry.teamMemberNames"
-              :key="index"
-              class="story-field"
-            >
-              {{ item }} ({{ entry.teamMemberOrcidIds[index] }})
-            </div>
-            <br />
-            <div class="story-bold-field">
-              Supporting information
-            </div>
-            <div
-              v-for="(item, index) in entry.references"
-              :key="index"
-              class="story-field"
-            >
-              {{ item }}
-            </div>
-            <br />
+            <template v-if="entry.publishDate">
+              <div class="story-bold-field">
+                Published Date
+              </div>
+              <div class="story-field">
+                {{ entry.publishDate }}
+              </div>
+              <br />
+            </template>
+            <template v-if="entry.teamMemberNames">
+              <div class="story-bold-field">
+                Team Members
+              </div>
+              <div
+                v-for="(item, index) in entry.teamMemberNames"
+                :key="index"
+                class="story-field"
+              >
+                {{ item }} ({{ entry.teamMemberOrcidIds[index] }})
+              </div>
+              <br />
+            </template>
+            <template v-if="entry.references">
+              <div class="story-bold-field">
+                Supporting information
+              </div>
+              <div
+                v-for="(item, index) in entry.references"
+                :key="index"
+                class="story-field"
+              >
+                {{ item }}
+              </div>
+              <br />
+            </template>
             <div class="story-bold-field">
               Share
             </div>
@@ -110,11 +121,27 @@ import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
 
 const options = {
-    renderNode: {
-        [BLOCKS.EMBEDDED_ASSET]: ({ data: { target: { fields }}}) =>
-            `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`,
+  renderNode: {
+    [BLOCKS.EMBEDDED_ENTRY]: (node) => {
+      // target the contentType of the EMBEDDED_ENTRY to display as you need
+      if (node.data.target.sys.contentType.sys.id === "videoEmbed") {
+        return (
+          `<iframe
+            src="${node.data.target.fields.embedUrl}"
+            height="260px"
+            width="100%"
+            frameBorder="0"
+            scrolling="no"
+            title="${node.data.target.fields.title}"
+            allowFullScreen="true"
+          />`
+        )
+      }
     },
-};
+    [BLOCKS.EMBEDDED_ASSET]: ({ data: { target: { fields }}}) =>
+      `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`,
+    },
+}
 
 const client = createClient()
 
@@ -170,7 +197,7 @@ export default {
   width: 1035px;
 }
 
-.video {
+.banner-asset {
   width: 100%;
   height: 285px;
 }
