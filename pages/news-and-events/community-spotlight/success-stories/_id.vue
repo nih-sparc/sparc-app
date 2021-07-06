@@ -1,5 +1,6 @@
 <template>
   <div class="events-page">
+    <breadcrumb :breadcrumb="breadcrumb" :title="entry.storyTitle" />
     <page-hero>
       <h1>{{ entry.storyTitle }}</h1>
       <br />
@@ -116,6 +117,7 @@
 <script>
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import { BLOCKS } from "@contentful/rich-text-types"
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
@@ -148,6 +150,7 @@ const client = createClient()
 export default {
   name: 'StoryPage',
   components: {
+    Breadcrumb,
     PageHero
   },
   async asyncData({ route }) {
@@ -173,7 +176,33 @@ export default {
     return {
       entry: {},
       slug: '',
-      pageUrl: 'https://sparc.science'
+      pageUrl: 'https://sparc.science',
+      breadcrumb: [
+        {
+          label: 'Home',
+          to: {
+            name: 'index'
+          }
+        },
+        {
+          label: 'News & Events',
+          to: {
+            name: 'news-and-events'
+          }
+        },
+        {
+          label: 'Community Spotlight',
+          to: {
+            name: 'news-and-events-community-spotlight'
+          }
+        },
+        {
+          label: 'Success Stories',
+          to: {
+            name: 'news-and-events-community-spotlight-success-stories'
+          }
+        }
+      ]
     }
   },
   computed: {

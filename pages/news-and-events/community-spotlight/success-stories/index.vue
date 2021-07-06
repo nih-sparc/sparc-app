@@ -1,11 +1,12 @@
 <template>
   <div class="help-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="community" />
+    <breadcrumb :breadcrumb="breadcrumb" title="Success Stories" />
     <page-hero>
       <h1>Success Stories</h1>
       <br />
       <p>
-        Learn how researchers have used the SPARC Program to advance neuromodulation of the ANS. Submit your success story
+        Learn how researchers have used the SPARC Program to advance
+        neuromodulation of the ANS. Submit your success story
       </p>
     </page-hero>
     <div class="page-wrap container">
@@ -60,6 +61,18 @@ export default {
           to: {
             name: 'index'
           }
+        },
+        {
+          label: 'News & Events',
+          to: {
+            name: 'news-and-events'
+          }
+        },
+        {
+          label: 'Community Spotlight',
+          to: {
+            name: 'news-and-events-community-spotlight'
+          }
         }
       ]
     }
@@ -73,15 +86,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.page-hero {
-  background-color: #292b66;
-  background-image: none;
-  h2 {
-    font-size: 2rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-  }
-}
 .video {
   height: 237px;
   width: 420px;
