@@ -1,8 +1,8 @@
 <template>
   <div class="story-result">
-    <template v-if="story.fields.youtubeUrl">
-      <client-only placeholder="Loading video ...">
-        <div  class="plyr__video-embed banner-asset" id="player">
+    <div class="banner">
+      <template v-if="story.fields.youtubeUrl">
+        <client-only placeholder="Loading video ...">
           <iframe
             class="banner-asset"
             :src="embeddedVideoSrc"
@@ -11,12 +11,12 @@
             allow="autoplay"
             frameBorder="0"
           />
-        </div>
-      </client-only>
-    </template>
-    <template v-else-if="story.fields.files">
-      <img class="banner-asset" :src="story.fields.files[0].fields.file.url" :alt="story.fields.files[0].description"/>
-    </template>
+        </client-only>
+      </template>
+      <template v-else-if="story.fields.files">
+        <img class="banner-asset" :src="story.fields.files[0].fields.file.url" :alt="story.fields.files[0].description"/>
+      </template>
+    </div>
     <div class="story-text">
       <div class="story-title">
         {{ story.fields.storyTitle }}
@@ -62,19 +62,23 @@ export default {
 @import "@/assets/_variables.scss";
 
 .banner-asset {
-  height: 237px;
-  width: 420px;
+  height: 238px;
+  width: 423px;
+}
+
+.banner {
+  margin-right: 32px;
   flex: 1;
 }
 
 .story-result {
   display: flex;
-  height: 272px;
+  min-height: 238px;
   width: 100%;
 }
 
 .story-text {
-  flex: 1.1;
+  flex: 1.2;
 }
 
 .story-title {

@@ -47,6 +47,7 @@ export default {
   background: rgb(216, 216, 216);
   border-radius: 0px;
   margin-bottom: 32px;
+  margin-top: 32px;
 }
 
 .subpage {
