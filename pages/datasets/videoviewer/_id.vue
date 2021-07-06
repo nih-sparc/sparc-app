@@ -97,7 +97,7 @@ export default {
     },
 
     video_src: function() {
-      return 'https://www.youtube.com/watch?v=8j3gKD3SBXM'
+      return `${process.env.portal_api}/s3-resource/${this.$route.query.file_path}`
     }
   },
   mounted() {

@@ -103,10 +103,7 @@
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>
               </share-network>
-              <button
-                @click="copyLink"
-                class="ml-8 btn-copy-permalink"
-              >
+              <button class="ml-8 btn-copy-permalink" @click="copyLink">
                 <svg-icon name="icon-permalink" height="28" width="28" />
                 <span class="visuallyhidden">Copy permalink</span>
               </button>
@@ -127,10 +124,11 @@ import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
+// options for rendering contentful rich text. Modified from:
+// https://www.contentful.com/blog/2021/04/14/rendering-linked-assets-entries-in-contentful/
 const options = {
   renderNode: {
     [BLOCKS.EMBEDDED_ENTRY]: node => {
-      // target the contentType of the EMBEDDED_ENTRY to display as you need
       if (node.data.target.sys.contentType.sys.id === 'videoEmbed') {
         return `<iframe
             src="${node.data.target.fields.embedUrl}"
@@ -169,9 +167,8 @@ export default {
       }
     } catch (error) {
       return {
-        page: {
-          fields: []
-        }
+        entry: {},
+        slug: ''
       }
     }
   },

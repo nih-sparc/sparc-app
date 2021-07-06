@@ -52,12 +52,6 @@ export default {
     }
   },
 
-  methods: {
-    pageChange: function(val) {
-      this.page = val
-    }
-  },
-
   data() {
     return {
       allStories: [],
@@ -97,20 +91,16 @@ export default {
     }
   },
 
-  mounted: function(){
-    // this.player = new Plyr(document.getElementById('player'))
+  methods: {
+    pageChange: function(val) {
+      this.page = val
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.video {
-  height: 237px;
-  width: 420px;
-  flex: 1;
-}
-
 .story-result {
   display: flex;
   height: 272px;
@@ -137,30 +127,7 @@ export default {
   line-height: 24px;
 }
 
-.seperator-path {
-  width: 971px;
-  height: 2px;
-  background: rgb(216, 216, 216);
-  border-radius: 0px;
-  margin-bottom: 32px;
-}
-
 .page-wrap {
   width: 1035px;
-}
-
-.subpage{
-  margin-bottom: 20px;
-}
-
-::v-deep h2 {
-  font-size: 1.5em;
-  font-weight: 500;
-  line-height: 2rem;
-  margin-bottom: 2rem;
-  @media (min-width: 768px) {
-    font-size: 1.5em;
-    margin-bottom: 2rem;
-  }
 }
 </style>

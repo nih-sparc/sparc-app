@@ -3,7 +3,6 @@ import { Route } from 'vue-router';
 import { sub } from 'date-fns'
 
 import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
-import { type } from 'os';
 
 
 export const fetchData = async (client: ContentfulClientApi, query?: string, limit?: number) : Promise<AsyncData> => {

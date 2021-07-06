@@ -4,7 +4,7 @@
       <community-spotlight-item :story="item" />
       <div v-if="index !== stories.length - 1 || inNews" class="seperator-path" />
     </div>
-    <div v-if="inNews" class="show-all-upcoming-events">
+    <template v-if="inNews">
       <nuxt-link
         class="community-link mt-16"
         :to="{
@@ -13,7 +13,7 @@
       >
         View All Community Spotlight &gt;
       </nuxt-link>
-    </div>
+    </template>
   </div>
 </template>
 

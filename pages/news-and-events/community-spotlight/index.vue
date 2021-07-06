@@ -89,10 +89,6 @@ export default {
         this.page * this.pageSize
       )
     }
-  },
-
-  mounted: function(){
-    // this.player = new Plyr(document.getElementById('player'))
   }
 }
 </script>
@@ -145,16 +141,5 @@ export default {
 
 .subpage{
   margin-bottom: 20px;
-}
-
-::v-deep h2 {
-  font-size: 1.5em;
-  font-weight: 500;
-  line-height: 2rem;
-  margin-bottom: 2rem;
-  @media (min-width: 768px) {
-    font-size: 1.5em;
-    margin-bottom: 2rem;
-  }
 }
 </style>
