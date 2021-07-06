@@ -1,31 +1,10 @@
 <template>
   <el-table
     :data="tableData"
+    :show-header="false"
     empty-text="No Results"
     @sort-change="onSortChange"
   >
-    <el-table-column
-      :fixed="true"
-      sortable="custom"
-      prop="name"
-      label="Title"
-      :sort-orders="sortOrders"
-      :width="titleColumnWidth"
-    >
-      <template slot-scope="scope">
-        <nuxt-link
-          :to="{
-            name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id },
-            query: {
-              type: $route.query.type
-            }
-          }"
-        >
-          {{ scope.row.name }}
-        </nuxt-link>
-      </template>
-    </el-table-column>
     <el-table-column prop="banner" label="Image" width="160">
       <template slot-scope="scope">
         <nuxt-link
@@ -51,31 +30,44 @@
       </template>
     </el-table-column>
     <el-table-column
-      prop="description"
-      label="Description"
-      :width="areSimulationResults ? 550 : 400"
-    />
-    <el-table-column
-      prop="createdAt"
-      label="Last Published"
-      width="200"
+      min-width="400"
       sortable="custom"
       :sort-orders="sortOrders"
     >
       <template slot-scope="scope">
-        {{ formatDate(scope.row.createdAt) }}
-      </template>
-    </el-table-column>
-    <el-table-column
-      v-if="!areSimulationResults"
-      prop="size"
-      label="Size"
-      width="150"
-      sortable="custom"
-      :sort-orders="sortOrders"
-    >
-      <template slot-scope="scope">
-        {{ formatMetric(scope.row.size) }}
+        <nuxt-link
+          :to="{
+            name: 'datasets-datasetId',
+            params: { datasetId: scope.row.id },
+            query: {
+              type: $route.query.type
+            }
+          }"
+        >
+          {{ scope.row.name }}
+        </nuxt-link>
+        <div class="mt-8 mb-8">
+          {{ scope.row.description }}
+        </div>
+        <table class="property-table">
+          <tr v-for="(property, index) in PROPERTY_DATA" :key="index">
+            <td class="property-name-column">
+              {{ property.displayName }}
+            </td>
+            <td>
+              {{
+                `${
+                  property.propName === 'createdAt'
+                    ? formatDate(scope.row[`${property.propName}`]) +
+                      ' (Last updated ' +
+                      formatDate(scope.row.updatedAt) +
+                      ')'
+                    : scope.row[`${property.propName}`]
+                }`
+              }}
+            </td>
+          </tr>
+        </table>
       </template>
     </el-table-column>
   </el-table>
@@ -99,16 +91,18 @@ export default {
     tableData: {
       type: Array,
       default: () => []
-    },
-    titleColumnWidth: {
-      type: Number,
-      default: () => 300
     }
   },
 
   data() {
     return {
-      sortOrders: ['ascending', 'descending']
+      sortOrders: ['ascending', 'descending'],
+      PROPERTY_DATA: [
+        {
+          displayName: 'Publication Date',
+          propName: 'createdAt'
+        }
+      ]
     }
   },
 
@@ -147,5 +141,21 @@ export default {
   img {
     display: block;
   }
+}
+.property-table {
+  td {
+    padding: 0.25rem 0 0 0;
+    border: none;
+  }
+  border: none;
+  padding: 0;
+}
+// The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
+table:not([class^='el-table__'])::before {
+  display: none;
+}
+.property-name-column {
+  width: 160px;
+  font-weight: bold;
 }
 </style>
