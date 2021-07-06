@@ -104,9 +104,17 @@
 
 <script>
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
+import { BLOCKS } from "@contentful/rich-text-types"
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+
+const options = {
+    renderNode: {
+        [BLOCKS.EMBEDDED_ASSET]: ({ data: { target: { fields }}}) =>
+            `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`,
+    },
+};
 
 const client = createClient()
 
@@ -144,7 +152,7 @@ export default {
   computed: {
     renderedStory: function() {
       if (this.entry.story) {
-        return documentToHtmlString(this.entry.story)
+        return documentToHtmlString(this.entry.story, options)
       }
       return ''
     },
