@@ -103,7 +103,11 @@
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>
               </share-network>
-                <svg-icon name="icon-permalink" class="ml-8" height="28" width="28" />
+              <button
+                @click="copyLink"
+                class="ml-8 btn-copy-permalink"
+              >
+                <svg-icon name="icon-permalink" height="28" width="28" />
                 <span class="visuallyhidden">Copy permalink</span>
               </button>
             </div>
@@ -116,19 +120,19 @@
 
 <script>
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
-import { BLOCKS } from "@contentful/rich-text-types"
+import { BLOCKS } from '@contentful/rich-text-types'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+import { successMessage, failMessage } from '@/utils/notification-messages'
 
 const options = {
   renderNode: {
-    [BLOCKS.EMBEDDED_ENTRY]: (node) => {
+    [BLOCKS.EMBEDDED_ENTRY]: node => {
       // target the contentType of the EMBEDDED_ENTRY to display as you need
-      if (node.data.target.sys.contentType.sys.id === "videoEmbed") {
-        return (
-          `<iframe
+      if (node.data.target.sys.contentType.sys.id === 'videoEmbed') {
+        return `<iframe
             src="${node.data.target.fields.embedUrl}"
             height="260px"
             width="100%"
@@ -137,12 +141,11 @@ const options = {
             title="${node.data.target.fields.title}"
             allowFullScreen="true"
           />`
-        )
       }
     },
     [BLOCKS.EMBEDDED_ASSET]: ({ data: { target: { fields }}}) =>
-      `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`,
-    },
+      `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`
+  }
 }
 
 const client = createClient()
@@ -155,13 +158,13 @@ export default {
   },
   async asyncData({ route }) {
     try {
-      console.log('in id page!')
-      console.log(route.params.id)
-      console.log(route.params.contentfulId)
-      const successStory = await client.getEntry(route.params.contentfulId)
-      console.log(successStory)
+      const results = await client.getEntries({
+        content_type: 'successStory',
+        'fields.storyRoute[match]': route.params.id,
+        include: 1,
+      })
       return {
-        entry: successStory.fields,
+        entry: results.items[0].fields,
         slug: route.params.slug
       }
     } catch (error) {
@@ -176,7 +179,6 @@ export default {
     return {
       entry: {},
       slug: '',
-      pageUrl: 'https://sparc.science',
       breadcrumb: [
         {
           label: 'Home',
@@ -206,6 +208,9 @@ export default {
     }
   },
   computed: {
+    pageUrl: function() {
+      return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    },
     renderedStory: function() {
       if (this.entry.story) {
         return documentToHtmlString(this.entry.story, options)
@@ -214,6 +219,18 @@ export default {
     },
     embeddedVideoSrc: function() {
       return youtubeEmbeddedSource(this.entry.youtubeUrl)
+    }
+  },
+  methods: {
+    copyLink: function() {
+      this.$copyText(this.pageUrl).then(
+        () => {
+          this.$message(successMessage('Share link copied to clipboard.'))
+        },
+        () => {
+          this.$message(failMessage('Failed to copy share link.'))
+        }
+      )
     }
   }
 }
@@ -260,6 +277,17 @@ export default {
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.btn-copy-permalink {
+  border: none;
+  background: none;
+  color: $median;
+  cursor: pointer;
+  padding: 0;
+  &:active {
+    outline: none;
+  }
 }
 
 .header {
