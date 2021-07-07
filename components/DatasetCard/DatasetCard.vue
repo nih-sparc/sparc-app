@@ -8,7 +8,10 @@
         <nuxt-link
           class="dataset-name"
           :to="{
-            name: 'news-and-events-community-spotlight',
+            name: 'datasets-datasetId',
+            params: {
+              datasetId: id
+            }
           }"
         >
           {{ dataset.name }}

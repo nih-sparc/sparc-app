@@ -11,7 +11,7 @@
           name: 'news-and-events-community-spotlight',
         }"
       >
-        View All Community Spotlight &gt;
+        View All Community Spotlights &gt;
       </nuxt-link>
     </template>
   </div>
