@@ -5,7 +5,7 @@
       <h1>Community Spotlight</h1>
       <br />
       <p>
-        Here about how the SPARC community are using the SPARC portal, including
+        Hear about how the SPARC community are using the SPARC portal, including
         Success Stories and Fireside Chats. Also, keep up to date with Community Announcements.
       </p>
     </page-hero>
@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-//import { Route } from 'vue-router';
 import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'

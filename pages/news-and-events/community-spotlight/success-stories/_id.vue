@@ -83,7 +83,7 @@
               <share-network
                 network="facebook"
                 :url="pageUrl"
-                title="heroTitle"
+                :title="entry.storyTitle"
               >
                 <svg-icon name="icon-share-facebook" height="28" width="28" />
                 <span class="visuallyhidden">Share on Facebook</span>
@@ -92,7 +92,7 @@
                 network="twitter"
                 class="ml-8"
                 :url="pageUrl"
-                title="heroTitle"
+                :title="entry.storyTitle"
               >
                 <svg-icon name="icon-share-twitter" height="28" width="28" />
                 <span class="visuallyhidden">Share on Twitter</span>
@@ -101,7 +101,7 @@
                 network="linkedin"
                 class="ml-8"
                 :url="pageUrl"
-                title="heroTitle"
+                :title="entry.storyTitle"
               >
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>

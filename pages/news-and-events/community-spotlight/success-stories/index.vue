@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-//import { Route } from 'vue-router';
 import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
