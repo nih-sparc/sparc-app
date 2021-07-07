@@ -5,7 +5,7 @@ export default function(url) {
   // parse the two ways of sharing links on youtube
   if (!url) return ''
   if (url.includes('https://www.youtube.com/embed/')) {
-    return url
+    return url + youtubeEmbedParams
   } else if (url.includes('watch')) {
     let id = url.split('=').pop()
     let embedUrl = 'https://www.youtube.com/embed/' + id + youtubeEmbedParams

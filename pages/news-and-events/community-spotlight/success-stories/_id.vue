@@ -10,11 +10,11 @@
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
-        <el-row :gutter="32">
-          <el-col :sm="12">
+        <el-row :gutter="38">
+          <el-col :sm="13">
             <div class="content" v-html="renderedStory" />
           </el-col>
-          <el-col :sm="12">
+          <el-col :sm="11">
             <template v-if="entry.youtubeUrl">
               <div class="plyr__video-embed banner-asset" id="player">
                 <iframe
@@ -53,7 +53,7 @@
               </div>
               <div
                 v-for="(item, index) in entry.teamMemberNames"
-                :key="index"
+                :key="'name' + index"
                 class="story-field"
               >
                 {{ item }}
@@ -69,7 +69,7 @@
               </div>
               <div
                 v-for="(item, index) in entry.references"
-                :key="index"
+                :key="'reference' + index"
                 class="story-field"
               >
                 {{ item }}
@@ -111,6 +111,20 @@
                 <span class="visuallyhidden">Copy permalink</span>
               </button>
             </div>
+            <div class="seperator-path" />
+            <template v-if="entry.associatedDatasets">
+              <div class="story-bold-field">
+                Associated Datasets
+              </div>
+              <br />
+              <div
+                v-for="(datasetUrl, index) in entry.associatedDatasets"
+                :key="'dataset' + index"
+                class="story-field"
+              >
+                <dataset-card :id="datasetIdFromUrl(datasetUrl)" />
+              </div>
+            </template>
           </el-col>
         </el-row>
       </div>
@@ -121,11 +135,13 @@
 <script>
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import { BLOCKS } from '@contentful/rich-text-types'
+import { successMessage, failMessage } from '@/utils/notification-messages'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
-import { successMessage, failMessage } from '@/utils/notification-messages'
+
 
 // options for rendering contentful rich text. Modified from:
 // https://www.contentful.com/blog/2021/04/14/rendering-linked-assets-entries-in-contentful/
@@ -134,13 +150,14 @@ const options = {
     [BLOCKS.EMBEDDED_ENTRY]: node => {
       if (node.data.target.sys.contentType.sys.id === 'videoEmbed') {
         return `<iframe
-            src="${node.data.target.fields.embedUrl}"
-            height="260px"
-            width="100%"
+            src="${youtubeEmbeddedSource(node.data.target.fields.embedUrl)}"
+            height="285px"
+            width="520px"
             frameBorder="0"
             scrolling="no"
             title="${node.data.target.fields.title}"
             allowFullScreen="true"
+            allowtransparency="true"
           />`
       }
     },
@@ -154,6 +171,7 @@ const client = createClient()
 export default {
   name: 'StoryPage',
   components: {
+    DatasetCard,
     Breadcrumb,
     PageHero
   },
@@ -222,6 +240,13 @@ export default {
     }
   },
   methods: {
+    // Retrieve dataset id form sparc.science, discover.pennsieve, or just the id
+    datasetIdFromUrl: function(url) {
+      if (!url.includes('/')) return Number(url)
+      let datasetId = url.split('/').pop()
+      if (datasetId.includes('?')) datasetId = datasetId.split('?')[0]
+      return Number(datasetId)
+    },
     copyLink: function() {
       this.$copyText(this.pageUrl).then(
         () => {
@@ -240,12 +265,12 @@ export default {
 @import '@/assets/_variables.scss';
 
 .page-wrap {
-  width: 1035px;
+  width: 1068px;
 }
 
 .banner-asset {
   width: 100%;
-  height: 285px;
+  min-height: 250px;
 }
 
 .content {
@@ -277,6 +302,12 @@ export default {
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.story-field {
+  font-family: Asap;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .btn-copy-permalink {
