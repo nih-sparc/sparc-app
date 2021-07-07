@@ -1,8 +1,8 @@
 <template>
   <div class="events-page">
-    <breadcrumb :breadcrumb="breadcrumb" :title="entry.storyTitle" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
-      <h1>{{ entry.storyTitle }}</h1>
+      <h1>{{ title }}</h1>
       <br />
       <p>
         {{ entry.summary }}
@@ -58,7 +58,7 @@
               >
                 {{ item }}
                 <template v-if="entry.teamMemberOrcidIds && entry.teamMemberOrcidIds.length - 1 > index">
-                  {{ entry.teamMemberOrcidIds[index] }}
+                  ({{ entry.teamMemberOrcidIds[index] }})
                 </template>
               </div>
               <br />
@@ -72,7 +72,7 @@
                 :key="'reference' + index"
                 class="story-field"
               >
-                {{ item }}
+                <a :href="item" target="_blank">{{ item }}</a>
               </div>
               <br />
             </template>
@@ -83,7 +83,7 @@
               <share-network
                 network="facebook"
                 :url="pageUrl"
-                :title="entry.storyTitle"
+                :title="title"
               >
                 <svg-icon name="icon-share-facebook" height="28" width="28" />
                 <span class="visuallyhidden">Share on Facebook</span>
@@ -92,7 +92,7 @@
                 network="twitter"
                 class="ml-8"
                 :url="pageUrl"
-                :title="entry.storyTitle"
+                :title="title"
               >
                 <svg-icon name="icon-share-twitter" height="28" width="28" />
                 <span class="visuallyhidden">Share on Twitter</span>
@@ -101,7 +101,7 @@
                 network="linkedin"
                 class="ml-8"
                 :url="pageUrl"
-                :title="entry.storyTitle"
+                :title="title"
               >
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>
@@ -184,10 +184,12 @@ export default {
       })
       return {
         entry: results.items[0].fields,
-        slug: route.params.slug
+        slug: route.params.slug,
+        title: results.items[0].fields.storyTitle
       }
     } catch (error) {
       return {
+        title: '',
         entry: {},
         slug: ''
       }
@@ -195,6 +197,7 @@ export default {
   },
   data: function() {
     return {
+      title: '',
       entry: {},
       slug: '',
       breadcrumb: [

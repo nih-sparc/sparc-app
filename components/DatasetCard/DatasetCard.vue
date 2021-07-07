@@ -84,5 +84,6 @@ export default {
 .dataset-description {
   font-size: 14px;
   line-height: 20px;
+  word-wrap: break-word;
 }
 </style>
