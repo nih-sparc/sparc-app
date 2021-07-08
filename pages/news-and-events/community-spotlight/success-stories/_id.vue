@@ -303,7 +303,6 @@ export default {
   padding-bottom: 56.25%; /* 16:9 */
   height: 0;
   min-width: 25.68rem;
-
 }
 
 // Used for sizing iframes that are in the content
@@ -326,6 +325,9 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+  }
+  @media (max-width: 48em) {
+    margin-bottom: 2rem;
   }
 }
 
