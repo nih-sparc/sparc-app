@@ -41,7 +41,7 @@ export default {
 @import '@/assets/_variables.scss';
 
 .seperator-path {
-  width: 971px;
+  width: 100%;
   height: 2px;
   background: rgb(216, 216, 216);
   border-radius: 0px;

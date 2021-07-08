@@ -1,8 +1,10 @@
 <template>
   <div class="story-result">
     <div class="banner">
-      <template v-if="story.fields.youtubeUrl">
-        <client-only placeholder="Loading video ...">
+      <div class="banner-wrapper">
+        <client-only
+          v-if="story.fields.youtubeUrl"
+          placeholder="Loading video ...">
           <iframe
             class="banner-asset"
             :src="embeddedVideoSrc"
@@ -12,10 +14,13 @@
             frameBorder="0"
           />
         </client-only>
-      </template>
-      <template v-else-if="story.fields.files">
-        <img class="banner-asset" :src="story.fields.files[0].fields.file.url" :alt="story.fields.files[0].description"/>
-      </template>
+        <img
+          v-else-if="story.fields.files"
+          class="banner-asset"
+          :src="story.fields.files[0].fields.file.url"
+          :alt="story.fields.files[0].description"
+        />
+      </div>
     </div>
     <div class="story-text">
       <div class="story-title">
@@ -59,26 +64,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/_variables.scss";
+@import '@/assets/_variables.scss';
 
-.banner-asset {
-  height: 238px;
-  width: 423px;
+.banner-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  min-width: 25.68rem;
+  @media (max-width: 48em) {
+    min-width: 8rem !important;
+  }
+}
+
+.banner-wrapper .banner-asset {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .banner {
-  margin-right: 32px;
   flex: 1;
+  @media (min-width: 48rem) {
+    margin-right: 2rem;
+  }
 }
 
 .story-result {
   display: flex;
+  flex-wrap: wrap;
   min-height: 238px;
   width: 100%;
 }
 
 .story-text {
   flex: 1.2;
+  min-width: 17.5rem;
+  @media (max-width: 48em) {
+    margin: 1rem 0 0;
+  }
 }
 
 .story-title {
