@@ -71,8 +71,8 @@ export default {
   padding-bottom: 56.25%; /* 16:9 */
   height: 0;
   min-width: 25.68rem;
-  @media (max-width: 48em) {
-    min-width: 8rem !important;
+  @media (max-width: 30em) {
+    min-width: 14rem !important;
   }
 }
 

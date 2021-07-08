@@ -99,33 +99,11 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.story-result {
-  display: flex;
-  height: 272px;
-  width: 100%;
-}
-
-.story-text {
-  flex: 1.1;
-}
-
-.story-title {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 32px;
-}
-
-.story-description {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 18px;
-  font-weight: normal;
-  line-height: 24px;
-}
-
 .page-wrap {
-  width: 1035px;
+  max-width: 68em;
+}
+
+.subpage {
+  margin-bottom: 20px;
 }
 </style>

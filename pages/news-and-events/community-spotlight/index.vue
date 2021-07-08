@@ -93,51 +93,11 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-.video {
-  height: 237px;
-  width: 420px;
-  flex: 1;
-}
-
-.story-result {
-  display: flex;
-  height: 272px;
-  width: 100%;
-}
-
-.story-text {
-  flex: 1.1;
-}
-
-.story-title {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 32px;
-}
-
-.story-description {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 18px;
-  font-weight: normal;
-  line-height: 24px;
-}
-
-.seperator-path {
-  width: 971px;
-  height: 2px;
-  background: rgb(216, 216, 216);
-  border-radius: 0px;
-  margin-bottom: 32px;
-}
-
 .page-wrap {
-  width: 1035px;
+  max-width: 68em;
 }
 
-.subpage{
+.subpage {
   margin-bottom: 20px;
 }
 </style>

@@ -129,13 +129,12 @@
         </el-row>
       </div>
       <nuxt-link
-        v-if="inNews"
         class="community-link mt-16"
         :to="{
-          name: 'news-and-events-community-spotlight',
+          name: 'news-and-events-community-spotlight-success-stories'
         }"
       >
-        View All Community Spotlights &gt;
+        View All Success Stories &gt;
       </nuxt-link>
     </div>
   </div>
@@ -277,12 +276,18 @@ export default {
 @import '@/assets/_variables.scss';
 
 .page-wrap {
-  width: 1068px;
+  width: 66.75rem;
+  @media (max-width: 48em) {
+    width: auto;
+  }
 }
 
 .banner-asset {
   width: 100%;
-  min-height: 250px;
+  min-height: 15.625rem;
+  @media (min-width: 48em) {
+    min-height: 8rem !important;
+  }
 }
 
 .content {
