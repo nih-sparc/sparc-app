@@ -128,6 +128,15 @@
           </el-col>
         </el-row>
       </div>
+      <nuxt-link
+        v-if="inNews"
+        class="community-link mt-16"
+        :to="{
+          name: 'news-and-events-community-spotlight',
+        }"
+      >
+        View All Community Spotlights &gt;
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -328,6 +337,21 @@ export default {
   margin-bottom: 3em;
   .updated {
     color: #aaa;
+  }
+}
+
+.community-link {
+  background: none;
+  border: none;
+  color: $navy;
+  cursor: pointer;
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  &:hover,
+  &:active {
+    text-decoration: underline;
   }
 }
 </style>
