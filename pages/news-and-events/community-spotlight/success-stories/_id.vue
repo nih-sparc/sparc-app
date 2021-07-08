@@ -15,21 +15,23 @@
             <div class="content" v-html="renderedStory" />
           </el-col>
           <el-col :sm="11">
-            <template v-if="entry.youtubeUrl">
-              <div class="plyr__video-embed banner-asset" id="player">
-                <iframe
-                  class="banner-asset"
-                  :src="embeddedVideoSrc"
-                  allowfullscreen
-                  allowtransparency
-                  allow="autoplay"
-                  frameBorder="0"
-                />
-              </div>
-            </template>
-            <template v-else-if="entry.files">
-              <img class="banner-asset" :src="entry.files[0].fields.file.url" :alt="entry.files[0].description"/>
-            </template>
+            <div class="banner-wrapper">
+              <iframe
+                v-if="entry.youtubeUrl"
+                class="banner-asset"
+                :src="embeddedVideoSrc"
+                allowfullscreen
+                allowtransparency
+                allow="autoplay"
+                frameBorder="0"
+              />
+              <img
+                v-else-if="entry.files"
+                class="banner-asset"
+                :src="entry.files[0].fields.file.url"
+                :alt="entry.files[0].description"
+              />
+            </div>
             <div class="seperator-path" />
             <div class="story-bold-field">
               Author
@@ -150,23 +152,23 @@ import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
 
-
 // options for rendering contentful rich text. Modified from:
 // https://www.contentful.com/blog/2021/04/14/rendering-linked-assets-entries-in-contentful/
 const options = {
   renderNode: {
     [BLOCKS.EMBEDDED_ENTRY]: node => {
       if (node.data.target.sys.contentType.sys.id === 'videoEmbed') {
-        return `<iframe
+        return `
+        <div style="position:relative;padding-bottom:56.25%;height:0;">
+          <iframe
             src="${youtubeEmbeddedSource(node.data.target.fields.embedUrl)}"
-            height="285px"
-            width="520px"
             frameBorder="0"
             scrolling="no"
             title="${node.data.target.fields.title}"
             allowFullScreen="true"
             allowtransparency="true"
-          />`
+          />
+        </div>`
       }
     },
     [BLOCKS.EMBEDDED_ASSET]: ({ data: { target: { fields }}}) =>
@@ -276,19 +278,35 @@ export default {
 @import '@/assets/_variables.scss';
 
 .page-wrap {
-  width: 66.75rem;
+  max-width: 66.75rem;
   @media (max-width: 48em) {
     width: auto;
   }
 }
 
-.banner-asset {
-  width: 100%;
-  min-height: 15.625rem;
-  @media (min-width: 48em) {
-    min-height: 8rem !important;
-  }
+.banner-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
 }
+
+.banner-wrapper .banner-asset {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.iframe-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  min-width: 25.68rem;
+
+}
+
+// Used for sizing iframes that are in the content
 
 .content {
   & ::v-deep {
@@ -301,6 +319,13 @@ export default {
     height: auto;
     margin: 0.5em 0;
     max-width: 100%;
+  }
+  & ::v-deep iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }
 

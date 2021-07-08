@@ -100,7 +100,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .page-wrap {
-  max-width: 68em;
+  max-width: 80em;
 }
 
 .subpage {
