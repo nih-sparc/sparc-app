@@ -4,7 +4,8 @@
       <div class="banner-wrapper">
         <client-only
           v-if="story.fields.youtubeUrl"
-          placeholder="Loading video ...">
+          placeholder="Loading video ..."
+        >
           <iframe
             class="banner-asset"
             :src="embeddedVideoSrc"
@@ -15,11 +16,20 @@
           />
         </client-only>
         <img
-          v-else-if="story.fields.files"
+          v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('image')"
           class="banner-asset"
           :src="story.fields.files[0].fields.file.url"
           :alt="story.fields.files[0].description"
         />
+        <video
+          v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('video')"
+          class="banner-asset"
+          controls=""
+          autoplay="false"
+          name="media"
+        >
+          <source :src="story.fields.files[0].fields.file.url" :type="story.fields.files[0].fields.file.contentType">
+        </video>
       </div>
     </div>
     <div class="story-text">

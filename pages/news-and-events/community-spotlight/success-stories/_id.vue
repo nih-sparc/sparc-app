@@ -176,7 +176,7 @@ const options = {
       if (fields.file.contentType.includes('video')){
         return `
         <div style="position:relative;padding-bottom:56.25%;height:0;">
-          <video id="video" controls="" autoplay="false" name="media"><source src="${fields.file.url}" type="video/mp4"></video>
+          <video id="video" controls="" autoplay="false" name="media"><source src="${fields.file.url}" type="${fields.file.contentType}"></video>
         </div>`
       } else if (fields.file.contentType.includes('image')) {
         return `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`
