@@ -171,8 +171,17 @@ const options = {
         </div>`
       }
     },
-    [BLOCKS.EMBEDDED_ASSET]: ({ data: { target: { fields }}}) =>
-      `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`
+    [BLOCKS.EMBEDDED_ASSET]: node => {
+      const fields = node.data.target.fields
+      if (fields.file.contentType.includes('video')){
+        return `
+        <div style="position:relative;padding-bottom:56.25%;height:0;">
+          <video id="video" controls="" autoplay="false" name="media"><source src="${fields.file.url}" type="video/mp4"></video>
+        </div>`
+      } else if (fields.file.contentType.includes('image')) {
+        return `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`
+      }
+    }
   }
 }
 
@@ -320,6 +329,13 @@ export default {
     max-width: 100%;
   }
   & ::v-deep iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  & ::v-deep video {
     position: absolute;
     top: 0;
     left: 0;
