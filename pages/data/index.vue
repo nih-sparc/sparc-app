@@ -8,16 +8,18 @@
         </h3>
         <ul class="search-tabs">
           <li v-for="type in searchTypes" :key="type.label">
-            <nuxt-link class="search-tabs__button"
-                      :class="{ active: type.type === $route.query.type }"
-                      :to="{
-                          name: 'data',
-                          query: {
-                          type: type.type,
-                          q: $route.query.q
-                        }
-                      }">
-                  {{ type.label }}
+            <nuxt-link
+              class="search-tabs__button"
+              :class="{ active: type.type === $route.query.type }"
+              :to="{
+                name: 'data',
+                query: {
+                  type: type.type,
+                  q: $route.query.q
+                }
+              }"
+            >
+              {{ type.label }}
             </nuxt-link>
           </li>
         </ul>
@@ -26,10 +28,12 @@
         <h5>
           Search within category
         </h5>
-        <search-form v-model="searchQuery"
-                    :q="q"
-                    @search="submitSearch"
-                    @clear="clearSearch" />
+        <search-form
+          v-model="searchQuery"
+          :q="q"
+          @search="submitSearch"
+          @clear="clearSearch"
+        />
       </div>
     </div>
     <div class="page-wrap container">
@@ -153,7 +157,6 @@ import {
   find,
   filter,
   head,
-  map,
   mergeLeft,
   pathOr,
   propEq,
@@ -188,7 +191,7 @@ const searchTypes = [
     label: 'Datasets',
     type: 'dataset',
     filterId: process.env.ctf_filters_dataset_id,
-    dataSource: 'blackfynn'
+    dataSource: 'algolia'
   },
   {
     label: 'Organs',
@@ -206,7 +209,7 @@ const searchTypes = [
     label: 'Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'blackfynn'
+    dataSource: 'algolia'
   }
 ]
 
@@ -220,21 +223,29 @@ const searchData = {
 
 const datasetFilters = ['Public']
 
-const shouldGetEmbargoed = (searchType, datasetFilters) => {
+const getEmbargoedFilter = (searchType, datasetFilters) => {
   const filters = Array.isArray(datasetFilters)
     ? datasetFilters
     : [datasetFilters]
-  return (
-    filters.includes('Embargoed') &&
-    !filters.includes('Public') &&
-    searchType === 'dataset'
-  )
+  if (searchType !== 'dataset') {
+    return
+  }
+  if (filters.includes('Embargoed') && !filters.includes('Public')) {
+    return 'embargo:true'
+  }
+  if (!filters.includes('Embargoed') && filters.includes('Public')) {
+    return 'embargo:false'
+  }
+  return ''
 }
 
 import createClient from '@/plugins/contentful.js'
+import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, transformFilters } from './utils'
 
 const client = createClient()
+const algoliaClient = createAlgoliaClient()
+const algoliaSearchIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER')
 
 export default {
   name: 'DataPage',
@@ -275,40 +286,6 @@ export default {
 
   computed: {
     /**
-     * Compute the URL for using a Blackfynn API
-     * @returns {String}
-     */
-    blackfynnApiUrl: function() {
-      const searchType = pathOr('', ['query', 'type'], this.$route)
-
-      const embargoed = shouldGetEmbargoed(searchType, this.datasetFilters)
-
-      let url = `${process.env.discover_api_host}/search/${
-        searchType === 'simulation' ? 'dataset' : searchType
-      }s?offset=${this.searchData.skip}&limit=${
-        this.searchData.limit
-      }&orderBy=${this.searchData.order || 'date'}&orderDirection=${
-        this.searchData.ascending ? 'asc' : 'desc'
-      }&${
-        searchType === 'simulation'
-          ? `organization=IT'IS%20Foundation`
-          : 'organization=SPARC%20Consortium'
-      }${embargoed ? `&embargo=true` : ''}`
-
-      const query = pathOr('', ['query', 'q'], this.$route)
-      if (query) {
-        url += `&query=${query}`
-      }
-
-      const tags = this.$route.query.tags || ''
-      if (tags) {
-        url += `&tags=${tags}`
-      }
-
-      return url
-    },
-
-    /**
      * Compute search type
      * @returns {String}
      */
@@ -345,10 +322,6 @@ export default {
      * @returns {String}
      */
     searchHeading: function() {
-      const start = this.searchData.skip + 1
-      const pageRange = this.searchData.limit * this.curSearchPage
-      const end =
-        pageRange < this.searchData.total ? pageRange : this.searchData.total
       const query = pathOr('', ['query', 'q'], this.$route)
 
       const searchTypeLabel = compose(
@@ -513,7 +486,7 @@ export default {
 
       const searchSources = {
         contentful: this.fetchFromContentful,
-        blackfynn: this.fetchFromBlackfynn
+        algolia: this.fetchFromAlgolia
       }
 
       if (typeof searchSources[source] === 'function') {
@@ -532,22 +505,36 @@ export default {
 
     /**
      * Get Search results
-     * This is using fetch from the Blackfynn API
+     * This is using fetch from the Algolia API
      */
-    fetchFromBlackfynn: function() {
+    fetchFromAlgolia: function() {
       this.isLoadingSearch = true
 
-      this.$axios
-        .$get(this.blackfynnApiUrl)
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      const embargoedFilter = getEmbargoedFilter(
+        searchType,
+        this.datasetFilters
+      )
+      const query = this.$route.query.q
+      const organizationNameFilter =
+        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
+
+      const filters = `${
+        embargoedFilter === undefined || embargoedFilter.length === 0
+          ? ''
+          : embargoedFilter + ' AND '
+      }organizationName:"${organizationNameFilter}"`
+
+      algoliaSearchIndex
+        .search(query, {
+          hitsPerPage: this.searchData.limit,
+          page: this.curSearchPage - 1,
+          filters: filters
+        })
         .then(response => {
-          const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
-            skip: response.offset,
-            items:
-              response[
-                `${searchType === 'simulation' ? 'dataset' : searchType}s`
-              ],
-            total: response.totalCount
+            items: response.hits,
+            total: response.nbHits
           }
           this.searchData = mergeLeft(searchData, this.searchData)
         })
@@ -844,19 +831,19 @@ export default {
 }
 .search-tabs__container {
   margin-top: 2rem;
-  padding-top: .5rem;
+  padding-top: 0.5rem;
   background-color: white;
-  border: .1rem solid $purple-gray;
+  border: 0.1rem solid $purple-gray;
   h3 {
-    padding-left: .75rem;
+    padding-left: 0.75rem;
     font-weight: 600;
     font-size: 1.5rem;
   }
 }
 .search-bar__container {
   margin-top: 1em;
-  padding: .75rem;
-  border: .1rem solid $purple-gray;
+  padding: 0.75rem;
+  border: 0.1rem solid $purple-gray;
   background: white;
   h5 {
     line-height: 1rem;
@@ -870,7 +857,7 @@ export default {
   overflow: auto;
   margin: 0 0 0 0;
   padding: 0 0;
-  outline: .1rem solid $median;
+  outline: 0.1rem solid $median;
   li {
     width: 100%;
     text-align: center;
@@ -889,14 +876,16 @@ export default {
   padding: 0;
   text-decoration: none;
   text-transform: uppercase;
-  border-right: .1rem solid $median;
+  border-right: 0.1rem solid $median;
   line-height: 3.5rem;
   @media (min-width: 48em) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
   }
-  &:hover, &:focus, &.active {
+  &:hover,
+  &:focus,
+  &.active {
     color: white;
     background-color: $median;
     font-weight: 500;
