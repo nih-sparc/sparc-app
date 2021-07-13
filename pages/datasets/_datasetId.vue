@@ -134,6 +134,12 @@
             <el-button class="citation-button" @click="scrollToCitations">
               Cite Dataset
             </el-button>
+            <el-button
+              class="dataset-button"
+              @click="addToCompareList"
+            >
+              Compare Dataset With Other Datasets
+            </el-button>
             <nuxt-link
               :to="{
                 name: 'help-helpId',
@@ -928,6 +934,14 @@ export default {
      */
     getCitationsArea: function() {
       return document.getElementById('citationsArea')
+    },
+
+    /**
+     * add to compare dataset list, then go to compare view
+     */
+    addToCompareList: function() {
+      this.$store.commit('datasetComparison/add', this.datasetInfo)
+      this.$router.push("/dataset-comparison")
     },
 
     /**
