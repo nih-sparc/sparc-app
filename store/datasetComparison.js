@@ -2,11 +2,13 @@ import createClient from '~/plugins/contentful'
 
 export const state = () => ({
   toCompare: [
-    {
-      name: "Vagus Dataset 1",
-      id: "156",
-      text: "test"
-    }
+    // {
+    //   name: "Vagus Dataset 1",
+    //   id: "156",
+    //   text: "test",
+    //   // ...
+    //   // and so on
+    // }
   ]
 })
 

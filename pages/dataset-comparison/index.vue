@@ -1,16 +1,17 @@
 <template>
   <div class="dataset-comparison-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
+    <breadcrumb :breadcrumb="breadcrumb" title="KnowMore Manual Discoveries!" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
           Compare Datasets
         </h3>
         <ul class="search-tabs">
-          <li v-for="type in searchTypes" :key="type.label">
+          <li v-for="type in comparisonDataTypes" :key="type.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: type.type === $route.query.type }"
+              :class="{ active: type.type === 'image' }"
+              :disabled="type.type !== 'image'"
               :to="{
                 name: 'dataset-comparison',
                 query: {
@@ -26,21 +27,41 @@
       </div>
       <div class="search-bar__container">
         <h5>
-          Search for datasets to compare
+          Add datasets to compare
         </h5>
-        <search-form
-          v-model="searchQuery"
-          :q="q"
-          @search="submitSearch"
-          @clear="clearSearch"
-        />
+        <div class="add-ds-form" @keyup.enter="$emit('search')">
+          <div class="input-wrap">
+            <input 
+              @keyup.enter="addDataset" 
+              v-model="toAddPreview"
+              v-on:input="loadPreview"
+              placeholder="Dataset ID (e.g., 156 or 157)"
+              class="add-ds-field"
+            />
+          </div>
+          <el-button class="btn-submit-search" :disabled="!previewData || previewData.error" @click="addDataset">
+            <svg-icon
+              icon="icon-magnifying-glass"
+              height="25"
+              width="25"
+              dir="left"
+            />
+            <span>
+              Add
+            </span>
+          </el-button>
+        </div>
+        <div v-loading="isLoadingDatasetPreview" class="table-wrap">
+          <div v-if="previewData" @click="addDataset" :class="{previewText: !previewData.error}">
+            {{previewData.error ? "(No dataset found with id: " + toAddPreview + ")" : previewData.name}}
+          </div>
+        </div>
+          
       </div>
     </div>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
-          <div class="search-heading">
-          </div>
           <div class="mb-16">
             <div class="active__filter__wrap">
               <div
@@ -63,14 +84,14 @@
           </div>
           <el-row :gutter="32">
             <el-col
-              v-if="searchType.type === 'image'"
+              v-if="comparisonDataType.type === 'image'"
               :sm="24"
               :md="6"
               :lg="4"
             >
               <div class="dataset-filters table-wrap">
-                <h2>Refine datasets by:</h2>
-                <h3>Status</h3>
+                <h2>Fake Checkboxes:</h2>
+                <h3>Options</h3>
                 <div class="dataset-filters__filter-group">
                   <el-checkbox-group
                     v-model="datasetFilters"
@@ -83,40 +104,55 @@
               </div>
             </el-col>
             <el-col
+              :sm="24"
+              :md="18"
+              :lg="20"
+            >
+              <div
+                v-if="datasetsToCompare.length > 0"
+              >
+                <h3>Datasets to Compare:</h3>
+                <el-row type="flex" v-for="dataset in datasetsToCompare" :key="dataset.text" class="dataset-row">
+                  <div>
+                    <svg-icon
+                      name="icon-clear"
+                      stroke="red"
+                      color="#909399 #fff"
+                      height="22"
+                      width="22"
+                      @click="removeDataset(dataset)"
+                    />
+                    <span>{{ dataset.name }} (id: {{ dataset.id }})  </span>
+                  </div>
+                  <img
+                    class="dataset-preview-img"
+                    v-bind:src="dataset.imageUrl"
+                  />
+                </el-row>
+              </div>
+            </el-col>
+            <el-button 
+              class="btn-submit-search" 
+              @click="compareDatasets"
+              :disabled="datasetsToCompare.length == 0"
+            >
+              <span>
+                Compare (Fake Button)
+              </span>
+            </el-button>
+            <el-col
               :sm="searchColSpan('sm')"
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
             >
-              <div v-loading="isLoadingSearch" class="table-wrap">
+              <div v-loading="isLoadingComparison" class="table-wrap">
               </div>
             </el-col>
           </el-row>
         </el-col>
       </el-row>
-      <div class="search-heading">
-      </div>
+
     </div>
-    <search-filters
-      v-model="filters"
-      :visible.sync="isFiltersVisible"
-      :is-loading="isLoadingFilters"
-      :dialog-title="activeFiltersLabel"
-      @input="setTagsQuery"
-    />
-		<div>
-			<ul>
-			  Datasets to Compare:
-				<li v-for="dataset in datasetsToCompare" :key="dataset.text">
-					<input :checked="dataset.done" @change="toggle(dataset)" type="checkbox">
-					<span :class="{ done: dataset.done }">{{ dataset.name }} (id: {{ dataset.id }})  </span>
-          <img
-            class="dataset-preview-img"
-            v-bind:src="dataset.imageUrl"
-          />
-				</li>
-				<li><input @keyup.enter="addDataset" placeholder="Dataset ID? (e.g., 156)"></li>
-			</ul>
-		</div>
   </div>
 </template>
 
@@ -139,21 +175,24 @@ import {
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
-import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 
-const searchTypes = [
+const comparisonDataTypes = [
   {
     label: 'Image',
+    type: 'image',
     disabled: false,
   },
   {
     label: 'Metadata',
+    // leave the type off, it feels more disabled
+    //type: 'metadata',
     disabled: true,
   },
   {
-    label: 'Text',
+    label: 'Full-Text',
+    // leave the type off, it feels more disabled
+    //type: 'full-text',
     disabled: true,
   }
 ]
@@ -179,8 +218,6 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    SearchFilters,
-    SearchForm,
   },
 
   mixins: [],
@@ -189,12 +226,13 @@ export default {
     return {
       searchQuery: '',
       filters: [],
-      searchTypes,
+      comparisonDataTypes,
+      previewData: null,
       searchData: clone(searchData),
-      isLoadingSearch: false,
-      isLoadingFilters: false,
-      isFiltersVisible: false,
-      isSearchMapVisible: false,
+      isLoadingDatasetPreview: false,
+      isLoadingComparison: false,
+      toAddPreview: "",
+
       breadcrumb: [
         {
           to: {
@@ -228,79 +266,19 @@ export default {
      * Compute search type
      * @returns {String}
      */
-    searchType: function() {
-      const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
-      const searchType = find(propEq('type', searchTypeQuery), this.searchTypes)
-
-      return defaultTo(head(this.searchTypes), searchType)
+    comparisonDataType: function() {
+      // TODO add more options
+      return {type: "image"}
     },
 
     /**
      * list of datasets we are comparing
+     * NOTE not currently in use, but I think this should return all data
      * @returns {Array}
      */
     tableData: function() {
       //return propOr([], 'items', this.searchData)
       return propOr([], this.$store.state.datasetComparison.toCompare)
-    },
-
-    /**
-     * Compute the current search page based off the limit and the offset
-     */
-    curSearchPage: function() {
-      return this.searchData.skip / this.searchData.limit + 1
-    },
-
-    /**
-     * Compute the search heading
-     * This data could be set at a specific time, such as when the active
-     * tab is set
-     * @returns {String}
-     */
-    searchHeading: function() {
-      const query = pathOr('', ['query', 'q'], this.$route)
-
-      const searchTypeLabel = compose(
-        propOr('', 'label'),
-        find(propEq('type', this.$route.query.type))
-      )(this.searchTypes)
-
-      let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
-
-      return query === '' ? searchHeading : `${searchHeading} for “${query}”`
-    },
-
-    /**
-     * Compute selected filters
-     * @returns {Array}
-     */
-    selectedFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('items')
-      )(this.filters)
-    },
-
-    /**
-     * Compute active filters
-     * @returns {Array}
-     */
-    activeFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('filters')
-      )(this.filters)
-    },
-
-    /**
-     * Compute dialog header based on how many active filters
-     * @returns {String}
-     */
-    activeFiltersLabel: function() {
-      const activeFilterLength = this.activeFilters.length
-      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     },
 
     q: function() {
@@ -320,12 +298,12 @@ export default {
     this.windowWidth = window.innerWidth
   },
   /**
-   * Check the searchType param in the route and set it if it doesn't exist
+   * Check the comparisonDataType param in the route and set it if it doesn't exist
    * Shrink the title column width if on mobile
    */
   mounted: function() {
     if (!this.$route.query.type) {
-      const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
+      const firstTabType = compose(propOr('', 'type'), head)(comparisonDataTypes)
 
       this.$router.replace({ query: { type: firstTabType } })
     } else {
@@ -346,8 +324,6 @@ export default {
           ? this.$route.query.datasetFilters
           : [this.$route.query.datasetFilters]
       }
-
-      this.fetchResults()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
@@ -355,13 +331,47 @@ export default {
 
   methods: {
     // add a dataset from the form to the compare list
-    async addDataset (e) {
-      const datasetId = e.target.value
-      const details = await this.getDatasetDetails(datasetId)
+    compareDatasets (e) {
+      // TODO 
+      console.log("this will compare the datasets")
+    },
+
+    addDataset (e) {
+      if (!this.previewData || this.previewData.error) {
+        console.log("not adding nothing")
+
+        return
+      }
+
+      const datasetId = this.toAddPreview
+      const details = this.previewData
       console.log("ds details: ", details)
 
       this.$store.commit('datasetComparison/add', details)
       e.target.value = ''
+    },
+
+    async loadPreview (e) {
+      const datasetId = e.target.value
+      if (datasetId == "") {
+        this.previewData = null
+        // don't display anything
+        return null
+      }
+
+      this.isLoadingDatasetPreview = true
+      const details = await this.getDatasetDetails(datasetId)
+
+      this.previewData = details
+      this.isLoadingDatasetPreview = false
+    },
+
+
+    removeDataset (dataset, e) {
+      const details = dataset
+      console.log("ds details: ", details)
+
+      this.$store.commit('datasetComparison/remove', details)
     },
 
 
@@ -394,7 +404,8 @@ export default {
         return datasetDetails
       } catch (error) {
         console.error(error)
-        return {}
+
+        return {error: true, errorMessage: error}
       }
     },
 
@@ -417,108 +428,6 @@ export default {
       })
     },
 
-
-    /**
-     * Check if an organ has datasets
-     * @param {Object}
-     * @return {Boolean}
-     */
-    hasDatasets: function(organData) {
-      return organData.totalCount > 0
-    },
-
-    /**
-     * Remove organs that do not have any
-     * associated datasets from the search data
-     * @returns {Array}
-     */
-    removeOrganNoDatasets: async function() {
-      const results = await Promise.all(
-        this.searchData.items.map(organ => this.getOrganDetails(organ))
-      )
-      return this.searchData.items.filter((organ, index) =>
-        this.hasDatasets(results[index])
-      )
-    },
-
-    /**
-     * Get filters based on the search type
-     */
-    fetchFilters: function() {
-      this.filters = []
-      this.isLoadingFilters = true
-
-      client
-        .getEntry(this.searchType.filterId, { include: 2 })
-        .then(response => {
-          const filters = transformFilters(response.fields)
-          this.filters = this.setActiveFilters(filters)
-        })
-        .catch(() => {
-          this.filters = []
-        })
-        .finally(() => {
-          this.isLoadingFilters = false
-        })
-    },
-
-
-    /**
-     * Submit search
-     */
-    submitSearch: function() {
-      this.searchData.skip = 0
-
-      const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
-      this.$router.replace({ query })
-    },
-
-    /**
-     * Submit search
-     */
-    clearSearch: function() {
-      this.searchData.skip = 0
-
-      const query = { ...this.$route.query, q: '' }
-      this.$router.replace({ query })
-    },
-
-    /**
-     * Clear filter's value
-     * @param {Number} filterIdx
-     * @param {Number} itemIdx
-     */
-    clearFilter: function(filterIdx, itemIdx) {
-      const filters = assocPath(
-        [filterIdx, 'filters', itemIdx, 'value'],
-        false,
-        this.filters
-      )
-      this.filters = filters
-      this.setTagsQuery()
-    },
-
-    /**
-     * Set the tags query parameter in the router
-     */
-    setTagsQuery: function() {
-      const filterVals = this.activeFilters.map(filter => {
-        return filter.key
-      })
-
-      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
-      if (equals(filterVals, queryParamTags.split(','))) {
-        return
-      }
-
-      const tags = { tags: filterVals.join(',') }
-
-      const query = { ...this.$route.query, ...tags }
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
-    },
-
     /**
      * Adjust the Title column width when
      * on smaller screens or mobile
@@ -533,10 +442,10 @@ export default {
 
     /**
      * Compute search column span
-     * Determined if the searchType === 'dataset'
+     * Determined if the comparisonDataType === 'dataset'
      */
     searchColSpan(viewport) {
-      const isDataset = this.searchType.type === 'dataset'
+      const isDataset = this.comparisonDataType.type === 'dataset'
       const viewports = {
         sm: isDataset ? 24 : 24,
         md: isDataset ? 18 : 24,
@@ -546,9 +455,6 @@ export default {
       return viewports[viewport] || 24
     },
 
-    /**
-     * Set datset filters
-     */
     setDatasetFilter() {
       this.$router.replace({
         query: {
@@ -565,7 +471,6 @@ export default {
        * properly render data and account for any missing data
        */
       this.searchData = clone(searchData)
-      this.fetchResults()
     }
   }
 }
@@ -573,6 +478,81 @@ export default {
 
 <style scoped lang="scss">
 @import '../../assets/_variables.scss';
+
+.add-ds-form {
+  display: flex;
+  width: 100%;
+  .input-wrap {
+    display: flex;
+    position: relative;
+    width: 100%;
+    border: .05rem solid black;
+    border-radius: .2rem;
+    margin: 0 .5rem;
+  }
+  input {
+    background: #fff;
+    border-radius: .2rem;
+    box-sizing: border-box;
+    border: none;
+    color: #909399;
+    flex: 1;
+    font-size: 0.875rem;
+    outline: none;
+    margin: 0;
+    padding: 0.5rem 2.25rem 0.5rem 0.8125rem;
+    &:focus {
+      border-color: $median;
+    }
+    &::-ms-clear {
+      display: none;
+    }
+  }
+  .btn-clear-search {
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+    outline: none;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    &:hover,
+    &:active {
+      opacity: 0.75;
+    }
+  }
+  .btn-submit-search {
+    background: $median;
+    color: white;
+    border: 1px solid $median;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 2.5rem;
+    padding: 0 1.5rem;
+    &[disabled] {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    @media screen and (max-width: 28rem) {
+      padding: 0 .5rem;
+      span {
+        display: none;
+      }
+    }
+  }
+  .clear-search {
+    background-color: transparent;
+    display: inline-block;
+    border: none;
+    width: fit-content;
+    color: $cochlear;
+    font-size: 1rem;
+    font-family: $font-family;
+  }
+}
 
 .page-hero {
   padding-bottom: 1.3125em;
@@ -631,12 +611,18 @@ export default {
     font-weight: 600;
     text-transform: none;
   }
-  &:hover,
-  &:focus,
-  &.active {
-    color: white;
-    background-color: $median;
-    font-weight: 500;
+  &[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  &:not([disabled]) {
+    &:hover,
+    &:focus,
+    &.active {
+      color: white;
+      background-color: $median;
+      font-weight: 500;
+    }
   }
 }
 .page-wrap {
@@ -663,22 +649,6 @@ export default {
   }
   button {
     background-color: transparent;
-  }
-}
-.search-heading {
-  align-items: center;
-  display: flex;
-  margin-bottom: 1em;
-  justify-content: space-between;
-  @media screen and (max-width: 28em) {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 0;
-  }
-  p {
-    font-size: 0.875em;
-    flex-shrink: 0;
-    margin: 2em 0 0 0;
   }
 }
 ::v-deep {
@@ -751,5 +721,12 @@ export default {
   ::v-deep .el-checkbox__label {
     color: $median;
   }
+}
+.previewText {
+  cursor: pointer;
+}
+.dataset-row {
+  justify-content: space-between;
+  margin: 1rem;
 }
 </style>
