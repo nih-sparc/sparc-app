@@ -8,16 +8,18 @@
         </h3>
         <ul class="search-tabs">
           <li v-for="type in searchTypes" :key="type.label">
-            <nuxt-link class="search-tabs__button"
-                      :class="{ active: type.type === $route.query.type }"
-                      :to="{
-                          name: 'data',
-                          query: {
-                          type: type.type,
-                          q: $route.query.q
-                        }
-                      }">
-                  {{ type.label }}
+            <nuxt-link
+              class="search-tabs__button"
+              :class="{ active: type.type === $route.query.type }"
+              :to="{
+                name: 'data',
+                query: {
+                  type: type.type,
+                  q: $route.query.q
+                }
+              }"
+            >
+              {{ type.label }}
             </nuxt-link>
           </li>
         </ul>
@@ -26,10 +28,12 @@
         <h5>
           Search within category
         </h5>
-        <search-form v-model="searchQuery"
-                    :q="q"
-                    @search="submitSearch"
-                    @clear="clearSearch" />
+        <search-form
+          v-model="searchQuery"
+          :q="q"
+          @search="submitSearch"
+          @clear="clearSearch"
+        />
       </div>
     </div>
     <div class="page-wrap container">
@@ -103,7 +107,9 @@
               <div v-loading="isLoadingSearch" class="table-wrap">
                 <component
                   :is="searchResultsComponent"
+                  :key="tableMetadata.size"
                   :table-data="tableData"
+                  :table-metadata="tableMetadata"
                   :title-column-width="titleColumnWidth"
                   @sort-change="handleSortChange"
                 />
@@ -153,7 +159,6 @@ import {
   find,
   filter,
   head,
-  map,
   mergeLeft,
   pathOr,
   propEq,
@@ -214,6 +219,7 @@ const searchData = {
   limit: 10,
   skip: 0,
   items: [],
+  kCoreItems: new Map(),
   order: undefined,
   ascending: false
 }
@@ -224,7 +230,7 @@ const getEmbargoedFilter = (searchType, datasetFilters) => {
   const filters = Array.isArray(datasetFilters)
     ? datasetFilters
     : [datasetFilters]
-  if (searchType !== 'dataset'){
+  if (searchType !== 'dataset') {
     return
   }
   if (filters.includes('Embargoed') && !filters.includes('Public')) {
@@ -233,7 +239,7 @@ const getEmbargoedFilter = (searchType, datasetFilters) => {
   if (!filters.includes('Embargoed') && filters.includes('Public')) {
     return 'embargo:false'
   }
-  return '';
+  return ''
 }
 
 import createClient from '@/plugins/contentful.js'
@@ -242,7 +248,8 @@ import { handleSortChange, transformFilters } from './utils'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaSearchIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER')
+const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER')
+const algoliaKCoreIndex = algoliaClient.initIndex('UCSD K-Core')
 
 export default {
   name: 'DataPage',
@@ -297,6 +304,10 @@ export default {
       return propOr([], 'items', this.searchData)
     },
 
+    tableMetadata: function() {
+      return propOr(new Map(), 'kCoreItems', this.searchData)
+    },
+
     /**
      * Compute which search results component to display based on the type of search
      * @returns {Function}
@@ -319,10 +330,6 @@ export default {
      * @returns {String}
      */
     searchHeading: function() {
-      const start = this.searchData.skip + 1
-      const pageRange = this.searchData.limit * this.curSearchPage
-      const end =
-        pageRange < this.searchData.total ? pageRange : this.searchData.total
       const query = pathOr('', ['query', 'q'], this.$route)
 
       const searchTypeLabel = compose(
@@ -512,27 +519,59 @@ export default {
       this.isLoadingSearch = true
 
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      const embargoedFilter = getEmbargoedFilter(searchType, this.datasetFilters);
+      const embargoedFilter = getEmbargoedFilter(
+        searchType,
+        this.datasetFilters
+      )
       const query = this.$route.query.q
-      const organizationNameFilter = searchType === 'simulation'
-          ? "IT'IS Foundation"
-          : "SPARC Consortium";
+      const organizationNameFilter =
+        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
 
-      const filters = `${embargoedFilter === undefined || embargoedFilter.length === 0 ? '' : embargoedFilter + " AND "}organizationName:"${organizationNameFilter}"`
+      const filters = `${
+        embargoedFilter === undefined || embargoedFilter.length === 0
+          ? ''
+          : embargoedFilter + ' AND '
+      }organizationName:"${organizationNameFilter}"`
 
-      algoliaSearchIndex.search(query, {
-        hitsPerPage: this.searchData.limit,
-        page: this.curSearchPage - 1,
-        filters: filters,
-      }).then(response => {
+      algoliaPennseiveIndex
+        .search(query, {
+          hitsPerPage: this.searchData.limit,
+          page: this.curSearchPage - 1,
+          filters: filters
+        })
+        .then(response => {
           const searchData = {
             items: response.hits,
             total: response.nbHits
           }
           this.searchData = mergeLeft(searchData, this.searchData)
-        }).finally(() => {
+        })
+        .finally(() => {
+          this.fetchItemsFromKCore()
+        })
+    },
+
+    fetchItemsFromKCore: function() {
+      // Get all the Penseive items and find their corresponding KCore item by searching for their doi
+      const dois = this.searchData.items.map(
+        item => `item.docid:"DOI:${item.doi}"`
+      )
+      const doisFilter = dois.join(' OR ')
+      algoliaKCoreIndex
+        .search('', {
+          filters: doisFilter
+        })
+        .then(response => {
+          response.hits.map(hit =>
+            this.searchData.kCoreItems.set(
+              hit.item.docid.replace('DOI:', ''),
+              hit
+            )
+          )
+        })
+        .finally(() => {
           this.isLoadingSearch = false
-        });
+        })
     },
 
     /**
@@ -823,19 +862,19 @@ export default {
 }
 .search-tabs__container {
   margin-top: 2rem;
-  padding-top: .5rem;
+  padding-top: 0.5rem;
   background-color: white;
-  border: .1rem solid $purple-gray;
+  border: 0.1rem solid $purple-gray;
   h3 {
-    padding-left: .75rem;
+    padding-left: 0.75rem;
     font-weight: 600;
     font-size: 1.5rem;
   }
 }
 .search-bar__container {
   margin-top: 1em;
-  padding: .75rem;
-  border: .1rem solid $purple-gray;
+  padding: 0.75rem;
+  border: 0.1rem solid $purple-gray;
   background: white;
   h5 {
     line-height: 1rem;
@@ -849,7 +888,7 @@ export default {
   overflow: auto;
   margin: 0 0 0 0;
   padding: 0 0;
-  outline: .1rem solid $median;
+  outline: 0.1rem solid $median;
   li {
     width: 100%;
     text-align: center;
@@ -868,14 +907,16 @@ export default {
   padding: 0;
   text-decoration: none;
   text-transform: uppercase;
-  border-right: .1rem solid $median;
+  border-right: 0.1rem solid $median;
   line-height: 3.5rem;
   @media (min-width: 48em) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
   }
-  &:hover, &:focus, &.active {
+  &:hover,
+  &:focus,
+  &.active {
     color: white;
     background-color: $median;
     font-weight: 500;
