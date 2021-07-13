@@ -100,7 +100,7 @@
         </el-row>
 
         <h2>Community Spotlight</h2>
-        <community-spotlight-listings :stories="stories.items" :in-news="true" />
+        <community-spotlight-listings :stories="shownStories" :in-news="true" />
 
         <h2>Stay Connected</h2>
         <div class="subpage">
@@ -226,6 +226,13 @@ export default Vue.extend<Data, Methods, Computed, never>({
      */
     featuredEvent: function() {
       return this.page.fields.featuredEvent || {}
+    },
+    /**
+     * Filter to only show two stories
+     * @returns {Array}
+     */
+    shownStories: function() {
+      return this.stories.items.slice(0,2)
     }
   },
 
