@@ -102,7 +102,8 @@ export default {
         path: '/datasets/:datasetId/version/:version',
         component: '@/pages/datasets/_datasetId.vue'
       })
-    }
+    },
+    base: "/sparc-app"
   },
   /*
    ** Global CSS

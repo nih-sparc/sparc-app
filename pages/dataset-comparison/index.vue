@@ -4,30 +4,12 @@
     <div class="container">
       <div class="search-tabs__container">
         <h3>
-          Compare Datasets
+          KnowMore about your Datasets
         </h3>
-        <ul class="search-tabs">
-          <li v-for="type in comparisonDataTypes" :key="type.label">
-            <nuxt-link
-              class="search-tabs__button"
-              :class="{ active: type.type === 'image' }"
-              :disabled="type.type !== 'image'"
-              :to="{
-                name: 'dataset-comparison',
-                query: {
-                  type: type.type,
-                  q: $route.query.q
-                }
-              }"
-            >
-              {{ type.label }}
-            </nuxt-link>
-          </li>
-        </ul>
       </div>
       <div class="search-bar__container">
         <h5>
-          Add datasets to compare
+          Add datasets to KnowMore about
         </h5>
         <div class="add-ds-form" @keyup.enter="$emit('search')">
           <div class="input-wrap">
@@ -84,21 +66,26 @@
           </div>
           <el-row :gutter="32">
             <el-col
-              v-if="comparisonDataType.type === 'image'"
               :sm="24"
               :md="6"
               :lg="4"
             >
               <div class="dataset-filters table-wrap">
-                <h2>Fake Checkboxes:</h2>
-                <h3>Options</h3>
+                <h2>Toggle Visualizations: </h2>
+                <h3>(Not yet working)</h3>
                 <div class="dataset-filters__filter-group">
                   <el-checkbox-group
                     v-model="datasetFilters"
                     @change="setDatasetFilter"
                   >
-                    <el-checkbox label="Public" />
-                    <el-checkbox label="Embargoed" />
+                    <div
+                      v-for="discoveryDataType in discoveryDataTypes"  
+                    >
+                      <el-checkbox 
+                        :label="discoveryDataType.label" 
+                        :disabled="discoveryDataType.disabled"
+                      />
+                    </div>
                   </el-checkbox-group>
                 </div>
               </div>
@@ -111,7 +98,7 @@
               <div
                 v-if="datasetsToCompare.length > 0"
               >
-                <h3>Datasets to Compare:</h3>
+                <h3>Datasets Ready for Discovery:</h3>
                 <el-row type="flex" v-for="dataset in datasetsToCompare" :key="dataset.text" class="dataset-row">
                   <div>
                     <svg-icon
@@ -137,7 +124,7 @@
               :disabled="datasetsToCompare.length == 0"
             >
               <span>
-                Compare (Fake Button)
+                Discover
               </span>
             </el-button>
             <el-col
@@ -145,7 +132,25 @@
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
             >
-              <div v-loading="isLoadingComparison" class="table-wrap">
+              <div class="">
+                Currently showing results for:
+                <div v-if="datasetsCurrentlyBeingCompared.length == 0" class="">
+                  (None Selected)
+                </div>
+                <div v-if="datasetsCurrentlyBeingCompared.length > 0" class="">
+                  <div v-for="ds in datasetsCurrentlyBeingCompared" class="">
+                    {{ ds.name }}
+                  </div>
+                </div>
+              </div>
+              <br />
+
+              <div v-for="discoveryDataType in discoveryDataTypes" class="">
+                <dataset-discovery-visualization-wrapper 
+                   v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type)"
+                   :visualizationType="discoveryDataType"
+                   :datasetsToCompare="datasetsCurrentlyBeingCompared"
+                />
               </div>
             </el-col>
           </el-row>
@@ -175,24 +180,28 @@ import {
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import DatasetDiscoveryVisualizationWrapper from '@/components/DatasetDiscoveryVisualization/DatasetDiscoveryVisualizationWrapper.vue'
 
 
-const comparisonDataTypes = [
+const discoveryDataTypes = [
   {
-    label: 'Image',
-    type: 'image',
-    disabled: false,
-  },
-  {
-    label: 'Metadata',
-    // leave the type off, it feels more disabled
-    //type: 'metadata',
+    label: 'Image Clusters',
+    type: 'imageCluster',
     disabled: true,
   },
   {
-    label: 'Full-Text',
-    // leave the type off, it feels more disabled
-    //type: 'full-text',
+    label: 'NLP',
+    type: 'nlp',
+    disabled: true,
+  },
+  {
+    label: 'Graph',
+    type: 'graph',
+    disabled: false,
+  },
+  {
+    label: 'Tabular Data Clustering',
+    type: 'tabularDataClustering',
     disabled: true,
   }
 ]
@@ -208,7 +217,6 @@ const searchData = {
 const datasetFilters = ['Public']
 
 import createClient from '@/plugins/contentful.js'
-import { handleSortChange, transformFilters } from './utils'
 
 const client = createClient()
 
@@ -218,6 +226,7 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
+    DatasetDiscoveryVisualizationWrapper,
   },
 
   mixins: [],
@@ -226,13 +235,23 @@ export default {
     return {
       searchQuery: '',
       filters: [],
-      comparisonDataTypes,
+      discoveryDataTypes,
       previewData: null,
       searchData: clone(searchData),
       isLoadingDatasetPreview: false,
       isLoadingComparison: false,
+      // start with all types active
+      activeDiscoveryDataTypes: discoveryDataTypes.map((dt) => (dt.type)),
+      // preview string (currently just using string) of dataset whose id user selected
       toAddPreview: "",
 
+      /**
+      * datasets that were compared when they last clicked the button, OR when component first mounted
+      - initializes from the store
+      - after that, waits for the user to press "discover" to sync with the store
+      *
+      */
+      datasetsCurrentlyBeingCompared: [],
       breadcrumb: [
         {
           to: {
@@ -243,11 +262,15 @@ export default {
       ],
       titleColumnWidth: 300,
       windowWidth: '',
-      datasetFilters: [...datasetFilters]
+      datasetFilters: [...datasetFilters],
     }
   },
 
   computed: {
+    /**
+    * datasets that are queued up to be compared when they click the button, OR when component first mounts
+    *
+    */
     datasetsToCompare: function() {
       const toCompare = this.$store.state.datasetComparison.toCompare
 
@@ -262,14 +285,6 @@ export default {
     },
 
 
-    /**
-     * Compute search type
-     * @returns {String}
-     */
-    comparisonDataType: function() {
-      // TODO add more options
-      return {type: "image"}
-    },
 
     /**
      * list of datasets we are comparing
@@ -296,14 +311,17 @@ export default {
 
   beforeMount: function() {
     this.windowWidth = window.innerWidth
+    // on mount, intialize what we compare using what was calculated from te store
+    this.datasetsCurrentlyBeingCompared = clone(this.datasetsToCompare)
   },
+
   /**
-   * Check the comparisonDataType param in the route and set it if it doesn't exist
+   * Check the discoveryDataType param in the route and set it if it doesn't exist
    * Shrink the title column width if on mobile
    */
   mounted: function() {
     if (!this.$route.query.type) {
-      const firstTabType = compose(propOr('', 'type'), head)(comparisonDataTypes)
+      const firstTabType = compose(propOr('', 'type'), head)(discoveryDataTypes)
 
       this.$router.replace({ query: { type: firstTabType } })
     } else {
@@ -334,6 +352,7 @@ export default {
     compareDatasets (e) {
       // TODO 
       console.log("this will compare the datasets")
+      this.datasetsCurrentlyBeingCompared = clone(this.datasetsToCompare)
     },
 
     addDataset (e) {
@@ -442,14 +461,12 @@ export default {
 
     /**
      * Compute search column span
-     * Determined if the comparisonDataType === 'dataset'
      */
     searchColSpan(viewport) {
-      const isDataset = this.comparisonDataType.type === 'dataset'
       const viewports = {
-        sm: isDataset ? 24 : 24,
-        md: isDataset ? 18 : 24,
-        lg: isDataset ? 20 : 24
+        sm: 24,
+        md: 24,
+        lg: 24
       }
 
       return viewports[viewport] || 24

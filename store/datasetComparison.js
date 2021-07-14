@@ -5,7 +5,6 @@ export const state = () => ({
     // {
     //   name: "Vagus Dataset 1",
     //   id: "156",
-    //   text: "test",
     //   // ...
     //   // and so on
     // }
