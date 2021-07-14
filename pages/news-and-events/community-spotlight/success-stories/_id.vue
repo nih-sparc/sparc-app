@@ -45,7 +45,7 @@
                 Published Date
               </div>
               <div class="story-field">
-                {{ entry.publishDate }}
+                {{ formatDate(entry.publishDate) }}
               </div>
               <br />
             </template>
@@ -133,10 +133,10 @@
       <nuxt-link
         class="community-link mt-16"
         :to="{
-          name: 'news-and-events-community-spotlight-success-stories'
+          name: 'news-and-events-community-spotlight'
         }"
       >
-        View All Success Stories &gt;
+        View All Community Spotlights &gt;
       </nuxt-link>
     </div>
   </div>
@@ -151,6 +151,7 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+import FormatDate from '@/mixins/format-date'
 
 // options for rendering contentful rich text. Modified from:
 // https://www.contentful.com/blog/2021/04/14/rendering-linked-assets-entries-in-contentful/
@@ -194,6 +195,7 @@ export default {
     Breadcrumb,
     PageHero
   },
+  mixins: [FormatDate],
   async asyncData({ route }) {
     try {
       const results = await client.getEntries({
@@ -236,12 +238,6 @@ export default {
           label: 'Community Spotlight',
           to: {
             name: 'news-and-events-community-spotlight'
-          }
-        },
-        {
-          label: 'Success Stories',
-          to: {
-            name: 'news-and-events-community-spotlight-success-stories'
           }
         }
       ]

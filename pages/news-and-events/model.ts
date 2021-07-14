@@ -134,7 +134,8 @@ export interface Data {
 }
 
 export interface Computed {
-  featuredEvent: EventsEntry
+  featuredEvent: EventsEntry,
+  shownStories: StoryCollection
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
