@@ -239,12 +239,6 @@ export default {
           to: {
             name: 'news-and-events-community-spotlight'
           }
-        },
-        {
-          label: 'Success Stories',
-          to: {
-            name: 'news-and-events-community-spotlight-success-stories'
-          }
         }
       ]
     }
