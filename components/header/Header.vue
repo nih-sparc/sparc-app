@@ -114,7 +114,7 @@
               </div>
             </div>
           </div>
-          <div class="nav-main-container__search" v-if="shouldShowSearch">
+          <div v-if="shouldShowSearch" class="nav-main-container__search">
             <el-input
               v-model="searchQuery"
               type="text"

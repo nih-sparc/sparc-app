@@ -532,7 +532,7 @@ export default {
           ? ''
           : embargoedFilter + ' AND '
       }organizationName:"${organizationNameFilter}"`
-
+      
       algoliaPennseiveIndex
         .search(query, {
           hitsPerPage: this.searchData.limit,

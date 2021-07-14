@@ -99,6 +99,9 @@
           </el-col>
         </el-row>
 
+        <h2>Community Spotlight</h2>
+        <community-spotlight-listings :stories="stories.items" :in-news="true" />
+
         <h2>Stay Connected</h2>
         <div class="subpage">
           <el-row :gutter="32">
@@ -142,7 +145,8 @@ import MarkedMixin from '@/mixins/marked'
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection } from './model';
+import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection, StoryCollection } from './model';
+import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
@@ -163,7 +167,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
     TabNav,
     SearchControlsContentful,
     NewsletterForm,
-    FeaturedEvent
+    FeaturedEvent,
+    CommunitySpotlightListings
   },
 
   asyncData() {
@@ -173,11 +178,12 @@ export default Vue.extend<Data, Methods, Computed, never>({
   watch: {
     '$route.query': {
       handler: async function(this: NewsAndEventsComponent) {
-        const { upcomingEvents, pastEvents, news, page } = await fetchData(client, this.$route.query.search as string, 2)
+        const { upcomingEvents, pastEvents, news, page, stories } = await fetchData(client, this.$route.query.search as string, 2)
         this.upcomingEvents = upcomingEvents;
         this.pastEvents = pastEvents;
         this.news = news;
         this.page = page;
+        this.stories = stories;
       },
       immediate: true
     }
@@ -208,7 +214,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
       upcomingEvents: {} as EventsCollection,
       pastEvents: {} as EventsCollection,
       news: {} as NewsCollection,
-      page: {} as PageEntry
+      page: {} as PageEntry,
+      stories: {} as StoryCollection
     }
   },
 
