@@ -50,20 +50,25 @@
           {{ scope.row.description }}
         </div>
         <table class="property-table">
-          <tr v-for="(property, index) in PROPERTY_DATA" :key="index">
+          <tr
+            v-for="(property, index) in PROPERTY_DATA"
+            v-show="
+              property.propPath === 'createdAt' ||
+                getPropertyValue(tableMetadata.get(scope.row.doi), property)
+            "
+            :key="index"
+          >
             <td class="property-name-column">
               {{ property.displayName }}
             </td>
             <td>
               {{
-                `${
-                  property.propName === 'createdAt'
-                    ? formatDate(scope.row[`${property.propName}`]) +
-                      ' (Last updated ' +
-                      formatDate(scope.row.updatedAt) +
-                      ')'
-                    : scope.row[`${property.propName}`]
-                }`
+                property.propPath === 'createdAt'
+                  ? formatDate(scope.row.createdAt) +
+                    ' (Last updated ' +
+                    formatDate(scope.row.updatedAt) +
+                    ')'
+                  : getPropertyValue(tableMetadata.get(scope.row.doi), property)
               }}
             </td>
           </tr>
@@ -79,6 +84,7 @@ import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 import { onSortChange } from '@/pages/data/utils'
 import { pathOr } from 'ramda'
+import _ from 'lodash'
 
 export default {
   name: 'DatasetSearchResults',
@@ -91,6 +97,10 @@ export default {
     tableData: {
       type: Array,
       default: () => []
+    },
+    tableMetadata: {
+      type: Map,
+      default: () => new Map()
     }
   },
 
@@ -99,8 +109,28 @@ export default {
       sortOrders: ['ascending', 'descending'],
       PROPERTY_DATA: [
         {
+          displayName: 'Anatomical Structure',
+          propPath: 'anatomy.organ'
+        },
+        {
+          displayName: 'Species',
+          propPath: 'organisms.primary[0].species.name'
+        },
+        {
+          displayName: 'Techniques',
+          propPath: 'item.techniques'
+        },
+        {
+          displayName: 'Samples',
+          propPath: 'item.statistics'
+        },
+        {
           displayName: 'Publication Date',
-          propName: 'createdAt'
+          propPath: 'createdAt'
+        },
+        {
+          displayName: 'Includes',
+          propPath: 'publication'
         }
       ]
     }
@@ -118,6 +148,45 @@ export default {
   },
 
   methods: {
+    getPropertyValue: function(item, property) {
+      if (item == undefined) {
+        return undefined
+      }
+      switch (property.displayName) {
+        case 'Anatomical Structure': {
+          const organs = _.get(item, property.propPath)
+          return organs
+            ? organs.map(item => _.upperFirst(item.name)).join(', ')
+            : undefined
+        }
+        case 'Includes': {
+          return _.get(item, property.propPath) ? undefined : 'Publications'
+        }
+        case 'Samples': {
+          const sampleCount = _.get(item, property.propPath + '.samples.count')
+          const subjectCount = _.get(
+            item,
+            property.propPath + '.subjects.count'
+          )
+          return sampleCount && subjectCount
+            ? `${sampleCount} samples from ${subjectCount} subjects`
+            : undefined
+        }
+        case 'Techniques': {
+          const techniques = _.get(item, property.propPath)
+          return techniques
+            ? techniques
+                .map(item => _.upperFirst(item.keyword))
+                .join(', ')
+                .replaceAll(' technique', '')
+            : undefined
+        }
+        default: {
+          return _.get(item, property.propPath)
+        }
+      }
+    },
+
     onSortChange: function(payload) {
       onSortChange(this, payload)
     }
@@ -129,6 +198,11 @@ export default {
 .el-table {
   width: 100%;
 }
+
+.el-table--enable-row-hover .el-table__body tr {
+  background-color: transparent;
+}
+
 .img-dataset {
   display: block;
   position: relative;
@@ -144,9 +218,11 @@ export default {
 }
 .property-table {
   td {
+    background-color: transparent;
     padding: 0.25rem 0 0 0;
     border: none;
   }
+  background-color: transparent;
   border: none;
   padding: 0;
 }
