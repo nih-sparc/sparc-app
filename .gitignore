@@ -109,3 +109,6 @@ sw.*
 # Certifact files
 .certs/
 
+# custom stuff I added  for hackathon 2021, to make sure it doesn't get in repo
+run-dev.sh
+.nvmrc

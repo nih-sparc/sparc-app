@@ -1,10 +1,13 @@
 <template>
   <div class="">
     <h3>{{ visualizationType.label }}</h3>
-    <div v-loading="isLoading" class="">
+    <div class="">
       <component
         :is="visualizationComponent"
         :datasetsInfo="datasetsInfo"
+        :isLoading="isLoading"
+        @loading="setToLoadingState(true)"
+        @notLoading="setToLoadingState(false)"
       />
     </div>
   </div>
@@ -66,7 +69,7 @@ export default {
 
   data() {
     return {
-      isLoading: true,
+      isLoading: false,
     }
   },
 
@@ -76,11 +79,19 @@ export default {
      * @returns {Function}
      */
     visualizationComponent: function() {
-      return defaultTo('', visualizationComponents[this.visualizationType])
+      return defaultTo('', visualizationComponents[this.visualizationType.type])
     },
   },
 
+
+  beforeMount: function() {
+    this.windowWidth = window.innerWidth
+  },
+
   methods: {
+    setToLoadingState (status = false) {
+      this.isLoading = status
+    }
   }
 }
 </script>

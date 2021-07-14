@@ -78,7 +78,13 @@ export default {
 
   serverMiddleware: [
     // Will register redirect-ssl npm package
-    'redirect-ssl'
+    'redirect-ssl',
+    {
+      // don't add the router base ("sparc-app") to routes
+      prefix: false,
+      path: "/dataset-discovery-api", 
+      handler: '~/server-middleware/dataset-discovery-api'
+    }
   ],
 
   /*
