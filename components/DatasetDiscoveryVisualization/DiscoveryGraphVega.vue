@@ -9,6 +9,26 @@
 
 <script>
 
+// import generateVegaSpec from './graph-spec.testing.js'
+import generateVegaSpec from './graph-spec.js'
+//import generateVegaSpec from './graph-spec.simple.js'
+// following this: https://vega.github.io/vega/examples/force-directed-layout/
+import {
+  assocPath,
+  clone,
+  compose,
+  defaultTo,
+  equals,
+  flatten,
+  find,
+  filter,
+  head,
+  mergeLeft,
+  pathOr,
+  propEq,
+  propOr,
+  pluck
+} from 'ramda'
 export default {
   name: 'DiscoveryGraphVega',
 
@@ -45,21 +65,45 @@ export default {
   },
 
   methods: {
-    refreshVis () {
+    async refreshVis () {
+      // NOTE !!! The key is that edges will be changed dynamically by the path transform. Need to clone this or something to make sure that links don't get stuck with their original values
+      const vegaSpec = clone(generateVegaSpec(nodes, edges))
       console.log("refreshing vega chart")
-      const spec = "https://vega.github.io/vega/examples/bar-chart.vg.json";
+      const edges = []
+      const nodes = []
+      console.log("vega spec", vegaSpec)
+      this.isReady = false
+
+      const options = {
+        renderer:  'svg',  // renderer (canvas or svg)
+        container: '#discovery-graph-vis',   // parent DOM container
+        // only for vega embed I believe, not regular vega
+        actions: {
+          export: true, 
+          source: true
+        },
+        // hover:     true,       // enable hover processing
+      }
 
       // vegaEmbed should be global, pulled from cdn
       // NOTE another way to get around this is to call window from the mounted or beforeMount hooks only. But then we might have trouble when trying to refresh the graph...
       if (vegaEmbed) {
-        vegaEmbed("#discovery-graph-vis", spec)
+        try {
+          const result = await vegaEmbed('#discovery-graph-vis', vegaSpec, options)
           // result.view provides access to the Vega View API
-          .then(result => {
-            this.isReady = true
-            console.log(result)
-          })
-          .catch(console.warn);
+          this.isReady = true
+          console.log(result)
+
+        } catch (err) {
+          console.error(err)
+        }
       }
+
+
+      // if using vega view without vega embed
+      // console.log(vegaSpec)
+      // let view = new vega.View(vega.parse(vegaSpec), options)
+      // view.runAsync();
     }
   }
 }
