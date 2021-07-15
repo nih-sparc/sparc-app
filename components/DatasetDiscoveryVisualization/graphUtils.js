@@ -15,7 +15,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 	//     "label": 1
 	// },
 
-	const nodes = []
+	let nodes = []
 
 	// edge entry schema:
 	// {
@@ -56,8 +56,8 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 			label: "award"
 		})
 		edges.push({
-	    source: datasetID,
-			target: id,
+	    sourceId: datasetID,
+			targetId: id,
 			label: "receivedAward"
 		})
 	}) 
@@ -82,8 +82,8 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		})
 
 		edges.push({
-	    source: datasetID,
-			target: id,
+	    sourceId: datasetID,
+			targetId: id,
 			label: "isOwnedBy"
 		})
 	} 
@@ -107,8 +107,8 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		})
 
 		edges.push({
-	    source: datasetID,
-			target: id,
+	    sourceId: datasetID,
+			targetId: id,
 			label: "hasOrganization"
 		})
 	} 
@@ -131,8 +131,8 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		})
 
 		edges.push({
-	    source: id,
-			target: datasetID,
+	    sourceId: id,
+			targetId: datasetID,
 			label: "contributedTo"
 		})
 
@@ -151,17 +151,30 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 				})
 
 				edges.push({
-					source: id,
-					target: affiliationID,
+					sourceId: id,
+					targetId: affiliationID,
 					label: "hasAffiliation"
 				})
 			}) 
 		}
 	}) 
 
-	// add ids for all edges
+	// add "index" for all nodes (maybe it's needed after all, having trouble getting it working without this)
+	// looks like it might need 
+	nodes = nodes.map((n, index) => {
+		n.index = index
+
+		return n
+	})
+
+	// add unique ids for all edges, to identify the edges
 	edges = edges.map(e => {
-		e.id = `${e.source}->${e.target}`
+		e.id = `${e.sourceId}->${e.targetId}`
+		// reference the index of the source and target nodes. 
+		// Have to use the specific keys "source" and "target"
+		// - https://vega.github.io/vega/docs/transforms/force/#link
+		e.source = nodes.find(n => n.id == e.sourceId).index
+		e.target = nodes.find(n => n.id == e.targetId).index
 
 		return e
 	})
@@ -182,5 +195,7 @@ function nameForPerson (person) {
 export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 	const nodes = []
 	const edges = []
+	console.warn("WARNING not yet implemented pennsieve record graph entities")
+
 	return {nodes, edges}
 }

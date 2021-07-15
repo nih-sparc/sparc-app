@@ -1,7 +1,8 @@
 import fakeData from './miserables.json'
 //import fakeData from './miserables.small-sample.json'
 
-export default (nodes, edges) => {
+export default (graphData) => {
+  const { nodes, edges } = graphData
   // for now just use their sample code raw
   // https://vega.github.io/vega/examples/force-directed-layout/
   // TODO for some reason, doesn't work. Has more functionality though
@@ -74,13 +75,15 @@ export default (nodes, edges) => {
 			{
 				"name": "node-data",
 				//"url": "https://vega.github.io/editor/data/miserables.json",
-				"values": fakeData.nodes,
+				"values": nodes,
 				"format": {"type": "json"}
 			},
 			{
+				// each record in this array should have a "source" and "target" property, as required by the "links" force 
+				// https://vega.github.io/vega/docs/transforms/force/#link
 				"name": "link-data",
 				//"url": "https://vega.github.io/editor/data/miserables.json",
-				"values": fakeData.links,
+				"values": edges,
 				"format": {"type": "json"}
 			}
 		],
@@ -95,6 +98,7 @@ export default (nodes, edges) => {
 		],
 
 		"marks": [
+			// draw the nodes circles
 			{
 				"name": "nodes",
 				"type": "symbol",
@@ -124,6 +128,7 @@ export default (nodes, edges) => {
 					}
 				},
 
+				// this scatters/draws together the nodes from each other based on various factors (the "forces" array)
 				"transform": [
 					{
 						"type": "force",
@@ -140,13 +145,25 @@ export default (nodes, edges) => {
 							{"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
 							{"force": "collide", "radius": {"signal": "nodeRadius"}},
 							{"force": "nbody", "strength": {"signal": "nodeCharge"}},
-							{"force": "link", "links": "link-data", "distance": {"signal": "linkDistance"}}
+							// https://vega.github.io/vega/docs/transforms/force/#link
+							{
+								"force": "link", 
+								"links": "link-data", 
+								"distance": {"signal": "linkDistance"}
+							}
 						]
 					}
 				]
 			},
 
 			// https://vega.github.io/vega/docs/marks/path/
+			// this draws the edge itself. 
+			// - instead of setting a specific path/angle/scalex/scaley, using special linkpath transform,
+			// which is just for paths
+			// https://vega.github.io/vega/docs/transforms/linkpath/
+			// - literally just draws the lines - without this, links still have a "force" on the nodes,
+			// pulling them from going too far from each other (due to the "forces" mark) but the lines
+			// are not drawn
 			{
 				"type": "path",
 				"from": {"data": "link-data"},
@@ -175,3 +192,4 @@ export default (nodes, edges) => {
 
   return spec
 }
+

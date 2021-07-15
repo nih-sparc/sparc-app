@@ -113,7 +113,7 @@
                   </div>
                   <img
                     class="dataset-preview-img"
-                    v-bind:src="dataset.imageUrl"
+                    v-bind:src="dataset.banner"
                   />
                 </el-row>
               </div>
@@ -145,7 +145,7 @@
               </div>
               <br />
 
-              <div v-for="discoveryDataType in discoveryDataTypes" class="">
+              <div v-if="datasetsCurrentlyBeingCompared.length > 0" v-for="discoveryDataType in discoveryDataTypes" class="">
                 <dataset-discovery-visualization-wrapper 
                    v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type)"
                    :visualizationType="discoveryDataType"
@@ -439,17 +439,6 @@ export default {
           datasetType === 'simulation'
             ? await this.$axios.$get(simulationUrl)
             : await this.$axios.$get(datasetUrl)
-
-        const datasetOwnerId = datasetDetails.ownerId || ''
-        const datasetOwnerEmail = await this.$axios
-          .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-          .then(resp => {
-            return resp.email
-          })
-          .catch(() => {
-            return ''
-          })
-        datasetDetails.ownerEmail = datasetOwnerEmail
 
         return datasetDetails
       } catch (error) {

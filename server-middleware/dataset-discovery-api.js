@@ -25,6 +25,18 @@ async function fetchInParallel (doiIDs) {
   const bodyBase = {
 		size: 10,
 		from: 0,
+		// get only fields we need, for faster response times
+		_source: [
+			"item.keywords",
+			"item.description",
+			"item.name",
+			"item.identifier",
+			"item.docid",
+			"item.curie",
+			"contribuors",
+			"supportingAwards",
+			"pennsieve"
+		],
 		query: {}
   }
   const queryStringBase = {

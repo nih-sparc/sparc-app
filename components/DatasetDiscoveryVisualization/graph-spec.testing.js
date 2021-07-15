@@ -1,5 +1,7 @@
-import fakeData from './miserables.json'
+//import fakeData from './miserables.json'
 //import fakeData from './miserables.small-sample.json'
+import fakeData from './miserables.string-keys-sample.json'
+console.log("fake data:", fakeData)
 
 export default (nodes, edges) => {
 	// started from here, 
@@ -38,16 +40,27 @@ export default (nodes, edges) => {
 			{
 				"name": "node-data",
 				//"url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/miserables.json",
-				//"format": {"type": "json", "property": "nodes"}
+				//"format": {"type": "json", "propert, "property": "links"y": "nodes"}
 				"values": fakeData.nodes,
 				"format": {"type": "json"}
 			},
 			{
 				"name": "link-data",
-				"url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/miserables.json",
-				 "format": {"type": "json", "property": "links"}
-				//"values": fakeData.links,
+				//"url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/miserables.json",
+				 "format": {"type": "json"},
+				"values": fakeData.links,
 				//"format": {"type": "json"}
+				transform: [
+					{
+						"type": "lookup",
+						"from": "node-data",
+						// key of the nodes to lookup
+						"key": "index",
+						// fields from the link-data to use to reference the node
+						"fields": ["source", "target"],
+						"as": ["sourceNode", "targetNode"]
+					},
+				]
 			}
 		],
 
@@ -74,7 +87,7 @@ export default (nodes, edges) => {
 							{"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
 							{"force": "collide", "radius": 5},
 							{"force": "nbody", "strength": -10},
-							{"force": "link", "links": "link-data", "distance": 15}
+							{"force": "link", "links": "link-data", "distance": 25, "id": "id"}
 						]
 					}
 				]

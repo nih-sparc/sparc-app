@@ -36,7 +36,7 @@ export default {
     this.refreshVis()
   },
   watch: {
-    graphData: {
+    graphEntities: {
       immediate: true,
       handler (values, oldValues) {
         this.refreshVis(values)
@@ -47,11 +47,13 @@ export default {
   props: {
     /**
     * info about each dataset we're comparing
+    * - has two keys, nodes nad edges
+    * - keep it one prop, since they should always be sent together, and so triggers / watchers know which one prop to watch
     *
     */
-    graphData: {
+    graphEntities: {
       type: Object,
-      default: () => {{}},
+      default: () => [],
     },
   },
 
@@ -65,12 +67,12 @@ export default {
   },
 
   methods: {
+    // reloads the current data into the chart, refreshing the chart
     async refreshVis () {
       // NOTE !!! The key is that edges will be changed dynamically by the path transform. Need to clone this or something to make sure that links don't get stuck with their original values
-      const vegaSpec = clone(generateVegaSpec(nodes, edges))
+      const vegaSpec = clone(generateVegaSpec(this.graphEntities))
+
       console.log("refreshing vega chart")
-      const edges = []
-      const nodes = []
       console.log("vega spec", vegaSpec)
       this.isReady = false
 
