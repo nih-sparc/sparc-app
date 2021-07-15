@@ -80,10 +80,10 @@ export default {
     // Will register redirect-ssl npm package
     'redirect-ssl',
     {
-      // don't add the router base ("sparc-app") to routes
-      prefix: false,
+      // NOTE using prefix by default, so make sure add the router base ("/sparc-app") to routes
       path: "/dataset-discovery-api", 
-      handler: '~/server-middleware/dataset-discovery-api'
+      handler: '~/server-middleware/dataset-discovery-api',
+      // prefix: true,
     }
   ],
 

@@ -149,7 +149,7 @@
                 <dataset-discovery-visualization-wrapper 
                    v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type)"
                    :visualizationType="discoveryDataType"
-                   :datasetsToCompare="datasetsCurrentlyBeingCompared"
+                   :datasetsInfo="datasetsCurrentlyBeingCompared"
                 />
               </div>
             </el-col>

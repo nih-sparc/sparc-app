@@ -1,6 +1,6 @@
 <template>
   <div v-loading="isLoading" class="">
-    vis
+    {{ enrichedData }}
   </div>
 </template>
 
@@ -25,6 +25,7 @@ export default {
 
   data() {
     return {
+      enrichedData: {},
     }
   },
 
@@ -42,14 +43,38 @@ export default {
   },
 
   methods: {
+    /**
+    * takes the updated data and updates the visualization
+    */
+    updateVis (enrichedData) {
+      // TODO eventually this will do more than set this var, will actually create the chart
+      console.log("updateing vis")
+      this.enrichedData = enrichedData
+    },
+
+    /**
+    * takes the dataset info and queries our express server, returning the enriched data we'll need to create the visualization
+    */
+    async retrieveFromApi (datasetsInfo) {
+      const { data } = await this.$axios.get("/sparc-app/dataset-discovery-api/enrich-data-for-datasets", {
+        params: {
+          // send just the DOI id we retrieved from pennsieve api
+          datasetDOIIds: datasetsInfo.map(d => d.doi)
+        }
+      })
+
+      console.log("response from our frontend server:", data)
+      return data
+    },
+
     async refreshVisualization (datasetsInfo) {
       this.$emit('loading')
 
       try {
-        const { data } = await this.$axios.get("/dataset-discovery-api/test")
+        const enrichedData = await this.retrieveFromApi(datasetsInfo)
+        this.updateVis(enrichedData)
 
-        console.log("response from our frontend server:", data)
-        return data
+        return enrichedData
 
       } catch (err) {
         console.error(err)
