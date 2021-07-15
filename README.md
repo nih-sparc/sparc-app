@@ -21,3 +21,11 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+# KNOWN ISSUES
+- hot reload for frontend server isn't working, seems like each time it reloads it starts reading on a path that prepends the prefix (`sparc-app`) Everytime.
+    * e.g., first time it's correct (`http://localhost:3000/sparc-app/enrich-data-for-datasets`)
+    * second time it prepends the prefix again (`http://localhost:3000/sparc-app/sparc-app/enrich-data-for-datasets`)
+    * third time it adds the prefix again, and so on
+
+    * To solve, just restart the dev server and start again using `yarn dev`

@@ -5,6 +5,22 @@
 </template>
 
 <script>
+import {
+  assocPath,
+  clone,
+  compose,
+  defaultTo,
+  equals,
+  flatten,
+  find,
+  filter,
+  head,
+  mergeLeft,
+  pathOr,
+  propEq,
+  propOr,
+  pluck
+} from 'ramda'
 export default {
   name: 'DiscoveryGraph',
 
@@ -63,8 +79,28 @@ export default {
         }
       })
 
-      console.log("response from our frontend server:", data)
       return data
+    },
+
+    // takes what we get from our frontend server and cleans it up so we can use it
+    async cleanResponse (apiResponse, originalDatasetsInfo) {
+      console.log("response from our frontend server:", apiResponse)
+      const cleaned = apiResponse.enrichedData.map((datum, index) => {
+        if (datum == "not-found-in-scicrunch-es-api") {
+          // just send original info we got from pennsieve
+          const unenrichedData = clone(originalDatasetsInfo[index])
+          unenrichedData.enriched = false
+
+          return unenrichedData
+
+        } else {
+          datum._source.enriched = true
+          return datum._source
+        }
+      })
+
+
+      return cleaned
     },
 
     async refreshVisualization (datasetsInfo) {
@@ -72,7 +108,10 @@ export default {
 
       try {
         const enrichedData = await this.retrieveFromApi(datasetsInfo)
-        this.updateVis(enrichedData)
+        // for records not found, use what we had from pennsieve originally
+        const cleanedData = await this.cleanResponse(enrichedData, datasetsInfo)
+
+        this.updateVis(cleanedData)
 
         return enrichedData
 
