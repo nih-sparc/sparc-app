@@ -1,10 +1,15 @@
 <template>
   <div v-loading="isLoading" class="">
+    <discovery-graph-vega 
+      v-if="isVegaLoaded && isVegaEmbedLoaded"
+    />
     {{ enrichedData }}
   </div>
 </template>
 
 <script>
+import DiscoveryGraphVega from '@/components/DatasetDiscoveryVisualization/DiscoveryGraphVega.vue'
+
 import {
   assocPath,
   clone,
@@ -21,8 +26,12 @@ import {
   propOr,
   pluck
 } from 'ramda'
+
 export default {
   name: 'DiscoveryGraph',
+  components: {
+    DiscoveryGraphVega,
+  },
 
   props: {
     /**
@@ -34,6 +43,15 @@ export default {
       default: () => []
     },
     isLoading: {
+      type: Boolean,
+      default: false
+    },
+    // make sure to not to try to render vega until loaded
+    isVegaLoaded: {
+      type: Boolean,
+      default: false
+    },
+    isVegaEmbedLoaded: {
       type: Boolean,
       default: false
     },

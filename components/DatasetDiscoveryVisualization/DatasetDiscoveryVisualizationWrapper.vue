@@ -6,6 +6,8 @@
         :is="visualizationComponent"
         :datasetsInfo="datasetsInfo"
         :isLoading="isLoading"
+        :isVegaLoaded="isVegaLoaded"
+        :isVegaEmbedLoaded="isVegaEmbedLoaded"
         @loading="setToLoadingState(true)"
         @notLoading="setToLoadingState(false)"
       />
@@ -64,6 +66,15 @@ export default {
     datasetsInfo: {
       type: Array,
       default: () => []
+    },
+    // make sure to not to try to render vega until loaded
+    isVegaLoaded: {
+      type: Boolean,
+      default: false
+    },
+    isVegaEmbedLoaded: {
+      type: Boolean,
+      default: false
     },
   },
 

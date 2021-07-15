@@ -150,6 +150,8 @@
                    v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type)"
                    :visualizationType="discoveryDataType"
                    :datasetsInfo="datasetsCurrentlyBeingCompared"
+                   :isVegaLoaded="isVegaLoaded"
+                   :isVegaEmbedLoaded="isVegaEmbedLoaded"
                 />
               </div>
             </el-col>
@@ -223,6 +225,31 @@ const client = createClient()
 export default {
   name: 'DataPage',
 
+  head () {
+    return {
+      script: [
+        { 
+          src: "https://cdn.jsdelivr.net/npm/vega@5",
+          // for using hid and callback
+          // https://github.com/nuxt/nuxt.js/issues/5052#issuecomment-663629000
+          hid: 'vega',
+          callback: () => { 
+            this.isVegaLoaded = true 
+            console.log("loaded vega")
+          },
+        },
+        { 
+          src: "https://cdn.jsdelivr.net/npm/vega-embed@6",
+          hid: 'vegaEmbed',
+          callback: () => { 
+            this.isVegaEmbedLoaded = true 
+            console.log("loaded vega embed")
+          },
+        },
+      ]
+    }
+  },
+
   components: {
     Breadcrumb,
     PageHero,
@@ -244,6 +271,10 @@ export default {
       activeDiscoveryDataTypes: discoveryDataTypes.map((dt) => (dt.type)),
       // preview string (currently just using string) of dataset whose id user selected
       toAddPreview: "",
+
+      // make sure to not to try to render vega until loaded
+      isVegaLoaded: false,
+      isVegaEmbedLoaded: false, 
 
       /**
       * datasets that were compared when they last clicked the button, OR when component first mounted
