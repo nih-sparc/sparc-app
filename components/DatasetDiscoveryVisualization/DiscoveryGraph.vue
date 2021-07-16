@@ -1,4 +1,4 @@
-<template>
+atemplate>
   <div v-loading="isLoading" class="">
     <discovery-graph-vega 
       v-if="isVegaLoaded && isVegaEmbedLoaded"
@@ -114,6 +114,8 @@ export default {
     */
     async retrieveFromApi (datasetsInfo) {
       const url = process.env.portal_api + "/sparc-app/dataset-discovery-api/enrich-data-for-datasets"
+      console.log("url", url)
+      console.log("process.env.portal_api", process.env.portal_api)
       const { data } = await this.$axios.get(url, {
         params: {
           // send just the DOI id we retrieved from pennsieve api
@@ -171,6 +173,10 @@ export default {
         n.index = index
         n.prettyLabel = prettyLabels[n.label]
         n.prettyTitle = `${n.prettyLabel}: ${n.name}`
+        // truncate
+        if (n.prettyTitle.length > 25) {
+          n.prettyTitle = `${n.prettyTitle.substring(0, 25)}...`
+        }
 
         return n
       })
