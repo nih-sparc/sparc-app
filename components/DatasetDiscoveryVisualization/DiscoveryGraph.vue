@@ -114,8 +114,6 @@ export default {
     */
     async retrieveFromApi (datasetsInfo) {
       const url = process.env.portal_api + "/sparc-app/dataset-discovery-api/enrich-data-for-datasets"
-      console.log("url", url)
-      console.log("process.env.portal_api", process.env.portal_api)
 
       const { data } = await this.$axios.get(url, {
         params: {
