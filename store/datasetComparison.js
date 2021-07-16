@@ -1,6 +1,7 @@
 import createClient from '~/plugins/contentful'
 
 export const state = () => ({
+  // array of datasets to compare
   toCompare: [
     // {
     //   name: "Vagus Dataset 1",
@@ -17,8 +18,11 @@ export const mutations = {
     state.toCompare.push(dataset)
   },
 
-  remove(state, { dataset }) {
-    const index = state.toCompare.indexOf(dataset)
-    state.toCompare.splice(index, 1)
+  remove(state, dataset) {
+    console.log("state", state.toCompare)
+    const matchIndex = state.toCompare.findIndex(ds => ds.id == dataset.id)
+    console.log("match index", matchIndex)
+
+    state.toCompare.splice(matchIndex, 1)
   },
 }
