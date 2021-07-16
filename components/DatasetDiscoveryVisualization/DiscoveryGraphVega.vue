@@ -90,7 +90,11 @@ export default {
         },
         actions: {
           export: true, 
-          source: true
+          // beacuse it's broken...
+          // TODO fix, seems to be from the marks, since commenting those out makes it work. 
+          source: false,
+          // beacuse it's broken...
+          editor: false,
         },
         // hover:     true,       // enable hover processing
       }

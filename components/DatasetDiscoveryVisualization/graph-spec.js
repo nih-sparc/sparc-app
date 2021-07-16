@@ -206,8 +206,6 @@ export default (graphData) => {
 						y: {"field": "y"},
 					}
 				},
-				transform: [
-				]
 
 				// This is not necessary, but what they recommend, 
 				// follow nodes as they moved around
