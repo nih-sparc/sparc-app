@@ -126,6 +126,12 @@
           </div>
           <div v-else>
             <el-button
+              class="dataset-button knowmore"
+              @click="addToCompareList"
+            >
+              Add to KnowMore
+            </el-button>
+            <el-button
               class="dataset-button"
               @click="isDownloadModalVisible = true"
             >
@@ -133,12 +139,6 @@
             </el-button>
             <el-button class="citation-button" @click="scrollToCitations">
               Cite Dataset
-            </el-button>
-            <el-button
-              class="dataset-button"
-              @click="addToCompareList"
-            >
-              Compare Dataset With Other Datasets
             </el-button>
             <nuxt-link
               :to="{
@@ -1141,6 +1141,9 @@ export default {
         color: #ffffff;
         font-weight: 500;
         text-transform: uppercase;
+        &.knowmore {
+          background-color: $knowmore;
+        }
         a {
           color: #fff;
         }

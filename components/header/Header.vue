@@ -166,6 +166,11 @@ const links = [
     href: '/data?type=dataset'
   },
   {
+    title: 'KnowMore',
+    displayTitle: 'KnowMore',
+    href: `/dataset-comparison`
+  },
+  {
     title: 'resources',
     displayTitle: 'Tools & Resources',
     href: `/resources?type=${process.env.ctf_resource_id}`

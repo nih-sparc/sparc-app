@@ -9,7 +9,7 @@
       </div>
       <div class="search-bar__container">
         <h5>
-          Add datasets to KnowMore about
+          Add datasets to KnowMore
         </h5>
         <div class="add-ds-form" @keyup.enter="$emit('search')">
           <div class="input-wrap">
@@ -22,18 +22,12 @@
             />
           </div>
           <el-button class="btn-submit-search" :disabled="!previewData || previewData.error" @click="addDataset">
-            <svg-icon
-              icon="icon-magnifying-glass"
-              height="25"
-              width="25"
-              dir="left"
-            />
             <span>
               Add
             </span>
           </el-button>
         </div>
-        <div v-loading="isLoadingDatasetPreview" class="table-wrap">
+        <div v-loading="isLoadingDatasetPreview" class="is-loading">
           <div v-if="previewData" @click="addDataset" :class="{previewText: !previewData.error}">
             {{previewData.error ? "(No dataset found with id: " + toAddPreview + ")" : previewData.name}}
           </div>
@@ -117,7 +111,7 @@
                   />
                 </el-row>
                 <el-button 
-                  class="btn-submit-search" 
+                  class="btn-submit-knowmore" 
                   @click="compareDatasets"
                   :disabled="datasetsToCompare.length == 0"
                 >
@@ -548,7 +542,7 @@ export default {
     margin: 0;
     padding: 0.5rem 2.25rem 0.5rem 0.8125rem;
     &:focus {
-      border-color: $median;
+      border-color: $knowmore;
     }
     &::-ms-clear {
       display: none;
@@ -570,9 +564,9 @@ export default {
     }
   }
   .btn-submit-search {
-    background: $median;
+    background: $knowmore;
     color: white;
-    border: 1px solid $median;
+    border: 1px solid $knowmore;
     border-radius: 4px;
     cursor: pointer;
     height: 2.5rem;
@@ -677,6 +671,11 @@ export default {
     padding-bottom: 3em;
   }
 }
+.is-loading {
+  background: #fff;
+  padding: 16px;
+  height: 1.5rem;
+}
 .table-wrap {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
@@ -709,7 +708,7 @@ export default {
   align-items: center;
   background: none;
   border: none;
-  color: $median;
+  color: $knowmore;
   display: flex;
   font-size: 0.875em;
   outline: none;
@@ -765,7 +764,15 @@ export default {
     flex-direction: column;
   }
   ::v-deep .el-checkbox__label {
-    color: $median;
+    color: $knowmore;
+  }
+}
+.btn-submit-knowmore {
+  background: $knowmore;
+  color: #fff;
+  &:hover,
+  &:active {
+    opacity: 0.75;
   }
 }
 .previewText {

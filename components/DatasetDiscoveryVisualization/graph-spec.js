@@ -8,7 +8,7 @@ export default (graphData) => {
   // TODO for some reason, doesn't work. Has more functionality though
   const spec = {
 		"$schema": "https://vega.github.io/schema/vega/v5.20.2.json",
-		"description": "A node-link diagram with force-directed layout, depicting character co-occurrence in the novel Les Misérables.",
+		"description": "A node-link diagram with force-directed layout.",
 		"width": 700,
 		"height": 500,
 		"padding": 0,
@@ -21,7 +21,7 @@ export default (graphData) => {
 				// "bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
 		  },
 			// "
-			{ "name": "nodeCharge", "value": -20,
+			{ "name": "nodeCharge", "value": -10,
 				//"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
 			{ "name": "linkDistance", "value": nodes.length > 10 ? 30 : 80,
