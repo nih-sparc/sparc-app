@@ -140,7 +140,7 @@
                 </div>
                 <div v-if="datasetsCurrentlyBeingCompared.length > 0" class="">
                   <div v-for="ds in datasetsCurrentlyBeingCompared" class="">
-                    {{ ds.name }}
+                    - {{ ds.name }}
                   </div>
                 </div>
               </div>

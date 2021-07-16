@@ -1,7 +1,6 @@
 <template>
   <div >
     <div >
-    (NOTE: Filler Graph)
     </div>
     <div id="discovery-graph-vis">loading...</div>
   </div>
