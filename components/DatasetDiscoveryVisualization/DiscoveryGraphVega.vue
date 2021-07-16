@@ -80,6 +80,9 @@ export default {
         renderer:  'svg',  // renderer (canvas or svg)
         container: '#discovery-graph-vis',   // parent DOM container
         // only for vega embed I believe, not regular vega
+
+        // add a tooltip for allowing on hover stuff
+        tooltip: {theme: 'dark'},
         actions: {
           export: true, 
           source: true
@@ -91,10 +94,16 @@ export default {
       // NOTE another way to get around this is to call window from the mounted or beforeMount hooks only. But then we might have trouble when trying to refresh the graph...
       if (vegaEmbed) {
         try {
+          // render vega to teh target element
           const result = await vegaEmbed('#discovery-graph-vis', vegaSpec, options)
+
           // result.view provides access to the Vega View API
           this.isReady = true
-          console.log(result)
+          console.log("vega spec", result)
+
+          // find out what data actually got into our chart
+          const dataUsed = result.vgSpec.data
+          console.log("data used for this rendering", {nodes: dataUsed[0].values, edges: dataUsed[1].values})
 
         } catch (err) {
           console.error(err)

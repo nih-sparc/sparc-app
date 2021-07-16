@@ -32,9 +32,9 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 
 	const datasetID = elasticsearchRecord.item.docid
 	nodes.push({
+		name: elasticsearchRecord.item.name,
 		group: datasetID,
 		id: datasetID,
-		name: elasticsearchRecord.item.name,
 		label: "dataset"
 	})
 
@@ -43,16 +43,19 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 	elasticsearchRecord.supportingAwards && elasticsearchRecord.supportingAwards.forEach((award) => {
 		// use identifier if possible, if not use agency name as unique id for this award type 
 		// (since not all awards have identifier)
-		const id = award.identifier || (award.agency && award.agency.name)
+		const awardName = (award.agency && award.agency.name) || "(unnamed award)"
+		// for now, let's just group all awards having the same agency name together
+		//const id = award.identifier || awardName
+		const id = awardName
 
 		// group by dataset 
 		// why not, it'll look nice
 		const group = datasetID
 
 		nodes.push({
-	    group,
 			id,
-			name: group,
+			name: awardName,
+	    group,
 			label: "award"
 		})
 		edges.push({
@@ -75,16 +78,16 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		const group = datasetID
 
 		nodes.push({
-	    group,
 			id,
 			name: nameForPerson(owner),
-			label: "person"
+	    group,
+			label: "person",
 		})
 
 		edges.push({
 	    sourceId: datasetID,
 			targetId: id,
-			label: "isOwnedBy"
+			label: "isOwnedBy",
 		})
 	} 
 
@@ -100,82 +103,31 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		const group = datasetID
 
 		nodes.push({
-	    group,
 			id,
 			name: organization.name,
-			label: "organization"
+	    group,
+			label: "organization",
 		})
 
 		edges.push({
 	    sourceId: datasetID,
 			targetId: id,
-			label: "hasOrganization"
+			label: "hasOrganization",
 		})
 	} 
 
 	//////////////////////////
 	// add entities for contributors
-	elasticsearchRecord.contributors && elasticsearchRecord.contributors.forEach((contributor) => {
-
-		// use identifier if possible, if not use agency name as unique id for this contributor type
-		const id = contributor.curie
-
-		// group by agency name (for now)
-		const group = contributor.agency && contributor.agency.name || datasetID
-
-		nodes.push({
-	    group,
-			id,
-			name: nameForPerson(contributor),
-			label: "person"
-		})
-
-		edges.push({
-	    sourceId: id,
-			targetId: datasetID,
-			label: "contributedTo"
-		})
-
-		// if they have affiliations, add that 
-		if (contributor.affiliations) {
-			contributor.affiliations.forEach(affiliation => {
-
-				// I think they only have descriptions, no other fields
-				const affiliationID = affiliation.description
-
-				nodes.push({
-					group: datasetID,
-					id: affiliationID,
-					name: affiliationID,
-					label: "affiliation"
-				})
-
-				edges.push({
-					sourceId: id,
-					targetId: affiliationID,
-					label: "hasAffiliation"
-				})
-			}) 
-		}
-	}) 
-
-	// add "index" for all nodes (maybe it's needed after all, having trouble getting it working without this)
-	// looks like it might need 
-	nodes = nodes.map((n, index) => {
-		n.index = index
-
-		return n
+	elasticsearchRecord.contributors && addEntitiesForContributors({
+		nodes, 
+		edges, 
+		datasetID, 
+		contributors: elasticsearchRecord.contributors,
 	})
 
-	// add unique ids for all edges, to identify the edges
+  // add unique ids for all edges, to identify the edges
 	edges = edges.map(e => {
 		e.id = `${e.sourceId}->${e.targetId}`
-		// reference the index of the source and target nodes. 
-		// Have to use the specific keys "source" and "target"
-		// - https://vega.github.io/vega/docs/transforms/force/#link
-		e.source = nodes.find(n => n.id == e.sourceId).index
-		e.target = nodes.find(n => n.id == e.targetId).index
-
 		return e
 	})
 
@@ -197,5 +149,87 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 	const edges = []
 	console.warn("WARNING not yet implemented pennsieve record graph entities")
 
+	const datasetID = pennsieveRecord.doi ? `DOI:${pennsieveRecord.doi}` : id
+
+	nodes.push({
+		name: pennsieveRecord.name,
+		group: datasetID,
+		id: datasetID,
+		label: "dataset"
+	})
+
+	//////////////////////////
+	// add entities for owner
+	if (pennsieveRecord.ownerOrcid)  {
+		
+		// use orcid, or if not availble use pennsieve internal id
+		// but add the ORC prefix, so matche sthe curie
+		let ownerId = pennsieveRecord.ownerOrcid ? `ORC:${pennsieveRecord.ownerOrcid}` : pennsieveRecord.ownerId
+
+		// group by dataset 
+		// why not, it'll look nice
+		const group = datasetID
+
+		nodes.push({
+			id: ownerId,
+			name: nameForPerson(`${pennsieveRecord.ownerLastName}, ${pennsieveRecord.ownerFirstName}`),
+	    group,
+			label: "person",
+		})
+
+		edges.push({
+	    sourceId: datasetID,
+			targetId: ownerId,
+			label: "isOwnedBy",
+		})
+	} 
 	return {nodes, edges}
+}
+
+// modifies the passed in nodes and edges to add relevant data from contributors array
+function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
+	contributors.forEach((contributor) => {
+
+		// use identifier if possible, if not use agency name as unique id for this contributor type
+		const id = contributor.curie || `ORC:${contributor.orcid}`
+
+		// group by datasetid 
+		const group = datasetID
+
+		nodes.push({
+			id,
+			name: nameForPerson(contributor),
+	    group,
+			label: "person",
+		})
+
+		edges.push({
+	    sourceId: id,
+			targetId: datasetID,
+			label: "contributedTo",
+		})
+
+		// if they have affiliations, add that 
+		if (contributor.affiliations) {
+			contributor.affiliations.forEach(affiliation => {
+
+				// I think they only have descriptions, no other fields
+				const affiliationID = affiliation.description
+
+				nodes.push({
+					id: affiliationID,
+					name: affiliationID,
+					group: datasetID,
+					label: "affiliation",
+				})
+
+				edges.push({
+					sourceId: id,
+					targetId: affiliationID,
+					label: "hasAffiliation",
+				})
+			}) 
+		}
+	}) 
+
 }

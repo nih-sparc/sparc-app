@@ -35,6 +35,22 @@ import {
   uniqBy,
 } from 'ramda'
 
+// labels to display in graph
+const prettyLabels = {
+	"hasAffiliation": "has affiliation",
+	"affiliation": "Affiliation",
+	"person": "Person",
+	"organization": "Organization",
+	contributedTo: "contributed to",
+	isOwnedBy: "is owned by",
+	organization: "Organization",
+	hasOrganization: "has organization",
+	dataset: "Dataset",
+	receivedAward: "received award",
+	award: "Award",
+}
+
+
 export default {
   name: 'DiscoveryGraph',
   components: {
@@ -139,6 +155,37 @@ export default {
       nodes = uniqBy(prop('id'), nodes)
       edges = uniqBy(prop('id'), edges)
 
+
+      // add "index" for all nodes (maybe it's needed after all, having trouble getting it working without this)
+      // looks like it might need 
+      nodes = nodes.map((n, index) => {
+        n.index = index
+        n.prettyLabel = prettyLabels[n.label]
+
+        return n
+      })
+      console.log("edges before mapping to nodes", edges)
+
+      // add some info we'll need for the graph
+      edges = edges.map((edge, index) => {
+        // reference the index of the source and target nodes. 
+        // Have to use the specific keys "source" and "target"
+        // - https://vega.github.io/vega/docs/transforms/force/#link
+        // - NOTE make sure to do this after we merge edges from all the different datasets, 
+        edge.source = nodes.find(n => {
+          return n.id == edge.sourceId
+        }).index
+
+        edge.target = nodes.find(n => n.id == edge.targetId).index
+        
+        // for debugging only
+        edge.targetIndex = edge.target
+        edge.sourceIndex = edge.source
+		    edge.prettyLabel = prettyLabels[edge.label]
+
+
+        return edge
+      })
 
       return {
         nodes, 

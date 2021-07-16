@@ -33,7 +33,7 @@ async function fetchInParallel (doiIDs) {
 			"item.identifier",
 			"item.docid",
 			"item.curie",
-			"contribuors",
+			"contributors",
 			"supportingAwards",
 			"pennsieve"
 		],

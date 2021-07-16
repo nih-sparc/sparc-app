@@ -22,14 +22,14 @@ export default (graphData) => {
 		  },
 			// "
 			{ "name": "nodeCharge", "value": -10,
-				"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
+				//"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
-			{ "name": "linkDistance", "value": 30
-				//"bind": {"input": "range", "min": 5, "max": 100, "step": 1} 
+			{ "name": "linkDistance", "value": 30,
+				"bind": {"input": "range", "min": 5, "max": 100, "step": 1} 
 			},
 			// toggles if animated simulation (false) or calculate in batch (true)
 			{ "name": "static", "value": false,
-				"bind": {"input": "checkbox"} 
+				//"bind": {"input": "checkbox"} 
 			},
 			{
 				"description": "State variable for active node fix status.",
@@ -81,6 +81,7 @@ export default (graphData) => {
 			{
 				// each record in this array should have a "source" and "target" property, as required by the "links" force 
 				// https://vega.github.io/vega/docs/transforms/force/#link
+				// These fields reference the index
 				"name": "link-data",
 				//"url": "https://vega.github.io/editor/data/miserables.json",
 				"values": edges,
@@ -120,7 +121,13 @@ export default (graphData) => {
 				"encode": {
 					"enter": {
 						"fill": {"scale": "color", "field": "group"},
-						"stroke": {"value": "white"}
+						"stroke": {"value": "white"},
+						// add a tooltip to nodes
+						"tooltip": {
+							signal: [
+								"{title: datum.prettyLabel + ': ' + datum.name}", 
+							]
+						},
 					},
 					"update": {
 						"size": {"signal": "2 * nodeRadius * nodeRadius"},
@@ -169,9 +176,18 @@ export default (graphData) => {
 				"from": {"data": "link-data"},
 				"interactive": false,
 				"encode": {
+					enter: {
+						// add a tooltip to edges (aka links)
+						"tooltip": {
+							signal: [
+								"{title: datum.prettyLabel + ': ' + datum.name}", 
+							]
+						},
+					},
 					"update": {
 						"stroke": {"value": "#ccc"},
-						"strokeWidth": {"value": 1.5}
+						"strokeWidth": {"value": 2.5},
+						"cursor": {"value": "pointer"},
 					}
 				},
 				// https://vega.github.io/vega/docs/transforms/linkpath/
