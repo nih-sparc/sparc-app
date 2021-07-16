@@ -2,7 +2,7 @@ import fakeData from './miserables.json'
 //import fakeData from './miserables.small-sample.json'
 
 export default (graphData) => {
-  const { nodes, edges } = graphData
+  const { nodes = [], edges = [] } = graphData
   // for now just use their sample code raw
   // https://vega.github.io/vega/examples/force-directed-layout/
   // TODO for some reason, doesn't work. Has more functionality though
