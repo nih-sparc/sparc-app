@@ -116,24 +116,25 @@
                     v-bind:src="dataset.banner"
                   />
                 </el-row>
+                <el-button 
+                  class="btn-submit-search" 
+                  @click="compareDatasets"
+                  :disabled="datasetsToCompare.length == 0"
+                >
+                  <span>
+                    Discover
+                  </span>
+                </el-button>
               </div>
             </el-col>
-            <el-button 
-              class="btn-submit-search" 
-              @click="compareDatasets"
-              :disabled="datasetsToCompare.length == 0"
-            >
-              <span>
-                Discover
-              </span>
-            </el-button>
+            <br />
             <el-col
               :sm="searchColSpan('sm')"
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
             >
               <div class="">
-                Currently showing results for:
+                <h4>Currently showing results for: </h4>
                 <div v-if="datasetsCurrentlyBeingCompared.length == 0" class="">
                   (None Selected)
                 </div>
@@ -397,8 +398,16 @@ export default {
       const details = this.previewData
       console.log("ds details: ", details)
 
-      this.$store.commit('datasetComparison/add', details)
-      e.target.value = ''
+      const toCompare = this.$store.state.datasetComparison.toCompare
+
+      // check if we already have this one to avoids dupes
+      if (!toCompare.some(ds => ds.id === details.id)) { 
+        this.$store.commit('datasetComparison/add', details)
+      }
+
+      // clear the field
+      this.toAddPreview = ""
+      this.previewData = null
     },
 
     async loadPreview (e) {
@@ -419,7 +428,7 @@ export default {
 
     removeDataset (dataset, e) {
       const details = dataset
-      console.log("ds details: ", details)
+      console.log("ds we're going to remove: ", details)
 
       this.$store.commit('datasetComparison/remove', details)
     },

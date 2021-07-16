@@ -21,11 +21,11 @@ export default (graphData) => {
 				"bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
 		  },
 			// "
-			{ "name": "nodeCharge", "value": -10,
+			{ "name": "nodeCharge", "value": -30,
 				//"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
-			{ "name": "linkDistance", "value": 30,
-				"bind": {"input": "range", "min": 5, "max": 100, "step": 1} 
+			{ "name": "linkDistance", "value": 120,
+				"bind": {"input": "range", "min": 5, "max": 250, "step": 1} 
 			},
 			// toggles if animated simulation (false) or calculate in batch (true)
 			{ "name": "static", "value": false,
@@ -92,9 +92,20 @@ export default (graphData) => {
 		"scales": [
 			{
 				"name": "color",
+				// band allows for more colors
 				"type": "ordinal",
-				"domain": {"data": "node-data", "field": "group"},
-				"range": {"scheme": "category20c"}
+				//"type": "band",
+				// could also change to field "label" and it would work well, except we have too many
+				"domain": {
+					data: "node-data", 
+					"field": "group",
+					//"field": "label"
+				},
+				//"range": {step: 20},
+				"range": {
+					// scheme: "category20c"
+					scheme: "paired"
+				}
 			}
 		],
 
@@ -125,12 +136,17 @@ export default (graphData) => {
 						// add a tooltip to nodes
 						"tooltip": {
 							signal: [
-								"{title: datum.prettyLabel + ': ' + datum.name}", 
+								"{title: 'id: ' + datum.id}", 
 							]
 						},
 					},
 					"update": {
-						"size": {"signal": "2 * nodeRadius * nodeRadius"},
+						"size": [
+							// make dataset nodes larger
+							{test: "datum.label == 'dataset'", signal: "7 * nodeRadius * nodeRadius"},
+							// the default if above tests don't match
+							{signal: "2 * nodeRadius * nodeRadius"}
+						],
 						"cursor": {"value": "pointer"}
 					}
 				},
@@ -158,9 +174,56 @@ export default (graphData) => {
 								"links": "link-data", 
 								"distance": {"signal": "linkDistance"}
 							}
-						]
-					}
+						],
+						// The output fields to which node positions and velocities are written. The default is ["x", "y", "vx", "vy"].
+						as: ["x", "y", "vx", "vy"],
+					},
+
+					// for use in labels
+					{
+						type: "formula", 
+						// want a little to the right of the node
+						expr: "datum.x + 10", as: "labelX" 
+					},
+
 				]
+			},
+
+			// labels for each node
+			{
+				"type": "text",
+				"from": {"data": "nodes"},
+				//test: "datum.label === 'dataset'",
+				"encode": {
+					"enter": {
+						"text": {"field": "datum.prettyTitle"},
+						"fontSize": {"value": 8}
+					},
+					update: {
+						// make sure the labels move with the modes
+						// NOTE fields (x and y) here correspond to the "as" option on the nodes mark
+						x: {"field": "labelX"},
+						y: {"field": "y"},
+					}
+				},
+				transform: [
+				]
+
+				// This is not necessary, but what they recommend, 
+				// follow nodes as they moved around
+				// it's recommended by the docs and nice ins ome ways, but by default hides overlapping
+				// labels but we don't want that and we didn't figure out how to change that yet, so just do without
+				// "transform": [
+				// 	{
+				// 		"type": "label",
+				// 		"anchor": ["top", "bottom", "right", "left"],
+				// 		// allow some flexibility with the labels
+				// 		padding: 5,
+				// 		"offset": [1],
+				// 		// not sure what this does, maybe sets max height and width?
+				// 		"size": {"signal": "[width + 160, height]"}
+				// 	}
+				// ]
 			},
 
 			// https://vega.github.io/vega/docs/marks/path/
@@ -180,7 +243,7 @@ export default (graphData) => {
 						// add a tooltip to edges (aka links)
 						"tooltip": {
 							signal: [
-								"{title: datum.prettyLabel + ': ' + datum.name}", 
+								"{title: datum.id}", 
 							]
 						},
 					},

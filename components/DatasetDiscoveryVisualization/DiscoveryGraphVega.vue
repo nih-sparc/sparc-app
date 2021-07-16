@@ -83,6 +83,12 @@ export default {
 
         // add a tooltip for allowing on hover stuff
         tooltip: {theme: 'dark'},
+        config: {
+          axis: {
+            // doesn't allow the labels to overlap like I want
+            //labelOverlap: false,
+          }
+        },
         actions: {
           export: true, 
           source: true
@@ -92,22 +98,20 @@ export default {
 
       // vegaEmbed should be global, pulled from cdn
       // NOTE another way to get around this is to call window from the mounted or beforeMount hooks only. But then we might have trouble when trying to refresh the graph...
-      if (vegaEmbed) {
-        try {
-          // render vega to teh target element
-          const result = await vegaEmbed('#discovery-graph-vis', vegaSpec, options)
+      try {
+        // render vega to teh target element
+        const result = await vegaEmbed('#discovery-graph-vis', vegaSpec, options)
 
-          // result.view provides access to the Vega View API
-          this.isReady = true
-          console.log("vega spec", result)
+        // result.view provides access to the Vega View API
+        this.isReady = true
+        console.log("Full vega spec", result)
 
-          // find out what data actually got into our chart
-          const dataUsed = result.vgSpec.data
-          console.log("data used for this rendering", {nodes: dataUsed[0].values, edges: dataUsed[1].values})
+        // find out what data actually got into our chart
+        const dataUsed = result.vgSpec.data
+        console.log("data used for this rendering", {nodes: dataUsed[0].values, edges: dataUsed[1].values})
 
-        } catch (err) {
-          console.error(err)
-        }
+      } catch (err) {
+        console.error(err)
       }
 
 

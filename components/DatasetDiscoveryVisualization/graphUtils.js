@@ -33,7 +33,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 	const datasetID = elasticsearchRecord.item.docid
 	nodes.push({
 		name: elasticsearchRecord.item.name,
-		group: datasetID,
+		group: "dataset",
 		id: datasetID,
 		label: "dataset"
 	})
@@ -48,14 +48,10 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		//const id = award.identifier || awardName
 		const id = awardName
 
-		// group by dataset 
-		// why not, it'll look nice
-		const group = datasetID
-
 		nodes.push({
 			id,
 			name: awardName,
-	    group,
+			group: "other",
 			label: "award"
 		})
 		edges.push({
@@ -73,14 +69,10 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		// but add the ORC prefix, so matche sthe curie
 		const id = `ORC:${owner.orcid.identifier}`
 
-		// group by dataset 
-		// why not, it'll look nice
-		const group = datasetID
-
 		nodes.push({
 			id,
 			name: nameForPerson(owner),
-	    group,
+			group: "person",
 			label: "person",
 		})
 
@@ -98,14 +90,10 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		// use orcid
 		const id = organization.identifier
 
-		// group by dataset 
-		// why not, it'll look nice
-		const group = datasetID
-
 		nodes.push({
 			id,
 			name: organization.name,
-	    group,
+			group: "other",
 			label: "organization",
 		})
 
@@ -125,18 +113,21 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		contributors: elasticsearchRecord.contributors,
 	})
 
-  // add unique ids for all edges, to identify the edges
-	edges = edges.map(e => {
-		e.id = `${e.sourceId}->${e.targetId}`
-		return e
-	})
 
 	return {nodes, edges}
 }
 
 
 function nameForPerson (person) {
-	return `${person.last.name}, ${person.first.name}`
+	// there should only be two formats for this. 
+	//
+	if (person.firstName) {
+		// pensnieve api format
+		return `${person.lastName}, ${person.firstName}`
+	} else {
+		// es api format
+		return `${person.last.name}, ${person.first.name}`
+	}
 }
 
 /**
@@ -153,53 +144,95 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 
 	nodes.push({
 		name: pennsieveRecord.name,
-		group: datasetID,
+		group: "dataset",
 		id: datasetID,
 		label: "dataset"
 	})
 
 	//////////////////////////
 	// add entities for owner
-	if (pennsieveRecord.ownerOrcid)  {
-		
+	let ownerId 	= pennsieveRecord.ownerOrcid && pennsieveRecord.ownerOrcid !== "" ? `ORC:${pennsieveRecord.ownerOrcid}` : pennsieveRecord.ownerId
+	let ownerName = pennsieveRecord.ownerLastName && pennsieveRecord.ownerLastName !== "" && nameForPerson({
+		lastName: pennsieveRecord.ownerLastName, 
+		firstName: pennsieveRecord.ownerFirstName
+	})
+
+	if (!ownerId)  {
+		// if that still doesn't catch, try using name
+		ownerId = ownerName
+	} 
+
+	if (ownerId)  {
 		// use orcid, or if not availble use pennsieve internal id
 		// but add the ORC prefix, so matche sthe curie
-		let ownerId = pennsieveRecord.ownerOrcid ? `ORC:${pennsieveRecord.ownerOrcid}` : pennsieveRecord.ownerId
 
 		// group by dataset 
 		// why not, it'll look nice
-		const group = datasetID
 
 		nodes.push({
 			id: ownerId,
-			name: nameForPerson(`${pennsieveRecord.ownerLastName}, ${pennsieveRecord.ownerFirstName}`),
-	    group,
+			name: ownerName,
+			group: "person",
 			label: "person",
 		})
 
+		console.log("adding edge", {
+	    sourceId: datasetID,
+			targetId: ownerId,
+			label: "isOwnedBy",
+		})
 		edges.push({
 	    sourceId: datasetID,
 			targetId: ownerId,
 			label: "isOwnedBy",
 		})
 	} 
+
+	if (pennsieveRecord.contributors) {
+		addEntitiesForContributors({
+			nodes, 
+			edges, 
+			datasetID, 
+			contributors: pennsieveRecord.contributors,
+		})
+	}
+		
+	if (pennsieveRecord.organizationId) {
+		const orgId = pennsieveRecord.organizationId
+		nodes.push({
+			id: orgId,
+			name: pennsieveRecord.organizationName,
+			group: "other",
+			label: "organization",
+		})
+
+		edges.push({
+	    sourceId: datasetID,
+			targetId: orgId,
+			label: "hasOrganization",
+		})
+	}
+
+	// TODO can add source dataset id also (?)
+
+	console.log("pennsieve entities:", {nodes, edges})
 	return {nodes, edges}
 }
+
+
 
 // modifies the passed in nodes and edges to add relevant data from contributors array
 function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 	contributors.forEach((contributor) => {
 
 		// use identifier if possible, if not use agency name as unique id for this contributor type
-		const id = contributor.curie || `ORC:${contributor.orcid}`
-
-		// group by datasetid 
-		const group = datasetID
+		// if not that, full name
+		const id = contributor.curie || (contributor.orcid ? `ORC:${contributor.orcid}` : nameForPerson(contributor))
 
 		nodes.push({
 			id,
 			name: nameForPerson(contributor),
-	    group,
+			group: "person",
 			label: "person",
 		})
 
@@ -219,7 +252,7 @@ function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 				nodes.push({
 					id: affiliationID,
 					name: affiliationID,
-					group: datasetID,
+					group: "other",
 					label: "affiliation",
 				})
 
@@ -230,6 +263,7 @@ function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 				})
 			}) 
 		}
-	}) 
+	})
 
+	// no return value, just mutates
 }

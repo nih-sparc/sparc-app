@@ -66,7 +66,7 @@ async function fetchInParallel (doiIDs) {
 
       const oneEnrichedData = await axios.post(url, body)
       console.log("received one response from es endpoint:", oneEnrichedData)
-      return oneEnrichedData
+      return {result: oneEnrichedData, doiID}
 
     } catch (err) {
       // make sure to log the response after digging down,  we have something helpful in the logs
@@ -78,17 +78,18 @@ async function fetchInParallel (doiIDs) {
     }
   }
 
+  // send a request to es endpoint, one per DOI ID
   const requests = doiIDs.map(d => getOne(d))
 
   // wait for all to return, compile into array
   const allResponses = await Promise.all(requests)
   const enrichedData = allResponses.map(response => {
     // dig into all the fluff axios returns
-    const axiosData = response.data
+    const axiosData = response.result.data
 
     // dig into all the fluff es returns
     // - NOTE should only be one record, so return that
-    const esRecord = axiosData.hits.hits[0] || "not-found-in-scicrunch-es-api"
+    const esRecord = axiosData.hits.hits[0] || {foundStatus: "not-found-in-scicrunch-es-api", doiID: response.doiID}
 
     return esRecord
   })

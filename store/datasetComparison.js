@@ -19,9 +19,7 @@ export const mutations = {
   },
 
   remove(state, dataset) {
-    console.log("state", state.toCompare)
     const matchIndex = state.toCompare.findIndex(ds => ds.id == dataset.id)
-    console.log("match index", matchIndex)
 
     state.toCompare.splice(matchIndex, 1)
   },

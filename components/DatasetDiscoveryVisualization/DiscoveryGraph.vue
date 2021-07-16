@@ -4,8 +4,6 @@
       v-if="isVegaLoaded && isVegaEmbedLoaded"
       :graphEntities="graphEntities"
     />
-    {{ graphEntities }}
-    {{ datasetsInfo }}
   </div>
 </template>
 
@@ -134,9 +132,12 @@ export default {
       apiResponse.enrichedData.forEach((datum, index) => {
         let graphEntities
         
-        if (datum == "not-found-in-scicrunch-es-api") {
+        if (datum.foundStatus == "not-found-in-scicrunch-es-api") {
           // just send original info we got from pennsieve
-          const unenrichedData = clone(originalDatasetsInfo[index])
+          console.log("no es for this one", datum.doiID)
+          const correspondingRecord = originalDatasetsInfo.find(info => info.doi == datum.doiID)
+          const unenrichedData = clone(correspondingRecord)
+
           unenrichedData.enriched = false
           graphEntities = pennsieveRecordToGraphEntities(unenrichedData)
 
@@ -145,6 +146,13 @@ export default {
           datum._source.enriched = true
           graphEntities = elasticsearchRecordToGraphEntities(datum._source)
         }
+
+        // add unique ids for all edges, to identify the edges
+        // need to do this whether or not data was enriched
+        graphEntities.edges = graphEntities.edges.map(e => {
+          e.id = `${e.sourceId}->${e.targetId}`
+          return e
+        })
 
         // merge into the main arrays
         nodes.push(...graphEntities.nodes)
@@ -161,6 +169,7 @@ export default {
       nodes = nodes.map((n, index) => {
         n.index = index
         n.prettyLabel = prettyLabels[n.label]
+        n.prettyTitle = `${n.prettyLabel}: ${n.name}`
 
         return n
       })
@@ -182,6 +191,7 @@ export default {
         edge.targetIndex = edge.target
         edge.sourceIndex = edge.source
 		    edge.prettyLabel = prettyLabels[edge.label]
+        edge.prettyTitle = `${edge.prettyLabel}: ${edge.name}`
 
 
         return edge
