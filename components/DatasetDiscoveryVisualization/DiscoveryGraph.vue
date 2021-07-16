@@ -113,7 +113,8 @@ export default {
     * takes the dataset info and queries our express server, returning the enriched data we'll need to create the visualization
     */
     async retrieveFromApi (datasetsInfo) {
-      const { data } = await this.$axios.get("/sparc-app/dataset-discovery-api/enrich-data-for-datasets", {
+      const url = process.env.portal_api + "/sparc-app/dataset-discovery-api/enrich-data-for-datasets"
+      const { data } = await this.$axios.get(url, {
         params: {
           // send just the DOI id we retrieved from pennsieve api
           datasetDOIIds: datasetsInfo.map(d => d.doi)
