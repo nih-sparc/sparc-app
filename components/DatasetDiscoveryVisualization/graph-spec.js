@@ -17,14 +17,14 @@ export default (graphData) => {
 		"signals": [
 			{ "name": "cx", "update": "width / 2" },
 			{ "name": "cy", "update": "height / 2" },
-			{ "name": "nodeRadius", "value": 4,
+			{ "name": "nodeRadius", "value": nodes.length > 10 ? 4 : 8,
 				// "bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
 		  },
 			// "
 			{ "name": "nodeCharge", "value": -20,
 				//"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
-			{ "name": "linkDistance", "value": 30,
+			{ "name": "linkDistance", "value": nodes.length > 10 ? 30 : 80,
 				"bind": {"input": "range", "min": 5, "max": 250, "step": 1} 
 			},
 			// toggles if animated simulation (false) or calculate in batch (true)
