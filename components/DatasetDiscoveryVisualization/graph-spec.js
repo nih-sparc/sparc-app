@@ -17,14 +17,14 @@ export default (graphData) => {
 		"signals": [
 			{ "name": "cx", "update": "width / 2" },
 			{ "name": "cy", "update": "height / 2" },
-			{ "name": "nodeRadius", "value": 8,
-				"bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
+			{ "name": "nodeRadius", "value": 4,
+				// "bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
 		  },
 			// "
-			{ "name": "nodeCharge", "value": -30,
+			{ "name": "nodeCharge", "value": -20,
 				//"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
-			{ "name": "linkDistance", "value": 120,
+			{ "name": "linkDistance", "value": 30,
 				"bind": {"input": "range", "min": 5, "max": 250, "step": 1} 
 			},
 			// toggles if animated simulation (false) or calculate in batch (true)
@@ -143,7 +143,7 @@ export default (graphData) => {
 					"update": {
 						"size": [
 							// make dataset nodes larger
-							{test: "datum.label == 'dataset'", signal: "7 * nodeRadius * nodeRadius"},
+							{test: "datum.label == 'dataset'", signal: "8 * nodeRadius * nodeRadius"},
 							// the default if above tests don't match
 							{signal: "2 * nodeRadius * nodeRadius"}
 						],
@@ -183,7 +183,7 @@ export default (graphData) => {
 					{
 						type: "formula", 
 						// want a little to the right of the node
-						expr: "datum.x + 10", as: "labelX" 
+						expr: "nodeRadius + datum.x + 3", as: "labelX" 
 					},
 
 				]
@@ -237,10 +237,12 @@ export default (graphData) => {
 			{
 				"type": "path",
 				"from": {"data": "link-data"},
+				name: "edgeLine",
 				"interactive": false,
 				"encode": {
 					enter: {
 						// add a tooltip to edges (aka links)
+				  	// TODO doesn't work
 						"tooltip": {
 							signal: [
 								"{title: datum.id}", 
@@ -249,9 +251,20 @@ export default (graphData) => {
 					},
 					"update": {
 						"stroke": {"value": "#ccc"},
-						"strokeWidth": {"value": 2.5},
-						"cursor": {"value": "pointer"},
-					}
+						"strokeWidth": {"value": .5},
+				  	// TODO doesn't work
+						//"cursor": {"value": "pointer"},
+					},
+				  // on hover, increase opacity of strokes for this edge to .6 (make darker)
+				  // TODO doesn't work
+
+					//"hover": {
+					//	"stroke": {"value": "#000"},
+					//	"strokeOpacity": {"value": 0.3},
+					//	"strokeWidth": [
+					//		{"value": 2, "mult": 5}
+					//	],
+					//}
 				},
 				// https://vega.github.io/vega/docs/transforms/linkpath/
 				"transform": [
