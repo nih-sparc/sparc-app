@@ -147,6 +147,7 @@
                    :datasetsInfo="datasetsCurrentlyBeingCompared"
                    :isVegaLoaded="isVegaLoaded"
                    :isVegaEmbedLoaded="isVegaEmbedLoaded"
+                   :isPollingOsparc="pollingOsparc"
                 />
               </div>
             </el-col>
@@ -189,7 +190,7 @@ const discoveryDataTypes = [
   {
     label: 'NLP',
     type: 'nlp',
-    disabled: true,
+    disabled: false,
   },
   {
     label: 'Graph',
@@ -199,7 +200,7 @@ const discoveryDataTypes = [
   {
     label: 'Tabular Data Clustering',
     type: 'tabularDataClustering',
-    disabled: true,
+    disabled: false,
   }
 ]
 
@@ -270,6 +271,10 @@ export default {
       // make sure to not to try to render vega until loaded
       isVegaLoaded: false,
       isVegaEmbedLoaded: false, 
+
+      // whether we need to keep polling osparc for data or not
+      pollingOsparc: false,
+      osparcJobID: null,
 
       /**
       * datasets that were compared when they last clicked the button, OR when component first mounted
@@ -375,10 +380,62 @@ export default {
 
   methods: {
     // add a dataset from the form to the compare list
-    compareDatasets (e) {
-      // TODO 
+    async compareDatasets (e) {
+      // sets the records queued up to compare to this component's state, which gets sent to child props, and ultimately triggers their handlers
       console.log("this will compare the datasets")
+
+      // this also triggers an asyncronous action, but don't need to wait for it. Let it be...asynchronous
       this.datasetsCurrentlyBeingCompared = clone(this.datasetsToCompare)
+
+
+      try {
+        // also want to send here the massive osparc query kickoff function
+        const url = `${process.env.flask_api_host}/api/start-osparc-job/`
+
+        const { data } = await this.$axios.post(url, {testPayload: "dataset info"})
+        console.log("results from creating job in osparc", data)
+
+        this.osparcJobID = data["job_id"]
+
+        // start polling osparc through our flask api
+        this.pollingOsparc = true
+
+        // not waiting for this, just set and forget
+        this.pollOsparcUntilComplete()
+
+      } catch (err) {
+        console.error(err)
+      }
+    },
+
+    
+    // this is async so you just call once and let it run forever. don't actually watch it...
+    async pollOsparcUntilComplete () {
+      while (this.pollOsparc) {
+        await this.pollOsparc(this.osparcJobID)
+
+        // sleep 5s 
+        const sleepSeconds = 5
+        await new Promise(resolve => setTimeout(resolve, sleepSeconds * 1000))
+      }
+    },
+
+    async pollOsparc (osparcJobID) {
+      const url = `${process.env.flask_api_host}/api/check-osparc-job/${osparcJobID}`
+      const { data } = await this.$axios.get(url)
+      console.log("results from polling osparc", data)
+
+     
+      if (data.finished) {
+        this.pollingOsparc = false
+
+        if (data.success) {
+          this.$store.commit('datasetComparison/setOsparcResults', data)
+        }
+
+      } else {
+        this.pollingOsparc = true
+      }
     },
 
     addDataset (e) {

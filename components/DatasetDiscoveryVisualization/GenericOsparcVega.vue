@@ -2,14 +2,12 @@
   <div >
     <div >
     </div>
-    <div id="discovery-graph-vis">loading...</div>
+    <div :id="elementId">loading...</div>
   </div>
 </template>
 
 <script>
-// import generateVegaSpec from './graph-spec.testing.js'
-import generateVegaSpec from './graph-spec.js'
-//import generateVegaSpec from './graph-spec.simple.js'
+
 // following this: https://vega.github.io/vega/examples/force-directed-layout/
 import {
   assocPath,
@@ -28,13 +26,13 @@ import {
   pluck
 } from 'ramda'
 export default {
-  name: 'DiscoveryGraphVega',
+  name: 'GenericOsparcVega',
 
   mounted: function() {
     this.refreshVis()
   },
   watch: {
-    graphEntities: {
+    osparcData: {
       immediate: true,
       handler (values, oldValues) {
         this.refreshVis(values)
@@ -49,9 +47,15 @@ export default {
     * - keep it one prop, since they should always be sent together, and so triggers / watchers know which one prop to watch
     *
     */
-    graphEntities: {
+    osparcData: {
       type: Object,
       default: () => [],
+    },
+    elementId: {
+      type: String,
+    },
+    generateVegaSpec: {
+      type: Function,
     },
   },
 
@@ -68,20 +72,24 @@ export default {
     // reloads the current data into the chart, refreshing the chart
     async refreshVis () {
       // NOTE !!! The key is that edges will be changed dynamically by the path transform. Need to clone this or something to make sure that links don't get stuck with their original values
-      const vegaSpec = clone(generateVegaSpec(this.graphEntities))
+      const vegaSpec = clone(this.generateVegaSpec(this.osparcData))
 
       console.log("refreshing vega chart")
       console.log("vega spec", vegaSpec)
       this.isReady = false
 
       const options = {
-        // renderer (canvas or svg) 
-        renderer:  'svg',  
+        renderer:  'svg',  // renderer (canvas or svg)
+        // only for vega embed I believe, not regular vega
 
         // add a tooltip for allowing on hover stuff
         tooltip: {theme: 'dark'},
-
-        // what to allow in the menu
+        config: {
+          axis: {
+            // doesn't allow the labels to overlap like I want
+            //labelOverlap: false,
+          }
+        },
         actions: {
           export: true, 
           // beacuse it's broken...
@@ -90,24 +98,21 @@ export default {
           // beacuse it's broken...
           editor: false,
         },
-        // not working
-        // enable hover processing
-        // hover:     true,
+        // hover:     true,       // enable hover processing
       }
 
       // vegaEmbed should be global, pulled from cdn
       // NOTE another way to get around this is to call window from the mounted or beforeMount hooks only. But then we might have trouble when trying to refresh the graph...
       try {
         // render vega to teh target element
-        const result = await vegaEmbed('#discovery-graph-vis', vegaSpec, options)
+        const result = await vegaEmbed(this.elementId, vegaSpec, options)
 
         // result.view provides access to the Vega View API
         this.isReady = true
-        console.log("Full vega spec", result)
+        console.log("Full vega spec for ", this.elementId,result)
 
         // find out what data actually got into our chart
         const dataUsed = result.vgSpec.data
-        console.log("data used for this rendering", {nodes: dataUsed[0].values, edges: dataUsed[1].values})
 
       } catch (err) {
         console.error(err)

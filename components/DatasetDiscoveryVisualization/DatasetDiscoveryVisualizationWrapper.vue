@@ -32,15 +32,20 @@ import {
   propOr,
   pluck
 } from 'ramda'
+const DiscoveryImageCluster = () =>
+  import('@/components/DatasetDiscoveryVisualization/DiscoveryImageCluster.vue')
+const DiscoveryNLP = () =>
+  import('@/components/DatasetDiscoveryVisualization/DiscoveryNLP.vue')
 const DiscoveryGraphVisualization = () =>
   import('@/components/DatasetDiscoveryVisualization/DiscoveryGraph.vue')
+const DiscoveryTabularDataClustering = () =>
+  import('@/components/DatasetDiscoveryVisualization/DiscoveryTabularDataClustering.vue')
 
 const visualizationComponents = {
   graph: DiscoveryGraphVisualization,
+  nlp: DiscoveryNLP,
   // TODO change out when these components are built
-  nlp: DiscoveryGraphVisualization,
-  // TODO change out when these components are built
-  imageCluster: DiscoveryGraphVisualization,
+  imageCluster: DiscoveryImageCluster,
   // TODO change out when these components are built
   tabularDataClustering: DiscoveryGraphVisualization
 }

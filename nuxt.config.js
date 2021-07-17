@@ -28,6 +28,7 @@ export default {
   },
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
+    flask_api_host: process.env.FLASK_API_HOST || 'http://localhost:5000',
     flatmap_api:
       process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/flatmaps/',
     crosscite_api_host:
