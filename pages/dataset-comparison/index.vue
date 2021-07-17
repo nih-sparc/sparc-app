@@ -182,24 +182,28 @@ import DatasetDiscoveryVisualizationWrapper from '@/components/DatasetDiscoveryV
 
 
 const discoveryDataTypes = [
-  {
-    label: 'Image Clusters',
-    type: 'imageCluster',
-    disabled: true,
-  },
-  {
-    label: 'NLP',
-    type: 'nlp',
-    disabled: false,
-  },
+  // shows up first, so show on top
   {
     label: 'Graph',
     type: 'graph',
     disabled: false,
   },
   {
+    label: 'Image Clusters',
+    type: 'imageCluster',
+    requiresOsparcJob: true,
+    disabled: true,
+  },
+  {
+    label: 'NLP',
+    type: 'nlp',
+    requiresOsparcJob: true,
+    disabled: false,
+  },
+  {
     label: 'Tabular Data Clustering',
     type: 'tabularDataClustering',
+    requiresOsparcJob: true,
     disabled: false,
   }
 ]
@@ -411,11 +415,11 @@ export default {
     
     // this is async so you just call once and let it run forever. don't actually watch it...
     async pollOsparcUntilComplete () {
-      while (this.pollOsparc) {
+      while (this.pollingOsparc) {
         await this.pollOsparc(this.osparcJobID)
 
-        // sleep 5s 
-        const sleepSeconds = 5
+        // sleep 30s 
+        const sleepSeconds = 30
         await new Promise(resolve => setTimeout(resolve, sleepSeconds * 1000))
       }
     },

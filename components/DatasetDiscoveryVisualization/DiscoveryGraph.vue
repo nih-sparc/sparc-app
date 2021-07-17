@@ -97,6 +97,10 @@ export default {
   },
 
   computed: {
+    esEnrichedData: function () {
+      // just follow this store
+      return this.$store.datasetComparison.datasetInfoEnrichedByES
+    }
   },
 
   methods: {
@@ -108,6 +112,8 @@ export default {
       // updates this, which sends it down to props, triggering a chart refresh
       this.graphEntities = graphEntities
     },
+
+    
 
     /**
     * takes the dataset info and queries our express server, returning the enriched data we'll need to create the visualization
@@ -133,7 +139,6 @@ export default {
 
       apiResponse.enrichedData.forEach((datum, index) => {
         let graphEntities
-        
         if (datum.foundStatus == "not-found-in-scicrunch-es-api") {
           // just send original info we got from pennsieve
           console.log("no es for this one", datum.doiID)

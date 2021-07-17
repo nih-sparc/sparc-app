@@ -8,6 +8,9 @@
 
 <script>
 
+// This is the chart to use for all the osparc related charts
+
+
 // following this: https://vega.github.io/vega/examples/force-directed-layout/
 import {
   assocPath,
