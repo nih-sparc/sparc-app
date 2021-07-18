@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="DatasetDiscoveryVisualizationWrapper">
     <h3>{{ visualizationType.label }}</h3>
     <div class="">
       <component
