@@ -34,6 +34,11 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
     * third time it adds the prefix again, and so on
 
     * To solve, just restart the dev server and start again using `yarn dev`
+
+## Other Debugging
+### ERROR TypeError: Cannot read property 'isString' of undefined
+This can happen even if all data for graph vis is correct, but there's some other error that happens before vega finishes that messes stuff up. Probably need better error handling so this doesn't happen...but it's happening, so just know that the vega spec can be perfect but this still happens
+
 # ENV VARS to set
 e.g., 
 
