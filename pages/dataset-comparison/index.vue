@@ -281,7 +281,7 @@ export default {
       osparcJobID: null,
 
       /**
-      * datasets that were compared when they last clicked the button, OR when component first mounted
+      * datasets that were compared when they last clicked the button
       - initializes from the store
       - after that, waits for the user to press "discover" to sync with the store
       *
@@ -346,8 +346,9 @@ export default {
 
   beforeMount: function() {
     this.windowWidth = window.innerWidth
-    // on mount, intialize what we compare using what was calculated from te store
-    this.datasetsCurrentlyBeingCompared = clone(this.datasetsToCompare)
+
+    // on mount, DON'T intialize what we compare using what was calculated from te store
+    //this.datasetsCurrentlyBeingCompared = clone(this.datasetsToCompare)
   },
 
   /**
@@ -355,29 +356,29 @@ export default {
    * Shrink the title column width if on mobile
    */
   mounted: function() {
-    if (!this.$route.query.type) {
-      const firstTabType = compose(propOr('', 'type'), head)(discoveryDataTypes)
+    // if (!this.$route.query.type) {
+    //   const firstTabType = compose(propOr('', 'type'), head)(discoveryDataTypes)
 
-      this.$router.replace({ query: { type: firstTabType } })
-    } else {
-      /**
-       * Set the searchData from query params
-       * Need to convert skip and limit from strings to numbers
-       */
-      const queryParams = {
-        skip: Number(this.$route.query.skip || searchData.skip),
-        limit: Number(this.$route.query.limit || searchData.limit),
-        q: this.$route.query.q || ''
-      }
+    //   this.$router.replace({ query: { type: firstTabType } })
+    // } else {
+    //   /**
+    //    * Set the searchData from query params
+    //    * Need to convert skip and limit from strings to numbers
+    //    */
+    //   const queryParams = {
+    //     skip: Number(this.$route.query.skip || searchData.skip),
+    //     limit: Number(this.$route.query.limit || searchData.limit),
+    //     q: this.$route.query.q || ''
+    //   }
 
-      this.searchData = { ...this.searchData, ...queryParams }
+    //   this.searchData = { ...this.searchData, ...queryParams }
 
-      if (this.$route.query.datasetFilters) {
-        this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
-          ? this.$route.query.datasetFilters
-          : [this.$route.query.datasetFilters]
-      }
-    }
+    //   if (this.$route.query.datasetFilters) {
+    //     this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
+    //       ? this.$route.query.datasetFilters
+    //       : [this.$route.query.datasetFilters]
+    //   }
+    // }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
   },
@@ -805,6 +806,8 @@ export default {
 
 .dataset-filters {
   padding: 0.5rem 1rem 1rem;
+  // hide for now
+  display: none;
   h2,
   h3 {
     font-size: 1.125rem;
