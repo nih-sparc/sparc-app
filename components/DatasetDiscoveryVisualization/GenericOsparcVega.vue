@@ -1,6 +1,9 @@
 <template>
-  <div >
-      <img :src="exampleImgURL" />
+  <div>
+    <div v-if="exampleImgURL" class="mock-data-image-wrapper">
+      <img class="mock-data-image" :src="exampleImgURL" />
+    </div>
+
     <div v-if="!exampleImgURL" :id="elementId">loading...</div>
   </div>
 </template>
