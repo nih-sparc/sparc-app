@@ -128,8 +128,9 @@
             <el-button
               class="dataset-button knowmore"
               @click="addToCompareList"
+              :disabled="inKnowMore"
             >
-              Add to KnowMore
+              {{ inKnowMore ? "Added to KnowMore!" : "Add to KnowMore" }} 
             </el-button>
             <el-button
               class="dataset-button"
@@ -542,6 +543,12 @@ export default {
       return true
     },
 
+    inKnowMore () {
+      const toCompare = this.$store.state.datasetComparison.toCompare
+      const match = toCompare.find(ds => ds.id == this.getDatasetId)
+      return !!match
+    },
+
     /**
      * Returns simulation id for run simulation button
      * @returns {String}
@@ -941,7 +948,7 @@ export default {
      */
     addToCompareList: function() {
       this.$store.commit('datasetComparison/add', this.datasetInfo)
-      this.$router.push("/dataset-comparison")
+      //this.$router.push("/dataset-comparison")
     },
 
     /**
@@ -1143,6 +1150,10 @@ export default {
         text-transform: uppercase;
         &.knowmore {
           background-color: $knowmore;
+          &[disabled] {
+            opacity: 0.7;
+            cursor: not-allowed;
+          }
         }
         a {
           color: #fff;
