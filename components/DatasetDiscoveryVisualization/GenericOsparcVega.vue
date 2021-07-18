@@ -1,8 +1,7 @@
 <template>
   <div >
-    <div >
-    </div>
-    <div :id="elementId">loading...</div>
+      <img :src="exampleImgURL" />
+    <div v-if="!exampleImgURL" :id="elementId">loading...</div>
   </div>
 </template>
 
@@ -57,6 +56,9 @@ export default {
     elementId: {
       type: String,
     },
+    exampleImgURL: {
+      type: String,
+    },
     generateVegaSpec: {
       type: Function,
     },
@@ -75,7 +77,12 @@ export default {
     // reloads the current data into the chart, refreshing the chart
     async refreshVis () {
       // NOTE !!! The key is that edges will be changed dynamically by the path transform. Need to clone this or something to make sure that links don't get stuck with their original values
-      const vegaSpec = clone(this.generateVegaSpec(this.osparcData))
+      if (this.exampleImgURL) {
+        console.log("sending mock image instead")
+        return
+      }
+
+      const vegaSpec =  clone(this.generateVegaSpec(this.osparcData))
 
       console.log("refreshing vega chart")
       console.log("vega spec", vegaSpec)

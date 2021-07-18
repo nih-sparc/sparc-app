@@ -4,6 +4,7 @@
       v-if="isVegaLoaded && isVegaEmbedLoaded"
       :osparcData="dataUsedInChart"
       :elementId="DiscoveryTabularDataClusteringVega"
+      :exampleImgURL="exampleImgURL"
     />
   </div>
 </template>
@@ -69,6 +70,7 @@ export default {
       // what we actually send to chart...so we don't have to retrieve from osparc everytime we refresh necessarily
       // ie adds a layer of abstraction from the store, so store stays always in line wiwth osparc data, but we can do what we want in frontend
       dataUsedInChart: {},
+      exampleImgURL: "https://miro.medium.com/max/1041/1*n8UZ90NsFpGhHJSQ3YCg_Q.png",
     }
   },
 
@@ -83,9 +85,8 @@ export default {
   },
 
   computed: {
-    osparcDataForChart: () => {
-      // TODO make sure this still updates when the store changes
-      this.datasetsInfo.map(ds =>  checkCacheForESRecord(ds.doiID))
+    osparcDataForChart () {
+      return this.$store.datasetComparison.osparcResults
     },
   },
 

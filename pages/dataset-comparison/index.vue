@@ -192,7 +192,7 @@ const discoveryDataTypes = [
     label: 'Image Clusters',
     type: 'imageCluster',
     requiresOsparcJob: true,
-    disabled: true,
+    disabled: false,
   },
   {
     label: 'NLP',

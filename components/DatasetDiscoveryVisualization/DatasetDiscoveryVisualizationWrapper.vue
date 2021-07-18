@@ -44,10 +44,8 @@ const DiscoveryTabularDataClustering = () =>
 const visualizationComponents = {
   graph: DiscoveryGraphVisualization,
   nlp: DiscoveryNLP,
-  // TODO change out when these components are built
   imageCluster: DiscoveryImageCluster,
-  // TODO change out when these components are built
-  tabularDataClustering: DiscoveryGraphVisualization
+  tabularDataClustering: DiscoveryTabularDataClustering,
 }
 
 // a wrapper around the various visualizations for the KnowMore tool
