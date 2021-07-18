@@ -3,7 +3,7 @@
     <generic-osparc-vega
       v-if="isVegaLoaded && isVegaEmbedLoaded"
       :osparcData="dataUsedInChart"
-      :elementId="DiscoveryTabularDataClusteringVega"
+      :elementId="'Discovery-NLP-Vega'"
       :exampleImgURL="exampleImgURL"
     />
   </div>

@@ -3,7 +3,7 @@
     <generic-osparc-vega
       v-if="isVegaLoaded && isVegaEmbedLoaded"
       :osparcData="dataUsedInChart"
-      :elementId="DiscoveryTabularDataClusteringVega"
+      :elementId="'discovery-tabular-data-clustering-vega'"
       :exampleImgURL="exampleImgURL"
     />
   </div>
@@ -83,7 +83,7 @@ export default {
   computed: {
     osparcDataForChart () {
       // not sure what to do yet
-      return this.$store.datasetComparison.osparcResults
+      return this.$store.state.datasetComparison.osparcResults
     },
   },
 

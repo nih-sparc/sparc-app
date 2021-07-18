@@ -202,7 +202,6 @@ export default {
         edge.targetIndex = edge.target
         edge.sourceIndex = edge.source
 		    edge.prettyLabel = prettyLabels[edge.label]
-        edge.prettyTitle = `${edge.prettyLabel}: ${edge.name}`
 
 
         return edge
