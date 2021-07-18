@@ -184,24 +184,24 @@ import DatasetDiscoveryVisualizationWrapper from '@/components/DatasetDiscoveryV
 const discoveryDataTypes = [
   // shows up first, so show on top
   {
-    label: 'Graph',
+    label: 'Knowledge Graph',
     type: 'graph',
     disabled: false,
   },
   {
-    label: 'Image Clusters',
+    label: 'Image Clustering',
     type: 'imageCluster',
     requiresOsparcJob: true,
     disabled: false,
   },
   {
-    label: 'NLP',
+    label: 'Common Keywords',
     type: 'nlp',
     requiresOsparcJob: true,
     disabled: false,
   },
   {
-    label: 'Tabular Data Clustering',
+    label: 'Data Correlation',
     type: 'tabularDataClustering',
     requiresOsparcJob: true,
     disabled: false,
