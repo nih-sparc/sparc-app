@@ -246,6 +246,14 @@ export default {
             console.log("loaded vega embed")
           },
         },
+        { 
+          src: "https://cdn.plot.ly/plotly-2.2.0.min.js",
+          hid: 'plotly',
+          callback: () => { 
+            this.isPlotlyLoaded = true 
+            console.log("loaded plotly")
+          },
+        },
       ]
     }
   },
@@ -272,9 +280,10 @@ export default {
       // preview string (currently just using string) of dataset whose id user selected
       toAddPreview: "",
 
-      // make sure to not to try to render vega until loaded
+      // make sure to not to try to render vega/plotly until loaded
       isVegaLoaded: false,
       isVegaEmbedLoaded: false, 
+      isPlotlyLoaded: false,
 
       // whether we need to keep polling osparc for data or not
       pollingOsparc: false,
