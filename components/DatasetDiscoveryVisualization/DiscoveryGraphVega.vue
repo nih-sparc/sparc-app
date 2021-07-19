@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div >
     </div>
     <div id="discovery-graph-vis">loading...</div>
@@ -51,7 +51,7 @@ export default {
     */
     graphEntities: {
       type: Object,
-      default: () => [],
+      default: () => {},
     },
   },
 
@@ -62,12 +62,24 @@ export default {
   },
 
   computed: {
+    // if no data yet, getting this error: TypeError: Cannot read property 'isString' of undefined. Even if later data comes in, it just messes things up too much already
+    // so don't render graph until we're totally ready
+    hasData () {
+      return this.graphEntities.nodes && this.graphEntities.nodes.length > 0
+    }
   },
 
   methods: {
     // reloads the current data into the chart, refreshing the chart
     async refreshVis () {
       // NOTE !!! The key is that edges will be changed dynamically by the path transform. Need to clone this or something to make sure that links don't get stuck with their original values
+
+      if (!this.hasData) {
+        console.log("no data yet, skipping")
+        // don't want any errors to throw here, or it will mess things up down the line. So if not data, just wait
+        return
+      }
+
       const vegaSpec = clone(generateVegaSpec(this.graphEntities))
 
       console.log("refreshing vega chart")
