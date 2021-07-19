@@ -1,7 +1,6 @@
 <template>
   <div v-loading="isLoading" class="">
     <generic-vega
-      v-if="isVegaLoaded && isVegaEmbedLoaded"
       :dataForChart="dataUsedInChart"
       :elementId="'Discovery-NLP-Vega'"
       :generateSpec="generateSpec"
@@ -47,15 +46,6 @@ export default {
       default: () => []
     },
     isLoading: {
-      type: Boolean,
-      default: false
-    },
-    // make sure to not to try to render vega until loaded
-    isVegaLoaded: {
-      type: Boolean,
-      default: false
-    },
-    isVegaEmbedLoaded: {
       type: Boolean,
       default: false
     },

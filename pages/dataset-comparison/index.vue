@@ -142,7 +142,7 @@
 
               <div v-if="datasetsCurrentlyBeingCompared.length > 0" v-for="discoveryDataType in discoveryDataTypes" class="">
                 <dataset-discovery-visualization-wrapper 
-                   v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type)"
+                   v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type) && !discoveryDataType.notChart"
                    :visualizationType="discoveryDataType"
                    :datasetsInfo="datasetsCurrentlyBeingCompared"
                    :isVegaLoaded="isVegaLoaded"
@@ -204,13 +204,20 @@ const discoveryDataTypes = [
     label: 'Summary Table',
     type: 'summaryTable',
     requiresOsparcJob: true,
-    disabled: true,
+    disabled: false,
   },
   {
     label: 'Image Clustering',
     type: 'imageCluster',
     requiresOsparcJob: true,
     disabled: false,
+  },
+  {
+    label: 'Abstract',
+    type: 'abstract',
+    notChart: true,
+    requiresOsparcJob: true,
+    disabled: true,
   },
 ]
 

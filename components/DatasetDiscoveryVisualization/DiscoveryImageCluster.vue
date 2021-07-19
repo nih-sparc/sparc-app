@@ -89,7 +89,9 @@ export default {
 
   computed: {
     osparcDataForChart () {
-      return this.$store.state.datasetComparison.osparcResults
+      const base = this.$store.state.datasetComparison.osparcResults
+      // not doing for now
+      return {}
     },
   },
 

@@ -96,7 +96,12 @@ export default {
       try {
         // render vega to teh target element
         const element = document.getElementById(this.elementId)
-        const result = Plotly.newPlot(element, plotlySpec.data, plotlySpec.options)
+        // some only take a single arg, the full spec. If so, only pass plotlySpec.options in
+        if (plotlySpec.data) {
+          const result = Plotly.newPlot(element, plotlySpec.data, plotlySpec.options)
+        } else {
+          const result = Plotly.newPlot(element, plotlySpec.options)
+        }
 
         // result.view provides access to the Scatterplot View API
         this.isReady = true
