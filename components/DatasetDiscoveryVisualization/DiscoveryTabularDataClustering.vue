@@ -2,9 +2,9 @@
   <div v-loading="isLoading" class="">
     <generic-osparc-vega
       v-if="isVegaLoaded && isVegaEmbedLoaded"
-      :osparcData="dataUsedInChart"
+      :osparcData="osparcDataForChart"
       :elementId="'discovery-tabular-data-clustering-vega'"
-      :exampleImgURL="exampleImgURL"
+      :generateScatterplotSpec="generateScatterplotSpec"
     />
   </div>
 </template>
@@ -31,6 +31,9 @@ import {
 
 
 import GenericOsparcVega from '@/components/DatasetDiscoveryVisualization/GenericOsparcVega.vue'
+import { generateDefaultScatterplotSpec } from '@/components/DatasetDiscoveryVisualization/scatterUtils.js'
+console.log("-=-=-=-=-=-=-=-=-=", generateDefaultScatterplotSpec)
+
 export default {
   name: 'DiscoveryTabularDataClustering',
   components: {
@@ -67,17 +70,11 @@ export default {
       // ie adds a layer of abstraction from the store, so store stays always in line wiwth osparc data, but we can do what we want in frontend
       dataUsedInChart: {},
       exampleImgURL: "https://www.vertica.com/wp-content/uploads/2019/09/corr_matrix_Titanic.png",
+      generateScatterplotSpec: generateDefaultScatterplotSpec,
     }
   },
 
   watch: {
-    datasetsInfo: {
-      immediate: true,
-      handler (values, oldValues) {
-        console.log("refreshing visualization...")
-        this.refreshVisualization(values)
-      }
-    },
   },
 
   computed: {
@@ -91,29 +88,29 @@ export default {
     /**
     * takes the updated data and updates the visualization
     */
-    updateVis (osparcDataForChart) {
-      console.log("updateing vis")
-      // updates this, which sends it down to props, triggering a chart refresh
-      this.dataUsedInChart = osparcDataForChart
-    },
+    // updateVis (osparcDataForChart) {
+    //   console.log("updateing vis")
+    //   // updates this, which sends it down to props, triggering a chart refresh
+    //   this.dataUsedInChart = osparcDataForChart
+    // },
 
-    // receives relevant data (as computed by the computed field) and sets to chart
-    async refreshVisualization () {
-      this.$emit('loading')
+    // // receives relevant data (as computed by the computed field) and sets to chart
+    // async refreshVisualization () {
+    //   this.$emit('loading')
 
-      try {
-        const dataForUpdate = this.osparcDataForChart
-        this.updateVis(dataForUpdate)
+    //   try {
+    //     const dataForUpdate = this.osparcDataForChart
+    //     this.updateVis(dataForUpdate)
 
-        this.$emit('notLoading')
+    //     this.$emit('notLoading')
 
-      } catch (err) {
-        console.error(err)
-        this.$emit('notLoading')
-        
-      }
+    //   } catch (err) {
+    //     console.error(err)
+    //     this.$emit('notLoading')
+    //     
+    //   }
 
-    }
+    // }
   }
 }
 </script>

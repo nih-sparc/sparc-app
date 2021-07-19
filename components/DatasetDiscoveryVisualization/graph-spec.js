@@ -18,18 +18,18 @@ export default (graphData) => {
 			{ "name": "cx", "update": "width / 2" },
 			{ "name": "cy", "update": "height / 2" },
 			{ "name": "nodeRadius", "value": nodes.length > 10 ? 4 : 8,
-				// "bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
+				"bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
 		  },
 			// "
 			{ "name": "nodeCharge", "value": -10,
-				//"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
+				"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
 			{ "name": "linkDistance", "value": nodes.length > 10 ? 30 : 80,
 				"bind": {"input": "range", "min": 5, "max": 250, "step": 1} 
 			},
 			// toggles if animated simulation (false) or calculate in batch (true)
 			{ "name": "static", "value": false,
-				//"bind": {"input": "checkbox"} 
+				"bind": {"input": "checkbox"} 
 			},
 			{
 				"description": "State variable for active node fix status.",
@@ -197,7 +197,7 @@ export default (graphData) => {
 				"encode": {
 					"enter": {
 						"text": {"field": "datum.prettyTitle"},
-						"fontSize": {"value": 8}
+						"fontSize": {"value": nodes.length > 10 ? 8 : 16}
 					},
 					update: {
 						// make sure the labels move with the modes

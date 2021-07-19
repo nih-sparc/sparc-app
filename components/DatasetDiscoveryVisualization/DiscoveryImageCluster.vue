@@ -5,6 +5,7 @@
       :osparcData="dataUsedInChart"
       :elementId="'discovery-image-cluster'"
       :exampleImgURL="exampleImgURL"
+      :generateScatterplotSpec="generateScatterplotSpec"
     />
   </div>
 </template>
@@ -15,6 +16,7 @@ import {
   checkCacheForESRecord
 }  from './graphUtils.js'
 
+import { generateDefaultScatterplotSpec } from '@/components/DatasetDiscoveryVisualization/scatterUtils.js'
 import {
   assocPath,
   clone,
@@ -71,6 +73,7 @@ export default {
       // ie adds a layer of abstraction from the store, so store stays always in line wiwth osparc data, but we can do what we want in frontend
       dataUsedInChart: {},
       exampleImgURL: "https://miro.medium.com/max/1041/1*n8UZ90NsFpGhHJSQ3YCg_Q.png",
+      generateScatterplotSpec: generateDefaultScatterplotSpec,
     }
   },
 

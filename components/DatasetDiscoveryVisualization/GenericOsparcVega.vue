@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="osparc-chart-wrapper">
     <div v-if="exampleImgURL" class="mock-data-image-wrapper">
       <img class="mock-data-image" :src="exampleImgURL" />
     </div>
 
-    <div v-if="!exampleImgURL" :id="elementId">loading...</div>
+    <div v-if="!exampleImgURL" :id="elementId"></div>
   </div>
 </template>
 
@@ -30,8 +30,9 @@ import {
   propOr,
   pluck
 } from 'ramda'
+
 export default {
-  name: 'GenericOsparcVega',
+  name: 'GenericOsparcScatterplot',
 
   mounted: function() {
     this.refreshVis()
@@ -62,7 +63,8 @@ export default {
     exampleImgURL: {
       type: String,
     },
-    generateVegaSpec: {
+    // expected to return obj with two keys: data and options, for first and second args to plotly respectively
+    generateScatterplotSpec: {
       type: Function,
     },
   },
@@ -81,51 +83,23 @@ export default {
     async refreshVis () {
       // NOTE !!! The key is that edges will be changed dynamically by the path transform. Need to clone this or something to make sure that links don't get stuck with their original values
       if (this.exampleImgURL) {
-        console.log("sending mock image instead")
+        console.log("sending mock image instead for ", this.elementId)
         return
       }
 
-      const vegaSpec =  clone(this.generateVegaSpec(this.osparcData))
+      const plotlySpec =  this.generateScatterplotSpec(this.osparcData)
 
-      console.log("refreshing vega chart")
-      console.log("vega spec", vegaSpec)
+      console.log("refreshing Plotly chart")
+      console.log("plotly spec", plotlySpec)
       this.isReady = false
 
-      const options = {
-        renderer:  'svg',  // renderer (canvas or svg)
-        // only for vega embed I believe, not regular vega
-
-        // add a tooltip for allowing on hover stuff
-        tooltip: {theme: 'dark'},
-        config: {
-          axis: {
-            // doesn't allow the labels to overlap like I want
-            //labelOverlap: false,
-          }
-        },
-        actions: {
-          export: true, 
-          // beacuse it's broken...
-          // TODO fix, seems to be from the marks, since commenting those out makes it work. 
-          source: false,
-          // beacuse it's broken...
-          editor: false,
-        },
-        // hover:     true,       // enable hover processing
-      }
-
-      // vegaEmbed should be global, pulled from cdn
-      // NOTE another way to get around this is to call window from the mounted or beforeMount hooks only. But then we might have trouble when trying to refresh the graph...
       try {
         // render vega to teh target element
-        const result = await vegaEmbed(this.elementId, vegaSpec, options)
+        const element = document.getElementById(this.elementId)
+        const result = Plotly.newPlot(element, plotlySpec.data, plotlySpec.options)
 
-        // result.view provides access to the Vega View API
+        // result.view provides access to the Scatterplot View API
         this.isReady = true
-        console.log("Full vega spec for ", this.elementId,result)
-
-        // find out what data actually got into our chart
-        const dataUsed = result.vgSpec.data
 
       } catch (err) {
         console.error(err)
@@ -142,6 +116,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.osparc-chart-wrapper {
+  min-height: 300px;
+
+}
 </style>
 </script>
 
