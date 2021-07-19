@@ -1,10 +1,10 @@
 <template>
   <div v-loading="isLoading" class="">
-    <generic-osparc-vega
+    <generic-vega
       v-if="isVegaLoaded && isVegaEmbedLoaded"
       :osparcData="dataUsedInChart"
       :elementId="'Discovery-NLP-Vega'"
-      :exampleImgURL="exampleImgURL"
+      :generateSpec="generateSpec"
     />
   </div>
 </template>
@@ -29,11 +29,12 @@ import {
   uniqBy,
 } from 'ramda'
 
-import GenericOsparcVega from '@/components/DatasetDiscoveryVisualization/GenericOsparcVega.vue'
+import GenericVega from '@/components/DatasetDiscoveryVisualization/GenericVega.vue'
+import { generateWordCloudSpec } from '@/components/DatasetDiscoveryVisualization/chartUtils.js'
 export default {
   name: 'DiscoveryNLP',
   components: {
-    GenericOsparcVega,
+    GenericVega,
   },
 
   props: {
@@ -66,6 +67,7 @@ export default {
       // ie adds a layer of abstraction from the store, so store stays always in line wiwth osparc data, but we can do what we want in frontend
       dataUsedInChart: {},
       exampleImgURL: "https://ak.picdn.net/shutterstock/videos/29502877/thumb/11.jpg",
+      generateSpec: generateWordCloudSpec,
     }
   },
 

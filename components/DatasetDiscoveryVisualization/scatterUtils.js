@@ -12,6 +12,7 @@ export function generateDefaultScatterplotSpec (osparcData) {
 			t: 0 
 		},  
 		height: 500,
+		height: 500,
 	}
 	
 	return {data, options}

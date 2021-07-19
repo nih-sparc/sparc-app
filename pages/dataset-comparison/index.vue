@@ -189,12 +189,6 @@ const discoveryDataTypes = [
     disabled: false,
   },
   {
-    label: 'Image Clustering',
-    type: 'imageCluster',
-    requiresOsparcJob: true,
-    disabled: false,
-  },
-  {
     label: 'Common Keywords',
     type: 'nlp',
     requiresOsparcJob: true,
@@ -205,7 +199,19 @@ const discoveryDataTypes = [
     type: 'tabularDataClustering',
     requiresOsparcJob: true,
     disabled: false,
-  }
+  },
+  {
+    label: 'Summary Table',
+    type: 'summaryTable',
+    requiresOsparcJob: true,
+    disabled: true,
+  },
+  {
+    label: 'Image Clustering',
+    type: 'imageCluster',
+    requiresOsparcJob: true,
+    disabled: false,
+  },
 ]
 
 const searchData = {

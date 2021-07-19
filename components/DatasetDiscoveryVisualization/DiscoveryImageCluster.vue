@@ -1,6 +1,6 @@
 <template>
   <div v-loading="isLoading" class="">
-    <generic-osparc-vega
+    <generic-vega
       v-if="isVegaLoaded && isVegaEmbedLoaded"
       :osparcData="dataUsedInChart"
       :elementId="'discovery-image-cluster'"
@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import GenericOsparcVega from '@/components/DatasetDiscoveryVisualization/GenericOsparcVega.vue'
+import GenericVega from '@/components/DatasetDiscoveryVisualization/GenericVega.vue'
 import { 
   checkCacheForESRecord
 }  from './graphUtils.js'
 
-import { generateDefaultScatterplotSpec } from '@/components/DatasetDiscoveryVisualization/scatterUtils.js'
+import { generateDefaultScatterplotSpec } from '@/components/DatasetDiscoveryVisualization/chartUtils.js'
 import {
   assocPath,
   clone,
@@ -40,7 +40,7 @@ import {
 export default {
   name: 'DiscoveryImageCluster',
   components: {
-    GenericOsparcVega,
+    GenericVega,
   },
 
   props: {

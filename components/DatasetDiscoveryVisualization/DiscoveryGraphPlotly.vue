@@ -83,6 +83,7 @@ export default {
 
       const vegaSpec = clone(generateVegaSpec(this.graphEntities))
 
+      console.log("refreshing vega chart")
       console.log("vega spec", vegaSpec)
       this.isReady = false
 
@@ -111,10 +112,13 @@ export default {
       // NOTE another way to get around this is to call window from the mounted or beforeMount hooks only. But then we might have trouble when trying to refresh the graph...
       try {
         // render vega to teh target element
+        console.log("trying to render graph vis...")
         const result = await vegaEmbed('#discovery-graph-vis', vegaSpec, options)
+        console.log("success render graph vis!")
 
         // BTW result.view provides access to the Vega View API, if you want it
         this.isReady = true
+        console.log("Full vega spec", result)
 
         // find out what data actually got into our chart
         const dataUsed = result.vgSpec.data

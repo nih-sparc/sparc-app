@@ -1,10 +1,10 @@
 <template>
   <div v-loading="isLoading" class="">
-    <generic-osparc-vega
+    <generic-plotly
       v-if="isVegaLoaded && isVegaEmbedLoaded"
       :osparcData="osparcDataForChart"
       :elementId="'discovery-tabular-data-clustering-vega'"
-      :generateScatterplotSpec="generateScatterplotSpec"
+      :generateSpec="generateSpec"
     />
   </div>
 </template>
@@ -30,14 +30,13 @@ import {
 } from 'ramda'
 
 
-import GenericOsparcVega from '@/components/DatasetDiscoveryVisualization/GenericOsparcVega.vue'
-import { generateDefaultScatterplotSpec } from '@/components/DatasetDiscoveryVisualization/scatterUtils.js'
-console.log("-=-=-=-=-=-=-=-=-=", generateDefaultScatterplotSpec)
+import GenericPlotly from '@/components/DatasetDiscoveryVisualization/GenericPlotly.vue'
+import { generateDefaultScatterplotSpec } from '@/components/DatasetDiscoveryVisualization/chartUtils.js'
 
 export default {
   name: 'DiscoveryTabularDataClustering',
   components: {
-    GenericOsparcVega,
+    GenericPlotly,
   },
 
   props: {
@@ -49,6 +48,7 @@ export default {
       type: Array,
       default: () => []
     },
+    // whether chart is loading 
     isLoading: {
       type: Boolean,
       default: false
@@ -70,7 +70,7 @@ export default {
       // ie adds a layer of abstraction from the store, so store stays always in line wiwth osparc data, but we can do what we want in frontend
       dataUsedInChart: {},
       exampleImgURL: "https://www.vertica.com/wp-content/uploads/2019/09/corr_matrix_Titanic.png",
-      generateScatterplotSpec: generateDefaultScatterplotSpec,
+      generateSpec: generateDefaultScatterplotSpec,
     }
   },
 
