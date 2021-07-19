@@ -32,12 +32,13 @@ export default {
 
   mounted: function() {
     this.refreshVis()
+    window.refreshKnowledgeGraphVis = this.refreshVis
   },
   watch: {
     graphEntities: {
       immediate: true,
       handler (values, oldValues) {
-        this.refreshVis(values)
+        this.refreshVis()
       }
     },
   },
@@ -115,7 +116,7 @@ export default {
         const result = await vegaEmbed('#discovery-graph-vis', vegaSpec, options)
         console.log("success render graph vis!")
 
-        // result.view provides access to the Vega View API
+        // BTW result.view provides access to the Vega View API, if you want it
         this.isReady = true
         console.log("Full vega spec", result)
 

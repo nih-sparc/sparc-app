@@ -51,7 +51,7 @@ const visualizationComponents = {
 // a wrapper around the various visualizations for the KnowMore tool
 
 export default {
-  name: 'DatasetDiscoveryVisualization',
+  name: 'DatasetDiscoveryVisualizationWrapper',
 
   props: {
     /**
@@ -93,7 +93,7 @@ export default {
      * @returns {Function}
      */
     visualizationComponent: function() {
-      return defaultTo('', visualizationComponents[this.visualizationType.type])
+      return visualizationComponents[this.visualizationType.type]
     },
   },
 
