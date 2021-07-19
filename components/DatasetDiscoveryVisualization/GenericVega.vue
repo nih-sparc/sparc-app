@@ -37,7 +37,7 @@ export default {
     this.refreshVis()
   },
   watch: {
-    osparcData: {
+    dataForChart: {
       immediate: true,
       handler (values, oldValues) {
         this.refreshVis(values)
@@ -52,7 +52,7 @@ export default {
     * - keep it one prop, since they should always be sent together, and so triggers / watchers know which one prop to watch
     *
     */
-    osparcData: {
+    dataForChart: {
       type: Object,
       default: () => [],
     },
@@ -85,7 +85,13 @@ export default {
         return
       }
 
-      const vegaSpec =  clone(this.generateSpec(this.osparcData))
+      if (!this.dataForChart) {
+        console.log("no data yet, just wait")
+        return
+      }
+
+      console.log(this.elementId, "using data", this.dataForChart) 
+      const vegaSpec =  clone(this.generateSpec(this.dataForChart))
 
       console.log("refreshing vega chart")
       console.log("vega spec", vegaSpec)

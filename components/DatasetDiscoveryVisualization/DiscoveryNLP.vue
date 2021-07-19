@@ -2,7 +2,7 @@
   <div v-loading="isLoading" class="">
     <generic-vega
       v-if="isVegaLoaded && isVegaEmbedLoaded"
-      :osparcData="dataUsedInChart"
+      :dataForChart="dataUsedInChart"
       :elementId="'Discovery-NLP-Vega'"
       :generateSpec="generateSpec"
     />
@@ -85,7 +85,8 @@ export default {
     osparcDataForChart () {
 
       // not sure what to do yet
-      const computed = this.$store.state.datasetComparison.osparcResults
+      const base = this.$store.state.datasetComparison.osparcResults
+      const computed = base && base.outputs.keywords
       return computed
     },
   },
