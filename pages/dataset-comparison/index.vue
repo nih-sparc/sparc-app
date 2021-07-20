@@ -419,7 +419,10 @@ export default {
         // also want to send here the massive osparc query kickoff function
         const apiUrl = `${process.env.flask_api_host}/api/start-osparc-job/`
 
-        const { data } = await this.$axios.post(apiUrl, {testPayload: "dataset info"})
+        const datasetIds = this.datasetsCurrentlyBeingCompared.map(ds => ds.id)
+        const { data } = await this.$axios.post(apiUrl, {
+          datasetIds,
+        })
         console.log("results from creating job in osparc", data)
 
         this.osparcJobID = data["job_id"]

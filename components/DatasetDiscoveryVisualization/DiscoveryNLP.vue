@@ -2,7 +2,7 @@
   <div v-loading="isLoading" class="">
     <generic-vega
       :dataForChart="dataUsedInChart"
-      :elementId="'Discovery-NLP-Vega'"
+      :elementId="'discovery-nlp-vega'"
       :generateSpec="generateSpec"
     />
   </div>
@@ -86,7 +86,7 @@ export default {
     * takes the updated data and updates the visualization
     */
     updateVis (osparcDataForChart) {
-      console.log("updateing vis")
+      console.log("updateing Wordcloud")
       // updates this, which sends it down to props, triggering a chart refresh
       this.dataUsedInChart = osparcDataForChart
     },
