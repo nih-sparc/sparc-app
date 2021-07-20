@@ -189,14 +189,15 @@ const discoveryDataTypes = [
     disabled: false,
   },
   {
-    label: 'Common Keywords',
-    type: 'nlp',
+    label: 'Abstract',
+    type: 'abstract',
+    notChart: true,
     requiresOsparcJob: true,
-    disabled: false,
+    disabled: true,
   },
   {
-    label: 'Data Correlation',
-    type: 'tabularDataClustering',
+    label: 'Common Keywords',
+    type: 'nlp',
     requiresOsparcJob: true,
     disabled: false,
   },
@@ -213,11 +214,10 @@ const discoveryDataTypes = [
     disabled: false,
   },
   {
-    label: 'Abstract',
-    type: 'abstract',
-    notChart: true,
+    label: 'Data Correlation',
+    type: 'tabularDataClustering',
     requiresOsparcJob: true,
-    disabled: true,
+    disabled: false,
   },
 ]
 
