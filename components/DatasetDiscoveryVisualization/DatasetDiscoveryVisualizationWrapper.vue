@@ -8,6 +8,7 @@
         :isLoading="isLoading"
         :isVegaLoaded="isVegaLoaded"
         :isVegaEmbedLoaded="isVegaEmbedLoaded"
+        :isPlotlyLoaded="isPlotlyLoaded"
         @loading="setToLoadingState(true)"
         @notLoading="setToLoadingState(false)"
       />
@@ -83,6 +84,11 @@ export default {
       type: Boolean,
       default: false
     },
+    // make sure to not to try to render plotly until loaded
+    isPlotlyLoaded: {
+      type: Boolean,
+      default: false
+    },
   },
 
   data() {
@@ -107,6 +113,7 @@ export default {
   },
 
   methods: {
+    // TODO need to fix this...only works for the graph
     setToLoadingState (status = false) {
       this.isLoading = status
     }

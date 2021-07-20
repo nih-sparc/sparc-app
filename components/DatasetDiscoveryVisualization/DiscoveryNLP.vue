@@ -74,9 +74,8 @@ export default {
   computed: {
     osparcDataForChart () {
 
-      // not sure what to do yet
       const base = this.$store.state.datasetComparison.osparcResults
-      const computed = base && base.outputs.keywords
+      const computed = base && base.outputs.output1.keywords
       return computed
     },
   },

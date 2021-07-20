@@ -1,10 +1,12 @@
 <template>
-  <div v-loading="isLoading" class="">
-    <generic-plotly
-      :osparcData="osparcDataForChart"
-      :elementId="'discovery-summary-table'"
-      :generateSpec="generateSpec"
-    />
+  <div v-loading="!osparcDataForChart" class="">
+    <div v-if="osparcDataForChart" class="">
+      <generic-plotly
+        :osparcData="osparcDataForChart"
+        :elementId="'discovery-summary-table'"
+        :generateSpec="generateSpec"
+      />
+    </div>
   </div>
 </template>
 
@@ -33,7 +35,7 @@ import GenericPlotly from '@/components/DatasetDiscoveryVisualization/GenericPlo
 import { generateSummaryTableSpec } from '@/components/DatasetDiscoveryVisualization/chartUtils.js'
 
 export default {
-  name: 'DiscoveryTabularDataClustering',
+  name: 'DiscoverySummaryChart',
   components: {
     GenericPlotly,
   },
@@ -47,17 +49,9 @@ export default {
       type: Array,
       default: () => []
     },
-    // whether chart is loading 
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
-    // make sure to not to try to render vega until loaded
-    isVegaLoaded: {
-      type: Boolean,
-      default: false
-    },
-    isVegaEmbedLoaded: {
+
+    // make sure to not to try to render plotly until loaded
+    isPlotlyLoaded: {
       type: Boolean,
       default: false
     },
@@ -67,8 +61,8 @@ export default {
     return {
       // what we actually send to chart...so we don't have to retrieve from osparc everytime we refresh necessarily
       // ie adds a layer of abstraction from the store, so store stays always in line wiwth osparc data, but we can do what we want in frontend
-      dataUsedInChart: {},
       generateSpec: generateSummaryTableSpec,
+
     }
   },
 
@@ -76,10 +70,19 @@ export default {
   },
 
   computed: {
-    osparcDataForChart () {
-      // not sure what to do yet
+    test () {
       const base = this.$store.state.datasetComparison.osparcResults
-      return base && base.outputs.summary_table
+      const computed = base
+
+      console.log("TEST summary chart data", computed)
+      return computed
+    },
+    osparcDataForChart () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      const computed = base ? base.outputs.output1["summary table"] : null
+
+      console.log("summary chart data", computed)
+      return clone(computed)
     },
   },
 

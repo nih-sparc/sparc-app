@@ -32,7 +32,6 @@ export function generateWordCloudSpec (keywordsData) {
 			count,
 		}
 	})
-	console.log("counts", counts)
 
 	return {
 		"$schema": "https://vega.github.io/schema/vega/v5.json",
@@ -128,26 +127,64 @@ export function generateWordCloudSpec (keywordsData) {
 
 // this one is for plotly
 // NOTE this one is little bit different, don't pass in data directly, only a complete options
-export function generateSummaryTableSpec () {
-	const data = [
-      ['Salaries', 'Office', 'Merchandise', 'Legal', '<b>TOTAL</b>'],
-      [1200000, 20000, 80000, 2000, 12120000],
-      [1300000, 20000, 70000, 2000, 130902000],
-      [1300000, 20000, 120000, 2000, 131222000],
-      [1400000, 20000, 90000, 2000, 14102000]]
+// expects object with keys being dataset ids (from pennsieve), and value being a nested object.
+// Nested object has keys being headers, and values being entries in table
+export function generateSummaryTableSpec (tableData) {
+	// const sampleData = [
+  //     ['Salaries', 'Office', 'Merchandise', 'Legal', '<b>TOTAL</b>'],
+  //     [1200000, 20000, 80000, 2000, 12120000],
+  //     [1300000, 20000, 70000, 2000, 130902000],
+  //     [1300000, 20000, 120000, 2000, 131222000],
+  //     [1400000, 20000, 90000, 2000, 14102000]]
+
+	// get a sample record to extract headers from
+	const datasetIds = Object.keys(tableData)
+	const sampleRecord = tableData[datasetIds[0]]
+
+	const sideColumn = Object.keys(sampleRecord)
+	let rows = Object.keys(tableData).map(datasetId => {
+		const valuesForDataset = tableData[datasetId]
+
+		// then for each header, get values for that item
+		const row = sideColumn.map(h => {
+			let val = valuesForDataset[h]
+
+			// if array, return first two entries joined
+			if (typeof val == "object") {
+				val = val.slice(0, 2).join(", ")
+			}
+
+			return val
+		})
+
+		// should be like [1400000, 20000, 90000, 2000, 14102000, ...]
+		return row
+	})
+
+
+	// make it bold, by adding that html
+	// add one on top
+	const headerConfigBase = ["DatasetIDs"].concat(datasetIds)
+	// each header needs to be an array, and then that inside another array
+	const headerConfig = headerConfigBase.map(h => [h])
+	const sideColumnFormatted = sideColumn.map(h => `<b>${h}</b>`)
+	rows.unshift(sideColumnFormatted)
 
 	const options = [{
 		type: 'table',
-		header: {
-			values: [["<b>EXPENSES</b>"], ["<b>Q1</b>"],
-					 ["<b>Q2</b>"], ["<b>Q3</b>"], ["<b>Q4</b>"]],
-			align: "center",
-			line: {width: 1, color: 'black'},
-			fill: {color: "grey"},
-			font: {family: "Arial", size: 12, color: "white"}
-		},
+		// TODO didn't get this part working yet...but it's ok
+		// header: {
+		// 	// wrap in another array
+		// 	// end result like [["<b>EXPENSES</b>"], ["<b>Q1</b>"],
+		// 	// 				 ["<b>Q2</b>"], ["<b>Q3</b>"], ["<b>Q4</b>"]],
+		// 	values: [headerConfig],
+		// 	align: "center",
+		// 	line: {width: 1, color: 'black'},
+		// 	fill: {color: "grey"},
+		// 	font: {family: "Arial", size: 12, color: "white"}
+		// },
 		cells: {
-			values: data,
+			values: rows,
 			align: "center",
 			line: {color: "black", width: 1},
 			font: {family: "Arial", size: 11, color: ["black"]}

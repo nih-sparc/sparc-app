@@ -2,7 +2,7 @@
   <div v-loading="isLoading" class="">
     <generic-vega
       v-if="isVegaLoaded && isVegaEmbedLoaded"
-      :osparcData="dataUsedInChart"
+      :dataForChart="dataUsedInChart"
       :elementId="'discovery-image-cluster'"
       :exampleImgURL="exampleImgURL"
       :generateScatterplotSpec="generateScatterplotSpec"
@@ -91,6 +91,7 @@ export default {
     osparcDataForChart () {
       const base = this.$store.state.datasetComparison.osparcResults
       // not doing for now
+      // const computed = base && base.outputs.output1.keywords
       return {}
     },
   },

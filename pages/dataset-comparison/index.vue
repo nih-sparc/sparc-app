@@ -146,6 +146,7 @@
                    :visualizationType="discoveryDataType"
                    :datasetsInfo="datasetsCurrentlyBeingCompared"
                    :isVegaLoaded="isVegaLoaded"
+                   :isPlotlyLoaded="isPlotlyLoaded"
                    :isVegaEmbedLoaded="isVegaEmbedLoaded"
                    :isPollingOsparc="pollingOsparc"
                 />
@@ -445,7 +446,7 @@ export default {
         await this.pollOsparc(this.osparcJobID)
 
         // sleep 30s 
-        const sleepSeconds = 30
+        const sleepSeconds = 3
         await new Promise(resolve => setTimeout(resolve, sleepSeconds * 1000))
       }
     },
