@@ -230,7 +230,8 @@ const searchData = {
   ascending: false
 }
 
-const datasetFilters = ['Public']
+// actually using labels for now, easy for using with the checkboxes and vue models
+const datasetFilters = discoveryDataTypes.map(type => type.label)
 
 import createClient from '@/plugins/contentful.js'
 
@@ -643,9 +644,10 @@ export default {
     },
 
     setDatasetFilter() {
+      // doesn't do anything yet. But doesn't hurt so why not
       this.$router.replace({
         query: {
-          type: 'dataset',
+          type: 'dataset-vis-types',
           q: this.$route.query.q,
           datasetFilters: this.datasetFilters,
           skip: 0,
@@ -653,11 +655,13 @@ export default {
         }
       })
 
-      /**
-       * Clear table data so the new table that is rendered can
-       * properly render data and account for any missing data
-       */
-      this.searchData = clone(searchData)
+      // take off active list
+      const activeTypesFullInfo = discoveryDataTypes.filter(chartType => (
+        this.datasetFilters.includes(chartType.label)
+      ))
+
+      this.activeDiscoveryDataTypes = activeTypesFullInfo.map(chartType => chartType.type)
+
     }
   }
 }
@@ -892,7 +896,7 @@ export default {
 .dataset-filters {
   padding: 0.5rem 1rem 1rem;
   // hide for now
-  display: none;
+  //display: none;
   h2,
   h3 {
     font-size: 1.125rem;
