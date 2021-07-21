@@ -142,13 +142,13 @@
 
               <div v-if="datasetsCurrentlyBeingCompared.length > 0" v-for="discoveryDataType in discoveryDataTypes" class="">
                 <dataset-discovery-visualization-wrapper 
-                   v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type) && !discoveryDataType.notChart"
+                   v-if="!discoveryDataType.disabled && activeDiscoveryDataTypes.includes(discoveryDataType.type)"
                    :visualizationType="discoveryDataType"
                    :datasetsInfo="datasetsCurrentlyBeingCompared"
                    :isVegaLoaded="isVegaLoaded"
                    :isPlotlyLoaded="isPlotlyLoaded"
                    :isVegaEmbedLoaded="isVegaEmbedLoaded"
-                   :isPollingOsparc="pollingOsparc"
+                   :isMatlabJobFinished="isMatlabJobFinished"
                 />
               </div>
             </el-col>
@@ -194,7 +194,7 @@ const discoveryDataTypes = [
     type: 'abstract',
     notChart: true,
     requiresOsparcJob: true,
-    disabled: true,
+    disabled: false,
   },
   {
     label: 'Common Keywords',
@@ -300,7 +300,12 @@ export default {
       isPlotlyLoaded: false,
 
       // whether we need to keep polling osparc for data or not
-      pollingOsparc: false,
+      //pollingPythonOsparcJob: false,
+      //pollingMatlabOsparcJob: false,
+
+      // if the matlab osparc job successfully completed
+      isMatlabJobFinished: false,
+
       osparcJobID: null,
 
       /**
@@ -428,45 +433,99 @@ export default {
 
         this.osparcJobID = data["job_id"]
 
-        // start polling osparc through our flask api
-        this.pollingOsparc = true
-
         // not waiting for this, just set and forget
-        this.pollOsparcUntilComplete()
+        this.pollPythonOsparcUntilComplete()
 
       } catch (err) {
         console.error(err)
       }
     },
 
-    
-    // this is async so you just call once and let it run forever. don't actually watch it...
-    async pollOsparcUntilComplete () {
-      while (this.pollingOsparc) {
-        await this.pollOsparc(this.osparcJobID)
+    async pollPythonOsparcUntilComplete () {
+      const pythonJobResult = await this.pollOsparcUntilComplete("python", this.osparcJobID)
+      console.log("received pythonJobResult for job:", this.osparcJobID, pythonJobResult)
 
-        // sleep 30s 
-        const sleepSeconds = 3
-        await new Promise(resolve => setTimeout(resolve, sleepSeconds * 1000))
-      }
+      // then start polling the matlab job using the job id we get back
+      const matlabJobResult = await this.pollMatlabOsparcUntilComplete(pythonJobResult["matlab_job_id"])
+
     },
 
-    async pollOsparc (osparcJobID) {
-      const url = `${process.env.flask_api_host}/api/check-osparc-job/${osparcJobID}`
+    async pollMatlabOsparcUntilComplete (matlabOsparcJobID) {
+      if (!matlabOsparcJobID) {
+        console.log("no matlab job id...something went wrong here")
+        return
+      }
+
+      await this.pollOsparcUntilComplete("matlab", matlabOsparcJobID)
+    },
+    
+    
+    // this is async so you just call once and let it run forever. don't actually watch it...
+    async pollOsparcUntilComplete (jobType, jobId) {
+      let consecutiveFailures = 0
+
+      let done = false
+      let result
+
+      while (!done) {
+        try {
+          [result, done] = await this.pollOsparc(jobType, jobId)
+
+          // sleep 30s 
+          const sleepSeconds = 3
+          await new Promise(resolve => setTimeout(resolve, sleepSeconds * 1000))
+
+          // return result, if there is one
+
+        } catch (err) { 
+          console.error(err)
+          consecutiveFailures = consecutiveFailures +1
+
+          if (consecutiveFailures > 50) {
+            // just give up here
+            console.log("giving up on job", jobId)
+
+            throw err
+          } else {
+            console.log("retrying", jobId)
+
+          }
+        }
+      }
+
+
+      return result
+    },
+
+    async pollOsparc (jobType, osparcJobID) {
+      const url = `${process.env.flask_api_host}/api/check-osparc-job/${jobType}/${osparcJobID}`
       const { data } = await this.$axios.get(url)
-      console.log("results from polling osparc", data)
+      console.log("results from polling osparc", data, "for job type", jobType)
 
      
+      let done
       if (data.finished) {
-        this.pollingOsparc = false
+        done = true
+
 
         if (data.success) {
-          this.$store.commit('datasetComparison/setOsparcResults', data)
+          if (jobType == "python") {
+            this.$store.commit('datasetComparison/setOsparcResults', data)
+          } else if (jobType == "matlab") {
+
+            // TODO probably better to just put on vue store
+            this.isMatlabJobFinished = true
+          }
+        } else {
+          // finished...but failed
         }
 
+
       } else {
-        this.pollingOsparc = true
+        done = false
       }
+
+      return [data, done]
     },
 
     addDataset (e) {

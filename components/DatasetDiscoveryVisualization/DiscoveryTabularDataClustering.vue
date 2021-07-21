@@ -1,14 +1,16 @@
 <template>
-  <div v-loading="isLoading" class="">
+  <div v-loading="!osparcDataForChart" class="">
     <generic-plotly
-      v-if="isVegaLoaded && isVegaEmbedLoaded"
+      v-if="isPlotlyLoaded"
       :osparcData="osparcDataForChart"
       :elementId="'discovery-tabular-data-clustering-vega'"
       :generateSpec="generateSpec"
     />
-  	<div  class="chart-images">
-      <div v-for="imageName in generatedImageNames" class="chart-image">
-        <img class="" :src="apiImageUrlBase(imageName)" />
+  	<div class="chart-images">
+  	  <div class="chart-images-wrapper" v-if="isMatlabJobFinished">
+        <div v-for="imageName in generatedImageNames" class="chart-image">
+          <img class="" :src="apiImageUrlBase(imageName)" />
+        </div>
       </div>
     </div>
   </div>
@@ -67,6 +69,11 @@ export default {
       default: false
     },
     isVegaEmbedLoaded: {
+      type: Boolean,
+      default: false
+    },
+    // make sure to not to try to render images until matlab job is completed
+    isMatlabJobFinished: {
       type: Boolean,
       default: false
     },
@@ -159,11 +166,13 @@ export default {
 .chart-images {
   // TODO make mobile friendly
   max-width: 100%;
-  .chart-image {
-    margin: 1rem;
+  .chart-images-wrapper {
+    .chart-image {
+      margin: 1rem;
 
-    img {
-      max-width: 100%;
+      img {
+        max-width: 100%;
+      }
     }
   }
 }

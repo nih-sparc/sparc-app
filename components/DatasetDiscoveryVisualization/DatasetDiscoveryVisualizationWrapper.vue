@@ -44,6 +44,8 @@ const DiscoveryTabularDataClustering = () =>
 const DiscoverySummaryChart = () =>
   import('@/components/DatasetDiscoveryVisualization/DiscoverySummaryChart.vue')
 
+const DiscoveryAbstract = () =>
+  import('@/components/DatasetDiscoveryVisualization/DiscoveryAbstract.vue')
 
 const visualizationComponents = {
   graph: DiscoveryGraphVisualization,
@@ -51,6 +53,7 @@ const visualizationComponents = {
   imageCluster: DiscoveryImageCluster,
   tabularDataClustering: DiscoveryTabularDataClustering,
   summaryTable:  DiscoverySummaryChart,
+  abstract:  DiscoveryAbstract,
 }
 
 // a wrapper around the various visualizations for the KnowMore tool
