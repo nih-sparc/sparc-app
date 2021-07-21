@@ -130,6 +130,10 @@ export default {
     pythonOsparcJobId () {
       const base = this.$store.state.datasetComparison.osparcResults
       return base && base.job_id
+    },
+    matlabOsparcJobId () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      return base && base.matlab_job_id
     }
   },
 
@@ -138,7 +142,7 @@ export default {
       // if using example images, just pull images from the example job id
       // if we start using real job ids, need to pass that down, maybe using the store
 
-      const jobId = this.pythonOsparcJobId
+      const jobId = this.matlabOsparcJobId
       if (!jobId) {
         return false
       }
