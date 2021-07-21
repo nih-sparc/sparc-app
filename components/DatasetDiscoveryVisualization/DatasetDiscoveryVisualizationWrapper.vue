@@ -9,6 +9,7 @@
         :isVegaLoaded="isVegaLoaded"
         :isVegaEmbedLoaded="isVegaEmbedLoaded"
         :isPlotlyLoaded="isPlotlyLoaded"
+        :isMatlabJobFinished="isMatlabJobFinished"
         @loading="setToLoadingState(true)"
         @notLoading="setToLoadingState(false)"
       />
@@ -89,6 +90,11 @@ export default {
     },
     // make sure to not to try to render plotly until loaded
     isPlotlyLoaded: {
+      type: Boolean,
+      default: false
+    },
+    // make sure to not to try to render images until matlab job is completed
+    isMatlabJobFinished: {
       type: Boolean,
       default: false
     },

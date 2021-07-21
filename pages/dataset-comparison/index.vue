@@ -308,13 +308,6 @@ export default {
 
       osparcJobID: null,
 
-      /**
-      * datasets that were compared when they last clicked the button
-      - initializes from the store
-      - after that, waits for the user to press "discover" to sync with the store
-      *
-      */
-      datasetsCurrentlyBeingCompared: [],
       breadcrumb: [
         {
           to: {
@@ -348,6 +341,32 @@ export default {
     },
 
 
+    /**
+    * datasets that were compared when they last clicked the button
+    - initializes from the store
+    - after that, waits for the user to press "discover" to sync with the store
+    *
+    */
+    datasetsCurrentlyBeingCompared: function () {
+      return this.lastJobRun.datasetIds || []
+    },
+
+    lastJobRun: function () {
+      const lastJobRun = this.$store.state.datasetComparison.lastJobRun
+      return lastJobRun
+    },
+
+    // job id of last matlab osparc job run
+    matlabOsparcJobID: function () {
+      // sometimes will be undefined
+      return this.lastJobRun.matlabOsparcJobID
+    },
+
+    // job id of last python osparc job run
+    pythonOsparcJobID: function () {
+      // sometimes will be undefined
+      return this.lastJobRun.pythonOsparcJobID
+    },
 
     /**
      * list of datasets we are comparing
@@ -418,7 +437,9 @@ export default {
       console.log("this will compare the datasets")
 
       // this also triggers an asyncronous action, but don't need to wait for it. Let it be...asynchronous
-      this.datasetsCurrentlyBeingCompared = clone(this.datasetsToCompare)
+      this.$store.commit('datasetComparison/setLastJobRan', {
+        datasetIds: clone(this.datasetsToCompare)
+      })
 
 
       try {
@@ -431,7 +452,9 @@ export default {
         })
         console.log("results from creating job in osparc", data)
 
-        this.osparcJobID = data["job_id"]
+        const newState = Object.assign({}, clone(this.lastJobRun))
+        newState.pythonOsparcJobID = data["job_id"]
+        this.$store.commit('datasetComparison/setLastJobRan', newState)
 
         // not waiting for this, just set and forget
         this.pollPythonOsparcUntilComplete()
@@ -442,26 +465,31 @@ export default {
     },
 
     async pollPythonOsparcUntilComplete () {
-      const pythonJobResult = await this.pollOsparcUntilComplete("python", this.osparcJobID)
-      console.log("received pythonJobResult for job:", this.osparcJobID, pythonJobResult)
+      // first do the python job
+      const pythonJobResult = await this.pollOsparcUntilComplete("python")
+
+      // then do the matlab job
+      const newState = Object.assign({}, clone(this.lastJobRun))
+      newState.matlabOsparcJobID = pythonJobResult["matlab_job_id"]
+      this.$store.commit('datasetComparison/setLastJobRan', newState)
 
       // then start polling the matlab job using the job id we get back
-      const matlabJobResult = await this.pollMatlabOsparcUntilComplete(pythonJobResult["matlab_job_id"])
+      const matlabJobResult = await this.pollMatlabOsparcUntilComplete()
 
     },
 
-    async pollMatlabOsparcUntilComplete (matlabOsparcJobID) {
-      if (!matlabOsparcJobID) {
+    async pollMatlabOsparcUntilComplete () {
+      if (!this.matlabOsparcJobID) {
         console.log("no matlab job id...something went wrong here")
         return
       }
 
-      await this.pollOsparcUntilComplete("matlab", matlabOsparcJobID)
+      await this.pollOsparcUntilComplete("matlab")
     },
     
     
     // this is async so you just call once and let it run forever. don't actually watch it...
-    async pollOsparcUntilComplete (jobType, jobId) {
+    async pollOsparcUntilComplete (jobType) {
       let consecutiveFailures = 0
 
       let done = false
@@ -469,7 +497,7 @@ export default {
 
       while (!done) {
         try {
-          [result, done] = await this.pollOsparc(jobType, jobId)
+          [result, done] = await this.pollOsparc(jobType)
 
           // sleep 30s 
           const sleepSeconds = 3
@@ -497,8 +525,11 @@ export default {
       return result
     },
 
-    async pollOsparc (jobType, osparcJobID) {
+    async pollOsparc (jobType) {
+      const osparcJobID = jobType == "python" ? this.pythonOsparcJobID : this.matlabOsparcJobID
+
       const url = `${process.env.flask_api_host}/api/check-osparc-job/${jobType}/${osparcJobID}`
+
       const { data } = await this.$axios.get(url)
       console.log("results from polling osparc", data, "for job type", jobType)
 

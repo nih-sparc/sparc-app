@@ -19,7 +19,7 @@ import {
 } from 'ramda'
 
 export const state = () => ({
-  // array of datasets to compare
+  // array of datasets to compare. Not necessarily what is currently shown by latest "Discover" button though
   toCompare: [
     // {
     //   name: "Vagus Dataset 1",
@@ -29,20 +29,29 @@ export const state = () => ({
     // }
   ],
 
+  // array of datasets to compare. Not necessarily what is currently shown by latest "Discover" button though
+  lastJobRun: {
+    // {
+    //   datasetIds: [64],
+    //   // ...
+    //   // and so on
+    // }
+  },
+
   // stuff returned by our osparc job
   osparcResults: null,
 
-  // what we get back from es when we 
+  // what we get back from es when we hit their api (after user clicks "discover")
   // - kind of local cache so we don't have to call more than once
   // - keys are dataset DOI ids, values are the es record (inside the little wrapper we put with
   // some metadata). Though some records will not be found, so not have the es record
   datasetInfoEnrichedByES: {
-  }
+  },
 })
 
 export const mutations = {
   ///////////////////////////
-  // for datasets to compare with each other
+  // for queuing which datasets to compare with each other (ie modifying toCompare key)
   ///////////////////////////
   // if you have the full record
   add(state, dataset) {
@@ -55,6 +64,17 @@ export const mutations = {
 
     state.toCompare.splice(matchIndex, 1)
   },
+
+  ///////////////////////////
+  // for keeping track of last job ran
+  ///////////////////////////
+
+  // just updates with new values
+  setLastJobRan(state, values) {
+    state.lastJobRun = clone(values)
+  },
+
+
 
   ///////////////////////////
   // for handling osparc results

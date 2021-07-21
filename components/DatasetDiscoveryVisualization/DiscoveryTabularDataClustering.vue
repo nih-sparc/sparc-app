@@ -6,7 +6,7 @@
       :elementId="'discovery-tabular-data-clustering-vega'"
       :generateSpec="generateSpec"
     />
-  	<div class="chart-images">
+  	<div class="chart-images" v-loading="!isMatlabJobFinished">
   	  <div class="chart-images-wrapper" v-if="isMatlabJobFinished">
         <div v-for="imageName in generatedImageNames" class="chart-image">
           <img class="" :src="apiImageUrlBase(imageName)" />
@@ -41,7 +41,7 @@ import GenericPlotly from '@/components/DatasetDiscoveryVisualization/GenericPlo
 import { generateDefaultScatterplotSpec } from '@/components/DatasetDiscoveryVisualization/chartUtils.js'
 
 // a for using just images from example output from matlab jobs
-const usingExampleImages = true
+//const usingExampleImages = true
 
 export default {
   name: 'DiscoveryTabularDataClustering',
@@ -65,6 +65,11 @@ export default {
     },
     // make sure to not to try to render vega until loaded
     isVegaLoaded: {
+      type: Boolean,
+      default: false
+    },
+    // make sure to not to try to render plotly until loaded
+    isPlotlyLoaded: {
       type: Boolean,
       default: false
     },
@@ -122,15 +127,23 @@ export default {
       // not sure what to do yet TODO
       return base && {}
     },
+    pythonOsparcJobId () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      return base && base.job_id
+    }
   },
 
   methods: {
     apiImageUrlBase (image_name) { 
       // if using example images, just pull images from the example job id
       // if we start using real job ids, need to pass that down, maybe using the store
-      const job_id = usingExampleImages ? "example-job-id" : "TODO"
 
-      return `${process.env.flask_api_host}/api/results-images/${job_id}/${image_name}`
+      const jobId = this.pythonOsparcJobId
+      if (!jobId) {
+        return false
+      }
+
+      return `${process.env.flask_api_host}/api/results-images/${jobId}/${image_name}`
     },
     /**
     * takes the updated data and updates the visualization
