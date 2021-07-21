@@ -3,25 +3,109 @@ This is the repository for the SPARC-Portal Web Application. The application is 
 
 It depends on the SPARC-API which can be found [here](https://github.com/nih-sparc/sparc-api) 
 
-## Build Setup
+## Prerequisites 
+We recommend using Anaconda to create and manage your development environments for KnowMore. All the subsequent instructions are provided assuming you are using [Anaconda (Python 3 version)](https://www.anaconda.com/products/individual).
 
-``` bash
-# install dependencies
+## Setup
+
+### Clone repo
+Clone the repo and submodules
+```
+git clone https://github.com/SPARC-FAIR-Codeathon/KnowMore.git --recurse
+```
+
+### cd into the root folder of this repo
+
+Open Anaconda prompt (Windows) or the system Command line interface then naviguate to the KnowMore folder
+```sh
+cd ./sparc-app
+```
+
+### Setup conda env
+```sh
+$ conda create -n "sparc-app-env" nodejs=12.14.1 yarn
+$ conda activate sparc-app-env
+```
+
+### Install dependencies
+``` 
 $ yarn install
+``` 
 
-# set env vars
-export CTF_SPACE_ID=...
-...
-# (see below for what to set)
+### Setup env vars
+The environment variables required are listed in the table below along with information on how to get them
 
-# serve with hot reload at localhost:3000
+<table>
+<thead>
+  <tr>
+    <th>Suggested name</th>
+    <th>Value or instructions for obtaining it</th>
+    <th>Purpose</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>PORTAL_API_HOST</td>
+    <td>"http://localhost:3000"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>FLASK_API_HOST</td>
+    <td>"localhost:5000"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> CTF_SPACE_ID</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>CTF_CDA_ACCESS_TOKEN</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>CTF_API_HOST</td>
+    <td>cdn.contentful.com</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>SCICRUNCH_API_KEY</td>
+    <td> </a> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>ALGOLIA_API_KEY</td>
+    <td></td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>ALGOLIA_APP_ID</td>
+    <td></td>
+    <td></td>
+  </tr>
+</tbody>
+</table>
+
+
+Each of them can be set in your conda environment as follows
+```sh
+$ conda env config vars set MY_VAR=value1 MY_OTHER_VAR=value2
+```
+
+### serve with hot reload at localhost:3000
+```
 $ yarn dev
+```
 
-# build for production and launch server
+## Build for production and launch server
+```
 $ yarn build
 $ yarn start
+```
 
-# generate static project
+## Generate static project
+```
 $ yarn generate
 ```
 
@@ -39,15 +123,3 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 ### ERROR TypeError: Cannot read property 'isString' of undefined
 This can happen even if all data for graph vis is correct, but there's some other error that happens before vega finishes that messes stuff up. Probably need better error handling so this doesn't happen...but it's happening, so just know that the vega spec can be perfect but this still happens
 
-# ENV VARS to set
-e.g., 
-
-```
-export CTF_SPACE_ID=
-export CTF_CDA_ACCESS_TOKEN=
-export CTF_API_HOST=
-export CTF_API_HOST=
-export SCICRUNCH_API_KEY=
-export PORTAL_API_HOST=http://localhost:3000
-export FLASK_API_HOST=http://localhost:5000
-```
