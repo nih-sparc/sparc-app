@@ -66,7 +66,6 @@
             >
               <div class="dataset-filters table-wrap">
                 <h2>Toggle Visualizations: </h2>
-                <h3>(Not yet working)</h3>
                 <div class="dataset-filters__filter-group">
                   <el-checkbox-group
                     v-model="datasetFilters"
