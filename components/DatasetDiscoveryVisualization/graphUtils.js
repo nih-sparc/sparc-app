@@ -1,6 +1,3 @@
-import fakeData from './miserables.json'
-//import fakeData from './miserables.small-sample.json'
-
 /**
  * takes a single elasticsearch enriched record (ie for a single dataset) and converts to nodes and edges
  */ 

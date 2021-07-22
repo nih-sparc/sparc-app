@@ -17,12 +17,16 @@ export default (graphData) => {
 			{ "name": "nodeRadius", "value": nodes.length > 10 ? 4 : 8,
 				"bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
 		  },
-			// "
+			// amount nodes attract each other (negative pushes each other away)
 			{ "name": "nodeCharge", "value": -10,
 				"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
+			// length of line representing an edge
 			{ "name": "linkDistance", "value": nodes.length > 10 ? 30 : 80,
 				"bind": {"input": "range", "min": 5, "max": 250, "step": 1} 
+			},
+			{ "name": "nodeFontSize", "value": nodes.length > 10 ? 12 : 16,
+				"bind": {"input": "range", "min": 8, "max": 24, "step": 1} 
 			},
 			// toggles if animated simulation (false) or calculate in batch (true)
 			{ "name": "static", "value": false,
@@ -194,13 +198,13 @@ export default (graphData) => {
 				"encode": {
 					"enter": {
 						"text": {"field": "datum.prettyTitle"},
-						"fontSize": {"value": nodes.length > 10 ? 8 : 16}
 					},
 					update: {
 						// make sure the labels move with the modes
 						// NOTE fields (x and y) here correspond to the "as" option on the nodes mark
 						x: {"field": "labelX"},
 						y: {"field": "y"},
+						fontSize: {signal: "nodeFontSize"},
 					}
 				},
 
