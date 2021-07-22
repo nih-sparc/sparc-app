@@ -1,6 +1,3 @@
-import fakeData from './miserables.json'
-//import fakeData from './miserables.small-sample.json'
-
 export default (graphData) => {
   const { nodes = [], edges = [] } = graphData
   // for now just use their sample code raw

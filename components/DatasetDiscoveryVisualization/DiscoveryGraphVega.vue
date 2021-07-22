@@ -7,10 +7,9 @@
 </template>
 
 <script>
-// import generateVegaSpec from './graph-spec.testing.js'
-import generateVegaSpec from './graph-spec.js'
-//import generateVegaSpec from './graph-spec.simple.js'
 // following this: https://vega.github.io/vega/examples/force-directed-layout/
+import generateVegaSpec from './graph-spec.js'
+
 import {
   assocPath,
   clone,
