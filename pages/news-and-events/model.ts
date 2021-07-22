@@ -19,7 +19,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
 
     const pastEvents = await client.getEntries<EventsEntry>({
       content_type: process.env.ctf_event_id,
-      order: 'fields.startDate',
+      order: '-fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString(),
       'fields.startDate[gte]': sub(todaysDate, { years: 2 }).toISOString(),
       query,
