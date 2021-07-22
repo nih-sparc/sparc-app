@@ -212,7 +212,7 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 
 	// TODO can add source dataset id also (?)
 
-	console.log("pennsieve entities:", clone({nodes, edges}))
+	console.log("pennsieve entities:", {nodes, edges})
 	return {nodes, edges}
 }
 

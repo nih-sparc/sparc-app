@@ -15,22 +15,22 @@ export default (graphData) => {
 			{ "name": "cx", "update": "width / 2" },
 			{ "name": "cy", "update": "height / 2" },
 			{ "name": "nodeRadius", "value": nodes.length > 10 ? 4 : 8,
-				"bind": {"input": "range", "min": 2, "max": 30, "step": 1} 
+				"bind": {"input": "range", "min": 2, "max": 30, "step": 1, "name": "Node Radius"} 
 		  },
 			// amount nodes attract each other (negative pushes each other away)
 			{ "name": "nodeCharge", "value": -10,
-				"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
+				"bind": {"input": "range", "min":-50, "max": 10, "step": 1, "name": "Node Charge"} 
 			},
 			// length of line representing an edge
 			{ "name": "linkDistance", "value": nodes.length > 10 ? 80 : 160,
-				"bind": {"input": "range", "min": 5, "max": 250, "step": 1} 
+				"bind": {"input": "range", "min": 5, "max": 250, "step": 1, name: "Link Length"} 
 			},
 			{ "name": "nodeFontSize", "value": nodes.length > 10 ? 12 : 16,
-				"bind": {"input": "range", "min": 8, "max": 24, "step": 1} 
+				"bind": {"input": "range", "min": 8, "max": 24, "step": 1, "name": "Font Size"} 
 			},
 			// toggles if animated simulation (false) or calculate in batch (true)
 			{ "name": "static", "value": false,
-				"bind": {"input": "checkbox"} 
+				"bind": {"input": "checkbox", name: "Disable Dynamic Movement"} 
 			},
 			{
 				"description": "State variable for active node fix status.",
