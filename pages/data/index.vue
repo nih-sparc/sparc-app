@@ -721,6 +721,7 @@ export default {
 
       const query = { ...this.$route.query, q: '' }
       this.$router.replace({ query })
+      this.searchQuery = ''
     },
 
     /**

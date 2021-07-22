@@ -2,10 +2,9 @@
   <div class="search-form" @keyup.enter="$emit('search')">
     <div class="input-wrap">
       <input :value="value" placeholder="Enter search criteria" @input="$emit('input', $event.target.value)" />
-      <button v-if="q" class="btn-clear-search" @click="$emit('clear')">
+      <button v-if="value" class="btn-clear-search" @click="$emit('clear')">
         <svg-icon
-          name="icon-clear"
-          stroke="red"
+          icon="icon-clear"
           color="#909399 #fff"
           height="22"
           width="22"
