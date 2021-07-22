@@ -122,12 +122,16 @@
               </div>
             </el-col>
             <br />
+          </el-row>
+
+          <el-row :gutter="32">
             <el-col
               :sm="searchColSpan('sm')"
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
             >
-              <div class="">
+              <h2 class="results-header">Results</h2>
+              <div class="source-datasets-for-results">
                 <h4>Currently showing results for: </h4>
                 <div v-if="datasetsCurrentlyBeingCompared.length == 0" class="">
                   (None Selected)
@@ -974,4 +978,11 @@ export default {
   justify-content: space-between;
   margin: 1rem;
 }
+.results-header {
+  margin-top: 2rem;
+}
+.source-datasets-for-results {
+  padding-left: 1rem;
+}
 </style>
+

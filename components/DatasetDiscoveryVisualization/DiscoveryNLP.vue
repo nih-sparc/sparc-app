@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="isLoading" class="">
+  <div v-loading="isLoading || !dataUsedInChart" class="">
     <generic-vega
       :dataForChart="dataUsedInChart"
       :elementId="'discovery-nlp-vega'"
@@ -73,7 +73,6 @@ export default {
 
   computed: {
     osparcDataForChart () {
-
       const base = this.$store.state.datasetComparison.osparcResults
       const computed = base && base.outputs.output1.keywords
       return computed

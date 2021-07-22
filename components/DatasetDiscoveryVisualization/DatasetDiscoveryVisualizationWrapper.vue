@@ -1,7 +1,7 @@
 <template>
   <div class="dataset-discovery-visualization-wrapper">
     <h3>{{ visualizationType.label }}</h3>
-    <div class="">
+    <div class="vis-wrapper">
       <component
         :is="visualizationComponent"
         :datasetsInfo="datasetsInfo"
@@ -131,4 +131,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.dataset-discovery-visualization-wrapper {
+  h3 {
+    margin-top: 2rem;
+  }
+}
+.vis-wrapper {
+  padding-left: 1rem;
+}
 </style>

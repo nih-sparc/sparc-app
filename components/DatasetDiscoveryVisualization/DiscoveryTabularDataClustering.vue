@@ -92,7 +92,7 @@ export default {
       exampleImgURL: "https://www.vertica.com/wp-content/uploads/2019/09/corr_matrix_Titanic.png",
       generateSpec: generateDefaultScatterplotSpec,
       generatedImageNames: [
-        "Plots-3.x.png",
+        //"Plots-3.x.png",
 				"Plots-PlotID-3.2.png",
 				"Plots-PlotID-3.4.png",
 				"Plots-PlotID-3.5.png",
@@ -184,8 +184,12 @@ export default {
   // TODO make mobile friendly
   max-width: 100%;
   .chart-images-wrapper {
+    display: flex;
+    flex-wrap: wrap;
     .chart-image {
-      margin: 1rem;
+      padding: 1rem;
+      box-sizing: border-box;
+      max-width: 50%;
 
       img {
         max-width: 100%;

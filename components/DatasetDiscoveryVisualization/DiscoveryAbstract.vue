@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="isLoading" class="">
+  <div v-loading="isLoading || !osparcDataForChart" class="">
     {{ osparcDataForChart }}
   </div>
 </template>

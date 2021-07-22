@@ -4,7 +4,7 @@
       <img class="mock-data-image" :src="exampleImgURL" />
     </div>
 
-    <div v-if="!exampleImgURL" :id="elementId">loading...</div>
+    <div v-if="!exampleImgURL" :id="elementId"></div>
   </div>
 </template>
 
