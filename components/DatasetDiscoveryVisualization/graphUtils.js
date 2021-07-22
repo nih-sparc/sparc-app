@@ -64,7 +64,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		const owner = elasticsearchRecord.pennsieve.owner
 		// use orcid
 		// but add the ORC prefix, so matche sthe curie
-		const id = `ORC:${owner.orcid.identifier}`
+		const id = `ORCID:${owner.orcid.identifier}`
 
 		nodes.push({
 			id,
@@ -130,14 +130,13 @@ function nameForPerson (person) {
 /**
  *
  * takes pennsieve (unenriched) data (ie for a single dataset) and converts to nodes and edges
- * TODO
  */ 
 export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 	const nodes = []
 	const edges = []
 	console.warn("WARNING not yet implemented pennsieve record graph entities")
 
-	const datasetID = pennsieveRecord.doi ? `DOI:${pennsieveRecord.doi}` : id
+	const datasetID = pennsieveRecord.doi ? `DOI:${pennsieveRecord.doi}` : pennsieveRecord.id
 
 	nodes.push({
 		name: pennsieveRecord.name,
@@ -148,7 +147,8 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 
 	//////////////////////////
 	// add entities for owner
-	let ownerId 	= pennsieveRecord.ownerOrcid && pennsieveRecord.ownerOrcid !== "" ? `ORC:${pennsieveRecord.ownerOrcid}` : pennsieveRecord.ownerId
+	let ownerId 	= pennsieveRecord.ownerOrcid && pennsieveRecord.ownerOrcid !== "" ? `ORCID:${pennsieveRecord.ownerOrcid}` : pennsieveRecord.ownerId
+
 	let ownerName = pennsieveRecord.ownerLastName && pennsieveRecord.ownerLastName !== "" && nameForPerson({
 		lastName: pennsieveRecord.ownerLastName, 
 		firstName: pennsieveRecord.ownerFirstName
@@ -212,7 +212,7 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 
 	// TODO can add source dataset id also (?)
 
-	console.log("pennsieve entities:", {nodes, edges})
+	console.log("pennsieve entities:", clone({nodes, edges}))
 	return {nodes, edges}
 }
 
@@ -224,7 +224,7 @@ function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 
 		// use identifier if possible, if not use agency name as unique id for this contributor type
 		// if not that, full name
-		const id = contributor.curie || (contributor.orcid ? `ORC:${contributor.orcid}` : nameForPerson(contributor))
+		const id = contributor.curie || (contributor.orcid ? `ORCID:${contributor.orcid}` : nameForPerson(contributor))
 
 		nodes.push({
 			id,

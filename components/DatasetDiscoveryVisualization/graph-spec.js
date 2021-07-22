@@ -22,7 +22,7 @@ export default (graphData) => {
 				"bind": {"input": "range", "min":-50, "max": 10, "step": 1} 
 			},
 			// length of line representing an edge
-			{ "name": "linkDistance", "value": nodes.length > 10 ? 30 : 80,
+			{ "name": "linkDistance", "value": nodes.length > 10 ? 80 : 160,
 				"bind": {"input": "range", "min": 5, "max": 250, "step": 1} 
 			},
 			{ "name": "nodeFontSize", "value": nodes.length > 10 ? 12 : 16,
