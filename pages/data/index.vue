@@ -37,6 +37,7 @@
       </div>
     </div>
     <div class="page-wrap container">
+      {{tableMetadata}}
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <div class="search-heading">

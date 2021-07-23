@@ -37,7 +37,7 @@
               Author
             </div>
             <div class="story-field">
-              {{ entry.name }}
+              {{ author }}
             </div>
             <br />
             <template v-if="entry.publishDate">
@@ -49,33 +49,18 @@
               </div>
               <br />
             </template>
-            <template v-if="entry.teamMemberNames">
+            <template v-if="entry.contributorsMarkdown">
               <div class="story-bold-field">
                 Team Members
               </div>
-              <div
-                v-for="(item, index) in entry.teamMemberNames"
-                :key="'name' + index"
-                class="story-field"
-              >
-                {{ item }}
-                <template v-if="entry.teamMemberOrcidIds && entry.teamMemberOrcidIds.length - 1 > index">
-                  ({{ entry.teamMemberOrcidIds[index] }})
-                </template>
-              </div>
+              <div class="content story-field" v-html="parseMarkdown(entry.contributorsMarkdown)" />
               <br />
             </template>
-            <template v-if="entry.references">
+            <template v-if="entry.referencesMarkdown">
               <div class="story-bold-field">
                 Supporting information
               </div>
-              <div
-                v-for="(item, index) in entry.references"
-                :key="'reference' + index"
-                class="story-field"
-              >
-                <a :href="item" target="_blank">{{ item }}</a>
-              </div>
+              <div class="content story-field" v-html="parseMarkdown(entry.referencesMarkdown)" />
               <br />
             </template>
             <div class="story-bold-field">
@@ -151,6 +136,7 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 
 // options for rendering contentful rich text. Modified from:
@@ -195,11 +181,11 @@ export default {
     Breadcrumb,
     PageHero
   },
-  mixins: [FormatDate],
+  mixins: [FormatDate, MarkedMixin],
   async asyncData({ route }) {
     try {
       const results = await client.getEntries({
-        content_type: 'successStory',
+        content_type: 'successStoryDisplay',
         'fields.storyRoute[match]': route.params.id,
         include: 1,
       })
@@ -249,12 +235,17 @@ export default {
     },
     renderedStory: function() {
       if (this.entry.story) {
-        return documentToHtmlString(this.entry.story, options)
+        return this.parseMarkdown(this.entry.story)
       }
       return ''
     },
     embeddedVideoSrc: function() {
       return youtubeEmbeddedSource(this.entry.youtubeUrl)
+    },
+    author: function(){
+      if (this.entry.name) return this.entry.name
+      if (this.entry.author) return this.entry.author
+      else return ''
     }
   },
   methods: {
@@ -325,18 +316,18 @@ export default {
     max-width: 100%;
   }
   & ::v-deep iframe {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 30rem;
+    height: 20rem;
   }
   & ::v-deep video {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 30rem;
+    height: 20rem;
   }
   @media (max-width: 48em) {
     margin-bottom: 2rem;
