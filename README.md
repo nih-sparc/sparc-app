@@ -1,7 +1,5 @@
 # SPARC WEB APPLICATION
-This is the repository for the SPARC-Portal Web Application. The application is build using [Nuxt.js](https://nuxtjs.org) and [Vue.js](https://vuejs.org/).
-
-It depends on the SPARC-API which can be found [here](https://github.com/nih-sparc/sparc-api) 
+This is our fork of the repository for the SPARC-Portal Web Application used to showcase [KnowMore](https://github.com/SPARC-FAIR-Codeathon/KnowMore). The application is build using [Nuxt.js](https://nuxtjs.org) and [Vue.js](https://vuejs.org/).
 
 ## Prerequisites 
 We recommend using Anaconda to create and manage your development environments for KnowMore. All the subsequent instructions are provided assuming you are using [Anaconda (Python 3 version)](https://www.anaconda.com/products/individual).
@@ -16,7 +14,7 @@ git clone https://github.com/SPARC-FAIR-Codeathon/KnowMore.git --recurse
 
 ### cd into the root folder of this repo
 
-Open Anaconda prompt (Windows) or the system Command line interface then naviguate to the KnowMore folder
+Open Anaconda prompt (Windows) or the system Command line interface then naviguate to the this folder
 ```sh
 cd ./sparc-app
 ```
