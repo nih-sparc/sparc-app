@@ -14,7 +14,7 @@ git clone https://github.com/SPARC-FAIR-Codeathon/KnowMore.git --recurse
 
 ### cd into this repo
 
-Open Anaconda prompt (Windows) or the system Command line interface then naviguate to the this folder
+Open Anaconda prompt (Windows) or the system Command line interface then naviguate to this repo
 ```sh
 cd ./sparc-app
 ```
