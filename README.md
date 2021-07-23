@@ -47,21 +47,21 @@ The environment variables required are listed in the table below along with info
   <tr>
     <td>PORTAL_API_HOST</td>
     <td>"http://localhost:3000"</td>
-    <td></td>
+    <td>frontend url</td>
   </tr>
   <tr>
     <td>FLASK_API_HOST</td>
     <td>"localhost:5000"</td>
-    <td></td>
+    <td>Url of flask server</td>
   </tr>
   <tr>
     <td> CTF_SPACE_ID</td>
-    <td></td>
+    <td>get from project admin</td>
     <td></td>
   </tr>
   <tr>
     <td>CTF_CDA_ACCESS_TOKEN</td>
-    <td></td>
+    <td>get from project admin</td>
     <td></td>
   </tr>
   <tr>
@@ -71,18 +71,18 @@ The environment variables required are listed in the table below along with info
   </tr>
   <tr>
     <td>SCICRUNCH_API_KEY</td>
-    <td> </a> </td>
-    <td> </td>
+    <td>get from project admin</td>
+    <td>API key to access scicrunch</td>
   </tr>
   <tr>
     <td>ALGOLIA_API_KEY</td>
-    <td></td>
-    <td> </td>
+    <td>get from project admin</td>
+    <td>API key to access Algolia, so frontend can do searches</td>
   </tr>
   <tr>
     <td>ALGOLIA_APP_ID</td>
-    <td></td>
-    <td></td>
+    <td>get from project admin</td>
+    <td>API id to access Algolia, so frontend can do searches</td>
   </tr>
 </tbody>
 </table>
