@@ -12,7 +12,7 @@ Clone the repo and submodules
 git clone https://github.com/SPARC-FAIR-Codeathon/KnowMore.git --recurse
 ```
 
-### cd into the root folder of this repo
+### cd into this repo
 
 Open Anaconda prompt (Windows) or the system Command line interface then naviguate to the this folder
 ```sh
