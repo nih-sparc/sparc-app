@@ -3,13 +3,18 @@
     <breadcrumb :breadcrumb="breadcrumb" title="KnowMore" />
     <div class="container">
       <div class="search-tabs__container" style="text-align: center;">
-        <img :src="image" style="width:40%"/> 
-        <h3 style="text-align: center">
+        <img :src="knowmorelogo" style="width:35%"/> 
+        <h4 style="text-align: center">
           Say "no more" to manual discovery across SPARC datasets
-        </h3>
+        </h4>
+        <h5 style="text-align: center; padding-top: 30px">
+          Visit our GitHub repositery for the documentation 
+          <a href="https://github.com/SPARC-FAIR-Codeathon/KnowMore"> <img :src="githublogo" style="width:24px; padding-left: 10px"/> </a>
+        </h5>
+
       </div>
       <div class="search-bar__container">
-        <h5 style="padding-bottom: 10px">
+        <h5 style="padding-bottom: 10px; padding-left: 9px;">
           Add datasets to analyze
         </h5>
         <div class="add-ds-form" @keyup.enter="$emit('search')">
@@ -162,7 +167,8 @@
 
 <script>
 
-import image from "../../assets/knowmore-logo.png"
+import knowmorelogo from "../../assets/knowmore-logo.png"
+import githublogo from "../../assets/GitHub-Mark-64px.png"
     
 import {
   assocPath,
@@ -290,7 +296,8 @@ export default {
   data: () => {
 
     return {
-      image: image,
+      knowmorelogo: knowmorelogo,
+      githublogo: githublogo,
       searchQuery: '',
       filters: [],
       discoveryDataTypes,
