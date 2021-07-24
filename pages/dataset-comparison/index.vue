@@ -1,15 +1,16 @@
 <template>
   <div class="dataset-comparison-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="KnowMore Manual Discoveries!" />
+    <breadcrumb :breadcrumb="breadcrumb" title="KnowMore" />
     <div class="container">
-      <div class="search-tabs__container">
-        <h3>
-          KnowMore about your Datasets
+      <div class="search-tabs__container" style="text-align: center;">
+        <img :src="image" style="width:40%"/> 
+        <h3 style="text-align: center">
+          Say "no more" to manual discovery across SPARC datasets
         </h3>
       </div>
       <div class="search-bar__container">
-        <h5>
-          Add datasets to KnowMore
+        <h5 style="padding-bottom: 10px">
+          Add datasets to analyze
         </h5>
         <div class="add-ds-form" @keyup.enter="$emit('search')">
           <div class="input-wrap">
@@ -160,6 +161,9 @@
 </template>
 
 <script>
+
+import image from "../../assets/knowmore-logo.png"
+    
 import {
   assocPath,
   clone,
@@ -236,7 +240,10 @@ import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
 
+
+
 export default {
+
   name: 'DatasetComparisonPage',
 
   head () {
@@ -281,7 +288,9 @@ export default {
   mixins: [],
 
   data: () => {
+
     return {
+      image: image,
       searchQuery: '',
       filters: [],
       discoveryDataTypes,

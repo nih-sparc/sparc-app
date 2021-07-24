@@ -112,3 +112,4 @@ sw.*
 # custom stuff I added  for hackathon 2021, to make sure it doesn't get in repo
 run-dev.sh
 .nvmrc
+yarn.lock
