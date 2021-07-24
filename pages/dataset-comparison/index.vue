@@ -38,7 +38,39 @@
             {{previewData.error ? "(No dataset found with id: " + toAddPreview + ")" : previewData.name}}
           </div>
         </div>
-          
+        <div
+          v-if="datasetsToCompare.length > 0"
+        >
+
+          <el-row type="flex" v-for="dataset in datasetsToCompare" :key="dataset.text" class="dataset-row">
+            <div>
+              <svg-icon
+                name="icon-clear"
+                stroke="red"
+                color="#909399 #fff"
+                height="22"
+                width="22"
+                @click="removeDataset(dataset)"
+              />
+              <span>{{ dataset.name }} (id: {{ dataset.id }})  </span>
+            </div>
+            <img
+              class="dataset-preview-img"
+              v-bind:src="dataset.banner"
+            />
+          </el-row>
+          <div class="center-button">
+          <el-button 
+            class="btn-submit-knowmore" 
+            @click="compareDatasets"
+            :disabled="datasetsToCompare.length == 0"
+          >
+            <span>
+              Discover
+            </span>
+          </el-button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="page-wrap container">
@@ -94,37 +126,7 @@
               :md="18"
               :lg="20"
             >
-              <div
-                v-if="datasetsToCompare.length > 0"
-              >
-                <h3>Datasets Ready for Discovery:</h3>
-                <el-row type="flex" v-for="dataset in datasetsToCompare" :key="dataset.text" class="dataset-row">
-                  <div>
-                    <svg-icon
-                      name="icon-clear"
-                      stroke="red"
-                      color="#909399 #fff"
-                      height="22"
-                      width="22"
-                      @click="removeDataset(dataset)"
-                    />
-                    <span>{{ dataset.name }} (id: {{ dataset.id }})  </span>
-                  </div>
-                  <img
-                    class="dataset-preview-img"
-                    v-bind:src="dataset.banner"
-                  />
-                </el-row>
-                <el-button 
-                  class="btn-submit-knowmore" 
-                  @click="compareDatasets"
-                  :disabled="datasetsToCompare.length == 0"
-                >
-                  <span>
-                    Discover
-                  </span>
-                </el-button>
-              </div>
+            
             </el-col>
             <br />
           </el-row>
@@ -135,12 +137,9 @@
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
             >
-              <h2 class="results-header">Results</h2>
-              <div class="source-datasets-for-results">
+              <h2 class="results-header" v-if="datasetsCurrentlyBeingCompared.length > 0">Results</h2>
+              <div class="source-datasets-for-results" v-if="datasetsCurrentlyBeingCompared.length > 0">
                 <h4>Currently showing results for: </h4>
-                <div v-if="datasetsCurrentlyBeingCompared.length == 0" class="">
-                  (None Selected)
-                </div>
                 <div v-if="datasetsCurrentlyBeingCompared.length > 0" class="">
                   <div v-for="ds in datasetsCurrentlyBeingCompared" class="">
                     - {{ ds.name }}
@@ -976,8 +975,17 @@ export default {
   &:hover,
   &:active {
     opacity: 0.75;
-  }
+  };
+  height:60px;
+  width:200px;
+  font-size: 20px;
 }
+
+.center-button {
+  padding-top: 20px;
+  text-align: center;
+}
+
 .previewText {
   cursor: pointer;
 }
