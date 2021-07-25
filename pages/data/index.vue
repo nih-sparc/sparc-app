@@ -107,9 +107,7 @@
               <div v-loading="isLoadingSearch" class="table-wrap">
                 <component
                   :is="searchResultsComponent"
-                  :key="tableMetadata.size"
                   :table-data="tableData"
-                  :table-metadata="tableMetadata"
                   :title-column-width="titleColumnWidth"
                   @sort-change="handleSortChange"
                 />
@@ -219,7 +217,6 @@ const searchData = {
   limit: 10,
   skip: 0,
   items: [],
-  kCoreItems: new Map(),
   order: undefined,
   ascending: false
 }
@@ -234,10 +231,10 @@ const getEmbargoedFilter = (searchType, datasetFilters) => {
     return
   }
   if (filters.includes('Embargoed') && !filters.includes('Public')) {
-    return 'embargo:true'
+    return 'pennsieve.embargo.keyword:true'
   }
   if (!filters.includes('Embargoed') && filters.includes('Public')) {
-    return 'embargo:false'
+    return 'pennsieve.embargo.keyword:false'
   }
   return ''
 }
@@ -248,8 +245,7 @@ import { handleSortChange, transformFilters } from './utils'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER')
-const algoliaKCoreIndex = algoliaClient.initIndex('UCSD K-Core')
+const algoliaIndex = algoliaClient.initIndex('k-core_v2')
 
 export default {
   name: 'DataPage',
@@ -302,10 +298,6 @@ export default {
 
     tableData: function() {
       return propOr([], 'items', this.searchData)
-    },
-
-    tableMetadata: function() {
-      return propOr(new Map(), 'kCoreItems', this.searchData)
     },
 
     /**
@@ -531,9 +523,9 @@ export default {
         embargoedFilter === undefined || embargoedFilter.length === 0
           ? ''
           : embargoedFilter + ' AND '
-      }organizationName:"${organizationNameFilter}"`
+      }pennsieve.organization.name:"${organizationNameFilter}"`
       
-      algoliaPennseiveIndex
+      algoliaIndex
         .search(query, {
           hitsPerPage: this.searchData.limit,
           page: this.curSearchPage - 1,
@@ -545,31 +537,6 @@ export default {
             total: response.nbHits
           }
           this.searchData = mergeLeft(searchData, this.searchData)
-        })
-        .finally(() => {
-          this.fetchItemsFromKCore()
-        })
-    },
-
-    fetchItemsFromKCore: function() {
-      // Get all the Penseive items and find their corresponding KCore item by searching for their doi
-      const dois = this.searchData.items.map(
-        item => `item.docid:"DOI:${item.doi}"`
-      )
-      const doisFilter = dois.join(' OR ')
-      algoliaKCoreIndex
-        .search('', {
-          filters: doisFilter
-        })
-        .then(response => {
-          response.hits.map(hit =>
-            this.searchData.kCoreItems.set(
-              hit.item.docid.replace('DOI:', ''),
-              hit
-            )
-          )
-        })
-        .finally(() => {
           this.isLoadingSearch = false
         })
     },

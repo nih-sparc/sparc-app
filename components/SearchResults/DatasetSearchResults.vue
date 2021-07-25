@@ -10,7 +10,7 @@
         <nuxt-link
           :to="{
             name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id },
+            params: { datasetId: scope.row.object_id },
             query: {
               type: $route.query.type
             }
@@ -18,14 +18,14 @@
           class="img-dataset"
         >
           <img
-            :src="scope.row.banner"
-            :alt="`Banner for ${scope.row.name}`"
+            :src="scope.row.pennsieve.banner.uri"
+            :alt="`Banner for ${scope.row.item.name}`"
             height="128"
             width="128"
           />
-          <sparc-pill v-if="scope.row.embargo">
+          <!-- <sparc-pill v-if="scope.row.pennsieve.embargo">
             Embargoed
-          </sparc-pill>
+          </sparc-pill> -->
         </nuxt-link>
       </template>
     </el-table-column>
@@ -38,18 +38,18 @@
         <nuxt-link
           :to="{
             name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id },
+            params: { datasetId: scope.row.object_id },
             query: {
               type: $route.query.type
             }
           }"
         >
-          {{ scope.row.name }}
+          {{ scope.row.item.name }}
         </nuxt-link>
         <div class="mt-8 mb-8">
-          {{ scope.row.description }}
+          {{ scope.row.item.description }}
         </div>
-        <table class="property-table">
+        <!-- <table class="property-table">
           <tr
             v-for="(property, index) in PROPERTY_DATA"
             v-show="
@@ -72,7 +72,7 @@
               }}
             </td>
           </tr>
-        </table>
+        </table> -->
       </template>
     </el-table-column>
   </el-table>
@@ -98,10 +98,6 @@ export default {
       type: Array,
       default: () => []
     },
-    tableMetadata: {
-      type: Map,
-      default: () => new Map()
-    }
   },
 
   data() {
