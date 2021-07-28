@@ -106,8 +106,8 @@
         <div class="subpage">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
-              <h3 class="mb-24">Sign up to the SPARC Newsletter</h3>
-              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC portal.</p>
+              <h3 class="mb-24">Sign up for the SPARC Newsletter</h3>
+              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC Portal.</p>
               <newsletter-form />
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">

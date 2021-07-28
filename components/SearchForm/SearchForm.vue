@@ -1,11 +1,10 @@
 <template>
   <div class="search-form" @keyup.enter="$emit('search')">
     <div class="input-wrap">
-      <input :value="value" placeholder="Enter search criteria" @input="$emit('input', $event.target.value)" />
-      <button v-if="q" class="btn-clear-search" @click="$emit('clear')">
+      <input :value="value" :placeholder="placeholder" @input="$emit('input', $event.target.value)" />
+      <button v-if="value" class="btn-clear-search" @click="$emit('clear')">
         <svg-icon
-          name="icon-clear"
-          stroke="red"
+          icon="icon-clear"
           color="#909399 #fff"
           height="22"
           width="22"
@@ -38,6 +37,10 @@ export default {
     q: {
       type: String,
       default: ''
+    },
+    placeholder: {
+      type: String,
+      default: 'Enter search criteria'
     }
   }
 }
@@ -56,7 +59,7 @@ export default {
   width: 100%;
   border: .05rem solid black;
   border-radius: .2rem;
-  margin: 0 .5rem;
+  margin-right: 0.5rem;
 }
 input {
   background: #fff;

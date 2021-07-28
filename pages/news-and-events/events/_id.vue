@@ -7,7 +7,9 @@
     :hero-summary="page.fields.summary"
     type="event"
   >
-    <img :src="newsImage" :alt="newsImageAlt" />
+    <a :href="page.fields.url" target="_blank">
+      <img :src="newsImage" :alt="newsImageAlt" />
+    </a>
     <hr />
 
     <h3>Type</h3>
