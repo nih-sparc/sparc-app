@@ -134,7 +134,7 @@ const getPastEvents = async () => {
     const todaysDate = new Date()
     return await client.getEntries({
       content_type: process.env.ctf_event_id,
-      order: 'fields.startDate',
+      order: '-fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString()
     })
   } catch (error) {

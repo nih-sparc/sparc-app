@@ -51,6 +51,7 @@
               @clear="searchQuery = ''"
             />
             <div
+              v-if="mobilSearchOpen"
               class="click-outside-mobile-search-catch"
               @click="mobileSearchOpen = false"
             />
