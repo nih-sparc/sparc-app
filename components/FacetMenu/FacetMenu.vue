@@ -19,7 +19,7 @@
 		<el-tree
 			:data='facets'
 			node-key="id"
-			indent=0
+			indent="0"
       show-checkbox
       @check='onFacetChecked'
 			:expand-on-click-node="false"
@@ -45,22 +45,6 @@ export default {
     },
   },
 
-  mounted: function() {
-    this.$nextTick(function () {
-      console.log("MOUNTED CALLED")
-      console.log("FACETS WITH SHOW ALL =", this.facets)
-      this.facets.forEach(facet => {
-        if (facet.children.length > 1 && facet.children[0].id != facet.label)
-        {
-          const showAllNode = { id: facet.label, label:'Show all', children:[] }
-          this.$refs.tree.insertBefore(showAllNode, facet.children[0])
-          // default is to show all
-          this.$refs.tree.setChecked(showAllNode, true, false)
-        }
-      })      
-    })
-  },
-
   data() {
     return {
       // The facets that are selected by the user
@@ -71,17 +55,18 @@ export default {
   methods: {
     renderTreeNode(h, { node, data, store }) {
       var customClasses = "custom-tree-node";
-      if (!node.isLeaf) {
-        if (data.children.length > 1)
-        {
-          customClasses += " childrenGreaterThanNine"
-        }
-      }
-      console.log("NODE DATA = ",node)
-      return (
+      return this.isTopLevelNode(node) ? 
+      (
         <span class={customClasses}>
-          <h3>{node.label}</h3>
-        </span>);
+          <span class="label">{node.label}</span>
+          <el-link on-click={() => this.deselectAllChildrenFacets(data)}>Reset</el-link>
+        </span>
+      ) : (
+        <span class={customClasses}>
+          <span class="label">{node.label}</span>
+        </span>
+      )
+
     },
     // If the facet is a top level facet then it is one of the categories and cannot be selected,
     // We can only hide the checkbox so it still shows up as selected when all its children are checked
@@ -89,18 +74,10 @@ export default {
       return node.level <= 1;
     },
     onFacetChecked(clickedNode, treeStatus) {
-      if (clickedNode.label == 'Show all')
-      {
-        const node = this.$refs.tree.getNode(clickedNode);
-        // Un-check all it's siblings
-        this.$refs.tree.setChecked(node.parent, node.checked, true)
-      }
-      
       this.selectedFacets = this.$refs.tree.getCheckedNodes().filter(checkedNode => {
           const node = this.$refs.tree.getNode(checkedNode);
           return !this.isTopLevelNode(node) && 
-            (node.parent.indeterminate || this.isTopLevelNode(node.parent)) &&
-            checkedNode.label != 'Show all'
+            (node.parent.indeterminate || this.isTopLevelNode(node.parent))
         })
       this.$emit('selected-facets-changed', this.selectedFacets);
     },
@@ -109,6 +86,13 @@ export default {
         this.$refs.tree.setChecked(facet.id, false, true)
       });
       this.selectedFacets = []
+      this.$emit('selected-facets-changed', this.selectedFacets);
+    },
+    deselectAllChildrenFacets(node) {
+      node.children.forEach(child => {
+        this.$refs.tree.setChecked(child.id, false, true)
+        this.selectedFacets = this.$refs.tree.getCheckedNodes();
+      });
       this.$emit('selected-facets-changed', this.selectedFacets);
     },
     deselectFacet(id) {
@@ -122,15 +106,6 @@ export default {
 
 <style lang="scss">
 @import '../../assets/_variables.scss';
-
-
-/*.el-tree-node__children:has(.el-tree-node:first-child:last-child) {
-	display: aria-expanded="true";
-}
-
-.el-tree-node__children > .el-tree-node:nth-child(1):last-child {
-	style: 'aria-expanded="true"'
-}*/
 
 .facets {
 	background: white;
@@ -181,8 +156,6 @@ export default {
 
   .el-tree-node__children {
     padding: 0 10px;
-    max-height: 10rem;
-    overflow-y: auto;
   }
 
   .el-checkbox__input.is-checked .el-checkbox__inner,
@@ -201,7 +174,10 @@ export default {
   }
 
   .custom-tree-node {
-    h3 {
+    .el-link {
+      margin-left: 1rem;
+    }
+    .label {
       color: black;
       font-size: 1rem;
       font-weight: 500;
@@ -215,13 +191,6 @@ export default {
     hr {
       padding-bottom: .75rem;
       margin-bottom: .5rem;
-    }
-    .el-link .el-link--inner {
-      text-decoration: underline;
-      color: $median;
-      a:hover {
-        text-decoration: none;
-      }
     }
     .flex {
       display: flex;
@@ -238,11 +207,19 @@ export default {
         opacity: .5;
       }
     }
-    //el-link adds a component with a border in order to underline the text.
-    //The underline is too low so we cannot use it, and must instead hide it
-    .el-link.el-link--default:after {
-      border: none;
+  }
+  .el-link .el-link--inner {
+      text-decoration: underline;
+      text-transform: none;
+      color: $median;
+      a:hover {
+        text-decoration: none;
+      }
     }
+  //el-link adds a component with a border in order to underline the text.
+  //The underline is too low so we cannot use it, and must instead hide it
+  .el-link.el-link--default:after {
+    border: none;
   }
 }
 </style>
