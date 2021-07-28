@@ -65,6 +65,19 @@
               :md="8"
               :lg="6"
             >
+            <div class="dataset-filters table-wrap">
+              <h2>Refine datasets by:</h2>
+              <h3>Status</h3>
+              <div class="dataset-filters__filter-group">
+                <el-checkbox-group
+                  v-model="datasetFilters"
+                  @change="setDatasetFilter"
+                >
+                  <el-checkbox label="Public" />
+                  <el-checkbox label="Embargoed" />
+                </el-checkbox-group>
+              </div>
+            </div>
             <facet-menu :facets="facets" @selected-facets-changed="updateSelectedFacets"/>
             </el-col>
             <el-col
@@ -584,30 +597,6 @@ export default {
         }, {
           id: 10,
           label: 'Two'
-        }, {
-          id: 11,
-          label: 'Three'
-        }, {
-          id: 12,
-          label: 'Four'
-        }, {
-          id: 13,
-          label: 'Five'
-        }, {
-          id: 14,
-          label: 'Six'
-        }, {
-          id: 15,
-          label: 'Seven'
-        }, {
-          id: 16,
-          label: 'Eight'
-        }, {
-          id: 17,
-          label: 'Nine'
-        }, {
-          id: 18,
-          label: 'Ten'
         }]
       }]
       }, {
@@ -635,7 +624,7 @@ export default {
     },
 
     updateSelectedFacets: function(newSelectedFacets) {
-      console.log("NEW SELECTED FACETS = " + newSelectedFacets)
+      
     },
 
     /**
@@ -870,6 +859,32 @@ export default {
   }
   .el-table .cell {
     word-break: normal;
+  }
+}
+.dataset-filters {
+  padding: 0.5rem 1rem 1rem;
+  margin-bottom: 2rem;
+  h2,
+  h3 {
+    font-size: 1.125rem;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+  h2 {
+    border-bottom: 1px solid #dbdfe6;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  h3 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+  }
+  ::v-deep .el-checkbox-group {
+    display: flex;
+    flex-direction: column;
+  }
+  ::v-deep .el-checkbox__label {
+    color: $median;
   }
 }
 </style>

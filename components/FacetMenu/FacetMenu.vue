@@ -19,7 +19,7 @@
 		<el-tree
 			:data='facets'
 			node-key="id"
-			indent="0"
+			indent=0
       show-checkbox
       @check='onFacetChecked'
 			:expand-on-click-node="false"
