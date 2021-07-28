@@ -65,20 +65,23 @@
               :md="8"
               :lg="6"
             >
-            <div class="dataset-filters table-wrap">
-              <h2>Refine datasets by:</h2>
-              <h3>Status</h3>
-              <div class="dataset-filters__filter-group">
-                <el-checkbox-group
-                  v-model="datasetFilters"
-                  @change="setDatasetFilter"
-                >
-                  <el-checkbox label="Public" />
-                  <el-checkbox label="Embargoed" />
-                </el-checkbox-group>
+              <div class="dataset-filters table-wrap">
+                <h2>Refine datasets by:</h2>
+                <h3>Status</h3>
+                <div class="dataset-filters__filter-group">
+                  <el-checkbox-group
+                    v-model="datasetFilters"
+                    @change="setDatasetFilter"
+                  >
+                    <el-checkbox label="Public" />
+                    <el-checkbox label="Embargoed" />
+                  </el-checkbox-group>
+                </div>
               </div>
-            </div>
-            <facet-menu :facets="facets" @selected-facets-changed="updateSelectedFacets"/>
+              <facet-menu
+                :facets="facets"
+                @selected-facets-changed="updateSelectedFacets"
+              />
             </el-col>
             <el-col
               :sm="searchColSpan('sm')"
@@ -132,7 +135,7 @@ import {
   mergeLeft,
   pathOr,
   propEq,
-  propOr,
+  propOr
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
@@ -475,7 +478,7 @@ export default {
       const doisFilter = dois.join(' OR ')
       algoliaKCoreIndex
         .search('', {
-          filters: doisFilter,
+          filters: doisFilter
         })
         .then(response => {
           response.hits.map(hit =>
@@ -585,47 +588,60 @@ export default {
     },
 
     fetchFacets: function() {
-      const facetData = [{
-      id: 1,
-      label: 'ANATOMICAL STRUCTURE',
-      children: [{
-        id: 4,
-        label: 'Level two 1-1',
-        children: [{
-          id: 9,
-          label: 'One'
-        }, {
-          id: 10,
-          label: 'Two'
-        }]
-      }]
-      }, {
-        id: 2,
-        label: 'Level one 2',
-        children: [{
-          id: 5,
-          label: 'Level two 2-1'
-        }, {
-          id: 6,
-          label: 'Level two 2-2'
-        }]
-      }, {
-        id: 3,
-        label: 'Level one 3',
-        children: [{
-          id: 7,
-          label: 'Level two 3-1'
-        }, {
-          id: 8,
-          label: 'Level two 3-2'
-        }]
-      }];
+      const facetData = [
+        {
+          id: 1,
+          label: 'ANATOMICAL STRUCTURE',
+          children: [
+            {
+              id: 4,
+              label: 'Level two 1-1',
+              children: [
+                {
+                  id: 9,
+                  label: 'One'
+                },
+                {
+                  id: 10,
+                  label: 'Two'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: 'Level one 2',
+          children: [
+            {
+              id: 5,
+              label: 'Level two 2-1'
+            },
+            {
+              id: 6,
+              label: 'Level two 2-2'
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: 'Level one 3',
+          children: [
+            {
+              id: 7,
+              label: 'Level two 3-1'
+            },
+            {
+              id: 8,
+              label: 'Level two 3-2'
+            }
+          ]
+        }
+      ]
       this.facets = facetData
     },
 
-    updateSelectedFacets: function(newSelectedFacets) {
-      
-    },
+    updateSelectedFacets: function(newSelectedFacets) {},
 
     /**
      * Update offset
