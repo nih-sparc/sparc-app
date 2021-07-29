@@ -316,18 +316,18 @@ export default {
     max-width: 100%;
   }
   & ::v-deep iframe {
-    position: relative;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 30rem;
-    height: 20rem;
+    width: 100%;
+    height: 100%;
   }
   & ::v-deep video {
-    position: relative;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 30rem;
-    height: 20rem;
+    width: 100%;
+    height: 100%;
   }
   @media (max-width: 48em) {
     margin-bottom: 2rem;
