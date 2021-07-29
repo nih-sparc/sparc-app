@@ -78,10 +78,6 @@
                   </el-checkbox-group>
                 </div>
               </div>
-              <facet-menu
-                :facets="facets"
-                @selected-facets-changed="updateSelectedFacets"
-              />
             </el-col>
             <el-col
               :sm="searchColSpan('sm')"
