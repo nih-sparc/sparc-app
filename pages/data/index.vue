@@ -254,7 +254,57 @@ export default {
       ],
       titleColumnWidth: 300,
       windowWidth: '',
-      datasetFilters: [...datasetFilters]
+      datasetFilters: [...datasetFilters],
+      facetData: [ // TODO: Remove once faceting logic is implemented. This is mock facet data for the time being
+        {
+          id: 1,
+          label: 'ANATOMICAL STRUCTURE',
+          children: [
+            {
+              id: 4,
+              label: 'Level two 1-1',
+              children: [
+                {
+                  id: 9,
+                  label: 'One'
+                },
+                {
+                  id: 10,
+                  label: 'Two'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: 'Level one 2',
+          children: [
+            {
+              id: 5,
+              label: 'Level two 2-1'
+            },
+            {
+              id: 6,
+              label: 'Level two 2-2'
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: 'Level one 3',
+          children: [
+            {
+              id: 7,
+              label: 'Level two 3-1'
+            },
+            {
+              id: 8,
+              label: 'Level two 3-2'
+            }
+          ]
+        }
+      ]
     }
   },
 
@@ -588,57 +638,7 @@ export default {
     },
 
     fetchFacets: function() {
-      const facetData = [
-        {
-          id: 1,
-          label: 'ANATOMICAL STRUCTURE',
-          children: [
-            {
-              id: 4,
-              label: 'Level two 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: 'One'
-                },
-                {
-                  id: 10,
-                  label: 'Two'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: 'Level one 2',
-          children: [
-            {
-              id: 5,
-              label: 'Level two 2-1'
-            },
-            {
-              id: 6,
-              label: 'Level two 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: 'Level one 3',
-          children: [
-            {
-              id: 7,
-              label: 'Level two 3-1'
-            },
-            {
-              id: 8,
-              label: 'Level two 3-2'
-            }
-          ]
-        }
-      ]
-      this.facets = facetData
+      this.facets = this.facetData
     },
 
     updateSelectedFacets: function(newSelectedFacets) {},
