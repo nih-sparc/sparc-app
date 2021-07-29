@@ -19,7 +19,7 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
 
     const pastEvents = await client.getEntries<EventsEntry>({
       content_type: process.env.ctf_event_id,
-      order: 'fields.startDate',
+      order: '-fields.startDate',
       'fields.startDate[lt]': todaysDate.toISOString(),
       'fields.startDate[gte]': sub(todaysDate, { years: 2 }).toISOString(),
       query,
@@ -30,11 +30,16 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
 
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
+    const stories = await client.getEntries<StoryEntry>({
+      content_type: 'successStory'
+    })
+
     return {
       upcomingEvents,
       pastEvents,
       news,
-      page
+      page,
+      stories
     }
   } catch (e) {
     console.error(e)
@@ -42,7 +47,8 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
       upcomingEvents: {} as unknown as EventsCollection,
       pastEvents: {} as unknown as EventsCollection,
       news: {} as unknown as NewsCollection,
-      page: {} as unknown as PageEntry
+      page: {} as unknown as PageEntry,
+      stories: {} as unknown as StoryCollection
     }
   }
 }
@@ -62,7 +68,7 @@ export const fetchNews = async (client: ContentfulClientApi, query?: string, lim
   }
 }
 
-export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "page">
+export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "page" | "stories">
 
 export interface PageData {
   featuredEvent?: EventsEntry;
@@ -86,6 +92,15 @@ export interface Event {
   title?: string;
   url?: string;
 }
+
+export interface SuccessStory {
+  title?: string;
+  youtubeUrl?: string;
+}
+
+export type StoryEntry = Entry<SuccessStory>
+
+export type StoryCollection = EntryCollection<StoryEntry>
 
 export type EventsEntry = Entry<Event>
 export type EventsCollection = EntryCollection<EventsEntry>
@@ -115,10 +130,12 @@ export interface Data {
   pastEvents: EventsCollection;
   news: NewsCollection;
   page: PageEntry;
+  stories: StoryCollection
 }
 
 export interface Computed {
-  featuredEvent: EventsEntry
+  featuredEvent: EventsEntry,
+  shownStories: StoryCollection
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
