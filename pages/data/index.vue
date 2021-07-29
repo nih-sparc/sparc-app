@@ -58,32 +58,12 @@
               @current-change="onPaginationPageChange"
             />
           </div>
-          <div class="mb-16">
-            <div class="active__filter__wrap">
-              <div
-                v-for="(filter, filterIdx) in filters"
-                :key="filter.category"
-                class="active__filter__wrap-category"
-              >
-                <template v-for="(item, itemIdx) in filter.filters">
-                  <el-tag
-                    v-if="item.value"
-                    :key="`${item.key}`"
-                    closable
-                    @close="clearFilter(filterIdx, itemIdx)"
-                  >
-                    {{ item.label }}
-                  </el-tag>
-                </template>
-              </div>
-            </div>
-          </div>
           <el-row :gutter="32">
             <el-col
               v-if="searchType.type === 'dataset'"
               :sm="24"
-              :md="6"
-              :lg="4"
+              :md="8"
+              :lg="6"
             >
               <div class="dataset-filters table-wrap">
                 <h2>Refine datasets by:</h2>
@@ -136,37 +116,24 @@
         />
       </div>
     </div>
-    <search-filters
-      v-model="filters"
-      :visible.sync="isFiltersVisible"
-      :is-loading="isLoadingFilters"
-      :dialog-title="activeFiltersLabel"
-      @input="setTagsQuery"
-    />
   </div>
 </template>
 
 <script>
 import {
-  assocPath,
   clone,
   compose,
   defaultTo,
-  equals,
-  flatten,
   find,
-  filter,
   head,
   mergeLeft,
   pathOr,
   propEq,
-  propOr,
-  pluck
+  propOr
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
-import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
@@ -242,6 +209,7 @@ const getEmbargoedFilter = (searchType, datasetFilters) => {
 import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, transformFilters } from './utils'
+import FacetMenu from '~/components/FacetMenu/FacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -253,7 +221,7 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    SearchFilters,
+    FacetMenu,
     SearchForm,
     PaginationMenu
   },
@@ -263,12 +231,10 @@ export default {
   data: () => {
     return {
       searchQuery: '',
-      filters: [],
+      facets: [],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
-      isLoadingFilters: false,
-      isFiltersVisible: false,
       isSearchMapVisible: false,
       breadcrumb: [
         {
@@ -280,7 +246,57 @@ export default {
       ],
       titleColumnWidth: 300,
       windowWidth: '',
-      datasetFilters: [...datasetFilters]
+      datasetFilters: [...datasetFilters],
+      facetData: [ // TODO: Remove once faceting logic is implemented. This is mock facet data for the time being
+        {
+          id: 1,
+          label: 'ANATOMICAL STRUCTURE',
+          children: [
+            {
+              id: 4,
+              label: 'Level two 1-1',
+              children: [
+                {
+                  id: 9,
+                  label: 'One'
+                },
+                {
+                  id: 10,
+                  label: 'Two'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: 'Level one 2',
+          children: [
+            {
+              id: 5,
+              label: 'Level two 2-1'
+            },
+            {
+              id: 6,
+              label: 'Level two 2-2'
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: 'Level one 3',
+          children: [
+            {
+              id: 7,
+              label: 'Level two 3-1'
+            },
+            {
+              id: 8,
+              label: 'Level two 3-2'
+            }
+          ]
+        }
+      ]
     }
   },
 
@@ -332,39 +348,6 @@ export default {
       let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
 
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
-    },
-
-    /**
-     * Compute selected filters
-     * @returns {Array}
-     */
-    selectedFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('items')
-      )(this.filters)
-    },
-
-    /**
-     * Compute active filters
-     * @returns {Array}
-     */
-    activeFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('filters')
-      )(this.filters)
-    },
-
-    /**
-     * Compute dialog header based on how many active filters
-     * @returns {String}
-     */
-    activeFiltersLabel: function() {
-      const activeFilterLength = this.activeFilters.length
-      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     },
 
     q: function() {
@@ -436,6 +419,7 @@ export default {
       }
 
       this.fetchResults()
+      this.fetchFacets()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
@@ -456,25 +440,6 @@ export default {
         query: { ...this.$route.query, limit: newLimit, skip: 0 }
       })
       this.fetchResults()
-    },
-
-    /**
-     * Set active filters based on the query params
-     * @params {Array} filters
-     * @returns {Array}
-     */
-    setActiveFilters: function(filters) {
-      const tags = (this.$route.query.tags || '').toLowerCase().split(',')
-
-      return filters.map(category => {
-        category.filters.map(filter => {
-          const hasTag = tags.indexOf(filter.key.toLowerCase())
-          filter.value = hasTag >= 0
-          return filter
-        })
-
-        return category
-      })
     },
 
     /**
@@ -635,26 +600,11 @@ export default {
       )
     },
 
-    /**
-     * Get filters based on the search type
-     */
-    fetchFilters: function() {
-      this.filters = []
-      this.isLoadingFilters = true
-
-      client
-        .getEntry(this.searchType.filterId, { include: 2 })
-        .then(response => {
-          const filters = transformFilters(response.fields)
-          this.filters = this.setActiveFilters(filters)
-        })
-        .catch(() => {
-          this.filters = []
-        })
-        .finally(() => {
-          this.isLoadingFilters = false
-        })
+    fetchFacets: function() {
+      this.facets = this.facetData
     },
+
+    updateSelectedFacets: function(newSelectedFacets) {},
 
     /**
      * Update offset
@@ -688,42 +638,7 @@ export default {
 
       const query = { ...this.$route.query, q: '' }
       this.$router.replace({ query })
-    },
-
-    /**
-     * Clear filter's value
-     * @param {Number} filterIdx
-     * @param {Number} itemIdx
-     */
-    clearFilter: function(filterIdx, itemIdx) {
-      const filters = assocPath(
-        [filterIdx, 'filters', itemIdx, 'value'],
-        false,
-        this.filters
-      )
-      this.filters = filters
-      this.setTagsQuery()
-    },
-
-    /**
-     * Set the tags query parameter in the router
-     */
-    setTagsQuery: function() {
-      const filterVals = this.activeFilters.map(filter => {
-        return filter.key
-      })
-
-      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
-      if (equals(filterVals, queryParamTags.split(','))) {
-        return
-      }
-
-      const tags = { tags: filterVals.join(',') }
-
-      const query = { ...this.$route.query, ...tags }
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
+      this.searchQuery = ''
     },
 
     /**
@@ -743,19 +658,6 @@ export default {
       }
 
       const newTags = query.tags ? [query.tags, labelKey].join(',') : labelKey
-
-      this.filters = this.filters.map(f => ({
-        ...f,
-        filters: f.filters.map(subFilter => {
-          if (subFilter.label === label) {
-            return {
-              ...subFilter,
-              value: true
-            }
-          }
-          return subFilter
-        })
-      }))
 
       this.$router
         .replace({
@@ -789,8 +691,8 @@ export default {
       const isDataset = this.searchType.type === 'dataset'
       const viewports = {
         sm: isDataset ? 24 : 24,
-        md: isDataset ? 18 : 24,
-        lg: isDataset ? 20 : 24
+        md: isDataset ? 16 : 24,
+        lg: isDataset ? 18 : 24
       }
 
       return viewports[viewport] || 24
@@ -939,42 +841,9 @@ export default {
     word-break: normal;
   }
 }
-.btn__filters {
-  align-items: center;
-  background: none;
-  border: none;
-  color: $median;
-  display: flex;
-  font-size: 0.875em;
-  outline: none;
-  padding: 0;
-  &[disabled] {
-    opacity: 0.7;
-  }
-  &:not([disabled]) {
-    &:hover,
-    &:focus {
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  }
-  .svg-icon {
-    margin-right: 0.3125rem;
-  }
-}
-.active__filter__wrap,
-.active__filter__wrap-category {
-  display: inline;
-}
-.active__filter__wrap .el-tag {
-  margin: 0.5em 1em 0.5em 0;
-}
-.filter__wrap {
-  padding-right: 1em;
-}
-
 .dataset-filters {
   padding: 0.5rem 1rem 1rem;
+  margin-bottom: 2rem;
   h2,
   h3 {
     font-size: 1.125rem;

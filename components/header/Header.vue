@@ -41,16 +41,20 @@
               dir="left"
             />
           </button>
-          <div :class="[searchOpen ? 'search-overlay' : '']">
-            <div v-if="searchOpen" class="search-mobile">
-              <input type="text" placeholder="Search Datasets" />
-              <button class="search-mobile__close" @click="closeMobileSearch">
-                <svg-icon
-                  icon="icon-remove"
-                  class="search-mobile__close--icon"
-                />
-              </button>
-            </div>
+          <div :class="[mobileSearchOpen ? 'search-overlay' : '']">
+            <search-form
+              v-if="mobileSearchOpen"
+              v-model="searchQuery"
+              class="search-mobile"
+              placeholder="Search Datasets"
+              @search="executeMobileSearch"
+              @clear="searchQuery = ''"
+            />
+            <div
+              v-if="mobilSearchOpen"
+              class="click-outside-mobile-search-catch"
+              @click="mobileSearchOpen = false"
+            />
           </div>
 
           <div :class="[menuOpen ? 'overlay' : '']">
@@ -152,6 +156,7 @@
 
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
+import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import { mapActions } from 'vuex'
 
 const links = [
@@ -185,37 +190,40 @@ const links = [
 export default {
   name: 'SparcHeader',
   components: {
-    SparcLogo
+    SparcLogo,
+    SearchForm
   },
-  data: () => ({
-    links,
-    menuOpen: false,
-    searchOpen: false,
-    searchQuery: '',
-    searchSelect: 'data',
-    searchSelectOptions: [
-      {
-        key: 'data',
-        value: 'data',
-        label: 'Datasets'
-      },
-      {
-        key: 'resources',
-        value: 'resources',
-        label: 'Resources'
-      },
-      {
-        key: 'news-and-events',
-        value: 'news-and-events',
-        label: 'News and Events'
-      },
-      {
-        key: 'help',
-        value: 'help',
-        label: 'Support Center'
-      }
-    ]
-  }),
+  data: () => {
+    return {
+      links,
+      menuOpen: false,
+      mobileSearchOpen: false,
+      searchQuery: '',
+      searchSelect: 'data',
+      searchSelectOptions: [
+        {
+          key: 'data',
+          value: 'data',
+          label: 'Datasets'
+        },
+        {
+          key: 'resources',
+          value: 'resources',
+          label: 'Resources'
+        },
+        {
+          key: 'news-and-events',
+          value: 'news-and-events',
+          label: 'News and Events'
+        },
+        {
+          key: 'help',
+          value: 'help',
+          label: 'Support Center'
+        }
+      ]
+    }
+  },
 
   computed: {
     /**
@@ -275,7 +283,7 @@ export default {
      */
     openMobileNav: function() {
       if (!this.menuOpen) {
-        this.searchOpen = false // just in case the search menu is open also
+        this.mobileSearchOpen = false // just in case the search menu is open also
         this.$store.dispatch('updateDisabledScrolling', true)
         this.menuOpen = true
       } else {
@@ -288,7 +296,7 @@ export default {
      * Opens the mobile version of the search bar
      */
     openMobileSearch: function() {
-      this.searchOpen = true
+      this.mobileSearchOpen = true
       this.menuOpen = false
       this.$store.dispatch('updateDisabledScrolling', true)
     },
@@ -297,8 +305,13 @@ export default {
      * Closes the mobile version of the search bar
      */
     closeMobileSearch: function() {
-      this.searchOpen = false
+      this.mobileSearchOpen = false
       this.$store.dispatch('updateDisabledScrolling', false)
+    },
+
+    executeMobileSearch: function() {
+      this.executeSearch()
+      this.closeMobileSearch()
     },
 
     /**
@@ -671,58 +684,22 @@ export default {
 @media (min-width: 320px) and (max-width: 1023px) {
   .search-mobile {
     background-color: $cochlear;
-    flex-direction: column;
-    left: 0;
     padding: 1em;
-    padding-top: 12px;
-    padding-bottom: 14px;
     position: fixed;
-    right: 6rem;
     top: 3.4rem;
-    z-index: 9999;
+    z-index: 11;
     display: flex;
-    width: 100%;
-    height: 1.4rem;
+    width: calc(100% - 2rem);
+    height: 2.5rem;
     border-top: solid 1px lightgray;
-
-    &__close {
-      width: 27px;
-      height: 30px;
-      position: inherit;
-      right: 0.8rem;
-    }
-
-    &--icon {
-      color: $neutral-gray;
-      width: 20px;
-      height: 20px;
-    }
   }
+}
 
-  input {
-    height: 2rem;
-    font-size: 16px;
-    width: 90%;
-  }
-
-  ::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: lightgrey;
-    opacity: 1; /* Firefox */
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 32px;
-    padding-left: 7px;
-  }
-
-  :-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: lightgrey;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 32px;
-    padding-left: 7px;
-  }
+.click-outside-mobile-search-catch {
+  height: calc(100% - 8rem);
+  top: 8rem;
+  position: fixed;
+  width: 100%;
 }
 
 .data-portal-title {
