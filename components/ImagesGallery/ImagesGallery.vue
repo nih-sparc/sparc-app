@@ -236,7 +236,7 @@ export default {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
               const filePath = segmentation.dataset.path
-              const id = segmentation.remote.id
+              const id = segmentation.id
               this.getSegmentationThumbnail(items, {
                 id,
                 fetchAttempts: 0,
@@ -259,15 +259,16 @@ export default {
           items.push(
             ...Array.from(scicrunchData['common-images'], generic_image => {
               const filePath = generic_image.dataset.path
-              const id = generic_image.remote.id
+              const id = generic_image.identifier
               this.getImageFromS3(items, {
                 id,
+                fetchAttempts: 0,
                 datasetId,
                 datasetVersion,
                 imageFilePath: filePath,
-                mimetype: generic_image.mimetype
+                mimetype: generic_image.mimetype.name
               })
-              const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&mimetype=${generic_image.mimetype}`
+              const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&mimetype=${generic_image.mimetype.name}`
               return {
                 id,
                 title: baseName(filePath),
@@ -376,13 +377,12 @@ export default {
             ) {
               segmentation_info.fetchAttempts += 1
               this.getSegmentationThumbnail(items, segmentation_info)
+            } else {
+              let item = items.find(x => x.id === segmentation_info.id)
+              this.$set(item, 'thumbnail', this.defaultImg)
             }
           }
         )
-        .catch(() => {
-          let item = items.find(x => x.id === segmentation_info.id)
-          this.$set(item, 'thumbnail', this.defaultImg)
-        })
     },
     scaleThumbnailImage(item, image_info) {
       let img = document.createElement('img')
@@ -423,19 +423,31 @@ export default {
         .fetch(
           image_info.datasetId,
           image_info.datasetVersion,
-          image_info.imageFilePath
+          image_info.imageFilePath,
+          true
         )
-        .then(response => {
-          let item = items.find(x => x.id === image_info.id)
-          this.scaleThumbnailImage(item, {
-            mimetype: image_info.mimetype,
-            data: response.data
-          })
-        })
-        .catch(() => {
-          let item = items.find(x => x.id === image_info.id)
-          this.$set(item, 'thumbnail', this.defaultImg)
-        })
+        .then(
+          response => {
+            let item = items.find(x => x.id === image_info.id)
+            this.scaleThumbnailImage(item, {
+              mimetype: image_info.mimetype,
+              data: response.data
+            })
+          },
+          reason => {
+            if (
+              reason.message.includes('timeout') &&
+              reason.message.includes('exceeded') &&
+              image_info.fetchAttempts < 3
+            ) {
+              image_info.fetchAttempts += 1
+              this.getImageFromS3(items, image_info)
+            } else {
+              let item = items.find(x => x.id === image_info.id)
+              this.$set(item, 'thumbnail', this.defaultImg)
+            }
+          }
+        )
     },
     getThumbnailFromBiolucida(items, image_id) {
       biolucida.getThumbnail(image_id).then(
