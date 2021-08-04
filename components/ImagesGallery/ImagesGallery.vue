@@ -355,8 +355,8 @@ export default {
       }
     },
     getSegmentationThumbnail(items, segmentation_info) {
-      discover
-        .fetchEmbeddedThumbnail(
+      biolucida
+        .getNeurolucidaThumbnail(
           segmentation_info.datasetId,
           segmentation_info.datasetVersion,
           segmentation_info.segmentationFilePath

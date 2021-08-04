@@ -15,6 +15,18 @@ const getThumbnail = async id => {
   return apiClient.get('thumbnail/' + id)
 }
 
+const getNeurolucidaThumbnail = async (id, version, path) => {
+  const config = {
+    params: {
+      datasetId: id,
+      version,
+      path
+    }
+  }
+  const response = await apiClient.get('thumbnail/neurolucida', config)
+  return response.data
+}
+
 const getImageInfo = async id => {
   const response = await apiClient.get('image/' + id)
   return response.data
@@ -26,6 +38,7 @@ const getCollectionInfo = async id => {
 
 export default {
   getThumbnail,
+  getNeurolucidaThumbnail,
   searchDataset,
   getImageInfo,
   getCollectionInfo
