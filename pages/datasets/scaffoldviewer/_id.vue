@@ -153,6 +153,14 @@ export default {
     },
 
     /**
+     * Compute the first column's attributes
+     * @returns {Object}
+     */
+    firstCol() {
+      return this.type === 'event' ? { span: 12 } : { span: 12, push: 12 }
+    },
+
+    /**
      * Return the url for the scaffold metadata file.
      * @returns String
      */
@@ -324,12 +332,12 @@ h1 {
 }
 
 .time-slider-container .el-slider__marks-text {
-  margin-top: 6px!important;
+  margin-top: 6px !important;
 }
 
 .time-slider-tooltip {
   padding: 6px 4px !important;
-  font-family: "Asap", sans-serif;
+  font-family: 'Asap', sans-serif;
   font-size: 12px !important;
   color: rgb(48, 49, 51) !important;
   background-color: #f3ecf6 !important;
@@ -341,7 +349,6 @@ h1 {
 .scaffold_viewer_dropdown .el-select-dropdown__item {
   white-space: nowrap;
   text-align: left;
-  font-family: "Asap", sans-serif;
+  font-family: 'Asap', sans-serif;
 }
-
 </style>

@@ -158,39 +158,42 @@ export default {
           datasetVersion = scicrunchData.discover_dataset.version
         }
 
-        const TURN_OFF = false
-        if (
-          'scaffolds' in scicrunchData &&
-          scicrunchData.scaffolds &&
-          TURN_OFF
-        ) {
+        if ('abi-scaffold-metadata-file' in scicrunchData) {
+          let index = 0
           items.push(
-            ...Array.from(scicrunchData.scaffolds, scaffold => {
-              const metaFilePath = encodeURIComponent(scaffold.meta_file.path)
-              const thumbnailFilePath = encodeURIComponent(
-                scaffold.thumbnail.path
-              )
-              discover
-                .fetch(datasetId, datasetVersion, thumbnailFilePath)
-                .then(response => {
-                  console.log('thumbnail response :', response)
+            ...Array.from(
+              scicrunchData['abi-scaffold-metadata-file'],
+              scaffold => {
+                const file_path = scaffold.dataset.path
+                const id = scaffold.identifier
+                const thumbnail = this.getThumbnailForScaffold(
+                  index,
+                  scicrunchData
+                )
+
+                this.getScaffoldThumbnail(items, {
+                  id,
+                  fetchAttempts: 0,
+                  datasetId,
+                  datasetVersion,
+                  mimetype: thumbnail.mimetype.name,
+                  file_path: thumbnail.dataset.path
                 })
-                .catch(e => {
-                  console.log('thumbnail error:', e.message)
-                })
-              let linkUrl =
-                baseRoute +
-                'datasets/scaffoldviewer' +
-                '?scaffold=' +
-                `${datasetId}/${datasetVersion}/files/${metaFilePath}`
-              return {
-                id: scaffold.meta_file.path,
-                title: 'no-name', //scaffold.file ? scaffold.file.name : 'no-name',
-                type: 'Scaffold',
-                thumbnail: this.defaultScaffoldImg,
-                link: linkUrl
+                let linkUrl =
+                  baseRoute +
+                  'datasets/scaffoldviewer' +
+                  '?scaffold=' +
+                  `${datasetId}/${datasetVersion}/files/${file_path}`
+                index += 1
+                return {
+                  id,
+                  title: baseName(file_path),
+                  type: 'Scaffold',
+                  thumbnail: this.defaultScaffoldImg,
+                  link: linkUrl
+                }
               }
-            })
+            )
           )
         }
 
@@ -325,6 +328,49 @@ export default {
       }
 
       return imageType + ' Image'
+    },
+    getThumbnailForScaffold(index, scaffold_info) {
+      if (
+        'abi-scaffold-thumbnail' in scaffold_info &&
+        index < scaffold_info['abi-scaffold-thumbnail'].length
+      ) {
+        return scaffold_info['abi-scaffold-thumbnail'][index]
+      }
+
+      return {
+        dataset: {
+          path: ''
+        },
+        mimetype: {
+          name: ''
+        }
+      }
+    },
+    getScaffoldThumbnail(items, info) {
+      discover
+        .fetch(info.datasetId, info.datasetVersion, info.file_path, true)
+        .then(
+          response => {
+            let item = items.find(x => x.id === info.id)
+            this.scaleThumbnailImage(item, {
+              mimetype: info.mimetype,
+              data: response.data
+            })
+          },
+          reason => {
+            if (
+              reason.message.includes('timeout') &&
+              reason.message.includes('exceeded') &&
+              info.fetchAttempts < 3
+            ) {
+              info.fetchAttempts += 1
+              this.getSegmentationThumbnail(items, info)
+            } else {
+              let item = items.find(x => x.id === info.id)
+              this.$set(item, 'thumbnail', this.defaultScaffoldImg)
+            }
+          }
+        )
     },
     goNext() {
       if (this.currentIndex < this.imageCount - 1) {
