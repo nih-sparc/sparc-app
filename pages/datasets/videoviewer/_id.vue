@@ -56,6 +56,18 @@ export default {
   components: {
     DetailTabs
   },
+  async asyncData({ route, $axios }) {
+    let signedUrl = await $axios
+      .$get(
+        `${process.env.portal_api}/download?key=${route.query.file_path}&contentType=${route.query.mimetype}`
+      )
+      .then(response => {
+        return response
+      })
+    return {
+      video_src: signedUrl
+    }
+  },
 
   data: () => {
     return {
@@ -94,10 +106,6 @@ export default {
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
-    },
-
-    video_src: function() {
-      return `${process.env.portal_api}/s3-resource/${this.$route.query.file_path}`
     }
   },
   mounted() {

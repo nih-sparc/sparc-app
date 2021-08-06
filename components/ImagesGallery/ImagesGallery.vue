@@ -31,8 +31,6 @@ import MarkedMixin from '@/mixins/marked'
 
 import { baseName } from '@/utils/common'
 
-import { plotTypeMap } from '@/static/js/plots'
-
 export default {
   name: 'ImagesGallery',
   components: {
@@ -159,6 +157,7 @@ export default {
           datasetId = scicrunchData.discover_dataset.id
           datasetVersion = scicrunchData.discover_dataset.version
         }
+
         const TURN_OFF = false
         if (
           'scaffolds' in scicrunchData &&
@@ -194,17 +193,18 @@ export default {
             })
           )
         }
-        if ('mp4' in scicrunchData && TURN_OFF) {
+
+        if ('video' in scicrunchData) {
           items.push(
-            ...Array.from(scicrunchData.mp4, videoFile => {
+            ...Array.from(scicrunchData.video, videoFile => {
               const filePath = this.getS3FilePath(
                 datasetId,
                 datasetVersion,
                 videoFile.dataset.path
               )
-              const linkUrl = `${baseRoute}datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}`
+              const linkUrl = `${baseRoute}datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}&mimetype=${videoFile.mimetype.name}`
               return {
-                title: videoFile.file.name,
+                title: videoFile.name,
                 type: 'Video',
                 thumbnail: this.defaultVideoImg,
                 link: linkUrl
@@ -212,26 +212,7 @@ export default {
             })
           )
         }
-        if ('csv' in scicrunchData && TURN_OFF) {
-          items.push(
-            ...Array.from(scicrunchData.csv, csvFile => {
-              const plotTypeName = plotTypeMap.get(csvFile.file.name)
-              const filePath = this.getS3FilePath(
-                datasetId,
-                datasetVersion,
-                csvFile.dataset.path
-              )
-              const linkUrl = `${baseRoute}datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&plot_type=${plotTypeName}`
-              return {
-                title: 'no-csv-file', //csvFile.file.name,
-                type: plotTypeName ? plotTypeName : 'CSV',
-                thumbnail: this.defaultPlotImg,
-                link: linkUrl
-              }
-            })
-          )
-          items = items.filter(item => item.type !== 'CSV')
-        }
+
         if ('mbf-segmentation' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
@@ -255,6 +236,7 @@ export default {
             })
           )
         }
+
         if ('common-images' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['common-images'], generic_image => {
