@@ -43,7 +43,7 @@ export default {
 
   async asyncData() {
     const successData = await client.getEntries({
-      content_type: 'successStory'
+      content_type: 'successStoryDisplay'
     })
     return {
       allStories: successData.items
