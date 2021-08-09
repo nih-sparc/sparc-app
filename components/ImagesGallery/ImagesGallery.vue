@@ -240,6 +240,23 @@ export default {
           )
         }
 
+        if ('abi-plot' in scicrunchData) {
+          items.push(
+            ...Array.from(scicrunchData['abi-plot'], plot => {
+              const id = plot.identifier
+              const file_path = plot.dataset.path
+              const linkUrl = `${baseRoute}datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&identifier=${id}`
+              return {
+                id,
+                title: baseName(file_path),
+                type: 'Plot',
+                thumbnail: this.defaultPlotImg,
+                link: linkUrl
+              }
+            })
+          )
+        }
+
         if ('common-images' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['common-images'], generic_image => {
@@ -315,9 +332,16 @@ export default {
     delete this.ro
   },
   methods: {
-    getS3FilePath(datasetId, datasetVersion, filePath) {
-      const encodedFilePath = encodeURIComponent(filePath)
-      return `${datasetId}/${datasetVersion}/files/${encodedFilePath}`
+    /**
+     * Returns a file path for S3.
+     * @param {String} dataset_id dataset id.
+     * @param {String} dataset_version dataset version.
+     * @param {String} file_path file path.
+     * @returns {String} full path to S3 file.
+     */
+    getS3FilePath(dataset_id, dataset_version, file_path) {
+      const encoded_file_path = encodeURIComponent(file_path)
+      return `${dataset_id}/${dataset_version}/files/${encoded_file_path}`
     },
     getBiolucidaImageType(name) {
       let imageType = ''

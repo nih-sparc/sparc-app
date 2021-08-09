@@ -33,7 +33,11 @@
       >
         <client-only placeholder="Loading plot ...">
           <div class="plotvuer-container">
-            <PlotVuer :url="plotUrl" :plot-type="plotType" :help-mode="false" />
+            <plot-vuer
+              :data-source="{ url: source_url }"
+              :metadata="metadata"
+              :supplemental-data="supplemental_data"
+            />
           </div>
         </client-only>
       </detail-tabs>
@@ -43,6 +47,8 @@
 
 <script>
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import scicrunch from '@/services/scicrunch'
+import discover from '@/services/discover'
 
 export default {
   name: 'PlotViewerPage',
@@ -53,6 +59,58 @@ export default {
       ? () => import('@abi-software/plotvuer').then(m => m.PlotVuer)
       : null
   },
+  async asyncData({ route }) {
+    const identifier = route.query.identifier
+
+    const scicrunchResponse = await scicrunch.getDatasetInfoFromIdentifier(
+      identifier
+    )
+    const scicrunchData = scicrunchResponse.data.result[0]
+    const matchedData = scicrunchData['abi-plot'].filter(function(el) {
+      return el.identifier === identifier
+    })
+
+    const plot_info = matchedData[0]
+    const plot_annotation = plot_info.datacite
+    const file_path = `${route.query.dataset_id}/${route.query.dataset_version}/files/${plot_info.dataset.path}`
+    const source_url_response = await discover.downloadLink(file_path)
+    let source_url = source_url_response.data
+    if (process.env.portal_api === 'http://localhost:8000') {
+      source_url = `${process.env.portal_api}/s3-resource/${file_path}`
+    }
+
+    const metadata = JSON.parse(
+      plot_annotation.supplemental_json_metadata.description
+    )
+
+    let supplemental_data = []
+    if (plot_annotation.isDescribedBy) {
+      let tmp_path = plot_annotation.isDescribedBy.path
+      // Hack to fix path entry.
+      if (tmp_path === '../derivative/sub-1/subject1_header.txt') {
+        tmp_path = 'derivative/sub-1/sam-1/subject1_header.txt'
+      }
+
+      const supplemental_file_path = `${route.query.dataset_id}/${route.query.dataset_version}/files/${tmp_path}`
+
+      const supplemental_url_response = await discover.downloadLink(
+        supplemental_file_path
+      )
+      let supplemental_url = supplemental_url_response.data
+      if (process.env.portal_api === 'http://localhost:8000') {
+        supplemental_url = `${process.env.portal_api}/s3-resource/${supplemental_file_path}`
+      }
+      supplemental_data.push({
+        url: supplemental_url
+      })
+    }
+
+    return {
+      source_url,
+      metadata,
+      supplemental_data
+    }
+  },
 
   data: () => {
     return {
@@ -62,13 +120,9 @@ export default {
           type: 'plot'
         }
       ],
-      activeTab: 'plot',
-      file: {},
-      traditional: true,
-      backgroundToggle: true
+      activeTab: 'plot'
     }
   },
-
   computed: {
     /**
      * Get the file name from the query parameter.
@@ -95,15 +149,7 @@ export default {
     },
 
     plotType: function() {
-      return this.$route.query.plot_type
-    },
-
-    /**
-     * Return the url for the file to plot.
-     * @returns String
-     */
-    plotUrl: function() {
-      return `${process.env.portal_api}/s3-resource/${this.$route.query.file_path}`
+      return this.metadata.attrs.style
     }
   }
 }

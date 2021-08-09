@@ -10,8 +10,13 @@ const search = query => {
   return apiClient.get('search/' + query)
 }
 
-const getDatasetInfo = async id => {
-  return apiClient.get('dataset_info/' + id)
+const getDatasetInfoFromIdentifier = async identifier => {
+  const config = {
+    params: {
+      identifier
+    }
+  }
+  return apiClient.get('dataset_info/using_object_identifier', config)
 }
 
 const getDatasetInfoFromDOI = async doi => {
@@ -32,7 +37,7 @@ const getCollectionInfo = async id => {
 }
 
 export default {
-  getDatasetInfo,
+  getDatasetInfoFromIdentifier,
   getDatasetInfoFromDOI,
   search,
   getImageInfo,

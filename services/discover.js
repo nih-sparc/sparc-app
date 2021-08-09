@@ -41,8 +41,18 @@ const fetchEmbeddedThumbnail = async (id, version, path) => {
   return await apiClient.get('/thumbnail/segmentation', config)
 }
 
+const downloadLink = async file_path => {
+  const config = {
+    params: {
+      key: file_path
+    }
+  }
+  return await apiClient.get('/download', config)
+}
+
 export default {
   browse,
+  downloadLink,
   fetch,
   fetchEmbeddedThumbnail
 }
