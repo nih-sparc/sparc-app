@@ -17,15 +17,18 @@
           }"
           class="img-dataset"
         >
+        <div v-if="scope.row.pennsieve">
           <img
+            v-if="scope.row.pennsieve.banner"
             :src="scope.row.pennsieve.banner.uri"
             :alt="`Banner for ${scope.row.item.name}`"
             height="128"
             width="128"
           />
-          <!-- <sparc-pill v-if="scope.row.pennsieve.embargo">
+          <sparc-pill v-show='scope.row.pennsieve.embargo.keyword == "true"' v-if='scope.row.pennsieve.embargo'>
             Embargoed
-          </sparc-pill> -->
+          </sparc-pill>
+        </div>
         </nuxt-link>
       </template>
     </el-table-column>
@@ -49,13 +52,10 @@
         <div class="mt-8 mb-8">
           {{ scope.row.item.description }}
         </div>
-        <!-- <table class="property-table">
+        <table class="property-table">
           <tr
             v-for="(property, index) in PROPERTY_DATA"
-            v-show="
-              property.propPath === 'createdAt' ||
-                getPropertyValue(tableMetadata.get(scope.row.doi), property)
-            "
+            v-show="getPropertyValue(scope.row, property)"
             :key="index"
           >
             <td class="property-name-column">
@@ -63,16 +63,11 @@
             </td>
             <td>
               {{
-                property.propPath === 'createdAt'
-                  ? formatDate(scope.row.createdAt) +
-                    ' (Last updated ' +
-                    formatDate(scope.row.updatedAt) +
-                    ')'
-                  : getPropertyValue(tableMetadata.get(scope.row.doi), property)
+                getPropertyValue(scope.row, property)
               }}
             </td>
           </tr>
-        </table> -->
+        </table>
       </template>
     </el-table-column>
   </el-table>
@@ -122,11 +117,11 @@ export default {
         },
         {
           displayName: 'Publication Date',
-          propPath: 'createdAt'
+          propPath: 'dates'
         },
         {
           displayName: 'Includes',
-          propPath: 'publication'
+          propPath: 'item.published.boolean'
         }
       ]
     }
@@ -156,7 +151,8 @@ export default {
             : undefined
         }
         case 'Includes': {
-          return _.get(item, property.propPath) ? undefined : 'Publications'
+          const published = _.get(item, property.propPath)
+          return (published == undefined || published == 'false') ? undefined : 'Publications'
         }
         case 'Samples': {
           const sampleCount = _.get(item, property.propPath + '.samples.count')
@@ -176,6 +172,15 @@ export default {
                 .join(', ')
                 .replaceAll(' technique', '')
             : undefined
+        }
+        case 'Publication Date': {
+          const dates = _.get(item, property.propPath)
+          const createdAt = dates.created.timestamp.split(",")[0]
+          const updatedAt = dates.updated[0].timestamp.split(",")[0]
+          return this.formatDate(createdAt) +
+                    ' (Last updated ' +
+                    this.formatDate(updatedAt) +
+                    ')'
         }
         default: {
           return _.get(item, property.propPath)

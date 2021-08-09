@@ -30,9 +30,13 @@
       node-key="id"
       indent="0"
       show-checkbox
+      default-expand-all
       :expand-on-click-node="false"
+      :default-checked-keys="defaultCheckedFacetIds"
+      :filter-node-method="hideFacets"
       :render-content="renderTreeNode"
       @check="onFacetChecked"
+      :key="facets.length"
     />
   </div>
 </template>
@@ -44,8 +48,17 @@ export default {
   components: {},
 
   props: {
-    // The facets to be displayed in the menu
+    // All facets contained in the menu
     facets: {
+      type: Array,
+      default: () => []
+    },
+    // Setting visibleFacets hides all other facets
+    visibleFacets: {
+      type: Object,
+      default: () => {}
+    },
+    defaultCheckedFacetIds: {
       type: Array,
       default: () => []
     }
@@ -54,7 +67,23 @@ export default {
   data() {
     return {
       // The facets that are selected by the user
-      selectedFacets: []
+      selectedFacets: [],
+    }
+  },
+
+  watch: {
+    "visibleFacets": function(facets) {
+      this.$refs.tree.filter(facets)
+    },
+    'facets': function(facets){
+      if (facets.length){
+        this.$nextTick(() => {
+          /* This is a hack to work around el-tree component not firing onFacetChecked event when setting default checked keys.
+          * We need to force selectedFacets to update so that the tags get shown and that the selectedFacets changed event
+          * gets fired and notifies the parent that the selected facets have changed so that they can then fetch results */
+          this.onFacetChecked()
+        })
+      } 
     }
   },
 
@@ -74,12 +103,20 @@ export default {
         </span>
       )
     },
+    hideFacets(value, data, node) {
+      const facetChildren = value[data.facetPropPath]
+      if (facetChildren == undefined) {
+        return false
+      }
+      return facetChildren[data.label] != undefined
+    },
+    
     // If the facet is a top level facet then it is one of the categories and cannot be selected,
     // We can only hide the checkbox so it still shows up as selected when all its children are checked
     isTopLevelNode(node) {
       return node.level <= 1
     },
-    onFacetChecked(clickedNode, treeStatus) {
+    onFacetChecked() {
       this.selectedFacets = this.$refs.tree
         .getCheckedNodes()
         .filter(checkedNode => {
@@ -188,6 +225,7 @@ export default {
       margin-left: 1rem;
     }
     .label {
+      text-transform: capitalize;
       color: black;
       font-size: 1rem;
       font-weight: 500;
@@ -211,6 +249,8 @@ export default {
     .facet-card {
       .el-card__body {
         padding: 10px;
+        max-height: 10rem;
+        overflow-y: auto;
       }
       .no-facets {
         font-style: italic;
