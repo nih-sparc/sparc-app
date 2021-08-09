@@ -1,6 +1,17 @@
 <template>
   <div class="file-detail-page">
     <div class="page-wrap container">
+      <detail-tabs
+        :tabs="tabs"
+        :active-tab="activeTab"
+        class="container"
+        @set-active-tab="activeTab = $event"
+      >
+        <biolucida-viewer
+          v-show="activeTab === 'viewer'"
+          :data="biolucidaData"
+        />
+      </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
           <h1>{{ imageName }}</h1>
@@ -33,17 +44,6 @@
           </div>
         </div>
       </div>
-      <detail-tabs
-        :tabs="tabs"
-        :active-tab="activeTab"
-        class="container"
-        @set-active-tab="activeTab = $event"
-      >
-        <biolucida-viewer
-          v-show="activeTab === 'viewer'"
-          :data="biolucidaData"
-        />
-      </detail-tabs>
     </div>
   </div>
 </template>
