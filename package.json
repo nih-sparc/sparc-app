@@ -19,7 +19,7 @@
   "dependencies": {
     "@abi-software/gallery": "^0.1.5",
     "@abi-software/mapintegratedvuer": "0.1.31-fix-1",
-    "@abi-software/plotvuer": "^0.2.42",
+    "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/scaffoldvuer": "0.1.48",
     "@contentful/rich-text-html-renderer": "^15.0.0",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
