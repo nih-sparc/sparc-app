@@ -1,6 +1,20 @@
 <template>
   <div class="file-detail-page">
     <div class="page-wrap container">
+      <detail-tabs
+        :tabs="tabs"
+        :active-tab="activeTab"
+        class="container"
+        @set-active-tab="activeTab = $event"
+      >
+        <img
+          v-show="activeTab === 'viewer'"
+          ref="img"
+          :src="imageSrc"
+          class="image-viewer"
+          @load="imageLoaded"
+        />
+      </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
           <h1>{{ imageName }}</h1>
@@ -33,20 +47,6 @@
           </div>
         </div>
       </div>
-      <detail-tabs
-        :tabs="tabs"
-        :active-tab="activeTab"
-        class="container"
-        @set-active-tab="activeTab = $event"
-      >
-        <img
-          v-show="activeTab === 'viewer'"
-          ref="img"
-          :src="imageSrc"
-          class="image-viewer"
-          @load="imageLoaded"
-        />
-      </detail-tabs>
     </div>
   </div>
 </template>

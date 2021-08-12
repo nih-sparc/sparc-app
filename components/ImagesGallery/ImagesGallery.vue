@@ -29,7 +29,7 @@ import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
 import MarkedMixin from '@/mixins/marked'
 
-import { baseName } from '@/utils/common'
+import { baseName, extractSection } from '@/utils/common'
 
 export default {
   name: 'ImagesGallery',
@@ -137,13 +137,7 @@ export default {
   watch: {
     markdown: function(text) {
       const html = this.parseMarkdown(text)
-      const doc = new DOMParser().parseFromString(html, 'text/html')
-      const links = doc.querySelectorAll('p')
-      links.forEach(paragraph => {
-        if (paragraph.innerText.includes('Data collection:')) {
-          this.description = paragraph.innerText.replace('Data collection:', '')
-        }
-      })
+      this.description = extractSection('Data collection:', html)
     },
     datasetScicrunch: {
       deep: true,
@@ -291,6 +285,8 @@ export default {
         let items = []
         const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
+          console.log('----------------------')
+          console.log(biolucidaData)
           items.push(
             ...Array.from(biolucidaData.dataset_images, dataset_image => {
               this.getThumbnailFromBiolucida(items, dataset_image.image_id)
@@ -309,7 +305,9 @@ export default {
                 '&dataset_version=' +
                 biolucidaData.discover_dataset_version +
                 '&dataset_id=' +
-                biolucidaData.discover_dataset_id
+                biolucidaData.discover_dataset_id +
+                '&item_id=' +
+                dataset_image.sourcepkg_id
 
               return {
                 id: dataset_image.image_id,

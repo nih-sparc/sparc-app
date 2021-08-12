@@ -11,6 +11,11 @@ const searchDataset = async id => {
   return response.data
 }
 
+const getXMPInfo = async id => {
+  const response = await apiClient.get('/image_xmp_info/' + id)
+  return response.data
+}
+
 const getThumbnail = async id => {
   return apiClient.get('thumbnail/' + id)
 }
@@ -41,5 +46,6 @@ export default {
   getNeurolucidaThumbnail,
   searchDataset,
   getImageInfo,
-  getCollectionInfo
+  getCollectionInfo,
+  getXMPInfo
 }

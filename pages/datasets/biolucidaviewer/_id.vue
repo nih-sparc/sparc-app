@@ -13,34 +13,53 @@
         />
       </detail-tabs>
       <div class="subpage">
-        <div class="page-heading">
-          <h1>{{ imageName }}</h1>
-        </div>
         <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Description</strong>
-          <div class="file-detail__column">
-            {{ imageInfo.description }}
+          <strong class="file-detail__column_1">Dataset</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              {{ title }}
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
-            {{ imageType }}
+          <strong class="file-detail__column_1">Filename</strong>
+          <div class="file-detail__column_2">
+            {{ image_info.name }}
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Dataset id</strong>
-          <div class="file-detail__column">
-            {{ datasetId }}
+          <strong class="file-detail__column_1">Data collection</strong>
+          <div class="file-detail__column_2">
+            {{ data_collection }}
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Version</strong>
-          <div class="file-detail__column">
-            {{ versionNumber }}
+          <strong class="file-detail__column_1">Modality</strong>
+          <div class="file-detail__column_2">
+            {{ xmp_metadata.modality }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Channel target labels</strong>
+          <div class="file-detail__column_2">
+            <image-channels :channel-colours="xmp_metadata.channel_colours" />
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Image scaling</strong>
+          <div class="file-detail__column_2">
+            <image-scaling
+              :x-scale="xmp_metadata.pixel_height"
+              :y-scale="xmp_metadata.pixel_width"
+              :z-scale="xmp_metadata.z_spacing"
+            />
           </div>
         </div>
       </div>
@@ -50,23 +69,45 @@
 
 <script>
 import biolucida from '@/services/biolucida'
+import scicrunch from '~/services/scicrunch'
 
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import ImageScaling from '@/components/Images/ImageScaling.vue'
+import ImageChannels from '@/components/Images/ImageChannels.vue'
+
+import MarkedMixin from '@/mixins/marked'
+
+import { extractSection } from '@/utils/common'
 
 export default {
   name: 'BiolucidaViewerPage',
 
   components: {
     BiolucidaViewer,
-    DetailTabs
+    DetailTabs,
+    ImageScaling,
+    ImageChannels
   },
 
+  mixins: [MarkedMixin],
+
   async asyncData({ route }) {
-    const imageInfo = await biolucida.getImageInfo(route.params.id)
+    const image_info = await biolucida.getImageInfo(route.params.id)
+    const identifier = route.query.item_id.substring(2)
+
+    const dataset_response = await scicrunch.getDatasetInfoFromIdentifier(
+      identifier
+    )
+
+    const xmp_metadata = await biolucida.getXMPInfo(route.params.id)
+    const dataset_info = dataset_response.data.result[0]
 
     return {
-      imageInfo
+      image_info,
+      xmp_metadata,
+      readme: dataset_info.readme,
+      title: dataset_info.title
     }
   },
 
@@ -79,7 +120,8 @@ export default {
         }
       ],
       activeTab: 'viewer',
-      file: {}
+      file: {},
+      data_collection: ''
     }
   },
 
@@ -102,34 +144,12 @@ export default {
      */
     datasetId: function() {
       return this.$route.query.dataset_id
-    },
-
-    /**
-     * Return the version number from the route query.
-     * @returns String
-     */
-    versionNumber: function() {
-      return this.$route.query.dataset_version
-    },
-
-    /**
-     * Return the image name without extension from the image information.
-     * @returns String
-     */
-    imageName: function() {
-      let imageName = this.imageInfo.name
-      return imageName.substring(0, imageName.lastIndexOf('.')) || imageName
-    },
-
-    /**
-     * Return the type of an image.
-     * @returns String
-     */
-    imageType: function() {
-      return this.imageInfo.name.toUpperCase().endsWith('JPX')
-        ? '3D JPEG Image'
-        : '2D JPEG Image'
     }
+  },
+
+  mounted: function() {
+    const html = this.parseMarkdown(this.readme)
+    this.data_collection = extractSection('Data collection:', html)
   }
 }
 </script>
@@ -177,7 +197,10 @@ h1 {
     flex-direction: row;
   }
 }
-.file-detail__column {
-  flex: 1;
+.file-detail__column_1 {
+  flex: 0.2;
+}
+.file-detail__column_2 {
+  flex: 0.8;
 }
 </style>
