@@ -35,6 +35,12 @@
           </div>
         </div>
         <div class="file-detail">
+          <strong class="file-detail__column_1">Data collection</strong>
+          <div class="file-detail__column_2">
+            {{ data_collection }}
+          </div>
+        </div>
+        <div class="file-detail">
           <strong class="file-detail__column_1">Subject</strong>
           <div class="file-detail__column_2">
             {{ segmentation_info.subject.subjectid }}
@@ -76,6 +82,9 @@ import scicrunch from '@/services/scicrunch'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 
+import MarkedMixin from '@/mixins/marked'
+
+import { extractSection } from '@/utils/common'
 import { baseName } from '@/utils/common'
 
 export default {
@@ -85,6 +94,8 @@ export default {
     SegmentationViewer,
     DetailTabs
   },
+
+  mixins: [MarkedMixin],
 
   async asyncData({ route }) {
     let segmentation_info_response = await discover.getSegmentationInfo(
@@ -105,6 +116,7 @@ export default {
 
     return {
       segmentation_info,
+      readme: dataset_info.readme,
       title: dataset_info.title
     }
   },
@@ -117,7 +129,8 @@ export default {
           type: 'viewer'
         }
       ],
-      activeTab: 'viewer'
+      activeTab: 'viewer',
+      data_collection: ''
     }
   },
 
@@ -158,6 +171,11 @@ export default {
     segmentationType: function() {
       return 'application/vnd.mbfbioscience.neurolucida+xml'
     }
+  },
+
+  mounted: function() {
+    const html = this.parseMarkdown(this.readme)
+    this.data_collection = extractSection('Data collection:', html)
   }
 }
 </script>
