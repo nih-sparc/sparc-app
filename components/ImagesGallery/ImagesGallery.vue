@@ -285,8 +285,6 @@ export default {
         let items = []
         const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
-          console.log('----------------------')
-          console.log(biolucidaData)
           items.push(
             ...Array.from(biolucidaData.dataset_images, dataset_image => {
               this.getThumbnailFromBiolucida(items, dataset_image.image_id)
