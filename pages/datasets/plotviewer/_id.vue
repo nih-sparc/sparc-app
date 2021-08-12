@@ -64,7 +64,7 @@ export default {
   async asyncData({ route }) {
     const identifier = route.query.identifier
 
-    const scicrunchResponse = await scicrunch.getDatasetInfoFromIdentifier(
+    const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(
       identifier
     )
     const scicrunchData = scicrunchResponse.data.result[0]

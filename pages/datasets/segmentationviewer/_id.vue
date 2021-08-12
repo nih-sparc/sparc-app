@@ -1,38 +1,6 @@
 <template>
   <div class="file-detail-page">
     <div class="page-wrap container">
-      <div class="subpage">
-        <div class="page-heading">
-          <h1>{{ segmentationName }}</h1>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Description</strong>
-          <div class="file-detail__column">
-            {{ segmentationDescription }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
-            {{ segmentationType }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Dataset id</strong>
-          <div class="file-detail__column">
-            {{ datasetId }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Version</strong>
-          <div class="file-detail__column">
-            {{ versionNumber }}
-          </div>
-        </div>
-      </div>
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -44,14 +12,71 @@
           :data="segmentationData"
         />
       </detail-tabs>
+      <div class="subpage">
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Dataset</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              {{ title }}
+            </nuxt-link>
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Filename</strong>
+          <div class="file-detail__column_2">
+            {{ segmentation_info.name }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Subject</strong>
+          <div class="file-detail__column_2">
+            {{ segmentation_info.subject.subjectid }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Species</strong>
+          <div class="file-detail__column_2">
+            {{ segmentation_info.subject.species }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Sex</strong>
+          <div class="file-detail__column_2">
+            {{ segmentation_info.subject.sex }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Age</strong>
+          <div class="file-detail__column_2">
+            {{ segmentation_info.subject.age }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Organ</strong>
+          <div class="file-detail__column_2">
+            {{ segmentation_info.atlas.organ }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import discover from '@/services/discover'
+import scicrunch from '@/services/scicrunch'
+
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import { baseName } from '~/utils/common'
+
+import { baseName } from '@/utils/common'
 
 export default {
   name: 'SegmentationViewerPage',
@@ -62,12 +87,25 @@ export default {
   },
 
   async asyncData({ route }) {
-    const segmentationInfo = {
+    let segmentation_info_response = await discover.getSegmentationInfo(
+      route.query.dataset_id,
+      route.query.dataset_version,
+      route.query.file_path
+    )
+    const segmentation_info = {
+      ...segmentation_info_response.data,
       name: baseName(route.query.file_path)
     }
 
+    const identifier = route.query.dataset_id
+    const dataset_response = await scicrunch.getDatasetInfoFromPennsieveIdentifier(
+      identifier
+    )
+    const dataset_info = dataset_response.data.result[0]
+
     return {
-      segmentationInfo
+      segmentation_info,
+      title: dataset_info.title
     }
   },
 
@@ -112,23 +150,6 @@ export default {
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
-    },
-
-    /**
-     * Return the segmentation name without extension from the segmentation information.
-     * @returns String
-     */
-    segmentationName: function() {
-      let name = this.segmentationInfo.name
-      return name.substring(0, name.lastIndexOf('.')) || name
-    },
-
-    /**
-     * Return the description for the segmentation.
-     * @returns String
-     */
-    segmentationDescription: function() {
-      return 'description about segmentation.'
     },
     /**
      * Return the type of an segmentation.
@@ -186,5 +207,11 @@ h1 {
 }
 .file-detail__column {
   flex: 1;
+}
+.file-detail__column_1 {
+  flex: 0.2;
+}
+.file-detail__column_2 {
+  flex: 0.8;
 }
 </style>

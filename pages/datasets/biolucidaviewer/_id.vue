@@ -96,7 +96,7 @@ export default {
     const image_info = await biolucida.getImageInfo(route.params.id)
     const identifier = route.query.item_id.substring(2)
 
-    const dataset_response = await scicrunch.getDatasetInfoFromIdentifier(
+    const dataset_response = await scicrunch.getDatasetInfoFromObjectIdentifier(
       identifier
     )
 
