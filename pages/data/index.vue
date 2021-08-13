@@ -177,8 +177,8 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const OrganSearchResults = () =>
-  import('@/components/SearchResults/OrganSearchResults.vue')
+const NewsSearchResults = () =>
+  import('@/components/SearchResults/NewsSearchResults.vue')
 const ResourcesSearchResults = () =>
   import('@/components/Resources/ResourcesSearchResults.vue')
 
@@ -187,8 +187,8 @@ const searchResultsComponents = {
   sparcAward: ProjectSearchResults,
   sparcPartners: ResourcesSearchResults,
   event: EventSearchResults,
-  organ: OrganSearchResults,
-  simulation: DatasetSearchResults
+  simulation: DatasetSearchResults,
+  news: NewsSearchResults,
 }
 
 const searchTypes = [
@@ -199,14 +199,24 @@ const searchTypes = [
     dataSource: 'algolia'
   },
   {
-    label: 'Organs',
-    type: process.env.ctf_organ_id,
-    filterId: process.env.ctf_filters_organ_id,
+    label: 'Simulations',
+    type: 'simulation',
+    filterId: process.env.ctf_filters_simulation_id,
+    dataSource: 'algolia'
+  },
+  {
+    label: 'Resources',
+    type: process.env.ctf_resource_id,
     dataSource: 'contentful'
   },
   {
-    label: 'Tools & Resources',
-    type: process.env.ctf_resource_id,
+    label: 'Events',
+    type: process.env.ctf_event_id,
+    dataSource: 'contentful'
+  },
+  {
+    label: 'News',
+    type: process.env.ctf_news_id,
     dataSource: 'contentful'
   },
   {
@@ -215,12 +225,6 @@ const searchTypes = [
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
   },
-  {
-    label: 'Simulations',
-    type: 'simulation',
-    filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'algolia'
-  }
 ]
 
 const searchData = {
