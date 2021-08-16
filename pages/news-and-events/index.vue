@@ -289,7 +289,7 @@ h3 {
   margin: 0 1rem 1rem;
   width: 100%;
   @media (min-width: 48em) {
-    width: calc(50% - 4.125em); // Account for the margins and the border
+    width: calc(50% - 4.25em); // Account for the margins and the border
   }
 }
 .show-all-upcoming-events {
