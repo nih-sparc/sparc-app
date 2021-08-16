@@ -864,22 +864,49 @@ export default {
       this.activeTab = activeLabel
     },
     /**
-     * Returns protocol records in a dataset's model if they exist
+     * Returns protocol records in a dataset's model if they exist.
+     * First, check if the dataset has external publications with type
+     * "isSupplementedBy" which is leveraged to contain the protocols in SPARC.
+     *
+     * To support backward compatibility, if this does not exist, check if there
+     * are records of type Protocol and only show those that are defined as a doi.
+     *
+     * This workflow allows datasets to be updated as a revision to update the protocols
+     * on the portal instead of requiring the dataset to be fully republished.
      */
     getProtocolRecords: function() {
-      this.$axios
-        .$get(this.getSearchRecordsUrl)
-        .then(response => {
-          const records = propOr([], 'records', response)
-          if (records.length !== 0) {
-            // that means protocol records exist
-            this.datasetRecords = records
-          }
+      if (this.datasetInfo.externalPublications.length !== 0) {
+        const allPubs = this.datasetInfo.externalPublications
+        const allProtocols = allPubs.filter(
+          x => x.relationshipType === 'IsSupplementedBy'
+        )
+        this.datasetRecords = allProtocols.map(obj => {
+          let rObj = {}
+          rObj['url'] = `https://doi.org/` + obj.doi
+          return rObj
         })
-        .catch(() => {
-          // handle error
-          this.errorLoading = true
-        })
+      } else {
+        this.$axios
+          .$get(this.getSearchRecordsUrl)
+          .then(response => {
+            const records = propOr([], 'records', response)
+            if (records.length !== 0) {
+              // that means protocol records exist
+              const allProtocols = records.filter(protocol =>
+                protocol.properties.url.startsWith('https://doi.org')
+              )
+              this.datasetRecords = allProtocols.map(obj => {
+                let rObj = {}
+                rObj['url'] = obj.properties.url
+                return rObj
+              })
+            }
+          })
+          .catch(() => {
+            // handle error
+            this.errorLoading = true
+          })
+      }
     },
 
     /**
@@ -914,6 +941,9 @@ export default {
             throw error
           })
       }
+    },
+    linkFromDoi: function(doi) {
+      return `https://doi.org/${doi}`
     },
 
     /**
