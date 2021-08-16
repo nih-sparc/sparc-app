@@ -52,7 +52,7 @@ export default {
     helpLink() {
       const sysId = pathOr('', ['sys', 'id'], this.helpItem)
       const helpId = pathOr(sysId, ['fields', 'slug'], this.helpItem)
-      return { name: 'help-helpId', params: { helpId } }
+      return { name: 'help-helpId', params: { helpId }, hash: '#top' }
     }
   }
 }

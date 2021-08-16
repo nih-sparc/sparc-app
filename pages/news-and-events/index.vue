@@ -99,12 +99,15 @@
           </el-col>
         </el-row>
 
+        <h2>Community Spotlight</h2>
+        <community-spotlight-listings :stories="shownStories" :in-news="true" />
+
         <h2>Stay Connected</h2>
         <div class="subpage">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
-              <h3 class="mb-24">Sign up to the SPARC Newsletter</h3>
-              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC portal.</p>
+              <h3 class="mb-24">Sign up for the SPARC Newsletter</h3>
+              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC Portal.</p>
               <newsletter-form />
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
@@ -142,7 +145,8 @@ import MarkedMixin from '@/mixins/marked'
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection } from './model';
+import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection, StoryCollection } from './model';
+import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 
 const client = createClient()
 const MAX_PAST_EVENTS = 8
@@ -163,7 +167,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
     TabNav,
     SearchControlsContentful,
     NewsletterForm,
-    FeaturedEvent
+    FeaturedEvent,
+    CommunitySpotlightListings
   },
 
   asyncData() {
@@ -173,11 +178,12 @@ export default Vue.extend<Data, Methods, Computed, never>({
   watch: {
     '$route.query': {
       handler: async function(this: NewsAndEventsComponent) {
-        const { upcomingEvents, pastEvents, news, page } = await fetchData(client, this.$route.query.search as string, 2)
+        const { upcomingEvents, pastEvents, news, page, stories } = await fetchData(client, this.$route.query.search as string, 2)
         this.upcomingEvents = upcomingEvents;
         this.pastEvents = pastEvents;
         this.news = news;
         this.page = page;
+        this.stories = stories;
       },
       immediate: true
     }
@@ -208,7 +214,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
       upcomingEvents: {} as EventsCollection,
       pastEvents: {} as EventsCollection,
       news: {} as NewsCollection,
-      page: {} as PageEntry
+      page: {} as PageEntry,
+      stories: {} as StoryCollection
     }
   },
 
@@ -219,6 +226,13 @@ export default Vue.extend<Data, Methods, Computed, never>({
      */
     featuredEvent: function() {
       return this.page.fields.featuredEvent || {}
+    },
+    /**
+     * Filter to only show two stories
+     * @returns {Array}
+     */
+    shownStories: function() {
+      return this.stories.items.slice(0,2)
     }
   },
 
@@ -275,7 +289,7 @@ h3 {
   margin: 0 1rem 1rem;
   width: 100%;
   @media (min-width: 48em) {
-    width: calc(50% - 4.125em); // Account for the margins and the border
+    width: calc(50% - 4.25em); // Account for the margins and the border
   }
 }
 .show-all-upcoming-events {
