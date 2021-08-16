@@ -27,6 +27,7 @@
 <script>
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
+
 import MarkedMixin from '@/mixins/marked'
 
 import { baseName, extractSection } from '@/utils/common'
@@ -384,7 +385,7 @@ export default {
               info.fetchAttempts < 3
             ) {
               info.fetchAttempts += 1
-              this.getSegmentationThumbnail(items, info)
+              this.getScaffoldThumbnail(items, info)
             } else {
               let item = items.find(x => x.id === info.id)
               this.$set(item, 'thumbnail', this.defaultScaffoldImg)

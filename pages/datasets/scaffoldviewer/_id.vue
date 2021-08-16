@@ -64,6 +64,8 @@
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
+import FirstCol from '@/mixins/first-col/index'
+
 export default {
   name: 'ScaffoldViewerPage',
 
@@ -73,6 +75,9 @@ export default {
       ? () => import('@abi-software/scaffoldvuer').then(m => m.ScaffoldVuer)
       : null
   },
+
+  mixins: [FirstCol],
+
   async fetch() {
     //Get id for retrieving state on the server,
     //Id is prioritized before viewURL and region.
@@ -150,14 +155,6 @@ export default {
         scaffold.substring(scaffold.indexOf('/') + 1, scaffold.length) || ''
       const version = postId.substring(0, postId.indexOf('/')) || ''
       return version
-    },
-
-    /**
-     * Compute the first column's attributes
-     * @returns {Object}
-     */
-    firstCol() {
-      return this.type === 'event' ? { span: 12 } : { span: 12, push: 12 }
     },
 
     /**

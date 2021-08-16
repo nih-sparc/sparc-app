@@ -14,7 +14,7 @@
           </bf-button>
         </a>
       </p>
-      <iframe :src="data.share_link" />
+      <iframe ref="biolucida" :src="data.share_link" />
     </template>
     <p v-else class="error">
       Sorry, an error has occurred
@@ -33,6 +33,10 @@ export default {
   },
 
   props: {
+    queryView: {
+      type: Boolean,
+      default: false
+    },
     data: {
       type: Object,
       default: () => {
@@ -42,6 +46,44 @@ export default {
           status: ''
         }
       }
+    }
+  },
+  watch: {
+    queryView() {
+      console.log('query view.')
+      console.log(this.$refs.biolucida)
+      this.$refs.biolucida.contentWindow.postMessage(
+        'getImgPos',
+        'https://localhost:3000'
+      )
+      this.$refs.biolucida.contentWindow.postMessage(
+        'getImgPos',
+        'https://sparc.science/'
+      )
+      this.$refs.biolucida.contentWindow.postMessage(
+        'getImgPos',
+        this.$refs.biolucida
+      )
+      // postMessage('gggggg', this.$refs.biolucida)
+      // postMessage('getImgPos', this.$refs.biolucida.contentWindow)
+      console.log('three requests, any response???')
+      this.$refs.biolucida.contentWindow.postMessage(
+        '84-54-1-3',
+        'https://sparc.science/'
+      )
+    }
+  },
+  mounted() {
+    window.addEventListener('message', this.receiveMessage)
+  },
+  beforeDestroy() {
+    window.removeEventListener('message', this.receiveMessage)
+  },
+  methods: {
+    receiveMessage(event) {
+      console.log('received message!!')
+      console.log(event.origin)
+      console.log(event.data)
     }
   }
 }

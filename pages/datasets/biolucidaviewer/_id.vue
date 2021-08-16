@@ -7,9 +7,18 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
+        <el-row :gutter="16">
+          <el-col :offset="22" :span="4" class="details">
+            <button class="ml-8 btn-copy-permalink-solid" @click="copyLink">
+              <svg-icon name="icon-permalink" height="28" width="28" />
+              <span class="visuallyhidden">Copy permalink</span>
+            </button>
+          </el-col>
+        </el-row>
         <biolucida-viewer
           v-show="activeTab === 'viewer'"
           :data="biolucidaData"
+          :query-view="queryView"
         />
       </detail-tabs>
       <div class="subpage">
@@ -69,7 +78,7 @@
 
 <script>
 import biolucida from '@/services/biolucida'
-import scicrunch from '~/services/scicrunch'
+import scicrunch from '@/services/scicrunch'
 
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -121,7 +130,8 @@ export default {
       ],
       activeTab: 'viewer',
       file: {},
-      data_collection: ''
+      data_collection: '',
+      queryView: false
     }
   },
 
@@ -150,6 +160,12 @@ export default {
   mounted: function() {
     const html = this.parseMarkdown(this.readme)
     this.data_collection = extractSection('Data collection:', html)
+  },
+  methods: {
+    copyLink: function() {
+      console.log('make a copy link please.')
+      this.queryView = !this.queryView
+    }
   }
 }
 </script>

@@ -12,6 +12,36 @@ export const baseName = str => {
     .pop()
 }
 
+// Convert a string to XML Node Structure.
+// Returns null on failure.
+function textToHTML(text) {
+  try {
+    let xml = null
+
+    if (window.DOMParser) {
+      const parser = new DOMParser()
+      xml = parser.parseFromString(text, 'text/html')
+
+      const found = xml.getElementsByTagName('parsererror')
+
+      if (!found || !found.length || !found[0].childNodes.length) {
+        return xml
+      }
+
+      return null
+    } else {
+      xml = new ActiveXObject('Microsoft.XMLDOM')
+
+      xml.async = false
+      xml.loadXML(text)
+
+      return xml
+    }
+  } catch (e) {
+    // suppress
+  }
+}
+
 /**
  * Extract a section from a snippet of html.
  * @param {String} section  The name of the section to extract.
@@ -19,7 +49,7 @@ export const baseName = str => {
  * @returns The extracted html section as a string, an empty string if no section is extracted.
  */
 export const extractSection = (section, html_in) => {
-  const doc = new DOMParser().parseFromString(html_in, 'text/html')
+  const doc = textToHTML(html_in)
   const links = doc.querySelectorAll('p')
   let html_section = ''
   links.forEach(paragraph => {

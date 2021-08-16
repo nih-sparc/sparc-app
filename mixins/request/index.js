@@ -1,4 +1,4 @@
-import EventBus from '@/static/js/event-bus'
+// import EventBus from '@/static/js/event-bus'
 import Logger from '@/mixins/logger'
 import { prop, propOr } from 'ramda'
 
@@ -97,7 +97,7 @@ export default {
         // return this.$router.replace({name: 'datasets-list'})
       }
       // emit ajaxError
-      EventBus.$emit('ajaxError', err)
+      // EventBus.$emit('ajaxError', err)
     }
   }
 }
