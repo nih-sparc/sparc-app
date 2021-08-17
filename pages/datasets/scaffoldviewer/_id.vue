@@ -1,32 +1,6 @@
 <template>
   <div class="scaffold-viewer-page">
     <div class="page-wrap container">
-      <div class="subpage">
-        <div class="page-heading">
-          <h1>{{ fileName }}</h1>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
-            3D Scaffold
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Dataset id</strong>
-          <div class="file-detail__column">
-            {{ datasetId }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Version</strong>
-          <div class="file-detail__column">
-            {{ versionNumber }}
-          </div>
-        </div>
-      </div>
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -55,6 +29,32 @@
           </div>
         </client-only>
       </detail-tabs>
+      <div class="subpage">
+        <div class="page-heading">
+          <h1>{{ fileName }}</h1>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">File Details</strong>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Type</strong>
+          <div class="file-detail__column">
+            3D Scaffold
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Dataset id</strong>
+          <div class="file-detail__column">
+            {{ datasetId }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Version</strong>
+          <div class="file-detail__column">
+            {{ versionNumber }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

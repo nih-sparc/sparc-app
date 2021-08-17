@@ -1,6 +1,22 @@
 <template>
   <div class="plot-viewer-page">
     <div class="page-wrap container">
+      <detail-tabs
+        :tabs="tabs"
+        :active-tab="activeTab"
+        class="container"
+        @set-active-tab="activeTab = $event"
+      >
+        <client-only placeholder="Loading plot ...">
+          <div class="plotvuer-container">
+            <plot-vuer
+              :data-source="{ url: source_url }"
+              :metadata="metadata"
+              :supplemental-data="supplemental_data"
+            />
+          </div>
+        </client-only>
+      </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
           <h1>{{ fileName }}</h1>
@@ -27,22 +43,6 @@
           </div>
         </div>
       </div>
-      <detail-tabs
-        :tabs="tabs"
-        :active-tab="activeTab"
-        class="container"
-        @set-active-tab="activeTab = $event"
-      >
-        <client-only placeholder="Loading plot ...">
-          <div class="plotvuer-container">
-            <plot-vuer
-              :data-source="{ url: source_url }"
-              :metadata="metadata"
-              :supplemental-data="supplemental_data"
-            />
-          </div>
-        </client-only>
-      </detail-tabs>
     </div>
   </div>
 </template>
