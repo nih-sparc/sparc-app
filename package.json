@@ -17,6 +17,7 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
+    "@abi-software/flatmapvuer": "0.1.36-beta-features-7",
     "@abi-software/gallery": "^0.1.5",
     "@abi-software/mapintegratedvuer": "0.1.31-fix-1",
     "@abi-software/plotvuer": "^0.3.0",
@@ -26,6 +27,7 @@
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
     "@nuxtjs/robots": "^2.4.2",
+    "@tehsurfer/flatmapvuer": "^0.1.33-alpha-1",
     "algoliasearch": "^4.9.3",
     "babel-eslint": "^10.0.3",
     "contentful": "^7.10.0",
