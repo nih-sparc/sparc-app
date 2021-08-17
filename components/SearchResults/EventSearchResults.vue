@@ -1,30 +1,22 @@
 <template>
-  <el-table :data="tableData" empty-text="No Results">
-    <el-table-column
-      :fixed="true"
-      prop="fields.title"
-      label="Title"
-      width="300"
-    >
-      <template slot-scope="scope">
-        <nuxt-link
-          :to="{
-            name: 'events-eventId',
-            params: { eventId: scope.row.sys.id }
-          }"
-        >
-          {{ scope.row.fields.title }}
-        </nuxt-link>
-      </template>
-    </el-table-column>
-    <el-table-column prop="fields.eventType" label="Event Type" />
-    <el-table-column prop="fields.location" label="Location" />
-  </el-table>
+  <div class="events">
+    <event-card
+      v-for="event in tableData"
+      :key="event.sys.id"
+      :event="event"
+    />
+  </div>
 </template>
 
 <script>
+import EventCard from '../EventCard/EventCard.vue'
+
 export default {
   name: 'EventSearchResults',
+
+  components: {
+    EventCard,
+  },
 
   props: {
     tableData: {
@@ -36,7 +28,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-table {
-  width: 100%;
+.events {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -1em;
+}
+.upcoming-event {
+  margin: 0 1em 2em;
+  @media (min-width: 48em) {
+    width: calc(50% - 4.125em); // Account for the margins and the border
+  }
+  @media (min-width: 64em) {
+    width: calc(25% - 4.125em); // Account for the margins and the border
+  }
 }
 </style>

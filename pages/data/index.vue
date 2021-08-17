@@ -144,15 +144,18 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const OrganSearchResults = () =>
-  import('@/components/SearchResults/OrganSearchResults.vue')
+const NewsSearchResults = () =>
+  import('@/components/SearchResults/NewsSearchResults.vue')
+const ResourcesSearchResults = () =>
+  import('@/components/Resources/ResourcesSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
+  sparcPartners: ResourcesSearchResults,
   event: EventSearchResults,
-  organ: OrganSearchResults,
-  simulation: DatasetSearchResults
+  simulation: DatasetSearchResults,
+  news: NewsSearchResults,
 }
 
 const searchTypes = [
@@ -163,9 +166,24 @@ const searchTypes = [
     dataSource: 'algolia'
   },
   {
-    label: 'Organs',
-    type: process.env.ctf_organ_id,
-    filterId: process.env.ctf_filters_organ_id,
+    label: 'Simulations',
+    type: 'simulation',
+    filterId: process.env.ctf_filters_simulation_id,
+    dataSource: 'algolia'
+  },
+  {
+    label: 'Resources',
+    type: process.env.ctf_resource_id,
+    dataSource: 'contentful'
+  },
+  {
+    label: 'Events',
+    type: process.env.ctf_event_id,
+    dataSource: 'contentful'
+  },
+  {
+    label: 'News',
+    type: process.env.ctf_news_id,
     dataSource: 'contentful'
   },
   {
@@ -174,12 +192,6 @@ const searchTypes = [
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
   },
-  {
-    label: 'Simulations',
-    type: 'simulation',
-    filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'algolia'
-  }
 ]
 
 const searchData = {
@@ -791,6 +803,9 @@ export default {
   margin: 0 0 0 0;
   padding: 0 0;
   outline: 0.1rem solid $median;
+  @media (max-width: 40rem) {
+    display: block
+  }
   li {
     width: 100%;
     text-align: center;
@@ -809,12 +824,14 @@ export default {
   padding: 0;
   text-decoration: none;
   text-transform: uppercase;
-  border-right: 0.1rem solid $median;
   line-height: 3.5rem;
-  @media (min-width: 48em) {
+  @media (min-width: 54rem) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
+  }
+  @media (min-width: 40rem) {
+    border-right: 0.1rem solid $median;
   }
   &:hover,
   &:focus,
