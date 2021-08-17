@@ -72,6 +72,7 @@ export default {
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
+    NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000')
   },
