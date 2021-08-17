@@ -6,12 +6,12 @@
     @close="closeHandler"
     @opened="openedHandler"
   >
-    <bf-dialog-header slot="title" title="Select a viewer" />
+    <bf-dialog-header slot="title" title="Select a service" />
     <dialog-body>
       <el-select
         v-model="selectedViewer"
         value-key="title"
-        placeholder="Select a viewer..."
+        placeholder="Select a service..."
       >
         <el-option
           v-for="viewer in viewersForFile"
@@ -25,7 +25,7 @@
         :processing="isFetching"
         @click="openFile"
       >
-        View in oSPARC
+        Open in oSPARC
       </bf-button>
     </dialog-body>
   </el-dialog>
@@ -37,6 +37,7 @@ import BfDialogHeader from '@/components/bf-dialog-header/BfDialogHeader.vue'
 import DialogBody from '@/components/dialog-body/DialogBody.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import { extractExtension } from '~/pages/data/utils'
+import { contentTypes } from '@/components/FilesTable/FilesTable.vue'
 
 export default {
   name: 'OsparcFileViewersDialog',
@@ -86,8 +87,16 @@ export default {
 
       this.isFetching = true
 
+      const requestUrl = new URL(process.env.portal_api + '/download')
+      requestUrl.searchParams.append('key', filePath)
+      const fileType = this.selectedFile.fileType.toLowerCase()
+      const contentType = contentTypes[fileType]
+      if (contentType) {
+        requestUrl.searchParams.append('contentType', contentType)
+      }
+
       this.$axios
-        .$get(`${process.env.portal_api}/download?key=${filePath}`)
+        .$get(requestUrl)
         .then(fileUrl => {
           const redirectionUrl = new URL(this.selectedViewer['view_url'])
 
@@ -97,7 +106,7 @@ export default {
           window.open(redirectionUrl, '_blank')
 
           this.selectedViewer = ''
-          this.onClose()
+          this.closeHandler()
         })
         .finally(() => {
           this.isFetching = false
