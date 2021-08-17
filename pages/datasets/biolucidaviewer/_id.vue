@@ -102,14 +102,15 @@ export default {
   mixins: [MarkedMixin],
 
   async asyncData({ route }) {
-    const image_info = await biolucida.getImageInfo(route.params.id)
+    const image_identifier = route.params.id
     const identifier = route.query.item_id.substring(2)
 
-    const dataset_response = await scicrunch.getDatasetInfoFromObjectIdentifier(
-      identifier
-    )
+    const [image_info, dataset_response, xmp_metadata] = await Promise.all([
+      biolucida.getImageInfo(image_identifier),
+      scicrunch.getDatasetInfoFromObjectIdentifier(identifier),
+      biolucida.getXMPInfo(image_identifier)
+    ])
 
-    const xmp_metadata = await biolucida.getXMPInfo(route.params.id)
     const dataset_info = dataset_response.data.result[0]
 
     return {
@@ -163,7 +164,6 @@ export default {
   },
   methods: {
     copyLink: function() {
-      console.log('make a copy link please.')
       this.queryView = !this.queryView
     }
   }
