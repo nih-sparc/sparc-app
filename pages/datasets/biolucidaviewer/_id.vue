@@ -111,7 +111,10 @@ export default {
       biolucida.getXMPInfo(image_identifier)
     ])
 
-    const dataset_info = dataset_response.data.result[0]
+    let dataset_info = dataset_response.data.result[0]
+    if (dataset_info === undefined) {
+      dataset_info = { readme: '', title: '' }
+    }
 
     return {
       image_info,
