@@ -1,6 +1,24 @@
 <template>
   <div class="video-viewer-page">
     <div class="page-wrap container">
+      <detail-tabs
+        :tabs="tabs"
+        :active-tab="activeTab"
+        class="container"
+        @set-active-tab="activeTab = $event"
+      >
+        <client-only placeholder="Loading video ...">
+          <div class="video-container">
+            <video ref="vid" class="video" controls crossorigin playsinline>
+              <source :src="video_src" :type="mimetype" size="1080" />
+              <p>
+                Your browser doesn't support HTML5 video. Here is a a
+                <a :href="video_src">link to the video</a> instead.
+              </p>
+            </video>
+          </div>
+        </client-only>
+      </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
           <h1>{{ fileName }}</h1>
@@ -27,20 +45,6 @@
           </div>
         </div>
       </div>
-      <detail-tabs
-        :tabs="tabs"
-        :active-tab="activeTab"
-        class="container"
-        @set-active-tab="activeTab = $event"
-      >
-        <client-only placeholder="Loading video ...">
-          <div class="video-container">
-            <video ref="vid" class="video" controls crossorigin playsinline>
-              <source :src="video_src" type="video/mp4" size="1080" />
-            </video>
-          </div>
-        </client-only>
-      </detail-tabs>
     </div>
   </div>
 </template>
@@ -65,7 +69,8 @@ export default {
         return response
       })
     return {
-      video_src: signedUrl
+      video_src: signedUrl,
+      mimetype: route.query.mimetype
     }
   },
 

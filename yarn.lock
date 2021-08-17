@@ -70,10 +70,10 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/gallery@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.1.5.tgz#f2ebeb513a46a77e7562015e9e18f057e89aa0a3"
-  integrity sha512-Q+EAi6lyby+bjN9A14VouvfMxSXPT3SymqWqw+DCjKxkVMLFdKtFzEBJhWLAXo03RCiaz/1/dlM47w/+Bc41Ug==
+"@abi-software/gallery@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.1.6.tgz#b7a67eb269e3d245a0cccd19f81a8df69a4f47bb"
+  integrity sha512-fWI0BGI5XFPveEaIi7WgOyNOXivp4tGx9XY102Y29lXeZ7oxy4rT1obgCs4RDla/R2I6wMyP34ErzvEVjqQH0A==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.11"
     "@babel/code-frame" "^7.12.11"
