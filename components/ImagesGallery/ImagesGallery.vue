@@ -139,7 +139,7 @@ export default {
   watch: {
     markdown: function(text) {
       const html = this.parseMarkdown(text)
-      this.description = extractSection('Data collection:', html)
+      this.description = extractSection(/data collect[^:]+:/i, html)
     },
     datasetScicrunch: {
       deep: true,
@@ -229,22 +229,24 @@ export default {
         if ('mbf-segmentation' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
-              const filePath = segmentation.dataset.path
               const id = segmentation.id
+              const file_path = segmentation.dataset.path
+              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${file_path}`
+
               this.getSegmentationThumbnail(items, {
                 id,
                 fetchAttempts: 0,
-                datasetId,
-                datasetVersion,
-                segmentationFilePath: filePath
+                datasetId: datasetId,
+                datasetVersion: datasetVersion,
+                segmentationFilePath: file_path
               })
-              const linkUrl = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
+
               return {
                 id,
-                title: baseName(filePath),
+                title: baseName(file_path),
                 type: 'Segmentation',
                 thumbnail: null,
-                link: linkUrl
+                link
               }
             })
           )
@@ -326,7 +328,7 @@ export default {
               return {
                 id: dataset_image.image_id,
                 title: null,
-                type: 'XD Image',
+                type: 'Image',
                 thumbnail: null,
                 link: linkUrl
               }
@@ -354,16 +356,6 @@ export default {
     getS3FilePath(dataset_id, dataset_version, file_path) {
       const encoded_file_path = encodeURIComponent(file_path)
       return `${dataset_id}/${dataset_version}/files/${encoded_file_path}`
-    },
-    getBiolucidaImageType(name) {
-      let imageType = ''
-      if (name.toUpperCase().endsWith('JPX')) {
-        imageType += '3D'
-      } else {
-        imageType += '2D'
-      }
-
-      return imageType + ' Image'
     },
     getThumbnailForScaffold(index, scaffold_info) {
       if (
@@ -418,6 +410,30 @@ export default {
         this.currentIndex -= 1
       }
     },
+    getFilePath(items, data) {
+      const what = discover.getDiscoverPath(data.uri).then(
+        response => {
+          return response.data
+        },
+        reason => {
+          if (
+            reason.message.includes('timeout') &&
+            reason.message.includes('exceeded') &&
+            data.fetchAttempts < 3
+          ) {
+            data.fetchAttempts += 1
+            return this.getFilePath(items, data)
+          } else {
+            let item = items.find(x => x.id === data.id)
+            item.title = 'No response'
+            this.$set(item, 'thumbnail', this.defaultImg)
+          }
+          return Promise.reject('Maximum attempts reached.')
+        }
+      )
+
+      return what
+    },
     getSegmentationThumbnail(items, segmentation_info) {
       biolucida
         .getNeurolucidaThumbnail(
@@ -430,7 +446,7 @@ export default {
             let item = items.find(x => x.id === segmentation_info.id)
             this.scaleThumbnailImage(item, {
               mimetype: 'image/png',
-              data: response.data
+              data: response
             })
           },
           reason => {
@@ -449,38 +465,39 @@ export default {
         )
     },
     scaleThumbnailImage(item, image_info) {
-      console.log(typeof document)
-      let img = document.createElement('img')
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      const this_ = this
-      img.onload = function() {
-        ctx.drawImage(img, 0, 0)
+      if (typeof window !== 'undefined') {
+        let img = document.createElement('img')
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        const this_ = this
+        img.onload = function() {
+          ctx.drawImage(img, 0, 0)
 
-        const MAX_WIDTH = 180
-        const MAX_HEIGHT = 135
-        let width = img.width
-        let height = img.height
+          const MAX_WIDTH = 180
+          const MAX_HEIGHT = 135
+          let width = img.width
+          let height = img.height
 
-        if (width > height) {
-          height *= MAX_WIDTH / width
-          width = MAX_WIDTH
-        } else {
-          width *= MAX_HEIGHT / height
-          height = MAX_HEIGHT
+          if (width > height) {
+            height *= MAX_WIDTH / width
+            width = MAX_WIDTH
+          } else {
+            width *= MAX_HEIGHT / height
+            height = MAX_HEIGHT
+          }
+          canvas.width = width
+          canvas.height = height
+          let new_ctx = canvas.getContext('2d')
+          new_ctx.drawImage(img, 0, 0, width, height)
+
+          const dataurl = canvas.toDataURL(image_info.mimetype)
+          this_.$set(item, 'thumbnail', dataurl)
         }
-        canvas.width = width
-        canvas.height = height
-        let new_ctx = canvas.getContext('2d')
-        new_ctx.drawImage(img, 0, 0, width, height)
-
-        const dataurl = canvas.toDataURL(image_info.mimetype)
-        this_.$set(item, 'thumbnail', dataurl)
-      }
-      if (image_info.data.startsWith('data:')) {
-        img.src = image_info.data
-      } else {
-        img.src = `data:${image_info.mimetype};base64,${image_info.data}`
+        if (image_info.data.startsWith('data:')) {
+          img.src = image_info.data
+        } else {
+          img.src = `data:${image_info.mimetype};base64,${image_info.data}`
+        }
       }
     },
     getImageFromS3(items, image_info) {
@@ -542,7 +559,6 @@ export default {
               name.length
             )
             this.$set(item, 'title', name.substring(0, name.lastIndexOf('.')))
-            this.$set(item, 'type', this.getBiolucidaImageType(extension))
           }
         },
         reason => {

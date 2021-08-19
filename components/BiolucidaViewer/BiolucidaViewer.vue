@@ -50,27 +50,7 @@ export default {
   },
   watch: {
     queryView() {
-      // console.log('query view.')
-      // console.log(this.$refs.biolucida)
-      // this.$refs.biolucida.contentWindow.postMessage(
-      // 'getImgPos',
-      // 'https://localhost:3000'
-      // )
-      this.$refs.biolucida.contentWindow.postMessage(
-        'getImgPos',
-        'https://sparc.science/'
-      )
-      // this.$refs.biolucida.contentWindow.postMessage(
-      // 'getImgPos',
-      // this.$refs.biolucida
-      // )
-      // postMessage('gggggg', this.$refs.biolucida)
-      // postMessage('getImgPos', this.$refs.biolucida.contentWindow)
-      // console.log('three requests, any response???')
-      // this.$refs.biolucida.contentWindow.postMessage(
-      // '84-54-1-3',
-      // 'https://sparc.science/'
-      // )
+      this.$refs.biolucida.contentWindow.postMessage('getImgPos')
     }
   },
   mounted() {
@@ -81,9 +61,9 @@ export default {
   },
   methods: {
     receiveMessage(event) {
-      // console.log('received message!!')
-      // console.log(event.origin)
-      // console.log(event.data)
+      console.log('received message.')
+      console.log(event.origin)
+      console.log(event.data)
     }
   }
 }
