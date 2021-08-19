@@ -16,7 +16,6 @@ const browse = async (id, version, path = undefined) => {
       }
     }
   }
-
   return apiClient.get(`/${id}/versions/${version}/files/browse`, config)
 }
 
@@ -44,7 +43,7 @@ const fetchEmbeddedThumbnail = async (id, version, path) => {
 const getSegmentationInfo = async (id, version, path) => {
   const config = {
     params: {
-      path: `${id}/${version}/files/${path}`
+      dataset_path: `${id}/${version}/files/${path}`
     }
   }
   return apiClient.get('/segmentation_info', config)
@@ -59,10 +58,21 @@ const downloadLink = async file_path => {
   return await apiClient.get('/download', config)
 }
 
+const getDiscoverPath = source_identifier => {
+  const config = {
+    params: {
+      uri: source_identifier
+    }
+  }
+  const response = apiClient.get('/s3-resource/discover_path', config)
+  return response
+}
+
 export default {
   browse,
   downloadLink,
   fetch,
   fetchEmbeddedThumbnail,
+  getDiscoverPath,
   getSegmentationInfo
 }

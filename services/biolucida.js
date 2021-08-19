@@ -25,7 +25,7 @@ const getNeurolucidaThumbnail = async (id, version, path) => {
     params: {
       datasetId: id,
       version,
-      path
+      path: `files/${path}`
     }
   }
   const response = await apiClient.get('thumbnail/neurolucida', config)

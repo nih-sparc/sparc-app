@@ -98,30 +98,40 @@ export default {
   mixins: [MarkedMixin],
 
   async asyncData({ route }) {
-    let segmentation_info_response = await discover.getSegmentationInfo(
-      route.query.dataset_id,
-      route.query.dataset_version,
-      route.query.file_path
-    )
-    const segmentation_info = {
-      ...segmentation_info_response.data,
-      name: baseName(route.query.file_path)
-    }
-
     const identifier = route.query.dataset_id
-    const dataset_response = await scicrunch.getDatasetInfoFromPennsieveIdentifier(
-      identifier
-    )
 
-    let dataset_info = dataset_response.data.result[0]
-    if (dataset_info === undefined) {
-      dataset_info = { readme: '', title: '' }
+    try {
+      const [segmentation_info_response, dataset_response] = await Promise.all([
+        discover.getSegmentationInfo(
+          route.query.dataset_id,
+          route.query.dataset_version,
+          route.query.file_path
+        ),
+        scicrunch.getDatasetInfoFromPennsieveIdentifier(identifier)
+      ])
+
+      const segmentation_info = {
+        ...segmentation_info_response.data,
+        name: baseName(route.query.file_path)
+      }
+
+      let dataset_info = dataset_response.data.result[0]
+      if (dataset_info === undefined) {
+        dataset_info = { readme: '', title: '' }
+      }
+
+      return {
+        segmentation_info,
+        readme: dataset_info.readme,
+        title: dataset_info.title
+      }
+    } catch (e) {
+      // Error caught return empty data.
     }
-
     return {
-      segmentation_info,
-      readme: dataset_info.readme,
-      title: dataset_info.title
+      segmentation_info: { subject: '', atlas: '' },
+      readme: '',
+      title: ''
     }
   },
 
@@ -147,6 +157,7 @@ export default {
       const datasetId = this.$route.query.dataset_id
       const version = this.$route.query.dataset_version
       const path = this.$route.query.file_path
+
       return {
         share_link: `${process.env.NL_LINK_PREFIX}/dataviewer?datasetId=${datasetId}&version=${version}&path=${path}`,
         status: ''
@@ -179,7 +190,7 @@ export default {
 
   mounted: function() {
     const html = this.parseMarkdown(this.readme)
-    this.data_collection = extractSection('Data collection:', html)
+    this.data_collection = extractSection(/data collect[^:]+:/i, html)
   }
 }
 </script>

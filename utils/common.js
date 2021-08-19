@@ -44,17 +44,18 @@ function textToHTML(text) {
 
 /**
  * Extract a section from a snippet of html.
- * @param {String} section  The name of the section to extract.
+ * @param {RegExp} section_regex  The regexp for the section to extract.
  * @param {*} html_in The html to extract the section from.
  * @returns The extracted html section as a string, an empty string if no section is extracted.
  */
-export const extractSection = (section, html_in) => {
+export const extractSection = (section_regex, html_in) => {
   const doc = textToHTML(html_in)
   const links = doc.querySelectorAll('p')
   let html_section = ''
   links.forEach(paragraph => {
-    if (paragraph.innerText.includes(section)) {
-      html_section = paragraph.innerText.replace(section, '')
+    const match = paragraph.innerText.match(section_regex)
+    if (match !== null) {
+      html_section = paragraph.innerText.replace(match[0], '')
     }
   })
   return html_section

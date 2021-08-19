@@ -163,7 +163,7 @@ export default {
 
   mounted: function() {
     const html = this.parseMarkdown(this.readme)
-    this.data_collection = extractSection('Data collection:', html)
+    this.data_collection = extractSection(/data collect[^:]+:/i, html)
   },
   methods: {
     copyLink: function() {

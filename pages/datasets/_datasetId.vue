@@ -341,7 +341,7 @@ const getBiolucidaData = async datasetId => {
 }
 
 /**
- * Get thumbnail data, if available.
+ * Get data for objects that have a data specific viewer.
  * @param {Number} datasetId
  * @param {String} datasetType
  */
@@ -349,17 +349,17 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
   let biolucidaImageData = {}
   let scicrunchData = {}
   try {
-    biolucidaImageData = await getBiolucidaData(datasetId)
-    if (Object.getOwnPropertyNames(biolucidaImageData).length > 0) {
-      if (biolucidaImageData.status === 'success') {
-        biolucidaImageData['discover_dataset_version'] = datasetVersion
-      } else {
-        biolucidaImageData = {}
-      }
+    const [biolucida_response, scicrunch_response] = await Promise.all([
+      getBiolucidaData(datasetId),
+      scicrunch.getDatasetInfoFromDOI(datasetDoi)
+    ])
+
+    if (biolucida_response.status === 'success') {
+      biolucidaImageData = biolucida_response
+      biolucidaImageData['discover_dataset_version'] = datasetVersion
     }
-    const scicrunchResponse = await scicrunch.getDatasetInfoFromDOI(datasetDoi)
-    if (scicrunchResponse.data.result.length > 0) {
-      scicrunchData = scicrunchResponse.data.result[0]
+    if (scicrunch_response.data.result.length > 0) {
+      scicrunchData = scicrunch_response.data.result[0]
       scicrunchData.discover_dataset = {
         id: Number(datasetId),
         version: datasetVersion
@@ -421,7 +421,8 @@ export default {
     )
 
     if (
-      Object.getOwnPropertyNames(biolucidaImageData).length > 0 ||
+      ('dataset_images' in biolucidaImageData &&
+        biolucidaImageData.dataset_images.length > 0) ||
       Object.getOwnPropertyNames(scicrunchData).length > 0
     ) {
       tabsData.push({ label: 'Gallery', type: 'images' })
