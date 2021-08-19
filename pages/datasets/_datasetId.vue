@@ -235,6 +235,7 @@ import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import Scaffolds from '@/static/js/scaffolds.js'
+import Uberons from '@/static/js/uberon-map.js'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -363,6 +364,22 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
       scicrunchData.discover_dataset = {
         id: Number(datasetId),
         version: datasetVersion
+      }
+
+      
+      // Check for flatmap neuron data
+      if (scicrunchData.organs){
+        let flatmapData = [{}]
+        for (let i in scicrunchData.organs) {
+          if (flatmapData.length <= i) {
+            flatmapData.push({})
+          }
+          flatmapData[i].taxo = Uberons.species['rat']
+          flatmapData[i].uberonid = scicrunchData.organs[i].curie
+          flatmapData[i].id = datasetId
+          flatmapData[i].version = datasetVersion
+        }
+        scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {

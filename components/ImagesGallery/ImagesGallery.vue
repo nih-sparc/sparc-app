@@ -98,6 +98,7 @@ export default {
       defaultScaffoldImg: require('~/assets/scaffold-light.png'),
       defaultPlotImg: require('~/assets/data-icon.png'),
       defaultVideoImg: require('~/assets/video-default.png'),
+      defaultFlatmapImg: require('~/assets/flatmap-thumbnail.png'),
       ro: null,
       maxWidth: 3,
       scicrunchItems: [],
@@ -205,6 +206,20 @@ export default {
                 title: videoFile.name,
                 type: 'Video',
                 thumbnail: this.defaultVideoImg,
+                link: linkUrl
+              }
+            })
+          )
+        }
+
+        if ('flatmaps' in scicrunchData) {
+          items.push(
+            ...Array.from(scicrunchData.flatmaps, f => {
+              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
+              return {
+                title: 'flatmap: ' + f.uberonid,
+                type: 'Flatmap',
+                thumbnail: this.defaultFlatmapImg,
                 link: linkUrl
               }
             })
