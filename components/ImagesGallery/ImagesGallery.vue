@@ -216,12 +216,18 @@ export default {
           items.push(
             ...Array.from(scicrunchData.flatmaps, f => {
               const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
-              return {
-                title: 'flatmap: ' + f.uberonid,
+              const item = {
+                id: f.uberonid,
+                title: f.uberonid,
                 type: 'Flatmap',
                 thumbnail: this.defaultFlatmapImg,
                 link: linkUrl
               }
+              this.scaleThumbnailImage(item, {
+                mimetype: 'image/png',
+                data: this.defaultFlatmapImg
+              })
+              return item
             })
           )
         }
@@ -392,11 +398,13 @@ export default {
               info.fetchAttempts < 3
             ) {
               info.fetchAttempts += 1
-              this.getScaffoldThumbnail(items, info)
+              return this.getScaffoldThumbnail(items, info)
             } else {
               let item = items.find(x => x.id === info.id)
               this.$set(item, 'thumbnail', this.defaultScaffoldImg)
             }
+
+            return Promise.reject('Maximum iterations reached.')
           }
         )
     },
@@ -493,7 +501,10 @@ export default {
           const dataurl = canvas.toDataURL(image_info.mimetype)
           this_.$set(item, 'thumbnail', dataurl)
         }
-        if (image_info.data.startsWith('data:')) {
+
+        if (image_info.data.startsWith('/_nuxt/assets')) {
+          img.src = image_info.data
+        } else if (image_info.data.startsWith('data:')) {
           img.src = image_info.data
         } else {
           img.src = `data:${image_info.mimetype};base64,${image_info.data}`
@@ -554,10 +565,6 @@ export default {
           let item = items.find(x => x.id === image_id)
           const name = response.name
           if (name) {
-            const extension = name.substring(
-              name.lastIndexOf('.') + 1,
-              name.length
-            )
             this.$set(item, 'title', name.substring(0, name.lastIndexOf('.')))
           }
         },

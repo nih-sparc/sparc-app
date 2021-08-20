@@ -1,6 +1,26 @@
 <template>
   <div class="flatmap-viewer-page">
     <div class="page-wrap container">
+      <detail-tabs
+        :tabs="tabs"
+        :active-tab="activeTab"
+        class="container"
+        @set-active-tab="activeTab = $event"
+      >
+        <client-only placeholder="Loading flatmap ...">
+          <div class="flatmap-container">
+            <FlatmapVuer
+              ref="flatmap"
+              :entry="taxo"
+              :name="taxo"
+              style="height:100%;width:100%;"
+              :display-minimap="false"
+              :flatmap-a-p-i="flatmapAPI"
+              @ready="flatmapReady"
+            />
+          </div>
+        </client-only>
+      </detail-tabs>
       <div class="subpage">
         <div class="page-heading" />
         <div class="file-detail">
@@ -37,22 +57,6 @@
           </div>
         </div>
       </div>
-      <detail-tabs
-        :tabs="tabs"
-        :active-tab="activeTab"
-        class="container"
-        @set-active-tab="activeTab = $event"
-      >
-        <client-only placeholder="Loading flatmap ...">
-          <div class="flatmap-container">
-            <FlatmapVuer  :entry="taxo" :name="taxo"
-              style="height:100%;width:100%;"
-              ref="flatmap" @ready="flatmapReady" :displayMinimap=false
-              :flatmapAPI="flatmapAPI"
-            />
-          </div>
-        </client-only>
-      </detail-tabs>
     </div>
   </div>
 </template>
@@ -67,33 +71,17 @@ export default {
       ? () => import('@abi-software/flatmapvuer').then(m => m.FlatmapVuer)
       : null
   },
-  methods: {
-    flatmapReady: function(component) {
-      let id = this.checkForIlxtr(this.uberonid)
-      component.mapImp.zoomTo(id)
-      component.checkAndCreatePopups({
-        resource: [id],
-        eventType: 'click'
-      })
-    },
-    checkForIlxtr: function(id) {
-      if (id.includes('neuron-type-keast') && !id.includes('ilxtr')) {
-        return 'ilxtr:' + id
-      }
-      return id
-    }
-  },
   data: () => {
     return {
       tabs: [
         {
           label: 'Flatmap Viewer',
-          type: 'flatmap',
-        },
+          type: 'flatmap'
+        }
       ],
       activeTab: 'flatmap',
       file: {},
-      flatmapAPI: process.env.flatmap_api,
+      flatmapAPI: process.env.flatmap_api
     }
   },
   computed: {
@@ -124,6 +112,22 @@ export default {
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
+    }
+  },
+  methods: {
+    flatmapReady: function(component) {
+      let id = this.checkForIlxtr(this.uberonid)
+      component.mapImp.zoomTo(id)
+      component.checkAndCreatePopups({
+        resource: [id],
+        eventType: 'click'
+      })
+    },
+    checkForIlxtr: function(id) {
+      if (id.includes('neuron-type-keast') && !id.includes('ilxtr')) {
+        return 'ilxtr:' + id
+      }
+      return id
     }
   }
 }
@@ -173,11 +177,11 @@ h1 {
 }
 </style>
 <style lang="scss">
-  .flatmap-container {
-    margin-top: 1.5rem;
-    height: 90vh;
-    max-width: calc(100% - 48px);
-    padding-left: 24px;
-    @import '~@abi-software/flatmapvuer/dist/flatmapvuer'
-  }
+.flatmap-container {
+  margin-top: 1.5rem;
+  height: 90vh;
+  max-width: calc(100% - 48px);
+  padding-left: 24px;
+  @import '~@abi-software/flatmapvuer/dist/flatmapvuer';
+}
 </style>

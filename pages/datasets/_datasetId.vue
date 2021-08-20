@@ -366,9 +366,8 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
         version: datasetVersion
       }
 
-      
       // Check for flatmap neuron data
-      if (scicrunchData.organs){
+      if (scicrunchData.organs) {
         let flatmapData = [{}]
         for (let i in scicrunchData.organs) {
           if (flatmapData.length <= i) {
@@ -420,30 +419,22 @@ export default {
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
 
-    const organEntries = await getOrganEntries()
-
-    const datasetDetails = await getDatasetDetails(
-      datasetId,
-      route.params.version,
-      route.query.type,
-      $axios
-    )
-
-    const versions = await getDatasetVersions(datasetId, $axios)
+    const [organEntries, datasetDetails, versions] = await Promise.all([
+      getOrganEntries(),
+      getDatasetDetails(
+        datasetId,
+        route.params.version,
+        route.query.type,
+        $axios
+      ),
+      getDatasetVersions(datasetId, $axios)
+    ])
 
     const { biolucidaImageData, scicrunchData } = await getThumbnailData(
       datasetDetails.doi,
       datasetId,
       datasetDetails.version
     )
-
-    if (
-      ('dataset_images' in biolucidaImageData &&
-        biolucidaImageData.dataset_images.length > 0) ||
-      Object.getOwnPropertyNames(scicrunchData).length > 0
-    ) {
-      tabsData.push({ label: 'Gallery', type: 'images' })
-    }
 
     // Get oSPARC file viewers
     const osparcViewers = await $axios
@@ -452,6 +443,14 @@ export default {
       .catch(() => {
         return {}
       })
+
+    if (
+      ('dataset_images' in biolucidaImageData &&
+        biolucidaImageData.dataset_images.length > 0) ||
+      Object.getOwnPropertyNames(scicrunchData).length > 0
+    ) {
+      tabsData.push({ label: 'Gallery', type: 'images' })
+    }
 
     return {
       biolucidaImageData,
