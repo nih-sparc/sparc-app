@@ -220,7 +220,7 @@ export default {
                 id: f.uberonid,
                 title: f.uberonid,
                 type: 'Flatmap',
-                thumbnail: this.defaultFlatmapImg,
+                thumbnail: null,
                 link: linkUrl
               }
               this.scaleThumbnailImage(item, {
@@ -502,9 +502,10 @@ export default {
           this_.$set(item, 'thumbnail', dataurl)
         }
 
-        if (image_info.data.startsWith('/_nuxt/assets')) {
-          img.src = image_info.data
-        } else if (image_info.data.startsWith('data:')) {
+        if (
+          image_info.data.includes('flatmap-thumbnail') ||
+          image_info.data.startsWith('data:')
+        ) {
           img.src = image_info.data
         } else {
           img.src = `data:${image_info.mimetype};base64,${image_info.data}`
