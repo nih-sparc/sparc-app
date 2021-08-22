@@ -27,7 +27,7 @@
     minisearch "^2.2.1"
     n3 "^1.3.5"
 
-"@abi-software/flatmap-viewer@^2.1.0-beta.1", "@abi-software/flatmap-viewer@^2.1.0-beta.8":
+"@abi-software/flatmap-viewer@^2.1.0-beta.8":
   version "2.1.0-beta.13"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.1.0-beta.13.tgz#d73155d990195ab29b5d55bd0128831a12d738a0"
   integrity sha512-0v8iRFQCV7jil7eIFbQR7tUjF+OpdgBRAmqZ/WzJhimyDufbG7wOoTIHROclpoNR/ZT0efbLc+OMIj/y7xCdug==
@@ -81,22 +81,22 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.0.11.tgz#1473a0146437ce6a1479b88c85b1bb4718984a37"
-  integrity sha512-3bI9W7D1jtbMYLwc7M4YiMI5K1cSGAzH7bBnKcnDNV3hBFOAFlEYR7m5rw2Rk8H5YTAaVP5vW+8KhnAv9PUkzQ==
+"@abi-software/map-side-bar@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.0.13.tgz#d576e1ddd3e3a1c3f0e8d4aef51f50de342bce35"
+  integrity sha512-4BucR+i3xwxVSxfyvdT3mVV2w432XNg51xtijnQP8+yP0zT0mHWgmjTyujpzoBlrnKougsJVIFUNFBZfZDzIXQ==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.12"
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@0.1.31-fix-1":
-  version "0.1.31-fix-1"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.31-fix-1.tgz#965312ed4e4d69109abe7bdac2e7986fbe0f804c"
-  integrity sha512-T2P3Ik4gevclRiiipx4S0JudB/gyPQWjesu+D34GN0oTGRPfaQvL+OOX1HGXRlnE6UGBEM8D3aTE7EWEawUVtQ==
+"@abi-software/mapintegratedvuer@0.1.31-fix-2":
+  version "0.1.31-fix-2"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.1.31-fix-2.tgz#3fc44f6c0ebce548a0c1ae19a7aca2d93ff1e7d3"
+  integrity sha512-g0N+siSHFQOCjQxCWqtpl+enS/M22+FcDkkn3yUCzkzJIVU7ZZzYx6OWHTkcYp4/rj8NxTR55pQD/yM40dojHw==
   dependencies:
     "@abi-software/flatmapvuer" "^0.1.33"
-    "@abi-software/map-side-bar" "^1.0.11"
+    "@abi-software/map-side-bar" "^1.0.13"
     "@abi-software/maptooltip" "^0.1.13"
     "@abi-software/plotvuer" "^0.2.41"
     "@abi-software/scaffoldvuer" "^0.1.48"
@@ -3075,21 +3075,6 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@soda/get-current-script/-/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha512-T7VNNlYVM1SgQ+VsMYhnDkcGmWhQdL0bDyGm5TlQ3GBXnJscEClUUOKduWTmm2zCnvNLC1hc3JpuXjs/nFOc5w==
-
-"@tehsurfer/flatmapvuer@^0.1.33-alpha-1":
-  version "0.1.33-alpha-1"
-  resolved "https://registry.yarnpkg.com/@tehsurfer/flatmapvuer/-/flatmapvuer-0.1.33-alpha-1.tgz#2f3ba0da35e95ee5bfc5bc9bfb2ade92c807f556"
-  integrity sha512-ldFSiyJ7QEapd/j/Exg9soUGsTerKjvjrtPmlK8IkItNMkqQB/4NNyFmsgNteXT7kirhvQs65OOoY+sTOPNr6Q==
-  dependencies:
-    "@abi-software/flatmap-viewer" "^2.1.0-beta.1"
-    "@abi-software/svg-sprite" "^0.1.11"
-    core-js "^3.3.2"
-    css-element-queries "^1.2.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.21"
-    vue "^2.6.10"
 
 "@turf/area@^6.0.1":
   version "6.3.0"
