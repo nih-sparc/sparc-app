@@ -117,7 +117,7 @@ export default {
         },
         {
           displayName: 'Publication Date',
-          propPath: 'dates'
+          propPath: 'pennsieve'
         },
         {
           displayName: 'Includes',
@@ -174,9 +174,9 @@ export default {
             : undefined
         }
         case 'Publication Date': {
-          const dates = _.get(item, property.propPath)
-          const createdAt = dates.created.timestamp.split(",")[0]
-          const updatedAt = dates.updated[0].timestamp.split(",")[0]
+          const pennsieve = _.get(item, property.propPath)
+          const createdAt = pennsieve.createdAt.timestamp.split(",")[0]
+          const updatedAt = pennsieve.updatedAt.timestamp.split(",")[0]
           return this.formatDate(createdAt) +
                     ' (Last updated ' +
                     this.formatDate(updatedAt) +

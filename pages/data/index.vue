@@ -201,7 +201,7 @@ import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaIndex = algoliaClient.initIndex('k-core_dev')
+const algoliaIndex = algoliaClient.initIndex('k-core_dev_published_time_desc')
 
 export default {
   name: 'DataPage',
@@ -420,12 +420,12 @@ export default {
       const query = this.$route.query.q
       var filters = this.constructFilters(this.selectedFacets);
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      const itemTypeFilter =
-        searchType === 'simulation' ? "item.types.name:Simulation" : "NOT item.types.name:Simulation"
+      const organizationNameFilter =
+        searchType === 'simulation' ? "IT'IS Foundation" : "SPARC Consortium"
 
       filters = filters == undefined ? 
-      `${itemTypeFilter}` : 
-      filters + ` AND ${itemTypeFilter}`
+      `pennsieve.organization.name:"${organizationNameFilter}"` : 
+      filters + ` AND pennsieve.organization.name:"${organizationNameFilter}"`
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
