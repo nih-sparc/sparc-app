@@ -15,7 +15,8 @@
                 name: 'data',
                 query: {
                   type: type.type,
-                  q: $route.query.q
+                  q: $route.query.q,
+                  selectedFacetIds: $route.query.selectedFacetIds
                 }
               }"
             >
@@ -65,19 +66,7 @@
               :md="8"
               :lg="6"
             >
-              <div class="dataset-filters table-wrap">
-                <h2>Refine datasets by:</h2>
-                <h3>Status</h3>
-                <div class="dataset-filters__filter-group">
-                  <el-checkbox-group
-                    v-model="datasetFilters"
-                    @change="setDatasetFilter"
-                  >
-                    <el-checkbox label="Public" />
-                    <el-checkbox label="Embargoed" />
-                  </el-checkbox-group>
-                </div>
-              </div>
+               <dataset-facet-menu :facets="facets" :defaultCheckedFacetIds="defaultCheckedFacetIds" :visibleFacets="visibleFacets" @selected-facets-changed="updateSelectedFacets" />
             </el-col>
             <el-col
               :sm="searchColSpan('sm')"
@@ -87,9 +76,7 @@
               <div v-loading="isLoadingSearch" class="table-wrap">
                 <component
                   :is="searchResultsComponent"
-                  :key="tableMetadata.size"
                   :table-data="tableData"
-                  :table-metadata="tableMetadata"
                   :title-column-width="titleColumnWidth"
                   @sort-change="handleSortChange"
                 />
@@ -128,8 +115,10 @@ import {
   defaultTo,
   find,
   head,
+  isEmpty,
   mergeLeft,
   pathOr,
+  pluck,
   propEq,
   propOr
 } from 'ramda'
@@ -157,6 +146,8 @@ const searchResultsComponents = {
   simulation: DatasetSearchResults,
   news: NewsSearchResults,
 }
+
+const sparcAwardType = ['projects']
 
 const searchTypes = [
   {
@@ -198,38 +189,19 @@ const searchData = {
   limit: 10,
   skip: 0,
   items: [],
-  kCoreItems: new Map(),
   order: undefined,
   ascending: false
 }
 
-const datasetFilters = ['Public']
-
-const getEmbargoedFilter = (searchType, datasetFilters) => {
-  const filters = Array.isArray(datasetFilters)
-    ? datasetFilters
-    : [datasetFilters]
-  if (searchType !== 'dataset') {
-    return
-  }
-  if (filters.includes('Embargoed') && !filters.includes('Public')) {
-    return 'embargo:true'
-  }
-  if (!filters.includes('Embargoed') && filters.includes('Public')) {
-    return 'embargo:false'
-  }
-  return ''
-}
-
 import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
-import { handleSortChange, transformFilters } from './utils'
-import FacetMenu from '~/components/FacetMenu/FacetMenu.vue'
+import { handleSortChange, facetPropPathMapping } from './utils'
+import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
+import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER')
-const algoliaKCoreIndex = algoliaClient.initIndex('UCSD K-Core')
+const algoliaIndex = algoliaClient.initIndex('k-core_dev')
 
 export default {
   name: 'DataPage',
@@ -237,7 +209,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    FacetMenu,
+    SparcInfoFacetMenu,
+    DatasetFacetMenu,
     SearchForm,
     PaginationMenu
   },
@@ -248,6 +221,10 @@ export default {
     return {
       searchQuery: '',
       facets: [],
+      visibleFacets: {},
+      selectedFacets: [],
+      defaultCheckedFacetIds:[],
+      sparcAwardType:[...sparcAwardType],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
@@ -262,57 +239,6 @@ export default {
       ],
       titleColumnWidth: 300,
       windowWidth: '',
-      datasetFilters: [...datasetFilters],
-      facetData: [ // TODO: Remove once faceting logic is implemented. This is mock facet data for the time being
-        {
-          id: 1,
-          label: 'ANATOMICAL STRUCTURE',
-          children: [
-            {
-              id: 4,
-              label: 'Level two 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: 'One'
-                },
-                {
-                  id: 10,
-                  label: 'Two'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: 'Level one 2',
-          children: [
-            {
-              id: 5,
-              label: 'Level two 2-1'
-            },
-            {
-              id: 6,
-              label: 'Level two 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: 'Level one 3',
-          children: [
-            {
-              id: 7,
-              label: 'Level two 3-1'
-            },
-            {
-              id: 8,
-              label: 'Level two 3-2'
-            }
-          ]
-        }
-      ]
     }
   },
 
@@ -330,10 +256,6 @@ export default {
 
     tableData: function() {
       return propOr([], 'items', this.searchData)
-    },
-
-    tableMetadata: function() {
-      return propOr(new Map(), 'kCoreItems', this.searchData)
     },
 
     /**
@@ -390,9 +312,6 @@ export default {
        * properly render data and account for any missing data
        */
       this.searchData = clone(searchData)
-      if (val === 'dataset' && !this.$route.query.datasetFilters) {
-        this.datasetFilters = [...datasetFilters]
-      }
       this.fetchResults()
     },
 
@@ -404,6 +323,14 @@ export default {
         }
       },
       immediate: true
+    },
+
+    'selectedFacets': function() {
+      this.$router.replace({
+        query: { ...this.$route.query, selectedFacetIds: pluck('id', this.selectedFacets).toString() }
+      })
+      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
+      this.fetchResults()
     }
   },
 
@@ -431,18 +358,14 @@ export default {
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
-
-      if (this.$route.query.datasetFilters) {
-        this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
-          ? this.$route.query.datasetFilters
-          : [this.$route.query.datasetFilters]
+      if (this.$route.query.selectedFacetIds) {
+        this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(",")
       }
-
-      this.fetchResults()
-      this.fetchFacets()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
+    this.populateFacets()
+    this.fetchResults()
   },
 
   methods: {
@@ -494,23 +417,28 @@ export default {
      */
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
-
-      const searchType = pathOr('', ['query', 'type'], this.$route)
-      const embargoedFilter = getEmbargoedFilter(
-        searchType,
-        this.datasetFilters
-      )
       const query = this.$route.query.q
-      const organizationNameFilter =
-        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
+      var filters = this.constructFilters(this.selectedFacets);
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      const itemTypeFilter =
+        searchType === 'simulation' ? "item.types.name:Simulation" : "NOT item.types.name:Simulation"
 
-      const filters = `${
-        embargoedFilter === undefined || embargoedFilter.length === 0
-          ? ''
-          : embargoedFilter + ' AND '
-      }organizationName:"${organizationNameFilter}"`
-      
-      algoliaPennseiveIndex
+      filters = filters == undefined ? 
+      `${itemTypeFilter}` : 
+      filters + ` AND ${itemTypeFilter}`
+
+      /* First we need to find only those facets that are relevant to the search query.
+       * If we attempt to do this in the same search as below than the response facets
+       * will only contain those specified by the filter */
+      algoliaIndex
+        .search(query, {
+          facets: ['*'],
+        })
+        .then(response => {
+          this.visibleFacets = response.facets
+        })
+
+      algoliaIndex
         .search(query, {
           hitsPerPage: this.searchData.limit,
           page: this.curSearchPage - 1,
@@ -522,33 +450,44 @@ export default {
             total: response.nbHits
           }
           this.searchData = mergeLeft(searchData, this.searchData)
-        })
-        .finally(() => {
-          this.fetchItemsFromKCore()
+          this.isLoadingSearch = false
         })
     },
 
-    fetchItemsFromKCore: function() {
-      // Get all the Penseive items and find their corresponding KCore item by searching for their doi
-      const dois = this.searchData.items.map(
-        item => `item.docid:"DOI:${item.doi}"`
-      )
-      const doisFilter = dois.join(' OR ')
-      algoliaKCoreIndex
+    // Loads all the desired facets dynamically into the facet menu by looking at the categories
+    populateFacets: function() {
+      const facetPropPaths = Object.keys(facetPropPathMapping)
+      var facetData = []
+      var facetId = 0
+      algoliaIndex
         .search('', {
-          filters: doisFilter
+          sortFacetValuesBy: 'alpha',
+          facets: facetPropPaths,
         })
         .then(response => {
-          response.hits.map(hit =>
-            this.searchData.kCoreItems.set(
-              hit.item.docid.replace('DOI:', ''),
-              hit
-            )
-          )
+          facetPropPaths.map(facetPropPath => {
+            const children = [];
+            const responseFacets = response.facets;
+            const responseFacetChildren = responseFacets[facetPropPath] == undefined ? {} : responseFacets[facetPropPath];
+            if (!isEmpty(responseFacetChildren)) {
+              Object.keys(responseFacetChildren).map(facet => {
+                children.push({
+                  label: facet,
+                  id: facetId++,
+                  facetPropPath: facetPropPath
+                })
+              })
+            }
+            if (!isEmpty(children)) {
+              facetData.push({
+                label: facetPropPathMapping[facetPropPath],
+                id: facetId++,
+                children: children
+              })
+            }
+          })
         })
-        .finally(() => {
-          this.isLoadingSearch = false
-        })
+      this.facets = facetData
     },
 
     /**
@@ -598,6 +537,30 @@ export default {
         })
     },
 
+    /* Returns filter for searching algolia. All facets of the same category are joined with OR,
+     * and each of those results is then joined with an AND. 
+     * i.e. (color:blue OR color:red) AND (shape:circle OR shape:red) */
+    constructFilters: function(selectedFacets) {
+      var filters = '';
+      const facetPropPaths = Object.keys(facetPropPathMapping)
+      facetPropPaths.map(facetPropPath => {
+        const facetsToOr = selectedFacets.filter(facet => facet.facetPropPath == facetPropPath)
+        var filter = ''
+        facetsToOr.map(facet => {
+          filter += `"${facetPropPath}":"${facet.label}" OR `
+        })
+        if (filter == '') {
+          return;
+        }
+        filter = `(${filter.substring(0, filter.lastIndexOf(' OR '))})`
+        filters += `${filter} AND `
+      })
+      if (filters == '') {
+        return;
+      }
+      return filters.substring(0, filters.lastIndexOf(" AND "))
+    },
+
     /**
      * Get organ details from discover api
      * @param {Object}
@@ -645,11 +608,17 @@ export default {
       )
     },
 
-    fetchFacets: function() {
-      this.facets = this.facetData
+    updateSelectedFacets: function(newSelectedFacets) {
+      var selectedFacets = []
+      newSelectedFacets.map(selectedFacet => {
+        selectedFacets.push({
+          label: selectedFacet.label,
+          facetPropPath: selectedFacet.facetPropPath,
+          id: selectedFacet.id
+        })
+      })
+      this.selectedFacets = selectedFacets;
     },
-
-    updateSelectedFacets: function(newSelectedFacets) {},
 
     /**
      * Update offset
@@ -742,28 +711,6 @@ export default {
 
       return viewports[viewport] || 24
     },
-
-    /**
-     * Set datset filters
-     */
-    setDatasetFilter() {
-      this.$router.replace({
-        query: {
-          type: 'dataset',
-          q: this.$route.query.q,
-          datasetFilters: this.datasetFilters,
-          skip: 0,
-          limit: 10
-        }
-      })
-
-      /**
-       * Clear table data so the new table that is rendered can
-       * properly render data and account for any missing data
-       */
-      this.searchData = clone(searchData)
-      this.fetchResults()
-    }
   }
 }
 </script>
