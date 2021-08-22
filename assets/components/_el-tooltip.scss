@@ -3,7 +3,7 @@
 .el-tooltip__popper{
     background: rgb(243, 236, 246) !important;
     border: 1px solid rgb(131, 0, 191) !important;
-    color: rgb(48, 49, 51);
+    color: rgb(48, 49, 51) !important;
     font-size: 12px;
     font-weight: normal;
     line-height: 18px;
@@ -87,5 +87,9 @@
 
 .el-tooltip__popper[x-placement^=bottom-end] .popper__arrow{
     right: 6px!important;
+}
+
+.el-tooltip__popper.capitalize{
+    text-transform: capitalize;
 }
 

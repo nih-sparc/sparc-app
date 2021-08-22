@@ -1,29 +1,5 @@
 <template>
-  <div class="facets">
-    <h2 class="title">
-      Refine results
-    </h2>
-    <hr />
-    <div class="tags-section">
-      <span class="flex">
-        Filters applied:
-        <el-link @click="deselectAllFacets">Reset all</el-link>
-      </span>
-      <hr />
-      <el-card shadow="never" class="facet-card">
-        <span v-if="selectedFacets.length == 0" class="no-facets">No filters applied</span>
-        <el-tag
-          v-for="facet in selectedFacets"
-          :key="facet.id"
-          disable-transitions
-          closable
-          @close="deselectFacet(facet.id)"
-        >
-          {{ facet.label }}
-        </el-tag>
-      </el-card>
-    </div>
-    <hr />
+  <div class="facet-menu">
     <el-tree
       ref="tree"
       :data="facets"
@@ -58,6 +34,7 @@ export default {
       type: Object,
       default: () => {}
     },
+    // Facets to be checked by default when loading the facet menu
     defaultCheckedFacetIds: {
       type: Array,
       default: () => []
@@ -78,9 +55,9 @@ export default {
     'facets': function(facets){
       if (facets.length){
         this.$nextTick(() => {
-          /* This is a hack to work around el-tree component not firing onFacetChecked event when setting default checked keys.
-          * We need to force selectedFacets to update so that the tags get shown and that the selectedFacets changed event
-          * gets fired and notifies the parent that the selected facets have changed so that they can then fetch results */
+          /* Work around el-tree component not firing onFacetChecked event when setting default checked keys. When user refreshes page, 
+           * we need to force selectedFacets to update so that the tags get shown and that the selectedFacets changed event gets fired 
+           * and notifies the parent that the selected facets have changed so that they can then fetch results */
           this.onFacetChecked()
         })
       } 
@@ -92,14 +69,16 @@ export default {
       var customClasses = 'custom-tree-node'
       return this.isTopLevelNode(node) ? (
         <span class={customClasses}>
-          <span class="label">{node.label}</span>
+          <span class="label uppercase">{node.label}</span>
           <el-link on-click={() => this.deselectAllChildrenFacets(data)}>
             Reset
           </el-link>
         </span>
       ) : (
         <span class={customClasses}>
-          <span class="label">{node.label}</span>
+          <el-tooltip content={node.label} popper-class="capitalize" transition="none" open-delay="700" placement="top-start">
+            <span class="label capitalize">{node.label}</span>
+          </el-tooltip>
         </span>
       )
     },
@@ -153,27 +132,7 @@ export default {
 
 <style lang="scss">
 @import '../../assets/_variables.scss';
-
-.facets {
-  background: white;
-
-  h2 {
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 1.2;
-  }
-
-  .title {
-    margin-bottom: 0;
-    padding: 0.5rem 1rem;
-  }
-
-  hr {
-    border: none;
-    border-bottom: 1px solid #dbdfe6;
-    margin: 0;
-  }
-
+.facet-menu {
   .el-tree-node {
     border-bottom: 1px solid #dbdfe6;
   }
@@ -183,7 +142,6 @@ export default {
   }
 
   .el-tree > .el-tree-node > .el-tree-node__content {
-    text-transform: uppercase;
     label.el-checkbox {
       display: none;
     }
@@ -220,44 +178,32 @@ export default {
     border-color: $median !important;
   }
 
+  .el-tree-node__expand-icon.is-leaf {
+    display: none;
+  }
+
   .custom-tree-node {
+    text-overflow: ellipsis;
+    overflow: hidden;
+
     .el-link {
       margin-left: 1rem;
     }
-    .label {
-      text-transform: capitalize;
+    .label{
       color: black;
       font-size: 1rem;
       font-weight: 500;
       line-height: 0;
       margin: 0;
     }
+    .capitalize {
+      text-transform: capitalize;
+    }
+    .uppercase {
+      text-transform: uppercase;
+    }
   }
 
-  .tags-section {
-    margin: 0.75rem;
-    hr {
-      padding-bottom: 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-    .flex {
-      display: flex;
-      .el-link {
-        margin-left: auto;
-      }
-    }
-    .facet-card {
-      .el-card__body {
-        padding: 10px;
-        max-height: 10rem;
-        overflow-y: auto;
-      }
-      .no-facets {
-        font-style: italic;
-        opacity: 0.5;
-      }
-    }
-  }
   .el-link .el-link--inner {
     text-decoration: underline;
     text-transform: none;

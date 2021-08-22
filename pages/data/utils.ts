@@ -160,6 +160,5 @@ export const facetPropPathMapping = {
   'item.techniques.keyword' : 'Techniques',
   'attributes.subject.sex.value' : 'Sex',
   'attributes.subject.ageCategory.value' : 'Age Categories',
-  'item.published.boolean' : 'Has Publications',
-  'pennsieve.embargo.keyword' : 'Embargoed'
+  'item.published.status' : 'Publication Status'
 }

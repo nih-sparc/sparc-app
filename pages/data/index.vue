@@ -15,7 +15,8 @@
                 name: 'data',
                 query: {
                   type: type.type,
-                  q: $route.query.q
+                  q: $route.query.q,
+                  selectedFacetIds: $route.query.selectedFacetIds
                 }
               }"
             >
@@ -65,7 +66,7 @@
               :md="8"
               :lg="6"
             >
-               <facet-menu :facets="facets" :defaultCheckedFacetIds="defaultCheckedFacetIds" :visibleFacets="visibleFacets" @selected-facets-changed="updateSelectedFacets" />
+               <dataset-facet-menu :facets="facets" :defaultCheckedFacetIds="defaultCheckedFacetIds" :visibleFacets="visibleFacets" @selected-facets-changed="updateSelectedFacets" />
             </el-col>
             <el-col
               :sm="searchColSpan('sm')"
@@ -143,6 +144,8 @@ const searchResultsComponents = {
   simulation: DatasetSearchResults
 }
 
+const sparcAwardType = ['projects']
+
 const searchTypes = [
   {
     label: 'Datasets',
@@ -181,11 +184,12 @@ const searchData = {
 import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, facetPropPathMapping } from './utils'
-import FacetMenu from '~/components/FacetMenu/FacetMenu.vue'
+import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
+import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaIndex = algoliaClient.initIndex('k-core_v2')
+const algoliaIndex = algoliaClient.initIndex('k-core_dev')
 
 export default {
   name: 'DataPage',
@@ -193,7 +197,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    FacetMenu,
+    SparcInfoFacetMenu,
+    DatasetFacetMenu,
     SearchForm,
     PaginationMenu
   },
@@ -207,6 +212,7 @@ export default {
       visibleFacets: {},
       selectedFacets: [],
       defaultCheckedFacetIds:[],
+      sparcAwardType:[...sparcAwardType],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
@@ -294,8 +300,6 @@ export default {
        * properly render data and account for any missing data
        */
       this.searchData = clone(searchData)
-      this.defaultCheckedFacetIds = []
-      this.selectedFacets = []
       this.fetchResults()
     },
 
@@ -313,7 +317,7 @@ export default {
       this.$router.replace({
         query: { ...this.$route.query, selectedFacetIds: pluck('id', this.selectedFacets).toString() }
       })
-
+      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
       this.fetchResults()
     }
   },
@@ -342,16 +346,14 @@ export default {
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
-      this.populateFacets()
       if (this.$route.query.selectedFacetIds) {
         this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(",")
-      }
-      else {
-        this.fetchResults()
       }
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
+    this.populateFacets()
+    this.fetchResults()
   },
 
   methods: {
@@ -406,15 +408,15 @@ export default {
       const query = this.$route.query.q
       var filters = this.constructFilters(this.selectedFacets);
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      const organizationNameFilter =
-        searchType === 'simulation' ? "IT'IS Foundation" : "SPARC Consortium"
+      const itemTypeFilter =
+        searchType === 'simulation' ? "item.types.name:Simulation" : "NOT item.types.name:Simulation"
 
       filters = filters == undefined ? 
-      `pennsieve.organization.name:"${organizationNameFilter}"` : 
-      filters + ` AND pennsieve.organization.name:"${organizationNameFilter}"`
+      `${itemTypeFilter}` : 
+      filters + ` AND ${itemTypeFilter}`
 
       /* First we need to find only those facets that are relevant to the search query.
-       * If we attemot to do this in the same search as below than the response facets
+       * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
       algoliaIndex
         .search(query, {
@@ -447,7 +449,8 @@ export default {
       var facetId = 0
       algoliaIndex
         .search('', {
-          facets: facetPropPaths
+          sortFacetValuesBy: 'alpha',
+          facets: facetPropPaths,
         })
         .then(response => {
           facetPropPaths.map(facetPropPath => {

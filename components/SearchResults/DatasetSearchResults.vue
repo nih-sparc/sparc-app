@@ -25,7 +25,7 @@
             height="128"
             width="128"
           />
-          <sparc-pill v-show='scope.row.pennsieve.embargo.keyword == "true"' v-if='scope.row.pennsieve.embargo'>
+          <sparc-pill v-show='scope.row.item.published.status == "embargo"'>
             Embargoed
           </sparc-pill>
         </div>
