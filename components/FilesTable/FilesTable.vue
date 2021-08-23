@@ -208,13 +208,14 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import { extractExtension } from '@/pages/data/utils'
 
-const contentTypes = {
+export const contentTypes = {
   pdf: 'application/pdf',
   text: 'text/plain',
   jpeg: 'image/jpeg',
   png: 'image/png',
   svg: 'img/svg+xml',
-  mp4: 'video/mp4'
+  mp4: 'video/mp4',
+  csv: 'text/csv'
 }
 
 export default {

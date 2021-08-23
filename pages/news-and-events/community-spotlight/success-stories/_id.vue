@@ -12,7 +12,7 @@
       <div class="subpage">
         <el-row :gutter="38">
           <el-col :sm="13">
-            <div class="content" v-html="renderedStory" />
+            <div class="content" v-html="parseMarkdown(entry.story)" />
           </el-col>
           <el-col :sm="11">
             <div class="banner-wrapper">
@@ -37,7 +37,7 @@
               Author
             </div>
             <div class="story-field">
-              {{ entry.name }}
+              {{ author }}
             </div>
             <br />
             <template v-if="entry.publishDate">
@@ -49,33 +49,18 @@
               </div>
               <br />
             </template>
-            <template v-if="entry.teamMemberNames">
+            <template v-if="entry.contributorsMarkdown">
               <div class="story-bold-field">
                 Team Members
               </div>
-              <div
-                v-for="(item, index) in entry.teamMemberNames"
-                :key="'name' + index"
-                class="story-field"
-              >
-                {{ item }}
-                <template v-if="entry.teamMemberOrcidIds && entry.teamMemberOrcidIds.length - 1 > index">
-                  ({{ entry.teamMemberOrcidIds[index] }})
-                </template>
-              </div>
+              <div class="content story-field" v-html="parseMarkdown(entry.contributorsMarkdown)" />
               <br />
             </template>
-            <template v-if="entry.references">
+            <template v-if="entry.referencesMarkdown">
               <div class="story-bold-field">
                 Supporting information
               </div>
-              <div
-                v-for="(item, index) in entry.references"
-                :key="'reference' + index"
-                class="story-field"
-              >
-                <a :href="item" target="_blank">{{ item }}</a>
-              </div>
+              <div class="content story-field" v-html="parseMarkdown(entry.referencesMarkdown)" />
               <br />
             </template>
             <div class="story-bold-field">
@@ -143,48 +128,14 @@
 </template>
 
 <script>
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
-import { BLOCKS } from '@contentful/rich-text-types'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
-
-// options for rendering contentful rich text. Modified from:
-// https://www.contentful.com/blog/2021/04/14/rendering-linked-assets-entries-in-contentful/
-const options = {
-  renderNode: {
-    [BLOCKS.EMBEDDED_ENTRY]: node => {
-      if (node.data.target.sys.contentType.sys.id === 'videoEmbed') {
-        return `
-        <div style="position:relative;padding-bottom:56.25%;height:0;">
-          <iframe
-            src="${youtubeEmbeddedSource(node.data.target.fields.embedUrl)}"
-            frameBorder="0"
-            scrolling="no"
-            title="${node.data.target.fields.title}"
-            allowFullScreen="true"
-            allowtransparency="true"
-          />
-        </div>`
-      }
-    },
-    [BLOCKS.EMBEDDED_ASSET]: node => {
-      const fields = node.data.target.fields
-      if (fields.file.contentType.includes('video')){
-        return `
-        <div style="position:relative;padding-bottom:56.25%;height:0;">
-          <video id="video" controls="" autoplay="false" name="media"><source src="${fields.file.url}" type="${fields.file.contentType}"></video>
-        </div>`
-      } else if (fields.file.contentType.includes('image')) {
-        return `<img src="${fields.file.url}" height="${fields.file.details.image.height}" width="${fields.file.details.image.width}" alt="${fields.description}"/>`
-      }
-    }
-  }
-}
 
 const client = createClient()
 
@@ -195,11 +146,11 @@ export default {
     Breadcrumb,
     PageHero
   },
-  mixins: [FormatDate],
+  mixins: [FormatDate, MarkedMixin],
   async asyncData({ route }) {
     try {
       const results = await client.getEntries({
-        content_type: 'successStory',
+        content_type: 'successStoryDisplay',
         'fields.storyRoute[match]': route.params.id,
         include: 1,
       })
@@ -247,14 +198,13 @@ export default {
     pageUrl: function() {
       return `${process.env.ROOT_URL}${this.$route.fullPath}`
     },
-    renderedStory: function() {
-      if (this.entry.story) {
-        return documentToHtmlString(this.entry.story, options)
-      }
-      return ''
-    },
     embeddedVideoSrc: function() {
       return youtubeEmbeddedSource(this.entry.youtubeUrl)
+    },
+    author: function(){
+      if (this.entry.name) return this.entry.name
+      if (this.entry.author) return this.entry.author
+      else return ''
     }
   },
   methods: {

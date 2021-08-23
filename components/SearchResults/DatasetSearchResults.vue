@@ -10,22 +10,25 @@
         <nuxt-link
           :to="{
             name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id },
+            params: { datasetId: scope.row.object_id },
             query: {
               type: $route.query.type
             }
           }"
           class="img-dataset"
         >
+        <div v-if="scope.row.pennsieve">
           <img
-            :src="scope.row.banner"
-            :alt="`Banner for ${scope.row.name}`"
+            v-if="scope.row.pennsieve.banner"
+            :src="scope.row.pennsieve.banner.uri"
+            :alt="`Banner for ${scope.row.item.name}`"
             height="128"
             width="128"
           />
-          <sparc-pill v-if="scope.row.embargo">
+          <sparc-pill v-show='scope.row.item.published.status == "embargo"'>
             Embargoed
           </sparc-pill>
+        </div>
         </nuxt-link>
       </template>
     </el-table-column>
@@ -38,24 +41,21 @@
         <nuxt-link
           :to="{
             name: 'datasets-datasetId',
-            params: { datasetId: scope.row.id },
+            params: { datasetId: scope.row.object_id },
             query: {
               type: $route.query.type
             }
           }"
         >
-          {{ scope.row.name }}
+          {{ scope.row.item.name }}
         </nuxt-link>
         <div class="mt-8 mb-8">
-          {{ scope.row.description }}
+          {{ scope.row.item.description }}
         </div>
         <table class="property-table">
           <tr
             v-for="(property, index) in PROPERTY_DATA"
-            v-show="
-              property.propPath === 'createdAt' ||
-                getPropertyValue(tableMetadata.get(scope.row.doi), property)
-            "
+            v-show="getPropertyValue(scope.row, property)"
             :key="index"
           >
             <td class="property-name-column">
@@ -63,12 +63,7 @@
             </td>
             <td>
               {{
-                property.propPath === 'createdAt'
-                  ? formatDate(scope.row.createdAt) +
-                    ' (Last updated ' +
-                    formatDate(scope.row.updatedAt) +
-                    ')'
-                  : getPropertyValue(tableMetadata.get(scope.row.doi), property)
+                getPropertyValue(scope.row, property)
               }}
             </td>
           </tr>
@@ -98,10 +93,6 @@ export default {
       type: Array,
       default: () => []
     },
-    tableMetadata: {
-      type: Map,
-      default: () => new Map()
-    }
   },
 
   data() {
@@ -126,11 +117,11 @@ export default {
         },
         {
           displayName: 'Publication Date',
-          propPath: 'createdAt'
+          propPath: 'pennsieve'
         },
         {
           displayName: 'Includes',
-          propPath: 'publication'
+          propPath: 'item.published.boolean'
         }
       ]
     }
@@ -160,7 +151,8 @@ export default {
             : undefined
         }
         case 'Includes': {
-          return _.get(item, property.propPath) ? undefined : 'Publications'
+          const published = _.get(item, property.propPath)
+          return (published == undefined || published == 'false') ? undefined : 'Publications'
         }
         case 'Samples': {
           const sampleCount = _.get(item, property.propPath + '.samples.count')
@@ -180,6 +172,15 @@ export default {
                 .join(', ')
                 .replaceAll(' technique', '')
             : undefined
+        }
+        case 'Publication Date': {
+          const pennsieve = _.get(item, property.propPath)
+          const createdAt = pennsieve.createdAt.timestamp.split(",")[0]
+          const updatedAt = pennsieve.updatedAt.timestamp.split(",")[0]
+          return this.formatDate(createdAt) +
+                    ' (Last updated ' +
+                    this.formatDate(updatedAt) +
+                    ')'
         }
         default: {
           return _.get(item, property.propPath)

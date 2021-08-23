@@ -15,7 +15,8 @@
                 name: 'data',
                 query: {
                   type: type.type,
-                  q: $route.query.q
+                  q: $route.query.q,
+                  selectedFacetIds: $route.query.selectedFacetIds
                 }
               }"
             >
@@ -58,46 +59,14 @@
               @current-change="onPaginationPageChange"
             />
           </div>
-          <div class="mb-16">
-            <div class="active__filter__wrap">
-              <div
-                v-for="(filter, filterIdx) in filters"
-                :key="filter.category"
-                class="active__filter__wrap-category"
-              >
-                <template v-for="(item, itemIdx) in filter.filters">
-                  <el-tag
-                    v-if="item.value"
-                    :key="`${item.key}`"
-                    closable
-                    @close="clearFilter(filterIdx, itemIdx)"
-                  >
-                    {{ item.label }}
-                  </el-tag>
-                </template>
-              </div>
-            </div>
-          </div>
           <el-row :gutter="32">
             <el-col
               v-if="searchType.type === 'dataset'"
               :sm="24"
-              :md="6"
-              :lg="4"
+              :md="8"
+              :lg="6"
             >
-              <div class="dataset-filters table-wrap">
-                <h2>Refine datasets by:</h2>
-                <h3>Status</h3>
-                <div class="dataset-filters__filter-group">
-                  <el-checkbox-group
-                    v-model="datasetFilters"
-                    @change="setDatasetFilter"
-                  >
-                    <el-checkbox label="Public" />
-                    <el-checkbox label="Embargoed" />
-                  </el-checkbox-group>
-                </div>
-              </div>
+               <dataset-facet-menu :facets="facets" :defaultCheckedFacetIds="defaultCheckedFacetIds" :visibleFacets="visibleFacets" @selected-facets-changed="updateSelectedFacets" />
             </el-col>
             <el-col
               :sm="searchColSpan('sm')"
@@ -107,9 +76,7 @@
               <div v-loading="isLoadingSearch" class="table-wrap">
                 <component
                   :is="searchResultsComponent"
-                  :key="tableMetadata.size"
                   :table-data="tableData"
-                  :table-metadata="tableMetadata"
                   :title-column-width="titleColumnWidth"
                   @sort-change="handleSortChange"
                 />
@@ -138,37 +105,26 @@
         />
       </div>
     </div>
-    <search-filters
-      v-model="filters"
-      :visible.sync="isFiltersVisible"
-      :is-loading="isLoadingFilters"
-      :dialog-title="activeFiltersLabel"
-      @input="setTagsQuery"
-    />
   </div>
 </template>
 
 <script>
 import {
-  assocPath,
   clone,
   compose,
   defaultTo,
-  equals,
-  flatten,
   find,
-  filter,
   head,
+  isEmpty,
   mergeLeft,
   pathOr,
+  pluck,
   propEq,
-  propOr,
-  pluck
+  propOr
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
-import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
@@ -177,16 +133,21 @@ const EventSearchResults = () =>
   import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const OrganSearchResults = () =>
-  import('@/components/SearchResults/OrganSearchResults.vue')
+const NewsSearchResults = () =>
+  import('@/components/SearchResults/NewsSearchResults.vue')
+const ResourcesSearchResults = () =>
+  import('@/components/Resources/ResourcesSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
+  sparcPartners: ResourcesSearchResults,
   event: EventSearchResults,
-  organ: OrganSearchResults,
-  simulation: DatasetSearchResults
+  simulation: DatasetSearchResults,
+  news: NewsSearchResults,
 }
+
+const sparcAwardType = ['projects']
 
 const searchTypes = [
   {
@@ -196,9 +157,24 @@ const searchTypes = [
     dataSource: 'algolia'
   },
   {
-    label: 'Organs',
-    type: process.env.ctf_organ_id,
-    filterId: process.env.ctf_filters_organ_id,
+    label: 'Simulations',
+    type: 'simulation',
+    filterId: process.env.ctf_filters_simulation_id,
+    dataSource: 'algolia'
+  },
+  {
+    label: 'Resources',
+    type: process.env.ctf_resource_id,
+    dataSource: 'contentful'
+  },
+  {
+    label: 'Events',
+    type: process.env.ctf_event_id,
+    dataSource: 'contentful'
+  },
+  {
+    label: 'News',
+    type: process.env.ctf_news_id,
     dataSource: 'contentful'
   },
   {
@@ -207,49 +183,25 @@ const searchTypes = [
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
   },
-  {
-    label: 'Simulations',
-    type: 'simulation',
-    filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'algolia'
-  }
 ]
 
 const searchData = {
   limit: 10,
   skip: 0,
   items: [],
-  kCoreItems: new Map(),
   order: undefined,
   ascending: false
 }
 
-const datasetFilters = ['Public']
-
-const getEmbargoedFilter = (searchType, datasetFilters) => {
-  const filters = Array.isArray(datasetFilters)
-    ? datasetFilters
-    : [datasetFilters]
-  if (searchType !== 'dataset') {
-    return
-  }
-  if (filters.includes('Embargoed') && !filters.includes('Public')) {
-    return 'embargo:true'
-  }
-  if (!filters.includes('Embargoed') && filters.includes('Public')) {
-    return 'embargo:false'
-  }
-  return ''
-}
-
 import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
-import { handleSortChange, transformFilters } from './utils'
+import { handleSortChange, facetPropPathMapping } from './utils'
+import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
+import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER')
-const algoliaKCoreIndex = algoliaClient.initIndex('UCSD K-Core')
+const algoliaIndex = algoliaClient.initIndex('k-core_dev_published_time_desc')
 
 export default {
   name: 'DataPage',
@@ -257,7 +209,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    SearchFilters,
+    SparcInfoFacetMenu,
+    DatasetFacetMenu,
     SearchForm,
     PaginationMenu
   },
@@ -267,12 +220,14 @@ export default {
   data: () => {
     return {
       searchQuery: '',
-      filters: [],
+      facets: [],
+      visibleFacets: {},
+      selectedFacets: [],
+      defaultCheckedFacetIds:[],
+      sparcAwardType:[...sparcAwardType],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
-      isLoadingFilters: false,
-      isFiltersVisible: false,
       isSearchMapVisible: false,
       breadcrumb: [
         {
@@ -284,7 +239,6 @@ export default {
       ],
       titleColumnWidth: 300,
       windowWidth: '',
-      datasetFilters: [...datasetFilters]
     }
   },
 
@@ -302,10 +256,6 @@ export default {
 
     tableData: function() {
       return propOr([], 'items', this.searchData)
-    },
-
-    tableMetadata: function() {
-      return propOr(new Map(), 'kCoreItems', this.searchData)
     },
 
     /**
@@ -342,39 +292,6 @@ export default {
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
 
-    /**
-     * Compute selected filters
-     * @returns {Array}
-     */
-    selectedFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('items')
-      )(this.filters)
-    },
-
-    /**
-     * Compute active filters
-     * @returns {Array}
-     */
-    activeFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('filters')
-      )(this.filters)
-    },
-
-    /**
-     * Compute dialog header based on how many active filters
-     * @returns {String}
-     */
-    activeFiltersLabel: function() {
-      const activeFilterLength = this.activeFilters.length
-      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
-    },
-
     q: function() {
       return this.$route.query.q || ''
     },
@@ -395,9 +312,6 @@ export default {
        * properly render data and account for any missing data
        */
       this.searchData = clone(searchData)
-      if (val === 'dataset' && !this.$route.query.datasetFilters) {
-        this.datasetFilters = [...datasetFilters]
-      }
       this.fetchResults()
     },
 
@@ -409,6 +323,14 @@ export default {
         }
       },
       immediate: true
+    },
+
+    'selectedFacets': function() {
+      this.$router.replace({
+        query: { ...this.$route.query, selectedFacetIds: pluck('id', this.selectedFacets).toString() }
+      })
+      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
+      this.fetchResults()
     }
   },
 
@@ -436,17 +358,14 @@ export default {
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
-
-      if (this.$route.query.datasetFilters) {
-        this.datasetFilters = Array.isArray(this.$route.query.datasetFilters)
-          ? this.$route.query.datasetFilters
-          : [this.$route.query.datasetFilters]
+      if (this.$route.query.selectedFacetIds) {
+        this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(",")
       }
-
-      this.fetchResults()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
+    this.populateFacets()
+    this.fetchResults()
   },
 
   methods: {
@@ -464,25 +383,6 @@ export default {
         query: { ...this.$route.query, limit: newLimit, skip: 0 }
       })
       this.fetchResults()
-    },
-
-    /**
-     * Set active filters based on the query params
-     * @params {Array} filters
-     * @returns {Array}
-     */
-    setActiveFilters: function(filters) {
-      const tags = (this.$route.query.tags || '').toLowerCase().split(',')
-
-      return filters.map(category => {
-        category.filters.map(filter => {
-          const hasTag = tags.indexOf(filter.key.toLowerCase())
-          filter.value = hasTag >= 0
-          return filter
-        })
-
-        return category
-      })
     },
 
     /**
@@ -517,23 +417,28 @@ export default {
      */
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
-
-      const searchType = pathOr('', ['query', 'type'], this.$route)
-      const embargoedFilter = getEmbargoedFilter(
-        searchType,
-        this.datasetFilters
-      )
       const query = this.$route.query.q
+      var filters = this.constructFilters(this.selectedFacets);
+      const searchType = pathOr('', ['query', 'type'], this.$route)
       const organizationNameFilter =
-        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
+        searchType === 'simulation' ? "IT'IS Foundation" : "SPARC Consortium"
 
-      const filters = `${
-        embargoedFilter === undefined || embargoedFilter.length === 0
-          ? ''
-          : embargoedFilter + ' AND '
-      }organizationName:"${organizationNameFilter}"`
+      filters = filters === undefined ? 
+      `pennsieve.organization.name:"${organizationNameFilter}"` : 
+      filters + ` AND pennsieve.organization.name:"${organizationNameFilter}"`
 
-      algoliaPennseiveIndex
+      /* First we need to find only those facets that are relevant to the search query.
+       * If we attempt to do this in the same search as below than the response facets
+       * will only contain those specified by the filter */
+      algoliaIndex
+        .search(query, {
+          facets: ['*'],
+        })
+        .then(response => {
+          this.visibleFacets = response.facets
+        })
+
+      algoliaIndex
         .search(query, {
           hitsPerPage: this.searchData.limit,
           page: this.curSearchPage - 1,
@@ -545,33 +450,44 @@ export default {
             total: response.nbHits
           }
           this.searchData = mergeLeft(searchData, this.searchData)
-        })
-        .finally(() => {
-          this.fetchItemsFromKCore()
+          this.isLoadingSearch = false
         })
     },
 
-    fetchItemsFromKCore: function() {
-      // Get all the Penseive items and find their corresponding KCore item by searching for their doi
-      const dois = this.searchData.items.map(
-        item => `item.docid:"DOI:${item.doi}"`
-      )
-      const doisFilter = dois.join(' OR ')
-      algoliaKCoreIndex
+    // Loads all the desired facets dynamically into the facet menu by looking at the categories
+    populateFacets: function() {
+      const facetPropPaths = Object.keys(facetPropPathMapping)
+      var facetData = []
+      var facetId = 0
+      algoliaIndex
         .search('', {
-          filters: doisFilter
+          sortFacetValuesBy: 'alpha',
+          facets: facetPropPaths,
         })
         .then(response => {
-          response.hits.map(hit =>
-            this.searchData.kCoreItems.set(
-              hit.item.docid.replace('DOI:', ''),
-              hit
-            )
-          )
+          facetPropPaths.map(facetPropPath => {
+            const children = [];
+            const responseFacets = response.facets;
+            const responseFacetChildren = responseFacets[facetPropPath] == undefined ? {} : responseFacets[facetPropPath];
+            if (!isEmpty(responseFacetChildren)) {
+              Object.keys(responseFacetChildren).map(facet => {
+                children.push({
+                  label: facet,
+                  id: facetId++,
+                  facetPropPath: facetPropPath
+                })
+              })
+            }
+            if (!isEmpty(children)) {
+              facetData.push({
+                label: facetPropPathMapping[facetPropPath],
+                id: facetId++,
+                children: children
+              })
+            }
+          })
         })
-        .finally(() => {
-          this.isLoadingSearch = false
-        })
+      this.facets = facetData
     },
 
     /**
@@ -621,6 +537,30 @@ export default {
         })
     },
 
+    /* Returns filter for searching algolia. All facets of the same category are joined with OR,
+     * and each of those results is then joined with an AND. 
+     * i.e. (color:blue OR color:red) AND (shape:circle OR shape:red) */
+    constructFilters: function(selectedFacets) {
+      var filters = '';
+      const facetPropPaths = Object.keys(facetPropPathMapping)
+      facetPropPaths.map(facetPropPath => {
+        const facetsToOr = selectedFacets.filter(facet => facet.facetPropPath == facetPropPath)
+        var filter = ''
+        facetsToOr.map(facet => {
+          filter += `"${facetPropPath}":"${facet.label}" OR `
+        })
+        if (filter == '') {
+          return;
+        }
+        filter = `(${filter.substring(0, filter.lastIndexOf(' OR '))})`
+        filters += `${filter} AND `
+      })
+      if (filters == '') {
+        return;
+      }
+      return filters.substring(0, filters.lastIndexOf(" AND "))
+    },
+
     /**
      * Get organ details from discover api
      * @param {Object}
@@ -668,25 +608,16 @@ export default {
       )
     },
 
-    /**
-     * Get filters based on the search type
-     */
-    fetchFilters: function() {
-      this.filters = []
-      this.isLoadingFilters = true
-
-      client
-        .getEntry(this.searchType.filterId, { include: 2 })
-        .then(response => {
-          const filters = transformFilters(response.fields)
-          this.filters = this.setActiveFilters(filters)
+    updateSelectedFacets: function(newSelectedFacets) {
+      var selectedFacets = []
+      newSelectedFacets.map(selectedFacet => {
+        selectedFacets.push({
+          label: selectedFacet.label,
+          facetPropPath: selectedFacet.facetPropPath,
+          id: selectedFacet.id
         })
-        .catch(() => {
-          this.filters = []
-        })
-        .finally(() => {
-          this.isLoadingFilters = false
-        })
+      })
+      this.selectedFacets = selectedFacets;
     },
 
     /**
@@ -725,42 +656,6 @@ export default {
     },
 
     /**
-     * Clear filter's value
-     * @param {Number} filterIdx
-     * @param {Number} itemIdx
-     */
-    clearFilter: function(filterIdx, itemIdx) {
-      const filters = assocPath(
-        [filterIdx, 'filters', itemIdx, 'value'],
-        false,
-        this.filters
-      )
-      this.filters = filters
-      this.setTagsQuery()
-    },
-
-    /**
-     * Set the tags query parameter in the router
-     */
-    setTagsQuery: function() {
-      const filterVals = this.activeFilters.map(filter => {
-        return filter.key
-      })
-
-      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
-      if (equals(filterVals, queryParamTags.split(','))) {
-        return
-      }
-
-      const tags = { tags: filterVals.join(',') }
-
-      const query = { ...this.$route.query, ...tags }
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
-    },
-
-    /**
      * responds to a click in the anatomical map popup by adding a filter
      * @param {String} label
      */
@@ -777,19 +672,6 @@ export default {
       }
 
       const newTags = query.tags ? [query.tags, labelKey].join(',') : labelKey
-
-      this.filters = this.filters.map(f => ({
-        ...f,
-        filters: f.filters.map(subFilter => {
-          if (subFilter.label === label) {
-            return {
-              ...subFilter,
-              value: true
-            }
-          }
-          return subFilter
-        })
-      }))
 
       this.$router
         .replace({
@@ -823,34 +705,12 @@ export default {
       const isDataset = this.searchType.type === 'dataset'
       const viewports = {
         sm: isDataset ? 24 : 24,
-        md: isDataset ? 18 : 24,
-        lg: isDataset ? 20 : 24
+        md: isDataset ? 16 : 24,
+        lg: isDataset ? 18 : 24
       }
 
       return viewports[viewport] || 24
     },
-
-    /**
-     * Set datset filters
-     */
-    setDatasetFilter() {
-      this.$router.replace({
-        query: {
-          type: 'dataset',
-          q: this.$route.query.q,
-          datasetFilters: this.datasetFilters,
-          skip: 0,
-          limit: 10
-        }
-      })
-
-      /**
-       * Clear table data so the new table that is rendered can
-       * properly render data and account for any missing data
-       */
-      this.searchData = clone(searchData)
-      this.fetchResults()
-    }
   }
 }
 </script>
@@ -890,6 +750,9 @@ export default {
   margin: 0 0 0 0;
   padding: 0 0;
   outline: 0.1rem solid $median;
+  @media (max-width: 40rem) {
+    display: block
+  }
   li {
     width: 100%;
     text-align: center;
@@ -908,12 +771,14 @@ export default {
   padding: 0;
   text-decoration: none;
   text-transform: uppercase;
-  border-right: 0.1rem solid $median;
   line-height: 3.5rem;
-  @media (min-width: 48em) {
+  @media (min-width: 54rem) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
+  }
+  @media (min-width: 40rem) {
+    border-right: 0.1rem solid $median;
   }
   &:hover,
   &:focus,
@@ -973,42 +838,9 @@ export default {
     word-break: normal;
   }
 }
-.btn__filters {
-  align-items: center;
-  background: none;
-  border: none;
-  color: $median;
-  display: flex;
-  font-size: 0.875em;
-  outline: none;
-  padding: 0;
-  &[disabled] {
-    opacity: 0.7;
-  }
-  &:not([disabled]) {
-    &:hover,
-    &:focus {
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  }
-  .svg-icon {
-    margin-right: 0.3125rem;
-  }
-}
-.active__filter__wrap,
-.active__filter__wrap-category {
-  display: inline;
-}
-.active__filter__wrap .el-tag {
-  margin: 0.5em 1em 0.5em 0;
-}
-.filter__wrap {
-  padding-right: 1em;
-}
-
 .dataset-filters {
   padding: 0.5rem 1rem 1rem;
+  margin-bottom: 2rem;
   h2,
   h3 {
     font-size: 1.125rem;

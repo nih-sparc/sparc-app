@@ -22,7 +22,6 @@
     "@abi-software/mapintegratedvuer": "0.1.31-fix-2",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/scaffoldvuer": "0.1.48",
-    "@contentful/rich-text-html-renderer": "^15.0.0",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
