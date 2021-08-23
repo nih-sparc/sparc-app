@@ -61,9 +61,10 @@ export default {
   },
   methods: {
     receiveMessage(event) {
-      console.log('received message.')
-      console.log(event.origin)
-      console.log(event.data)
+      // Waiting on changes to Biolucida that will enable us to receive the desired message.
+      // console.log('received message.')
+      // console.log(event.origin)
+      // console.log(event.data)
     }
   }
 }
