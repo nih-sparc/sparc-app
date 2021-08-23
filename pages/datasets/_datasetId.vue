@@ -881,9 +881,7 @@ export default {
           x => x.relationshipType === 'IsSupplementedBy'
         )
         this.datasetRecords = allProtocols.map(obj => {
-          let rObj = {}
-          rObj['url'] = `https://doi.org/` + obj.doi
-          return rObj
+          return { url: `https://doi.org/${obj.doi}` }
         })
       } else {
         this.$axios
@@ -896,9 +894,7 @@ export default {
                 protocol.properties.url.startsWith('https://doi.org')
               )
               this.datasetRecords = allProtocols.map(obj => {
-                let rObj = {}
-                rObj['url'] = obj.properties.url
-                return rObj
+                return { url: obj.properties.url}
               })
             }
           })
@@ -941,9 +937,6 @@ export default {
             throw error
           })
       }
-    },
-    linkFromDoi: function(doi) {
-      return `https://doi.org/${doi}`
     },
 
     /**
