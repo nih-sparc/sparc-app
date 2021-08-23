@@ -5,10 +5,6 @@
         <strong>Data collection:</strong>
         {{ description }}
       </p>
-      <!-- <p>
-        <strong>Highlighted {{ imageTypes[currentIndex] }} image:</strong>
-        {{ imageNames[currentIndex] }}
-      </p> -->
     </div>
     <client-only placeholder="Loading gallery ...">
       <div class="gallery-container">
