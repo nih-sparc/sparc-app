@@ -29,7 +29,7 @@ export default {
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
     flatmap_api:
-      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/devel/flatmap/v1/',
+      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/flatmaps/',
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
