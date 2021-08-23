@@ -17,13 +17,14 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "0.1.30-hotfix-1",
+    "@abi-software/mapintegratedvuer": "0.1.31-fix-1",
     "@abi-software/plotvuer": "^0.2.42",
-    "@abi-software/scaffoldvuer": "^0.1.45",
+    "@abi-software/scaffoldvuer": "0.1.48",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
     "@nuxtjs/robots": "^2.4.2",
+    "algoliasearch": "^4.9.3",
     "babel-eslint": "^10.0.3",
     "contentful": "^7.10.0",
     "cookie-universal-nuxt": "^2.1.1",
@@ -48,7 +49,8 @@
     "vue-infinite-loading": "^2.4.4",
     "vue-meta": "^2.3.2",
     "vue-social-sharing": "^3.0.4",
-    "vue-svgicon": "^3.2.6"
+    "vue-svgicon": "^3.2.6",
+    "zincjs": "0.39.1"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.5.6",

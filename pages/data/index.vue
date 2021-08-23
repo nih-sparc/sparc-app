@@ -1,36 +1,41 @@
 <template>
   <div class="data-page">
     <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
-
-    <page-hero>
-      <h1>
-        Find Data
-      </h1>
-      <search-form
-        v-model="searchQuery"
-        :q="q"
-        @search="submitSearch"
-        @clear="clearSearch"
-      />
-
-      <ul class="search-tabs">
-        <li v-for="type in searchTypes" :key="type.label">
-          <nuxt-link
-            class="search-tabs__button"
-            :class="{ active: type.type === $route.query.type }"
-            :to="{
-              name: 'data',
-              query: {
-                type: type.type,
-                q: $route.query.q
-              }
-            }"
-          >
-            {{ type.label }}
-          </nuxt-link>
-        </li>
-      </ul>
-    </page-hero>
+    <div class="container">
+      <div class="search-tabs__container">
+        <h3>
+          Browse categories
+        </h3>
+        <ul class="search-tabs">
+          <li v-for="type in searchTypes" :key="type.label">
+            <nuxt-link
+              class="search-tabs__button"
+              :class="{ active: type.type === $route.query.type }"
+              :to="{
+                name: 'data',
+                query: {
+                  type: type.type,
+                  q: $route.query.q
+                }
+              }"
+            >
+              {{ type.label }}
+            </nuxt-link>
+          </li>
+        </ul>
+      </div>
+      <div class="search-bar__container">
+        <h5>
+          Search within category
+        </h5>
+        <search-form
+          v-model="searchQuery"
+          :q="q"
+          @search="submitSearch"
+          @clear="clearSearch"
+        />
+      </div>
+    </div>
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
@@ -53,32 +58,12 @@
               @current-change="onPaginationPageChange"
             />
           </div>
-          <div class="mb-16">
-            <div class="active__filter__wrap">
-              <div
-                v-for="(filter, filterIdx) in filters"
-                :key="filter.category"
-                class="active__filter__wrap-category"
-              >
-                <template v-for="(item, itemIdx) in filter.filters">
-                  <el-tag
-                    v-if="item.value"
-                    :key="`${item.key}`"
-                    closable
-                    @close="clearFilter(filterIdx, itemIdx)"
-                  >
-                    {{ item.label }}
-                  </el-tag>
-                </template>
-              </div>
-            </div>
-          </div>
           <el-row :gutter="32">
             <el-col
               v-if="searchType.type === 'dataset'"
               :sm="24"
-              :md="6"
-              :lg="4"
+              :md="8"
+              :lg="6"
             >
               <div class="dataset-filters table-wrap">
                 <h2>Refine datasets by:</h2>
@@ -102,7 +87,9 @@
               <div v-loading="isLoadingSearch" class="table-wrap">
                 <component
                   :is="searchResultsComponent"
+                  :key="tableMetadata.size"
                   :table-data="tableData"
+                  :table-metadata="tableMetadata"
                   :title-column-width="titleColumnWidth"
                   @sort-change="handleSortChange"
                 />
@@ -131,38 +118,24 @@
         />
       </div>
     </div>
-    <search-filters
-      v-model="filters"
-      :visible.sync="isFiltersVisible"
-      :is-loading="isLoadingFilters"
-      :dialog-title="activeFiltersLabel"
-      @input="setTagsQuery"
-    />
   </div>
 </template>
 
 <script>
 import {
-  assocPath,
   clone,
   compose,
   defaultTo,
-  equals,
-  flatten,
   find,
-  filter,
   head,
-  map,
   mergeLeft,
   pathOr,
   propEq,
-  propOr,
-  pluck
+  propOr
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
-import SearchFilters from '@/components/SearchFilters/SearchFilters.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
@@ -187,7 +160,7 @@ const searchTypes = [
     label: 'Datasets',
     type: 'dataset',
     filterId: process.env.ctf_filters_dataset_id,
-    dataSource: 'blackfynn'
+    dataSource: 'algolia'
   },
   {
     label: 'Organs',
@@ -205,7 +178,7 @@ const searchTypes = [
     label: 'Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'blackfynn'
+    dataSource: 'algolia'
   }
 ]
 
@@ -213,27 +186,38 @@ const searchData = {
   limit: 10,
   skip: 0,
   items: [],
+  kCoreItems: new Map(),
   order: undefined,
   ascending: false
 }
 
 const datasetFilters = ['Public']
 
-const shouldGetEmbargoed = (searchType, datasetFilters) => {
+const getEmbargoedFilter = (searchType, datasetFilters) => {
   const filters = Array.isArray(datasetFilters)
     ? datasetFilters
     : [datasetFilters]
-  return (
-    filters.includes('Embargoed') &&
-    !filters.includes('Public') &&
-    searchType === 'dataset'
-  )
+  if (searchType !== 'dataset') {
+    return
+  }
+  if (filters.includes('Embargoed') && !filters.includes('Public')) {
+    return 'embargo:true'
+  }
+  if (!filters.includes('Embargoed') && filters.includes('Public')) {
+    return 'embargo:false'
+  }
+  return ''
 }
 
 import createClient from '@/plugins/contentful.js'
+import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, transformFilters } from './utils'
+import FacetMenu from '~/components/FacetMenu/FacetMenu.vue'
 
 const client = createClient()
+const algoliaClient = createAlgoliaClient()
+const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER')
+const algoliaKCoreIndex = algoliaClient.initIndex('UCSD K-Core')
 
 export default {
   name: 'DataPage',
@@ -241,7 +225,7 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    SearchFilters,
+    FacetMenu,
     SearchForm,
     PaginationMenu
   },
@@ -251,12 +235,10 @@ export default {
   data: () => {
     return {
       searchQuery: '',
-      filters: [],
+      facets: [],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
-      isLoadingFilters: false,
-      isFiltersVisible: false,
       isSearchMapVisible: false,
       breadcrumb: [
         {
@@ -268,45 +250,61 @@ export default {
       ],
       titleColumnWidth: 300,
       windowWidth: '',
-      datasetFilters: [...datasetFilters]
+      datasetFilters: [...datasetFilters],
+      facetData: [ // TODO: Remove once faceting logic is implemented. This is mock facet data for the time being
+        {
+          id: 1,
+          label: 'ANATOMICAL STRUCTURE',
+          children: [
+            {
+              id: 4,
+              label: 'Level two 1-1',
+              children: [
+                {
+                  id: 9,
+                  label: 'One'
+                },
+                {
+                  id: 10,
+                  label: 'Two'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: 'Level one 2',
+          children: [
+            {
+              id: 5,
+              label: 'Level two 2-1'
+            },
+            {
+              id: 6,
+              label: 'Level two 2-2'
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: 'Level one 3',
+          children: [
+            {
+              id: 7,
+              label: 'Level two 3-1'
+            },
+            {
+              id: 8,
+              label: 'Level two 3-2'
+            }
+          ]
+        }
+      ]
     }
   },
 
   computed: {
-    /**
-     * Compute the URL for using a Blackfynn API
-     * @returns {String}
-     */
-    blackfynnApiUrl: function() {
-      const searchType = pathOr('', ['query', 'type'], this.$route)
-
-      const embargoed = shouldGetEmbargoed(searchType, this.datasetFilters)
-
-      let url = `${process.env.discover_api_host}/search/${
-        searchType === 'simulation' ? 'dataset' : searchType
-      }s?offset=${this.searchData.skip}&limit=${
-        this.searchData.limit
-      }&orderBy=${this.searchData.order || 'date'}&orderDirection=${
-        this.searchData.ascending ? 'asc' : 'desc'
-      }&${
-        searchType === 'simulation'
-          ? `organization=IT'IS%20Foundation`
-          : 'organization=SPARC%20Consortium'
-      }${embargoed ? `&embargo=true` : ''}`
-
-      const query = pathOr('', ['query', 'q'], this.$route)
-      if (query) {
-        url += `&query=${query}`
-      }
-
-      const tags = this.$route.query.tags || ''
-      if (tags) {
-        url += `&tags=${tags}`
-      }
-
-      return url
-    },
-
     /**
      * Compute search type
      * @returns {String}
@@ -320,6 +318,10 @@ export default {
 
     tableData: function() {
       return propOr([], 'items', this.searchData)
+    },
+
+    tableMetadata: function() {
+      return propOr(new Map(), 'kCoreItems', this.searchData)
     },
 
     /**
@@ -344,10 +346,6 @@ export default {
      * @returns {String}
      */
     searchHeading: function() {
-      const start = this.searchData.skip + 1
-      const pageRange = this.searchData.limit * this.curSearchPage
-      const end =
-        pageRange < this.searchData.total ? pageRange : this.searchData.total
       const query = pathOr('', ['query', 'q'], this.$route)
 
       const searchTypeLabel = compose(
@@ -358,39 +356,6 @@ export default {
       let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
 
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
-    },
-
-    /**
-     * Compute selected filters
-     * @returns {Array}
-     */
-    selectedFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('items')
-      )(this.filters)
-    },
-
-    /**
-     * Compute active filters
-     * @returns {Array}
-     */
-    activeFilters: function() {
-      return compose(
-        filter(propEq('value', true)),
-        flatten,
-        pluck('filters')
-      )(this.filters)
-    },
-
-    /**
-     * Compute dialog header based on how many active filters
-     * @returns {String}
-     */
-    activeFiltersLabel: function() {
-      const activeFilterLength = this.activeFilters.length
-      return activeFilterLength ? `Filters (${activeFilterLength})` : `Filters`
     },
 
     q: function() {
@@ -462,6 +427,7 @@ export default {
       }
 
       this.fetchResults()
+      this.fetchFacets()
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
@@ -485,25 +451,6 @@ export default {
     },
 
     /**
-     * Set active filters based on the query params
-     * @params {Array} filters
-     * @returns {Array}
-     */
-    setActiveFilters: function(filters) {
-      const tags = (this.$route.query.tags || '').toLowerCase().split(',')
-
-      return filters.map(category => {
-        category.filters.map(filter => {
-          const hasTag = tags.indexOf(filter.key.toLowerCase())
-          filter.value = hasTag >= 0
-          return filter
-        })
-
-        return category
-      })
-    },
-
-    /**
      * Figure out which source to fetch results from based on the
      * type of search
      */
@@ -512,7 +459,7 @@ export default {
 
       const searchSources = {
         contentful: this.fetchFromContentful,
-        blackfynn: this.fetchFromBlackfynn
+        algolia: this.fetchFromAlgolia
       }
 
       if (typeof searchSources[source] === 'function') {
@@ -531,24 +478,61 @@ export default {
 
     /**
      * Get Search results
-     * This is using fetch from the Blackfynn API
+     * This is using fetch from the Algolia API
      */
-    fetchFromBlackfynn: function() {
+    fetchFromAlgolia: function() {
       this.isLoadingSearch = true
 
-      this.$axios
-        .$get(this.blackfynnApiUrl)
+      const searchType = pathOr('', ['query', 'type'], this.$route)
+      const embargoedFilter = getEmbargoedFilter(
+        searchType,
+        this.datasetFilters
+      )
+      const query = this.$route.query.q
+      const organizationNameFilter =
+        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
+
+      const filters = `${
+        embargoedFilter === undefined || embargoedFilter.length === 0
+          ? ''
+          : embargoedFilter + ' AND '
+      }organizationName:"${organizationNameFilter}"`
+      
+      algoliaPennseiveIndex
+        .search(query, {
+          hitsPerPage: this.searchData.limit,
+          page: this.curSearchPage - 1,
+          filters: filters
+        })
         .then(response => {
-          const searchType = pathOr('', ['query', 'type'], this.$route)
           const searchData = {
-            skip: response.offset,
-            items:
-              response[
-                `${searchType === 'simulation' ? 'dataset' : searchType}s`
-              ],
-            total: response.totalCount
+            items: response.hits,
+            total: response.nbHits
           }
           this.searchData = mergeLeft(searchData, this.searchData)
+        })
+        .finally(() => {
+          this.fetchItemsFromKCore()
+        })
+    },
+
+    fetchItemsFromKCore: function() {
+      // Get all the Penseive items and find their corresponding KCore item by searching for their doi
+      const dois = this.searchData.items.map(
+        item => `item.docid:"DOI:${item.doi}"`
+      )
+      const doisFilter = dois.join(' OR ')
+      algoliaKCoreIndex
+        .search('', {
+          filters: doisFilter
+        })
+        .then(response => {
+          response.hits.map(hit =>
+            this.searchData.kCoreItems.set(
+              hit.item.docid.replace('DOI:', ''),
+              hit
+            )
+          )
         })
         .finally(() => {
           this.isLoadingSearch = false
@@ -649,26 +633,11 @@ export default {
       )
     },
 
-    /**
-     * Get filters based on the search type
-     */
-    fetchFilters: function() {
-      this.filters = []
-      this.isLoadingFilters = true
-
-      client
-        .getEntry(this.searchType.filterId, { include: 2 })
-        .then(response => {
-          const filters = transformFilters(response.fields)
-          this.filters = this.setActiveFilters(filters)
-        })
-        .catch(() => {
-          this.filters = []
-        })
-        .finally(() => {
-          this.isLoadingFilters = false
-        })
+    fetchFacets: function() {
+      this.facets = this.facetData
     },
+
+    updateSelectedFacets: function(newSelectedFacets) {},
 
     /**
      * Update offset
@@ -702,42 +671,7 @@ export default {
 
       const query = { ...this.$route.query, q: '' }
       this.$router.replace({ query })
-    },
-
-    /**
-     * Clear filter's value
-     * @param {Number} filterIdx
-     * @param {Number} itemIdx
-     */
-    clearFilter: function(filterIdx, itemIdx) {
-      const filters = assocPath(
-        [filterIdx, 'filters', itemIdx, 'value'],
-        false,
-        this.filters
-      )
-      this.filters = filters
-      this.setTagsQuery()
-    },
-
-    /**
-     * Set the tags query parameter in the router
-     */
-    setTagsQuery: function() {
-      const filterVals = this.activeFilters.map(filter => {
-        return filter.key
-      })
-
-      const queryParamTags = pathOr('', ['query', 'tags'], this.$route)
-      if (equals(filterVals, queryParamTags.split(','))) {
-        return
-      }
-
-      const tags = { tags: filterVals.join(',') }
-
-      const query = { ...this.$route.query, ...tags }
-      this.$router.replace({ query }).then(() => {
-        this.fetchResults()
-      })
+      this.searchQuery = ''
     },
 
     /**
@@ -757,19 +691,6 @@ export default {
       }
 
       const newTags = query.tags ? [query.tags, labelKey].join(',') : labelKey
-
-      this.filters = this.filters.map(f => ({
-        ...f,
-        filters: f.filters.map(subFilter => {
-          if (subFilter.label === label) {
-            return {
-              ...subFilter,
-              value: true
-            }
-          }
-          return subFilter
-        })
-      }))
 
       this.$router
         .replace({
@@ -803,8 +724,8 @@ export default {
       const isDataset = this.searchType.type === 'dataset'
       const viewports = {
         sm: isDataset ? 24 : 24,
-        md: isDataset ? 18 : 24,
-        lg: isDataset ? 20 : 24
+        md: isDataset ? 16 : 24,
+        lg: isDataset ? 18 : 24
       }
 
       return viewports[viewport] || 24
@@ -841,57 +762,72 @@ export default {
 .page-hero {
   padding-bottom: 1.3125em;
 }
+.search-tabs__container {
+  margin-top: 2rem;
+  padding-top: 0.5rem;
+  background-color: white;
+  border: 0.1rem solid $purple-gray;
+  h3 {
+    padding-left: 0.75rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+}
+.search-bar__container {
+  margin-top: 1em;
+  padding: 0.75rem;
+  border: 0.1rem solid $purple-gray;
+  background: white;
+  h5 {
+    line-height: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+}
 .search-tabs {
   display: flex;
   list-style: none;
   overflow: auto;
-  margin: 0 -2rem 0 0;
-  padding: 0 1rem;
-  @media (min-width: 48em) {
-    margin: 0;
-    padding: 0;
-  }
+  margin: 0 0 0 0;
+  padding: 0 0;
+  outline: 0.1rem solid $median;
   li {
-    margin: 0 0.625em;
-    @media (min-width: 48em) {
-      margin: 0 2.25em;
-    }
-    &:first-child {
-      margin-left: 0;
-    }
+    width: 100%;
+    text-align: center;
+    color: $median;
+  }
+  li:last-child > a {
+    border-right: none;
   }
 }
 .search-tabs__button {
-  background: none;
-  border-bottom: 2px solid transparent;
-  color: #fff;
-  cursor: pointer;
+  background: $light-purple;
   display: block;
-  font-size: 0.75em;
+  font-size: 0.75rem;
   font-weight: 500;
   outline: none;
   padding: 0;
   text-decoration: none;
   text-transform: uppercase;
+  border-right: 0.1rem solid $median;
+  line-height: 3.5rem;
   @media (min-width: 48em) {
-    font-size: 1em;
-    font-weight: 400;
+    font-size: 1.25rem;
+    font-weight: 600;
     text-transform: none;
   }
   &:hover,
   &:focus,
   &.active {
-    border-bottom-color: #fff;
+    color: white;
+    background-color: $median;
     font-weight: 500;
   }
 }
-
 .page-wrap {
   padding-bottom: 1em;
-  padding-top: 1em;
   @media (min-width: 48em) {
     padding-bottom: 3em;
-    padding-top: 3em;
   }
 }
 .table-wrap {
@@ -938,42 +874,9 @@ export default {
     word-break: normal;
   }
 }
-.btn__filters {
-  align-items: center;
-  background: none;
-  border: none;
-  color: $median;
-  display: flex;
-  font-size: 0.875em;
-  outline: none;
-  padding: 0;
-  &[disabled] {
-    opacity: 0.7;
-  }
-  &:not([disabled]) {
-    &:hover,
-    &:focus {
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  }
-  .svg-icon {
-    margin-right: 0.3125rem;
-  }
-}
-.active__filter__wrap,
-.active__filter__wrap-category {
-  display: inline;
-}
-.active__filter__wrap .el-tag {
-  margin: 0.5em 1em 0.5em 0;
-}
-.filter__wrap {
-  padding-right: 1em;
-}
-
 .dataset-filters {
   padding: 0.5rem 1rem 1rem;
+  margin-bottom: 2rem;
   h2,
   h3 {
     font-size: 1.125rem;

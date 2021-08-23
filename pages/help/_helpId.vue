@@ -1,5 +1,5 @@
 <template>
-  <div class="events-page">
+  <div id="top" class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="helpItem.fields.title" />
     <help-hero :title="helpHeroData.title" :summary="helpHeroData.summary" />
     <div class="page-wrap container">
@@ -67,7 +67,8 @@ export default {
     if (slug && params.helpId !== slug) {
       redirect({
         name: 'help-helpId',
-        params: { helpId: slug }
+        params: { helpId: slug },
+        hash: '#top'
       })
     }
 
