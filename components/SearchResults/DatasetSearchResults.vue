@@ -7,29 +7,52 @@
   >
     <el-table-column prop="banner" label="Image" width="160">
       <template slot-scope="scope">
-        <nuxt-link
-          :to="{
-            name: 'datasets-datasetId',
-            params: { datasetId: scope.row.object_id },
-            query: {
-              type: $route.query.type
-            }
-          }"
-          class="img-dataset"
-        >
-        <div v-if="scope.row.pennsieve">
-          <img
-            v-if="scope.row.pennsieve.banner"
-            :src="scope.row.pennsieve.banner.uri"
-            :alt="`Banner for ${scope.row.item.name}`"
-            height="128"
-            width="128"
-          />
-          <sparc-pill v-show='scope.row.item.published.status == "embargo"'>
-            Embargoed
-          </sparc-pill>
+        <div v-if="scope.row.item">
+          <nuxt-link
+            :to="{
+              name: 'datasets-datasetId',
+              params: { datasetId: scope.row.object_id },
+              query: {
+                type: $route.query.type
+              }
+            }"
+            class="img-dataset"
+          >   
+            <img
+              v-if="scope.row.pennsieve.banner"
+              :src="scope.row.pennsieve.banner.uri"
+              :alt="`Banner for ${scope.row.item.name}`"
+              height="128"
+              width="128"
+            />
+            <sparc-pill v-show='scope.row.item.published.status == "embargo"'>
+              Embargoed
+            </sparc-pill>
+          </nuxt-link>
         </div>
-        </nuxt-link>
+        <div v-else>
+          <nuxt-link
+            :to="{
+              name: 'datasets-datasetId',
+              params: { datasetId: scope.row.objectID },
+              query: {
+                type: $route.query.type
+              }
+            }"
+            class="img-dataset"
+          >
+            <img
+              v-if="scope.row.banner"
+              :src="scope.row.banner"
+              :alt="`Banner for ${scope.row.name}`"
+              height="128"
+              width="128"
+            />
+            <sparc-pill v-show='scope.row.embargo'>
+              Embargoed
+            </sparc-pill>
+          </nuxt-link>
+        </div>
       </template>
     </el-table-column>
     <el-table-column
@@ -38,36 +61,69 @@
       :sort-orders="sortOrders"
     >
       <template slot-scope="scope">
-        <nuxt-link
-          :to="{
-            name: 'datasets-datasetId',
-            params: { datasetId: scope.row.object_id },
-            query: {
-              type: $route.query.type
-            }
-          }"
-        >
-          {{ scope.row.item.name }}
-        </nuxt-link>
-        <div class="mt-8 mb-8">
-          {{ scope.row.item.description }}
-        </div>
-        <table class="property-table">
-          <tr
-            v-for="(property, index) in PROPERTY_DATA"
-            v-show="getPropertyValue(scope.row, property)"
-            :key="index"
+        <div v-if="scope.row.item">
+          <nuxt-link
+            :to="{
+              name: 'datasets-datasetId',
+              params: { datasetId: scope.row.object_id },
+              query: {
+                type: $route.query.type
+              }
+            }"
           >
-            <td class="property-name-column">
-              {{ property.displayName }}
-            </td>
-            <td>
-              {{
-                getPropertyValue(scope.row, property)
-              }}
-            </td>
-          </tr>
-        </table>
+            {{ scope.row.item.name }}
+          </nuxt-link>
+          <div class="mt-8 mb-8">
+            {{ scope.row.item.description }}
+          </div>
+          <table class="property-table">
+            <tr
+              v-for="(property, index) in PROPERTY_DATA"
+              v-show="getPropertyValue(scope.row, property)"
+              :key="index"
+            >
+              <td class="property-name-column">
+                {{ property.displayName }}
+              </td>
+              <td>
+                {{
+                  getPropertyValue(scope.row, property)
+                }}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div v-else>
+          <nuxt-link
+            :to="{
+              name: 'datasets-datasetId',
+              params: { datasetId: scope.row.objectID },
+              query: {
+                type: $route.query.type
+              }
+            }"
+          >
+            {{ scope.row.name }}
+          </nuxt-link>
+          <div class="mt-8 mb-8">
+            {{ scope.row.description }}
+          </div>
+          <table class="property-table">
+            <tr>
+              <td class="property-name-column">
+                Publication Date
+              </td>
+              <td>
+                {{ 
+                  formatDate(scope.row.createdAt) +
+                    ' (Last updated ' +
+                    formatDate(scope.row.updatedAt) +
+                    ')'
+                }}
+              </td>
+            </tr>
+          </table>
+        </div>
       </template>
     </el-table-column>
   </el-table>
