@@ -100,7 +100,7 @@ const tabTypes = [
     type: 'Device' as const
   },
   {
-    label: 'Databases',
+    label: 'Data and Models',
     type: 'Databases' as const
   },
   {
