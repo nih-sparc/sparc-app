@@ -66,7 +66,12 @@
               :md="8"
               :lg="6"
             >
-               <dataset-facet-menu :facets="facets" :defaultCheckedFacetIds="defaultCheckedFacetIds" :visibleFacets="visibleFacets" @selected-facets-changed="updateSelectedFacets" />
+              <dataset-facet-menu
+                :facets="facets"
+                :default-checked-facet-ids="defaultCheckedFacetIds"
+                :visible-facets="visibleFacets"
+                @selected-facets-changed="updateSelectedFacets"
+              />
             </el-col>
             <el-col
               :sm="searchColSpan('sm')"
@@ -144,7 +149,7 @@ const searchResultsComponents = {
   sparcPartners: ResourcesSearchResults,
   event: EventSearchResults,
   simulation: DatasetSearchResults,
-  news: NewsSearchResults,
+  news: NewsSearchResults
 }
 
 const sparcAwardType = ['projects']
@@ -182,7 +187,7 @@ const searchTypes = [
     type: process.env.ctf_project_id,
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
-  },
+  }
 ]
 
 const searchData = {
@@ -223,8 +228,8 @@ export default {
       facets: [],
       visibleFacets: {},
       selectedFacets: [],
-      defaultCheckedFacetIds:[],
-      sparcAwardType:[...sparcAwardType],
+      defaultCheckedFacetIds: [],
+      sparcAwardType: [...sparcAwardType],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
@@ -238,7 +243,7 @@ export default {
         }
       ],
       titleColumnWidth: 300,
-      windowWidth: '',
+      windowWidth: ''
     }
   },
 
@@ -325,9 +330,12 @@ export default {
       immediate: true
     },
 
-    'selectedFacets': function() {
+    selectedFacets: function() {
       this.$router.replace({
-        query: { ...this.$route.query, selectedFacetIds: pluck('id', this.selectedFacets).toString() }
+        query: {
+          ...this.$route.query,
+          selectedFacetIds: pluck('id', this.selectedFacets).toString()
+        }
       })
       this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
       this.fetchResults()
@@ -359,7 +367,9 @@ export default {
 
       this.searchData = { ...this.searchData, ...queryParams }
       if (this.$route.query.selectedFacetIds) {
-        this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(",")
+        this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(
+          ','
+        )
       }
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -418,21 +428,23 @@ export default {
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
       const query = this.$route.query.q
-      var filters = this.constructFilters(this.selectedFacets);
+      var filters = this.constructFilters(this.selectedFacets)
       const searchType = pathOr('', ['query', 'type'], this.$route)
       const organizationNameFilter =
-        searchType === 'simulation' ? "IT'IS Foundation" : "SPARC Consortium"
+        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
 
-      filters = filters === undefined ? 
-      `pennsieve.organization.name:"${organizationNameFilter}"` : 
-      filters + ` AND pennsieve.organization.name:"${organizationNameFilter}"`
+      filters =
+        filters === undefined
+          ? `pennsieve.organization.name:"${organizationNameFilter}"`
+          : filters +
+            ` AND pennsieve.organization.name:"${organizationNameFilter}"`
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
       algoliaIndex
         .search(query, {
-          facets: ['*'],
+          facets: ['*']
         })
         .then(response => {
           this.visibleFacets = response.facets
@@ -462,13 +474,16 @@ export default {
       algoliaIndex
         .search('', {
           sortFacetValuesBy: 'alpha',
-          facets: facetPropPaths,
+          facets: facetPropPaths
         })
         .then(response => {
           facetPropPaths.map(facetPropPath => {
-            const children = [];
-            const responseFacets = response.facets;
-            const responseFacetChildren = responseFacets[facetPropPath] == undefined ? {} : responseFacets[facetPropPath];
+            const children = []
+            const responseFacets = response.facets
+            const responseFacetChildren =
+              responseFacets[facetPropPath] == undefined
+                ? {}
+                : responseFacets[facetPropPath]
             if (!isEmpty(responseFacetChildren)) {
               Object.keys(responseFacetChildren).map(facet => {
                 children.push({
@@ -538,27 +553,29 @@ export default {
     },
 
     /* Returns filter for searching algolia. All facets of the same category are joined with OR,
-     * and each of those results is then joined with an AND. 
+     * and each of those results is then joined with an AND.
      * i.e. (color:blue OR color:red) AND (shape:circle OR shape:red) */
     constructFilters: function(selectedFacets) {
-      var filters = '';
+      var filters = ''
       const facetPropPaths = Object.keys(facetPropPathMapping)
       facetPropPaths.map(facetPropPath => {
-        const facetsToOr = selectedFacets.filter(facet => facet.facetPropPath == facetPropPath)
+        const facetsToOr = selectedFacets.filter(
+          facet => facet.facetPropPath == facetPropPath
+        )
         var filter = ''
         facetsToOr.map(facet => {
           filter += `"${facetPropPath}":"${facet.label}" OR `
         })
         if (filter == '') {
-          return;
+          return
         }
         filter = `(${filter.substring(0, filter.lastIndexOf(' OR '))})`
         filters += `${filter} AND `
       })
       if (filters == '') {
-        return;
+        return
       }
-      return filters.substring(0, filters.lastIndexOf(" AND "))
+      return filters.substring(0, filters.lastIndexOf(' AND '))
     },
 
     /**
@@ -617,7 +634,7 @@ export default {
           id: selectedFacet.id
         })
       })
-      this.selectedFacets = selectedFacets;
+      this.selectedFacets = selectedFacets
     },
 
     /**
@@ -710,7 +727,7 @@ export default {
       }
 
       return viewports[viewport] || 24
-    },
+    }
   }
 }
 </script>
@@ -751,7 +768,7 @@ export default {
   padding: 0 0;
   outline: 0.1rem solid $median;
   @media (max-width: 40rem) {
-    display: block
+    display: block;
   }
   li {
     width: 100%;
