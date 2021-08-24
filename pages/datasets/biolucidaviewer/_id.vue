@@ -105,10 +105,16 @@ export default {
     const image_identifier = route.params.id
     const identifier = route.query.item_id.substring(2)
 
-    const [image_info, dataset_response, xmp_metadata] = await Promise.all([
+    const [
+      image_info,
+      dataset_response,
+      xmp_metadata,
+      blv_link
+    ] = await Promise.all([
       biolucida.getImageInfo(image_identifier),
       scicrunch.getDatasetInfoFromObjectIdentifier(identifier),
-      biolucida.getXMPInfo(image_identifier)
+      biolucida.getXMPInfo(image_identifier),
+      biolucida.getBLVLink(image_identifier)
     ])
 
     let dataset_info = dataset_response.data.result[0]
@@ -117,6 +123,7 @@ export default {
     }
 
     return {
+      blv_link,
       image_info,
       xmp_metadata,
       readme: dataset_info.readme,
@@ -147,6 +154,7 @@ export default {
     biolucidaData: function() {
       return {
         biolucida_image_id: '',
+        blv_link: this.blv_link,
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
         status: ''
       }

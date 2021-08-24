@@ -16,6 +16,11 @@ const getXMPInfo = async id => {
   return response.data
 }
 
+const getBLVLink = async id => {
+  const response = await apiClient.get('/image_blv_link/' + id)
+  return response.data
+}
+
 const getThumbnail = async id => {
   return apiClient.get('thumbnail/' + id)
 }
@@ -42,6 +47,7 @@ const getCollectionInfo = async id => {
 }
 
 export default {
+  getBLVLink,
   getThumbnail,
   getNeurolucidaThumbnail,
   searchDataset,
