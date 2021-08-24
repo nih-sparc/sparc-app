@@ -1,5 +1,3 @@
-const fs = require('fs')
-
 export default {
   /*
    ** Headers of the page
@@ -179,13 +177,6 @@ export default {
         removeComments: true,
         removeEmptyElements: true
       }
-    }
-  },
-  server: {
-    host: 'localhost',
-    https: {
-      key: fs.readFileSync('.certs/sparc.science.key'),
-      cert: fs.readFileSync('.certs/sparc.science.crt')
     }
   }
 }
