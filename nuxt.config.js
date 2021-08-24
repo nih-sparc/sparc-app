@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 export default {
   /*
    ** Headers of the page
@@ -29,7 +31,8 @@ export default {
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
     flatmap_api:
-      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/flatmaps/',
+      process.env.FLATMAP_API_HOST ||
+      'https://mapcore-demo.org/devel/flatmap/v1/',
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
@@ -176,6 +179,13 @@ export default {
         removeComments: true,
         removeEmptyElements: true
       }
+    }
+  },
+  server: {
+    host: 'localhost',
+    https: {
+      key: fs.readFileSync('.certs/sparc.science.key'),
+      cert: fs.readFileSync('.certs/sparc.science.crt')
     }
   }
 }
