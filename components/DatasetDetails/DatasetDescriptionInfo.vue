@@ -11,13 +11,13 @@
         </strong>
       </p>
       <div v-if="datasetRecords.length !== 0">
-        <p v-for="record in datasetRecords" :key="record.properties.id">
+        <p v-for="record in datasetRecords" :key="record.id">
           <a
-            :href="record.properties.url"
+            :href="record.url"
             target="_blank"
             class="description-container__protocol-block--protocol-text"
           >
-            {{ record.properties.url }}
+            {{ record.url }}
           </a>
         </p>
       </div>
