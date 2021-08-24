@@ -90,7 +90,7 @@ export default {
   right: 0;
   padding: 2rem 0;
   position: fixed;
-  z-index: 9;
+  z-index: 10000;
 }
 .cookie-notice__content {
   max-width: 80%;
