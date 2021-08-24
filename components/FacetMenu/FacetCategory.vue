@@ -7,19 +7,16 @@
       <el-checkbox v-model="showAll" @change="onChangeShowAll" />
       <span>Show all</span>
     </div>
-    <el-tree
-      ref="tree"
-      :data="facet.children"
-      node-key="id"
-      indent="0"
-      show-checkbox
-      default-expand-all
-      @check-change="onCheckChange"
-    />
+    <el-tree ref="tree" :data="visibleChildren" node-key="id" show-checkbox
+             default-expand-all :props="treeProps"
+             @check-change="onCheckChange"
+/>
   </div>
 </template>
 
 <script>
+import { filter, propOr } from 'ramda'
+
 export default {
   name: 'FacetCategory',
 
@@ -29,12 +26,42 @@ export default {
     facet: {
       type: Object,
       default: () => {}
+    },
+    visibleFacets: {
+      type: Object,
+      default: () => {}
     }
   },
 
   data() {
     return {
-      showAll: true
+      showAll: true,
+      treeProps: {
+        label: 'label2'
+      }
+    }
+
+  },
+
+  computed: {
+    visibleChildren: function() {
+      if (Object.keys(propOr({}, this.facet.key, this.visibleFacets)).length) {
+        let allKeys = Object.keys(this.visibleFacets[this.facet.key])
+        let filteredOptions = filter(
+          n => allKeys.includes(n.label),
+          this.facet.children
+        )
+        for (let n in filteredOptions) {
+          filteredOptions[n].label2 =
+            filteredOptions[n].label +
+            ' (' +
+            this.visibleFacets[this.facet.key][filteredOptions[n].label] +
+            ')'
+        }
+        return filteredOptions
+      } else {
+        return this.facet.children
+      }
     }
   },
 

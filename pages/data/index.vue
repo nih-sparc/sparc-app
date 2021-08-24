@@ -322,10 +322,8 @@ export default {
 
     '$route.query.q': {
       handler: function(val) {
-        if (val) {
-          this.searchQuery = this.$route.query.q
-          this.fetchResults()
-        }
+        this.searchQuery = this.$route.query.q
+        this.fetchResults()
       },
       immediate: true
     },
@@ -497,7 +495,8 @@ export default {
               facetData.push({
                 label: facetPropPathMapping[facetPropPath],
                 id: facetId++,
-                children: children
+                children: children,
+                key: facetPropPath
               })
             }
           })

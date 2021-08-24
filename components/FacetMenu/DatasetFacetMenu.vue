@@ -4,27 +4,30 @@
       Refine results
     </h2>
     <hr />
-		<tags-container
-        :selectedFacets="selectedFacets"
-        @deselect-facet="deselectFacet"
-        @deselect-all-facets="deselectAllFacets"/>
+    <tags-container
+      :selectedFacets="selectedFacets"
+      @deselect-facet="deselectFacet"
+      @deselect-all-facets="deselectAllFacets"
+    />
     <hr />
     <facet-category
-      v-for = "item in this.facets"
-      :key = "item.id"
-      :facet = item
+      v-for="item in this.facets"
+      :key="item.id"
+      :facet="item"
+      :visible-facets="visibleFacets"
+      @selection-change="onSelectionChange"
     />
   </div>
 </template>
 
 <script>
-import FacetMenu from '@/components/FacetMenu/FacetMenu.vue'
+// import FacetMenu from '@/components/FacetMenu/FacetMenu.vue'
 import TagsContainer from '@/components/FacetMenu/TagsContainer.vue'
-import FacetCategory from "~/components/FacetMenu/FacetCategory"
+import FacetCategory from '~/components/FacetMenu/FacetCategory'
 export default {
   name: 'DatasetFacetMenu',
 
-  components: {FacetCategory, FacetMenu, TagsContainer },
+  components: { FacetCategory, TagsContainer },
 
   props: {
     facets: {
@@ -43,19 +46,19 @@ export default {
 
   data() {
     return {
-      selectedFacets: [],
+      selectedFacets: []
     }
   },
 
-	mounted() {
-		// Work around el-tree component not firing onFacetChecked event when setting default checked keys.
-		// When user navigates between tabs, we need to force selectedFacets to update so that the tags get shown
-		// if (this.$refs.menu.facets.length > 0) {
-		// 	this.$refs.menu.onFacetChecked()
-		// }
-	},
+  mounted() {},
 
   methods: {
+    visibleFacetsForCategory: function(key) {
+      return this.visibleFacets[key]
+    },
+    onSelectionChange: function() {
+
+    },
     selectedFacetsChanged: function(newSelectedFacets) {
 			this.selectedFacets = newSelectedFacets
       this.$emit('selected-facets-changed', newSelectedFacets)
