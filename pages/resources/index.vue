@@ -68,15 +68,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from 'vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import TabNav from '@/components/TabNav/TabNav.vue'
 import createClient from '@/plugins/contentful.js'
-import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
-import { Computed, Data, Methods, Resource } from '~/pages/resources/model';
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
+import { Computed, Data, Methods, Resource } from '~/pages/resources/model'
 import marked from '@/mixins/marked/index'
 
 const client = createClient()
@@ -132,11 +132,12 @@ export default Vue.extend<Data, Methods, Computed, never>({
   },
 
   asyncData() {
-      // Get page content
-      return client.getEntry(process.env.ctf_resource_hero_id as string)
+    // Get page content
+    return client
+      .getEntry(process.env.ctf_resource_hero_id as string)
       .then(({ fields }) => {
         return {
-          fields,
+          fields
         }
       })
       .catch(console.error)
@@ -195,8 +196,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
   watch: {
     '$route.query': function() {
       this.fetchResults()
-    },
-
+    }
   },
 
   /**
@@ -239,9 +239,10 @@ export default Vue.extend<Data, Methods, Computed, never>({
         order: 'fields.name',
         include: 2,
         query: this.$route.query.search,
-        'fields.resourceType': this.$route.query.type === 'sparcPartners'
-          ? undefined
-          : this.$route.query.type
+        'fields.resourceType':
+          this.$route.query.type === 'sparcPartners'
+            ? undefined
+            : this.$route.query.type
       }
 
       client

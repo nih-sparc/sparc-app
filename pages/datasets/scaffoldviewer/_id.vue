@@ -1,32 +1,6 @@
 <template>
   <div class="scaffold-viewer-page">
     <div class="page-wrap container">
-      <div class="subpage">
-        <div class="page-heading">
-          <h1>{{ fileName }}</h1>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
-            3D Scaffold
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Dataset id</strong>
-          <div class="file-detail__column">
-            {{ datasetId }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Version</strong>
-          <div class="file-detail__column">
-            {{ versionNumber }}
-          </div>
-        </div>
-      </div>
       <detail-tabs
         :tabs="tabs"
         :active-tab="activeTab"
@@ -55,6 +29,32 @@
           </div>
         </client-only>
       </detail-tabs>
+      <div class="subpage">
+        <div class="page-heading">
+          <h1>{{ fileName }}</h1>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">File Details</strong>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Type</strong>
+          <div class="file-detail__column">
+            3D Scaffold
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Dataset id</strong>
+          <div class="file-detail__column">
+            {{ datasetId }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Version</strong>
+          <div class="file-detail__column">
+            {{ versionNumber }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -63,6 +63,8 @@
 // :scaffold-selected="scaffoldSelected"
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import { successMessage, failMessage } from '@/utils/notification-messages'
+
+import FirstCol from '@/mixins/first-col/index'
 
 export default {
   name: 'ScaffoldViewerPage',
@@ -73,6 +75,9 @@ export default {
       ? () => import('@abi-software/scaffoldvuer').then(m => m.ScaffoldVuer)
       : null
   },
+
+  mixins: [FirstCol],
+
   async fetch() {
     //Get id for retrieving state on the server,
     //Id is prioritized before viewURL and region.
@@ -324,12 +329,12 @@ h1 {
 }
 
 .time-slider-container .el-slider__marks-text {
-  margin-top: 6px!important;
+  margin-top: 6px !important;
 }
 
 .time-slider-tooltip {
   padding: 6px 4px !important;
-  font-family: "Asap", sans-serif;
+  font-family: 'Asap', sans-serif;
   font-size: 12px !important;
   color: rgb(48, 49, 51) !important;
   background-color: #f3ecf6 !important;
@@ -341,7 +346,6 @@ h1 {
 .scaffold_viewer_dropdown .el-select-dropdown__item {
   white-space: nowrap;
   text-align: left;
-  font-family: "Asap", sans-serif;
+  font-family: 'Asap', sans-serif;
 }
-
 </style>

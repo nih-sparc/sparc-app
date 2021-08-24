@@ -33,7 +33,7 @@ export default {
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
-      process.env.BLACKFYNN_DISCOVER_API_HOST ||
+      process.env.PENNSIEVE_DISCOVER_API_HOST ||
       'https://api.pennsieve.io/discover',
     bf_api_host: process.env.BF_API_HOST || 'https://api.pennsieve.io',
     zipit_api_host:
@@ -72,6 +72,7 @@ export default {
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
+    NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000')
   },
@@ -158,6 +159,22 @@ export default {
     extend(config, ctx) {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    },
+    html: {
+      minify: {
+        collapseBooleanAttributes: true,
+        decodeEntities: true,
+        minifyCSS: true,
+        minifyJS: true,
+        processConditionalComments: true,
+        removeEmptyAttributes: true,
+        removeRedundantAttributes: true,
+        trimCustomFragments: true,
+        useShortDoctype: true,
+        minifyURLs: true,
+        removeComments: true,
+        removeEmptyElements: true
       }
     }
   }

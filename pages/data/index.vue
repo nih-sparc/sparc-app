@@ -423,7 +423,7 @@ export default {
       const organizationNameFilter =
         searchType === 'simulation' ? "IT'IS Foundation" : "SPARC Consortium"
 
-      filters = filters == undefined ? 
+      filters = filters === undefined ? 
       `pennsieve.organization.name:"${organizationNameFilter}"` : 
       filters + ` AND pennsieve.organization.name:"${organizationNameFilter}"`
 

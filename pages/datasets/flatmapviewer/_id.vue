@@ -1,5 +1,5 @@
 <template>
-  <div class="video-viewer-page">
+  <div class="flatmap-viewer-page">
     <div class="page-wrap container">
       <detail-tabs
         :tabs="tabs"
@@ -7,29 +7,41 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
-        <client-only placeholder="Loading video ...">
-          <div class="video-container">
-            <video ref="vid" class="video" controls crossorigin playsinline>
-              <source :src="video_src" :type="mimetype" size="1080" />
-              <p>
-                Your browser doesn't support HTML5 video. Here is a a
-                <a :href="video_src">link to the video</a> instead.
-              </p>
-            </video>
+        <client-only placeholder="Loading flatmap ...">
+          <div class="flatmap-container">
+            <FlatmapVuer
+              ref="flatmap"
+              :entry="taxo"
+              :name="taxo"
+              style="height:100%;width:100%;"
+              :display-minimap="false"
+              :flatmap-a-p-i="flatmapAPI"
+              @ready="flatmapReady"
+            />
           </div>
         </client-only>
       </detail-tabs>
       <div class="subpage">
-        <div class="page-heading">
-          <h1>{{ fileName }}</h1>
-        </div>
+        <div class="page-heading" />
         <div class="file-detail">
           <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
-            Video
+            Flatmap
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">taxo</strong>
+          <div class="file-detail__column">
+            {{ taxo }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">uberon</strong>
+          <div class="file-detail__column">
+            {{ uberonid }}
           </div>
         </div>
         <div class="file-detail">
@@ -50,71 +62,73 @@
 </template>
 
 <script>
-import Plyr from 'plyr'
-
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-
 export default {
-  name: 'VideoViewerPage',
-
+  name: 'FlatmapViewerPage',
   components: {
-    DetailTabs
+    DetailTabs,
+    FlatmapVuer: process.client
+      ? () => import('@abi-software/flatmapvuer').then(m => m.FlatmapVuer)
+      : null
   },
-  async asyncData({ route, $axios }) {
-    let signedUrl = await $axios
-      .$get(
-        `${process.env.portal_api}/download?key=${route.query.file_path}&contentType=${route.query.mimetype}`
-      )
-      .then(response => {
-        return response
-      })
-    return {
-      video_src: signedUrl,
-      mimetype: route.query.mimetype
-    }
-  },
-
   data: () => {
     return {
       tabs: [
         {
-          label: 'Video Viewer',
-          type: 'video'
+          label: 'Flatmap Viewer',
+          type: 'flatmap'
         }
       ],
-      activeTab: 'video',
+      activeTab: 'flatmap',
       file: {},
-      traditional: true,
-      backgroundToggle: true
+      flatmapAPI: process.env.flatmap_api
     }
   },
   computed: {
     /**
-     * Get the file name from the query parameter.
+     * Get the taxo from the query parameter.
      * @returns String
      */
-    fileName: function() {
-      return this.$route.query.id
+    taxo: function() {
+      return this.$route.query.taxo
     },
-
     /**
-     * Get the dataset id from the query parameter.
+     * Get the uberon id from the query parameter.
      * @returns Number
+     */
+    uberonid: function() {
+      return this.$route.query.uberonid
+    },
+    /**
+     * Return the dataset id from the route query.
+     * @returns String
      */
     datasetId: function() {
       return this.$route.query.dataset_id
     },
-
     /**
-     * Get the version number from the query parameter.
-     * @returns Number
+     * Return the version number from the route query.
+     * @returns String
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
     }
   },
-  mounted() {
-    this.player = new Plyr(this.$refs.vid)
+  methods: {
+    flatmapReady: function(component) {
+      let id = this.checkForIlxtr(this.uberonid)
+      component.mapImp.zoomTo(id)
+      component.checkAndCreatePopups({
+        resource: [id],
+        eventType: 'click'
+      })
+    },
+    checkForIlxtr: function(id) {
+      if (id.includes('neuron-type-keast') && !id.includes('ilxtr')) {
+        return 'ilxtr:' + id
+      }
+      return id
+    }
   }
 }
 </script>
@@ -123,18 +137,15 @@ export default {
 .page {
   display: flex;
   margin-top: 7rem;
-
   p {
     color: #606266;
   }
 }
-
 .about {
   text-align: center;
   min-height: 50vh;
   margin-top: 9rem;
 }
-
 h1 {
   flex: 1;
   font-size: 1.5em;
@@ -151,7 +162,6 @@ h1 {
 .page-heading__button {
   flex-shrink: 0;
 }
-
 .file-detail {
   border-bottom: 1px solid #dbdfe6;
   flex-direction: column;
@@ -167,10 +177,11 @@ h1 {
 }
 </style>
 <style lang="scss">
-.video-container {
-  padding-top: 8px;
-}
-.video {
-  width: 100%;
+.flatmap-container {
+  margin-top: 1.5rem;
+  height: 90vh;
+  max-width: calc(100% - 48px);
+  padding-left: 24px;
+  @import '~@abi-software/flatmapvuer/dist/flatmapvuer';
 }
 </style>

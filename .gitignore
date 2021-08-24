@@ -1,4 +1,3 @@
-.DS_Store
 dist
 .vscode/
 node_modules
@@ -108,4 +107,3 @@ sw.*
 
 # Certifact files
 .certs/
-

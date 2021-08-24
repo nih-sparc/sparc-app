@@ -14,7 +14,7 @@
           </bf-button>
         </a>
       </p>
-      <iframe ref="biolucida" :src="data.share_link" />
+      <iframe :src="data.share_link" />
     </template>
     <p v-else class="error">
       Sorry, an error has occurred
@@ -26,45 +26,21 @@
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 export default {
-  name: 'BiolucidaViewer',
+  name: 'SegmentationViewer',
 
   components: {
     BfButton
   },
 
   props: {
-    queryView: {
-      type: Boolean,
-      default: false
-    },
     data: {
       type: Object,
       default: () => {
         return {
-          biolucida_image_id: '',
           share_link: '',
           status: ''
         }
       }
-    }
-  },
-  watch: {
-    queryView() {
-      this.$refs.biolucida.contentWindow.postMessage('getImgPos')
-    }
-  },
-  mounted() {
-    window.addEventListener('message', this.receiveMessage)
-  },
-  beforeDestroy() {
-    window.removeEventListener('message', this.receiveMessage)
-  },
-  methods: {
-    receiveMessage(event) {
-      // Waiting on changes to Biolucida that will enable us to receive the desired message.
-      // console.log('received message.')
-      // console.log(event.origin)
-      // console.log(event.data)
     }
   }
 }

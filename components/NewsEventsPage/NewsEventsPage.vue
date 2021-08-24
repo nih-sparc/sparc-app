@@ -44,10 +44,7 @@
                 <svg-icon name="icon-share-linked" height="28" width="28" />
                 <span class="visuallyhidden">Share on Linkedin</span>
               </share-network>
-              <button
-                @click="copyLink"
-                class="ml-8 btn-copy-permalink"
-              >
+              <button class="ml-8 btn-copy-permalink" @click="copyLink">
                 <svg-icon name="icon-permalink" height="28" width="28" />
                 <span class="visuallyhidden">Copy permalink</span>
               </button>
@@ -67,12 +64,13 @@
 </template>
 
 <script>
-import { pathEq } from 'ramda'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import PageHero from '@/components/PageHero/PageHero'
+
+import FirstCol from '@/mixins/first-col/index'
 
 export default {
   name: 'NewsEventsPage',
@@ -82,18 +80,7 @@ export default {
     PageHero
   },
 
-  mixins: [FormatDate, MarkedMixin],
-
-  methods: {
-    copyLink: function() {
-      this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
-        () => {
-          this.$message(successMessage('Share link copied to clipboard.'))
-      }, () => {
-          this.$message(failMessage('Failed to copy share link.'))
-      });
-    },
-  },
+  mixins: [FormatDate, MarkedMixin, FirstCol],
 
   props: {
     page: {
@@ -139,14 +126,6 @@ export default {
      * Compute the first column's attributes
      * @returns {Object}
      */
-    firstCol() {
-      return this.type === 'event' ? { span: 12 } : { span: 12, push: 12 }
-    },
-
-    /**
-     * Compute the first column's attributes
-     * @returns {Object}
-     */
     secondCol() {
       return this.type === 'event' ? { span: 12 } : { span: 12, pull: 12 }
     },
@@ -169,6 +148,19 @@ export default {
       const name = this.type === 'event' ? 'Events' : 'News'
 
       return `View All ${name} >`
+    }
+  },
+
+  methods: {
+    copyLink: function() {
+      this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
+        () => {
+          this.$message(successMessage('Share link copied to clipboard.'))
+        },
+        () => {
+          this.$message(failMessage('Failed to copy share link.'))
+        }
+      )
     }
   }
 }
