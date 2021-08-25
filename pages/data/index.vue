@@ -234,6 +234,9 @@ export default {
       searchData: clone(searchData),
       isLoadingSearch: false,
       isSearchMapVisible: false,
+      latestFacetUpdateKey: '',
+      latestSearchTerm: '',
+      hasKeys: 0,
       breadcrumb: [
         {
           to: {
@@ -326,7 +329,7 @@ export default {
         this.fetchResults()
       },
       immediate: true
-    },
+    }
 
     // selectedFacets: function() {
     //   this.$router.replace({
@@ -426,7 +429,13 @@ export default {
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
       const query = this.$route.query.q
-      var filters = this.constructFilters(this.selectedFacets)
+
+
+      var filters = undefined
+      if (this.selectedFacets) {
+        filters = this.constructFilters(this.selectedFacets)
+      }
+
       const searchType = pathOr('', ['query', 'type'], this.$route)
       const organizationNameFilter =
         searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
@@ -440,16 +449,21 @@ export default {
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-      algoliaIndex
-        .search(query, {
-          facets: ['*']
-        })
-        .then(response => {
-          this.visibleFacets = response.facets
-        })
+      if (query !== this.latestSearchTerm || !this.hasKeys) {
+        this.latestSearchTerm = query
+        algoliaIndex
+          .search(query, {
+            facets: ['*'],
+            filters: `pennsieve.organization.name:"${organizationNameFilter}"`
+          })
+          .then(response => {
+            this.visibleFacets = response.facets
+          })
+      }
 
       algoliaIndex
         .search(query, {
+          facets: ['*'],
           hitsPerPage: this.searchData.limit,
           page: this.curSearchPage - 1,
           filters: filters
@@ -461,6 +475,20 @@ export default {
           }
           this.searchData = mergeLeft(searchData, this.searchData)
           this.isLoadingSearch = false
+          // update facet result numbers
+          for (const [key, value] of Object.entries(this.visibleFacets)) {
+            if ( (this.latestFacetUpdateKey === key && !this.hasKeys) || (this.latestFacetUpdateKey !== key) ){
+              for (const [key2, value2] of Object.entries(value)) {
+                let maybeFacetCount = pathOr(null, [key, key2], response.facets)
+                if (maybeFacetCount) {
+                  let test = response.facets[key][key2]
+                  this.visibleFacets[key][key2] = response.facets[key][key2]
+                } else {
+                  this.visibleFacets[key][key2] = 0
+                }
+            }
+            }
+          }
         })
     },
 
@@ -624,7 +652,9 @@ export default {
       )
     },
 
-    updateSelectedFacets: function(facets) {
+    updateSelectedFacets: function(key, hasKeys, facets) {
+      this.latestFacetUpdateKey = key
+      this.hasKeys = hasKeys
       this.selectedFacets = facets
       console.log(pluck('id', this.selectedFacets).toString())
       this.$router.replace({

@@ -22,7 +22,6 @@
 </template>
 
 <script>
-// import FacetMenu from '@/components/FacetMenu/FacetMenu.vue'
 import TagsContainer from '@/components/FacetMenu/TagsContainer.vue'
 import FacetCategory from '~/components/FacetMenu/FacetCategory'
 export default {
@@ -76,7 +75,7 @@ export default {
         this.selectedFacetArray = this.selectedFacetArray.concat(value)
       }
 
-      this.$emit('selected-facets-changed', this.selectedFacetArray)
+      this.$emit('selected-facets-changed', data.key, Object.keys(data.facets).length ,this.selectedFacetArray)
 
     },
     // selectedFacetsChanged: function(newSelectedFacets) {

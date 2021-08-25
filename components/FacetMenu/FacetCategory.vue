@@ -1,14 +1,14 @@
 <template>
   <div class="white-background">
-    <hr>
+    <hr />
     <h2 class="title">
       {{ facet.label }}
     </h2>
-    <hr>
+    <hr />
     <div class="show-all-node">
       <el-checkbox v-model="showAll" @change="onChangeShowAll" />
       <span>Show all</span>
-      <hr>
+      <hr />
     </div>
     <el-tree
       ref="tree"
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { filter, propOr } from 'ramda'
+import { propOr, pathOr } from 'ramda'
 
 export default {
   name: 'FacetCategory',
@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     allKeys: function() {
-      Object.keys(this.visibleFacets[this.facet.key])
+      return Object.keys(propOr({}, this.facet.key, this.visibleFacets))
     }
   },
   watch: {
@@ -84,11 +84,22 @@ export default {
       if (!value) return true
       return this.allKeys.includes(data.label)
     },
+    // eslint-disable-next-line no-unused-vars
     renderContent(h, { node, data, store }) {
-      let nrResults = this.visibleFacets[this.facet.key][node.data.label]
+      let nrResults = pathOr(
+        0,
+        [this.facet.key, node.data.label],
+        this.visibleFacets
+      )
       return (
         <span class="custom-tree-node">
-          <el-tooltip content={node.label} popper-class="capitalize" transition="none" open-delay="700" placement="top-start">
+          <el-tooltip
+            content={node.label}
+            popper-class="capitalize"
+            open-delay="700"
+            transition="none"
+            placement="top-start"
+          >
             <span class="capitalize">{node.label}</span>
           </el-tooltip>
           <span class="tree-counter">({nrResults})</span>
