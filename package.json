@@ -17,9 +17,9 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/flatmapvuer": "0.1.33",
+    "@abi-software/flatmapvuer": "0.2.0",
     "@abi-software/gallery": "^0.1.6",
-    "@abi-software/mapintegratedvuer": "0.1.31-fix-2",
+    "@abi-software/mapintegratedvuer": "0.2.1",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/scaffoldvuer": "0.1.48",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
