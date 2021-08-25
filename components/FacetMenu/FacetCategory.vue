@@ -3,25 +3,35 @@
     <hr>
     <h2 class="title">
       {{ facet.label }}
+      <svg-icon
+        @click="() => collapsed = !collapsed"
+        class="ml-8 icon-arrow"
+        name="icon-arrow"
+        :dir="collapsibleArrowDir"
+        height="15"
+        width="15"
+      />
     </h2>
-    <hr>
-    <div class="show-all-node">
-      <el-checkbox v-model="showAll" @change="onChangeShowAll" />
-      <span>Show all</span>
+    <div v-show="!collapsed" class="light-gray-background">
       <hr>
+      <div class="show-all-node">
+        <el-checkbox v-model="showAll" @change="onChangeShowAll" />
+        <span>Show all</span>
+        <hr>
+      </div>
+      <el-tree
+        ref="tree"
+        :data="facet.children"
+        node-key="id"
+        show-checkbox
+        default-expand-all
+        :default-checked-keys="defaultCheckedKeys"
+        :props="treeProps"
+        :filter-node-method="filterNode"
+        :render-content="renderContent"
+        @check-change="onCheckChange"
+      />
     </div>
-    <el-tree
-      ref="tree"
-      :data="facet.children"
-      node-key="id"
-      show-checkbox
-      default-expand-all
-      :default-checked-keys="defaultCheckedKeys"
-      :props="treeProps"
-      :filter-node-method="filterNode"
-      :render-content="renderContent"
-      @check-change="onCheckChange"
-    />
   </div>
 </template>
 
@@ -54,12 +64,16 @@ export default {
       showAll: true,
       treeProps: {
         label: 'label'
-      }
+      },
+      collapsed: false
     }
   },
   computed: {
     allKeys: function() {
       Object.keys(this.visibleFacets[this.facet.key])
+    },
+    collapsibleArrowDir: function() {
+      return this.collapsed ? 'up' : 'down'
     }
   },
   watch: {
@@ -140,12 +154,19 @@ export default {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+.light-gray-background .el-tree {
+  background: rgb(250, 250, 250);
+}
 </style>
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
 .white-background {
   background-color: white;
+}
+
+.light-gray-background {
+  background-color: rgb(250, 250, 250);
 }
 
 .show-all-node {
@@ -155,7 +176,7 @@ export default {
   hr {
     margin: .5rem 0;
   }
-  margin: 0 1.5rem;
+  margin: .5rem 1.5rem;
 }
 
 h2 {
@@ -165,6 +186,8 @@ h2 {
 }
 
 .title {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 0;
   padding: 0.5rem 1rem;
 }
@@ -172,6 +195,6 @@ h2 {
 hr {
   border: none;
   border-bottom: 1px solid #dbdfe6;
-  margin: .5rem 0;
+  margin: 0;
 }
 </style>
