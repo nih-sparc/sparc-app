@@ -49,7 +49,7 @@
         <div class="file-detail">
           <strong class="file-detail__column_1">Species</strong>
           <div class="file-detail__column_2">
-            {{ segmentation_info.subject.species }}
+            {{ human_readable_species }}
           </div>
         </div>
         <div class="file-detail">
@@ -78,6 +78,7 @@
 <script>
 import discover from '@/services/discover'
 import scicrunch from '@/services/scicrunch'
+import general from '@/services/general'
 
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -115,6 +116,12 @@ export default {
         name: baseName(route.query.file_path)
       }
 
+      const species_lookup_response = await general.lookupOLSTerm(
+        segmentation_info.subject.species
+      )
+
+      const human_readable_species = species_lookup_response.label
+
       let dataset_info = dataset_response.data.result[0]
       if (dataset_info === undefined) {
         dataset_info = { readme: '', title: '' }
@@ -122,6 +129,7 @@ export default {
 
       return {
         segmentation_info,
+        human_readable_species,
         readme: dataset_info.readme,
         title: dataset_info.title
       }
@@ -130,6 +138,7 @@ export default {
     }
     return {
       segmentation_info: { subject: '', atlas: '' },
+      human_readable_species: '',
       readme: '',
       title: ''
     }
