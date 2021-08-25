@@ -1,5 +1,5 @@
 <template>
-  <div class="white-background">
+  <div>
     <hr />
     <h2 class="title">
       {{ facet.label }}
@@ -107,15 +107,7 @@ export default {
       )
       return (
         <span class="custom-tree-node">
-          <el-tooltip
-            content={node.label}
-            popper-class="capitalize"
-            open-delay="700"
-            transition="none"
-            placement="top-start"
-          >
             <span class="capitalize">{node.label}</span>
-          </el-tooltip>
           <span class="tree-counter">({nrResults})</span>
         </span>
       )
@@ -166,7 +158,7 @@ export default {
   overflow: hidden;
 }
 .light-gray-background .el-tree {
-  background: rgb(250, 250, 250);
+  background: rgb(250,251,252);
 }
 </style>
 
@@ -177,7 +169,7 @@ export default {
 }
 
 .light-gray-background {
-  background-color: rgb(250, 250, 250);
+  background-color: rgb(250,251,252);
 }
 
 .show-all-node {

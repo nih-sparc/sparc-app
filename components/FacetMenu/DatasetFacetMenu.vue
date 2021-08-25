@@ -96,6 +96,7 @@ export default {
 @import '../../assets/_variables.scss';
 	.white-background {
 		background-color: white;
+    border: 0.1rem solid #e4e7ed
 	}
 
 	h2 {
