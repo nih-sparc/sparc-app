@@ -5,7 +5,7 @@
     </h2>
     <hr />
     <tags-container
-      :selectedFacets="selectedFacets"
+      :selectedFacets="selectedFacetArray"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
@@ -46,9 +46,19 @@ export default {
 
   data() {
     return {
-      selectedFacets: []
+      selectedFacets: {},
+      selectedFacetArray: []
     }
   },
+  // watch: {
+  //   selectedFacets: function() {
+  //     let result = []
+  //     for (let n in Object.keys(this.selectedFacets)) {
+  //       result.push(this.selectedFacets[n])
+  //     }
+  //     return result
+  //   }
+  // },
 
   mounted() {},
 
@@ -56,13 +66,22 @@ export default {
     visibleFacetsForCategory: function(key) {
       return this.visibleFacets[key]
     },
-    onSelectionChange: function() {
+    onSelectionChange: function(data) {
+      console.log(data)
+      this.selectedFacets[data.key] = data.facets
+
+      this.selectedFacetArray = []
+      for (const [key, value] of Object.entries(this.selectedFacets)) {
+        this.selectedFacetArray = this.selectedFacetArray.concat(value)
+      }
+
+      this.$emit('selected-facets-changed', this.selectedFacetArray)
 
     },
-    selectedFacetsChanged: function(newSelectedFacets) {
-			this.selectedFacets = newSelectedFacets
-      this.$emit('selected-facets-changed', newSelectedFacets)
-  	},
+    // selectedFacetsChanged: function(newSelectedFacets) {
+		// 	this.selectedFacets = newSelectedFacets
+    //   this.$emit('selected-facets-changed', newSelectedFacets)
+  	// },
 		deselectAllFacets() {
       this.$refs.menu.deselectAllFacets()
     },

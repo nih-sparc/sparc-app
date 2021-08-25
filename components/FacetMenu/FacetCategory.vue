@@ -7,10 +7,17 @@
       <el-checkbox v-model="showAll" @change="onChangeShowAll" />
       <span>Show all</span>
     </div>
-    <el-tree ref="tree" :data="visibleChildren" node-key="id" show-checkbox
-             default-expand-all :props="treeProps"
-             @check-change="onCheckChange"
-/>
+    <el-tree
+      ref="tree"
+      :data="facet.children"
+      node-key="id"
+      show-checkbox
+      default-expand-all
+      :props="treeProps"
+      :filter-node-method="filterNode"
+      :render-content="renderContent"
+      @check-change="onCheckChange"
+    />
   </div>
 </template>
 
@@ -37,37 +44,37 @@ export default {
     return {
       showAll: true,
       treeProps: {
-        label: 'label2'
+        label: 'label'
       }
     }
-
   },
-
   computed: {
-    visibleChildren: function() {
-      if (Object.keys(propOr({}, this.facet.key, this.visibleFacets)).length) {
-        let allKeys = Object.keys(this.visibleFacets[this.facet.key])
-        let filteredOptions = filter(
-          n => allKeys.includes(n.label),
-          this.facet.children
-        )
-        for (let n in filteredOptions) {
-          filteredOptions[n].label2 =
-            filteredOptions[n].label +
-            ' (' +
-            this.visibleFacets[this.facet.key][filteredOptions[n].label] +
-            ')'
-        }
-        return filteredOptions
-      } else {
-        return this.facet.children
-      }
+    allKeys: function() {
+      return Object.keys(this.visibleFacets[this.facet.key])
+    }
+  },
+  watch: {
+    allKeys(val) {
+      this.$refs.tree.filter(val)
     }
   },
 
   mounted() {},
 
   methods: {
+    filterNode: function(value, data) {
+      if (!value) return true
+      return this.allKeys.includes(data.label)
+    },
+    renderContent(h, { node, data, store }) {
+      let nrResults = this.visibleFacets[this.facet.key][node.data.label]
+      return (
+        <span class="custom-tree-node">
+          <span>{node.label}</span>
+          <span class="tree-counter">({nrResults})</span>
+        </span>
+      )
+    },
     onChangeShowAll: function(value) {
       if (value) {
         this.uncheckAll()
@@ -78,11 +85,17 @@ export default {
     onCheckChange: function(data) {
       const checked = this.$refs.tree.getCheckedKeys()
       if (!checked.length) {
-        console.log('should show all')
         this.showAll = true
       } else {
         this.showAll = false
       }
+      this.$emit('selection-change', {
+        key: this.facet.key,
+        facets: this.$refs.tree.getCheckedNodes(true)
+      })
+    },
+    getSelectedFacets: function() {
+      return this.$refs.tree.getCheckedNodes()
     },
     uncheckAll: function() {
       this.$refs.tree.setCheckedKeys([])
@@ -90,6 +103,14 @@ export default {
   }
 }
 </script>
+
+<style>
+.tree-counter {
+  margin-left: 5px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+</style>
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';

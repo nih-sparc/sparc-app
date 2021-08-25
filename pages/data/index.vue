@@ -328,16 +328,16 @@ export default {
       immediate: true
     },
 
-    selectedFacets: function() {
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          selectedFacetIds: pluck('id', this.selectedFacets).toString()
-        }
-      })
-      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
-      this.fetchResults()
-    }
+    // selectedFacets: function() {
+    //   this.$router.replace({
+    //     query: {
+    //       ...this.$route.query,
+    //       selectedFacetIds: pluck('id', this.selectedFacets).toString()
+    //     }
+    //   })
+    //   this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
+    //   this.fetchResults()
+    // }
   },
 
   beforeMount: function() {
@@ -624,16 +624,17 @@ export default {
       )
     },
 
-    updateSelectedFacets: function(newSelectedFacets) {
-      var selectedFacets = []
-      newSelectedFacets.map(selectedFacet => {
-        selectedFacets.push({
-          label: selectedFacet.label,
-          facetPropPath: selectedFacet.facetPropPath,
-          id: selectedFacet.id
-        })
+    updateSelectedFacets: function(facets) {
+      this.selectedFacets = facets
+      console.log(pluck('id', this.selectedFacets).toString())
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          selectedFacetIds: pluck('id', this.selectedFacets).toString()
+        }
       })
-      this.selectedFacets = selectedFacets
+      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
+      this.fetchResults()
     },
 
     /**
