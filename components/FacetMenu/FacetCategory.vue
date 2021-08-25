@@ -65,10 +65,19 @@ export default {
   watch: {
     allKeys(val) {
       this.$refs.tree.filter(val)
-    }
+    },
   },
 
-  mounted() {},
+  mounted() {
+    if (this.defaultCheckedKeys.length){
+        this.$nextTick(() => {
+          /* Work around el-tree component not firing onFacetChecked event when setting default checked keys. When user refreshes page, 
+           * we need to force selectedFacets to update so that the tags get shown and that the selectedFacets changed event gets fired 
+           * and notifies the parent that the selected facets have changed so that they can then fetch results */
+          this.onCheckChange()
+        })
+      }
+  },
 
   methods: {
     filterNode: function(value, data) {
