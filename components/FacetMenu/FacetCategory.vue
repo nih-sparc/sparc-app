@@ -193,6 +193,7 @@ h2 {
   justify-content: space-between;
   margin-bottom: 0;
   padding: 0.5rem 1rem;
+  font-weight: 300;
 }
 
 hr {

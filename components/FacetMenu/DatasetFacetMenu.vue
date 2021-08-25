@@ -50,15 +50,6 @@ export default {
       selectedFacetArray: []
     }
   },
-  // watch: {
-  //   selectedFacets: function() {
-  //     let result = []
-  //     for (let n in Object.keys(this.selectedFacets)) {
-  //       result.push(this.selectedFacets[n])
-  //     }
-  //     return result
-  //   }
-  // },
 
   mounted() {},
 
@@ -78,10 +69,6 @@ export default {
       this.$emit('selected-facets-changed', data.key, Object.keys(data.facets).length ,this.selectedFacetArray)
 
     },
-    // selectedFacetsChanged: function(newSelectedFacets) {
-		// 	this.selectedFacets = newSelectedFacets
-    //   this.$emit('selected-facets-changed', newSelectedFacets)
-  	// },
     deselectAllFacets() {
       this.$refs.facetCategories.map(FacetCategory => FacetCategory.uncheckAll())
     },
@@ -108,6 +95,8 @@ export default {
 	.title {
 		margin-bottom: 0;
 		padding: 0.5rem 1rem;
+    font-weight: 300
+
 	}
 
 	hr {
