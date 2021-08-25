@@ -1,11 +1,14 @@
 <template>
   <div class="white-background">
+    <hr>
     <h2 class="title">
       {{ facet.label }}
     </h2>
-    <div>
+    <hr>
+    <div class="show-all-node">
       <el-checkbox v-model="showAll" @change="onChangeShowAll" />
       <span>Show all</span>
+      <hr>
     </div>
     <el-tree
       ref="tree"
@@ -13,6 +16,7 @@
       node-key="id"
       show-checkbox
       default-expand-all
+      :default-checked-keys="defaultCheckedKeys"
       :props="treeProps"
       :filter-node-method="filterNode"
       :render-content="renderContent"
@@ -37,6 +41,11 @@ export default {
     visibleFacets: {
       type: Object,
       default: () => {}
+    },
+    // Facets to be checked by default when loading the facet menu
+    defaultCheckedKeys: {
+      type: Array,
+      default: () => []
     }
   },
 
@@ -50,7 +59,7 @@ export default {
   },
   computed: {
     allKeys: function() {
-      return Object.keys(this.visibleFacets[this.facet.key])
+      Object.keys(this.visibleFacets[this.facet.key])
     }
   },
   watch: {
@@ -70,7 +79,9 @@ export default {
       let nrResults = this.visibleFacets[this.facet.key][node.data.label]
       return (
         <span class="custom-tree-node">
-          <span>{node.label}</span>
+          <el-tooltip content={node.label} popper-class="capitalize" transition="none" open-delay="700" placement="top-start">
+            <span class="capitalize">{node.label}</span>
+          </el-tooltip>
           <span class="tree-counter">({nrResults})</span>
         </span>
       )
@@ -99,6 +110,9 @@ export default {
     },
     uncheckAll: function() {
       this.$refs.tree.setCheckedKeys([])
+    },
+    uncheck: function(id) {
+      this.$refs.tree.setChecked(id, false, true)
     }
   }
 }
@@ -110,12 +124,29 @@ export default {
   font-size: 12px;
   vertical-align: middle;
 }
+.capitalize {
+  text-transform: capitalize;
+}
+.custom-tree-node {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 </style>
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
 .white-background {
   background-color: white;
+}
+
+.show-all-node {
+  .el-checkbox {
+    padding-right: .25rem;
+  }
+  hr {
+    margin: .5rem 0;
+  }
+  margin: 0 1.5rem;
 }
 
 h2 {
@@ -132,6 +163,6 @@ h2 {
 hr {
   border: none;
   border-bottom: 1px solid #dbdfe6;
-  margin: 0;
+  margin: .5rem 0;
 }
 </style>

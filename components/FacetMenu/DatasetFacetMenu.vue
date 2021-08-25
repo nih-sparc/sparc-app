@@ -9,13 +9,14 @@
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
-    <hr />
     <facet-category
       v-for="item in this.facets"
       :key="item.id"
       :facet="item"
       :visible-facets="visibleFacets"
+      :default-checked-keys="defaultCheckedFacetIds"
       @selection-change="onSelectionChange"
+      ref="facetCategories"
     />
   </div>
 </template>
@@ -82,11 +83,11 @@ export default {
 		// 	this.selectedFacets = newSelectedFacets
     //   this.$emit('selected-facets-changed', newSelectedFacets)
   	// },
-		deselectAllFacets() {
-      this.$refs.menu.deselectAllFacets()
+    deselectAllFacets() {
+      this.$refs.facetCategories.map(FacetCategory => FacetCategory.uncheckAll())
     },
     deselectFacet(id) {
-      this.$refs.menu.deselectFacet(id)
+      this.$refs.facetCategories.map(FacetCategory => FacetCategory.uncheck(id))
     }
 	}
 }
