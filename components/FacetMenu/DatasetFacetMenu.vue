@@ -4,19 +4,30 @@
       Refine results
     </h2>
     <hr />
-		<tags-container :selectedFacets="selectedFacets" @deselect-facet="deselectFacet" @deselect-all-facets="deselectAllFacets"/>
-    <hr />
-    <facet-menu ref="menu" :facets="facets" :defaultCheckedFacetIds="defaultCheckedFacetIds" :visibleFacets="visibleFacets" @selected-facets-changed="selectedFacetsChanged"/>
+    <tags-container
+      :selectedFacets="selectedFacetArray"
+      @deselect-facet="deselectFacet"
+      @deselect-all-facets="deselectAllFacets"
+    />
+    <facet-category
+      v-for="item in this.facets"
+      :key="item.id"
+      :facet="item"
+      :visible-facets="visibleFacets"
+      :default-checked-keys="defaultCheckedFacetIds"
+      @selection-change="onSelectionChange"
+      ref="facetCategories"
+    />
   </div>
 </template>
 
 <script>
-import FacetMenu from '@/components/FacetMenu/FacetMenu.vue'
 import TagsContainer from '@/components/FacetMenu/TagsContainer.vue'
+import FacetCategory from '~/components/FacetMenu/FacetCategory'
 export default {
   name: 'DatasetFacetMenu',
 
-  components: { FacetMenu, TagsContainer },
+  components: { FacetCategory, TagsContainer },
 
   props: {
     facets: {
@@ -35,28 +46,34 @@ export default {
 
   data() {
     return {
-      selectedFacets: [],
+      selectedFacets: {},
+      selectedFacetArray: []
     }
   },
 
-	mounted() {
-		// Work around el-tree component not firing onFacetChecked event when setting default checked keys.
-		// When user navigates between tabs, we need to force selectedFacets to update so that the tags get shown
-		if (this.$refs.menu.facets.length > 0) {
-			this.$refs.menu.onFacetChecked()
-		}
-	},
+  mounted() {},
 
   methods: {
-    selectedFacetsChanged: function(newSelectedFacets) {
-			this.selectedFacets = newSelectedFacets
-      this.$emit('selected-facets-changed', newSelectedFacets)
-  	},
-		deselectAllFacets() {
-      this.$refs.menu.deselectAllFacets()
+    visibleFacetsForCategory: function(key) {
+      return this.visibleFacets[key]
+    },
+    onSelectionChange: function(data) {
+      console.log(data)
+      this.selectedFacets[data.key] = data.facets
+
+      this.selectedFacetArray = []
+      for (const [key, value] of Object.entries(this.selectedFacets)) {
+        this.selectedFacetArray = this.selectedFacetArray.concat(value)
+      }
+
+      this.$emit('selected-facets-changed', data.key, Object.keys(data.facets).length ,this.selectedFacetArray)
+
+    },
+    deselectAllFacets() {
+      this.$refs.facetCategories.map(FacetCategory => FacetCategory.uncheckAll())
     },
     deselectFacet(id) {
-      this.$refs.menu.deselectFacet(id)
+      this.$refs.facetCategories.map(FacetCategory => FacetCategory.uncheck(id))
     }
 	}
 }
@@ -66,6 +83,7 @@ export default {
 @import '../../assets/_variables.scss';
 	.white-background {
 		background-color: white;
+    border: 0.1rem solid #e4e7ed
 	}
 
 	h2 {
@@ -77,6 +95,8 @@ export default {
 	.title {
 		margin-bottom: 0;
 		padding: 0.5rem 1rem;
+    font-weight: 300
+
 	}
 
 	hr {

@@ -66,7 +66,12 @@
               :md="8"
               :lg="6"
             >
-               <dataset-facet-menu :facets="facets" :defaultCheckedFacetIds="defaultCheckedFacetIds" :visibleFacets="visibleFacets" @selected-facets-changed="updateSelectedFacets" />
+              <dataset-facet-menu
+                :facets="facets"
+                :default-checked-facet-ids="defaultCheckedFacetIds"
+                :visible-facets="visibleFacets"
+                @selected-facets-changed="updateSelectedFacets"
+              />
             </el-col>
             <el-col
               :sm="searchColSpan('sm')"
@@ -144,7 +149,7 @@ const searchResultsComponents = {
   sparcPartners: ResourcesSearchResults,
   event: EventSearchResults,
   simulation: DatasetSearchResults,
-  news: NewsSearchResults,
+  news: NewsSearchResults
 }
 
 const sparcAwardType = ['projects']
@@ -182,7 +187,7 @@ const searchTypes = [
     type: process.env.ctf_project_id,
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
-  },
+  }
 ]
 
 const searchData = {
@@ -223,12 +228,15 @@ export default {
       facets: [],
       visibleFacets: {},
       selectedFacets: [],
-      defaultCheckedFacetIds:[],
-      sparcAwardType:[...sparcAwardType],
+      defaultCheckedFacetIds: [],
+      sparcAwardType: [...sparcAwardType],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
       isSearchMapVisible: false,
+      latestFacetUpdateKey: '',
+      latestSearchTerm: '',
+      hasKeys: 0,
       breadcrumb: [
         {
           to: {
@@ -238,7 +246,7 @@ export default {
         }
       ],
       titleColumnWidth: 300,
-      windowWidth: '',
+      windowWidth: ''
     }
   },
 
@@ -317,21 +325,22 @@ export default {
 
     '$route.query.q': {
       handler: function(val) {
-        if (val) {
-          this.searchQuery = this.$route.query.q
-          this.fetchResults()
-        }
+        this.searchQuery = this.$route.query.q
+        this.fetchResults()
       },
       immediate: true
-    },
-
-    'selectedFacets': function() {
-      this.$router.replace({
-        query: { ...this.$route.query, selectedFacetIds: pluck('id', this.selectedFacets).toString() }
-      })
-      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
-      this.fetchResults()
     }
+
+    // selectedFacets: function() {
+    //   this.$router.replace({
+    //     query: {
+    //       ...this.$route.query,
+    //       selectedFacetIds: pluck('id', this.selectedFacets).toString()
+    //     }
+    //   })
+    //   this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
+    //   this.fetchResults()
+    // }
   },
 
   beforeMount: function() {
@@ -359,7 +368,9 @@ export default {
 
       this.searchData = { ...this.searchData, ...queryParams }
       if (this.$route.query.selectedFacetIds) {
-        this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(",")
+        this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(
+          ','
+        )
       }
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -418,28 +429,41 @@ export default {
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
       const query = this.$route.query.q
-      var filters = this.constructFilters(this.selectedFacets);
+
+
+      var filters = undefined
+      if (this.selectedFacets) {
+        filters = this.constructFilters(this.selectedFacets)
+      }
+
       const searchType = pathOr('', ['query', 'type'], this.$route)
       const organizationNameFilter =
-        searchType === 'simulation' ? "IT'IS Foundation" : "SPARC Consortium"
+        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
 
-      filters = filters === undefined ? 
-      `pennsieve.organization.name:"${organizationNameFilter}"` : 
-      filters + ` AND pennsieve.organization.name:"${organizationNameFilter}"`
+      filters =
+        filters === undefined
+          ? `pennsieve.organization.name:"${organizationNameFilter}"`
+          : filters +
+            ` AND pennsieve.organization.name:"${organizationNameFilter}"`
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-      algoliaIndex
-        .search(query, {
-          facets: ['*'],
-        })
-        .then(response => {
-          this.visibleFacets = response.facets
-        })
+      if (query !== this.latestSearchTerm || !this.hasKeys) {
+        this.latestSearchTerm = query
+        algoliaIndex
+          .search(query, {
+            facets: ['*'],
+            filters: `pennsieve.organization.name:"${organizationNameFilter}"`
+          })
+          .then(response => {
+            this.visibleFacets = response.facets
+          })
+      }
 
       algoliaIndex
         .search(query, {
+          facets: ['*'],
           hitsPerPage: this.searchData.limit,
           page: this.curSearchPage - 1,
           filters: filters
@@ -451,6 +475,20 @@ export default {
           }
           this.searchData = mergeLeft(searchData, this.searchData)
           this.isLoadingSearch = false
+          // update facet result numbers
+          for (const [key, value] of Object.entries(this.visibleFacets)) {
+            if ( (this.latestFacetUpdateKey === key && !this.hasKeys) || (this.latestFacetUpdateKey !== key) ){
+              for (const [key2, value2] of Object.entries(value)) {
+                let maybeFacetCount = pathOr(null, [key, key2], response.facets)
+                if (maybeFacetCount) {
+                  let test = response.facets[key][key2]
+                  this.visibleFacets[key][key2] = response.facets[key][key2]
+                } else {
+                  this.visibleFacets[key][key2] = 0
+                }
+            }
+            }
+          }
         })
     },
 
@@ -462,13 +500,16 @@ export default {
       algoliaIndex
         .search('', {
           sortFacetValuesBy: 'alpha',
-          facets: facetPropPaths,
+          facets: facetPropPaths
         })
         .then(response => {
           facetPropPaths.map(facetPropPath => {
-            const children = [];
-            const responseFacets = response.facets;
-            const responseFacetChildren = responseFacets[facetPropPath] == undefined ? {} : responseFacets[facetPropPath];
+            const children = []
+            const responseFacets = response.facets
+            const responseFacetChildren =
+              responseFacets[facetPropPath] == undefined
+                ? {}
+                : responseFacets[facetPropPath]
             if (!isEmpty(responseFacetChildren)) {
               Object.keys(responseFacetChildren).map(facet => {
                 children.push({
@@ -482,7 +523,8 @@ export default {
               facetData.push({
                 label: facetPropPathMapping[facetPropPath],
                 id: facetId++,
-                children: children
+                children: children,
+                key: facetPropPath
               })
             }
           })
@@ -538,27 +580,29 @@ export default {
     },
 
     /* Returns filter for searching algolia. All facets of the same category are joined with OR,
-     * and each of those results is then joined with an AND. 
+     * and each of those results is then joined with an AND.
      * i.e. (color:blue OR color:red) AND (shape:circle OR shape:red) */
     constructFilters: function(selectedFacets) {
-      var filters = '';
+      var filters = ''
       const facetPropPaths = Object.keys(facetPropPathMapping)
       facetPropPaths.map(facetPropPath => {
-        const facetsToOr = selectedFacets.filter(facet => facet.facetPropPath == facetPropPath)
+        const facetsToOr = selectedFacets.filter(
+          facet => facet.facetPropPath == facetPropPath
+        )
         var filter = ''
         facetsToOr.map(facet => {
           filter += `"${facetPropPath}":"${facet.label}" OR `
         })
         if (filter == '') {
-          return;
+          return
         }
         filter = `(${filter.substring(0, filter.lastIndexOf(' OR '))})`
         filters += `${filter} AND `
       })
       if (filters == '') {
-        return;
+        return
       }
-      return filters.substring(0, filters.lastIndexOf(" AND "))
+      return filters.substring(0, filters.lastIndexOf(' AND '))
     },
 
     /**
@@ -608,16 +652,19 @@ export default {
       )
     },
 
-    updateSelectedFacets: function(newSelectedFacets) {
-      var selectedFacets = []
-      newSelectedFacets.map(selectedFacet => {
-        selectedFacets.push({
-          label: selectedFacet.label,
-          facetPropPath: selectedFacet.facetPropPath,
-          id: selectedFacet.id
-        })
+    updateSelectedFacets: function(key, hasKeys, facets) {
+      this.latestFacetUpdateKey = key
+      this.hasKeys = hasKeys
+      this.selectedFacets = facets
+      console.log(pluck('id', this.selectedFacets).toString())
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          selectedFacetIds: pluck('id', this.selectedFacets).toString()
+        }
       })
-      this.selectedFacets = selectedFacets;
+      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
+      this.fetchResults()
     },
 
     /**
@@ -710,7 +757,7 @@ export default {
       }
 
       return viewports[viewport] || 24
-    },
+    }
   }
 }
 </script>
@@ -751,7 +798,7 @@ export default {
   padding: 0 0;
   outline: 0.1rem solid $median;
   @media (max-width: 40rem) {
-    display: block
+    display: block;
   }
   li {
     width: 100%;
