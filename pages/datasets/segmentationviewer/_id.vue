@@ -116,7 +116,7 @@ export default {
         name: baseName(route.query.file_path)
       }
 
-      const species_lookup_response = await general.lookupOLSTerm(
+      const species_lookup_response = await general.lookupOntoTerm(
         segmentation_info.subject.species
       )
 

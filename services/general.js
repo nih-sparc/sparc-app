@@ -6,16 +6,16 @@ const apiClient = axios.create({
   timeout: 20000
 })
 
-const lookupOLSTerm = async term => {
+const lookupOntoTerm = async term => {
   const config = {
     params: {
       term
     }
   }
-  const response = await apiClient.get('/ols_lookup', config)
+  const response = await apiClient.get('/onto_term_lookup', config)
   return response.data
 }
 
 export default {
-  lookupOLSTerm
+  lookupOntoTerm
 }
