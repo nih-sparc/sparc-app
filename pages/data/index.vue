@@ -165,7 +165,7 @@ const searchTypes = [
     label: 'Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'algolia'
+    dataSource: 'pennsieveIndex'
   },
   {
     label: 'Resources',
@@ -206,6 +206,7 @@ import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
+const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER');
 const algoliaIndex = algoliaClient.initIndex('k-core_dev_published_time_desc')
 
 export default {
@@ -405,7 +406,8 @@ export default {
 
       const searchSources = {
         contentful: this.fetchFromContentful,
-        algolia: this.fetchFromAlgolia
+        algolia: this.fetchFromAlgolia,
+        pennsieveIndex: this.fetchFromPennsieveIndex
       }
 
       if (typeof searchSources[source] === 'function') {
@@ -420,6 +422,23 @@ export default {
         this.fetchResults,
         payload
       )
+    },
+
+    fetchFromPennsieveIndex: function() {
+      const query = this.$route.query.q
+
+      algoliaPennseiveIndex.search(query, {
+        hitsPerPage: this.searchData.limit,
+        page: this.curSearchPage - 1,
+        filters: `organizationName:"IT'IS Foundation"`,
+      }).then(response => {
+          const searchData = {
+            items: response.hits,
+            total: response.nbHits
+          }
+          this.searchData = mergeLeft(searchData, this.searchData)
+          this.isLoadingSearch = false
+        })
     },
 
     /**
