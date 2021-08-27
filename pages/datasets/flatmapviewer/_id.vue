@@ -118,10 +118,11 @@ export default {
     flatmapReady: function(component) {
       let id = this.checkForIlxtr(this.uberonid)
       component.mapImp.zoomTo(id)
-      component.checkAndCreatePopups({
-        resource: [id],
-        eventType: 'click'
-      })
+      // **NOTE: This is commented out until fCCB approves the popups
+      // component.checkAndCreatePopups({
+      //   resource: [id],
+      //   eventType: 'click'
+      // })
     },
     checkForIlxtr: function(id) {
       if (id.includes('neuron-type-keast') && !id.includes('ilxtr')) {
