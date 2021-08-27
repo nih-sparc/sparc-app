@@ -366,22 +366,20 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
         version: datasetVersion
       }
 
-      // **NOTE: Below code is commented out as flatmap CCB is still in the process of approving this feature**
-
       // Check for flatmap neuron data
-      // if (scicrunchData.organs) {
-      //   let flatmapData = [{}]
-      //   for (let i in scicrunchData.organs) {
-      //     if (flatmapData.length <= i) {
-      //       flatmapData.push({})
-      //     }
-      //     flatmapData[i].taxo = Uberons.species['rat']
-      //     flatmapData[i].uberonid = scicrunchData.organs[i].curie
-      //     flatmapData[i].id = datasetId
-      //     flatmapData[i].version = datasetVersion
-      //   }
-      //   scicrunchData['flatmaps'] = flatmapData
-      // }
+      if (scicrunchData.organs) {
+        let flatmapData = [{}]
+        for (let i in scicrunchData.organs) {
+          if (flatmapData.length <= i) {
+            flatmapData.push({})
+          }
+          flatmapData[i].taxo = Uberons.species['rat']
+          flatmapData[i].uberonid = scicrunchData.organs[i].curie
+          flatmapData[i].id = datasetId
+          flatmapData[i].version = datasetVersion
+        }
+        scicrunchData['flatmaps'] = flatmapData
+      }
     }
   } catch (e) {
     return {
