@@ -1,14 +1,9 @@
 <template>
-  <div class="white-background">
-    <h2 class="title">
-      Refine results
-    </h2>
-    <hr />
-    <tags-container
-      :selectedFacets="selectedFacetArray"
-      @deselect-facet="deselectFacet"
-      @deselect-all-facets="deselectAllFacets"
-    />
+  <facet-menu
+    :selectedFacets="selectedFacetArray"
+    @deselect-facet="deselectFacet"
+    @deselect-all-facets="deselectAllFacets"
+  >
     <facet-category
       v-for="item in this.facets"
       :key="item.id"
@@ -18,16 +13,17 @@
       @selection-change="onSelectionChange"
       ref="facetCategories"
     />
-  </div>
+  </facet-menu>
 </template>
 
 <script>
 import TagsContainer from '@/components/FacetMenu/TagsContainer.vue'
-import FacetCategory from '~/components/FacetMenu/FacetCategory'
+import FacetCategory from '@/components/FacetMenu/FacetCategory.vue'
+import FacetMenu from './FacetMenu.vue'
 export default {
   name: 'DatasetFacetMenu',
 
-  components: { FacetCategory, TagsContainer },
+  components: { FacetCategory, TagsContainer, FacetMenu },
 
   props: {
     facets: {
@@ -51,21 +47,17 @@ export default {
     }
   },
 
-  mounted() {},
-
   methods: {
     visibleFacetsForCategory: function(key) {
       return this.visibleFacets[key]
     },
     onSelectionChange: function(data) {
-      console.log(data)
       this.selectedFacets[data.key] = data.facets
 
       this.selectedFacetArray = []
       for (const [key, value] of Object.entries(this.selectedFacets)) {
         this.selectedFacetArray = this.selectedFacetArray.concat(value)
       }
-
       this.$emit('selected-facets-changed', data.key, Object.keys(data.facets).length ,this.selectedFacetArray)
 
     },

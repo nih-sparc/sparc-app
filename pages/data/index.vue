@@ -152,8 +152,6 @@ const searchResultsComponents = {
   news: NewsSearchResults
 }
 
-const sparcAwardType = ['projects']
-
 const searchTypes = [
   {
     label: 'Datasets',
@@ -202,7 +200,6 @@ import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, facetPropPathMapping } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
-import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -215,7 +212,6 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    SparcInfoFacetMenu,
     DatasetFacetMenu,
     SearchForm,
     PaginationMenu
@@ -331,17 +327,6 @@ export default {
       },
       immediate: true
     }
-
-    // selectedFacets: function() {
-    //   this.$router.replace({
-    //     query: {
-    //       ...this.$route.query,
-    //       selectedFacetIds: pluck('id', this.selectedFacets).toString()
-    //     }
-    //   })
-    //   this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
-    //   this.fetchResults()
-    // }
   },
 
   beforeMount: function() {
@@ -675,7 +660,6 @@ export default {
       this.latestFacetUpdateKey = key
       this.hasKeys = hasKeys
       this.selectedFacets = facets
-      console.log(pluck('id', this.selectedFacets).toString())
       this.$router.replace({
         query: {
           ...this.$route.query,

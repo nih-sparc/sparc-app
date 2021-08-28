@@ -1,47 +1,34 @@
 <template>
-  <div>
-    <hr />
-    <h2 class="title">
-      {{ facet.label }}
-      <svg-icon
-        @click="() => collapsed = !collapsed"
-        class="ml-8 icon-arrow"
-        name="icon-arrow"
-        :dir="collapsibleArrowDir"
-        height="15"
-        width="15"
-      />
-    </h2>
-    <div v-show="!collapsed" class="light-gray-background">
+  <facet-label :label="facet.label">
+    <hr>
+    <div class="show-all-node">
+      <el-checkbox v-model="showAll" @change="onChangeShowAll" />
+      <span>Show all</span>
       <hr>
-      <div class="show-all-node">
-        <el-checkbox v-model="showAll" @change="onChangeShowAll" />
-        <span>Show all</span>
-        <hr>
-      </div>
-      <el-tree
-        ref="tree"
-        :data="facet.children"
-        node-key="id"
-        show-checkbox
-        default-expand-all
-        :default-checked-keys="defaultCheckedKeys"
-        :props="treeProps"
-        :filter-node-method="filterNode"
-        :render-content="renderContent"
-        @check-change="onCheckChange"
-      />
     </div>
-  </div>
+    <el-tree
+      ref="tree"
+      :data="facet.children"
+      node-key="id"
+      show-checkbox
+      default-expand-all
+      :default-checked-keys="defaultCheckedKeys"
+      :props="treeProps"
+      :filter-node-method="filterNode"
+      :render-content="renderContent"
+      @check-change="onCheckChange"
+    />
+  </facet-label>
 </template>
 
 <script>
 import { propOr, pathOr } from 'ramda'
+import FacetLabel from './FacetLabel.vue'
 
 export default {
   name: 'FacetCategory',
 
-  components: {},
+  components: {FacetLabel},
 
   props: {
     facet: {
@@ -65,16 +52,12 @@ export default {
       treeProps: {
         label: 'label'
       },
-      collapsed: false
     }
   },
   computed: {
     allKeys: function() {
       return Object.keys(propOr({}, this.facet.key, this.visibleFacets))
     },
-    collapsibleArrowDir: function() {
-      return this.collapsed ? 'up' : 'down'
-    }
   },
   watch: {
     allKeys(val) {
@@ -164,13 +147,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
-.white-background {
-  background-color: white;
-}
-
-.light-gray-background {
-  background-color: rgb(250,251,252);
-}
 
 .show-all-node {
   .el-checkbox {
@@ -180,25 +156,5 @@ export default {
     margin: .5rem 0;
   }
   margin: .5rem 1.5rem;
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.title {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0;
-  padding: 0.5rem 1rem;
-  font-weight: 300;
-}
-
-hr {
-  border: none;
-  border-bottom: 1px solid #dbdfe6;
-  margin: 0;
 }
 </style>
