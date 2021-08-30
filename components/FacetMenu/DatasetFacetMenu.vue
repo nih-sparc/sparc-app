@@ -1,15 +1,17 @@
 <template>
   <div class="white-background">
     <h2 class="title">
-      Refine results
+      Results
     </h2>
     <hr />
     <tags-container
+        v-if="false"
       :selectedFacets="selectedFacetArray"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
     <facet-category
+        v-if="false"
       v-for="item in this.facets"
       :key="item.id"
       :facet="item"
