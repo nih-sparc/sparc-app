@@ -16,7 +16,8 @@
                 query: {
                   type: type.type,
                   q: $route.query.q,
-                  selectedFacetIds: $route.query.selectedFacetIds
+                  selectedFacetIds: $route.query.selectedFacetIds,
+                  newsAndEventsType: $route.query.newsAndEventsType
                 }
               }"
             >
@@ -71,6 +72,17 @@
                 :default-checked-facet-ids="defaultCheckedFacetIds"
                 :visible-facets="visibleFacets"
                 @selected-facets-changed="updateSelectedFacets"
+              />
+            </el-col>
+            <el-col
+              v-if="searchType.type === 'newsAndEvents'"
+              :sm="24"
+              :md="8"
+              :lg="6"
+            >
+              <news-and-events-facet-menu
+                :news-and-events-type="newsAndEventsType"
+                @news-and-events-type-changed="newsAndEventsTypeChanged"
               />
             </el-col>
             <el-col
@@ -134,12 +146,10 @@ import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
-const EventSearchResults = () =>
-  import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const NewsSearchResults = () =>
-  import('@/components/SearchResults/NewsSearchResults.vue')
+const NewsAndEventsSearchResults = () =>
+  import('@/components/SearchResults/NewsAndEventsSearchResults.vue')
 const ResourcesSearchResults = () =>
   import('@/components/Resources/ResourcesSearchResults.vue')
 
@@ -147,9 +157,8 @@ const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   sparcPartners: ResourcesSearchResults,
-  event: EventSearchResults,
   simulation: DatasetSearchResults,
-  news: NewsSearchResults
+  newsAndEvents: NewsAndEventsSearchResults,
 }
 
 const searchTypes = [
@@ -171,13 +180,8 @@ const searchTypes = [
     dataSource: 'contentful'
   },
   {
-    label: 'Events',
-    type: process.env.ctf_event_id,
-    dataSource: 'contentful'
-  },
-  {
-    label: 'News',
-    type: process.env.ctf_news_id,
+    label: 'News and Events',
+    type: process.env.ctf_news_and_events_id,
     dataSource: 'contentful'
   },
   {
@@ -200,6 +204,7 @@ import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, facetPropPathMapping } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
+import NewsAndEventsFacetMenu from '~/components/FacetMenu/NewsAndEventsFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -214,7 +219,8 @@ export default {
     PageHero,
     DatasetFacetMenu,
     SearchForm,
-    PaginationMenu
+    PaginationMenu,
+    NewsAndEventsFacetMenu
   },
 
   mixins: [],
@@ -225,8 +231,8 @@ export default {
       facets: [],
       visibleFacets: {},
       selectedFacets: [],
+      newsAndEventsType: 'news',
       defaultCheckedFacetIds: [],
-      sparcAwardType: [...sparcAwardType],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
@@ -326,6 +332,11 @@ export default {
         this.fetchResults()
       },
       immediate: true
+    },
+
+    '$route.query.newsAndEventsType': function(val) {
+      this.newsAndEventsType = val;
+      this.fetchResults()
     }
   },
 
@@ -357,6 +368,9 @@ export default {
         this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(
           ','
         )
+      }
+      if (this.$route.query.newsAndEventsType) {
+        this.newsAndEventsType = this.$route.query.newsAndEventsType
       }
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -548,10 +562,14 @@ export default {
       // Keep the original search data limit to get all organs before pagination
       const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
+      var contentType = ""
+      var contentType = this.$route.query.type === process.env.ctf_news_and_events_id ?
+        this.newsAndEventsType :
+        this.$route.query.type   
 
       client
         .getEntries({
-          content_type: this.$route.query.type,
+          content_type: contentType,
           query: this.$route.query.q,
           limit: this.searchData.limit,
           skip: this.searchData.skip,
@@ -670,6 +688,12 @@ export default {
       this.fetchResults()
     },
 
+    newsAndEventsTypeChanged: function(newType) {
+      this.$router.replace({
+        query: { ...this.$route.query, newsAndEventsType: newType }
+      })
+    },
+
     /**
      * Update offset
      */
@@ -752,11 +776,12 @@ export default {
      * Determined if the searchType === 'dataset'
      */
     searchColSpan(viewport) {
-      const isDataset = this.searchType.type === 'dataset'
+      const hasFacetMenu = this.searchType.type === 'dataset' ||
+        this.searchType.type === 'newsAndEvents'
       const viewports = {
-        sm: isDataset ? 24 : 24,
-        md: isDataset ? 16 : 24,
-        lg: isDataset ? 18 : 24
+        sm: hasFacetMenu ? 24 : 24,
+        md: hasFacetMenu ? 16 : 24,
+        lg: hasFacetMenu ? 18 : 24
       }
 
       return viewports[viewport] || 24
