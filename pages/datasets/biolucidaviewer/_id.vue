@@ -9,7 +9,10 @@
       >
         <el-row :gutter="16">
           <el-col :offset="22" :span="4" class="details">
-            <button class="ml-8 btn-copy-permalink-solid" @click="copyLink">
+            <button
+              class="ml-8 btn-copy-permalink-solid hidden"
+              @click="copyLink"
+            >
               <svg-icon name="icon-permalink" height="28" width="28" />
               <span class="visuallyhidden">Copy permalink</span>
             </button>
@@ -174,6 +177,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.hidden {
+  visibility: hidden;
+}
+
 .page {
   display: flex;
   margin-top: 7rem;
