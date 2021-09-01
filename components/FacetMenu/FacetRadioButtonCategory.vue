@@ -28,9 +28,15 @@ export default {
       type: Array,
       default: () => []
     },
-    selectedOption: {
+    defaultSelectedOption: {
       type: String,
       default: ""
+    }
+  },
+
+  data() {
+    return {
+      selectedOption: this.defaultSelectedOption
     }
   },
 
@@ -38,7 +44,9 @@ export default {
     
   },
   watch: {
-    
+    defaultSelectedOption: function() {
+      this.selectedOption = this.defaultSelectedOption
+		}
   },
 
   mounted() {

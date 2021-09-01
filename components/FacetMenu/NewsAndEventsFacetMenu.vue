@@ -5,10 +5,18 @@
     @deselect-all-facets="deselectAllFacets"
   >
     <facet-radio-button-category
-			:label="label"
+			:label='"News/Event Type"'
 			:options="options"
-			:selectedOption="selectedRadioOption"
+			:defaultSelectedOption="selectedNewsAndEventType"
 			@selection-changed="selectedTypeChanged"
+		/>
+		<facet-radio-button-date-category 
+			:label='"Publication Date"'
+			:enabled="selectedNewsAndEventType === options[0].label"
+		/>
+		<facet-radio-button-date-category 
+			:label='"Event Date"'
+			:enabled="selectedNewsAndEventType === options[1].label"
 		/>
   </facet-menu>
 </template>
@@ -17,8 +25,8 @@
 import TagsContainer from '@/components/FacetMenu/TagsContainer.vue'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonCategory from './FacetRadioButtonCategory.vue'
+import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
-const label = "News/Event Type"
 const options = [{
 		label:"news", 
 		id:"news"
@@ -31,10 +39,10 @@ const options = [{
 export default {
   name: 'NewsAndEventsFacetMenu',
 
-  components: { TagsContainer, FacetMenu, FacetRadioButtonCategory },
+  components: { TagsContainer, FacetMenu, FacetRadioButtonCategory, FacetRadioButtonDateCategory },
 
 	computed: {
-		selectedRadioOption: function() {
+		selectedNewsAndEventType: function() {
 			var selectedOption = this.options.find(option => this.newsAndEventsType === option.id);
 			return selectedOption === undefined ? options[0].label : selectedOption.label;
 		}
@@ -51,7 +59,6 @@ export default {
     return {
       selectedFacetArray: [],
 			options: options,
-			label: label
     }
   },
 

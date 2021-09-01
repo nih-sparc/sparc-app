@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div :class="{ disabled: disabled }">
     <hr />
     <h2 class="title">
       {{ label }}
       <svg-icon
 				v-show="showCollapsibleArrow"
-        @click="() => collapsed = !collapsed"
+        @click="onArrowClicked"
         class="ml-8 icon-arrow"
         name="icon-arrow"
         :dir="collapsibleArrowDir"
@@ -38,7 +38,11 @@ export default {
 		showCollapsibleArrow: {
 			type: Boolean,
 			default: true
-  	}
+  	},
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   },
 
   data() {
@@ -49,7 +53,20 @@ export default {
   computed: {
     collapsibleArrowDir: function() {
       return this.collapsed ? 'up' : 'down'
+    },
+  }, 
+  methods: {
+    onArrowClicked() {
+      if (!this.disabled) {
+        this.collapsed = !this.collapsed
+      }
+      return this.collapsed
     }
+  },
+  watch: {
+    disabled: function() {
+      this.collapsed = this.disabled
+		}
   }
 }
 
@@ -82,4 +99,8 @@ hr {
   margin: 0;
 }
 
+.disabled {
+  opacity: .5;
+  background-color: #fafbfc
+}
 </style>
