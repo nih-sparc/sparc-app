@@ -1,23 +1,29 @@
 <template>
   <div class="white-background">
-    <h2 class="title">
+    <h2 class="title" v-if="showFacetMenu">
       Refine results
+    </h2>
+    <h2 class="title" v-else>
+      Results
     </h2>
     <hr />
     <tags-container
+      v-if="showFacetMenu"
       :selectedFacets="selectedFacetArray"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
-    <facet-category
-      v-for="item in this.facets"
-      :key="item.id"
-      :facet="item"
-      :visible-facets="visibleFacets"
-      :default-checked-keys="defaultCheckedFacetIds"
-      @selection-change="onSelectionChange"
-      ref="facetCategories"
-    />
+    <template v-if="showFacetMenu">
+      <facet-category
+        v-for="item in this.facets"
+        :key="item.id"
+        :facet="item"
+        :visible-facets="visibleFacets"
+        :default-checked-keys="defaultCheckedFacetIds"
+        @selection-change="onSelectionChange"
+        ref="facetCategories"
+      />
+    </template>
   </div>
 </template>
 
@@ -46,6 +52,7 @@ export default {
 
   data() {
     return {
+      showFacetMenu: (process.env.show_facet_menu == 'true') ? true : false,
       selectedFacets: {},
       selectedFacetArray: []
     }
