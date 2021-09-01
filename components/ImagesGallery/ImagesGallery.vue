@@ -276,20 +276,20 @@ export default {
             ...Array.from(scicrunchData['common-images'], generic_image => {
               const filePath = generic_image.dataset.path
               const id = generic_image.identifier
-              this.getImageFromS3(items, {
-                id,
-                fetchAttempts: 0,
-                datasetId,
-                datasetVersion,
-                imageFilePath: filePath,
-                mimetype: generic_image.mimetype.name
-              })
+              // this.getImageFromS3(items, {
+              //   id,
+              //   fetchAttempts: 0,
+              //   datasetId,
+              //   datasetVersion,
+              //   imageFilePath: filePath,
+              //   mimetype: generic_image.mimetype.name
+              // })
               const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&mimetype=${generic_image.mimetype.name}`
               return {
                 id,
                 title: baseName(filePath),
                 type: 'Image',
-                thumbnail: null,
+                thumbnail: this.defaultImg,
                 link: linkUrl
               }
             })
@@ -307,8 +307,14 @@ export default {
         if ('dataset_images' in biolucidaData) {
           items.push(
             ...Array.from(biolucidaData.dataset_images, dataset_image => {
-              this.getThumbnailFromBiolucida(items, dataset_image.image_id)
-              this.getImageInfoFromBiolucida(items, dataset_image.image_id)
+              this.getThumbnailFromBiolucida(items, {
+                id: dataset_image.image_id,
+                fetchAttempts: 0
+              })
+              this.getImageInfoFromBiolucida(items, {
+                id: dataset_image.image_id,
+                fetchAttempts: 0
+              })
               const viewEncoding = dataset_image.share_link.replace(
                 process.env.BL_SHARE_LINK_PREFIX,
                 ''
@@ -539,27 +545,34 @@ export default {
           }
         )
     },
-    getThumbnailFromBiolucida(items, image_id) {
-      biolucida.getThumbnail(image_id).then(
+    getThumbnailFromBiolucida(items, info) {
+      biolucida.getThumbnail(info.id).then(
         response => {
-          let item = items.find(x => x.id === image_id)
+          let item = items.find(x => x.id === info.id)
 
           this.$set(item, 'thumbnail', 'data:image/png;base64,' + response.data)
         },
         reason => {
           if (
             reason.message.includes('timeout') &&
-            reason.message.includes('exceeded')
+            reason.message.includes('exceeded') &&
+            info.fetchAttempts < 3
           ) {
-            this.getThumbnailFromBiolucida(items, image_id)
+            info.fetchAttempts += 1
+            this.getThumbnailFromBiolucida(items, info)
+          } else {
+            let item = items.find(x => x.id === info.id)
+            this.$set(item, 'thumbnail', this.defaultImg)
           }
+
+          return Promise.reject('Maximum iterations reached.')
         }
       )
     },
-    getImageInfoFromBiolucida(items, image_id) {
-      biolucida.getImageInfo(image_id).then(
+    getImageInfoFromBiolucida(items, info) {
+      biolucida.getImageInfo(info.id).then(
         response => {
-          let item = items.find(x => x.id === image_id)
+          let item = items.find(x => x.id === info.id)
           const name = response.name
           if (name) {
             this.$set(item, 'title', name.substring(0, name.lastIndexOf('.')))
@@ -568,10 +581,17 @@ export default {
         reason => {
           if (
             reason.message.includes('timeout') &&
-            reason.message.includes('exceeded')
+            reason.message.includes('exceeded') &&
+            info.fetchAttempts < 3
           ) {
-            this.getImageInfoFromBiolucida(items, image_id)
+            info.fetchAttempts += 1
+            this.getImageInfoFromBiolucida(items, info)
+          } else {
+            let item = items.find(x => x.id === info.id)
+            this.$set(item, 'thumbnail', this.defaultImg)
           }
+
+          return Promise.reject('Maximum iterations reached.')
         }
       )
     },
