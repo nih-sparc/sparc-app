@@ -13,7 +13,7 @@
         width="15"
       />
     </h2>
-    <div v-show="!collapsed" class="light-gray-background">
+    <div v-show="showContent" class="light-gray-background">
 			<slot></slot>
 		</div>
   </div>
@@ -52,8 +52,11 @@ export default {
   },
   computed: {
     collapsibleArrowDir: function() {
-      return this.collapsed ? 'up' : 'down'
+      return this.showContent ? 'down' : 'up'
     },
+    showContent: function() {
+      return !(this.collapsed || this.disabled)
+    }
   }, 
   methods: {
     onArrowClicked() {
@@ -63,11 +66,6 @@ export default {
       return this.collapsed
     }
   },
-  watch: {
-    disabled: function() {
-      this.collapsed = this.disabled
-		}
-  }
 }
 
 </script>

@@ -52,11 +52,11 @@ export default {
     },
     defaultMonth: {
       type: String,
-      default: ""
+      default: "Mar"
     },
     defaultYear: {
       type: String,
-      default: ""
+      default: "2020"
     },
   },
 
@@ -77,7 +77,13 @@ export default {
 		},
     defaultYear: function() {
       this.year = this.defaultYear
-		}
+		},
+    enabled: function() {
+      if (this.enabled) {
+        this.$emit('year-changed', this.year);
+        this.$emit('month-changed', this.month);
+      }
+    }
   },
 
   mounted() {

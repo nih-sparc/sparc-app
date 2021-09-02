@@ -17,7 +17,8 @@
                   type: type.type,
                   q: $route.query.q,
                   selectedFacetIds: $route.query.selectedFacetIds,
-                  newsAndEventsType: $route.query.newsAndEventsType
+                  newsAndEventsType: $route.query.newsAndEventsType,
+                  publicationDateOption: $route.query.publicationDateOption
                 }
               }"
             >
@@ -82,7 +83,9 @@
             >
               <news-and-events-facet-menu
                 :news-and-events-type="newsAndEventsType"
+                :default-publication-date-option="publicationDateOption"
                 @news-and-events-type-changed="newsAndEventsTypeChanged"
+                @publication-date-option-changed="publicationDateOptionChanged"
               />
             </el-col>
             <el-col
@@ -232,6 +235,7 @@ export default {
       visibleFacets: {},
       selectedFacets: [],
       newsAndEventsType: 'news',
+      publicationDateOption: 'show all',
       defaultCheckedFacetIds: [],
       searchTypes,
       searchData: clone(searchData),
@@ -337,6 +341,11 @@ export default {
     '$route.query.newsAndEventsType': function(val) {
       this.newsAndEventsType = val;
       this.fetchResults()
+    },
+
+    '$route.query.publicationDateOption': function(val) {
+      this.publicationDateOption = val;
+      this.fetchResults()
     }
   },
 
@@ -371,6 +380,9 @@ export default {
       }
       if (this.$route.query.newsAndEventsType) {
         this.newsAndEventsType = this.$route.query.newsAndEventsType
+      }
+      if (this.$route.query.publicationDateOption) {
+        this.publicationDateOption = this.$route.query.publicationDateOption
       }
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -691,6 +703,12 @@ export default {
     newsAndEventsTypeChanged: function(newType) {
       this.$router.replace({
         query: { ...this.$route.query, newsAndEventsType: newType }
+      })
+    },
+
+    publicationDateOptionChanged: function(newType) {
+      this.$router.replace({
+        query: { ...this.$route.query, publicationDateOption: newType }
       })
     },
 

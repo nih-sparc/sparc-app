@@ -13,6 +13,8 @@
 		<facet-radio-button-date-category 
 			:label='"Publication Date"'
 			:enabled="selectedNewsAndEventType === options[0].label"
+			:defaultSelectedOption="defaultPublicationDateOption"
+			@selected-date-option-changed="publicationDateOptionChanged"
 		/>
 		<facet-radio-button-date-category 
 			:label='"Event Date"'
@@ -53,18 +55,26 @@ export default {
       type: String,
       default: options[0].id
     },
+		defaultPublicationDateOption: {
+			type: String,
+			default: 'show all'
+		}
   },
 
   data() {
     return {
       selectedFacetArray: [],
 			options: options,
+			publicationDateOption: this.defaultPublicationDateOption
     }
   },
 
   methods: {
     selectedTypeChanged(newValue){
 			this.$emit('news-and-events-type-changed', newValue)
+		},
+		publicationDateOptionChanged(newValue) {
+			this.$emit('publication-date-option-changed', newValue)
 		},
     deselectAllFacets() {
     },
