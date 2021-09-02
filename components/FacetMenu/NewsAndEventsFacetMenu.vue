@@ -13,7 +13,7 @@
 		<facet-radio-button-date-category 
 			:label='"Publication Date"'
 			:enabled="selectedNewsAndEventType === options[0].label"
-			:defaultSelectedOption="defaultPublicationDateOption"
+			:defaultSelectedOption="publicationDateOption"
 			@selected-date-option-changed="publicationDateOptionChanged"
 		/>
 		<facet-radio-button-date-category 
@@ -50,31 +50,56 @@ export default {
 		}
 	},
 
-  props: {
-    newsAndEventsType: {
-      type: String,
-      default: options[0].id
-    },
-		defaultPublicationDateOption: {
-			type: String,
-			default: 'show all'
-		}
-  },
+  props: {},
 
   data() {
     return {
       selectedFacetArray: [],
 			options: options,
-			publicationDateOption: this.defaultPublicationDateOption
+			publicationDateOption: 'show all',
+			newsAndEventsType: options[0].id
     }
   },
 
+	watch: {
+		
+  },
+
+	mounted() {
+		if (this.$route.query.newsAndEventsType) {
+      this.newsAndEventsType = this.$route.query.newsAndEventsType
+    } else {
+			this.$router.replace({
+        query: { ...this.$route.query, newsAndEventsType: this.newsAndEventsType }
+      })
+		}
+		if (this.$route.query.publicationDateOption) {
+      this.publicationDateOption = this.$route.query.publicationDateOption
+    } else {
+			this.$router.replace({
+        query: { ...this.$route.query, publicationDateOption: this.publicationDateOption }
+      })
+		}
+	},
+
   methods: {
     selectedTypeChanged(newValue){
-			this.$emit('news-and-events-type-changed', newValue)
+			this.newsAndEventsType = newValue
+			this.$router.replace({
+        	query: { ...this.$route.query, newsAndEventsType: newValue }
+      	}, () => { 
+					this.$emit('news-and-events-selections-changed', newValue)
+				}
+			)	
 		},
 		publicationDateOptionChanged(newValue) {
-			this.$emit('publication-date-option-changed', newValue)
+			this.publicationDateOption = newValue
+			this.$router.replace({
+					query: { ...this.$route.query, publicationDateOption: newValue }
+				}, () => { 
+					this.$emit('news-and-events-selections-changed', newValue)
+				}
+			)
 		},
     deselectAllFacets() {
     },

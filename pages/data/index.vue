@@ -17,8 +17,6 @@
                   type: type.type,
                   q: $route.query.q,
                   selectedFacetIds: $route.query.selectedFacetIds,
-                  newsAndEventsType: $route.query.newsAndEventsType,
-                  publicationDateOption: $route.query.publicationDateOption
                 }
               }"
             >
@@ -82,10 +80,7 @@
               :lg="6"
             >
               <news-and-events-facet-menu
-                :news-and-events-type="newsAndEventsType"
-                :default-publication-date-option="publicationDateOption"
-                @news-and-events-type-changed="newsAndEventsTypeChanged"
-                @publication-date-option-changed="publicationDateOptionChanged"
+                @news-and-events-selections-changed="newsAndEventsSelectionsChanged"
               />
             </el-col>
             <el-col
@@ -234,8 +229,6 @@ export default {
       facets: [],
       visibleFacets: {},
       selectedFacets: [],
-      newsAndEventsType: 'news',
-      publicationDateOption: 'show all',
       defaultCheckedFacetIds: [],
       searchTypes,
       searchData: clone(searchData),
@@ -337,16 +330,6 @@ export default {
       },
       immediate: true
     },
-
-    '$route.query.newsAndEventsType': function(val) {
-      this.newsAndEventsType = val;
-      this.fetchResults()
-    },
-
-    '$route.query.publicationDateOption': function(val) {
-      this.publicationDateOption = val;
-      this.fetchResults()
-    }
   },
 
   beforeMount: function() {
@@ -377,12 +360,6 @@ export default {
         this.defaultCheckedFacetIds = this.$route.query.selectedFacetIds.split(
           ','
         )
-      }
-      if (this.$route.query.newsAndEventsType) {
-        this.newsAndEventsType = this.$route.query.newsAndEventsType
-      }
-      if (this.$route.query.publicationDateOption) {
-        this.publicationDateOption = this.$route.query.publicationDateOption
       }
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
@@ -576,7 +553,7 @@ export default {
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
       var contentType = ""
       var contentType = this.$route.query.type === process.env.ctf_news_and_events_id ?
-        this.newsAndEventsType :
+        this.$route.query.newsAndEventsType :
         this.$route.query.type   
 
       client
@@ -700,16 +677,8 @@ export default {
       this.fetchResults()
     },
 
-    newsAndEventsTypeChanged: function(newType) {
-      this.$router.replace({
-        query: { ...this.$route.query, newsAndEventsType: newType }
-      })
-    },
-
-    publicationDateOptionChanged: function(newType) {
-      this.$router.replace({
-        query: { ...this.$route.query, publicationDateOption: newType }
-      })
+    newsAndEventsSelectionsChanged: function() {
+      this.fetchResults()
     },
 
     /**
