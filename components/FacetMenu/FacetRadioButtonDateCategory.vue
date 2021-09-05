@@ -69,7 +69,11 @@ export default {
   },
   watch: {
 		defaultSelectedOption: function() {
-      this.selectedOption = this.defaultSelectedOption
+			if (this.selectedOption !== this.defaultSelectedOption)
+			{
+				this.selectedOption = this.defaultSelectedOption
+				this.$emit('selected-date-option-changed', this.selectedOption);
+			}
 		},
 		defaultSelectedYear: function() {
       this.year = this.defaultSelectedYear

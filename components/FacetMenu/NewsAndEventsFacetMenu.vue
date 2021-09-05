@@ -64,9 +64,15 @@ export default {
 				id: ""
 			}
 			if (this.newsAndEventsType === this.options[0].id) {
-				facet.label = this.publicationDateOption === 'show all' ? this.publicationDateOption : `${this.publicationDateOption} ${this.publicationMonth} ${this.publicationYear}`
+				if (this.publicationDateOption === 'show all'){
+					return []
+				}
+				facet.label = `${this.publicationDateOption} ${this.publicationMonth} ${this.publicationYear}`
 			} else if (this.newsAndEventsType === options[1].id) {
-				facet.label = this.eventDateOption === 'show all' ? this.eventDateOption : `${this.eventDateOption} ${this.eventMonth} ${this.eventYear}`
+				if (this.eventDateOption === 'show all'){
+					return []
+				}
+				facet.label = `${this.eventDateOption} ${this.eventMonth} ${this.eventYear}`
 			}
 			facet.id = this.newsAndEventsType
 			return [facet];
@@ -213,8 +219,15 @@ export default {
 			)
 		},
     deselectAllFacets() {
+			this.publicationDateOption = 'show all'
+			this.eventDateOption = 'show all'
     },
-    deselectFacet(id) {
+    deselectFacet() {
+			if (this.newsAndEventsType === this.options[0].id) {
+				this.publicationDateOption = 'show all'
+			} else if (this.newsAndEventsType === options[1].id) {
+				this.eventDateOption = 'show all'
+			}
     }
 	}
 }
