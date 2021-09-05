@@ -11,6 +11,8 @@
         :label="option"
         :key="index"
 				:enabled="selectedOption === option"
+				:defaultMonth="defaultSelectedMonth"
+				:defaultYear="defaultSelectedYear"
 				@year-changed="yearChanged"
 				@month-changed="monthChanged"
       />
