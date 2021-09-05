@@ -14,9 +14,8 @@
               :to="{
                 name: 'data',
                 query: {
+                  ...$route.query,
                   type: type.type,
-                  q: $route.query.q,
-                  selectedFacetIds: $route.query.selectedFacetIds,
                 }
               }"
             >
