@@ -79,7 +79,9 @@
               :lg="6"
             >
               <news-and-events-facet-menu
-                @news-and-events-selections-changed="newsAndEventsSelectionsChanged"
+                @news-and-events-selections-changed="fetchResults"
+                @hook:mounted="fetchResults"
+                ref="newsAndEventsFacetMenu"
               />
             </el-col>
             <el-col
@@ -550,43 +552,57 @@ export default {
       // Keep the original search data limit to get all organs before pagination
       const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
-      var contentType = ""
-      var contentType = this.$route.query.type === process.env.ctf_news_and_events_id ?
-        this.$route.query.newsAndEventsType :
-        this.$route.query.type   
+      var contentType = this.$route.query.type  
+      var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
 
-      client
-        .getEntries({
-          content_type: contentType,
-          query: this.$route.query.q,
-          limit: this.searchData.limit,
-          skip: this.searchData.skip,
-          order: this.searchData.order,
-          include: 2,
-          'fields.tags[all]': tags
-        })
-        .then(async response => {
-          this.searchData = { ...response, order: this.searchData.order }
-          if (
-            this.$route.query.type === 'organ' &&
-            origSearchDataLimit !== 999
-          ) {
-            this.searchData.items = await this.removeOrganNoDatasets()
-            // Reset search data values for pagination
-            this.searchData.limit = origSearchDataLimit
-            this.searchData.skip == 0
-              ? this.searchData.items.length > this.searchData.limit
-                ? this.searchData.items.splice(this.searchData.limit)
-                : (this.searchData.total = this.searchData.items.length)
-              : ''
-          }
-        })
-        .catch(() => {
-          this.searchData = clone(searchData)
-        })
-        .finally(() => {
-          this.isLoadingSearch = false
-        })
+      if (this.$route.query.type === process.env.ctf_news_and_events_id) {
+        contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
+        newsPublishedLessThanDate = this.$refs.newsAndEventsFacetMenu?.getPublishedLessThanDate();
+        newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
+        eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
+        eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
+      }
+      if (contentType === undefined) {
+        this.isLoadingSearch = false;
+      }
+      else {
+        client
+          .getEntries({
+            content_type: contentType,
+            query: this.$route.query.q,
+            limit: this.searchData.limit,
+            skip: this.searchData.skip,
+            order: this.searchData.order,
+            include: 2,
+            'fields.tags[all]': tags,
+            'fields.publishedDate[lt]': newsPublishedLessThanDate,
+            'fields.publishedDate[gte]': newsPublishedGreaterThanOrEqualToDate,
+            'fields.startDate[lt]': eventStartLessThanDate,
+            'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
+          })
+          .then(async response => {
+            this.searchData = { ...response, order: this.searchData.order }
+            if (
+              this.$route.query.type === 'organ' &&
+              origSearchDataLimit !== 999
+            ) {
+              this.searchData.items = await this.removeOrganNoDatasets()
+              // Reset search data values for pagination
+              this.searchData.limit = origSearchDataLimit
+              this.searchData.skip == 0
+                ? this.searchData.items.length > this.searchData.limit
+                  ? this.searchData.items.splice(this.searchData.limit)
+                  : (this.searchData.total = this.searchData.items.length)
+                : ''
+            }
+          })
+          .catch(() => {
+            this.searchData = clone(searchData)
+          })
+          .finally(() => {
+            this.isLoadingSearch = false
+          })
+      }
     },
 
     /* Returns filter for searching algolia. All facets of the same category are joined with OR,
@@ -673,10 +689,6 @@ export default {
         }
       })
       this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
-      this.fetchResults()
-    },
-
-    newsAndEventsSelectionsChanged: function() {
       this.fetchResults()
     },
 

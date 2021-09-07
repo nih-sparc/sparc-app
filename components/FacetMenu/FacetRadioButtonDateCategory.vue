@@ -65,26 +65,28 @@ export default {
 	},
 
   computed: {
-    
+    monthNumber : function() {
+			return new Date(this.month+'-1-01').getMonth()+1;
+		}
   },
   watch: {
 		defaultSelectedOption: function() {
-			if (this.selectedOption !== this.defaultSelectedOption)
-			{
-				this.selectedOption = this.defaultSelectedOption
-				this.$emit('selected-date-option-changed', this.selectedOption);
-			}
+			if (this.selectedOption === this.defaultSelectedOption) { return }
+			this.selectedOption = this.defaultSelectedOption
+			this.$emit('selected-date-option-changed', this.selectedOption);
 		},
 		defaultSelectedYear: function() {
+			if (this.year === this.defaultSelectedYear) { return }
       this.year = this.defaultSelectedYear
 		},
 		defaultSelectedMonth: function() {
+			if (this.month === this.defaultSelectedMonth) { return }
       this.month = this.defaultSelectedMonth
 		}
   },
 
   mounted() {
-    
+	   
   },
 
   methods: {
@@ -99,6 +101,39 @@ export default {
 			this.year = newValue;
 			this.$emit('selected-year-changed', newValue);
 		},
+		reset: function() {
+			this.selectedOption = this.showAllOption;
+			this.$emit('selected-date-option-changed', this.selectedOption);
+		},
+		getLessThanDate: function() {
+			switch(this.selectedOption) {
+				case this.dateOptions[0]:
+					return `${this.year}-${String(this.monthNumber).padStart(2,0)}-01T00:00:00.000Z`;
+				case this.dateOptions[1]:
+					return this.getNextMonthDate();
+				default:
+					return;
+			}
+		},
+		getGreaterThanOrEqualToDate: function() {
+			switch(this.selectedOption) {
+				case this.dateOptions[1]:
+					return `${this.year}-${String(this.monthNumber).padStart(2,0)}-01T00:00:00.000Z`;
+				case this.dateOptions[2]:	
+					return this.getNextMonthDate();
+				default:
+					return;
+			}
+		},
+		getNextMonthDate: function() {
+			var nextMonth = this.monthNumber + 1;
+			var year = this.year;
+			if (nextMonth === 13) {
+				nextMonth = 1;
+				year += 1;
+			}
+			return `${year}-${String(nextMonth).padStart(2,0)}-01T00:00:00.000Z`;
+		}
   }
 }
 </script>

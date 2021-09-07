@@ -73,9 +73,11 @@ export default {
   },
   watch: {
     defaultMonth: function() {
+      if (this.month === this.defaultMonth) { return }
       this.month = this.defaultMonth
 		},
     defaultYear: function() {
+      if (this.year === this.defaultYear) { return }
       this.year = this.defaultYear
 		},
   },

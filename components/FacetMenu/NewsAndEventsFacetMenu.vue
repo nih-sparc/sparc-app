@@ -7,28 +7,30 @@
     <facet-radio-button-category
 			:label='"News/Event Type"'
 			:options="options"
-			:defaultSelectedOption="selectedNewsAndEventType"
+			:defaultSelectedOption="selectedNewsAndEventTypeLabel"
 			@selection-changed="selectedTypeChanged"
 		/>
 		<facet-radio-button-date-category 
 			:label='"Publication Date"'
-			:enabled="selectedNewsAndEventType === options[0].label"
+			:enabled="selectedNewsAndEventTypeLabel === options[0].label"
 			:defaultSelectedOption="publicationDateOption"
 			:defaultSelectedMonth="publicationMonth"
 			:defaultSelectedYear="publicationYear"
 			@selected-date-option-changed="publicationDateOptionChanged"
 			@selected-month-changed="publicationMonthChanged"
 			@selected-year-changed="publicationYearChanged"
+			ref="publicationCategory"
 		/>
 		<facet-radio-button-date-category 
 			:label='"Event Date"'
-			:enabled="selectedNewsAndEventType === options[1].label"
+			:enabled="selectedNewsAndEventTypeLabel === options[1].label"
 			:defaultSelectedOption="eventDateOption"
 			:defaultSelectedMonth="eventMonth"
 			:defaultSelectedYear="eventYear"
 			@selected-date-option-changed="eventDateOptionChanged"
 			@selected-month-changed="eventMonthChanged"
 			@selected-year-changed="eventYearChanged"
+			ref="eventCategory"
 		/>
   </facet-menu>
 </template>
@@ -54,7 +56,7 @@ export default {
   components: { TagsContainer, FacetMenu, FacetRadioButtonCategory, FacetRadioButtonDateCategory },
 
 	computed: {
-		selectedNewsAndEventType: function() {
+		selectedNewsAndEventTypeLabel: function() {
 			var selectedOption = this.options.find(option => this.newsAndEventsType === option.id);
 			return selectedOption === undefined ? options[0].label : selectedOption.label;
 		},
@@ -95,138 +97,132 @@ export default {
   },
 
 	watch: {
-		
+
   },
 
 	mounted() {
 		if (this.$route.query.newsAndEventsType) {
       this.newsAndEventsType = this.$route.query.newsAndEventsType
-    } else {
-			this.$router.replace({
-        query: { ...this.$route.query, newsAndEventsType: this.newsAndEventsType }
-      })
-		}
+    }
 		if (this.$route.query.publicationDateOption) {
       this.publicationDateOption = this.$route.query.publicationDateOption
-    } else {
-			this.$router.replace({
-        query: { ...this.$route.query, publicationDateOption: this.publicationDateOption }
-      })
-		}
+    } 
 		if (this.$route.query.publicationMonth) {
       this.publicationMonth = this.$route.query.publicationMonth
-    } else {
-			this.$router.replace({
-        query: { ...this.$route.query, publicationMonth: this.publicationMonth }
-      })
-		}
+    } 
 		if (this.$route.query.publicationYear) {
       this.publicationYear = Number(this.$route.query.publicationYear)
-    } else {
-			this.$router.replace({
-        query: { ...this.$route.query, publicationYear: this.publicationYear }
-      })
-		}
+    } 
 		if (this.$route.query.eventDateOption) {
       this.eventDateOption = this.$route.query.eventDateOption
-    } else {
-			this.$router.replace({
-        query: { ...this.$route.query, eventDateOption: this.eventDateOption }
-      })
-		}
+    } 
 		if (this.$route.query.eventMonth) {
       this.eventMonth = this.$route.query.eventMonth
-    } else {
-			this.$router.replace({
-        query: { ...this.$route.query, eventMonth: this.eventMonth }
-      })
-		}
+    } 
 		if (this.$route.query.eventYear) {
       this.eventYear = Number(this.$route.query.eventYear)
-    } else {
-			this.$router.replace({
-        query: { ...this.$route.query, eventYear: this.eventYear }
-      })
-		}
+    }
 	},
 
   methods: {
     selectedTypeChanged(newValue){
+			if (this.newsAndEventsType === newValue) { return }
 			this.newsAndEventsType = newValue
 			this.$router.replace({
         	query: { ...this.$route.query, newsAndEventsType: newValue }
       	}, () => { 
-					this.$emit('news-and-events-selections-changed', newValue)
+					this.$emit('news-and-events-selections-changed')
 				}
 			)	
 		},
 		publicationDateOptionChanged(newValue) {
+			if (this.publicationDateOption === newValue) { return }
 			this.publicationDateOption = newValue
 			this.$router.replace({
 					query: { ...this.$route.query, publicationDateOption: newValue }
 				}, () => { 
-					this.$emit('news-and-events-selections-changed', newValue)
+					this.$emit('news-and-events-selections-changed')
 				}, (error) => {
 					console.log(error);
 				}
 			)
 		},
 		publicationMonthChanged(newValue) {
+			if (this.publicationMonth === newValue) { return }
 			this.publicationMonth = newValue
 			this.$router.replace({
 					query: { ...this.$route.query, publicationMonth: newValue }
 				}, () => { 
-					this.$emit('news-and-events-selections-changed', newValue)
+					this.$emit('news-and-events-selections-changed')
 				}, (error) => {
 					console.log(error);
 				}
 			)
 		},
 		publicationYearChanged(newValue) {
+			if (this.publicationYear === newValue) { return }
 			this.publicationYear = newValue
 			this.$router.replace({
 					query: { ...this.$route.query, publicationYear: newValue }
 				}, () => { 
-					this.$emit('news-and-events-selections-changed', newValue)
+					this.$emit('news-and-events-selections-changed')
 				}
 			)
 		},
 		eventDateOptionChanged(newValue) {
+			if (this.eventDateOption === newValue) { return }
 			this.eventDateOption = newValue
 			this.$router.replace({
 					query: { ...this.$route.query, eventDateOption: newValue }
 				}, () => { 
-					this.$emit('news-and-events-selections-changed', newValue)
+					this.$emit('news-and-events-selections-changed')
 				}
 			)
 		},
 		eventMonthChanged(newValue) {
+			if (this.eventMonth === newValue) { return }
 			this.eventMonth = newValue
 			this.$router.replace({
 					query: { ...this.$route.query, eventMonth: newValue }
 				}, () => { 
-					this.$emit('news-and-events-selections-changed', newValue)
+					this.$emit('news-and-events-selections-changed')
 				}
 			)
 		},
 		eventYearChanged(newValue) {
+			if (this.eventYear === newValue) { return }
 			this.eventYear = newValue
 			this.$router.replace({
 					query: { ...this.$route.query, eventYear: newValue }
 				}, () => { 
-					this.$emit('news-and-events-selections-changed', newValue)
+					this.$emit('news-and-events-selections-changed')
 				}
 			)
 		},
+		getPublishedLessThanDate() {
+			return this.selectedNewsAndEventTypeLabel === this.options[0].label ? this.$refs.publicationCategory.getLessThanDate() : undefined;
+		},
+		getEventsLessThanDate() {
+			return this.selectedNewsAndEventTypeLabel === this.options[1].label ? this.$refs.eventCategory.getLessThanDate() : undefined;
+		},
+		getPublishedGreaterThanOrEqualToDate() {	
+			return this.selectedNewsAndEventTypeLabel === this.options[0].label ? this.$refs.publicationCategory.getGreaterThanOrEqualToDate() : undefined;
+		},
+		getEventsGreaterThanOrEqualToDate() {	
+			return this.selectedNewsAndEventTypeLabel === this.options[1].label ? this.$refs.eventCategory.getGreaterThanOrEqualToDate() : undefined;
+		},
+		getSelectedType() {
+			return this.newsAndEventsType
+		},
     deselectAllFacets() {
-			this.publicationDateOption = 'show all'
-			this.eventDateOption = 'show all'
+			this.$refs.publicationCategory.reset();
+			this.$refs.eventCategory.reset();
     },
     deselectFacet() {
 			if (this.newsAndEventsType === this.options[0].id) {
-				this.publicationDateOption = 'show all'
+				this.$refs.publicationCategory.reset();
 			} else if (this.newsAndEventsType === options[1].id) {
-				this.eventDateOption = 'show all'
+				this.$refs.eventCategory.reset();
 			}
     }
 	}
