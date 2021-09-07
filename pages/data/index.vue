@@ -80,7 +80,7 @@
             >
               <news-and-events-facet-menu
                 @news-and-events-selections-changed="fetchResults"
-                @hook:mounted="fetchResults"
+                @hook:mounted="newsAndEventsFacetMenuMounted"
                 ref="newsAndEventsFacetMenu"
               />
             </el-col>
@@ -402,6 +402,10 @@ export default {
       if (typeof searchSources[source] === 'function') {
         searchSources[source]()
       }
+    },
+
+    newsAndEventsFacetMenuMounted: function() {
+      this.$nextTick(() => this.fetchResults())
     },
 
     handleSortChange: function(payload) {
