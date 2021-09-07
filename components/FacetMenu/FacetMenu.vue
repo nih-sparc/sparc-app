@@ -5,11 +5,11 @@
     </h2>
     <hr />
     <tags-container
-      :selectedFacets="selectedFacets"
+      :selected-facets="selectedFacets"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
@@ -34,35 +34,32 @@ export default {
     deselectFacet(id) {
       this.$emit('deselect-facet', id)
     }
-	}
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
-	.white-background {
-		background-color: white;
-    border: 0.1rem solid #e4e7ed
-	}
+.white-background {
+  background-color: white;
+  border: 0.1rem solid #e4e7ed;
+}
 
-	h2 {
-		font-size: 1.25rem;
-		font-weight: 500;
-		line-height: 1.2;
-	}
+h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
 
-	.title {
-		margin-bottom: 0;
-		padding: 0.5rem 1rem;
-    font-weight: 300
+.title {
+  margin-bottom: 0;
+  padding: 0.5rem 1rem;
+  font-weight: 300;
+}
 
-	}
-
-	hr {
-		border: none;
-		border-bottom: 1px solid #dbdfe6;
-		margin: 0;
-	}
-  
+hr {
+  border: none;
+  border-bottom: 1px solid #dbdfe6;
+  margin: 0;
+}
 </style>
-

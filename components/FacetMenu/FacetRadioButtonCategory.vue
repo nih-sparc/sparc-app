@@ -1,13 +1,17 @@
 <template>
-  <facet-label :label="label" :showCollapsibleArrow="false">
-		<el-radio-group v-model="selectedOption" @input="selectionChanged" class="fill-width white-background negate-label-padding">
-      <el-radio 
-        v-for="option in this.options"
+  <facet-label :label="label" :show-collapsible-arrow="false">
+    <el-radio-group
+      v-model="selectedOption"
+      class="fill-width white-background negate-label-padding"
+      @input="selectionChanged"
+    >
+      <el-radio
+        v-for="option in options"
+        :key="option.id"
         class="radio"
         :label="option.label"
-        :key="option.id"
       />
-		</el-radio-group> 
+    </el-radio-group>
   </facet-label>
 </template>
 
@@ -17,12 +21,12 @@ import FacetLabel from './FacetLabel.vue'
 export default {
   name: 'FacetRadioButtonCategory',
 
-  components: {FacetLabel},
+  components: { FacetLabel },
 
   props: {
     label: {
       type: String,
-      default: ""
+      default: ''
     },
     options: {
       type: Array,
@@ -30,7 +34,7 @@ export default {
     },
     defaultSelectedOption: {
       type: String,
-      default: ""
+      default: ''
     }
   },
 
@@ -40,23 +44,19 @@ export default {
     }
   },
 
-  computed: {
-    
-  },
+  computed: {},
   watch: {
     defaultSelectedOption: function() {
       this.selectedOption = this.defaultSelectedOption
-		}
+    }
   },
 
-  mounted() {
-    
-  },
+  mounted() {},
 
   methods: {
     selectionChanged: function(newValue) {
-      const newValueId = this.options.find(option => option.label == newValue).id;
-      this.$emit('selection-changed', newValueId);
+      const newValueId = this.options.find(option => option.label == newValue).id
+      this.$emit('selection-changed', newValueId)
     }
   }
 }
@@ -74,22 +74,21 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
-  .radio {
-    display: block;
-    text-transform: capitalize;
-    margin: 1rem 2rem;
-  }
+.radio {
+  display: block;
+  text-transform: capitalize;
+  margin: 1rem 2rem;
+}
 
-  .fill-width {
-    width: 100%;
-  }
+.fill-width {
+  width: 100%;
+}
 
-  .white-background {
-    background-color: white;
-  }
+.white-background {
+  background-color: white;
+}
 
-  .negate-label-padding {
-    margin-top: -0.5rem;
-  }
-
+.negate-label-padding {
+  margin-top: -0.5rem;
+}
 </style>

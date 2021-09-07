@@ -1,40 +1,50 @@
 <template>
-	<div>
-		<el-radio
-			class="margin-bottom" 
-			:label="label"
-		/>
-		<div class="flex margin-y">
-			<el-select 
-        class="margin-right" 
-        v-model="month" 
+  <div>
+    <el-radio class="margin-bottom" :label="label" />
+    <div class="flex margin-y">
+      <el-select
+        v-model="month"
+        class="margin-right"
         placeholder="Month"
+        :disabled="!enabled"
         @change="monthChanged"
-        :disabled="!enabled">
-          <el-option
-            v-for="(month, index) in months"
-            :key="index"
-            :label="month"
-            :value="month">
-          </el-option>
-			</el-select>
-      <el-input-number 
-        class="remove-number-arrows" 
-        v-model="year" 
-        placeholder="Year" 
-        @change="yearChanged" 
-        :precision="0" 
-        :min="2000" 
+      >
+        <el-option
+          v-for="(month, index) in months"
+          :key="index"
+          :label="month"
+          :value="month"
+        />
+      </el-select>
+      <el-input-number
+        v-model="year"
+        class="remove-number-arrows"
+        placeholder="Year"
+        :precision="0"
+        :min="2000"
         :max="2040"
-        :disabled="!enabled" 
+        :disabled="!enabled"
+        @change="yearChanged"
       />
-		</div>
-	</div>
+    </div>
+  </div>
 </template>
 
 <script>
-
-const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+]
 
 export default {
   name: 'RadioDateOption',
@@ -44,7 +54,7 @@ export default {
   props: {
     label: {
       type: String,
-      default: ""
+      default: ''
     },
     enabled: {
       type: Boolean,
@@ -52,46 +62,46 @@ export default {
     },
     defaultMonth: {
       type: String,
-      default: "Mar"
+      default: 'Mar'
     },
     defaultYear: {
       type: Number,
       default: 2020
-    },
+    }
   },
 
-	data() {
+  data() {
     return {
       months: months,
       month: this.defaultMonth,
       year: this.defaultYear
     }
-	},
-
-  computed: {
-    
   },
+
+  computed: {},
   watch: {
     defaultMonth: function() {
-      if (this.month === this.defaultMonth) { return }
+      if (this.month === this.defaultMonth) {
+        return
+      }
       this.month = this.defaultMonth
-		},
+    },
     defaultYear: function() {
-      if (this.year === this.defaultYear) { return }
+      if (this.year === this.defaultYear) {
+        return
+      }
       this.year = this.defaultYear
-		},
+    }
   },
 
-  mounted() {
-    
-  },
+  mounted() {},
 
   methods: {
     yearChanged: function(newValue) {
-      this.$emit('year-changed', newValue);
+      this.$emit('year-changed', newValue)
     },
     monthChanged: function(newValue) {
-      this.$emit('month-changed', newValue);
+      this.$emit('month-changed', newValue)
     }
   }
 }
@@ -105,7 +115,8 @@ export default {
   border-color: #8300bf;
   background: #8300bf;
 }
-.remove-number-arrows > .el-input-number__increase, .remove-number-arrows > .el-input-number__decrease {
+.remove-number-arrows > .el-input-number__increase,
+.remove-number-arrows > .el-input-number__decrease {
   display: none;
 }
 .remove-number-arrows > .el-input > .el-input__inner {
@@ -117,20 +128,19 @@ export default {
 @import '../../assets/_variables.scss';
 
 .flex {
-	display: flex;
-	justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }
 
 .margin-y {
-	margin: 0 1.5rem;
+  margin: 0 1.5rem;
 }
 
 .margin-right {
-	margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 .margin-bottom {
-	margin-bottom: .25rem;
+  margin-bottom: 0.25rem;
 }
-
 </style>

@@ -4,41 +4,40 @@
     <h2 class="title">
       {{ label }}
       <svg-icon
-				v-show="showCollapsibleArrow"
-        @click="onArrowClicked"
+        v-show="showCollapsibleArrow"
         class="ml-8 icon-arrow"
         name="icon-arrow"
         :dir="collapsibleArrowDir"
         height="15"
         width="15"
+        @click="onArrowClicked"
       />
     </h2>
     <div v-show="showContent" class="light-gray-background">
-			<slot></slot>
-		</div>
+      <slot />
+    </div>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'FacetLabel',
 
   components: {},
 
   props: {
-		label: {
-			type: String,
-			default: ""
-  	},
-		collapseByDefault: {
-			type: Boolean,
-			default: false
-  	},
-		showCollapsibleArrow: {
-			type: Boolean,
-			default: true
-  	},
+    label: {
+      type: String,
+      default: ''
+    },
+    collapseByDefault: {
+      type: Boolean,
+      default: false
+    },
+    showCollapsibleArrow: {
+      type: Boolean,
+      default: true
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -57,7 +56,7 @@ export default {
     showContent: function() {
       return !(this.collapsed || this.disabled)
     }
-  }, 
+  },
   methods: {
     onArrowClicked() {
       if (!this.disabled) {
@@ -65,16 +64,15 @@ export default {
       }
       return this.collapsed
     }
-  },
+  }
 }
-
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
 
 .light-gray-background {
-  background-color: rgb(250,251,252);
+  background-color: rgb(250, 251, 252);
 }
 
 h2 {
@@ -98,7 +96,7 @@ hr {
 }
 
 .disabled {
-  opacity: .5;
-  background-color: #fafbfc
+  opacity: 0.5;
+  background-color: #fafbfc;
 }
 </style>
