@@ -97,7 +97,7 @@ const tabTypes = [
   },
   {
     label: 'Devices',
-    type: 'Device' as const
+    type: 'Devices' as const
   },
   {
     label: 'Data and Models',
