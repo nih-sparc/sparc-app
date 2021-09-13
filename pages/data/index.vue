@@ -85,6 +85,16 @@
               />
             </el-col>
             <el-col
+              v-if="searchType.type === 'sparcPartners'"
+              :sm="24"
+              :md="8"
+              :lg="6"
+            >
+              <tools-and-resources-facet-menu
+                @tool-and-resources-selections-changed="fetchResults"
+              />
+            </el-col>
+            <el-col
               :sm="searchColSpan('sm')"
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
@@ -162,7 +172,7 @@ const searchResultsComponents = {
 
 const searchTypes = [
   {
-    label: 'Datasets',
+    label: 'Data',
     type: 'dataset',
     filterId: process.env.ctf_filters_dataset_id,
     dataSource: 'algolia'
@@ -174,12 +184,12 @@ const searchTypes = [
     dataSource: 'pennsieveIndex'
   },
   {
-    label: 'Resources',
+    label: 'Tools & Resources',
     type: process.env.ctf_resource_id,
     dataSource: 'contentful'
   },
   {
-    label: 'News and Events',
+    label: 'News & Events',
     type: process.env.ctf_news_and_events_id,
     dataSource: 'contentful'
   },
@@ -195,8 +205,6 @@ const searchData = {
   limit: 10,
   skip: 0,
   items: [],
-  order: undefined,
-  ascending: false
 }
 
 import createClient from '@/plugins/contentful.js'
@@ -204,6 +212,7 @@ import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, facetPropPathMapping } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
 import NewsAndEventsFacetMenu from '~/components/FacetMenu/NewsAndEventsFacetMenu.vue'
+import ToolsAndResourcesFacetMenu from '~/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -219,7 +228,8 @@ export default {
     DatasetFacetMenu,
     SearchForm,
     PaginationMenu,
-    NewsAndEventsFacetMenu
+    NewsAndEventsFacetMenu,
+    ToolsAndResourcesFacetMenu
   },
 
   mixins: [],
@@ -558,6 +568,8 @@ export default {
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
       var contentType = this.$route.query.type  
       var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
+      var resourceTypes, developedBySparc = undefined;
+      var sortOrder = undefined;
 
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
         contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
@@ -565,6 +577,15 @@ export default {
         newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
+        sortOrder = contentType === process.env.ctf_news_id ? 'fields.publishedDate' : 'fields.startDate';
+      }
+      if (this.$route.query.type === process.env.ctf_resource_id) {
+        resourceTypes = this.$route.query.resourceTypes;
+        developedBySparc = this.$route.query.developedBySparc;
+        sortOrder = 'fields.name'
+      }
+      if (this.$route.query.type === process.env.ctf_project_id) {
+        sortOrder = 'fields.title'
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false;
@@ -576,16 +597,18 @@ export default {
             query: this.$route.query.q,
             limit: this.searchData.limit,
             skip: this.searchData.skip,
-            order: this.searchData.order,
+            order: sortOrder,
             include: 2,
             'fields.tags[all]': tags,
             'fields.publishedDate[lt]': newsPublishedLessThanDate,
             'fields.publishedDate[gte]': newsPublishedGreaterThanOrEqualToDate,
             'fields.startDate[lt]': eventStartLessThanDate,
             'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
+            'fields.resourceType[in]': resourceTypes,
+            'fields.developedBySparc' : developedBySparc
           })
           .then(async response => {
-            this.searchData = { ...response, order: this.searchData.order }
+            this.searchData = { ...response }
             if (
               this.$route.query.type === 'organ' &&
               origSearchDataLimit !== 999
@@ -779,7 +802,8 @@ export default {
      */
     searchColSpan(viewport) {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
-        this.searchType.type === 'newsAndEvents'
+        this.searchType.type === 'newsAndEvents' || 
+        this.searchType.type ==='sparcPartners'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
         md: hasFacetMenu ? 16 : 24,
