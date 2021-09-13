@@ -69,6 +69,7 @@
             </el-col>
             <el-col
               v-if="searchType.type === 'sparcPartners'"
+              class="facet-menu"
               :sm="24"
               :md="8"
               :lg="6"
