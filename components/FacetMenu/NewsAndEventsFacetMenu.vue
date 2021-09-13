@@ -157,9 +157,6 @@ export default {
         },
         () => {
           this.$emit('news-and-events-selections-changed')
-        },
-        error => {
-          console.log(error)
         }
       )
     },
@@ -174,9 +171,6 @@ export default {
         },
         () => {
           this.$emit('news-and-events-selections-changed')
-        },
-        error => {
-          console.log(error)
         }
       )
     },
@@ -260,8 +254,16 @@ export default {
       return this.newsAndEventsType
     },
     deselectAllFacets() {
-      this.$refs.publicationCategory.reset()
-      this.$refs.eventCategory.reset()
+      this.$router.replace(
+        {
+          query: { ...this.$route.query, publicationDateOption: undefined, eventDateOption: undefined }
+        },
+				() => {
+          this.$emit('tool-and-resources-selections-changed')
+					this.$refs.publicationCategory.reset()
+          this.$refs.eventCategory.reset()
+        }
+      )
     },
     deselectFacet() {
       if (this.newsAndEventsType === this.options[0].id) {
