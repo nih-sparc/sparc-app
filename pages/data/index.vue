@@ -79,6 +79,17 @@
               />
             </el-col>
             <el-col
+              v-if="searchType.type === 'sparcAward'"
+              class="facet-menu"
+              :sm="24"
+              :md="8"
+              :lg="6"
+            >
+              <sparc-info-facet-menu
+                @sparc-info-selections-changed="fetchResults"
+              />
+            </el-col>
+            <el-col
               :sm="searchColSpan('sm')"
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
@@ -216,6 +227,7 @@ import { handleSortChange, facetPropPathMapping } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
 import NewsAndEventsFacetMenu from '~/components/FacetMenu/NewsAndEventsFacetMenu.vue'
 import ToolsAndResourcesFacetMenu from '~/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
+import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -232,7 +244,8 @@ export default {
     SearchForm,
     PaginationMenu,
     NewsAndEventsFacetMenu,
-    ToolsAndResourcesFacetMenu
+    ToolsAndResourcesFacetMenu,
+    SparcInfoFacetMenu
   },
 
   mixins: [],
@@ -806,7 +819,8 @@ export default {
     searchColSpan(viewport) {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
         this.searchType.type === 'newsAndEvents' || 
-        this.searchType.type ==='sparcPartners'
+        this.searchType.type === 'sparcPartners' ||
+        this.searchType.type === 'sparcAward'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
         md: hasFacetMenu ? 16 : 24,
