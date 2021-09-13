@@ -39,28 +39,10 @@
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
-          <div class="search-heading">
-            <p v-show="!isLoadingSearch && searchData.items.length">
-              {{ searchHeading }} | Showing
-              <pagination-menu
-                :page-size="searchData.limit"
-                @update-page-size="updateDataSearchLimit"
-              />
-            </p>
-            <el-pagination
-              v-if="searchData.limit < searchData.total"
-              :small="isMobile"
-              :page-size="searchData.limit"
-              :pager-count="5"
-              :current-page="curSearchPage"
-              layout="prev, pager, next"
-              :total="searchData.total"
-              @current-change="onPaginationPageChange"
-            />
-          </div>
           <el-row :gutter="32">
             <el-col
               v-if="searchType.type === 'dataset'"
+              class="facet-menu"
               :sm="24"
               :md="8"
               :lg="6"
@@ -74,6 +56,7 @@
             </el-col>
             <el-col
               v-if="searchType.type === 'newsAndEvents'"
+              class="facet-menu"
               :sm="24"
               :md="8"
               :lg="6"
@@ -89,6 +72,25 @@
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
             >
+              <div class="search-heading">
+                <p v-show="!isLoadingSearch && searchData.items.length">
+                  {{ searchHeading }} | Showing
+                  <pagination-menu
+                    :page-size="searchData.limit"
+                    @update-page-size="updateDataSearchLimit"
+                  />
+                </p>
+                <el-pagination
+                  v-if="searchData.limit < searchData.total"
+                  :small="isMobile"
+                  :page-size="searchData.limit"
+                  :pager-count="5"
+                  :current-page="curSearchPage"
+                  layout="prev, pager, next"
+                  :total="searchData.total"
+                  @current-change="onPaginationPageChange"
+                />
+              </div>
               <div v-loading="isLoadingSearch" class="table-wrap">
                 <component
                   :is="searchResultsComponent"
@@ -906,6 +908,9 @@ export default {
     flex-shrink: 0;
     margin: 2em 0 0 0;
   }
+}
+.facet-menu {
+  margin-top: 2em;
 }
 ::v-deep {
   .el-table td {
