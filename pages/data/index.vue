@@ -14,9 +14,8 @@
               :to="{
                 name: 'data',
                 query: {
+                  ...$route.query,
                   type: type.type,
-                  q: $route.query.q,
-                  selectedFacetIds: $route.query.selectedFacetIds
                 }
               }"
             >
@@ -40,28 +39,10 @@
     <div class="page-wrap container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
-          <div class="search-heading">
-            <p v-show="!isLoadingSearch && searchData.items.length">
-              {{ searchHeading }} | Showing
-              <pagination-menu
-                :page-size="searchData.limit"
-                @update-page-size="updateDataSearchLimit"
-              />
-            </p>
-            <el-pagination
-              v-if="searchData.limit < searchData.total"
-              :small="isMobile"
-              :page-size="searchData.limit"
-              :pager-count="5"
-              :current-page="curSearchPage"
-              layout="prev, pager, next"
-              :total="searchData.total"
-              @current-change="onPaginationPageChange"
-            />
-          </div>
           <el-row :gutter="32">
             <el-col
               v-if="searchType.type === 'dataset'"
+              class="facet-menu"
               :sm="24"
               :md="8"
               :lg="6"
@@ -74,10 +55,42 @@
               />
             </el-col>
             <el-col
+              v-if="searchType.type === 'newsAndEvents'"
+              class="facet-menu"
+              :sm="24"
+              :md="8"
+              :lg="6"
+            >
+              <news-and-events-facet-menu
+                @news-and-events-selections-changed="fetchResults"
+                @hook:mounted="newsAndEventsFacetMenuMounted"
+                ref="newsAndEventsFacetMenu"
+              />
+            </el-col>
+            <el-col
               :sm="searchColSpan('sm')"
               :md="searchColSpan('md')"
               :lg="searchColSpan('lg')"
             >
+              <div class="search-heading">
+                <p v-show="!isLoadingSearch && searchData.items.length">
+                  {{ searchHeading }} | Showing
+                  <pagination-menu
+                    :page-size="searchData.limit"
+                    @update-page-size="updateDataSearchLimit"
+                  />
+                </p>
+                <el-pagination
+                  v-if="searchData.limit < searchData.total"
+                  :small="isMobile"
+                  :page-size="searchData.limit"
+                  :pager-count="5"
+                  :current-page="curSearchPage"
+                  layout="prev, pager, next"
+                  :total="searchData.total"
+                  @current-change="onPaginationPageChange"
+                />
+              </div>
               <div v-loading="isLoadingSearch" class="table-wrap">
                 <component
                   :is="searchResultsComponent"
@@ -134,12 +147,10 @@ import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
-const EventSearchResults = () =>
-  import('@/components/SearchResults/EventSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const NewsSearchResults = () =>
-  import('@/components/SearchResults/NewsSearchResults.vue')
+const NewsAndEventsSearchResults = () =>
+  import('@/components/SearchResults/NewsAndEventsSearchResults.vue')
 const ResourcesSearchResults = () =>
   import('@/components/Resources/ResourcesSearchResults.vue')
 
@@ -147,12 +158,9 @@ const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcAward: ProjectSearchResults,
   sparcPartners: ResourcesSearchResults,
-  event: EventSearchResults,
   simulation: DatasetSearchResults,
-  news: NewsSearchResults
+  newsAndEvents: NewsAndEventsSearchResults,
 }
-
-const sparcAwardType = ['projects']
 
 const searchTypes = [
   {
@@ -173,13 +181,8 @@ const searchTypes = [
     dataSource: 'contentful'
   },
   {
-    label: 'Events',
-    type: process.env.ctf_event_id,
-    dataSource: 'contentful'
-  },
-  {
-    label: 'News',
-    type: process.env.ctf_news_id,
+    label: 'News and Events',
+    type: process.env.ctf_news_and_events_id,
     dataSource: 'contentful'
   },
   {
@@ -202,7 +205,7 @@ import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { handleSortChange, facetPropPathMapping } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
-import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
+import NewsAndEventsFacetMenu from '~/components/FacetMenu/NewsAndEventsFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -215,10 +218,10 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    SparcInfoFacetMenu,
     DatasetFacetMenu,
     SearchForm,
-    PaginationMenu
+    PaginationMenu,
+    NewsAndEventsFacetMenu
   },
 
   mixins: [],
@@ -230,7 +233,6 @@ export default {
       visibleFacets: {},
       selectedFacets: [],
       defaultCheckedFacetIds: [],
-      sparcAwardType: [...sparcAwardType],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
@@ -330,18 +332,7 @@ export default {
         this.fetchResults()
       },
       immediate: true
-    }
-
-    // selectedFacets: function() {
-    //   this.$router.replace({
-    //     query: {
-    //       ...this.$route.query,
-    //       selectedFacetIds: pluck('id', this.selectedFacets).toString()
-    //     }
-    //   })
-    //   this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
-    //   this.fetchResults()
-    // }
+    },
   },
 
   beforeMount: function() {
@@ -413,6 +404,10 @@ export default {
       if (typeof searchSources[source] === 'function') {
         searchSources[source]()
       }
+    },
+
+    newsAndEventsFacetMenuMounted: function() {
+      this.$nextTick(() => this.fetchResults())
     },
 
     handleSortChange: function(payload) {
@@ -563,39 +558,57 @@ export default {
       // Keep the original search data limit to get all organs before pagination
       const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
+      var contentType = this.$route.query.type  
+      var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
 
-      client
-        .getEntries({
-          content_type: this.$route.query.type,
-          query: this.$route.query.q,
-          limit: this.searchData.limit,
-          skip: this.searchData.skip,
-          order: this.searchData.order,
-          include: 2,
-          'fields.tags[all]': tags
-        })
-        .then(async response => {
-          this.searchData = { ...response, order: this.searchData.order }
-          if (
-            this.$route.query.type === 'organ' &&
-            origSearchDataLimit !== 999
-          ) {
-            this.searchData.items = await this.removeOrganNoDatasets()
-            // Reset search data values for pagination
-            this.searchData.limit = origSearchDataLimit
-            this.searchData.skip == 0
-              ? this.searchData.items.length > this.searchData.limit
-                ? this.searchData.items.splice(this.searchData.limit)
-                : (this.searchData.total = this.searchData.items.length)
-              : ''
-          }
-        })
-        .catch(() => {
-          this.searchData = clone(searchData)
-        })
-        .finally(() => {
-          this.isLoadingSearch = false
-        })
+      if (this.$route.query.type === process.env.ctf_news_and_events_id) {
+        contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
+        newsPublishedLessThanDate = this.$refs.newsAndEventsFacetMenu?.getPublishedLessThanDate();
+        newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
+        eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
+        eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
+      }
+      if (contentType === undefined) {
+        this.isLoadingSearch = false;
+      }
+      else {
+        client
+          .getEntries({
+            content_type: contentType,
+            query: this.$route.query.q,
+            limit: this.searchData.limit,
+            skip: this.searchData.skip,
+            order: this.searchData.order,
+            include: 2,
+            'fields.tags[all]': tags,
+            'fields.publishedDate[lt]': newsPublishedLessThanDate,
+            'fields.publishedDate[gte]': newsPublishedGreaterThanOrEqualToDate,
+            'fields.startDate[lt]': eventStartLessThanDate,
+            'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
+          })
+          .then(async response => {
+            this.searchData = { ...response, order: this.searchData.order }
+            if (
+              this.$route.query.type === 'organ' &&
+              origSearchDataLimit !== 999
+            ) {
+              this.searchData.items = await this.removeOrganNoDatasets()
+              // Reset search data values for pagination
+              this.searchData.limit = origSearchDataLimit
+              this.searchData.skip == 0
+                ? this.searchData.items.length > this.searchData.limit
+                  ? this.searchData.items.splice(this.searchData.limit)
+                  : (this.searchData.total = this.searchData.items.length)
+                : ''
+            }
+          })
+          .catch(() => {
+            this.searchData = clone(searchData)
+          })
+          .finally(() => {
+            this.isLoadingSearch = false
+          })
+      }
     },
 
     /* Returns filter for searching algolia. All facets of the same category are joined with OR,
@@ -675,7 +688,6 @@ export default {
       this.latestFacetUpdateKey = key
       this.hasKeys = hasKeys
       this.selectedFacets = facets
-      console.log(pluck('id', this.selectedFacets).toString())
       this.$router.replace({
         query: {
           ...this.$route.query,
@@ -768,11 +780,12 @@ export default {
      * Determined if the searchType === 'dataset'
      */
     searchColSpan(viewport) {
-      const isDataset = this.searchType.type === 'dataset'
+      const hasFacetMenu = this.searchType.type === 'dataset' ||
+        this.searchType.type === 'newsAndEvents'
       const viewports = {
-        sm: isDataset ? 24 : 24,
-        md: isDataset ? 16 : 24,
-        lg: isDataset ? 18 : 24
+        sm: hasFacetMenu ? 24 : 24,
+        md: hasFacetMenu ? 16 : 24,
+        lg: hasFacetMenu ? 18 : 24
       }
 
       return viewports[viewport] || 24
@@ -895,6 +908,9 @@ export default {
     flex-shrink: 0;
     margin: 2em 0 0 0;
   }
+}
+.facet-menu {
+  margin-top: 2em;
 }
 ::v-deep {
   .el-table td {
