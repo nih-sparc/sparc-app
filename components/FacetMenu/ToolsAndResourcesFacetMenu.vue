@@ -160,7 +160,7 @@ export default {
     setSelectedFacetArray(data) {
       this.selectedFacets[data.key] = data.facets
       this.selectedFacetArray = []
-      for (const [value] of Object.entries(this.selectedFacets)) {
+      for (const [key, value] of Object.entries(this.selectedFacets)) {
         this.selectedFacetArray = this.selectedFacetArray.concat(value)
       }
     }
