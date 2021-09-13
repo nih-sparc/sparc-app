@@ -256,11 +256,15 @@ export default {
     deselectAllFacets() {
       this.$router.replace(
         {
-          query: { ...this.$route.query, publicationDateOption: undefined, eventDateOption: undefined }
+          query: {
+            ...this.$route.query,
+            publicationDateOption: undefined,
+            eventDateOption: undefined
+          }
         },
-				() => {
+        () => {
           this.$emit('tool-and-resources-selections-changed')
-					this.$refs.publicationCategory.reset()
+          this.$refs.publicationCategory.reset()
           this.$refs.eventCategory.reset()
         }
       )
