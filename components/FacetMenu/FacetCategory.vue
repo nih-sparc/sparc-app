@@ -6,19 +6,21 @@
       <span>Show all</span>
       <hr>
     </div>
-    <el-tree
-      ref="tree"
-      :class="{ 'white-background' : !showCollapsibleLabelArrow }"
-      :data="facet.children"
-      node-key="id"
-      show-checkbox
-      default-expand-all
-      :default-checked-keys="defaultCheckedKeys"
-      :props="treeProps"
-      :filter-node-method="filterNode"
-      :render-content="renderContent"
-      @check-change="onCheckChange"
-    />
+    <div :class="['padding-bottom', { 'light-gray-background' : showCollapsibleLabelArrow, 'white-background' : !showCollapsibleLabelArrow}]">
+      <el-tree
+        ref="tree"
+        :class="{ 'white-background' : !showCollapsibleLabelArrow }"
+        :data="facet.children"
+        node-key="id"
+        show-checkbox
+        default-expand-all
+        :default-checked-keys="defaultCheckedKeys"
+        :props="treeProps"
+        :filter-node-method="filterNode"
+        :render-content="renderContent"
+        @check-change="onCheckChange"
+      />
+    </div>
   </facet-label>
 </template>
 
@@ -177,5 +179,9 @@ export default {
 
 .white-background {
   background: white
+}
+
+.padding-bottom {
+  padding-bottom: .5rem;
 }
 </style>
