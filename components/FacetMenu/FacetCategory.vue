@@ -1,13 +1,14 @@
 <template>
-  <facet-label :label="facet.label">
-    <hr>
-    <div class="show-all-node">
+  <facet-label :label="facet.label" :show-collapsible-arrow="showCollapsibleLabelArrow">
+    <hr v-show="showCollapsibleLabelArrow">
+    <div v-show="!hideShowAllOption" class="show-all-node">
       <el-checkbox v-model="showAll" @change="onChangeShowAll" />
       <span>Show all</span>
       <hr>
     </div>
     <el-tree
       ref="tree"
+      :class="{ 'white-background' : !showCollapsibleLabelArrow }"
       :data="facet.children"
       node-key="id"
       show-checkbox
@@ -43,6 +44,18 @@ export default {
     defaultCheckedKeys: {
       type: Array,
       default: () => []
+    },
+    hideShowAllOption: {
+      type: Boolean,
+      default: false
+    },
+    showCollapsibleLabelArrow: {
+      type: Boolean,
+      default: true
+    },
+    showNumberResults: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -88,10 +101,11 @@ export default {
         [this.facet.key, node.data.label],
         this.visibleFacets
       )
+      let nrResultsClass = this.showNumberResults ? 'tree-counter' : 'hide-nr-results';
       return (
         <span class="custom-tree-node">
-            <span class="capitalize">{node.label}</span>
-          <span class="tree-counter">({nrResults})</span>
+          <span class="capitalize">{node.label}</span>
+          <span class={nrResultsClass}>({nrResults})</span>
         </span>
       )
     },
@@ -133,6 +147,9 @@ export default {
   font-size: 12px;
   vertical-align: middle;
 }
+.hide-nr-results {
+  display: none;
+}
 .capitalize {
   text-transform: capitalize;
 }
@@ -156,5 +173,9 @@ export default {
     margin: .5rem 0;
   }
   margin: .5rem 1.5rem;
+}
+
+.white-background {
+  background: white
 }
 </style>

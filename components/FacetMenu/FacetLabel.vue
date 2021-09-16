@@ -87,6 +87,7 @@ h2 {
   margin-bottom: 0;
   padding: 0.5rem 1rem;
   font-weight: 300;
+  text-transform: uppercase;
 }
 
 hr {
