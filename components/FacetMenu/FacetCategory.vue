@@ -131,7 +131,7 @@ export default {
         this.showAll = true
       }
     },
-    onCheckChange: function(data) {
+    onCheckChange: function() {
       const checked = this.$refs.tree.getCheckedKeys()
       if (!checked.length) {
         this.showAll = true
