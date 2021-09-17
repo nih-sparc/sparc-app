@@ -1,7 +1,7 @@
 <template>
-  <facet-label :label="facet.label" :tooltip="tooltip" :showHelpIcon="showHelpIcon">
-    <hr>
-    <div class="show-all-node">
+  <facet-label :label="facet.label" :tooltip="tooltip" :showHelpIcon="showHelpIcon" :show-collapsible-arrow="showCollapsibleLabelArrow">
+    <hr v-show="showCollapsibleLabelArrow">
+    <div v-show="!hideShowAllOption"  class="show-all-node">
       <el-checkbox v-model="showAll" @change="onChangeShowAll">
         Show all
       </el-checkbox>
@@ -9,6 +9,7 @@
     </div>
     <el-tree
       ref="tree"
+      :class="{ 'white-background' : !showCollapsibleLabelArrow }"
       :data="facet.children"
       node-key="id"
       show-checkbox
@@ -53,6 +54,18 @@ export default {
       default: ''
     },
     showHelpIcon: {
+      type: Boolean,
+      default: false
+    },
+    hideShowAllOption: {
+      type: Boolean,
+      default: false
+    },
+    showCollapsibleLabelArrow: {
+      type: Boolean,
+      default: true
+    },
+    showNumberResults: {
       type: Boolean,
       default: false
     }
@@ -100,12 +113,13 @@ export default {
         [this.facet.key, node.data.label],
         this.visibleFacets
       )
+      let nrResultsClass = this.showNumberResults ? 'tree-counter' : 'hide-nr-results';
       return (
         <el-tooltip placement="top-end" transition="none" open-delay={tooltipDelay}>
           <div slot="content" class="capitalize">{node.label}</div>
           <span class="custom-tree-node">
             <span class="capitalize">{node.label}</span>
-            <span class="tree-counter">({nrResults})</span>
+            <span class={nrResultsClass}>({nrResults})</span>
           </span>
         </el-tooltip>
       )
@@ -148,6 +162,9 @@ export default {
   font-size: 12px;
   vertical-align: middle;
 }
+.hide-nr-results {
+  display: none;
+}
 .capitalize {
   text-transform: capitalize;
 }
@@ -175,5 +192,9 @@ export default {
     margin: .5rem 0;
   }
   margin: .5rem 1.5rem;
+}
+
+.white-background {
+  background: white
 }
 </style>

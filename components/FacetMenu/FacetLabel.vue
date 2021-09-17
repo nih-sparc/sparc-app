@@ -102,6 +102,7 @@ h2 {
   padding: 0.5rem 1rem;
   font-weight: 500;
   align-items: center;
+  text-transform: uppercase;
 }
 
 .purple-fill {
