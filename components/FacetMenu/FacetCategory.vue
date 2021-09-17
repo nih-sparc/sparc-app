@@ -1,9 +1,10 @@
 <template>
-  <facet-label :label="facet.label">
+  <facet-label :label="facet.label" :tooltip="tooltip" :showHelpIcon="showHelpIcon">
     <hr>
     <div class="show-all-node">
-      <el-checkbox v-model="showAll" @change="onChangeShowAll" />
-      <span>Show all</span>
+      <el-checkbox v-model="showAll" @change="onChangeShowAll">
+        Show all
+      </el-checkbox>
       <hr>
     </div>
     <el-tree
@@ -12,6 +13,7 @@
       node-key="id"
       show-checkbox
       default-expand-all
+      check-on-click-node
       :default-checked-keys="defaultCheckedKeys"
       :props="treeProps"
       :filter-node-method="filterNode"
@@ -24,6 +26,8 @@
 <script>
 import { propOr, pathOr } from 'ramda'
 import FacetLabel from './FacetLabel.vue'
+
+const tooltipDelay = 800
 
 export default {
   name: 'FacetCategory',
@@ -43,6 +47,14 @@ export default {
     defaultCheckedKeys: {
       type: Array,
       default: () => []
+    },
+    tooltip: {
+      type: String,
+      default: ''
+    },
+    showHelpIcon: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -89,10 +101,13 @@ export default {
         this.visibleFacets
       )
       return (
-        <span class="custom-tree-node">
+        <el-tooltip placement="top-end" transition="none" open-delay={tooltipDelay}>
+          <div slot="content" class="capitalize">{node.label}</div>
+          <span class="custom-tree-node">
             <span class="capitalize">{node.label}</span>
-          <span class="tree-counter">({nrResults})</span>
-        </span>
+            <span class="tree-counter">({nrResults})</span>
+          </span>
+        </el-tooltip>
       )
     },
     onChangeShowAll: function(value) {
@@ -142,6 +157,10 @@ export default {
 }
 .light-gray-background .el-tree {
   background: rgb(250,251,252);
+}
+.show-all-node .el-checkbox__label {
+  font-size: 16px;
+  font-weight: normal;
 }
 </style>
 

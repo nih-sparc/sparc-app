@@ -54,7 +54,7 @@ h2 {
 .title {
   margin-bottom: 0;
   padding: 0.5rem 1rem;
-  font-weight: 300;
+  font-weight: 500;
 }
 
 hr {

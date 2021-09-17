@@ -2,7 +2,13 @@
   <div :class="{ disabled: disabled }">
     <hr />
     <h2 class="title">
-      {{ label }}
+      <span>
+        {{ label }}
+        <el-tooltip placement="top-start" transition="none">
+          <div slot="content" v-html="tooltip">{{tooltip}}</div>
+          <svg-icon v-show="showHelpIcon" class="purple-fill" icon="icon-help" width="26" height="26" />
+        </el-tooltip>
+      </span>
       <svg-icon
         v-show="showCollapsibleArrow"
         class="ml-8 icon-arrow"
@@ -41,6 +47,14 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    showHelpIcon: {
+      type: Boolean,
+      default: false
+    },
+    tooltip: {
+      type: String,
+      default: ""
     }
   },
 
@@ -86,7 +100,12 @@ h2 {
   justify-content: space-between;
   margin-bottom: 0;
   padding: 0.5rem 1rem;
-  font-weight: 300;
+  font-weight: 500;
+  align-items: center;
+}
+
+.purple-fill {
+  fill: $median;
 }
 
 hr {

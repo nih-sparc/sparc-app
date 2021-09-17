@@ -71,10 +71,10 @@
               }
             }"
           >
-            {{ scope.row.item.name }}
+            {{ scope.row.pennsieve.name }}
           </nuxt-link>
           <div class="mt-8 mb-8">
-            {{ scope.row.item.description }}
+            {{ scope.row.pennsieve.description }}
           </div>
           <table class="property-table">
             <tr
@@ -170,10 +170,6 @@ export default {
         {
           displayName: 'Samples',
           propPath: 'item.statistics'
-        },
-        {
-          displayName: 'Publication Date',
-          propPath: 'pennsieve'
         },
         {
           displayName: 'Includes',

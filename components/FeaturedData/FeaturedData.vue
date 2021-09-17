@@ -1,12 +1,12 @@
 <template>
-  <div class="featured-data container">
+  <div v-loading="isLoadingOrganFacetIds" class="featured-data container">
     <h2>Find Data by Category</h2>
     <div class="data-wrap">
       <nuxt-link
         v-for="item in featuredData"
         :key="item.sys.id"
         class="featured-data__item"
-        :to="item.fields.link"
+        :to="`${getLink(item.fields)}`"
       >
         <img
           :src="imageUrl(item)"
@@ -18,7 +18,7 @@
       </nuxt-link>
     </div>
 
-    <nuxt-link :to="{ name: 'data', query: { type: 'organ' } }">
+    <nuxt-link :to="{ name: 'data', query: { type: 'dataset' } }">
       <el-button class="btn-view-more mt-32">
         View more
       </el-button>
@@ -27,8 +27,12 @@
 </template>
 
 <script>
-import { pathOr } from 'ramda'
+import createAlgoliaClient from '@/plugins/algolia.js'
+import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
+import { isEmpty, pathOr } from 'ramda'
 
+const algoliaClient = createAlgoliaClient();
+const algoliaIndex = algoliaClient.initIndex('k-core_dev_published_time_desc')
 export default {
   name: 'FeaturedData',
 
@@ -39,6 +43,17 @@ export default {
     }
   },
 
+  data: () => {
+    return {
+      organFacets: [],
+      isLoadingOrganFacetIds: true
+    }
+  },
+
+  created() {
+    this.loadOrganFacets()
+  },
+
   methods: {
     /**
      * Get image URL for the featured data
@@ -47,6 +62,21 @@ export default {
      */
     imageUrl: function(item) {
       return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], item)
+    },
+    loadOrganFacets: function() {
+      this.isLoadingOrganFacetIds = true;
+      getAlgoliaFacets(algoliaIndex, facetPropPathMapping).then(data => {
+        this.organFacets = data.filter(facet => facet.key === 'anatomy.organ.name')[0].children
+      }).finally(() => {
+        this.isLoadingOrganFacetIds = false
+      })
+    },
+    getLink(contentfulFields) {
+      if (isEmpty(this.organFacetIds)) {
+        return contentfulFields.link
+      }
+      var organ = this.organFacets.find(organ => organ.label.toLowerCase() === contentfulFields.label.toLowerCase())
+      return organ === undefined ? contentfulFields.link : `${contentfulFields.link}&selectedFacetIds=${organ.id}`
     }
   }
 }
