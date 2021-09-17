@@ -113,7 +113,7 @@ export default {
         [this.facet.key, node.data.label],
         this.visibleFacets
       )
-      let nrResultsClass = this.showNumberResults ? 'tree-counter' : 'hide-nr-results';
+      let nrResultsClass = this.showNumberResults && nrResults > 0 ? 'tree-counter' : 'hide-nr-results';
       return (
         <el-tooltip placement="top-end" transition="none" open-delay={tooltipDelay}>
           <div slot="content" class="capitalize">{node.label}</div>
