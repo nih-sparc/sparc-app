@@ -50,7 +50,7 @@
               <dataset-facet-menu
                 :facets="facets"
                 :visible-facets="visibleFacets"
-                @selected-facets-changed="onDatasetMenuFacetSelectionChanged"
+                @selected-facets-changed="fetchResults"
                 ref="datasetFacetMenu"
               />
             </el-col>
@@ -244,9 +244,7 @@ export default {
       searchData: clone(searchData),
       isLoadingSearch: false,
       isSearchMapVisible: false,
-      latestDatasetFacetMenuUpdateKey: '',
       latestSearchTerm: '',
-      datasetFacetMenuHasKeys: 0,
       breadcrumb: [
         {
           to: {
@@ -458,7 +456,7 @@ export default {
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-      if (query !== this.latestSearchTerm || !this.datasetFacetMenuHasKeys) {
+      if (query !== this.latestSearchTerm || !this.$refs.datasetFacetMenu?.hasKeys()) {
         this.latestSearchTerm = query
         algoliaIndex
           .search(query, {
@@ -486,7 +484,7 @@ export default {
           this.isLoadingSearch = false
           // update facet result numbers
           for (const [key, value] of Object.entries(this.visibleFacets)) {
-            if ( (this.latestDatasetFacetMenuUpdateKey === key && !this.datasetFacetMenuHasKeys) || (this.latestDatasetFacetMenuUpdateKey !== key) ){
+            if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
               for (const [key2, value2] of Object.entries(value)) {
                 let maybeFacetCount = pathOr(null, [key, key2], response.facets)
                 if (maybeFacetCount) {
@@ -623,12 +621,6 @@ export default {
       return this.searchData.items.filter((organ, index) =>
         this.hasDatasets(results[index])
       )
-    },
-
-    onDatasetMenuFacetSelectionChanged: function(key, datasetFacetMenuHasKeys, facets) {
-      this.latestDatasetFacetMenuUpdateKey = key
-      this.datasetFacetMenuHasKeys = datasetFacetMenuHasKeys
-      this.fetchResults()
     },
 
     /**

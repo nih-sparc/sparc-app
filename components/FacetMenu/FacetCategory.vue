@@ -67,7 +67,7 @@ export default {
     },
     showNumberResults: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
 

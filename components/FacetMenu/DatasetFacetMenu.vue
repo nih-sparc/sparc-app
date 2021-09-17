@@ -72,7 +72,9 @@ export default {
       selectedFacetArray: [],
       defaultCheckedFacetIds: [],
       embargoedFacetCategory : embargoedFacetCategory,
-      embargoFacetCategoryTooltip: embargoFacetCategoryTooltip
+      embargoFacetCategoryTooltip: embargoFacetCategoryTooltip,
+      numKeys: 0,
+      latestUpdateKey: '',
     }
   },
 
@@ -100,7 +102,10 @@ export default {
           selectedFacetIds: this.selectedFacetArray.length === 0 ? undefined : pluck('id', this.selectedFacetArray).toString()
         }
       }).catch(()=> {}).finally(() => {
-        this.$emit('selected-facets-changed', data.key, Object.keys(data.facets).length ,this.selectedFacetArray)
+        this.latestUpdateKey = data.key;
+        this.numKeys = Object.keys(data.facets).length
+
+        this.$emit('selected-facets-changed')
       })
     },
     /* Returns filter for searching algolia. All facets of the same category are joined with OR,
@@ -131,6 +136,12 @@ export default {
         filters += `${filter} AND `
       })
       return filters.substring(0, filters.lastIndexOf(' AND '))
+    },
+    getLatestUpdateKey() {
+      return this.latestUpdateKey
+    },
+    hasKeys() {
+      return this.numKeys > 0
     },
     deselectAllFacets() {
       this.selectedFacets = []
