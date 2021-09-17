@@ -103,6 +103,10 @@ h2 {
   font-weight: 500;
   align-items: center;
   text-transform: uppercase;
+  cursor: default;
+  svg {
+    cursor: pointer
+  }
 }
 
 .purple-fill {
