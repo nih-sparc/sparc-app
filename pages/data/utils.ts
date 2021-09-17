@@ -155,13 +155,13 @@ export const extractExtension = (
 
 // Mapping between display categories and their Algolia index property path
 // Used for populating the Dataset Search Results facet menu dynamically
-export const facetPropPathMapping = new Object({
+export const facetPropPathMapping = {
   'anatomy.organ.name' : 'Anatomical Structure',
   'organisms.primary.species.name' : 'Species',
   'item.modalities.keyword' : 'Experimental Approach',
   'attributes.subject.sex.value' : 'Sex',
   'attributes.subject.ageCategory.value' : 'Age Categories',
-})
+}
 
 export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMapping : Object) {
   const map = new Map(Object.entries(propPathMapping));

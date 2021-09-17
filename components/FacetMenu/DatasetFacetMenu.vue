@@ -104,7 +104,6 @@ export default {
       }).catch(()=> {}).finally(() => {
         this.latestUpdateKey = data.key;
         this.numKeys = Object.keys(data.facets).length
-
         this.$emit('selected-facets-changed')
       })
     },
@@ -145,7 +144,6 @@ export default {
     },
     deselectAllFacets() {
       this.selectedFacets = []
-
       this.$router.replace(
         {
           query: {
