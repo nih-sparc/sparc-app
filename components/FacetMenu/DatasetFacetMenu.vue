@@ -18,6 +18,8 @@
       :facet="embargoedFacetCategory"
       :default-checked-keys="defaultCheckedFacetIds"
       @selection-change="onSelectionChange"
+      :show-collapsible-label-arrow="false"
+      hide-show-all-option
       show-help-icon
       :tooltip="embargoFacetCategoryTooltip"
       ref="embargoedFacetCategory"
