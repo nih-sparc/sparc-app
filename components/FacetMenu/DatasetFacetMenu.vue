@@ -114,9 +114,9 @@ export default {
       if (this.selectedFacetArray === undefined) {
         return undefined
       }
-      var filters = 'pennsieve.embargo.keyword:false'
+      var filters = 'NOT item.published.status:embargo'
       if(this.selectedFacetArray.some(facet => facet.key === this.embargoedFacetCategory.children[0].key)) {
-        filters += ' OR pennsieve.embargo.keyword:true'
+        filters += ' OR item.published.status:embargo'
       }
       filters = `(${filters}) AND `
       const facetPropPaths = Object.keys(facetPropPathMapping)
