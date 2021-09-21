@@ -49,9 +49,9 @@
             >
               <dataset-facet-menu
                 :facets="facets"
-                :default-checked-facet-ids="defaultCheckedFacetIds"
                 :visible-facets="visibleFacets"
-                @selected-facets-changed="updateSelectedFacets"
+                @selected-facets-changed="fetchResults"
+                ref="datasetFacetMenu"
               />
             </el-col>
             <el-col
@@ -85,7 +85,7 @@
             >
               <div class="search-heading">
                 <p v-show="!isLoadingSearch && searchData.items.length">
-                  {{ searchHeading }} | Showing
+                  {{ searchData.total }} Results | Showing
                   <pagination-menu
                     :page-size="searchData.limit"
                     @update-page-size="updateDataSearchLimit"
@@ -107,32 +107,31 @@
                   :is="searchResultsComponent"
                   :table-data="tableData"
                   :title-column-width="titleColumnWidth"
-                  @sort-change="handleSortChange"
+                />
+              </div>
+              <div class="search-heading">
+                <p v-if="!isLoadingSearch && searchData.items.length">
+                  {{ searchHeading }} | Showing
+                  <pagination-menu
+                    :page-size="searchData.limit"
+                    @update-page-size="updateDataSearchLimit"
+                  />
+                </p>
+                <el-pagination
+                  v-if="searchData.limit < searchData.total"
+                  :small="isMobile"
+                  :page-size="searchData.limit"
+                  :pager-count="5"
+                  :current-page="curSearchPage"
+                  layout="prev, pager, next"
+                  :total="searchData.total"
+                  @current-change="onPaginationPageChange"
                 />
               </div>
             </el-col>
           </el-row>
         </el-col>
       </el-row>
-      <div class="search-heading">
-        <p v-if="!isLoadingSearch && searchData.items.length">
-          {{ searchHeading }} | Showing
-          <pagination-menu
-            :page-size="searchData.limit"
-            @update-page-size="updateDataSearchLimit"
-          />
-        </p>
-        <el-pagination
-          v-if="searchData.limit < searchData.total"
-          :small="isMobile"
-          :page-size="searchData.limit"
-          :pager-count="5"
-          :current-page="curSearchPage"
-          layout="prev, pager, next"
-          :total="searchData.total"
-          @current-change="onPaginationPageChange"
-        />
-      </div>
     </div>
   </div>
 </template>
@@ -147,7 +146,6 @@ import {
   isEmpty,
   mergeLeft,
   pathOr,
-  pluck,
   propEq,
   propOr
 } from 'ramda'
@@ -212,7 +210,7 @@ const searchData = {
 
 import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
-import { handleSortChange, facetPropPathMapping } from './utils'
+import { facetPropPathMapping, getAlgoliaFacets } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
 import NewsAndEventsFacetMenu from '~/components/FacetMenu/NewsAndEventsFacetMenu.vue'
 import ToolsAndResourcesFacetMenu from '~/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
@@ -242,15 +240,11 @@ export default {
       searchQuery: '',
       facets: [],
       visibleFacets: {},
-      selectedFacets: [],
-      defaultCheckedFacetIds: [],
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
       isSearchMapVisible: false,
-      latestFacetUpdateKey: '',
       latestSearchTerm: '',
-      hasKeys: 0,
       breadcrumb: [
         {
           to: {
@@ -378,8 +372,9 @@ export default {
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
-    this.populateFacets()
-    this.fetchResults()
+    getAlgoliaFacets(algoliaIndex, facetPropPathMapping).then(data => this.facets = data).finally(() => {
+      this.fetchResults()
+    })
   },
 
   methods: {
@@ -421,15 +416,6 @@ export default {
       this.$nextTick(() => this.fetchResults())
     },
 
-    handleSortChange: function(payload) {
-      handleSortChange(
-        this.searchType.dataSource,
-        this.searchData,
-        this.fetchResults,
-        payload
-      )
-    },
-
     fetchFromPennsieveIndex: function() {
       const query = this.$route.query.q
 
@@ -455,11 +441,7 @@ export default {
       this.isLoadingSearch = true
       const query = this.$route.query.q
 
-
-      var filters = undefined
-      if (this.selectedFacets) {
-        filters = this.constructFilters(this.selectedFacets)
-      }
+      var filters =  this.$refs.datasetFacetMenu?.getFilters()
 
       const searchType = pathOr('', ['query', 'type'], this.$route)
       const organizationNameFilter =
@@ -474,7 +456,7 @@ export default {
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-      if (query !== this.latestSearchTerm || !this.hasKeys) {
+      if (query !== this.latestSearchTerm || !this.$refs.datasetFacetMenu?.hasKeys()) {
         this.latestSearchTerm = query
         algoliaIndex
           .search(query, {
@@ -502,11 +484,10 @@ export default {
           this.isLoadingSearch = false
           // update facet result numbers
           for (const [key, value] of Object.entries(this.visibleFacets)) {
-            if ( (this.latestFacetUpdateKey === key && !this.hasKeys) || (this.latestFacetUpdateKey !== key) ){
+            if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
               for (const [key2, value2] of Object.entries(value)) {
                 let maybeFacetCount = pathOr(null, [key, key2], response.facets)
                 if (maybeFacetCount) {
-                  let test = response.facets[key][key2]
                   this.visibleFacets[key][key2] = response.facets[key][key2]
                 } else {
                   this.visibleFacets[key][key2] = 0
@@ -515,46 +496,6 @@ export default {
             }
           }
         })
-    },
-
-    // Loads all the desired facets dynamically into the facet menu by looking at the categories
-    populateFacets: function() {
-      const facetPropPaths = Object.keys(facetPropPathMapping)
-      var facetData = []
-      var facetId = 0
-      algoliaIndex
-        .search('', {
-          sortFacetValuesBy: 'alpha',
-          facets: facetPropPaths
-        })
-        .then(response => {
-          facetPropPaths.map(facetPropPath => {
-            const children = []
-            const responseFacets = response.facets
-            const responseFacetChildren =
-              responseFacets[facetPropPath] == undefined
-                ? {}
-                : responseFacets[facetPropPath]
-            if (!isEmpty(responseFacetChildren)) {
-              Object.keys(responseFacetChildren).map(facet => {
-                children.push({
-                  label: facet,
-                  id: facetId++,
-                  facetPropPath: facetPropPath
-                })
-              })
-            }
-            if (!isEmpty(children)) {
-              facetData.push({
-                label: facetPropPathMapping[facetPropPath],
-                id: facetId++,
-                children: children,
-                key: facetPropPath
-              })
-            }
-          })
-        })
-      this.facets = facetData
     },
 
     /**
@@ -635,32 +576,6 @@ export default {
       }
     },
 
-    /* Returns filter for searching algolia. All facets of the same category are joined with OR,
-     * and each of those results is then joined with an AND.
-     * i.e. (color:blue OR color:red) AND (shape:circle OR shape:red) */
-    constructFilters: function(selectedFacets) {
-      var filters = ''
-      const facetPropPaths = Object.keys(facetPropPathMapping)
-      facetPropPaths.map(facetPropPath => {
-        const facetsToOr = selectedFacets.filter(
-          facet => facet.facetPropPath == facetPropPath
-        )
-        var filter = ''
-        facetsToOr.map(facet => {
-          filter += `"${facetPropPath}":"${facet.label}" OR `
-        })
-        if (filter == '') {
-          return
-        }
-        filter = `(${filter.substring(0, filter.lastIndexOf(' OR '))})`
-        filters += `${filter} AND `
-      })
-      if (filters == '') {
-        return
-      }
-      return filters.substring(0, filters.lastIndexOf(' AND '))
-    },
-
     /**
      * Get organ details from discover api
      * @param {Object}
@@ -706,20 +621,6 @@ export default {
       return this.searchData.items.filter((organ, index) =>
         this.hasDatasets(results[index])
       )
-    },
-
-    updateSelectedFacets: function(key, hasKeys, facets) {
-      this.latestFacetUpdateKey = key
-      this.hasKeys = hasKeys
-      this.selectedFacets = facets
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          selectedFacetIds: pluck('id', this.selectedFacets).toString()
-        }
-      })
-      this.defaultCheckedFacetIds = pluck('id', this.selectedFacets)
-      this.fetchResults()
     },
 
     /**

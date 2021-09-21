@@ -63,7 +63,7 @@ export default {
     .facet-card {
       .el-card__body {
         padding: 10px;
-        max-height: 10rem;
+        height: 6rem;
         overflow-y: auto;
       }
       .no-facets {
