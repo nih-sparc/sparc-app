@@ -208,7 +208,7 @@ const searchTypes = [
     dataSource: 'contentful'
   },
   {
-    label: 'Projects',
+    label: 'SPARC Information',
     type: process.env.ctf_project_id,
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
