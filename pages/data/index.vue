@@ -218,7 +218,7 @@ import ToolsAndResourcesFacetMenu from '~/components/FacetMenu/ToolsAndResources
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
 const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER');
-const algoliaIndex = algoliaClient.initIndex('k-core_dev_published_time_desc')
+const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 export default {
   name: 'DataPage',
