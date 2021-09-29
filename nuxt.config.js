@@ -71,6 +71,7 @@ export default {
     CTF_API_HOST: process.env.CTF_API_HOST,
     ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+    ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev_published_time_desc',
     BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
