@@ -2,10 +2,6 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <svg-icon icon="icon-about" width="18" height="18" />
-        <nuxt-link :to="{ name: 'about' }">
-          About SPARC
-        </nuxt-link>
         <svg-icon icon="icon-contact" width="18" height="18" />
         <nuxt-link to="/contact-us">
           Contact Us
@@ -76,12 +72,6 @@
                 <hr class="divider" />
               </ul>
               <ul class="mobile-navigation__links">
-                <li>
-                  <svg-icon icon="icon-about" width="18" height="18" />
-                  <nuxt-link :to="{ name: 'about' }">
-                    About SPARC
-                  </nuxt-link>
-                </li>
                 <li>
                   <svg-icon icon="icon-contact" width="18" height="18" />
                   <nuxt-link to="/contact-us">
@@ -184,6 +174,11 @@ const links = [
     title: 'news-and-events',
     displayTitle: 'News & Events',
     href: '/news-and-events'
+  },
+  {
+    title: 'about',
+    displayTitle: 'About',
+    href: '/about'
   }
 ]
 

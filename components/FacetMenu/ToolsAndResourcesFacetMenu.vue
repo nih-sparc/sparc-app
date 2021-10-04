@@ -32,9 +32,9 @@ const typesCategory = {
   children: [
     {
       label: 'Devices',
-      id: 'Device',
+      id: 'Devices',
       children: [],
-      key: 'Device'
+      key: 'Devices'
     },
     {
       label: 'Data and Models',

@@ -71,10 +71,10 @@
               }
             }"
           >
-            {{ scope.row.item.name }}
+            {{ scope.row.pennsieve.name }}
           </nuxt-link>
           <div class="mt-8 mb-8">
-            {{ scope.row.item.description }}
+            {{ scope.row.pennsieve.description }}
           </div>
           <table class="property-table">
             <tr
@@ -164,16 +164,12 @@ export default {
           propPath: 'organisms.primary[0].species.name'
         },
         {
-          displayName: 'Techniques',
-          propPath: 'item.techniques'
+          displayName: 'Experimental Approach',
+          propPath: 'item.modalities'
         },
         {
           displayName: 'Samples',
           propPath: 'item.statistics'
-        },
-        {
-          displayName: 'Publication Date',
-          propPath: 'pennsieve'
         },
         {
           displayName: 'Includes',
@@ -220,13 +216,12 @@ export default {
             ? `${sampleCount} samples from ${subjectCount} subjects`
             : undefined
         }
-        case 'Techniques': {
+        case 'Experimental Approach': {
           const techniques = _.get(item, property.propPath)
           return techniques
             ? techniques
                 .map(item => _.upperFirst(item.keyword))
                 .join(', ')
-                .replaceAll(' technique', '')
             : undefined
         }
         case 'Publication Date': {
@@ -288,7 +283,7 @@ table:not([class^='el-table__'])::before {
   display: none;
 }
 .property-name-column {
-  width: 160px;
+  width: 180px;
   font-weight: bold;
 }
 </style>

@@ -1,9 +1,10 @@
 <template>
-  <facet-label :label="facet.label" :show-collapsible-arrow="showCollapsibleLabelArrow">
+  <facet-label :label="facet.label" :tooltip="tooltip" :showHelpIcon="showHelpIcon" :show-collapsible-arrow="showCollapsibleLabelArrow">
     <hr v-show="showCollapsibleLabelArrow">
-    <div v-show="!hideShowAllOption" class="show-all-node">
-      <el-checkbox v-model="showAll" @change="onChangeShowAll" />
-      <span>Show all</span>
+    <div v-show="!hideShowAllOption"  class="show-all-node">
+      <el-checkbox v-model="showAll" @change="onChangeShowAll">
+        Show all
+      </el-checkbox>
       <hr>
     </div>
     <div :class="['padding-bottom', { 'light-gray-background' : showCollapsibleLabelArrow, 'white-background' : !showCollapsibleLabelArrow}]">
@@ -14,6 +15,7 @@
         node-key="id"
         show-checkbox
         default-expand-all
+        check-on-click-node
         :default-checked-keys="defaultCheckedKeys"
         :props="treeProps"
         :filter-node-method="filterNode"
@@ -27,6 +29,8 @@
 <script>
 import { propOr, pathOr } from 'ramda'
 import FacetLabel from './FacetLabel.vue'
+
+const tooltipDelay = 800
 
 export default {
   name: 'FacetCategory',
@@ -47,6 +51,14 @@ export default {
       type: Array,
       default: () => []
     },
+    tooltip: {
+      type: String,
+      default: ''
+    },
+    showHelpIcon: {
+      type: Boolean,
+      default: false
+    },
     hideShowAllOption: {
       type: Boolean,
       default: false
@@ -57,7 +69,7 @@ export default {
     },
     showNumberResults: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
 
@@ -103,12 +115,15 @@ export default {
         [this.facet.key, node.data.label],
         this.visibleFacets
       )
-      let nrResultsClass = this.showNumberResults ? 'tree-counter' : 'hide-nr-results';
+      let nrResultsClass = this.showNumberResults && nrResults > 0 ? 'tree-counter' : 'hide-nr-results';
       return (
-        <span class="custom-tree-node">
-          <span class="capitalize">{node.label}</span>
-          <span class={nrResultsClass}>({nrResults})</span>
-        </span>
+        <el-tooltip placement="top-end" transition="none" open-delay={tooltipDelay}>
+          <div slot="content" class="capitalize">{node.label}</div>
+          <span class="custom-tree-node">
+            <span class="capitalize">{node.label}</span>
+            <span class={nrResultsClass}>({nrResults})</span>
+          </span>
+        </el-tooltip>
       )
     },
     onChangeShowAll: function(value) {
@@ -118,7 +133,7 @@ export default {
         this.showAll = true
       }
     },
-    onCheckChange: function(data) {
+    onCheckChange: function() {
       const checked = this.$refs.tree.getCheckedKeys()
       if (!checked.length) {
         this.showAll = true
@@ -161,6 +176,10 @@ export default {
 }
 .light-gray-background .el-tree {
   background: rgb(250,251,252);
+}
+.show-all-node .el-checkbox__label {
+  font-size: 16px;
+  font-weight: normal;
 }
 </style>
 

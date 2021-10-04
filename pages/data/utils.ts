@@ -1,5 +1,6 @@
 import { Entry } from "contentful";
 import {ExtendedVue, Vue, VueConfiguration, VueConstructor} from "vue/types/vue";
+import { SearchIndex } from "algoliasearch";
 
 interface Tag {
   name: string;
@@ -157,8 +158,46 @@ export const extractExtension = (
 export const facetPropPathMapping = {
   'anatomy.organ.name' : 'Anatomical Structure',
   'organisms.primary.species.name' : 'Species',
-  'item.techniques.keyword' : 'Techniques',
+  'item.modalities.keyword' : 'Experimental Approach',
   'attributes.subject.sex.value' : 'Sex',
   'attributes.subject.ageCategory.value' : 'Age Categories',
-  'item.published.status' : 'Publication Status'
+}
+
+export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMapping : Object) {
+  const map = new Map(Object.entries(propPathMapping));
+  const facetPropPaths = Array.from(map.keys() );
+  var facetData: { label: string; id: number; children: object[]; key: string; }[] = []
+  var facetId = 0
+  return algoliaIndex
+    .search('', {
+      sortFacetValuesBy: 'alpha',
+      facets: facetPropPaths
+    })
+    .then(response => {
+      facetPropPaths.map((facetPropPath: string) => {
+        var children: { label: string; id: number; facetPropPath: string; }[] = []
+        const responseFacets = response.facets
+        if (responseFacets === undefined) {return}
+        const responseFacetChildren =
+          responseFacets[facetPropPath] == undefined
+            ? {}
+            : responseFacets[facetPropPath]
+        Object.keys(responseFacetChildren).map(facet => {
+          children.push({
+            label: facet,
+            id: facetId++,
+            facetPropPath: facetPropPath
+          })
+        })
+        if (children.length > 0) {
+          facetData.push({
+            label: map.get(facetPropPath),
+            id: facetId++,
+            children: children,
+            key: facetPropPath
+          })
+        }
+      })
+      return facetData
+    })
 }
