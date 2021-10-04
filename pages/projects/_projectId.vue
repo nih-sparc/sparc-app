@@ -112,7 +112,8 @@ export default {
           to: {
             name: 'data',
             query: {
-              type: 'sparcAward'
+              type: 'sparcInfo',
+              sparcInfoType: 'sparcAward'
             }
           },
           label: 'Find Data'

@@ -79,7 +79,7 @@
               />
             </el-col>
             <el-col
-              v-if="searchType.type === 'sparcAward'"
+              v-if="searchType.type === 'sparcInfo'"
               class="facet-menu"
               :sm="24"
               :md="8"
@@ -87,6 +87,8 @@
             >
               <sparc-info-facet-menu
                 @sparc-info-selections-changed="fetchResults"
+                @hook:mounted="sparcInfoFacetMenuMounted"
+                ref="sparcInfoFacetMenu"
               />
             </el-col>
             <el-col
@@ -167,8 +169,8 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
-const ProjectSearchResults = () =>
-  import('@/components/SearchResults/ProjectSearchResults.vue')
+const SparcInfoSearchResults = () =>
+  import('@/components/SearchResults/SparcInfoSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
 const NewsAndEventsSearchResults = () =>
@@ -178,7 +180,7 @@ const ResourcesSearchResults = () =>
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
-  sparcAward: ProjectSearchResults,
+  sparcInfo: SparcInfoSearchResults,
   sparcPartners: ResourcesSearchResults,
   simulation: DatasetSearchResults,
   newsAndEvents: NewsAndEventsSearchResults,
@@ -209,7 +211,7 @@ const searchTypes = [
   },
   {
     label: 'SPARC Information',
-    type: process.env.ctf_project_id,
+    type: 'sparcInfo',
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
   }
@@ -433,6 +435,10 @@ export default {
     newsAndEventsFacetMenuMounted: function() {
       this.$nextTick(() => this.fetchResults())
     },
+    
+    sparcInfoFacetMenuMounted: function() {
+      this.$nextTick(() => this.fetchResults())
+    },
 
     handleSortChange: function(payload) {
       handleSortChange(
@@ -586,7 +592,10 @@ export default {
       var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
       var resourceTypes, developedBySparc = undefined;
       var sortOrder = undefined;
-
+      if (this.$route.query.type === "sparcInfo") {
+        contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
+        sortOrder = 'fields.title'
+      }
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
         contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
         newsPublishedLessThanDate = this.$refs.newsAndEventsFacetMenu?.getPublishedLessThanDate();
@@ -599,9 +608,6 @@ export default {
         resourceTypes = this.$route.query.resourceTypes;
         developedBySparc = this.$route.query.developedBySparc;
         sortOrder = 'fields.name'
-      }
-      if (this.$route.query.type === process.env.ctf_project_id) {
-        sortOrder = 'fields.title'
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false;
@@ -820,7 +826,7 @@ export default {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
         this.searchType.type === 'newsAndEvents' || 
         this.searchType.type === 'sparcPartners' ||
-        this.searchType.type === 'sparcAward'
+        this.searchType.type === 'sparcInfo'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
         md: hasFacetMenu ? 16 : 24,

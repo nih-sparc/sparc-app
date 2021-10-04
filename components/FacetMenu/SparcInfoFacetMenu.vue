@@ -57,7 +57,7 @@ const options = [
   },
   {
     label: 'help',
-    id: 'help'
+    id: 'helpDocument'
   },
   {
     label: 'policies',
@@ -65,7 +65,7 @@ const options = [
   },
   {
     label: 'projects',
-    id: 'projects'
+    id: 'sparcAward'
   }
 ]
 
@@ -135,7 +135,7 @@ export default {
   data() {
     return {
       options: options,
-      type: options[0].id,
+      sparcInfoType: options[0].id,
       sparcInvestigatorsCategory : sparcInvestigatorsCategory,
       hasPublicationsCategory : hasPublicationsCategory,
       hasDatasetsCategory : hasDatasetsCategory,
@@ -147,7 +147,7 @@ export default {
   computed: {
     selectedTypeLabel: function() {
       var selectedOption = this.options.find(
-        option => this.type === option.id
+        option => this.sparcInfoType === option.id
       )
       return selectedOption === undefined
         ? options[0].label
@@ -162,16 +162,16 @@ export default {
 
   mounted() {
     if (this.$route.query.sparcInfoType) {
-      this.type = this.$route.query.sparcInfoType
+      this.sparcInfoType = this.$route.query.sparcInfoType
     }
   },
 
   methods: {
     onSelectedTypeChanged(newValue) {
-      if (this.type === newValue) {
+      if (this.sparcInfoType === newValue) {
         return
       }
-      this.type = newValue
+      this.sparcInfoType = newValue
       this.$router.replace(
         {
           query: { ...this.$route.query, sparcInfoType: newValue }
@@ -194,7 +194,7 @@ export default {
 
     },
     getSelectedType() {
-      return this.type
+      return this.sparcInfoType
     },
     deselectAllFacets() {
       this.$router.replace(

@@ -81,16 +81,20 @@ export default {
       helpItem: helpItem,
       breadcrumb: [
         {
-          label: 'Home',
           to: {
             name: 'index'
-          }
+          },
+          label: 'Home'
         },
         {
-          label: allHelpData.fields.title,
           to: {
-            name: 'help'
-          }
+            name: 'data',
+            query: {
+              type: 'sparcInfo',
+              sparcInfoType: 'helpDocument'
+            }
+          },
+          label: 'Find Data'
         }
       ]
     }
