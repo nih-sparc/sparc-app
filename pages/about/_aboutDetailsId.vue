@@ -80,7 +80,6 @@ export default {
         name: `about-${slug}`
       })
     }
-
     return {
       aboutDetailsItem: aboutDetailsItem,
       heroCopy: '',
