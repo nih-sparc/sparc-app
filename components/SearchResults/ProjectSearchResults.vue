@@ -1,9 +1,5 @@
 <template>
-  <el-table
-    :data="tableData"
-    :show-header="false"
-    empty-text="No Results"
-  >
+  <el-table :data="tableData" :show-header="false" empty-text="No Results">
     <el-table-column width="160">
       <template slot-scope="scope">
         <img
@@ -35,7 +31,7 @@
               Lead Institution
             </td>
             <td>
-              {{scope.row.fields.institution.fields.name}}
+              {{ scope.row.fields.institution.fields.name }}
             </td>
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
@@ -43,7 +39,7 @@
               Principle Investigator
             </td>
             <td>
-              {{reverseName(scope.row.fields.principleInvestigator)}}
+              {{ reverseName(scope.row.fields.principleInvestigator) }}
             </td>
           </tr>
           <tr v-if="scope.row.fields.awardId">
@@ -61,7 +57,7 @@
               Anatomical Focus
             </td>
             <td>
-              {{scope.row.fields.projectSection.fields.title}}
+              {{ scope.row.fields.projectSection.fields.title }}
             </td>
           </tr>
         </table>
@@ -82,7 +78,7 @@ export default {
     tableData: {
       type: Array,
       default: () => []
-    },
+    }
   },
 
   methods: {
@@ -127,11 +123,11 @@ export default {
 
     // Return name in the form last, first
     reverseName: function(name) {
-      const fullName = name.split(" ");
+      const fullName = name.split(' ')
       if (fullName.length < 2) {
         return name
       }
-      if (fullName.length === 2){
+      if (fullName.length === 2) {
         return `${fullName[1]}, ${fullName[0]}`
       }
       return `${fullName[2]}, ${fullName[0]} ${fullName[1]}`

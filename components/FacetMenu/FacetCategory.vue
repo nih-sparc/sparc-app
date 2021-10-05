@@ -1,16 +1,29 @@
 <template>
-  <facet-label :label="facet.label" :tooltip="tooltip" :showHelpIcon="showHelpIcon" :show-collapsible-arrow="showCollapsibleLabelArrow">
-    <hr v-show="showCollapsibleLabelArrow">
-    <div v-show="!hideShowAllOption"  class="show-all-node">
+  <facet-label
+    :label="facet.label"
+    :tooltip="tooltip"
+    :show-help-icon="showHelpIcon"
+    :show-collapsible-arrow="showCollapsibleLabelArrow"
+  >
+    <hr v-show="showCollapsibleLabelArrow" />
+    <div v-show="!hideShowAllOption" class="show-all-node">
       <el-checkbox v-model="showAll" @change="onChangeShowAll">
         Show all
       </el-checkbox>
-      <hr>
+      <hr />
     </div>
-    <div :class="['padding-bottom', { 'light-gray-background' : showCollapsibleLabelArrow, 'white-background' : !showCollapsibleLabelArrow}]">
+    <div
+      :class="[
+        'padding-bottom',
+        {
+          'light-gray-background': showCollapsibleLabelArrow,
+          'white-background': !showCollapsibleLabelArrow
+        }
+      ]"
+    >
       <el-tree
         ref="tree"
-        :class="{ 'white-background' : !showCollapsibleLabelArrow }"
+        :class="{ 'white-background': !showCollapsibleLabelArrow }"
         :data="facet.children"
         node-key="id"
         show-checkbox
@@ -35,7 +48,7 @@ const tooltipDelay = 800
 export default {
   name: 'FacetCategory',
 
-  components: {FacetLabel},
+  components: { FacetLabel },
 
   props: {
     facet: {
@@ -78,29 +91,29 @@ export default {
       showAll: true,
       treeProps: {
         label: 'label'
-      },
+      }
     }
   },
   computed: {
     allKeys: function() {
       return Object.keys(propOr({}, this.facet.key, this.visibleFacets))
-    },
+    }
   },
   watch: {
     allKeys(val) {
       this.$refs.tree.filter(val)
-    },
+    }
   },
 
   mounted() {
-    if (this.defaultCheckedKeys.length){
-        this.$nextTick(() => {
-          /* Work around el-tree component not firing onFacetChecked event when setting default checked keys. When user refreshes page, 
-           * we need to force selectedFacets to update so that the tags get shown and that the selectedFacets changed event gets fired 
-           * and notifies the parent that the selected facets have changed so that they can then fetch results */
-          this.onCheckChange()
-        })
-      }
+    if (this.defaultCheckedKeys.length) {
+      this.$nextTick(() => {
+        /* Work around el-tree component not firing onFacetChecked event when setting default checked keys. When user refreshes page,
+         * we need to force selectedFacets to update so that the tags get shown and that the selectedFacets changed event gets fired
+         * and notifies the parent that the selected facets have changed so that they can then fetch results */
+        this.onCheckChange()
+      })
+    }
   },
 
   methods: {
@@ -115,10 +128,19 @@ export default {
         [this.facet.key, node.data.label],
         this.visibleFacets
       )
-      let nrResultsClass = this.showNumberResults && nrResults > 0 ? 'tree-counter' : 'hide-nr-results';
+      let nrResultsClass =
+        this.showNumberResults && nrResults > 0
+          ? 'tree-counter'
+          : 'hide-nr-results'
       return (
-        <el-tooltip placement="top-end" transition="none" open-delay={tooltipDelay}>
-          <div slot="content" class="capitalize">{node.label}</div>
+        <el-tooltip
+          placement="top-end"
+          transition="none"
+          open-delay={tooltipDelay}
+        >
+          <div slot="content" class="capitalize">
+            {node.label}
+          </div>
           <span class="custom-tree-node">
             <span class="capitalize">{node.label}</span>
             <span class={nrResultsClass}>({nrResults})</span>
@@ -175,7 +197,7 @@ export default {
   overflow: hidden;
 }
 .light-gray-background .el-tree {
-  background: rgb(250,251,252);
+  background: rgb(250, 251, 252);
 }
 .show-all-node .el-checkbox__label {
   font-size: 16px;
@@ -188,19 +210,19 @@ export default {
 
 .show-all-node {
   .el-checkbox {
-    padding-right: .25rem;
+    padding-right: 0.25rem;
   }
   hr {
-    margin: .5rem 0;
+    margin: 0.5rem 0;
   }
-  margin: .5rem 1.5rem;
+  margin: 0.5rem 1.5rem;
 }
 
 .white-background {
-  background: white
+  background: white;
 }
 
 .padding-bottom {
-  padding-bottom: .5rem;
+  padding-bottom: 0.5rem;
 }
 </style>

@@ -1,17 +1,14 @@
 <template>
   <div>
-		<help-search-results
-			v-if="this.$route.query.sparcInfoType === 'helpDocument'" 
-			:table-data="tableData"
-		/>
-		<project-search-results
-			v-if="this.$route.query.sparcInfoType === 'sparcAward'" 
+    <help-search-results
+      v-if="this.$route.query.sparcInfoType === 'helpDocument'"
       :table-data="tableData"
     />
-    <about-details-search-results
-			v-else 
+    <project-search-results
+      v-if="this.$route.query.sparcInfoType === 'sparcAward'"
       :table-data="tableData"
     />
+    <about-details-search-results v-else :table-data="tableData" />
   </div>
 </template>
 
@@ -38,5 +35,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

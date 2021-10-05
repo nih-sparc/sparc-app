@@ -1,13 +1,10 @@
 <template>
   <el-table :show-header="false" :data="tableData" empty-text="No Results">
-		<el-table-column>
-			<template slot-scope="scope">
-				  <help-card
-            class="small-title"
-						:help-item="scope.row"
-					/>
+    <el-table-column>
+      <template slot-scope="scope">
+        <help-card class="small-title" :help-item="scope.row" />
       </template>
-		</el-table-column>
+    </el-table-column>
   </el-table>
 </template>
 
@@ -17,7 +14,7 @@ import HelpCard from '@/components/HelpCard/HelpCard.vue'
 export default {
   name: 'HelpSearchResults',
 
-	components: {
+  components: {
     HelpCard
   },
 
@@ -34,5 +31,4 @@ export default {
 .el-table {
   width: 100%;
 }
-
 </style>

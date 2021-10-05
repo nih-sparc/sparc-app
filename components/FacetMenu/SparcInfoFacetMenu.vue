@@ -138,10 +138,10 @@ export default {
     return {
       options: options,
       sparcInfoType: options[0].id,
-      sparcInvestigatorsCategory : sparcInvestigatorsCategory,
-      hasPublicationsCategory : hasPublicationsCategory,
-      hasDatasetsCategory : hasDatasetsCategory,
-      hasModelSimulationCategory : hasModelSimulationCategory,
+      sparcInvestigatorsCategory: sparcInvestigatorsCategory,
+      hasPublicationsCategory: hasPublicationsCategory,
+      hasDatasetsCategory: hasDatasetsCategory,
+      hasModelSimulationCategory: hasModelSimulationCategory,
       defaultCheckedKeys: [],
       showFacetMenu: process.env.show_facet_menu
     }
@@ -161,11 +161,15 @@ export default {
     },
     aboutDetailsTypesToCheck: function() {
       if (this.sparcInfoType !== 'policies' && this.sparcInfoType !== 'about') {
-        return undefined;
+        return undefined
       }
-      return this.sparcInfoType === 'policies' ?
-        process.env.ctf_about_details_page_types.filter(type => type === 'Policies').toString() :
-        process.env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
+      return this.sparcInfoType === 'policies'
+        ? process.env.ctf_about_details_page_types
+            .filter(type => type === 'Policies')
+            .toString()
+        : process.env.ctf_about_details_page_types
+            .filter(type => type !== 'Policies')
+            .toString()
     }
   },
 
@@ -192,18 +196,10 @@ export default {
         }
       )
     },
-    onSparcInvestigatorsChanged(newValue) {
-
-    },
-    onHasPublicationsChanged(newValue) {
-
-    },
-    onHasDatasetsChanged(newValue) {
-
-    },
-    onHasModelSimulationChanged(newValue) {
-
-    },
+    onSparcInvestigatorsChanged(newValue) {},
+    onHasPublicationsChanged(newValue) {},
+    onHasDatasetsChanged(newValue) {},
+    onHasModelSimulationChanged(newValue) {},
     getSelectedType() {
       if (this.sparcInfoType === 'policies' || this.sparcInfoType === 'about') {
         return process.env.ctf_about_details_content_type_id
@@ -214,7 +210,7 @@ export default {
       this.$router.replace(
         {
           query: {
-            ...this.$route.query,
+            ...this.$route.query
           }
         },
         () => {
