@@ -66,7 +66,7 @@ export default {
     const slug = aboutDetailsItem.fields.slug
     if (slug && params.aboutDetailsId !== slug) {
       redirect({
-        name: 'about-policies-aboutDetailsId',
+        name: 'about-policies-and-standards-aboutDetailsId',
         params: { aboutDetailsId: slug }
       })
     }
@@ -91,7 +91,7 @@ export default {
         {
           label: aboutDetailsItem.fields.type,
           to: {
-            name: 'about-policies'
+            name: 'about-policies-and-standards'
           }
         }
       ]

@@ -66,12 +66,19 @@ export default {
 @import '@/assets/_variables.scss';
 .learn-more-card {
   h3 {
-    margin-bottom: 0;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: .5rem;
+  }
+}
+.small-title {
+  h3 {
+    font-size: 1em !important;
   }
 }
 .about-link {
   color: $median;
-  font-size: 24px;
 }
 .about-link:not(:hover) {
   text-decoration: none;
