@@ -543,7 +543,7 @@ export default {
         newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
-        sortOrder = contentType === process.env.ctf_news_id ? '-fields.publishedDate' : '-fields.startDate';
+        sortOrder = this.$refs.newsAndEventsFacetMenu?.getSortOrder();
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
