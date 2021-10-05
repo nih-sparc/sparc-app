@@ -50,7 +50,8 @@
               <dataset-facet-menu
                 :facets="facets"
                 :visible-facets="visibleFacets"
-                @selected-facets-changed="fetchResults"
+                @selected-facets-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
                 ref="datasetFacetMenu"
               />
             </el-col>
@@ -62,8 +63,8 @@
               :lg="6"
             >
               <news-and-events-facet-menu
-                @news-and-events-selections-changed="fetchResults"
-                @hook:mounted="newsAndEventsFacetMenuMounted"
+                @news-and-events-selections-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
                 ref="newsAndEventsFacetMenu"
               />
             </el-col>
@@ -75,7 +76,8 @@
               :lg="6"
             >
               <tools-and-resources-facet-menu
-                @tool-and-resources-selections-changed="fetchResults"
+                @tool-and-resources-selections-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
               />
             </el-col>
             <el-col
@@ -86,8 +88,8 @@
               :lg="6"
             >
               <sparc-info-facet-menu
-                @sparc-info-selections-changed="fetchResults"
-                @hook:mounted="sparcInfoFacetMenuMounted"
+                @sparc-info-selections-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
                 ref="sparcInfoFacetMenu"
               />
             </el-col>
@@ -427,11 +429,7 @@ export default {
       }
     },
 
-    newsAndEventsFacetMenuMounted: function() {
-      this.$nextTick(() => this.fetchResults())
-    },
-    
-    sparcInfoFacetMenuMounted: function() {
+    facetMenuMounted: function() {
       this.$nextTick(() => this.fetchResults())
     },
 
@@ -532,9 +530,11 @@ export default {
       var contentType = this.$route.query.type  
       var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
       var resourceTypes, developedBySparc = undefined;
+      var aboutDetailsTypes = undefined;
       var sortOrder = undefined;
       if (this.$route.query.type === "sparcInfo") {
         contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
+        aboutDetailsTypes = this.$refs.sparcInfoFacetMenu?.aboutDetailsTypesToCheck
         sortOrder = 'fields.title'
       }
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
@@ -543,7 +543,7 @@ export default {
         newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
-        sortOrder = contentType === process.env.ctf_news_id ? 'fields.publishedDate' : 'fields.startDate';
+        sortOrder = contentType === process.env.ctf_news_id ? '-fields.publishedDate' : '-fields.startDate';
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
@@ -568,7 +568,8 @@ export default {
             'fields.startDate[lt]': eventStartLessThanDate,
             'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
             'fields.resourceType[in]': resourceTypes,
-            'fields.developedBySparc' : developedBySparc
+            'fields.developedBySparc' : developedBySparc,
+            'fields.type[in]' : aboutDetailsTypes,
           })
           .then(async response => {
             this.searchData = { ...response }

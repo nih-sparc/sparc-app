@@ -10,38 +10,40 @@
       :default-selected-option="selectedTypeLabel"
       @selection-changed="onSelectedTypeChanged"
     />
-    <facet-category
-      ref="sparcInvestigatorsCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :facet="sparcInvestigatorsCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onSparcInvestigatorsChanged"
-    />
-    <facet-category
-      ref="hasPublicationsCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :facet="hasPublicationsCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onHasPublicationsChanged"
-    />
-    <facet-category
-      ref="hasDatasetsCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :facet="hasDatasetsCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onHasDatasetsChanged"
-    />
-    <facet-category
-      ref="hasModelSimulationCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :facet="hasModelSimulationCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onHasModelSimulationChanged"
-    />
+    <div v-if="showFacetMenu">
+      <facet-category
+        ref="sparcInvestigatorsCategory"
+        :default-checked-keys="defaultCheckedKeys"
+        :facet="sparcInvestigatorsCategory"
+        :hide-show-all-option="true"
+        :show-collapsible-label-arrow="false"
+        @selection-change="onSparcInvestigatorsChanged"
+      />
+      <facet-category
+        ref="hasPublicationsCategory"
+        :default-checked-keys="defaultCheckedKeys"
+        :facet="hasPublicationsCategory"
+        :hide-show-all-option="true"
+        :show-collapsible-label-arrow="false"
+        @selection-change="onHasPublicationsChanged"
+      />
+      <facet-category
+        ref="hasDatasetsCategory"
+        :default-checked-keys="defaultCheckedKeys"
+        :facet="hasDatasetsCategory"
+        :hide-show-all-option="true"
+        :show-collapsible-label-arrow="false"
+        @selection-change="onHasDatasetsChanged"
+      />
+      <facet-category
+        ref="hasModelSimulationCategory"
+        :default-checked-keys="defaultCheckedKeys"
+        :facet="hasModelSimulationCategory"
+        :hide-show-all-option="true"
+        :show-collapsible-label-arrow="false"
+        @selection-change="onHasModelSimulationChanged"
+      />
+    </div>
   </facet-menu>
 </template>
 
@@ -57,7 +59,7 @@ const options = [
   },
   {
     label: 'help',
-    id: 'helpDocument'
+    id: process.env.ctf_help_id
   },
   {
     label: 'policies',
@@ -65,7 +67,7 @@ const options = [
   },
   {
     label: 'projects',
-    id: 'sparcAward'
+    id: process.env.ctf_project_id
   }
 ]
 
@@ -140,7 +142,8 @@ export default {
       hasPublicationsCategory : hasPublicationsCategory,
       hasDatasetsCategory : hasDatasetsCategory,
       hasModelSimulationCategory : hasModelSimulationCategory,
-      defaultCheckedKeys: []
+      defaultCheckedKeys: [],
+      showFacetMenu: process.env.show_facet_menu
     }
   },
 
@@ -155,6 +158,14 @@ export default {
     },
     selectedFacet: function() {
       return []
+    },
+    aboutDetailsTypesToCheck: function() {
+      if (this.sparcInfoType !== 'policies' && this.sparcInfoType !== 'about') {
+        return undefined;
+      }
+      return this.sparcInfoType === 'policies' ?
+        process.env.ctf_about_details_page_types.filter(type => type === 'Policies').toString() :
+        process.env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
     }
   },
 
@@ -194,6 +205,9 @@ export default {
 
     },
     getSelectedType() {
+      if (this.sparcInfoType === 'policies' || this.sparcInfoType === 'about') {
+        return process.env.ctf_about_details_content_type_id
+      }
       return this.sparcInfoType
     },
     deselectAllFacets() {

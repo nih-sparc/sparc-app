@@ -68,7 +68,7 @@ export default {
     margin-bottom: .5rem;
   }
 }
-.small-font {
+.small-title {
   h3 {
     font-size: 1em !important;
   }

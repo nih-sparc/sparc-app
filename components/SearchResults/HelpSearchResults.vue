@@ -3,7 +3,7 @@
 		<el-table-column>
 			<template slot-scope="scope">
 				  <help-card
-            class="small-font"
+            class="small-title"
 						:help-item="scope.row"
 					/>
       </template>

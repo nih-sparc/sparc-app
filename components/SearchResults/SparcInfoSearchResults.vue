@@ -8,19 +8,25 @@
 			v-if="this.$route.query.sparcInfoType === 'sparcAward'" 
       :table-data="tableData"
     />
+    <about-details-search-results
+			v-else 
+      :table-data="tableData"
+    />
   </div>
 </template>
 
 <script>
-import ProjectSearchResults from './ProjectSearchResults.vue'
+import AboutDetailsSearchResults from './AboutDetailsSearchResults.vue'
 import HelpSearchResults from './HelpSearchResults.vue'
+import ProjectSearchResults from './ProjectSearchResults.vue'
 
 export default {
   name: 'SparcInfoSearchResults',
 
   components: {
-    ProjectSearchResults,
-		HelpSearchResults
+    AboutDetailsSearchResults,
+    HelpSearchResults,
+    ProjectSearchResults
   },
 
   props: {
