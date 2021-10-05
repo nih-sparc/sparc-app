@@ -4,11 +4,12 @@
     <page-hero>
       <h1>Maps</h1>
       <p>
-        SPARC is creating detailed PNS maps based on SPARC data and information 
-        available from the literature. The flatmaps you see here are not yet 
-        comprehensive and are largely derived from rat knowledge. 
-        New connectivity and species specificity will be added as the SPARC 
-        program progresses.
+        SPARC is creating detailed PNS maps based on SPARC data and information
+        available from the literature. The flatmaps you see here are not yet
+        comprehensive and are largely derived from regions of the nervous system
+        where SPARC data has been published on this site, supplemented in some regions
+        by published knowledge of rat anatomy. New connectivity and species
+        specificity will be added as the SPARC program progresses.
       </p>
     </page-hero>
     <div ref="mappage" class="page-wrap portalmapcontainer">
