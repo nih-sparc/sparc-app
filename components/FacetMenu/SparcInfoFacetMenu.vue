@@ -14,6 +14,7 @@
       <facet-category
         ref="sparcInvestigatorsCategory"
         :default-checked-keys="defaultCheckedKeys"
+        :enabled="selectedTypeLabel === options[1].label"
         :facet="sparcInvestigatorsCategory"
         :hide-show-all-option="true"
         :show-collapsible-label-arrow="false"
@@ -22,6 +23,7 @@
       <facet-category
         ref="hasPublicationsCategory"
         :default-checked-keys="defaultCheckedKeys"
+        :enabled="selectedTypeLabel === options[3].label"
         :facet="hasPublicationsCategory"
         :hide-show-all-option="true"
         :show-collapsible-label-arrow="false"
@@ -30,6 +32,7 @@
       <facet-category
         ref="hasDatasetsCategory"
         :default-checked-keys="defaultCheckedKeys"
+        :enabled="selectedTypeLabel === options[3].label"
         :facet="hasDatasetsCategory"
         :hide-show-all-option="true"
         :show-collapsible-label-arrow="false"
@@ -38,6 +41,7 @@
       <facet-category
         ref="hasModelSimulationCategory"
         :default-checked-keys="defaultCheckedKeys"
+        :enabled="selectedTypeLabel === options[3].label"
         :facet="hasModelSimulationCategory"
         :hide-show-all-option="true"
         :show-collapsible-label-arrow="false"

@@ -21,6 +21,7 @@
         }
       ]"
     >
+    <el-form :disabled="!enabled">
       <el-tree
         ref="tree"
         :class="{ 'white-background': !showCollapsibleLabelArrow }"
@@ -28,13 +29,14 @@
         node-key="id"
         show-checkbox
         default-expand-all
-        check-on-click-node
+        :check-on-click-node="enabled"
         :default-checked-keys="defaultCheckedKeys"
         :props="treeProps"
         :filter-node-method="filterNode"
         :render-content="renderContent"
         @check-change="onCheckChange"
       />
+    </el-form>
     </div>
   </facet-label>
 </template>
@@ -63,6 +65,10 @@ export default {
     defaultCheckedKeys: {
       type: Array,
       default: () => []
+    },
+    enabled: {
+      type: Boolean,
+      default: true
     },
     tooltip: {
       type: String,
