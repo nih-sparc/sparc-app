@@ -658,7 +658,7 @@ export default {
      * @return {String}
      */
     originallyPublishedDate: function() {
-      const date = propOr('', 'createdAt', this.datasetInfo)
+      const date = propOr('', 'firstPublishedAt', this.datasetInfo)
       return this.formatDate(date)
     },
 

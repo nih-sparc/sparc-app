@@ -3,21 +3,24 @@
     :visible="visible"
     :show-close="false"
     class="version-history-dialog"
-    width="772px"
-    height="600px"
+    width="48.25em"
+    height="22.5em"
     @close="closeDialog"
   >
     <bf-dialog-header slot="title" title="Version History" />
 
     <div class="version-history-container">
       <el-row class="table-header" type="flex" justify="center">
-        <el-col :span="6">
+        <el-col :span="4" :pull="1">
           Version
         </el-col>
-        <el-col :span="6">
-          Date Published
+        <el-col :span="4">
+          Revisions
         </el-col>
-        <el-col :span="10" :push="2">
+        <el-col :span="4">
+          Date 
+        </el-col>
+        <el-col :span="8" :push="2">
           DOI
         </el-col>
       </el-row>
@@ -28,7 +31,7 @@
         type="flex"
         justify="center"
       >
-        <el-col :span="6">
+        <el-col :span="4" :pull="1">
           <router-link
             :to="{
               name: 'version',
@@ -45,10 +48,13 @@
             Version {{ version.version }}
           </router-link>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="4">
+          {{ version.revision ? version.revision : '-' }}
+        </el-col>
+        <el-col :span="4">
           {{ formatDate(version.createdAt) }}
         </el-col>
-        <el-col :span="10" :push="2">
+        <el-col :span="8" :push="2">
           {{ version.doi }}
         </el-col>
       </el-row>
@@ -91,7 +97,6 @@ export default {
       default: () => []
     }
   },
-
   methods: {
     /**
      * Closes the dialog
@@ -109,7 +114,8 @@ export default {
 <style lang="scss" scoped>
 .version-history-dialog {
   .version-history-container {
-    height: 290px;
+    height: 20em;
+    width: 100%;
     font-size: 0.875rem;
     line-height: 1rem;
 
@@ -138,8 +144,6 @@ export default {
   }
 
   ::v-deep .el-dialog {
-    width: 616px !important;
-    height: 350px;
     .el-dialog__header {
       background-color: #f1f1f3;
       padding-top: 1rem;
