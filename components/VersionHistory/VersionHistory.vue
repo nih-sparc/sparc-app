@@ -3,8 +3,8 @@
     :visible="visible"
     :show-close="false"
     class="version-history-dialog"
-    width="772px"
-    height="360px"
+    width="48.25em"
+    height="22.5em"
     @close="closeDialog"
   >
     <bf-dialog-header slot="title" title="Version History" />
@@ -114,8 +114,8 @@ export default {
 <style lang="scss" scoped>
 .version-history-dialog {
   .version-history-container {
-    height: 320px;
-    width: calc(100% - 1px);
+    height: 20em;
+    width: 100%;
     font-size: 0.875rem;
     line-height: 1rem;
 
