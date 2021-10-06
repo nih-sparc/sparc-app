@@ -30,24 +30,13 @@
           </div>
         </div>
         <div class="dataset-owners">
-          <template v-if="!isContributorListVisible">
-            <contributor-item :contributor="firstContributor" />
-            <button
-              class="contributors-button"
-              href="#"
-              @click.prevent="isContributorListVisible = true"
-            >
-              <span class="button-text">...</span>
-            </button>
-          </template>
-
           <div
-            v-for="(contributor, idx) in datasetContributorsList"
+            v-for="(contributor, idx) in datasetContributors"
             :key="contributor.id"
             class="contributor-item-wrap"
           >
             <contributor-item :contributor="contributor" />
-            <template v-if="idx < datasetContributorsList.length - 1">
+            <template v-if="idx < datasetContributors.length - 1">
               ,
             </template>
           </div>
@@ -474,7 +463,6 @@ export default {
       activeTab: this.$route.query.tab ? this.$route.query.tab : 'description',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
-      isContributorListVisible: true,
       isDownloadModalVisible: false,
       tabs: [],
       breadcrumb: [
@@ -615,16 +603,6 @@ export default {
     datasetContributors: function() {
       return propOr([], 'contributors', this.datasetInfo)
     },
-    /**
-     * Compute contributors list based
-     * on expanded list being show
-     * @returns {Array}
-     */
-    datasetContributorsList: function() {
-      return this.isContributorListVisible
-        ? this.datasetContributors
-        : [last(this.datasetContributors)]
-    },
 
     /**
      * Returns dataset owner full name
@@ -680,7 +658,7 @@ export default {
      * @return {String}
      */
     originallyPublishedDate: function() {
-      const date = propOr('', 'createdAt', this.datasetInfo)
+      const date = propOr('', 'firstPublishedAt', this.datasetInfo)
       return this.formatDate(date)
     },
 
@@ -812,15 +790,6 @@ export default {
     datasetInfo: {
       handler: function() {
         this.getMarkdown()
-      },
-      immediate: true
-    },
-
-    datasetContributors: {
-      handler: function(val) {
-        if (val.length > 15) {
-          this.isContributorListVisible = false
-        }
       },
       immediate: true
     },

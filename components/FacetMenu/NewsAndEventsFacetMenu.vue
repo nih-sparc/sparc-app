@@ -43,11 +43,18 @@ import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 const options = [
   {
     label: 'news',
-    id: 'news'
+    id: 'news',
+    sortOrder: '-fields.publishedDate'
   },
   {
     label: 'events',
-    id: 'event'
+    id: 'event',
+    sortOrder: '-fields.startDate'
+  },
+  {
+    label: 'community spotlight',
+    id: 'successStoryDisplay',
+    sortOrder: '-fields.storyTitle'
   }
 ]
 
@@ -99,6 +106,9 @@ export default {
           return []
         }
         facet.label = `${this.eventDateOption} ${this.eventMonth} ${this.eventYear}`
+      }
+      else if (this.newsAndEventsType === options[2].id) {
+        return []
       }
       facet.id = this.newsAndEventsType
       return [facet]
@@ -252,6 +262,11 @@ export default {
     },
     getSelectedType() {
       return this.newsAndEventsType
+    },
+    getSortOrder() {
+      return options.find(option => {
+        return option.id === this.newsAndEventsType
+      }).sortOrder
     },
     deselectAllFacets() {
       this.$router.replace(
