@@ -1,6 +1,5 @@
 <template>
   <facet-menu
-    v-if="showFacetMenu"
     :selectedFacets="selectedFacetArray"
     @deselect-facet="deselectFacet"
     @deselect-all-facets="deselectAllFacets"
@@ -67,7 +66,6 @@ export default {
 
   data() {
     return {
-      showFacetMenu: (process.env.show_facet_menu == 'true') ? true : false,
       selectedFacets: {},
       selectedFacetArray: [],
       defaultCheckedFacetIds: [],

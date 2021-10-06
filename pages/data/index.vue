@@ -50,7 +50,8 @@
               <dataset-facet-menu
                 :facets="facets"
                 :visible-facets="visibleFacets"
-                @selected-facets-changed="fetchResults"
+                @selected-facets-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
                 ref="datasetFacetMenu"
               />
             </el-col>
@@ -62,8 +63,8 @@
               :lg="6"
             >
               <news-and-events-facet-menu
-                @news-and-events-selections-changed="fetchResults"
-                @hook:mounted="newsAndEventsFacetMenuMounted"
+                @news-and-events-selections-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
                 ref="newsAndEventsFacetMenu"
               />
             </el-col>
@@ -75,7 +76,21 @@
               :lg="6"
             >
               <tools-and-resources-facet-menu
-                @tool-and-resources-selections-changed="fetchResults"
+                @tool-and-resources-selections-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
+              />
+            </el-col>
+            <el-col
+              v-if="searchType.type === 'sparcInfo'"
+              class="facet-menu"
+              :sm="24"
+              :md="8"
+              :lg="6"
+            >
+              <sparc-info-facet-menu
+                @sparc-info-selections-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
+                ref="sparcInfoFacetMenu"
               />
             </el-col>
             <el-col
@@ -154,8 +169,8 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
-const ProjectSearchResults = () =>
-  import('@/components/SearchResults/ProjectSearchResults.vue')
+const SparcInfoSearchResults = () =>
+  import('@/components/SearchResults/SparcInfoSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
 const NewsAndEventsSearchResults = () =>
@@ -165,7 +180,7 @@ const ResourcesSearchResults = () =>
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
-  sparcAward: ProjectSearchResults,
+  sparcInfo: SparcInfoSearchResults,
   sparcPartners: ResourcesSearchResults,
   simulation: DatasetSearchResults,
   newsAndEvents: NewsAndEventsSearchResults,
@@ -195,8 +210,8 @@ const searchTypes = [
     dataSource: 'contentful'
   },
   {
-    label: 'Projects',
-    type: process.env.ctf_project_id,
+    label: 'SPARC Information',
+    type: 'sparcInfo',
     filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
   }
@@ -214,11 +229,12 @@ import { facetPropPathMapping, getAlgoliaFacets } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
 import NewsAndEventsFacetMenu from '~/components/FacetMenu/NewsAndEventsFacetMenu.vue'
 import ToolsAndResourcesFacetMenu from '~/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
+import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
 const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER');
-const algoliaIndex = algoliaClient.initIndex('k-core_dev_published_time_desc')
+const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 export default {
   name: 'DataPage',
@@ -230,7 +246,8 @@ export default {
     SearchForm,
     PaginationMenu,
     NewsAndEventsFacetMenu,
-    ToolsAndResourcesFacetMenu
+    ToolsAndResourcesFacetMenu,
+    SparcInfoFacetMenu
   },
 
   mixins: [],
@@ -412,7 +429,7 @@ export default {
       }
     },
 
-    newsAndEventsFacetMenuMounted: function() {
+    facetMenuMounted: function() {
       this.$nextTick(() => this.fetchResults())
     },
 
@@ -513,23 +530,25 @@ export default {
       var contentType = this.$route.query.type  
       var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
       var resourceTypes, developedBySparc = undefined;
+      var aboutDetailsTypes = undefined;
       var sortOrder = undefined;
-
+      if (this.$route.query.type === "sparcInfo") {
+        contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
+        aboutDetailsTypes = this.$refs.sparcInfoFacetMenu?.aboutDetailsTypesToCheck
+        sortOrder = 'fields.title'
+      }
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
         contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
         newsPublishedLessThanDate = this.$refs.newsAndEventsFacetMenu?.getPublishedLessThanDate();
         newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
-        sortOrder = contentType === process.env.ctf_news_id ? 'fields.publishedDate' : 'fields.startDate';
+        sortOrder = this.$refs.newsAndEventsFacetMenu?.getSortOrder();
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
         developedBySparc = this.$route.query.developedBySparc;
         sortOrder = 'fields.name'
-      }
-      if (this.$route.query.type === process.env.ctf_project_id) {
-        sortOrder = 'fields.title'
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false;
@@ -549,7 +568,8 @@ export default {
             'fields.startDate[lt]': eventStartLessThanDate,
             'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
             'fields.resourceType[in]': resourceTypes,
-            'fields.developedBySparc' : developedBySparc
+            'fields.developedBySparc' : developedBySparc,
+            'fields.type[in]' : aboutDetailsTypes,
           })
           .then(async response => {
             this.searchData = { ...response }
@@ -707,7 +727,8 @@ export default {
     searchColSpan(viewport) {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
         this.searchType.type === 'newsAndEvents' || 
-        this.searchType.type ==='sparcPartners'
+        this.searchType.type === 'sparcPartners' ||
+        this.searchType.type === 'sparcInfo'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
         md: hasFacetMenu ? 16 : 24,
