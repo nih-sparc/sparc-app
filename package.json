@@ -17,11 +17,11 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/flatmapvuer": "0.2.3-beta-features-3",
+    "@abi-software/flatmapvuer": "0.2.3-fixes-3",
     "@abi-software/gallery": "^0.2.1",
-    "@abi-software/mapintegratedvuer": "0.2.3-flatmap-beta-0",
+    "@abi-software/mapintegratedvuer": "0.2.3",
     "@abi-software/plotvuer": "^0.3.0",
-    "@abi-software/scaffoldvuer": "0.1.49-beta-0",
+    "@abi-software/scaffoldvuer": "0.1.49",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
