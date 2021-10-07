@@ -52,6 +52,10 @@ export default {
 			this.$emit('deselect-facet', id)
     },
     doShowTagFacet(facet) {
+      // If visible facets is not set then we default to showing tags for all the facets in that category
+      if (this.visibleFacetCategories.includes(facet.facetPropPath) && this.visibleFacets === undefined) {
+        return true
+      }
       return (this.visibleFacetCategories.includes(facet.facetPropPath) && 
         pathOr(undefined, [facet.facetPropPath, facet.label], this.visibleFacets) !== undefined)
     }
