@@ -5,7 +5,7 @@
       :table-data="tableData"
     />
     <project-search-results
-      v-if="this.$route.query.sparcInfoType === 'sparcAward'"
+      v-else-if="this.$route.query.sparcInfoType === 'sparcAward'"
       :table-data="tableData"
     />
     <about-details-search-results v-else :table-data="tableData" />
