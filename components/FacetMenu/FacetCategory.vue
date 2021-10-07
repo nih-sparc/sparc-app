@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { propOr, pathOr, pluck, isEmpty } from 'ramda'
+import { propOr, pathOr, pluck } from 'ramda'
 import FacetLabel from './FacetLabel.vue'
 
 const tooltipDelay = 800
@@ -191,7 +191,7 @@ export default {
       this.$refs.tree.setChecked(id, false, true)
     },
     areAnyVisible: function(facets) {
-      if (isEmpty(this.visibleFacets)) { return true }
+      if (this.visibleFacets === undefined) { return true }
       let anyVisible = false; 
       facets.map(facet => {
         if (pathOr(undefined, [facet.facetPropPath, facet.label], this.visibleFacets) !== undefined) {

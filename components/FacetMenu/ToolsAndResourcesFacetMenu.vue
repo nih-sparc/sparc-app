@@ -1,6 +1,7 @@
 <template>
   <facet-menu
     :selected-facets="selectedFacetArray"
+    :visible-facet-categories="visibleCategories"
     @deselect-facet="deselectFacet"
     @deselect-all-facets="deselectAllFacets"
   >
@@ -26,6 +27,8 @@ import { pluck } from 'ramda'
 import FacetCategory from '@/components/FacetMenu/FacetCategory.vue'
 import FacetMenu from './FacetMenu.vue'
 
+const visibleCategories = ['type', 'developedBySparc']
+
 const typesCategory = {
   label: 'Type',
   key: 'type',
@@ -34,30 +37,35 @@ const typesCategory = {
       label: 'Devices',
       id: 'Devices',
       children: [],
+      facetPropPath: 'type',
       key: 'Devices'
     },
     {
       label: 'Data and Models',
       id: 'Databases',
       children: [],
+      facetPropPath: 'type',
       key: 'Databases'
     },
     {
       label: 'Information Services',
       id: 'Information Services',
       children: [],
+      facetPropPath: 'type',
       key: 'Information Services'
     },
     {
       label: 'Software',
       id: 'Software',
       children: [],
+      facetPropPath: 'type',
       key: 'Software'
     },
     {
       label: 'Biologicals',
       id: 'Biologicals',
       children: [],
+      facetPropPath: 'type',
       key: 'Biologicals'
     }
   ]
@@ -71,6 +79,7 @@ const createdBySparcCategory = {
       label: 'Show only if "YES"',
       id: 'developedBySparc',
       children: [],
+      facetPropPath: 'developedBySparc',
       key: 'developedBySparc'
     }
   ]
@@ -89,7 +98,8 @@ export default {
       selectedFacetArray: [],
       typesCategory: typesCategory,
       createdBySparcCategory: createdBySparcCategory,
-      defaultCheckedKeys: []
+      defaultCheckedKeys: [],
+      visibleCategories: visibleCategories
     }
   },
 
