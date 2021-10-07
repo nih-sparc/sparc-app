@@ -522,7 +522,7 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
-      const tags = this.$route.query.tags || undefined
+      var tags = this.$route.query.tags || undefined
 
       // Keep the original search data limit to get all organs before pagination
       const origSearchDataLimit = this.searchData.limit
@@ -536,6 +536,8 @@ export default {
         contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
         aboutDetailsTypes = this.$refs.sparcInfoFacetMenu?.aboutDetailsTypesToCheck
         sortOrder = 'fields.title'
+        const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.tags
+        tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`)
       }
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
         contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();

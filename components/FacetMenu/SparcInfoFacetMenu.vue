@@ -1,6 +1,6 @@
 <template>
   <facet-menu
-    :selected-facets="selectedFacet"
+    :selected-facets="selectedFacets"
     @deselect-facet="deselectFacet"
     @deselect-all-facets="deselectAllFacets"
   >
@@ -55,6 +55,7 @@
 import FacetCategory from './FacetCategory.vue'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonCategory from './FacetRadioButtonCategory.vue'
+import { isEmpty } from 'ramda'
 
 const options = [
   {
@@ -147,7 +148,8 @@ export default {
       hasDatasetsCategory: hasDatasetsCategory,
       hasModelSimulationCategory: hasModelSimulationCategory,
       defaultCheckedKeys: [],
-      showFacetMenu: process.env.show_facet_menu
+      showFacetMenu: process.env.show_facet_menu,
+      selectedFacets: []
     }
   },
 
@@ -159,9 +161,6 @@ export default {
       return selectedOption === undefined
         ? options[0].label
         : selectedOption.label
-    },
-    selectedFacet: function() {
-      return []
     },
     aboutDetailsTypesToCheck: function() {
       if (this.sparcInfoType !== 'policies' && this.sparcInfoType !== 'about') {
@@ -200,7 +199,13 @@ export default {
         }
       )
     },
-    onSparcInvestigatorsChanged(newValue) {},
+    onSparcInvestigatorsChanged(newValue) {
+      if (isEmpty(newValue.facets)) {
+        // Remove from selected facets
+      }
+      // Add to selected facets
+      console.log("NEW VALUE = ", newValue)
+    },
     onHasPublicationsChanged(newValue) {},
     onHasDatasetsChanged(newValue) {},
     onHasModelSimulationChanged(newValue) {},
