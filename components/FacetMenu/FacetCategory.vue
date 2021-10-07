@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { propOr, pathOr } from 'ramda'
+import { propOr, pathOr, pluck, isEmpty } from 'ramda'
 import FacetLabel from './FacetLabel.vue'
 
 const tooltipDelay = 800
@@ -108,6 +108,9 @@ export default {
   watch: {
     allKeys(val) {
       this.$refs.tree.filter(val)
+    },
+    'visibleFacets': function() {
+      this.setShowAll();
     }
   },
 
@@ -162,12 +165,7 @@ export default {
       }
     },
     onCheckChange: function() {
-      const checked = this.$refs.tree.getCheckedKeys()
-      if (!checked.length) {
-        this.showAll = true
-      } else {
-        this.showAll = false
-      }
+      this.setShowAll()
       this.$emit('selection-change', {
         key: this.facet.key,
         facets: this.$refs.tree.getCheckedNodes(true)
@@ -177,10 +175,38 @@ export default {
       return this.$refs.tree.getCheckedNodes()
     },
     uncheckAll: function() {
-      this.$refs.tree.setCheckedKeys([])
+      if (this.visibleFacets === undefined)
+      {
+        this.$refs.tree.setCheckedKeys([])
+        return
+      }
+
+      const nonVisibleKeys = this.$refs.tree.getCheckedNodes().filter(node => node.facetPropPath === this.facet.key).filter(node => {
+        return !this.allKeys.includes(node.label)
+      })
+
+      this.$refs.tree.setCheckedKeys(pluck('id', nonVisibleKeys))
     },
     uncheck: function(id) {
       this.$refs.tree.setChecked(id, false, true)
+    },
+    areAnyVisible: function(facets) {
+      if (isEmpty(this.visibleFacets)) { return true }
+      let anyVisible = false; 
+      facets.map(facet => {
+        if (pathOr(undefined, [facet.facetPropPath, facet.label], this.visibleFacets) !== undefined) {
+          anyVisible = true
+        }
+      })
+      return anyVisible;
+    },
+    setShowAll: function() {
+      const checked = this.$refs.tree.getCheckedNodes()
+      if (!checked.length || !this.areAnyVisible(checked)) {
+        this.showAll = true
+      } else {
+        this.showAll = false
+      }
     }
   }
 }

@@ -9,6 +9,7 @@
 			<span v-if="selectedFacets.length == 0" class="no-facets">No filters applied</span>
 			<el-tag
 				v-for="facet in selectedFacets"
+        v-show="doShowTagFacet(facet)"
 				:key="facet.id"
         class="capitalize"
 				disable-transitions
@@ -22,6 +23,8 @@
 </template>
 
 <script>
+import { pathOr } from 'ramda'
+
 export default {
   name: 'TagsContainer',
 
@@ -31,6 +34,14 @@ export default {
       type: Array,
       default: () => []
     },
+    visibleFacetCategories: {
+      type: Array,
+      default: () => []
+    },
+    visibleFacets: {
+      type: Object,
+      default: () => {}
+    }
   },
   
   methods: {
@@ -39,6 +50,10 @@ export default {
     },
     deselectFacet(id) {
 			this.$emit('deselect-facet', id)
+    },
+    doShowTagFacet(facet) {
+      return (this.visibleFacetCategories.includes(facet.facetPropPath) && 
+        pathOr(undefined, [facet.facetPropPath, facet.label], this.visibleFacets) !== undefined)
     }
 	}
 }

@@ -1,11 +1,14 @@
 <template>
   <facet-menu
     :selectedFacets="selectedFacetArray"
+    :visibleFacetCategories="visibleCategories"
+    :visibleFacets="facetMenuVisibleFacets"
     @deselect-facet="deselectFacet"
     @deselect-all-facets="deselectAllFacets"
   >
     <facet-category
       v-for="item in this.facets"
+      v-show="visibleCategories.includes(item.key)"
       :key="item.id"
       :facet="item"
       :visible-facets="visibleFacets"
@@ -14,6 +17,7 @@
       ref="facetCategories"
     />
     <facet-category
+      v-show="visibleCategories.includes(embargoedFacetCategory.key)"
       :facet="embargoedFacetCategory"
       :default-checked-keys="defaultCheckedFacetIds"
       @selection-change="onSelectionChange"
@@ -27,7 +31,7 @@
 </template>
 
 <script>
-import { pluck } from 'ramda'
+import { pluck, pathOr } from 'ramda'
 import TagsContainer from '@/components/FacetMenu/TagsContainer.vue'
 import FacetCategory from '@/components/FacetMenu/FacetCategory.vue'
 import FacetMenu from './FacetMenu.vue'
@@ -35,16 +39,29 @@ import { facetPropPathMapping } from '~/pages/data/utils'
 
 const embargoedFacetCategory = {
   label: 'Availability',
+  id: 'availabilty',
   key: 'availability',
   children: [
     {
       label: 'Include Embargoed',
       id: 'embargoed',
       children: [],
+      facetPropPath: 'availability',
       key: 'embargoed'
     }
   ]
 }
+
+const visibleDatasetsFacetCategories = [
+  'anatomy.organ.name',
+  'organisms.primary.species.name',
+  'item.modalities.keyword',
+  'attributes.subject.sex.value',
+  'attributes.subject.ageCategory.value',
+  'availability'
+];
+
+const visibleModelsAndSimulationsFacetCategories = ['item.types.name', 'anatomy.organ.name', 'availability'];
 
 const embargoFacetCategoryTooltip = "SPARC data sets are subject to a 1 year embargo during which time<br/>the data sets are visible only to members of the SPARC consortium.<br/>During embargo, the public will be able to view basic metadata about<br/>these data sets as well as their release date."
 
@@ -62,6 +79,19 @@ export default {
       type: Object,
       default: () => {}
     },
+  },
+
+  computed: {
+    visibleCategories: function() {
+      return this.$route.query.type === 'dataset' ? visibleDatasetsFacetCategories : visibleModelsAndSimulationsFacetCategories
+    },
+    facetMenuVisibleFacets: function() {
+      const availability = {
+        'Include Embargoed': true,
+        facetPropPath: 'availability',
+      }
+      return {...this.visibleFacets, availability}
+    }
   },
 
   data() {
@@ -113,17 +143,23 @@ export default {
         return undefined
       }
       var filters = 'NOT item.published.status:embargo'
-      if(this.selectedFacetArray.some(facet => facet.key === this.embargoedFacetCategory.children[0].key)) {
+      if(this.selectedFacetArray.some(facet => facet.key === this.embargoedFacetCategory.children[0].key) && this.visibleCategories.includes(embargoedFacetCategory.key)) {
         filters += ' OR item.published.status:embargo'
       }
       filters = `(${filters}) AND `
       const facetPropPaths = Object.keys(facetPropPathMapping)
       facetPropPaths.map(facetPropPath => {
+        if (!this.visibleCategories.includes(facetPropPath)) {
+          return
+        }
         const facetsToOr = this.selectedFacetArray.filter(
           facet => facet.facetPropPath == facetPropPath
         )
         var filter = ''
         facetsToOr.map(facet => {
+          if (pathOr(undefined, [facet.facetPropPath, facet.label], this.visibleFacets) === undefined) {
+            return
+          }
           filter += `"${facetPropPath}":"${facet.label}" OR `
         })
         if (filter == '') {
@@ -141,20 +177,12 @@ export default {
       return this.numKeys > 0
     },
     deselectAllFacets() {
-      this.selectedFacets = []
-      this.$router.replace(
-        {
-          query: {
-            ...this.$route.query,
-            selectedFacetIds : undefined
-          }
-        },
-        () => { 
-          this.$refs.facetCategories.map(facetCategory => facetCategory.uncheckAll())
+          this.$refs.facetCategories.map(facetCategory => {
+            if (this.visibleCategories.includes(facetCategory.facet.key))
+              facetCategory.uncheckAll()
+          })
           this.$refs.embargoedFacetCategory.uncheckAll()
-          this.$emit('selected-facets-changed', undefined, 0 , [])
-        }
-      )
+          this.$emit('selected-facets-changed')
     },
     deselectFacet(id) {
       this.$refs.facetCategories.map(facetCategory => facetCategory.uncheck(id))
