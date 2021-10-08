@@ -158,7 +158,6 @@ import {
   defaultTo,
   find,
   head,
-  isEmpty,
   mergeLeft,
   pathOr,
   propEq,
@@ -513,8 +512,8 @@ export default {
         contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
         aboutDetailsTypes = this.$refs.sparcInfoFacetMenu?.aboutDetailsTypesToCheck
         sortOrder = 'fields.title'
-        const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.tags
-        tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`)
+        const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.getTags()
+        tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`) 
       }
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
         contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();

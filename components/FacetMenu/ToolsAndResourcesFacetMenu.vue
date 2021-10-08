@@ -1,6 +1,6 @@
 <template>
   <facet-menu
-    :selected-facets="selectedFacetArray"
+    :selected-facets="selectedFacetsArray"
     :visible-facet-categories="visibleCategories"
     @deselect-facet="deselectFacet"
     @deselect-all-facets="deselectAllFacets"
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { pluck } from 'ramda'
+import { pluck, isEmpty } from 'ramda'
 import FacetCategory from '@/components/FacetMenu/FacetCategory.vue'
 import FacetMenu from './FacetMenu.vue'
 
@@ -74,6 +74,8 @@ const typesCategory = {
 const createdBySparcCategory = {
   label: 'created by sparc',
   key: 'developedBySparc',
+  id: 'developedBySparc',
+  facetPropPath: 'developedBySparc',
   children: [
     {
       label: 'Show only if "YES"',
@@ -95,7 +97,7 @@ export default {
   data() {
     return {
       selectedFacets: {},
-      selectedFacetArray: [],
+      selectedFacetsArray: [],
       typesCategory: typesCategory,
       createdBySparcCategory: createdBySparcCategory,
       defaultCheckedKeys: [],
@@ -119,7 +121,7 @@ export default {
       return this.visibleFacets[key]
     },
     onTypeChanged: function(data) {
-      this.setSelectedFacetArray(data)
+      this.setSelectedFacetsArray(data)
 
       var selectedResourceTypes = pluck('id', data.facets).toString()
       selectedResourceTypes =
@@ -135,7 +137,14 @@ export default {
       )
     },
     onCreatedBySparcChanged: function(data) {
-      this.setSelectedFacetArray(data)
+      if (!isEmpty(data.facets)) {
+        this.setSelectedFacetsArray({
+          facets: [createdBySparcCategory],
+          key: 'developedBySparc'
+        })
+      } else {
+        this.setSelectedFacetsArray(data)
+      }
 
       const developedBySparc = data.facets.length > 0 ? true : undefined
       this.$router.replace(
@@ -167,11 +176,11 @@ export default {
       this.$refs.typesCategory.uncheck(id)
       this.$refs.createdBySparcCategory.uncheck(id)
     },
-    setSelectedFacetArray(data) {
+    setSelectedFacetsArray(data) {
       this.selectedFacets[data.key] = data.facets
-      this.selectedFacetArray = []
+      this.selectedFacetsArray = []
       for (const [key, value] of Object.entries(this.selectedFacets)) {
-        this.selectedFacetArray = this.selectedFacetArray.concat(value)
+        this.selectedFacetsArray = this.selectedFacetsArray.concat(value)
       }
     }
   }
