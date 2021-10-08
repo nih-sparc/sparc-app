@@ -113,7 +113,10 @@
         <el-table-column label="Operation" width="200">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'File'" >
-              <div class="circle" @click="getDownloadFile(scope)">
+                <div class="circle" @click="executeDownload(scope.row)">
+                <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
+                  <input v-model="zipData" type="hidden" name="data" />
+                </form>
                 <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
                   <div slot="content">
                     Download file
@@ -160,7 +163,7 @@
                   <svg-icon name="icon-view" height="1.5em" width="1.5em" />
                 </el-tooltip>
               </div>
-              <div v-if="scope.row.uri" class="circle" @click="copyS3Url(scope)">
+              <div v-if="isFileOpenable(scope)" class="circle" @click="copyS3Url(scope)">
                 <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
                   <div slot="content">
                     Copy link
@@ -203,7 +206,6 @@ import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
-import RequestDownloadFile from '@/mixins/request-download-file'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import { extractExtension } from '@/pages/data/utils'
@@ -226,7 +228,7 @@ export default {
     OsparcFileViewersDialog
   },
 
-  mixins: [FormatStorage, RequestDownloadFile],
+  mixins: [FormatStorage],
 
   props: {
     datasetDetails: {
@@ -253,7 +255,8 @@ export default {
       hasError: false,
       limit: 500,
       selected: [],
-      dialogSelectedFile: null
+      dialogSelectedFile: null,
+      zipData: '',
     }
   },
 
@@ -300,7 +303,14 @@ export default {
      */
     datasetVersion: function() {
       return propOr(1, 'version', this.datasetDetails)
-    }
+    },
+    /**
+     * Compute URL for zipit service
+     * @returns {String}
+     */
+    zipitUrl: function() {
+      return process.env.zipit_api_host
+    },
   },
 
   watch: {
@@ -452,20 +462,7 @@ export default {
       this.dialogSelectedFile = scope ? scope.row : null
     },
 
-    /**
-     * Get the download file for the given scope.
-     * @param {Object} scope
-     */
-    getDownloadFile: function(scope) {
-      this.requestDownloadFile(scope.row)
-    },
-
-    /**
-     * Opens a file in a new tab
-     * This is currently for MS Word, MS Excel, and Powerpoint files only
-     * @param {Object} scope
-     */
-    openFile: function(scope) {
+    getViewFileUrl(scope){
       const filePath = compose(
         last,
         defaultTo([]),
@@ -478,13 +475,39 @@ export default {
 
       const requestUrl = `${process.env.portal_api}/download?key=${filePath}&contentType=${contentType}`
 
-      this.$axios.$get(requestUrl).then(response => {
+      return this.$axios.$get(requestUrl).then(response => {
         const url = response
         const encodedUrl = encodeURIComponent(url)
-        const finalURL = this.isMicrosoftFileType(scope)
+        return this.isMicrosoftFileType(scope)
           ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
           : url
-        window.open(finalURL, '_blank')
+      })
+    },
+
+    /**
+     * Opens a file in a new tab
+     * This is currently for MS Word, MS Excel, and Powerpoint files only
+     * @param {Object} scope
+     */
+    openFile: function(scope) {
+      this.getViewFileUrl(scope).then(response => {
+        window.open(response, '_blank')
+      })
+    },
+
+    executeDownload(downloadInfo) {
+      const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+      const matches = downloadInfo.uri.match(datasetVersionRegexp)
+
+      const payload = {
+        paths: [matches.groups.filePath],
+        datasetId: matches.groups.datasetId,
+        version: matches.groups.version
+      }
+
+      this.zipData = JSON.stringify(payload, undefined)
+      this.$nextTick(() => {
+        this.$refs.zipForm.submit() // eslint-disable-line no-undef
       })
     },
 
@@ -551,14 +574,16 @@ export default {
      * @param {Object} scope
      */
     copyS3Url(scope) {
-      this.$copyText(scope.row.uri).then(
-        () => {
-          this.$message(successMessage(`File URL copied to clipboard.`))
-        },
-        () => {
-          this.$message(failMessage(`Cannot copy to clipboard.`))
-        }
-      )
+      this.getViewFileUrl(scope).then(response => {
+        this.$copyText(response).then(
+          () => {
+            this.$message(successMessage(`File URL copied to clipboard.`))
+          },
+          () => {
+            this.$message(failMessage(`Cannot copy to clipboard.`))
+          }
+        )
+      })
     }
   }
 }
