@@ -112,16 +112,30 @@
         />
         <el-table-column label="Operation" width="200">
           <template slot-scope="scope">
-            <template v-if="scope.row.type === 'File'" >
-                <div class="circle" @click="executeDownload(scope.row)">
-                <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
+            <template v-if="scope.row.type === 'File'">
+              <div class="circle" @click="executeDownload(scope.row)">
+                <form
+                  id="zipForm"
+                  ref="zipForm"
+                  method="POST"
+                  :action="zipitUrl"
+                >
                   <input v-model="zipData" type="hidden" name="data" />
                 </form>
-                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                <el-tooltip
+                  enterable
+                  :open-delay="tooltipDelay"
+                  effect="light"
+                  placement="top"
+                >
                   <div slot="content">
                     Download file
                   </div>
-                  <svg-icon name="icon-download" height="1.5rem" width="1.5rem" />
+                  <svg-icon
+                    name="icon-download"
+                    height="1.5rem"
+                    width="1.5rem"
+                  />
                 </el-tooltip>
               </div>
               <div
@@ -129,7 +143,12 @@
                 class="circle"
                 @click="openFile(scope)"
               >
-                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                <el-tooltip
+                  enterable
+                  :open-delay="tooltipDelay"
+                  effect="light"
+                  placement="top"
+                >
                   <div slot="content">
                     View file in web viewer
                   </div>
@@ -141,7 +160,12 @@
                 class="circle"
                 @click="openScaffold(scope)"
               >
-                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                <el-tooltip
+                  enterable
+                  :open-delay="tooltipDelay"
+                  effect="light"
+                  placement="top"
+                >
                   <div slot="content">
                     Open as 3d scaffold
                   </div>
@@ -153,7 +177,12 @@
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
-                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+                <el-tooltip
+                  enterable
+                  :open-delay="tooltipDelay"
+                  effect="light"
+                  placement="top"
+                >
                   <div slot="content">
                     Open in oSPARC. More info on oSPARC can be found
                     <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
@@ -163,12 +192,25 @@
                   <svg-icon name="icon-view" height="1.5em" width="1.5em" />
                 </el-tooltip>
               </div>
-              <div v-if="isFileOpenable(scope)" class="circle" @click="copyS3Url(scope)">
-                <el-tooltip enterable :open-delay="tooltipDelay" effect="light" placement="top">
+              <div
+                v-if="isFileOpenable(scope)"
+                class="circle"
+                @click="copyS3Url(scope)"
+              >
+                <el-tooltip
+                  enterable
+                  :open-delay="tooltipDelay"
+                  effect="light"
+                  placement="top"
+                >
                   <div slot="content">
                     Copy link
                   </div>
-                  <svg-icon name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+                  <svg-icon
+                    name="icon-permalink-nobg"
+                    height="1.5rem"
+                    width="1.5rem"
+                  />
                 </el-tooltip>
               </div>
             </template>
@@ -256,7 +298,7 @@ export default {
       limit: 500,
       selected: [],
       dialogSelectedFile: null,
-      zipData: '',
+      zipData: ''
     }
   },
 
@@ -310,7 +352,7 @@ export default {
      */
     zipitUrl: function() {
       return process.env.zipit_api_host
-    },
+    }
   },
 
   watch: {
@@ -462,7 +504,7 @@ export default {
       this.dialogSelectedFile = scope ? scope.row : null
     },
 
-    getViewFileUrl(scope){
+    getViewFileUrl(scope) {
       const filePath = compose(
         last,
         defaultTo([]),
