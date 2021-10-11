@@ -72,10 +72,10 @@
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.3.tgz#32baf8827645ae79c362d9572529b7595d4defe6"
-  integrity sha512-HM0UdyC9A1j8Dbp7w0W66gBHz2b5DwDrgLCPhxUux3WddM7ftmKTyVN58wW+nw4JU0NkEbTDC4t4/SkA3Wmj4A==
+"@abi-software/mapintegratedvuer@0.2.3-fixes-1":
+  version "0.2.3-fixes-1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.3-fixes-1.tgz#30ca76026cc78274ca1fbb52a5bb7a293c6092da"
+  integrity sha512-qdsCwDxpIXC+q55ZxnRFkg4JC+agohTscIvXMA/EPBDFKg4FHPGWRxgOTdOM7XzDy7MsvsSMdG05COzsqTaKHw==
   dependencies:
     "@abi-software/flatmap-viewer" "^2.1.0-beta.14"
     "@abi-software/flatmapvuer" "^0.2.3-fixes-1"
