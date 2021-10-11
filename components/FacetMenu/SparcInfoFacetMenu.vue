@@ -143,7 +143,7 @@ export default {
       hasDatasetsCategory: hasDatasetsCategory,
       hasModelSimulationCategory: hasModelSimulationCategory,
       defaultCheckedKeys: [],
-      showFacetMenu: process.env.show_facet_menu
+      showFacetMenu: (process.env.show_facet_menu == 'true') ? true : false,
     }
   },
 
