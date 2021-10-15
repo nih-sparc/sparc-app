@@ -160,7 +160,7 @@ export default {
       hasDatasetsCategory: hasDatasetsCategory,
       hasModelsSimulationsCategory: hasModelsSimulationsCategory,
       defaultCheckedKeys: [],
-      showFacetMenu: process.env.show_facet_menu,
+      showFacetMenu: (process.env.show_facet_menu == 'true') ? true : false,
       selectedFacets: {},
       selectedFacetsArray: []
     }
