@@ -29,7 +29,7 @@
         node-key="id"
         show-checkbox
         default-expand-all
-        :check-on-click-node="enabled"
+        check-on-click-node
         :default-checked-keys="defaultCheckedKeys"
         :props="treeProps"
         :filter-node-method="filterNode"
