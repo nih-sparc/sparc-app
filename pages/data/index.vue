@@ -418,8 +418,7 @@ export default {
 
       const searchSources = {
         contentful: this.fetchFromContentful,
-        algolia: this.fetchFromAlgolia,
-        pennsieveIndex: this.fetchFromPennsieveIndex
+        algolia: this.fetchFromAlgolia
       }
 
       if (typeof searchSources[source] === 'function') {
