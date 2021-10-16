@@ -193,7 +193,7 @@ const searchTypes = [
     dataSource: 'algolia'
   },
   {
-    label: 'Simulations',
+    label: 'Models & Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
     dataSource: 'algolia'
@@ -776,13 +776,17 @@ export default {
   text-decoration: none;
   text-transform: uppercase;
   line-height: 3.5rem;
-  @media (min-width: 54rem) {
+  @media (min-width: 40rem) {
+    font-size: 0.65rem;
+    border-right: 0.1rem solid $median;
+  }
+  @media (min-width: 50rem) {
+    font-size: .75rem;
+  }
+  @media (min-width: 64rem) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
-  }
-  @media (min-width: 40rem) {
-    border-right: 0.1rem solid $median;
   }
   &:hover,
   &:focus,
