@@ -6,6 +6,8 @@
     <hr />
     <tags-container
       :selected-facets="selectedFacets"
+      :visibleFacetCategories="visibleFacetCategories"
+      :visibleFacets="visibleFacets"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
@@ -24,6 +26,14 @@ export default {
     selectedFacets: {
       type: Array,
       default: () => []
+    },
+    visibleFacetCategories: {
+      type: Array,
+      default: () => []
+    },
+    visibleFacets: {
+      type: Object,
+      default: () => {}
     }
   },
 

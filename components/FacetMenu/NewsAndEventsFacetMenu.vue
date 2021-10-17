@@ -1,6 +1,7 @@
 <template>
   <facet-menu
     :selected-facets="selectedFacet"
+    :visible-facet-categories="visibleCategories"
     @deselect-facet="deselectFacet"
     @deselect-all-facets="deselectAllFacets"
   >
@@ -58,6 +59,8 @@ const options = [
   }
 ]
 
+const visibleCategories = ['newsAndEvents']
+
 export default {
   name: 'NewsAndEventsFacetMenu',
 
@@ -78,7 +81,8 @@ export default {
       publicationMonth: 'Mar',
       publicationYear: 2020,
       eventMonth: 'Mar',
-      eventYear: 2020
+      eventYear: 2020,
+      visibleCategories: visibleCategories,
     }
   },
 
@@ -94,7 +98,8 @@ export default {
     selectedFacet: function() {
       var facet = {
         label: '',
-        id: ''
+        id: '',
+        facetPropPath: 'newsAndEvents'
       }
       if (this.newsAndEventsType === this.options[0].id) {
         if (this.publicationDateOption === 'show all') {

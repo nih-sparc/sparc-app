@@ -41,7 +41,7 @@
         <el-col :span="24">
           <el-row :gutter="32">
             <el-col
-              v-if="searchType.type === 'dataset'"
+              v-if="searchType.type === 'dataset' || searchType.type === 'simulation'"
               class="facet-menu"
               :sm="24"
               :md="8"
@@ -158,7 +158,6 @@ import {
   defaultTo,
   find,
   head,
-  isEmpty,
   mergeLeft,
   pathOr,
   propEq,
@@ -194,10 +193,10 @@ const searchTypes = [
     dataSource: 'algolia'
   },
   {
-    label: 'Simulations',
+    label: 'Models & Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'pennsieveIndex'
+    dataSource: 'algolia'
   },
   {
     label: 'Tools & Resources',
@@ -233,7 +232,6 @@ import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER');
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 export default {
@@ -420,8 +418,7 @@ export default {
 
       const searchSources = {
         contentful: this.fetchFromContentful,
-        algolia: this.fetchFromAlgolia,
-        pennsieveIndex: this.fetchFromPennsieveIndex
+        algolia: this.fetchFromAlgolia
       }
 
       if (typeof searchSources[source] === 'function') {
@@ -433,23 +430,6 @@ export default {
       this.$nextTick(() => this.fetchResults())
     },
 
-    fetchFromPennsieveIndex: function() {
-      const query = this.$route.query.q
-
-      algoliaPennseiveIndex.search(query, {
-        hitsPerPage: this.searchData.limit,
-        page: this.curSearchPage - 1,
-        filters: `organizationName:"IT'IS Foundation"`,
-      }).then(response => {
-          const searchData = {
-            items: response.hits,
-            total: response.nbHits
-          }
-          this.searchData = mergeLeft(searchData, this.searchData)
-          this.isLoadingSearch = false
-        })
-    },
-
     /**
      * Get Search results
      * This is using fetch from the Algolia API
@@ -458,61 +438,56 @@ export default {
       this.isLoadingSearch = true
       const query = this.$route.query.q
 
-      var filters =  this.$refs.datasetFacetMenu?.getFilters()
-
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      const organizationNameFilter =
-        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
-
-      filters =
-        filters === undefined
-          ? `pennsieve.organization.name:"${organizationNameFilter}"`
-          : filters +
-            ` AND pennsieve.organization.name:"${organizationNameFilter}"`
+      const datasetsFilter =
+        searchType === 'dataset' ? "item.types.name:Dataset" : '(NOT item.types.name:Dataset)'
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-      if (query !== this.latestSearchTerm || !this.$refs.datasetFacetMenu?.hasKeys()) {
-        this.latestSearchTerm = query
+        this.latestSearchTerm = query     
         algoliaIndex
           .search(query, {
             facets: ['*'],
-            filters: `pennsieve.organization.name:"${organizationNameFilter}"`
+            filters: `${datasetsFilter}`
           })
           .then(response => {
             this.visibleFacets = response.facets
-          })
-      }
+          }).finally(() => {
+            var filters =  this.$refs.datasetFacetMenu?.getFilters()
+            filters = filters === undefined ? 
+              `${datasetsFilter}` : 
+              filters + ` AND ${datasetsFilter}`
 
-      algoliaIndex
-        .search(query, {
-          facets: ['*'],
-          hitsPerPage: this.searchData.limit,
-          page: this.curSearchPage - 1,
-          filters: filters
-        })
-        .then(response => {
-          const searchData = {
-            items: response.hits,
-            total: response.nbHits
-          }
-          this.searchData = mergeLeft(searchData, this.searchData)
-          this.isLoadingSearch = false
-          // update facet result numbers
-          for (const [key, value] of Object.entries(this.visibleFacets)) {
-            if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
-              for (const [key2, value2] of Object.entries(value)) {
-                let maybeFacetCount = pathOr(null, [key, key2], response.facets)
-                if (maybeFacetCount) {
-                  this.visibleFacets[key][key2] = response.facets[key][key2]
-                } else {
-                  this.visibleFacets[key][key2] = 0
+            algoliaIndex
+              .search(query, {
+                facets: ['*'],
+                hitsPerPage: this.searchData.limit,
+                page: this.curSearchPage - 1,
+                filters: filters
+              })
+              .then(response => {
+                const searchData = {
+                  items: response.hits,
+                  total: response.nbHits
                 }
-            }
-            }
-          }
-        })
+                this.searchData = mergeLeft(searchData, this.searchData)
+                this.isLoadingSearch = false
+                // update facet result numbers
+                for (const [key, value] of Object.entries(this.visibleFacets)) {
+                  if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
+                    for (const [key2, value2] of Object.entries(value)) {
+                      let maybeFacetCount = pathOr(null, [key, key2], response.facets)
+                      if (maybeFacetCount) {
+                        this.visibleFacets[key][key2] = response.facets[key][key2]
+                      } else {
+                        this.visibleFacets[key][key2] = 0
+                      }
+                    }
+                  }
+                }
+              })
+          }) 
     },
 
     /**
@@ -522,7 +497,7 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
-      const tags = this.$route.query.tags || undefined
+      var tags = this.$route.query.tags || undefined
 
       // Keep the original search data limit to get all organs before pagination
       const origSearchDataLimit = this.searchData.limit
@@ -536,6 +511,8 @@ export default {
         contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
         aboutDetailsTypes = this.$refs.sparcInfoFacetMenu?.aboutDetailsTypesToCheck
         sortOrder = 'fields.title'
+        const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.getTags()
+        tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`) 
       }
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
         contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
@@ -728,6 +705,7 @@ export default {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
         this.searchType.type === 'newsAndEvents' || 
         this.searchType.type === 'sparcPartners' ||
+        this.searchType.type === 'simulation' ||
         this.searchType.type === 'sparcInfo'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
@@ -798,13 +776,17 @@ export default {
   text-decoration: none;
   text-transform: uppercase;
   line-height: 3.5rem;
-  @media (min-width: 54rem) {
+  @media (min-width: 40rem) {
+    font-size: 0.65rem;
+    border-right: 0.1rem solid $median;
+  }
+  @media (min-width: 50rem) {
+    font-size: .75rem;
+  }
+  @media (min-width: 64rem) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
-  }
-  @media (min-width: 40rem) {
-    border-right: 0.1rem solid $median;
   }
   &:hover,
   &:focus,
