@@ -32,7 +32,7 @@ import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import { isEmpty, pathOr } from 'ramda'
 
 const algoliaClient = createAlgoliaClient();
-const algoliaIndex = algoliaClient.initIndex('k-core_dev_published_time_desc')
+const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 export default {
   name: 'FeaturedData',
 
