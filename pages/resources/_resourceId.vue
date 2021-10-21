@@ -6,7 +6,7 @@
       :breadcrumb="breadcrumb"
       :hero-title="resource.fields.name"
       :hero-summary="resource.fields.description"
-      type="news"
+      type="resource"
     >
       <template v-if="resourceLogoUrl">
         <img :src="resourceLogoUrl" :alt="resourceLogoAlt" />
