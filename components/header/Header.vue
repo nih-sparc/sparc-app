@@ -8,7 +8,7 @@
         </nuxt-link>
         <svg-icon icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
-          Need Help?
+          Help
         </nuxt-link>
       </div>
       <div class="header__nav--main">
@@ -81,7 +81,7 @@
                 <li>
                   <svg-icon icon="icon-help" width="18" height="18" />
                   <nuxt-link :to="{ name: 'help' }">
-                    Need Help?
+                    Help
                   </nuxt-link>
                 </li>
               </ul>
@@ -214,7 +214,7 @@ export default {
         {
           key: 'help',
           value: 'help',
-          label: 'Support Center'
+          label: 'Help'
         }
       ]
     }
