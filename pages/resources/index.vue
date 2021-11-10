@@ -5,79 +5,69 @@
       <h1>Tools &amp; Resources</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(fields.heroCopyLong)" />
-      <search-controls-contentful
-        placeholder="Search resources"
-        path="/resources"
-      />
-      <img
-        v-if="fields.heroImage"
-        slot="image"
-        class="page-hero-img"
-        :src="fields.heroImage.fields.file.url"
-      />
+      <div v-html="parseMarkdown(fields.heroCopy)"/>
     </page-hero>
-    <div class="page-wrap">
-      <div class="container">
-        <tab-nav
-          :tabs="tabTypes"
-          :active-tab="activeTab"
-          @set-active-tab="setActiveTab"
-        />
-        <div class="page-wrap__results">
-          <div class="resources-heading">
-            <p>
-              {{ currentResourceCount }} {{ resourceHeading }} | Showing
-              <pagination-menu
-                :page-size="resourceData.limit"
-                @update-page-size="updateDataSearchLimit"
-              />
-              <el-pagination
-                v-if="resourceData.limit < resourceData.total"
-                :page-size="resourceData.limit"
-                :pager-count="5"
-                :current-page="curSearchPage"
-                layout="prev, pager, next"
-                :total="resourceData.total"
-                @current-change="onPaginationPageChange"
-              />
-            </p>
-          </div>
+    <div class="container">
+      <div class="page-description">
+        <p v-html="fields.heroCopyLong"/>
+        <div class="page-description__button-container">
+          <el-button>Browse Tools &amp; Resources</el-button>
         </div>
-        <div v-loading="isLoadingSearch" class="table-wrap">
-          <resources-search-results :table-data="tableData" />
-        </div>
-        <div class="resources-heading">
-          {{ currentResourceCount }} {{ resourceHeading }} | Showing
-          <pagination-menu
-            :page-size="resourceData.limit"
-            @update-page-size="updateDataSearchLimit"
-          />
-          <el-pagination
-            :page-size="resourceData.limit"
-            :pager-count="5"
-            :current-page="curSearchPage"
-            layout="prev, pager, next"
-            :total="resourceData.total"
-            @current-change="onPaginationPageChange"
-          />
-        </div>
+      </div>
+      <div>
+        <h2>Featured Tools &amp; Resources</h2>
+        <featured-resource/>
       </div>
     </div>
   </div>
 </template>
 
+<style lang="scss" scoped>
+@import '@/assets/_variables.scss';
+h2 {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+}
+.container {
+  & > div {
+    margin: 3em 0;
+  }
+}
+.page-description {
+  & > p {
+    font-size: 1.25em;
+    line-height: 1.5rem;
+    @media (min-width: 48em) {
+      font-size: 1.25em;
+      line-height: 2rem;
+    }
+  }
+  &__button-container {
+    text-align: center;
+    & > button {
+      background-color: $median;
+      width: auto;
+      height: 40px;
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: 500;
+      text-transform: uppercase;
+      a {
+        color: #fff;
+      }
+    }
+  }
+}
+</style>
+
 <script lang="ts">
 import Vue from 'vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
-import TabNav from '@/components/TabNav/TabNav.vue'
 import createClient from '@/plugins/contentful.js'
-import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import { Computed, Data, Methods, Resource } from '~/pages/resources/model'
 import marked from '@/mixins/marked/index'
+import FeaturedResource from '@/components/Resources/FeaturedResource.vue'
 
 const client = createClient()
 
@@ -123,12 +113,9 @@ export default Vue.extend<Data, Methods, Computed, never>({
   mixins: [marked],
 
   components: {
-    SearchControlsContentful,
     Breadcrumb,
-    ResourcesSearchResults,
     PageHero,
-    PaginationMenu,
-    TabNav
+    FeaturedResource
   },
 
   asyncData() {
