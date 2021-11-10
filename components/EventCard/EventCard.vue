@@ -19,7 +19,7 @@
         </div>
       </template>
 
-      <span>{{ event.fields.eventType }}</span>
+      <chip>{{ event.fields.eventType }}</chip>
     </div>
     <h3>
       <nuxt-link
@@ -56,8 +56,14 @@ import { pathOr } from 'ramda'
 
 import FormatDate from '@/mixins/format-date'
 
+import Chip from '@/components/Chip/Chip.vue'
+
 export default {
   name: 'EventCard',
+
+  components: {
+    Chip
+  },
 
   mixins: [FormatDate],
 
@@ -118,16 +124,6 @@ export default {
       position: absolute;
       top: 0;
       width: 100%;
-    }
-    span {
-      background: $median;
-      border-radius: 15px;
-      color: #fff;
-      font-size: 0.875rem;
-      top: 10px;
-      padding: 0 0.65rem;
-      position: absolute;
-      right: 14px;
     }
   }
   &__detail {
