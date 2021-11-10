@@ -4,7 +4,10 @@
       <img src="/images/osparc-human.png" />
     </div>
     <div class="resource-info">
-      <h3>Un titulo</h3>
+      <div class="header">
+        <h3>Un titulo</h3>
+        <chip>SPARC</chip>
+      </div>
       <p class="subtitle">
         Subtítulo
       </p>
@@ -57,4 +60,27 @@ h3 {
   font-size: 1.25rem;
   line-height: 2.25rem;
 }
+.header {
+  & > h3 {
+    margin-right: 1em;
+  }
+  & > span {
+    font-family: 'Asap', sans-serif;
+    font-size: 12px;
+    padding: 0.25rem 0.65rem;
+  }
+  & > * {
+    display: inline;
+  }
+}
 </style>
+
+<script>
+import Chip from '@/components/Chip/Chip.vue'
+export default {
+  name: 'FeaturedResource',
+  components: {
+    Chip
+  }
+}
+</script>

@@ -125,6 +125,11 @@ export default {
       top: 0;
       width: 100%;
     }
+    span {
+      position: absolute;
+      right: 14px;
+      top: 10px;
+    }
   }
   &__detail {
     align-items: baseline;
