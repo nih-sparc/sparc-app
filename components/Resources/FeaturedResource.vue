@@ -43,6 +43,7 @@
     & > .image-container {
       & > .image-border {
         border: 2px solid rgb(151, 151, 151);
+        border-radius: 1px;
         padding: 0.65em;
         position: absolute;
         top: 0;
@@ -51,10 +52,10 @@
         left: 0;
         display: flex;
         align-items: center;
-      }
-      & img {
-        height: auto;
-        width: 100%;
+        & > img {
+          height: auto;
+          width: 100%;
+        }
       }
       padding-top: 100%;
       position: relative;
