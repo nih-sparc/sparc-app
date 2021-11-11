@@ -55,6 +55,7 @@ h2 {
   }
 }
 .page-description {
+  color: rgb(36, 36, 91);
   & > p {
     font-size: 1.25em;
     line-height: 1.5rem;
@@ -86,8 +87,10 @@ h2 {
 }
 .paper {
   border: 2px solid rgb(151, 151, 151);
+  border-radius: 1px;
   padding: 1.5em;
   color: rgb(36, 36, 91);
+  background-color: white;
   &-title {
     font-size: 1.5rem;
     text-align: center;
