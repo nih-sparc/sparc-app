@@ -18,7 +18,9 @@
         or copied to create a new version of the same protocol. SPARC maintains
         a workplace on this platform.
       </p>
-      <el-button>View resource</el-button>
+      <el-button class="pink-button">
+        View resource
+      </el-button>
     </div>
   </div>
 </template>
@@ -38,39 +40,44 @@
   }
   & > div.resource-info {
     flex: 1;
-    & > button {
-      padding-top: 0.688rem;
-      background: #f9f2fc;
-      border: 1px solid $median;
-      color: $median;
-      &:hover {
-        color: #1a1489;
-      }
-      @media (max-width: 24em) {
-        margin-top: 10px;
-        margin-left: 0;
-      }
-    }
   }
   .subtitle {
     text-transform: uppercase;
+    font-weight: 500;
+    font-size: 14px;
   }
 }
 h3 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   line-height: 2.25rem;
 }
 .header {
+  display: flex;
+  align-items: center;
   & > h3 {
-    margin-right: 1em;
+    margin: 0 1em 0 0;
   }
   & > span {
     font-family: 'Asap', sans-serif;
     font-size: 12px;
-    padding: 0.25rem 0.65rem;
+    padding: 0 0.65rem;
   }
-  & > * {
-    display: inline;
+}
+</style>
+
+<style lang="scss">
+@import '@/assets/_variables.scss';
+button.pink-button {
+  padding-top: 0.688rem;
+  background: #f9f2fc;
+  border: 1px solid $median;
+  color: $median;
+  &:hover {
+    color: #1a1489;
+  }
+  @media (max-width: 24em) {
+    margin-top: 10px;
+    margin-left: 0;
   }
 }
 </style>
