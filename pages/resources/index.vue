@@ -5,18 +5,39 @@
       <h1>Tools &amp; Resources</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(fields.heroCopy)"/>
+      <div v-html="parseMarkdown(fields.heroCopy)" />
     </page-hero>
     <div class="container">
       <div class="page-description">
-        <p v-html="fields.heroCopyLong"/>
+        <p v-html="fields.heroCopyLong" />
         <div class="page-description__button-container">
           <el-button>Browse Tools &amp; Resources</el-button>
         </div>
       </div>
       <div>
         <h2>Featured Tools &amp; Resources</h2>
-        <featured-resource/>
+        <div class="featured-resource-list">
+          <featured-resource />
+          <featured-resource />
+        </div>
+      </div>
+      <div>
+        <h2>Contribute</h2>
+        <div class="paper">
+          <p class="paper-title">Want your tool or resource listen on the SPARC Portal?</p>
+          <p class="paper-content">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+          <div class="paper-actions">
+            <el-button class="pink-button">Submit a recommendation</el-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -58,6 +79,23 @@ h2 {
     }
   }
 }
+.featured-resource-list {
+  & > div + div {
+    margin-top: 2.5em;
+  }
+}
+.paper {
+  border: 2px solid rgb(151, 151, 151);
+  padding: 1.5em;
+  color: rgb(36, 36, 91);
+  &-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  &-actions {
+    text-align: right;
+  }
+}
 </style>
 
 <script lang="ts">
@@ -77,34 +115,34 @@ const resourceData: Data['resourceData'] = {
   items: [],
   total: 0,
   stringifySafe: () => '',
-  toPlainObject: () => ({})
+  toPlainObject: () => ({}),
 }
 
 const tabTypes = [
   {
     label: 'All Resources',
-    type: 'sparcPartners' as const
+    type: 'sparcPartners' as const,
   },
   {
     label: 'Devices',
-    type: 'Devices' as const
+    type: 'Devices' as const,
   },
   {
     label: 'Data and Models',
-    type: 'Databases' as const
+    type: 'Databases' as const,
   },
   {
     label: 'Information Services',
-    type: 'Information Services' as const
+    type: 'Information Services' as const,
   },
   {
     label: 'Software',
-    type: 'Software' as const
+    type: 'Software' as const,
   },
   {
     label: 'Biologicals',
-    type: 'Biologicals' as const
-  }
+    type: 'Biologicals' as const,
+  },
 ]
 
 export default Vue.extend<Data, Methods, Computed, never>({
@@ -115,7 +153,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
   components: {
     Breadcrumb,
     PageHero,
-    FeaturedResource
+    FeaturedResource,
   },
 
   asyncData() {
@@ -124,7 +162,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
       .getEntry(process.env.ctf_resource_hero_id as string)
       .then(({ fields }) => {
         return {
-          fields
+          fields,
         }
       })
       .catch(console.error)
@@ -136,15 +174,15 @@ export default Vue.extend<Data, Methods, Computed, never>({
       breadcrumb: [
         {
           to: {
-            name: 'index'
+            name: 'index',
           },
-          label: 'Home'
-        }
+          label: 'Home',
+        },
       ],
       activeTab: 'sparcPartners',
       resourceData,
       tabTypes,
-      isLoadingSearch: false
+      isLoadingSearch: false,
     }
   },
 
@@ -153,7 +191,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
      * Returns the current displayed number of resources
      * @returns {Number}
      */
-    currentResourceCount: function() {
+    currentResourceCount: function () {
       return this.resourceData.total
     },
 
@@ -161,35 +199,35 @@ export default Vue.extend<Data, Methods, Computed, never>({
      * Returns data that is displayed in table
      * @returns {Array}
      */
-    tableData: function() {
+    tableData: function () {
       return this.resourceData.items
     },
 
     /**
      * Compute the current search page based off the limit and the offset
      */
-    curSearchPage: function() {
+    curSearchPage: function () {
       return this.resourceData.skip / this.resourceData.limit + 1
     },
 
     /**
      * Compute singular or plural resource heading based on count
      */
-    resourceHeading: function() {
+    resourceHeading: function () {
       return this.currentResourceCount > 1 ? 'resources' : 'resource'
-    }
+    },
   },
 
   watch: {
-    '$route.query': function() {
+    '$route.query': function () {
       this.fetchResults()
-    }
+    },
   },
 
   /**
    * Check the searchType param in the route and set it if it doesn't exist
    */
-  mounted: function() {
+  mounted: function () {
     if (!this.$route.query.type) {
       const firstTabType = tabTypes[0].type
 
@@ -204,7 +242,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
      * Update search limit based on pagination number selection
      * @param {Number} limit
      */
-    updateDataSearchLimit: function(limit) {
+    updateDataSearchLimit: function (limit) {
       this.resourceData.skip = 0
       if (typeof limit === 'string') {
         this.resourceData.limit = this.resourceData.total
@@ -216,7 +254,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
     /**
      * Fetches resource results
      */
-    fetchResults: function() {
+    fetchResults: function () {
       this.isLoadingSearch = true
 
       const entries = {
@@ -229,12 +267,12 @@ export default Vue.extend<Data, Methods, Computed, never>({
         'fields.resourceType':
           this.$route.query.type === 'sparcPartners'
             ? undefined
-            : this.$route.query.type
+            : this.$route.query.type,
       }
 
       client
         .getEntries<Resource>(entries)
-        .then(response => {
+        .then((response) => {
           this.resourceData = response
         })
         .catch(console.error)
@@ -246,7 +284,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
     /**
      * Update offset
      */
-    onPaginationPageChange: function(page) {
+    onPaginationPageChange: function (page) {
       const offset = (page - 1) * this.resourceData.limit
       this.resourceData.skip = offset
 
@@ -256,18 +294,18 @@ export default Vue.extend<Data, Methods, Computed, never>({
     /**
      * Set active tab
      */
-    setActiveTab: function(tab) {
+    setActiveTab: function (tab) {
       this.activeTab = tab
       this.resourceData.skip = 0
       this.$router.push({
         name: 'resources',
         query: {
           ...this.$route.query,
-          type: tab
-        }
+          type: tab,
+        },
       })
-    }
-  }
+    },
+  },
 })
 </script>
 

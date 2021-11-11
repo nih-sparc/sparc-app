@@ -1,16 +1,22 @@
 <template>
   <div class="featured-resource">
     <div class="thumbnail">
-      <img src="/images/osparc-human.png" />
+      <div class="image-container">
+        <div class="image-border">
+          <img src="/images/osparc-human.png" />
+        </div>
+      </div>
     </div>
     <div class="resource-info">
-      <div class="header">
-        <h3>Un titulo</h3>
-        <chip>SPARC</chip>
+      <div>
+        <div class="header">
+          <h3>Un titulo</h3>
+          <chip>SPARC</chip>
+        </div>
+        <p class="subtitle">
+          Subtítulo
+        </p>
       </div>
-      <p class="subtitle">
-        Subtítulo
-      </p>
       <p>
         A web platform for creating and storing protocols. Protocols.io is a
         public platform for creating and storing scientific protocols. Each
@@ -18,9 +24,11 @@
         or copied to create a new version of the same protocol. SPARC maintains
         a workplace on this platform.
       </p>
-      <el-button class="pink-button">
-        View resource
-      </el-button>
+      <div>
+        <el-button class="pink-button">
+          View resource
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -31,20 +39,35 @@
   display: flex;
   flex-direction: row;
   & > div.thumbnail {
-    flex: 0.5;
-    margin-right: 2em;
-    & > img {
-      height: auto;
-      width: 100%;
+    flex: 0.3;
+    & > .image-container {
+      & > .image-border {
+        border: 2px solid rgb(151, 151, 151);
+        padding: 0.65em;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+      }
+      & img {
+        height: auto;
+        width: 100%;
+      }
+      padding-top: 100%;
+      position: relative;
     }
   }
   & > div.resource-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
-  .subtitle {
-    text-transform: uppercase;
-    font-weight: 500;
-    font-size: 14px;
+  & > div + div {
+    margin-left: 2em;
   }
 }
 h3 {
@@ -62,6 +85,11 @@ h3 {
     font-size: 12px;
     padding: 0 0.65rem;
   }
+}
+.subtitle {
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 14px;
 }
 </style>
 
