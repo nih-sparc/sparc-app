@@ -1,34 +1,30 @@
 <template>
   <div class="featured-resource">
-    <div class="thumbnail">
+    <div v-if="thumbnailUrl !== null" class="thumbnail">
       <div class="image-container">
         <div class="image-border">
-          <img src="/images/osparc-human.png" />
+          <img :src="thumbnailUrl" />
         </div>
       </div>
     </div>
     <div class="resource-info">
       <div>
         <div class="header">
-          <h3>Un titulo</h3>
-          <chip>SPARC</chip>
+          <h3>{{ title }}</h3>
+          <chip v-if="tag !== null">{{ tag }}</chip>
         </div>
-        <p class="subtitle">
-          Subtítulo
+        <p v-if="subtitle !== null" class="subtitle">
+          {{ subtitle }}
         </p>
       </div>
-      <p>
-        A web platform for creating and storing protocols. Protocols.io is a
-        public platform for creating and storing scientific protocols. Each
-        protocol can be kept private or made public. Protocols can be "forked"
-        or copied to create a new version of the same protocol. SPARC maintains
-        a workplace on this platform.
+      <p v-if="description !== null">
+        {{ description }}
       </p>
-      <div>
+      <a v-if="buttonLink !== null" :href="buttonLink">
         <el-button class="pink-button">
           View resource
         </el-button>
-      </div>
+      </a>
     </div>
   </div>
 </template>
@@ -117,6 +113,32 @@ export default {
   name: 'FeaturedResource',
   components: {
     Chip
+  },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    tag: {
+      type: String,
+      default: null
+    },
+    subtitle: {
+      type: String,
+      default: null
+    },
+    description: {
+      type: String,
+      default: null
+    },
+    buttonLink: {
+      type: String,
+      default: null
+    },
+    thumbnailUrl: {
+      type: String,
+      default: null
+    }
   }
 }
 </script>
