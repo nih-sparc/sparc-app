@@ -3,7 +3,7 @@
     <div class="subpage-col about-page-border">
       <div class="about-page-text" v-html="text" />
       <NuxtLink
-        v-if="buttonText !== null"
+        v-if="buttonText !== null && buttonLinkExternal === null"
         class="margin-top-auto"
         :to="buttonLink"
       >
@@ -11,6 +11,16 @@
           {{ buttonText }}
         </el-button>
       </NuxtLink>
+      <a
+        v-if="buttonText !== null && buttonLinkExternal !== null"
+        class="margin-top-auto"
+        :href="buttonLinkExternal"
+        target="_blank"
+      >
+        <el-button class="about-button">
+          {{ buttonText }}
+        </el-button>
+      </a>
     </div>
     <img
       v-if="imgSrc"
@@ -72,6 +82,10 @@ export default {
       default: ''
     },
     buttonLink: {
+      type: Object,
+      default: null
+    },
+    buttonLinkExternal: {
       type: String,
       default: null
     },
