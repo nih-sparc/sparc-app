@@ -44,6 +44,7 @@ export default {
     ctf_news_and_events_id: 'newsAndEvents',
     ctf_resource_id: 'sparcPartners',
     ctf_resource_hero_id: '3ImGx7UyDXPwM3oTag06nt',
+    ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
     ctf_help_id: 'helpDocument',
     ctf_help_list_id: 'helpSection',
     ctf_help_aws_id: 'zQfzadwADutviJjT19hA5',
