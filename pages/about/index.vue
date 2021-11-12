@@ -184,40 +184,9 @@ export default {
   }
 }
 
-.about-page-link {
-  color: white;
-  text-decoration: underline;
-  &:hover {
-    color: #909399;
-  }
-}
-
 .about-button {
   border: 2px solid $median;
   background-color: ghostwhite;
-}
-
-.about-teams-and-projects-button {
-  background: $median;
-  text-transform: uppercase;
-  height: 2.5rem;
-  width: 12.4rem;
-  border-radius: 4px;
-  font-size: 0.875em;
-  font-weight: 500;
-  a {
-    text-decoration: none;
-    color: #fff;
-  }
-  @media screen and (max-width: 767px) {
-    margin-left: 0;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
 }
 
 .portal-image {
