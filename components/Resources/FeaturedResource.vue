@@ -29,6 +29,59 @@
   </div>
 </template>
 
+<script>
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
+export default {
+  name: 'FeaturedResource',
+  components: {
+    SparcPill
+  },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    tag: {
+      type: String,
+      default: null
+    },
+    subtitle: {
+      type: String,
+      default: null
+    },
+    description: {
+      type: String,
+      default: null
+    },
+    buttonLink: {
+      type: String,
+      default: null
+    },
+    thumbnailUrl: {
+      type: String,
+      default: null
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+@import '@/assets/_variables.scss';
+button.pink-button {
+  padding-top: 0.688rem;
+  background: #f9f2fc;
+  border: 1px solid $median;
+  color: $median;
+  &:hover {
+    color: #1a1489;
+  }
+  @media (max-width: 24em) {
+    margin-top: 10px;
+    margin-left: 0;
+  }
+}
+</style>
+
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .featured-resource {
@@ -89,56 +142,3 @@ h3 {
   font-size: 14px;
 }
 </style>
-
-<style lang="scss">
-@import '@/assets/_variables.scss';
-button.pink-button {
-  padding-top: 0.688rem;
-  background: #f9f2fc;
-  border: 1px solid $median;
-  color: $median;
-  &:hover {
-    color: #1a1489;
-  }
-  @media (max-width: 24em) {
-    margin-top: 10px;
-    margin-left: 0;
-  }
-}
-</style>
-
-<script>
-import SparcPill from '@/components/SparcPill/SparcPill.vue'
-export default {
-  name: 'FeaturedResource',
-  components: {
-    SparcPill
-  },
-  props: {
-    title: {
-      type: String,
-      default: ''
-    },
-    tag: {
-      type: String,
-      default: null
-    },
-    subtitle: {
-      type: String,
-      default: null
-    },
-    description: {
-      type: String,
-      default: null
-    },
-    buttonLink: {
-      type: String,
-      default: null
-    },
-    thumbnailUrl: {
-      type: String,
-      default: null
-    }
-  }
-}
-</script>

@@ -31,6 +31,34 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'Paper',
+  props: {
+    text: {
+      type: String,
+      default: ''
+    },
+    buttonLink: {
+      type: Object,
+      default: null
+    },
+    buttonLinkExternal: {
+      type: String,
+      default: null
+    },
+    buttonText: {
+      type: String,
+      default: null
+    },
+    imgSrc: {
+      type: String,
+      default: null
+    }
+  }
+}
+</script>
+
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .subpage-col {
@@ -72,31 +100,3 @@
   }
 }
 </style>
-
-<script>
-export default {
-  name: 'Paper',
-  props: {
-    text: {
-      type: String,
-      default: ''
-    },
-    buttonLink: {
-      type: Object,
-      default: null
-    },
-    buttonLinkExternal: {
-      type: String,
-      default: null
-    },
-    buttonText: {
-      type: String,
-      default: null
-    },
-    imgSrc: {
-      type: String,
-      default: null
-    }
-  }
-}
-</script>
