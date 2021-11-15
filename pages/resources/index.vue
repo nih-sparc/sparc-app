@@ -16,12 +16,9 @@
           </NuxtLink>
         </div>
       </div>
-      <div>
+      <div v-if="fields.featured !== undefined">
         <h2>Featured Tools &amp; Resources</h2>
-        <div
-          v-if="fields.featured !== undefined"
-          class="featured-resource-list"
-        >
+        <div class="featured-resource-list">
           <featured-resource
             v-for="resource in fields.featured"
             :key="resource.sys.id"
