@@ -11,7 +11,7 @@
       <div>
         <div class="header">
           <h3>{{ title }}</h3>
-          <chip v-if="tag !== null">{{ tag }}</chip>
+          <sparc-pill v-if="tag !== null">{{ tag }}</sparc-pill>
         </div>
         <p v-if="subtitle !== null" class="subtitle">
           {{ subtitle }}
@@ -108,11 +108,11 @@ button.pink-button {
 </style>
 
 <script>
-import Chip from '@/components/Chip/Chip.vue'
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
 export default {
   name: 'FeaturedResource',
   components: {
-    Chip
+    SparcPill
   },
   props: {
     title: {

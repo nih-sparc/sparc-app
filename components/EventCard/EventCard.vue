@@ -19,7 +19,7 @@
         </div>
       </template>
 
-      <chip>{{ event.fields.eventType }}</chip>
+      <sparc-pill>{{ event.fields.eventType }}</sparc-pill>
     </div>
     <h3>
       <nuxt-link
@@ -56,13 +56,13 @@ import { pathOr } from 'ramda'
 
 import FormatDate from '@/mixins/format-date'
 
-import Chip from '@/components/Chip/Chip.vue'
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
 export default {
   name: 'EventCard',
 
   components: {
-    Chip
+    SparcPill
   },
 
   mixins: [FormatDate],
@@ -125,7 +125,7 @@ export default {
       top: 0;
       width: 100%;
     }
-    span {
+    div {
       position: absolute;
       right: 14px;
       top: 10px;
