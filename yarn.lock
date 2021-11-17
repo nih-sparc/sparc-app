@@ -63,25 +63,25 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.1.3.tgz#45f3384a723544936d16a38d9d1c463895273a6d"
-  integrity sha512-LdFi02x2nUxiFdWzS9GLMBsk0pbQRuod9u/BX/5F2/DqpyBElnu9An7pQDaSeqfEMn6EoT2EIW3cQ1hARclGiA==
+"@abi-software/map-side-bar@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.1.4.tgz#c4cb410865d7c37ae2275cc074f7397d6a16f0f7"
+  integrity sha512-a+g8B2M3fFqmlSAngA/s6K9k95YVEN4m54HOvTVIVt0mdo6jWVamaL2vpaZDjvaEcWlfwejUSNuKpeZRtseCLA==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.12"
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@0.2.3-fixes-1":
-  version "0.2.3-fixes-1"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.3-fixes-1.tgz#30ca76026cc78274ca1fbb52a5bb7a293c6092da"
-  integrity sha512-qdsCwDxpIXC+q55ZxnRFkg4JC+agohTscIvXMA/EPBDFKg4FHPGWRxgOTdOM7XzDy7MsvsSMdG05COzsqTaKHw==
+"@abi-software/mapintegratedvuer@0.2.4-fixes-0":
+  version "0.2.4-fixes-0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.4-fixes-0.tgz#989165bccf79b40fa995aef7d5d9ec2f77b3e121"
+  integrity sha512-gO8HUgZpdeVfjRlFbFcQvw0eVEZ26VCRCNvR3gN/wwvpMaij3118iJXalq6Zie5+L8guuIdHwbYOqZC2tpxsaA==
   dependencies:
     "@abi-software/flatmap-viewer" "^2.1.0-beta.14"
     "@abi-software/flatmapvuer" "^0.2.3-fixes-1"
-    "@abi-software/map-side-bar" "^1.1.3"
+    "@abi-software/map-side-bar" "^1.1.4"
     "@abi-software/plotvuer" "^0.2.41"
-    "@abi-software/scaffoldvuer" "^0.1.49"
+    "@abi-software/scaffoldvuer" "^0.1.50"
     "@abi-software/simulationvuer" "^0.4.6"
     "@abi-software/svg-sprite" "^0.1.12"
     "@soda/get-current-script" "^1.0.2"
@@ -150,13 +150,13 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@0.1.49", "@abi-software/scaffoldvuer@^0.1.49":
-  version "0.1.49"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.49.tgz#8ef220f396c4ed9cffa5af10be3586f9233ce76c"
-  integrity sha512-aSalG/G8Ja6uROP79mi/D9HgRvHWRZlXixGI+Ziytvv4VQefzuT9EqsIp5p4GN7dA4ySAIFrfUUL4Vnpsq4DhA==
+"@abi-software/scaffoldvuer@0.1.50", "@abi-software/scaffoldvuer@^0.1.50":
+  version "0.1.50"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.50.tgz#e108719ef01bfe51b6a0c9cf79859b1dadd5cf27"
+  integrity sha512-kLFjALthZMLNNMcGh4Aw+QTQ5L4jNUJBlzLM3VJ/9/dEE79SVnJoJXnTyVfCugmMW1nyxzYJGauxIZV2XhLi+w==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.13"
-    axios "^0.21.1"
+    axios "^0.21.2"
     core-js "^3.3.2"
     current-script-polyfill "^1.0.0"
     element-ui "^2.13.0"
@@ -3129,6 +3129,13 @@ axios@^0.21.1:
   integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   dependencies:
     follow-redirects "^1.10.0"
+
+axios@^0.21.2:
+  version "0.21.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
+  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+  dependencies:
+    follow-redirects "^1.14.0"
 
 babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
   version "6.26.0"
@@ -6221,6 +6228,11 @@ follow-redirects@^1.0.0, follow-redirects@^1.10.0:
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.3.tgz#e5598ad50174c1bc4e872301e82ac2cd97f90267"
   integrity sha512-DUgl6+HDzB0iEptNQEXLx/KhTmDb8tZUHSeLqpnjpknR70H0nC2t9N73BK6fN4hOvJ84pKlIQVQ4k5FFlBedKA==
+
+follow-redirects@^1.14.0:
+  version "1.14.5"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.5.tgz#f09a5848981d3c772b5392309778523f8d85c381"
+  integrity sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==
 
 font-atlas@^2.1.0:
   version "2.1.0"
