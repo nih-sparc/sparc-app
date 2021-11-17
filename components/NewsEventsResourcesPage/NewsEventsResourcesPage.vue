@@ -73,7 +73,7 @@ import PageHero from '@/components/PageHero/PageHero'
 import FirstCol from '@/mixins/first-col/index'
 
 export default {
-  name: 'NewsEventsPage',
+  name: 'NewsEventsResourcesPage',
 
   components: {
     Breadcrumb,
@@ -123,6 +123,14 @@ export default {
     },
 
     /**
+     * Construct current url 
+     * @returns {String}
+     */
+    pageUrl: function() {
+      return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    },
+
+    /**
      * Compute the first column's attributes
      * @returns {Object}
      */
@@ -135,9 +143,12 @@ export default {
      * @returns {String}
      */
     backLink() {
-      return this.type === 'event'
-        ? 'news-and-events-events'
-        : 'news-and-events-news'
+      const routesLookup = {
+        event: 'news-and-events-events',
+        news: 'news-and-events-news',
+        resource: 'resources'
+      }
+      return routesLookup[this.type]
     },
 
     /**
@@ -145,7 +156,12 @@ export default {
      * @returns {String}
      */
     backCopy() {
-      const name = this.type === 'event' ? 'Events' : 'News'
+      const nameLookup = {
+        event: 'Events',
+        news: 'News',
+        resource: 'Resources'
+      }
+      const name = nameLookup[this.type]
 
       return `View All ${name} >`
     }

@@ -1,5 +1,5 @@
 <template>
-  <news-events-page
+  <news-events-resources-page
     :page="page"
     :content="page.fields.description"
     :breadcrumb="breadcrumb"
@@ -25,13 +25,13 @@
     <p>
       <a :href="page.fields.url" target="_blank">{{ page.fields.url }}</a>
     </p>
-  </news-events-page>
+  </news-events-resources-page>
 </template>
 
 <script>
 import { pathOr } from 'ramda'
 
-import NewsEventsPage from '@/components/NewsEventsPage/NewsEventsPage'
+import NewsEventsResourcesPage from '@/components/NewsEventsResourcesPage/NewsEventsResourcesPage'
 
 import FormatDate from '@/mixins/format-date'
 
@@ -43,7 +43,7 @@ export default {
   name: 'EventPage',
 
   components: {
-    NewsEventsPage
+    NewsEventsResourcesPage
   },
 
   mixins: [FormatDate],
