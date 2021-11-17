@@ -17,68 +17,33 @@
         </div>
       </div>
 
+      <paper
+        class="row top-margin"
+        :text="parseMarkdown(sparcPortal)"
+        :button-text="' About the SPARC Portal '"
+        :button-link="aboutLink(aboutPortalPageId)"
+        :img-src="sparcPortalImage ? sparcPortalImage.fields.file.url : null"
+      />
+
       <div class="row top-margin">
-        <div class="subpage-col about-page-border">
-          <div class="about-page-text" v-html="parseMarkdown(sparcPortal)" />
-          <NuxtLink :to="aboutLink(aboutPortalPageId)">
-            <el-button class="about-button">
-              About the SPARC Portal
-            </el-button>
-          </NuxtLink>
-        </div>
-        <img
-          v-if="sparcPortalImage"
-          slot="image"
-          class="portal-image midnightblue-background"
-          :src="sparcPortalImage.fields.file.url"
+        <paper
+          class="row-item"
+          :text="parseMarkdown(whatWeOffer)"
+          :button-text="' What We Offer '"
+          :button-link="aboutLink(whatWeOfferPageId)"
         />
-      </div>
-
-      <div class="row top-margin">
-        <div class="row-item">
-          <div class="subpage-col about-page-border">
-            <div class="about-page-text" v-html="parseMarkdown(whatWeOffer)" />
-            <NuxtLink
-              class="margin-top-auto"
-              :to="aboutLink(whatWeOfferPageId)"
-            >
-              <el-button class="about-button">
-                What We Offer
-              </el-button>
-            </NuxtLink>
-          </div>
-        </div>
-
-        <div class="row-item">
-          <div class="subpage-col about-page-border">
-            <div
-              class="about-page-text"
-              v-html="parseMarkdown(teamLeadership)"
-            />
-            <NuxtLink
-              class="margin-top-auto"
-              :to="aboutLink(teamAndLeadershipPageId)"
-            >
-              <el-button class="about-button">
-                Team & Leadership
-              </el-button>
-            </NuxtLink>
-          </div>
-        </div>
-
-        <div class="row-item">
-          <div class="subpage-col about-page-border">
-            <div class="about-page-text" v-html="parseMarkdown(getInvolved)" />
-            <NuxtLink
-              class="margin-top-auto"
-              :to="aboutLink(getInvolvedPageId)"
-            >
-              <el-button class="about-button">
-                Get Involved
-              </el-button>
-            </NuxtLink>
-          </div>
-        </div>
+        <paper
+          class="row-item"
+          :text="parseMarkdown(teamLeadership)"
+          :button-text="' Team & Leadership '"
+          :button-link="aboutLink(teamAndLeadershipPageId)"
+        />
+        <paper
+          class="row-item"
+          :text="parseMarkdown(getInvolved)"
+          :button-text="' Get Involved '"
+          :button-link="aboutLink(getInvolvedPageId)"
+        />
       </div>
 
       <div class="row top-margin about-page-border">
@@ -97,9 +62,7 @@
             class="margin-top-auto"
             to="/news-and-events/community-spotlight"
           >
-            <el-button class="about-button">
-              View Spotlight
-            </el-button>
+            <el-button class="about-button"> View Spotlight </el-button>
           </NuxtLink>
         </div>
       </div>
@@ -110,6 +73,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import Paper from '@/components/Paper/Paper.vue'
 
 import MarkedMixin from '@/mixins/marked'
 import createClient from '@/plugins/contentful.js'
@@ -121,7 +85,8 @@ export default {
 
   components: {
     Breadcrumb,
-    PageHero
+    PageHero,
+    Paper
   },
 
   mixins: [MarkedMixin],
@@ -219,40 +184,9 @@ export default {
   }
 }
 
-.about-page-link {
-  color: white;
-  text-decoration: underline;
-  &:hover {
-    color: #909399;
-  }
-}
-
 .about-button {
   border: 2px solid $median;
   background-color: ghostwhite;
-}
-
-.about-teams-and-projects-button {
-  background: $median;
-  text-transform: uppercase;
-  height: 2.5rem;
-  width: 12.4rem;
-  border-radius: 4px;
-  font-size: 0.875em;
-  font-weight: 500;
-  a {
-    text-decoration: none;
-    color: #fff;
-  }
-  @media screen and (max-width: 767px) {
-    margin-left: 0;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
 }
 
 .portal-image {
