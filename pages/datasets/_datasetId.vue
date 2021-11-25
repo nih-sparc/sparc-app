@@ -102,7 +102,7 @@
               </div>
             </div>
           </div>
-          <div v-if="datasetType === 'simulation'">
+          <div v-if="datasetType === 'simulation' && datasetInfo.study">
             <a
               :href="`https://osparc.io/study/${getSimulationId}`"
               target="_blank"
@@ -202,7 +202,7 @@
 
 <script>
 import marked from 'marked'
-import { clone, propOr, pathOr, last, head, compose, split } from 'ramda'
+import { clone, propOr, pathOr, head, compose, split } from 'ramda'
 
 import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
@@ -828,7 +828,10 @@ export default {
      * on the portal instead of requiring the dataset to be fully republished.
      */
     getProtocolRecords: function() {
-      if (this.datasetInfo.externalPublications.length !== 0) {
+      if (
+        this.datasetInfo.externalPublications &&
+        this.datasetInfo.externalPublications.length !== 0
+      ) {
         const allPubs = this.datasetInfo.externalPublications
         const allProtocols = allPubs.filter(
           x => x.relationshipType === 'IsSupplementedBy'
@@ -847,7 +850,7 @@ export default {
                 protocol.properties.url.startsWith('https://doi.org')
               )
               this.datasetRecords = allProtocols.map(obj => {
-                return { url: obj.properties.url}
+                return { url: obj.properties.url }
               })
             }
           })

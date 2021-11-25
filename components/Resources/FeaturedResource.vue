@@ -11,7 +11,9 @@
       <div>
         <div class="header">
           <h3>{{ title }}</h3>
-          <sparc-pill v-if="tag !== null">{{ tag }}</sparc-pill>
+          <sparc-pill v-if="tag !== null">
+            {{ tag }}
+          </sparc-pill>
         </div>
         <p v-if="subtitle !== null" class="subtitle">
           {{ subtitle }}
