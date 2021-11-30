@@ -538,7 +538,6 @@ export default {
   width: 30vw;
   height: 34px;
   border-radius: 4px;
-  border: solid 1px $dark-gray;
   @media screen and (max-width: 1023px) {
     display: none;
   }

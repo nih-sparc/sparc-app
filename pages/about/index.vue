@@ -62,7 +62,7 @@
             class="margin-top-auto"
             to="/news-and-events/community-spotlight"
           >
-            <el-button class="about-button"> View Spotlight </el-button>
+            <el-button class="secondary"> View Spotlight </el-button>
           </NuxtLink>
         </div>
       </div>
@@ -182,11 +182,6 @@ export default {
   @media screen and (max-width: 767px) {
     flex-direction: column;
   }
-}
-
-.about-button {
-  border: 2px solid $median;
-  background-color: ghostwhite;
 }
 
 .portal-image {

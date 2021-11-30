@@ -40,110 +40,112 @@
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
-            <el-col
-              v-if="searchType.type === 'dataset' || searchType.type === 'simulation'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <dataset-facet-menu
-                :facets="facets"
-                :visible-facets="visibleFacets"
-                @selected-facets-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-                ref="datasetFacetMenu"
-              />
-            </el-col>
-            <el-col
-              v-if="searchType.type === 'newsAndEvents'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <news-and-events-facet-menu
-                @news-and-events-selections-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-                ref="newsAndEventsFacetMenu"
-              />
-            </el-col>
-            <el-col
-              v-if="searchType.type === 'sparcPartners'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <tools-and-resources-facet-menu
-                @tool-and-resources-selections-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-              />
-            </el-col>
-            <el-col
-              v-if="searchType.type === 'sparcInfo'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <sparc-info-facet-menu
-                @sparc-info-selections-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-                ref="sparcInfoFacetMenu"
-              />
-            </el-col>
-            <el-col
-              :sm="searchColSpan('sm')"
-              :md="searchColSpan('md')"
-              :lg="searchColSpan('lg')"
-            >
-              <div class="search-heading">
-                <p v-show="!isLoadingSearch && searchData.items.length">
-                  {{ searchData.total }} Results | Showing
-                  <pagination-menu
+            <client-only>
+              <el-col
+                v-if="searchType.type === 'dataset' || searchType.type === 'simulation'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <dataset-facet-menu
+                  :facets="facets"
+                  :visible-facets="visibleFacets"
+                  @selected-facets-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                  ref="datasetFacetMenu"
+                />
+              </el-col>
+              <el-col
+                v-if="searchType.type === 'newsAndEvents'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <news-and-events-facet-menu
+                  @news-and-events-selections-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                  ref="newsAndEventsFacetMenu"
+                />
+              </el-col>
+              <el-col
+                v-if="searchType.type === 'sparcPartners'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <tools-and-resources-facet-menu
+                  @tool-and-resources-selections-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                />
+              </el-col>
+              <el-col
+                v-if="searchType.type === 'sparcInfo'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <sparc-info-facet-menu
+                  @sparc-info-selections-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                  ref="sparcInfoFacetMenu"
+                />
+              </el-col>
+              <el-col
+                :sm="searchColSpan('sm')"
+                :md="searchColSpan('md')"
+                :lg="searchColSpan('lg')"
+              >
+                <div class="search-heading">
+                  <p v-show="!isLoadingSearch && searchData.items.length">
+                    {{ searchData.total }} Results | Showing
+                    <pagination-menu
+                      :page-size="searchData.limit"
+                      @update-page-size="updateDataSearchLimit"
+                    />
+                  </p>
+                  <el-pagination
+                    v-if="searchData.limit < searchData.total"
+                    :small="isMobile"
                     :page-size="searchData.limit"
-                    @update-page-size="updateDataSearchLimit"
+                    :pager-count="5"
+                    :current-page="curSearchPage"
+                    layout="prev, pager, next"
+                    :total="searchData.total"
+                    @current-change="onPaginationPageChange"
                   />
-                </p>
-                <el-pagination
-                  v-if="searchData.limit < searchData.total"
-                  :small="isMobile"
-                  :page-size="searchData.limit"
-                  :pager-count="5"
-                  :current-page="curSearchPage"
-                  layout="prev, pager, next"
-                  :total="searchData.total"
-                  @current-change="onPaginationPageChange"
-                />
-              </div>
-              <div v-loading="isLoadingSearch" class="table-wrap">
-                <component
-                  :is="searchResultsComponent"
-                  :table-data="tableData"
-                  :title-column-width="titleColumnWidth"
-                />
-              </div>
-              <div class="search-heading">
-                <p v-if="!isLoadingSearch && searchData.items.length">
-                  {{ searchHeading }} | Showing
-                  <pagination-menu
+                </div>
+                <div v-loading="isLoadingSearch" class="table-wrap">
+                  <component
+                    :is="searchResultsComponent"
+                    :table-data="tableData"
+                    :title-column-width="titleColumnWidth"
+                  />
+                </div>
+                <div class="search-heading">
+                  <p v-if="!isLoadingSearch && searchData.items.length">
+                    {{ searchHeading }} | Showing
+                    <pagination-menu
+                      :page-size="searchData.limit"
+                      @update-page-size="updateDataSearchLimit"
+                    />
+                  </p>
+                  <el-pagination
+                    v-if="searchData.limit < searchData.total"
+                    :small="isMobile"
                     :page-size="searchData.limit"
-                    @update-page-size="updateDataSearchLimit"
+                    :pager-count="5"
+                    :current-page="curSearchPage"
+                    layout="prev, pager, next"
+                    :total="searchData.total"
+                    @current-change="onPaginationPageChange"
                   />
-                </p>
-                <el-pagination
-                  v-if="searchData.limit < searchData.total"
-                  :small="isMobile"
-                  :page-size="searchData.limit"
-                  :pager-count="5"
-                  :current-page="curSearchPage"
-                  layout="prev, pager, next"
-                  :total="searchData.total"
-                  @current-change="onPaginationPageChange"
-                />
-              </div>
-            </el-col>
+                </div>
+              </el-col>
+            </client-only>
           </el-row>
         </el-col>
       </el-row>

@@ -119,11 +119,13 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['element-ui/lib/theme-chalk/index.css'],
+  css: ['element-ui/lib/theme-chalk/index.css', '@nih-sparc\\sparc-design-system-components/src/assets/styles.scss'],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/bootstrap', '@/plugins/contentful'],
+  plugins: ['@/plugins/bootstrap', '@/plugins/contentful', {
+    src: '@/plugins/system-design-components', mode: 'client'
+  }],
   /*
    ** Nuxt.js dev-modules
    */
@@ -162,7 +164,7 @@ export default {
    ** Build configuration
    */
   build: {
-    transpile: [/^element-ui/],
+    transpile: [/^element-ui/, 'system-design-components'],
 
     /*
      ** You can extend webpack config here
