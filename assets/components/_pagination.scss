@@ -1,15 +1,15 @@
 @import '../_variables.scss';
 
 .el-pager li {
-  background-color: transparent;
+  background-color: transparent !important;
   &.active {
     &:after {
-      background: $app-primary-color;
-      content: '';
-      display: block;
-      height: 4px;
-      transform: translateY(-2px);
-      width: 100%;
+      background: $app-primary-color !important;
+      content: '' !important;
+      display: block !important;
+      height: 4px !important;
+      transform: translateY(-2px) !important;
+      width: 100% !important;
     }
   }
 }

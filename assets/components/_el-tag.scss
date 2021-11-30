@@ -1,10 +1,14 @@
 .el-tag {
-  background: #fff;
-  border-color: #dcdfe6;
-  border-radius: 3px;
-  color: #303133;
+  background: #fff !important;
+  border-color: #dcdfe6 !important;
+  border-radius: 3px !important;
+  color: #303133 !important;
   font-size: 0.75em;
+  cursor: default !important;
 }
 .el-tag .el-tag__close {
-  color: #828282;
+  color: #828282 !important;
+}
+.el-tag .el-tag__close:hover {
+  background-color: #dcdfe6 !important;
 }

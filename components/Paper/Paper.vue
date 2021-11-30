@@ -7,7 +7,7 @@
         class="margin-top-auto"
         :to="buttonLink"
       >
-        <el-button class="about-button">
+        <el-button class="secondary">
           {{ buttonText }}
         </el-button>
       </NuxtLink>
@@ -82,10 +82,6 @@ export default {
 }
 .margin-top-auto {
   margin-top: auto;
-}
-.about-button {
-  border: 2px solid $median;
-  background-color: ghostwhite;
 }
 .midnightblue-background {
   background-color: midnightblue;

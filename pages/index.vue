@@ -8,7 +8,7 @@
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(heroCopy)" />
       <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
-        <el-button class="uppercase">
+        <el-button class="uppercase secondary">
           {{ heroButtonLabel }}
         </el-button>
       </a>

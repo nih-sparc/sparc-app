@@ -23,7 +23,7 @@
         {{ description }}
       </p>
       <a v-if="buttonLink !== null" :href="buttonLink">
-        <el-button class="pink-button">
+        <el-button class="secondary">
           View resource
         </el-button>
       </a>
@@ -66,23 +66,6 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import '@/assets/_variables.scss';
-button.pink-button {
-  padding-top: 0.688rem;
-  background: #f9f2fc;
-  border: 1px solid $median;
-  color: $median;
-  &:hover {
-    color: #1a1489;
-  }
-  @media (max-width: 24em) {
-    margin-top: 10px;
-    margin-left: 0;
-  }
-}
-</style>
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
