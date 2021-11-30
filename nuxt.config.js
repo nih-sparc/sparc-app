@@ -119,7 +119,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['element-ui/lib/theme-chalk/index.css', '@nih-sparc\\sparc-design-system-components/src/assets/styles.scss'],
+  css: ['element-ui/lib/theme-chalk/index.css', '@nih-sparc/sparc-design-system-components/src/assets/styles.scss'],
   /*
    ** Plugins to load before mounting the App
    */
