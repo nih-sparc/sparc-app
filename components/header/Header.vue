@@ -251,7 +251,7 @@ export default {
     menuOpen: {
       handler: function(val) {
         if (!val) {
-          this.$store.dispatch('updateDisabledScrolling', false)
+          this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
         }
       },
       immediate: true
@@ -259,9 +259,6 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      scrolling: 'updateDisabledScrolling'
-    }),
     /**
      * Sets a link to active based on current page
      * @param {String} query
@@ -279,11 +276,11 @@ export default {
     openMobileNav: function() {
       if (!this.menuOpen) {
         this.mobileSearchOpen = false // just in case the search menu is open also
-        this.$store.dispatch('updateDisabledScrolling', true)
+        this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
         this.menuOpen = true
       } else {
         this.menuOpen = false
-        this.$store.dispatch('updateDisabledScrolling', false)
+        this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
       }
     },
 
@@ -293,7 +290,7 @@ export default {
     openMobileSearch: function() {
       this.mobileSearchOpen = true
       this.menuOpen = false
-      this.$store.dispatch('updateDisabledScrolling', true)
+      this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
     },
 
     /**
@@ -301,7 +298,7 @@ export default {
      */
     closeMobileSearch: function() {
       this.mobileSearchOpen = false
-      this.$store.dispatch('updateDisabledScrolling', false)
+      this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
     },
 
     executeMobileSearch: function() {

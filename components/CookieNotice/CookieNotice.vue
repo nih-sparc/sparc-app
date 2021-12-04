@@ -59,7 +59,7 @@ export default {
       const today = new Date()
       const expirationDate = new Date(today.setDate(today.getDate() + 30))
       this.$cookies.set('GDPR:accepted', true, { expires: expirationDate })
-      this.$store.dispatch('setHasAcceptedGdpr', true)
+      this.$store.dispatch('layouts/default/setHasAcceptedGdpr', true)
     },
 
     /**

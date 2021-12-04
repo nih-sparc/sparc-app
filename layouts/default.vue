@@ -20,11 +20,12 @@ export default {
     sparcFooter
   },
   computed: {
-    ...mapState({
-      scrollingState: 'disableScrolling'
+    ...mapState('layouts/default', {
+      scrollingState: state => state.disableScrolling
     }),
-
-    ...mapState(['hasAcceptedGDPR'])
+    ...mapState('layouts/default', {
+      hasAcceptedGDPR: state => state.hasAcceptedGDPR
+    })
   }
 }
 </script>
