@@ -53,20 +53,8 @@ export default {
 
 <style scoped lang="scss">
 .dataset-image {
-  width: 368px;
-  height: 368px;
-}
-@media screen and (max-width: 360px) {
-  .dataset-image {
-    width: 288px;
-    height: 288px;
-    margin-left: 1rem;
-  }
-}
-
-@media screen and (max-width: 320px) {
-  .dataset-image {
-    margin-left: 0;
-  }
+  width: -webkit-fill-available;
+  height: auto;
+  margin-bottom: .5rem;
 }
 </style>

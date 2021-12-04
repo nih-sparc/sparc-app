@@ -183,8 +183,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/_variables.scss';
 .has-orcid {
   text-decoration: underline;
+  color: $median;
 }
 </style>
 <style lang="scss">

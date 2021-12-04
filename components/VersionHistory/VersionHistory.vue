@@ -43,7 +43,7 @@
                 type: 'dataset'
               }
             }"
-            @click.native="$emit('update:visible', false)"
+            @click.native="closeDialog()"
           >
             Version {{ version.version }}
           </router-link>

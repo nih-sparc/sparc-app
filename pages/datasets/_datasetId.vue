@@ -1,183 +1,62 @@
 <template>
   <div class="dataset-details">
-    <details-header
-      :subtitle="subtitles.toString()"
-      :title="datasetTitle"
-      :description="datasetDescription"
-      :breadcrumb="breadcrumb"
-    >
-      <div slot="banner image" class="img-dataset">
-        <dataset-banner-image :src="getDatasetImage" />
-        <sparc-pill v-if="datasetInfo.embargo">
-          Embargoed
-        </sparc-pill>
-      </div>
-      <div slot="meta content" class="details-header__container--content-links">
-        <div class="dataset-meta">
-          <div class="dataset-updated-date">
-            Last updated on {{ lastUpdatedDate }}
-            <template v-if="datasetType !== 'simulation'">
-              (
-              <a
-                href="#"
-                class="version-link"
-                @click.prevent="isVersionModalVisible = true"
-              >
-                {{ versionRevisionText }}
-              </a>
-              )
-            </template>
+    <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
+    <div class="bx--grid">
+      <div class="bx--row">
+        <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3">
+          <dataset-action-box 
+            @get-dataset="isDownloadModalVisible = true"
+          />
+        </div>
+        <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13">
+          <dataset-header
+            :subtitle="subtitles.toString()"
+            :latestVersionRevision="latestVersionRevision"
+            :latestVersionDate="latestVersionDate"
+            :external-publications="externalPublications"
+          />
+          <div v-if="datasetInfo.embargo === false">
+            <citation-details
+              :doi-value="datasetInfo.doi"
+              :published-date="originallyPublishedDate"
+            />
+          </div>
+          <div v-if="datasetInfo.embargo === false">
+            <detail-tabs
+              :tabs="tabs"
+              :active-tab="activeTab"
+              default-tab="description"
+            >
+              <dataset-description-info
+                v-show="activeTab === 'description'"
+                :markdown="markdown"
+                :dataset-records="datasetRecords"
+                :loading-markdown="loadingMarkdown"
+              />
+              <dataset-about-info
+                v-show="activeTab === 'about'"
+                :updated-date="lastUpdatedDate"
+                :doi="datasetDOI"
+                :dataset-tags="datasetTags"
+                :dataset-owner-name="datasetOwnerName"
+                :dataset-owner-email="datasetOwnerEmail"
+              />
+              <dataset-files-info
+                v-show="activeTab === 'files'"
+                :dataset-details="datasetInfo"
+                :osparc-viewers="osparcViewers"
+              />
+              <images-gallery
+                v-show="activeTab === 'images'"
+                :markdown="markdown.markdownTop"
+                :dataset-biolucida="biolucidaImageData"
+                :dataset-scicrunch="scicrunchData"
+              />
+            </detail-tabs>
           </div>
         </div>
-        <div class="dataset-owners">
-          <div
-            v-for="(contributor, idx) in datasetContributors"
-            :key="contributor.id"
-            class="contributor-item-wrap"
-          >
-            <contributor-item :contributor="contributor" />
-            <template v-if="idx < datasetContributors.length - 1">
-              ,
-            </template>
-          </div>
-        </div>
-        <p v-if="datasetInfo.embargo" class="embargo-release-date">
-          Release date: {{ formatDate(datasetInfo.embargoReleaseDate) }}
-        </p>
-
-        <template v-if="datasetInfo.embargo === false">
-          <div class="header-stats-section">
-            <div class="header-stats-block">
-              <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
-              <div>
-                <template v-if="datasetFiles > 0">
-                  <strong>
-                    {{ datasetFiles }}
-                  </strong>
-                  Files
-                </template>
-
-                <template v-else>
-                  No Files
-                </template>
-              </div>
-            </div>
-            <div v-if="datasetType !== 'simulation'" class="header-stats-block">
-              <svg-icon
-                class="mr-8"
-                name="icon-storage"
-                height="20"
-                width="20"
-              />
-              <div>
-                <strong>{{ datasetStorage.number }}</strong>
-                {{ datasetStorage.unit }}
-              </div>
-            </div>
-            <div class="header-stats-block">
-              <svg-icon
-                class="mr-8"
-                name="icon-license"
-                height="20"
-                width="20"
-              />
-              <div>
-                <template v-if="datasetLicense">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="datasetLicenseName"
-                    placement="top"
-                    :visible-arrow="false"
-                  >
-                    <a :href="licenseLink" target="_blank">
-                      {{ datasetLicense }}
-                    </a>
-                  </el-tooltip>
-                </template>
-
-                <template v-else>
-                  No License Selected
-                </template>
-              </div>
-            </div>
-          </div>
-          <div v-if="datasetType === 'simulation' && datasetInfo.study">
-            <a
-              :href="`https://osparc.io/study/${getSimulationId}`"
-              target="_blank"
-              class="dataset-button-link"
-            >
-              <el-button class="dataset-button">
-                Run Simulation
-              </el-button>
-            </a>
-          </div>
-          <div v-else>
-            <el-button
-              class="dataset-button"
-              @click="isDownloadModalVisible = true"
-            >
-              Get Dataset
-            </el-button>
-            <el-button class="citation-button" @click="scrollToCitations">
-              Cite Dataset
-            </el-button>
-            <nuxt-link
-              :to="{
-                name: 'help-helpId',
-                params: {
-                  helpId: ctfDatasetFormatInfoPageId
-                }
-              }"
-              class="dataset-link"
-            >
-              SPARC Dataset Structure
-            </nuxt-link>
-          </div>
-        </template>
       </div>
-    </details-header>
-    <div v-if="datasetInfo.embargo === false" class="container">
-      <citation-details
-        :doi-value="datasetInfo.doi"
-        :published-date="originallyPublishedDate"
-      />
-    </div>
-    <div v-if="datasetInfo.embargo === false" class="container">
-      <detail-tabs
-        :tabs="tabs"
-        :active-tab="activeTab"
-        default-tab="description"
-      >
-        <dataset-description-info
-          v-show="activeTab === 'description'"
-          :markdown="markdown"
-          :dataset-records="datasetRecords"
-          :loading-markdown="loadingMarkdown"
-        />
-        <dataset-about-info
-          v-show="activeTab === 'about'"
-          :updated-date="lastUpdatedDate"
-          :doi="datasetDOI"
-          :dataset-tags="datasetTags"
-          :dataset-owner-name="datasetOwnerName"
-          :dataset-owner-email="datasetOwnerEmail"
-          :external-publications="externalPublications"
-        />
-        <dataset-files-info
-          v-show="activeTab === 'files'"
-          :dataset-details="datasetInfo"
-          :osparc-viewers="osparcViewers"
-        />
-        <images-gallery
-          v-show="activeTab === 'images'"
-          :markdown="markdown.markdownTop"
-          :dataset-biolucida="biolucidaImageData"
-          :dataset-scicrunch="scicrunchData"
-        />
-      </detail-tabs>
-    </div>
+    </div>   
     <download-dataset
       :visible.sync="isDownloadModalVisible"
       :dataset-details="datasetInfo"
@@ -185,7 +64,7 @@
       @close-download-dialog="isDownloadModalVisible = false"
     />
     <version-history
-      :visible.sync="isVersionModalVisible"
+      :visible="showAllVersionsModal"
       :dataset-id="datasetInfo.id"
       :latest-version="datasetInfo.latestVersion"
       :versions="versions"
@@ -202,21 +81,21 @@
 
 <script>
 import marked from 'marked'
+import { mapState } from 'vuex'
 import { clone, propOr, pathOr, head, compose, split } from 'ramda'
 
-import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
+import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
+import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
-import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
-import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -386,11 +265,11 @@ export default {
   name: 'DatasetDetails',
 
   components: {
-    DetailsHeader,
+    Breadcrumb,
+    DatasetHeader,
+    DatasetActionBox,
     DetailTabs,
     CitationDetails,
-    ContributorItem,
-    DatasetBannerImage,
     DownloadDataset,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
@@ -398,12 +277,11 @@ export default {
     ImagesGallery,
     VersionHistory,
     DatasetVersionMessage,
-    SparcPill
   },
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ route, $axios, store }) {
     let tabsData = clone(tabs)
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
@@ -441,10 +319,11 @@ export default {
       tabsData.push({ label: 'Gallery', type: 'images' })
     }
 
+    store.dispatch('pages/datasets/datasetId/setDatasetInfo', datasetDetails)
+    store.dispatch('pages/datasets/datasetId/setDatasetType', route.query.type)
+
     return {
       biolucidaImageData,
-      datasetInfo: datasetDetails,
-      datasetType: route.query.type,
       entries: organEntries,
       osparcViewers,
       scicrunchData,
@@ -484,11 +363,11 @@ export default {
       ],
       subtitles: [],
       ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
-      isVersionModalVisible: false
     }
   },
 
   computed: {
+    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetType','showAllVersionsModal']),
     defaultTab() {
       return this.tabs[0].type
     },
@@ -504,7 +383,24 @@ export default {
 
       return true
     },
-
+    /**
+     * computes the text of the latest version and revision
+     * @returns {String}
+     */
+    latestVersionRevision() {
+      let revision = compose(propOr(0, 'revision'), head)(this.versions)
+      let version = compose(propOr(1, 'version'), head)(this.versions)
+      return `${version}.${revision}`
+    },
+    /**
+     * computes the date of the latest version
+     * @returns {String}
+     */
+    latestVersionDate() {
+      let version = compose(head)(this.versions)
+      const date = version.revisedAt || version.versionPublishedAt
+      return this.formatDate(date)
+    },
     /**
      * Returns simulation id for run simulation button
      * @returns {String}
@@ -589,14 +485,6 @@ export default {
     },
 
     /**
-     * Returns dataset banner
-     * @returns {String}
-     */
-    getDatasetImage: function() {
-      return propOr('', 'banner', this.datasetInfo)
-    },
-
-    /**
      * Returns the list of contributors who contributed to the dataset
      * @returns {String}
      */
@@ -627,7 +515,7 @@ export default {
      * @returns {String}
      */
     firstContributor: function() {
-      return head(this.datasetContributors)
+      return head(propOr([], 'contributors', this.datasetInfo))
     },
     /**
      * Returns the dataset title
@@ -905,27 +793,10 @@ export default {
     },
 
     /**
-     * Get the citations area in the
-     * About tab by id
-     * @returns {Object}
-     */
-    getCitationsArea: function() {
-      return document.getElementById('citationsArea')
-    },
-
-    /**
-     * Scroll to the citations area
-     * in the About tab
-     */
-    scrollToCitations: function() {
-      this.getCitationsArea().scrollIntoView()
-    },
-
-    /**
      * Closes the version history modal
      */
     closeVersionModal: function() {
-      this.isVersionModalVisible = false
+      this.$store.dispatch('pages/datasets/datasetId/showAllVersionsModal', false)
     }
   },
 
@@ -1080,6 +951,16 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_spacing.scss';
 @import '@/assets/_variables.scss';
+hr {
+  margin-top: 1rem;
+  border-top: none;
+}
+p.bullet-title{
+  margin-bottom: 0;
+  margin-right: 0.5em;
+  font-weight: bold;
+}
+
 .details-header {
   &__container {
     &--content-links {
@@ -1164,19 +1045,6 @@ export default {
     &:focus {
       color: black;
     }
-  }
-}
-
-.dataset-owners {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  color: #404554;
-  font-size: 14px;
-  line-height: 24px;
-  .contributor-item-wrap {
-    display: inline-flex;
-    margin-right: 4px;
   }
 }
 
