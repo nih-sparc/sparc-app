@@ -1,100 +1,75 @@
 <template>
   <div class="dataset-about-info">
     <div class="dataset-about-info__container">
-      <h3>Last Updated</h3>
-      <p>{{ updatedDate }}</p>
-      <h3>Corresponding Author</h3>
-      <p>
-        {{ datasetOwnerName }}<br />
-        {{ datasetOwnerEmail }}
-      </p>
-      <h3>Dataset DOI</h3>
-      <p>
+      <h2 class="section-text">
+        About this dataset
+      </h2>
+      <p><strong>Title: </strong>{{datasetTitle}}</p>
+      <p><strong>First Published: </strong>{{firstPublishedDate}}</p>
+      <p><strong>Last Published: </strong>{{latestVersionDate}}</p>
+      <hr />
+      <div class="about-section-container">
+        <span class="author-section-name-column"><strong>Contact Author: </strong></span>
+        <span>
+          <div>{{datasetOwnerName}}</div>
+          <div>
+            <a
+            :href="`mailto:${datasetOwnerEmail}`"
+            >
+              {{ datasetOwnerEmail }}
+            </a>
+          </div>
+        </span> 
+      </div>
+      <hr />
+      <p><strong>Award: </strong>NIH {{sparcAwardNumber}}</p>
+      <hr />
+      <p><strong>Associated project: </strong></p>
+      <div class="about-section-container">
+        <span class="institution-section-name-column"><strong>Institution(s): </strong></span>
+        <span>
+          
+        </span> 
+      </div>
+      <hr />
+      <h2 class="section-text">
+        About this version
+      </h2>
+      <p><strong>{{versionRevisionText}}: </strong>Publication date: {{publicationDate}} (Last updated: {{lastPublishedDate}})</p>
+      <p><strong>Dataset DOI: </strong>
         <a
-          class="dataset-about-info__container--doi-link mb-16"
-          :href="doi"
-          target="_blank"
-        >
-          {{ doi }}
-        </a>
+            :href="doiLink"
+            target="_blank"
+          >
+            {{ doiLink }}
+          </a>
       </p>
-      <h3>NIH Award</h3>
-      <p>{{ getSparcAwardNumber }}</p>
-      <template v-if="primaryPublication">
-        <h3> Primary Publication</h3>
-        <external-pub-link :publication="primaryPublication" />
-      </template>
-      <p />
-      <h3>Tags</h3>
-      <div v-if="datasetTags.length !== 0">
-        <tag-list :tags="datasetTags" />
-      </div>
-      <div v-else>
-        <p>N/A</p>
-      </div>
-
-      <div v-if="externalPublications.length" class="row mt-24">
-        <div class="col-xs-12">
-          <h3>References</h3>
-          <external-publication-list-item
-            v-for="publication in externalPublications"
-            :key="publication.doi"
-            class="mb-16"
-            :publication="publication"
-          />
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { compose, propOr, head } from 'ramda'
+import { mapState } from 'vuex'
 
-import ExternalPublicationListItem from '@/components/ExternalPublicationListItem/ExternalPublicationListItem.vue'
-import ExternalPubLink from '@/components/ExternalPubLink/ExternalPubLink'
-import TagList from '@/components/TagList/TagList.vue'
+import DateUtils from '@/mixins/format-date'
 
 export default {
   name: 'DatasetAboutInfo',
 
   components: {
-    ExternalPublicationListItem,
-    ExternalPubLink,
-    TagList
   },
   props: {
-    updatedDate: {
+    latestVersionRevision: {
       type: String,
       default: ''
     },
-
-    doi: {
+    latestVersionDate: {
       type: String,
       default: ''
-    },
-
-    datasetTags: {
-      type: Array,
-      default: () => []
-    },
-
-    datasetOwnerName: {
-      type: String,
-      default: ''
-    },
-
-    datasetOwnerEmail: {
-      type: String,
-      default: ''
-    },
-
-    externalPublications: {
-      type: Array,
-      default: () => []
     }
   },
-
+  mixins: [DateUtils],
   data() {
     return {
       sparcAwardNumber: ''
@@ -102,6 +77,72 @@ export default {
   },
 
   computed: {
+    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetType']),
+    /**
+     * Returns the dataset title
+     * @returns {String}
+     */
+    datasetTitle: function() {
+      return propOr('', 'name', this.datasetInfo)
+    },
+    /**
+     * Get formatted originally published date
+     * @return {String}
+     */
+    firstPublishedDate: function() {
+      const date = propOr('', 'firstPublishedAt', this.datasetInfo)
+      return this.formatDate(date)
+    },
+    /**
+     * Get formatted last updated date
+     * @return {String}
+     */
+    lastPublishedDate: function() {
+      const date =
+        this.datasetInfo.revisedAt || this.datasetInfo.versionPublishedAt
+      return this.formatDate(date)
+    },
+    /**
+     * Get formatted publication date
+     * @return {String}
+     */
+    publicationDate: function() {
+      const date = this.datasetInfo.versionPublishedAt
+      return this.formatDate(date)
+    },
+    /**
+     * Returns dataset owner full name
+     * @returns {String}
+     */
+    datasetOwnerName: function() {
+      const ownerFirstName = this.datasetInfo.ownerFirstName || ''
+      const ownerLastName = this.datasetInfo.ownerLastName || ''
+      return `${ownerFirstName} ${ownerLastName}`
+    },
+
+    /**
+     * Returns dataset owner email
+     * @returns {String}
+     */
+    datasetOwnerEmail: function() {
+      return this.datasetInfo.ownerEmail || ''
+    },
+    /**
+     * Return DOI link
+     * @returns {String}
+     */
+    doiLink: function() {
+      const doi = propOr('', 'doi', this.datasetInfo)
+      return doi ? `https://doi.org/${doi}` : ''
+    },
+    /**
+     * computes the right text based on the version and revision
+     * @returns {String}
+     */
+    versionRevisionText() {
+      let revision = this.datasetInfo.revision ? this.datasetInfo.revision : '0'
+      return `Version ${this.datasetInfo.version} Revision ${revision}`
+    },
     /**
      * Gets the sparc award number
      * @return {String}
@@ -117,12 +158,6 @@ export default {
     getRecordsUrl: function() {
       return `${process.env.discover_api_host}/search/records?datasetId=${this.$route.params.datasetId}`
     },
-    primaryPublication: function() {
-	      const valObj = this.externalPublications.filter(function(elem) {
-	        return elem.relationshipType == 'IsDescribedBy'
-	      })
-	      return valObj.length > 0 ? valObj[0] : null
-	    }
   },
 
   watch: {
@@ -181,95 +216,26 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .dataset-about-info {
-  &__container {
-    h3 {
-      font-size: 0.875em;
-      font-weight: 500;
-      line-height: 1em;
-      color: black;
+  .section-text {
+    font-weight: 500;
+  }
+  hr {
+    margin-top: 1rem;
+    border-top: none;
+  }
+  a {
+    text-decoration: underline;
+  }
+  .about-section-container {
+    display: flex;
+    @media (max-width: 48em) {
+      flex-direction: column;
     }
-
-    p {
-      font-size: 0.875em;
-      font-weight: normal;
-      line-height: 24px;
-      color: black;
+    .author-section-name-column {
+      min-width: 7.25rem;
     }
-
-    &--citation {
-      height: 100%;
-      background: $washed-gray;
-      padding-left: 1rem;
-      padding-right: 1rem;
-      margin-bottom: 1.5rem;
-      .copy-button {
-        margin: 1.875rem 0 1rem 0;
-        background: #f9f2fc;
-        border: 1px solid $median;
-        cursor: pointer;
-        color: $median;
-        &:hover {
-          color: #1a1489;
-        }
-      }
-    }
-
-    .info-citation {
-      font-size: 14px;
-      font-weight: normal;
-      line-height: 24px;
-      color: black;
-      margin-top: 1rem;
-    }
-
-    &--citation-links {
-      border-bottom: 1px solid #e4e7ed;
-      display: flex;
-      flex-wrap: wrap;
-      list-style: none;
-      padding: 0;
-      li {
-        margin-right: 0.5rem;
-        :hover {
-          border-bottom: 2px solid $median;
-          padding-bottom: 0.094rem;
-        }
-        a {
-          color: black;
-          text-decoration: none;
-          padding: 0 0.5rem;
-          cursor: pointer;
-          &.active-citation {
-            color: $median;
-            border-bottom: 2px solid $median;
-            padding-bottom: 0.094rem;
-          }
-        }
-      }
-    }
-
-    &--protocol-text {
-      color: black;
-      text-decoration: none;
-      font-size: 0.875em;
-      line-height: 24px;
-      font-weight: normal;
-    }
-
-    &--protocol-text-na {
-      p {
-        margin-bottom: 0;
-      }
-    }
-
-    .protocol-block {
-      margin-bottom: 1rem;
-    }
-
-    &--doi-link {
-      color: $median;
-      text-decoration: none;
-      font-weight: 500;
+    .institution-section-name-column {
+      min-width: 6rem;
     }
   }
 }

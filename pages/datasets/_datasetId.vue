@@ -15,45 +15,46 @@
             :latestVersionDate="latestVersionDate"
             :external-publications="externalPublications"
           />
-          <div v-if="datasetInfo.embargo === false">
-            <citation-details
-              :doi-value="datasetInfo.doi"
-              :published-date="originallyPublishedDate"
-            />
-          </div>
-          <div v-if="datasetInfo.embargo === false">
-            <detail-tabs
-              :tabs="tabs"
-              :active-tab="activeTab"
-              default-tab="description"
-            >
-              <dataset-description-info
-                v-show="activeTab === 'description'"
-                :markdown="markdown"
-                :dataset-records="datasetRecords"
-                :loading-markdown="loadingMarkdown"
-              />
-              <dataset-about-info
-                v-show="activeTab === 'about'"
-                :updated-date="lastUpdatedDate"
-                :doi="datasetDOI"
-                :dataset-tags="datasetTags"
-                :dataset-owner-name="datasetOwnerName"
-                :dataset-owner-email="datasetOwnerEmail"
-              />
-              <dataset-files-info
-                v-show="activeTab === 'files'"
-                :dataset-details="datasetInfo"
-                :osparc-viewers="osparcViewers"
-              />
-              <images-gallery
-                v-show="activeTab === 'images'"
-                :markdown="markdown.markdownTop"
-                :dataset-biolucida="biolucidaImageData"
-                :dataset-scicrunch="scicrunchData"
-              />
-            </detail-tabs>
-          </div>
+          <client-only>
+            <div class="tabs-container">
+              <content-tab-card
+                :tabs="tabs"
+                :active-tab-id="activeTabId"
+                @tab-changed="tabChanged"
+                linkComponent="nuxt-link"
+                routeName="datasetDetailsTab"
+              >
+                <dataset-description-info
+                  v-show="activeTabId === 'abstract'"
+                  :markdown="markdown"
+                  :dataset-records="datasetRecords"
+                  :loading-markdown="loadingMarkdown"
+                  :dataset-tags="datasetTags"
+                />
+                <dataset-about-info
+                  v-show="activeTabId === 'about'"
+                  :latestVersionRevision="latestVersionRevision"
+                  :latestVersionDate="latestVersionDate"
+                />
+                <citation-details
+                  v-show="activeTabId === 'citations'"
+                  :doi-value="datasetInfo.doi"
+                  :published-date="originallyPublishedDate"
+                />
+                <dataset-files-info
+                  v-show="activeTabId === 'files'"
+                  :dataset-details="datasetInfo"
+                  :osparc-viewers="osparcViewers"
+                />
+                <images-gallery
+                  v-show="activeTabId === 'images'"
+                  :markdown="markdown.markdownTop"
+                  :dataset-biolucida="biolucidaImageData"
+                  :dataset-scicrunch="scicrunchData"
+                />
+              </content-tab-card>
+            </div>
+          </client-only>
         </div>
       </div>
     </div>   
@@ -86,7 +87,6 @@ import { clone, propOr, pathOr, head, compose, split } from 'ramda'
 
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
-import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
@@ -119,16 +119,20 @@ marked.setOptions({
 
 const tabs = [
   {
-    label: 'Description',
-    type: 'description'
+    label: 'Abstract',
+    id: 'abstract'
   },
   {
     label: 'About',
-    type: 'about'
+    id: 'about'
+  },
+  {
+    label: 'Cite',
+    id: 'citations'
   },
   {
     label: 'Files',
-    type: 'files'
+    id: 'files'
   }
 ]
 
@@ -268,7 +272,6 @@ export default {
     Breadcrumb,
     DatasetHeader,
     DatasetActionBox,
-    DetailTabs,
     CitationDetails,
     DownloadDataset,
     DatasetAboutInfo,
@@ -316,7 +319,7 @@ export default {
         biolucidaImageData.dataset_images.length > 0) ||
       Object.getOwnPropertyNames(scicrunchData).length > 0
     ) {
-      tabsData.push({ label: 'Gallery', type: 'images' })
+      tabsData.push({ label: 'Gallery', id: 'images' })
     }
 
     store.dispatch('pages/datasets/datasetId/setDatasetInfo', datasetDetails)
@@ -339,7 +342,7 @@ export default {
       errorLoading: false,
       loadingMarkdown: false,
       markdown: {},
-      activeTab: this.$route.query.tab ? this.$route.query.tab : 'description',
+      activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
       datasetRecords: [],
       discover_host: process.env.discover_api_host,
       isDownloadModalVisible: false,
@@ -369,7 +372,7 @@ export default {
   computed: {
     ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetType','showAllVersionsModal']),
     defaultTab() {
-      return this.tabs[0].type
+      return this.tabs[0].id
     },
     /**
      * Compute if the dataset is the latest version
@@ -585,7 +588,7 @@ export default {
      * Return DOI link
      * @returns {String}
      */
-    DOIlink: function() {
+    doiLink: function() {
       const doi = propOr('', 'doi', this.datasetInfo)
       return doi ? `https://doi.org/${doi}` : ''
     },
@@ -697,12 +700,8 @@ export default {
     }
   },
   methods: {
-    /**
-     * Sets active tab
-     * @param {String} activeLabel
-     */
-    setActiveTab: function(activeLabel) {
-      this.activeTab = activeLabel
+    tabChanged(newTab) {
+      this.activeTabId = newTab.id
     },
     /**
      * Returns protocol records in a dataset's model if they exist.
@@ -753,8 +752,8 @@ export default {
      * Set the active tab to match the current query values.
      */
     queryChanged: function() {
-      this.activeTab = this.$route.query.tab
-        ? this.$route.query.tab
+      this.activeTabId = this.$route.query.datasetDetailsTab
+        ? this.$route.query.datasetDetailsTab
         : this.defaultTab
     },
 
@@ -889,7 +888,7 @@ export default {
         },
         {
           name: 'DC.identifier',
-          content: this.DOIlink,
+          content: this.doiLink,
           scheme: 'DCTERMS.URI'
         },
         {
@@ -916,7 +915,7 @@ export default {
           json: {
             '@context': 'http://schema.org',
             '@type': 'Dataset',
-            '@id': this.DOIlink,
+            '@id': this.doiLink,
             sameAs: this.getDatasetUrl,
             name: this.datasetName,
             creator: creators,
@@ -927,7 +926,7 @@ export default {
             version: this.datasetInfo.version,
             url: process.env.siteUrl,
             citation: this.citationText,
-            identifier: this.DOIlink,
+            identifier: this.doiLink,
             isAccessibleForFree: true
           },
           type: 'application/ld+json'
@@ -960,7 +959,13 @@ p.bullet-title{
   margin-right: 0.5em;
   font-weight: bold;
 }
-
+.tabs-container {
+  border: solid 1px $cloudy;
+  margin: 1.25rem 0 2rem;
+}
+::v-deep .details-tabs__container--data {
+  padding-top: 0;
+}
 .details-header {
   &__container {
     &--content-links {

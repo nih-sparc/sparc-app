@@ -208,6 +208,9 @@ p {
     min-width: 9rem;
   }
   .primary-publications-list-container {
+    .primary-publications-list-item {
+      text-decoration: underline;
+    }
     .primary-publications-list-item:not(:last-child) {
       margin-bottom: .5rem;
     }
