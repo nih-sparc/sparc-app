@@ -11,7 +11,7 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmap-viewer@^2.1.0-beta.14":
+"@abi-software/flatmap-viewer@2.1.0-beta.14", "@abi-software/flatmap-viewer@^2.1.0-beta.14":
   version "2.1.0-beta.14"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.1.0-beta.14.tgz#58e766f4230efec032fcad98b2078021d0469619"
   integrity sha512-WqnMFrfgVRsrIOKhIpudXCa8nO28Xc0WjN5XRrhYM8KU0LBD+QP1kBzTDBgbt/Q6ygiIiCgWvI1Wtoy8Kj5DjQ==
@@ -23,25 +23,10 @@
     maplibre-gl "^1.15.2"
     minisearch "^2.2.1"
 
-"@abi-software/flatmapvuer@0.2.3-fixes-3":
+"@abi-software/flatmapvuer@0.2.3-fixes-3", "@abi-software/flatmapvuer@^0.2.3-fixes-3":
   version "0.2.3-fixes-3"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.2.3-fixes-3.tgz#b01f0da43e53d4f1110df00e2efebc54f2f2efa7"
   integrity sha512-C3PxVV1n6VpMfvn+BTpx/kudket2wwngHRAiqz+EzWWZwkylsquIiZz/THlrCR792J9VetdDHdP8U0WK+aTR7g==
-  dependencies:
-    "@abi-software/flatmap-viewer" "^2.1.0-beta.14"
-    "@abi-software/svg-sprite" "^0.1.11"
-    core-js "^3.3.2"
-    css-element-queries "^1.2.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.21"
-    vue "^2.6.10"
-
-"@abi-software/flatmapvuer@^0.2.3-fixes-1":
-  version "0.2.3-fixes-1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.2.3-fixes-1.tgz#a78194956dcdea5fbce8473d8584a14cb7874de4"
-  integrity sha512-GiQbpXKESziQ29vNeWOmka36TyyKD2EErT+YrvUZPNfkPRK+PCj2B3wRuxIeQn/aOGpsOXLtgcjwlHc1OiMOtw==
   dependencies:
     "@abi-software/flatmap-viewer" "^2.1.0-beta.14"
     "@abi-software/svg-sprite" "^0.1.11"
@@ -72,13 +57,13 @@
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@0.2.4-fixes-0":
-  version "0.2.4-fixes-0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.4-fixes-0.tgz#989165bccf79b40fa995aef7d5d9ec2f77b3e121"
-  integrity sha512-gO8HUgZpdeVfjRlFbFcQvw0eVEZ26VCRCNvR3gN/wwvpMaij3118iJXalq6Zie5+L8guuIdHwbYOqZC2tpxsaA==
+"@abi-software/mapintegratedvuer@0.2.4-fixes-1":
+  version "0.2.4-fixes-1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.4-fixes-1.tgz#6e9488794f20daf95a31f0555448b106753525de"
+  integrity sha512-WJ2OQB4WQqOHQy2nWon0P6eXC+W0PIhJccmg9PMg0VlI5qVPr8qtFaUUktQP0HGzM8tEZOAAGMgXKyinnx1s6w==
   dependencies:
-    "@abi-software/flatmap-viewer" "^2.1.0-beta.14"
-    "@abi-software/flatmapvuer" "^0.2.3-fixes-1"
+    "@abi-software/flatmap-viewer" "2.1.0-beta.14"
+    "@abi-software/flatmapvuer" "^0.2.3-fixes-3"
     "@abi-software/map-side-bar" "^1.1.4"
     "@abi-software/plotvuer" "^0.2.41"
     "@abi-software/scaffoldvuer" "^0.1.50"

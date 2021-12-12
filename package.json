@@ -19,7 +19,7 @@
   "dependencies": {
     "@abi-software/flatmapvuer": "0.2.3-fixes-3",
     "@abi-software/gallery": "^0.2.1",
-    "@abi-software/mapintegratedvuer": "0.2.4-fixes-0",
+    "@abi-software/mapintegratedvuer": "0.2.4-fixes-1",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/scaffoldvuer": "0.1.50",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
