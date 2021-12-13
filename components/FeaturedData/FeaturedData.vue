@@ -66,7 +66,7 @@ export default {
     loadOrganFacets: function() {
       this.isLoadingOrganFacetIds = true;
       getAlgoliaFacets(algoliaIndex, facetPropPathMapping).then(data => {
-        this.organFacets = data.filter(facet => facet.key === 'anatomy.organ.name')[0].children
+        this.organFacets = data.find(facet => facet.key === 'anatomy.organ.name').children
       }).finally(() => {
         this.isLoadingOrganFacetIds = false
       })
@@ -75,8 +75,10 @@ export default {
       if (isEmpty(this.organFacetIds)) {
         return contentfulFields.link
       }
-      var organ = this.organFacets.find(organ => organ.label.toLowerCase() === contentfulFields.label.toLowerCase())
-      return organ === undefined ? contentfulFields.link : `${contentfulFields.link}&selectedFacetIds=${organ.id}`
+      var organIds = this.organFacets
+        .filter(organ => organ.label.toLowerCase().includes(contentfulFields.label.toLowerCase()))
+        .map(organ => organ.id)
+      return organIds.length === 0 ? contentfulFields.link : `${contentfulFields.link}&selectedFacetIds=${organIds.join(',')}`
     }
   }
 }
