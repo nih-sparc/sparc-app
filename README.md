@@ -19,5 +19,20 @@ $ yarn start
 # generate static project
 $ yarn generate
 ```
+##Important Note on Running Locally
+
+Ensure that the following configuration variables are set in your environment prior to running (values can be obtained once you are given access to the sparc-portal developer apps on Heroku):
+*ALGOLIA_API_KEY
+*ALGOLIA_APP_ID
+*BLACKFYNN_API_HOST
+*BLACKFYNN_API_SECRET
+*BLACKFYNN_API_TOKEN
+*CTF_SPACE_ID
+*CTF_CDA_ACCESS_TOKEN
+*CTF_API_HOST
+*DEPLOY_ENV
+*SHOW_FACET_MENU
+*PORTAL_API_HOST
+
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
