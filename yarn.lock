@@ -9940,10 +9940,6 @@ nuxt@^2.12.1:
     "@nuxt/vue-renderer" "2.15.2"
     "@nuxt/webpack" "2.15.2"
 
-nvm@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/nvm/-/nvm-0.0.4.tgz#38a178e9d31b283508c92d15c9da861d1a9210bc"
-  integrity sha1-OKF46dMbKDUIyS0VydqGHRqSELw=
 
 nwsapi@^2.0.7:
   version "2.2.0"
