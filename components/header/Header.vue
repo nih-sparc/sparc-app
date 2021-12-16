@@ -1,3 +1,4 @@
+
 <template>
   <div class="header">
     <div class="header__nav">
@@ -10,6 +11,12 @@
         <nuxt-link :to="{ name: 'help' }">
           Help
         </nuxt-link>
+        <el-button class="login-button" @click="isLoginModalVisible = true"> Login
+        </el-button>
+        <login-class
+          :visible.sync="isLoginModalVisible"
+          @close-login-dialog="isLoginModalVisible = false"
+        />
       </div>
       <div class="header__nav--main">
         <div class="nav-main-container">
@@ -24,12 +31,16 @@
               <sparc-logo />
             </nuxt-link>
           </div>
+
+
+
+
           <button
             v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch"
-          >
+            >
             <svg-icon
               icon="icon-magnifying-glass"
               height="25"
@@ -145,6 +156,7 @@
 </template>
 
 <script>
+import LoginPopup from '@/components/LoginPopup/LoginPopup.vue'
 import SparcLogo from '../logo/SparcLogo.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import { mapActions } from 'vuex'
@@ -186,7 +198,8 @@ export default {
   name: 'SparcHeader',
   components: {
     SparcLogo,
-    SearchForm
+    SearchForm,
+    LoginPopup
   },
   data: () => {
     return {
@@ -705,4 +718,16 @@ export default {
   margin-left: 5px;
   user-select: none;
 }
+.login-button {
+      background-color: $median;
+      width: auto;
+      height: 40px;
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: 500;
+      text-transform: uppercase;
+      a {
+        color: #fff;
+      }
+    }
 </style>
