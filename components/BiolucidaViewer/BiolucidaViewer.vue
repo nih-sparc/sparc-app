@@ -2,15 +2,9 @@
   <div class="biolucida-viewer">
     <template v-if="data.status !== 'error'">
       <p>
-        <a :href="data.share_link" target="_blank">
+        <a :href="data.blv_link" target="_blank">
           <bf-button>
-            View Full Screen
-            <svg-icon
-              class="icon-full-screen"
-              name="icon-full-screen"
-              height="24"
-              width="24"
-            />
+            View in 3D
           </bf-button>
         </a>
       </p>
@@ -42,6 +36,7 @@ export default {
       default: () => {
         return {
           biolucida_image_id: '',
+          blv_link: '',
           share_link: '',
           status: ''
         }
