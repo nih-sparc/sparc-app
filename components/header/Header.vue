@@ -555,8 +555,8 @@ export default {
   height: 40px;
   border-radius: 4px;
   margin-left: 9px;
-  margin-top: 1px;
   border: none;
+  cursor: pointer;
   @media screen and (max-width: 1023px) {
     display: none;
   }
