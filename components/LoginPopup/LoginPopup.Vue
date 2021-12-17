@@ -3,26 +3,27 @@
 <template>
   <el-dialog
     :visible="visible"
-    :show-close="false"
+    :show-close="true"
+    width="35%"
     class="login-class-dialog"
     :height="height"
     @close="closeDialog"
   >
     <div class="login-class-container">
       <button class="close-dialog" @click="closeDialog">
-
+      <!--change to call to oauth -->
       </button>
       <div class="aws-container">
         <div
-        <h1>Login with ORCiD</h1>
+        <h1>SPARC portal sign in</h1>
         <p>
-          text here
+          other login options here
         </p>
+        <br><br>
           <el-button class="secondary" @click="closeDialog">
-            Close
+            Login with ORCiD ID
           </el-button>
           </div>
-
         </div>
       </div>
     </div>

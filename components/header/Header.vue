@@ -11,9 +11,9 @@
         <nuxt-link :to="{ name: 'help' }">
           Help
         </nuxt-link>
-        <el-button class="login-button" @click="isLoginModalVisible = true"> Login
+        <el-button class="login-popup" @click="loginButtonClicked"> Login
         </el-button>
-        <login-class
+        <login-popup
           :visible.sync="isLoginModalVisible"
           @close-login-dialog="isLoginModalVisible = false"
         />
@@ -208,6 +208,7 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
+      isLoginModalVisible: false,
       searchSelectOptions: [
         {
           key: 'data',
@@ -348,7 +349,11 @@ export default {
 
       this.searchQuery = ''
       this.searchSelect = 'data'
+    },
+    loginButtonClicked: function(){
+      this.isLoginModalVisible =true;
     }
+
   }
 }
 </script>
@@ -718,16 +723,5 @@ export default {
   margin-left: 5px;
   user-select: none;
 }
-.login-button {
-      background-color: $median;
-      width: auto;
-      height: 40px;
-      font-size: 14px;
-      color: #ffffff;
-      font-weight: 500;
-      text-transform: uppercase;
-      a {
-        color: #fff;
-      }
-    }
+
 </style>
