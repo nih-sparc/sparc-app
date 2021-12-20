@@ -36,7 +36,7 @@
         </button>
       </div>
     </details-header>
-    <detail-tabs
+    <!-- <detail-tabs
       :tabs="tabs"
       :active-tab="activeTab"
       class="container"
@@ -46,7 +46,7 @@
         v-show="activeTab === 'datasets'"
         :table-data="datasets.datasets"
       />
-    </detail-tabs>
+    </detail-tabs> -->
   </div>
 </template>
 
@@ -72,7 +72,7 @@ export default {
       const project = await client.getEntry(route.params.projectId)
 
       const datasets = await $axios
-        .$get(`${process.env.portal_api}/project/${project.fields.awardId}`)
+        .$get(`${process.env.portal_api}/projects/${project.fields.awardId}`)
         .catch(() => {
           return {}
         })

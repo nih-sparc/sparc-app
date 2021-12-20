@@ -26,7 +26,7 @@
         </template>
       </div>
     </div>
-    <div class="header-stats-block" v-if="datasetType !== 'simulation'">
+    <div class="header-stats-block" v-if="datasetTypeName === 'dataset'">
       <svg-icon
         class="mr-8"
         name="icon-storage"
@@ -40,7 +40,7 @@
     </div>
     <p><strong>Latest version: {{latestVersionRevision}}</strong></p>
     <p>{{latestVersionDate}}</p>
-    <p v-if="!embargoed" v-on:click="viewOtherVersions" class="active-link">View other versions</p>
+    <p v-if="!embargoed" v-on:click="viewOtherVersionsClicked" class="active-link">View other versions</p>
   </div>
 </template>
 
@@ -75,7 +75,7 @@ export default {
      * Get dataset info from the store
      * @returns {Object}
      */
-    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetType','showAllVersionsModal']),
+    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetTypeName','showAllVersionsModal']),
     /**
      * Gets dataset version
      * @returns {Number}
@@ -166,8 +166,26 @@ export default {
   },
 
   methods: {
-    viewOtherVersions() {
-      this.$store.dispatch('pages/datasets/datasetId/showAllVersionsModal', true)
+    /**
+     * Get the dataset details tab area by id
+     * @returns {Object}
+     */
+    getDatasetDetailsTabArea: function() {
+      return document.getElementById('datasetDetailsTabsContainer')
+    },
+
+    /**
+     * scroll to the dataset details tab area
+     */
+    scrollToDatasetDetailsTabArea: function() {
+      this.getDatasetDetailsTabArea().scrollIntoView()
+    },
+    viewOtherVersionsClicked: function() {
+      this.$router.replace({
+        query: { ...this.$route.query, datasetDetailsTab: 'versions' }
+      }).finally(() => {
+        this.scrollToDatasetDetailsTabArea()
+      })
     }
   }
 }

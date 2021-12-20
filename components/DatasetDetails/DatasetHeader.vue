@@ -24,7 +24,7 @@
               </div>
             </div>
             <hr />
-            <p class="details-header__container--content-description-default">
+            <p>
               <strong>Description: </strong>{{ formatDescription(description) }}
             </p>
           </div>
@@ -38,16 +38,16 @@
             <hr />
             <div v-if="primaryPublications">
               <div class="publications-container">
-                <div class="primary-publications-title-column">
-                  <p class="details-header__container--content-description-default">
+                <span class="primary-publications-title-column">
+                  <p>
                     <strong>Primary Publication(s): </strong>
                   </p>
-                </div>
-                <div class="primary-publications-list-container">
+                </span>
+                <span>
                   <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
                     <external-pub-link :publication="item" />
                   </div>
-                </div>
+                </span>
               </div>
               <hr />
             </div>
@@ -109,10 +109,6 @@ export default {
       type: String,
       default: ''
     },
-    externalPublications: {
-      type: Array,
-      default: () => []
-    }
   },
 
   computed: {
@@ -143,6 +139,13 @@ export default {
       return propOr('', 'description', this.datasetInfo)
     },
     /**
+     * Returns list of external publications for dataset
+     * @returns {Array}
+     */
+    externalPublications: function() {
+      return propOr([], 'externalPublications', this.datasetInfo)
+    },
+    /**
      * Returns the dataset title
      * @returns {String}
      */
@@ -166,7 +169,7 @@ export default {
     },
     primaryPublications: function() {
       const valObj = this.externalPublications.filter(function(elem) {
-        return elem.relationshipType == 'IsDescribedBy' || elem.relationshipType == 'IsSupplementedBy'
+        return elem.relationshipType == 'IsDescribedBy'
       })
       return valObj.length > 0 ? valObj : null
     }
@@ -205,15 +208,10 @@ p {
     flex-direction: column;
   }
   .primary-publications-title-column {
-    min-width: 9rem;
+    min-width: 10.25rem;
   }
-  .primary-publications-list-container {
-    .primary-publications-list-item {
-      text-decoration: underline;
-    }
-    .primary-publications-list-item:not(:last-child) {
-      margin-bottom: .5rem;
-    }
+  .primary-publications-list-item:not(:last-child) {
+    margin-bottom: .5rem;
   }
 }
   .bx--grid {

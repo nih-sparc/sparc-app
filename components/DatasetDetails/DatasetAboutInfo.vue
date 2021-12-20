@@ -1,55 +1,54 @@
 <template>
   <div class="dataset-about-info">
-    <div class="dataset-about-info__container">
-      <h2 class="section-text">
-        About this dataset
-      </h2>
-      <p><strong>Title: </strong>{{datasetTitle}}</p>
-      <p><strong>First Published: </strong>{{firstPublishedDate}}</p>
-      <p><strong>Last Published: </strong>{{latestVersionDate}}</p>
-      <hr />
-      <div class="about-section-container">
-        <span class="author-section-name-column"><strong>Contact Author: </strong></span>
-        <span>
-          <div>{{datasetOwnerName}}</div>
-          <div>
-            <a
-            :href="`mailto:${datasetOwnerEmail}`"
-            >
-              {{ datasetOwnerEmail }}
-            </a>
-          </div>
-        </span> 
-      </div>
-      <hr />
-      <p><strong>Award: </strong>NIH {{sparcAwardNumber}}</p>
-      <hr />
-      <p><strong>Associated project: </strong></p>
-      <div class="about-section-container">
-        <span class="institution-section-name-column"><strong>Institution(s): </strong></span>
-        <span>
-          
-        </span> 
-      </div>
-      <hr />
-      <h2 class="section-text">
-        About this version
-      </h2>
-      <p><strong>{{versionRevisionText}}: </strong>Publication date: {{publicationDate}} (Last updated: {{lastPublishedDate}})</p>
-      <p><strong>Dataset DOI: </strong>
-        <a
-            :href="doiLink"
-            target="_blank"
+    <h2 class="section-text">
+      About this dataset
+    </h2>
+    <p><strong>Title: </strong>{{datasetTitle}}</p>
+    <p><strong>First Published: </strong>{{firstPublishedDate}}</p>
+    <p><strong>Last Published: </strong>{{latestVersionDate}}</p>
+    <hr />
+    <div class="about-section-container">
+      <span class="author-section-name-column"><strong>Contact Author: </strong></span>
+      <span>
+        <div>{{datasetOwnerName}}</div>
+        <div>
+          <a
+          :href="`mailto:${datasetOwnerEmail}`"
           >
-            {{ doiLink }}
+            {{ datasetOwnerEmail }}
           </a>
-      </p>
+        </div>
+      </span>
     </div>
+    <hr />
+    <p><strong>Award: </strong>{{awardSparcNumber}}</p>
+    <hr />
+    <p><strong>Associated project: </strong>
+      <nuxt-link
+        :to="associatedProjectLink"
+      >
+        {{associatedProjectTitle}}
+      </nuxt-link>
+    </p>
+    <p><strong>Institution: </strong>{{associatedProjectInstitution}}</p>
+    <hr />
+    <h2 class="section-text">
+      About this version
+    </h2>
+    <p><strong>{{versionRevisionText}}: </strong>Publication date: {{publicationDate}} (Last updated: {{lastPublishedDate}})</p>
+    <p><strong>Dataset DOI: </strong>
+      <a
+          :href="doiLink"
+          target="_blank"
+        >
+          {{ doiLink }}
+        </a>
+    </p>
   </div>
 </template>
 
 <script>
-import { compose, propOr, head } from 'ramda'
+import { propOr} from 'ramda'
 import { mapState } from 'vuex'
 
 import DateUtils from '@/mixins/format-date'
@@ -67,17 +66,17 @@ export default {
     latestVersionDate: {
       type: String,
       default: ''
-    }
-  },
-  mixins: [DateUtils],
-  data() {
-    return {
-      sparcAwardNumber: ''
+    },
+    associatedProject: {
+      type: Object,
+      default: () => {}
     }
   },
 
+  mixins: [DateUtils],
+
   computed: {
-    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetType']),
+    ...mapState('pages/datasets/datasetId', ['datasetInfo']),
     /**
      * Returns the dataset title
      * @returns {String}
@@ -144,72 +143,44 @@ export default {
       return `Version ${this.datasetInfo.version} Revision ${revision}`
     },
     /**
-     * Gets the sparc award number
-     * @return {String}
-     */
-    getSparcAwardNumber: function() {
-      return this.sparcAwardNumber !== '' ? this.sparcAwardNumber : 'N/A'
-    },
-
-    /**
-     * Url to get records for model
+     * Compute the project link
      * @returns {String}
      */
-    getRecordsUrl: function() {
-      return `${process.env.discover_api_host}/search/records?datasetId=${this.$route.params.datasetId}`
+    associatedProjectLink: function() {
+      const sys = propOr(null, 'sys', this.associatedProject)
+      const entryId = propOr(null, 'id', sys)
+      return entryId != null ? `/projects/${entryId}` : ''
+    },
+    /**
+     * Compute the sparc award number
+     * @returns {String}
+     */
+    awardSparcNumber: function() {
+      const fields = propOr(null, 'fields', this.associatedProject)
+      const awardNumber = propOr(null, 'awardId', fields)
+      return awardNumber !== null ? `NIH ${awardNumber}` : 'N/A'
+    },
+    /**
+     * Compute the project title
+     * @returns {String}
+     */
+    associatedProjectTitle: function() {
+      const fields = propOr(null, 'fields', this.associatedProject)
+      const title = propOr(null, 'title', fields)
+      return title ?? 'N/A'
+    },
+    /**
+     * Compute the project institution
+     * @returns {String}
+     */
+    associatedProjectInstitution: function() {
+      const fields = propOr(null, 'fields', this.associatedProject)
+      const institution = propOr(null, 'institution', fields)
+      const institutionFields = propOr(null, 'fields', institution)
+      const institutionName = propOr(null, 'name', institutionFields)
+      return institutionName ?? 'N/A'
     },
   },
-
-  watch: {
-    getRecordsUrl: {
-      handler: function(val) {
-        if (val) {
-          this.getDatasetRecords()
-        }
-      },
-      immediate: true
-    }
-  },
-
-  methods: {
-    /**
-     * Retrievs the metadata records for a dataset to get the sparc award number
-     */
-    getDatasetRecords: async function() {
-      try {
-        const summary = await this.$axios
-          .$get(`${this.getRecordsUrl}&model=summary`)
-          .catch(
-            // handle error
-            (this.errorLoading = true)
-          )
-        const award = await this.$axios
-          .$get(`${this.getRecordsUrl}&model=award`)
-          .catch(
-            // handle error
-            (this.errorLoading = true)
-          )
-
-        const summaryId = compose(
-          propOr('', 'hasAwardNumber'),
-          propOr([], 'properties'),
-          head,
-          propOr([], 'records')
-        )(summary)
-
-        const awardId = compose(
-          propOr('', 'award_id'),
-          propOr([], 'properties'),
-          head,
-          propOr([], 'records')
-        )(award)
-
-        this.sparcAwardNumber = summaryId || awardId
-      } catch (e) {
-        console.error(e)
-      }
-    }
-  }
 }
 </script>
 
@@ -233,9 +204,6 @@ export default {
     }
     .author-section-name-column {
       min-width: 7.25rem;
-    }
-    .institution-section-name-column {
-      min-width: 6rem;
     }
   }
 }

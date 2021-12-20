@@ -4,25 +4,62 @@
     <sparc-pill v-if="datasetInfo.embargo">
       Embargoed
     </sparc-pill>
-    <div v-if="datasetType === 'simulation' && datasetInfo.study">
-      <a
-        :href="`https://osparc.io/study/${getSimulationId}`"
-        target="_blank"
-        class="dataset-button-link"
+    <div class="button-container" v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
+      <el-button
+        class="dataset-button"
+        @click="actionButtonClicked('files')"
       >
-        <el-button class="dataset-button">
+        Get Scaffold
+      </el-button>
+      <el-button class="secondary" @click="actionButtonClicked('cite')">
+        Cite Scaffold
+      </el-button>
+    </div>
+    <div class="button-container" v-else-if="datasetTypeName === 'computational model'">
+      <a
+        v-if="hasSimulation"
+        :href="`https://osparc.io/study/${simulationId}`"
+        target="_blank"
+      >
+        <el-button>
           Run Simulation
         </el-button>
       </a>
-    </div>
-    <div v-else>
       <el-button
-        class="dataset-button"
-        @click="getDatasetClicked"
+        @click="actionButtonClicked('files')"
+      >
+        Get Model
+      </el-button>
+      <el-button class="secondary" @click="actionButtonClicked('cite')">
+        Cite Model
+      </el-button>
+      <a
+        v-if="hasSimulation"
+        href="https://osparc.io/"
+        target="_blank"
+      >
+        <sparc-tooltip
+          placement="left-center"
+        >
+          <div slot="data">
+            oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at 
+            <a class="ospac-tooltip" href="https://osparc.io/">
+              osparc.io
+            </a>
+          </div>
+          <el-button slot="item" class="secondary">
+            Go to oSPARC
+          </el-button>
+        </sparc-tooltip>
+      </a>
+    </div>
+    <div class="button-container" v-else>
+      <el-button
+        @click="actionButtonClicked('files')"
       >
         Get Dataset
       </el-button>
-      <el-button class="secondary" @click="scrollToCitations">
+      <el-button class="secondary" @click="actionButtonClicked('cite')">
         Cite Dataset
       </el-button>
     </div>
@@ -44,15 +81,12 @@ export default {
     SparcPill
   },
 
-  props: {
-  },
-
   computed: {
     /**
      * Get dataset info from the store
      * @returns {Object}
      */
-    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetType']),
+    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetTypeName']),
     /**
      * Gets dataset version
      * @returns {Number}
@@ -67,45 +101,70 @@ export default {
     datasetImage: function() {
       return propOr('', 'banner', this.datasetInfo)
     },
+    /**
+     * Returns simulation id for run simulation button
+     * @returns {String}
+     */
+    simulationId: function() {
+      return this.hasSimulation ? this.datasetInfo.study.uuid : ''
+    },
+    hasSimulation: function() {
+      return this.datasetInfo.study
+    }
   },
 
   methods: {
     /**
-     * Get the citations area in the
-     * About tab by id
+     * Get the dataset details tab area by id
      * @returns {Object}
      */
-    getCitationsArea: function() {
-      return document.getElementById('citationsArea')
+    getDatasetDetailsTabArea: function() {
+      return document.getElementById('datasetDetailsTabsContainer')
     },
 
     /**
-     * Scroll to the citations area
-     * in the About tab
+     * scroll to the dataset details tab area
      */
-    scrollToCitations: function() {
-      this.getCitationsArea().scrollIntoView()
+    scrollToDatasetDetailsTabArea: function() {
+      this.getDatasetDetailsTabArea().scrollIntoView()
     },
-    getDatasetClicked: function() {
-      this.$emit('get-dataset')
+    actionButtonClicked: function(tabId) {
+      this.$router.replace({
+        query: { ...this.$route.query, datasetDetailsTab: tabId }
+      }).finally(() => {
+        this.scrollToDatasetDetailsTabArea()
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .dataset-action-box {
   display: flex;
   flex-direction: column;
-  border: solid 1px $cloudy;
+  border: solid 1px $lineColor1;
   text-align: center;
   padding: .5rem;
   background: white;
   margin: 1.25rem 0 0;
   button {
     margin: .25rem 0;
+  }
+  a {
+    display: inline-grid;
+    text-decoration: none;
+  }
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    align-self: center;
+  }
+  .ospac-tooltip {
+    color: $purple;
   }
 }
 </style>

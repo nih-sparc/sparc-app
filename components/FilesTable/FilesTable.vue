@@ -2,6 +2,7 @@
   <div class="files-table">
     <div class="files-table-header">
       <div class="breadcrumb-list">
+        <span class="mr-4">Folder: </span>
         <div v-for="(item, idx) in breadcrumbs" :key="idx" class="breadcrumb">
           <nuxt-link
             class="breadcrumb-link"
@@ -19,14 +20,6 @@
           </span>
         </div>
       </div>
-
-      <bf-download-file
-        class="mb-8"
-        :selected="selected"
-        :dataset="datasetDetails"
-        :file-path="path"
-        @remove-selection="removeSelection"
-      />
     </div>
 
     <div class="files-table-table">
@@ -43,18 +36,21 @@
         :data="data"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" fixed width="55" />
-        <el-table-column fixed prop="name" label="Name" width="340" sortable>
+        <el-table-column type="selection" fixed width="45" />
+        <el-table-column fixed prop="name" label="Name" min-width="150" sortable :sort-method="(a, b) => sortWithCaseInsensitive(a.name, b.name)">
           <template slot-scope="scope">
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
                 <i class="file-icon el-icon-folder" />
-                <nuxt-link
-                  class="file-name"
-                  :to="{ query: { ...$route.query, path: scope.row.path } }"
-                >
-                  {{ scope.row.name }}
-                </nuxt-link>
+                <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                  <nuxt-link
+                    slot="item"
+                    class="file-name truncated"
+                    :to="{ query: { ...$route.query, path: scope.row.path } }"
+                  >
+                    {{ scope.row.name }}
+                  </nuxt-link>
+                </sparc-tooltip>
               </template>
 
               <template v-else>
@@ -63,37 +59,45 @@
                   class="file-icon el-icon-picture-outline"
                 />
                 <i v-else class="file-icon el-icon-document" />
-                <div v-if="isFileOpenable(scope)">
-                  <a href="#" @click.prevent="openFile(scope)">
-                    {{ scope.row.name }}
-                  </a>
+                <div v-if="isFileOpenable(scope)" class="truncated">
+                    <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                      <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
+                        {{ scope.row.name }}
+                      </a>
+                    </sparc-tooltip>
                 </div>
-                <div v-else-if="isScaffoldMetaFile(scope)">
-                  <nuxt-link :to="getScaffoldLink(scope)">
-                    {{ scope.row.name }}
-                  </nuxt-link>
+                <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
+                  <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                    <nuxt-link slot="item" class="truncated" :to="getScaffoldLink(scope)">
+                      {{ scope.row.name }}
+                    </nuxt-link>
+                  </sparc-tooltip>
                 </div>
-                <div v-else>
-                  <nuxt-link
-                    :to="{
-                      name: 'file-datasetId-datasetVersion',
-                      params: {
-                        datasetId: datasetDetails.id,
-                        datasetVersion: datasetDetails.version
-                      },
-                      query: {
-                        path: scope.row.path
-                      }
-                    }"
-                  >
-                    {{ scope.row.name }}
-                  </nuxt-link>
+                <div v-else class="truncated">
+                  <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                    <nuxt-link
+                      slot="item"
+                      class="truncated"
+                      :to="{
+                        name: 'file-datasetId-datasetVersion',
+                        params: {
+                          datasetId: datasetInfo.id,
+                          datasetVersion: datasetInfo.version
+                        },
+                        query: {
+                          path: scope.row.path
+                        }
+                      }"
+                    >
+                      {{ scope.row.name }}
+                    </nuxt-link>
+                  </sparc-tooltip>
                 </div>
               </template>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="280">
+        <el-table-column prop="fileType" label="File type" width="280" sortable>
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -109,8 +113,9 @@
           label="Size"
           width="220"
           :formatter="formatStorage"
+          sortable
         />
-        <el-table-column label="Operation" width="200">
+        <el-table-column label="Action" width="200">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'File'">
               <div class="circle" @click="executeDownload(scope.row)">
@@ -227,6 +232,14 @@
         @close="() => setDialogSelectedFile(null)"
       />
     </div>
+    <bf-download-file
+        class="mt-16"
+        :disabled="selected.length == 0"
+        :selected="selected"
+        :dataset="datasetInfo"
+        :file-path="path"
+        @remove-selection="removeSelection"
+      />
   </div>
 </template>
 
@@ -246,6 +259,7 @@ import {
 
 import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
+import { mapState } from 'vuex'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
@@ -273,12 +287,6 @@ export default {
   mixins: [FormatStorage],
 
   props: {
-    datasetDetails: {
-      type: Object,
-      default: function() {
-        return {}
-      }
-    },
     osparcViewers: {
       type: Object,
       default: function() {
@@ -303,6 +311,11 @@ export default {
   },
 
   computed: {
+    /**
+     * Get dataset info from the store
+     * @returns {Object}
+     */
+    ...mapState('pages/datasets/datasetId', ['datasetInfo']),
     /**
      * Compute the current path for the dataset's files.
      * @returns {String}
@@ -344,7 +357,7 @@ export default {
      * @returns {String}
      */
     datasetVersion: function() {
-      return propOr(1, 'version', this.datasetDetails)
+      return propOr(1, 'version', this.datasetInfo)
     },
     /**
      * Compute URL for zipit service
@@ -626,6 +639,15 @@ export default {
           }
         )
       })
+    },
+    sortWithCaseInsensitive(name1, name2) {
+      var a = name1.toUpperCase(); 
+      var b = name2.toUpperCase(); 
+      if (a > b) 
+         return 1 
+      if (a < b) 
+         return -1 
+      return 0; 
     }
   }
 }
@@ -636,7 +658,6 @@ export default {
 .breadcrumb {
   background: none;
   height: auto;
-  margin-bottom: 8px;
 }
 .files-table-header {
   align-items: center;
@@ -659,13 +680,18 @@ export default {
 }
 .files-table-table {
   background: #fff;
-  padding: 16px;
 }
 .error-wrap {
   text-align: center;
 }
 .file-name-wrap {
   display: flex;
+}
+
+.truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .file-name {
@@ -704,7 +730,8 @@ export default {
       line-height: 16px;
     }
     &.el-table-column--selection .cell {
-      padding: 0 14px;
+      padding: 0 16px;
+      text-overflow: unset;
     }
   }
 }

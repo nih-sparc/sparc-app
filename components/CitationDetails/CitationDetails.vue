@@ -144,17 +144,17 @@ export default {
     margin-bottom: 1rem;
     position: relative;
     .copy-button {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: .25rem;
-    img {
-      width: 20px;
-      height: 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: .25rem;
+      img {
+        width: 20px;
+        height: 20px;
+      }
     }
-  }
   }
   .citation-text {
     word-wrap: break-word;

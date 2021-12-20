@@ -164,7 +164,7 @@ export const facetPropPathMapping = {
   'attributes.subject.ageCategory.value' : 'Age Categories',
 }
 
-export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMapping : Object) {
+export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMapping : Object, filters : string) {
   const map = new Map(Object.entries(propPathMapping));
   const facetPropPaths = Array.from(map.keys() );
   var facetData: { label: string; id: number; children: object[]; key: string; }[] = []
@@ -172,7 +172,8 @@ export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMap
   return algoliaIndex
     .search('', {
       sortFacetValuesBy: 'alpha',
-      facets: facetPropPaths
+      facets: facetPropPaths,
+      filters: filters || ''
     })
     .then(response => {
       facetPropPaths.map((facetPropPath: string) => {
