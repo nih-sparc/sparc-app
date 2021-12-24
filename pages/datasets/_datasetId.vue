@@ -20,7 +20,7 @@
               :numCitations="numCitations"
               :numDownloads="numDownloads"
             />
-            <div class="tabs-container">
+            <div class="tabs-container mt-16 mb-0 mx-0">
               <content-tab-card
                 id="datasetDetailsTabsContainer"
                 :tabs="tabs"
@@ -1006,7 +1006,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .left-column {
   @media (max-width: 47rem) {
     order: 1;
@@ -1014,8 +1014,7 @@ export default {
   } 
 }
 .tabs-container {
-  border: solid 1px $cloudy;
-  margin: 1.25rem 0 0 0;
+  border: solid 1px $lineColor1;
 }
 ::v-deep .details-tabs__container--data {
   padding-top: 0;

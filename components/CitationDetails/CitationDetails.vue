@@ -5,7 +5,7 @@
     </h2>
     <div v-for="citationType in citationTypes" :key="citationType.type">
       <p><strong>{{citationType.label}}</strong></p>
-      <div class="info-citation" v-if="!hasCitationError" v-loading="citationLoading">
+      <div class="info-citation mb-16 py-16 pl-16 pr-24" v-if="!hasCitationError" v-loading="citationLoading">
         <button class="copy-button" @click="handleCitationCopy(citationType)">
           <img src="../../static/images/copyIcon.png" />
         </button>
@@ -140,8 +140,6 @@ export default {
   }
   .info-citation {
     background-color: $washed-gray;
-    padding: 1rem 1.5rem 1rem 1rem;
-    margin-bottom: 1rem;
     position: relative;
     .copy-button {
       border: none;

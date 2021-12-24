@@ -670,7 +670,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .breadcrumb {
   background: none;
   height: auto;
@@ -678,7 +678,6 @@ export default {
 .files-table-header {
   align-items: center;
   display: flex;
-  margin-bottom: 8px;
 }
 .breadcrumb-list {
   align-items: center;
@@ -689,7 +688,7 @@ export default {
 .breadcrumb-link {
   word-break: break-word;
   text-decoration: underline;
-  color: $median;
+  color: $purple;
 }
 .breadcrumb-separator {
   margin: 0 4px;
@@ -711,7 +710,7 @@ export default {
 }
 
 .file-name {
-  color: $median;
+  color: $purple;
 }
 
 .file-icon {
@@ -731,7 +730,7 @@ export default {
   -moz-border-radius: 0.75em; /* or 50% */
   border-radius: 0.75em; /* or 50% */
 
-  background-color: #8300bf;
+  background-color: $purple;
   color: #fff;
   text-align: center;
   cursor: pointer;

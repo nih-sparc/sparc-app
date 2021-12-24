@@ -1,24 +1,22 @@
 <template>
-  <div class="dataset-information-box">
-    <p><strong>Viewing version: {{versionRevisionText}}</strong></p>
-    <p>
+  <div class="dataset-information-box px-8 py-4">
+    <div class="bold">Viewing version: {{versionRevisionText}}</div>
+    <div>
       DOI: 
       <a
         :href="doiLink"
       >
         <u>{{doi}}</u>
       </a>
-    </p>
-    <p>
+    </div>
+    <div>
       {{lastUpdatedDate}}
-    </p>
-    <div class="header-stats-block">
+    </div>
+    <div class="header-stats-block my-8">
       <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
       <div>
         <template v-if="datasetFiles > 0">
-          <strong>
-            {{ datasetFiles }}
-          </strong>
+          <span class="bold">{{ datasetFiles }}</span>
           Files
         </template>
         <template v-else>
@@ -26,7 +24,7 @@
         </template>
       </div>
     </div>
-    <div class="header-stats-block" v-if="datasetTypeName === 'dataset'">
+    <div class="header-stats-block mb-8" v-if="datasetTypeName === 'dataset'">
       <svg-icon
         class="mr-8"
         name="icon-storage"
@@ -34,13 +32,13 @@
         width="20"
       />
       <div>
-        <strong>{{ datasetStorage.number }}</strong>
+        <span class="bold">{{ datasetStorage.number }}</span>
         {{ datasetStorage.unit }}
       </div>
     </div>
-    <p><strong>Latest version: {{latestVersionRevision}}</strong></p>
-    <p>{{latestVersionDate}}</p>
-    <p v-if="!embargoed" v-on:click="viewOtherVersionsClicked" class="active-link">View other versions</p>
+    <div class="bold">Latest version: {{latestVersionRevision}}</div>
+    <div class="mb-8">{{latestVersionDate}}</div>
+    <div v-if="!embargoed" v-on:click="viewOtherVersionsClicked" class="active-link mb-8">View other versions</div>
   </div>
 </template>
 
@@ -53,9 +51,6 @@ import DateUtils from '@/mixins/format-date'
 
 export default {
   name: 'DatasetInformationBox',
-
-  components: {
-  },
 
   mixins: [DateUtils, FormatStorage],
 
@@ -83,7 +78,7 @@ export default {
     version: function() {
       return propOr(1, 'version', this.datasetInfo)
     },
-        /**
+    /**
      * Gets dataset size for download
      * @returns {Number}
      */
@@ -192,23 +187,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .dataset-information-box {
-  border: 1px solid $cloudy;
-  padding: 0.25rem 0.5rem;
+  border: 1px solid $lineColor1;
   width: fit-content;
   margin-left: auto;
-  p {
-    margin-bottom: 0.25rem;
-    font-size: 14px;
-  }
   @media (max-width: 47rem) {
     margin-left: 0;
     margin-right: auto;
   }
   .active-link {
-    color: $median;
+    color: $purple;
     text-decoration: underline;
     cursor: pointer;
   }
@@ -217,10 +207,12 @@ export default {
     display: flex;
     font-size: 14px;
     font-weight: 500;
-    margin: 0.5rem 0;
     .svg-icon {
       margin-right: 3px;
     }
+  }
+  .bold {
+    font-weight: 600;
   }
 }
 </style>

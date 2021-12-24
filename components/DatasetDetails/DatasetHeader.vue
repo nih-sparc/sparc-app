@@ -11,7 +11,7 @@
             </h2>
             <div class="dataset-owners">
               <span>
-                <strong>Contributors:&nbsp</strong>
+                <strong>Contributors:&nbsp;</strong>
               </span>
               <div
                 v-for="(contributor, idx) in contributors"
@@ -221,7 +221,6 @@ export default {
     formatTitle: function(title) {
       return title.length > 150 ? title.substring(0, 150) + '...' : title
     },
-
     /**
      * Formats description based on length for regular viewports
      * @param {String} description
@@ -256,11 +255,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .details-header-container {
   display: flex;
   flex-direction: row;
-  border: solid 1px $cloudy;
+  border: solid 1px $lineColor1;
   background: white;
 
   .publications-container {

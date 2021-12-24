@@ -1,13 +1,13 @@
 <template>
   <div class="version-history-container">
     <h2 class="section-text">Versions for this Dataset</h2>
-    <p><strong>Current version: </strong>{{latestVersionRevisionText}}</p>
-    <p><strong>Original version: </strong>{{originalVersionRevisionText}}</p>
+    <div class="mb-8"><span class="section-text">Current version: </span>{{latestVersionRevisionText}}</div>
+    <div class="mb-8"><span class="section-text">Original version: </span>{{originalVersionRevisionText}}</div>
     <p>
       A dataset version refers to a DOI-specific, version-controlled iteration of a dataset. A new version of a dataset must be released when there are any changes to the files or scientific metadata made within a dataset. A dataset revision refers to an update made to dataset metadata (i.e. title, subtitle, description, etc.) that does not require an updated DOI.
     </p>
     <div class="version-table">
-      <el-row class="table-header" type="flex" justify="center">
+      <el-row class="table-header py-12" type="flex" justify="center">
         <el-col :span="4" :pull="1">
           Version
         </el-col>
@@ -24,7 +24,7 @@
       <el-row
         v-for="version in versions"
         :key="version.doi"
-        class="table-rows"
+        class="table-rows py-12"
         type="flex"
         justify="center"
       >
@@ -119,6 +119,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .version-history-container {
   min-width: 30rem;
   width: 100%;
@@ -128,28 +129,17 @@ export default {
     
   }
   .section-text {
-    font-weight: 500;
+    font-weight: 600;
   }
   .table-header {
-    background-color: #f9f9f9;
-    color: #404554;
+    background-color: $background;
     font-weight: 600;
-    padding: 0.75rem 0;
-    margin-left: 0px !important;
   }
 
   .table-rows {
     color: #000000;
-    padding: 0.75rem 0;
-    border-top: solid 1px #dadada;
-    margin-left: 0px !important;
-
     a {
       text-decoration: underline;
-
-      &:focus {
-        color: #1c46bd;
-      }
     }
   }
 }

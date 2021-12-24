@@ -2,7 +2,7 @@
   <img
     ref="img"
     :src="bannerSrc"
-    class="dataset-image"
+    class="dataset-image mb-8"
     alt="Dataset Banner Image"
   />
 </template>
@@ -55,6 +55,5 @@ export default {
 .dataset-image {
   width: -webkit-fill-available;
   height: auto;
-  margin-bottom: .5rem;
 }
 </style>

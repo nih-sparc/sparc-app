@@ -71,7 +71,7 @@
     <span><strong>Keywords: </strong></span>
     <span v-if="datasetTags.length !== 0">
       <span class="keywords" v-for="(item, index) in datasetTags" :key="index">
-        <p v-if="index !== datasetTags.length - 1">{{item}},&nbsp</p>
+        <p v-if="index !== datasetTags.length - 1">{{item}},&nbsp;</p>
         <p v-else>{{item}}</p>
       </span>
     </span>
@@ -205,7 +205,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
 .dataset-description-info {
   overflow-wrap: anywhere;
   .section-text {

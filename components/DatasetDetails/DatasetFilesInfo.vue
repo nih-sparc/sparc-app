@@ -9,7 +9,7 @@
         <div v-if="!isDatasetSizeLarge">
           <p><strong>Option 1 - Direct download: </strong>Download a zip archive of the raw files and metadata directly to your computer free of charge.</p>
           <a :href="downloadUrl">
-            <el-button class="download-button">Download</el-button>
+            <el-button class="mb-16">Download</el-button>
           </a>
         </div>
         <div v-else>
@@ -22,18 +22,18 @@
           Download or transfer the dataset to your AWS Account. The raw files and metadata are stored in an AWS S3 Requester Pays bucket. You can learn more about downloading data from AWS on our
           <a href="https://sparc.science/help/zQfzadwADutviJjT19hA5" target="_blank">Help Page</a>.
         </p>
-        <div class="aws-block">
-          <h2 class="sub-section-text">Resource Type</h2>
+        <div class="aws-block mb-16 p-16">
+          <h2 class="sub-section-text mb-0">Resource Type</h2>
           <p>Amazon S3 Bucket (Requester Pays) *</p>
-          <h2 class="sub-section-text">Amazon S3 Bucket</h2>
-          <div class="download-text-block">
+          <h2 class="sub-section-text mb-0">Amazon S3 Bucket</h2>
+          <div class="download-text-block mb-8 p-4">
             {{ datasetArn }}
             <button class="copy-button" @click="handleCitationCopy(datasetArn)">
               <img src="../../static/images/copyIcon.png" />
             </button>
           </div>
-          <h2 class="sub-section-text">AWS Region</h2>
-          <div class="download-text-block aws">
+          <h2 class="sub-section-text mb-0">AWS Region</h2>
+          <div class="download-text-block p-4 aws">
             {{ awsMessage}}
             <button class="copy-button" @click="handleCitationCopy(awsMessage)">
               <img src="../../static/images/copyIcon.png" />
@@ -172,7 +172,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 a {
   text-decoration: underline;
 }
@@ -183,15 +183,12 @@ hr {
   margin-top: 1rem;
   border-top: none;
 }
-.download-button {
-  margin-bottom: 1rem;
-}
 .bx--col {
   padding-left: 1rem;
 }
 .aws-download-column {
   @media (min-width: 64rem) {
-    border-left: 1px solid $cloudy;
+    border-left: 1px solid $lineColor1
   }
 }
 .flex {
@@ -206,14 +203,9 @@ hr {
 
 .download-text-block {
   background-color: #f5f7fa;
-  padding: 6px 6px 6px 6px;
   display: flex;
   justify-content: space-between;
   border-radius: 4px;
-  margin-bottom: .5rem;
-}
-.sub-section-text {
-  margin-bottom: 0;
 }
 .copy-button {
   border: none;
@@ -225,8 +217,6 @@ hr {
   }
 }
 .aws-block {
-  padding: 1rem;
-  border: 1px solid $cloudy;
-  margin-bottom: 1rem;
+  border: 1px solid $lineColor1;
 }
 </style>

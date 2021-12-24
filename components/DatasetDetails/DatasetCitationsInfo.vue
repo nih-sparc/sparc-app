@@ -44,7 +44,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
 .dataset-citations-info {
   .section-text {
     font-weight: 500;
