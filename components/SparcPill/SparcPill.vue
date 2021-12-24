@@ -21,5 +21,6 @@ export default {
   overflow: hidden;
   padding: 0 0.65rem;
   text-overflow: ellipsis;
+  cursor: default;
 }
 </style>

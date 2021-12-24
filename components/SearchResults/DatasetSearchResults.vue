@@ -163,7 +163,7 @@ export default {
                     ')'
         }
         default: {
-          return _.get(item, property.propPath)
+          return _.upperFirst(_.get(item, property.propPath))
         }
       }
     },

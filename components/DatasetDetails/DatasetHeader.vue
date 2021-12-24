@@ -1,21 +1,22 @@
 <template>
-  <div class="details-header__container">
-    <div class="details-header__container--content">
+  <div class="details-header-container mt-16 py-16 px-24">
       <div class="bx--grid">
         <div class="bx--row">
           <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13">
             <h3>
               {{ subtitle }}
             </h3>
-            <h2 class="details-header__container--content-title-default">
+            <h2>
               {{ formatTitle(title) }}
             </h2>
             <div class="dataset-owners">
-              <p class="bullet-title">Contributors:</p>
+              <span>
+                <strong>Contributors:&nbsp</strong>
+              </span>
               <div
                 v-for="(contributor, idx) in contributors"
                 :key="contributor.id"
-                class="contributor-item-wrap"
+                class="contributor-item-wrap mr-4"
               >
                 <contributor-item :contributor="contributor" />
                 <template v-if="idx < contributors.length - 1">
@@ -24,9 +25,9 @@
               </div>
             </div>
             <hr />
-            <p>
+            <div>
               <strong>Description: </strong>{{ formatDescription(description) }}
-            </p>
+            </div>
           </div>
           <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3">
             <dataset-information-box 
@@ -39,9 +40,9 @@
             <div v-if="primaryPublications">
               <div class="publications-container">
                 <span class="primary-publications-title-column">
-                  <p>
+                  <div>
                     <strong>Primary Publication(s): </strong>
-                  </p>
+                  </div>
                 </span>
                 <span>
                   <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
@@ -52,30 +53,47 @@
               <hr />
             </div>
             <div class="header-stats-block">
-              <p class="bullet-title">Usage Rights:</p>
               <div>
-                <template v-if="license">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="licenseName"
-                    placement="top"
-                    :visible-arrow="false"
-                  >
-                    <a :href="licenseLink" target="_blank">
-                      {{ license }}
-                    </a>
-                  </el-tooltip>
-                </template>
-                <template v-else>
-                  No License Selected
-                </template>
+                <span>
+                  <strong>Usage Rights:</strong>
+                </span>
+                <span>
+                  <template v-if="license">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="licenseName"
+                      placement="top"
+                      :visible-arrow="false"
+                    >
+                      <a :href="licenseLink" target="_blank">
+                        {{ license }}
+                      </a>
+                    </el-tooltip>
+                  </template>
+                  <template v-else>
+                    No License Selected
+                  </template>
+                </span>
+              </div>
+              <div class="metics-container">
+                <span class="mr-16">
+                  <strong>Citations: </strong>
+                  <a v-if="showCitations" class="citations-link" v-on:click="numCitationsClicked">
+                    {{numCitationsText}}
+                  </a>
+                  <span v-else>
+                    {{numCitationsText}}
+                  </span>
+                </span>
+                <span>
+                  <strong>Downloads: </strong> {{numDownloadsText}}
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -109,6 +127,14 @@ export default {
       type: String,
       default: ''
     },
+    numCitations: {
+      type: Number,
+      default: 0
+    },
+    numDownloads: {
+      type: Number,
+      default: 0
+    }
   },
 
   computed: {
@@ -160,6 +186,9 @@ export default {
       const licenseKey = this.licenseName
       return getLicenseAbbr(licenseKey)
     },
+    embargoed: function() {
+      return propOr(false, 'embargo', this.datasetInfo)
+    },
     /**
      * Returns the license name associated with the dataset
      * @returns {String}
@@ -172,6 +201,15 @@ export default {
         return elem.relationshipType == 'IsDescribedBy'
       })
       return valObj.length > 0 ? valObj : null
+    },
+    showCitations: function() {
+      return !this.embargoed && this.numCitations !== 0
+    },
+    numCitationsText: function() {
+      return this.showCitations ? `${this.numCitations}` : 'n/a'
+    },
+    numDownloadsText: function() {
+      return this.embargoed ? 'n/a' : `${this.numDownloads}`
     }
   },
 
@@ -193,27 +231,50 @@ export default {
         ? description.substring(0, 540) + '...'
         : description
     },
+    /**
+     * Get the dataset details tab area by id
+     * @returns {Object}
+     */
+    getDatasetDetailsTabArea: function() {
+      return document.getElementById('datasetDetailsTabsContainer')
+    },
+    /**
+     * scroll to the dataset details tab area
+     */
+    scrollToDatasetDetailsTabArea: function() {
+      this.getDatasetDetailsTabArea().scrollIntoView()
+    },
+    numCitationsClicked: function() {
+      this.$router.replace({
+        query: { ...this.$route.query, datasetDetailsTab: 'citations' }
+      }).finally(() => {
+        this.scrollToDatasetDetailsTabArea()
+      })
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
-p {
-  margin: 0;
-}
-.publications-container {
+.details-header-container {
   display: flex;
-  @media (max-width: 48em) {
-    flex-direction: column;
+  flex-direction: row;
+  border: solid 1px $cloudy;
+  background: white;
+
+  .publications-container {
+    display: flex;
+    @media (max-width: 48em) {
+      flex-direction: column;
+    }
+    .primary-publications-title-column {
+      min-width: 10.25rem;
+    }
+    .primary-publications-list-item:not(:last-child) {
+      margin-bottom: .5rem;
+    }
   }
-  .primary-publications-title-column {
-    min-width: 10.25rem;
-  }
-  .primary-publications-list-item:not(:last-child) {
-    margin-bottom: .5rem;
-  }
-}
   .bx--grid {
     padding: 0;
     [class*="bx--col"] {
@@ -222,9 +283,8 @@ p {
   }
   .header-stats-block {
     align-items: center;
+    justify-content: space-between;
     display: flex;
-    font-size: 14px;
-    font-weight: 500;
   }
   hr {
     border-top: none;
@@ -234,45 +294,12 @@ p {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    font-size: 14px;
-    line-height: 24px;
     .contributor-item-wrap {
       display: inline-flex;
-      margin-right: 4px;
     }
   }
-  p.bullet-title {
-    margin-bottom: 0;
-    margin-right: .5em;
-    font-weight: bold;
+  .citations-link {
+    cursor: pointer;
   }
-  .details-header {
-    &__container {
-      display: flex;
-      flex-direction: row;
-      border: solid 1px $cloudy;
-      padding: 1rem 1.5rem;
-      background: white;
-      margin: 1.25rem 0 0;
-      &--content {
-        h3 {
-          text-transform: uppercase;
-          font-weight: 500;
-          line-height: 24px;
-          font-size: 14px;
-          color: $medium-gray;
-        }
-      }
-      &--content-title-default {
-        font-weight: 500;
-        font-size: 24px;
-        line-height: 32px;
-      }
-      &--content-description-default {
-        font-size: 14px;
-        font-weight: normal;
-        line-height: 24px;
-      }
-    }
-  }
+}
 </style>

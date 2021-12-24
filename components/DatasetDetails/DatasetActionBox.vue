@@ -1,11 +1,25 @@
 <template>
-  <div class="dataset-action-box">
+  <div class="dataset-action-box mt-16 p-8">
     <dataset-banner-image :src="datasetImage" />
-    <sparc-pill v-if="datasetInfo.embargo">
+    <sparc-pill class="sparc-pill" v-if="datasetInfo.embargo">
       Embargoed
     </sparc-pill>
     <div class="button-container" v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
+      <sparc-tooltip
+        v-if="embargoed"
+        placement="left-center"
+      >
+        <div slot="data">
+          This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
+        </div>
+        <el-button
+          slot="item"
+        >
+          Get Saffold
+        </el-button>
+      </sparc-tooltip>
       <el-button
+        v-else-if="hasFiles"
         class="dataset-button"
         @click="actionButtonClicked('files')"
       >
@@ -25,7 +39,21 @@
           Run Simulation
         </el-button>
       </a>
+      <sparc-tooltip
+        v-if="embargoed"
+        placement="left-center"
+      >
+        <div slot="data">
+          This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
+        </div>
+        <el-button
+          slot="item"
+        >
+          Get Model
+        </el-button>
+      </sparc-tooltip>
       <el-button
+        v-else-if="hasFiles"
         @click="actionButtonClicked('files')"
       >
         Get Model
@@ -54,7 +82,21 @@
       </a>
     </div>
     <div class="button-container" v-else>
+      <sparc-tooltip
+        v-if="embargoed"
+        placement="left-center"
+      >
+        <div slot="data">
+          This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
+        </div>
+        <el-button
+          slot="item"
+        >
+          Get Dataset
+        </el-button>
+      </sparc-tooltip>
       <el-button
+        v-else-if="hasFiles"
         @click="actionButtonClicked('files')"
       >
         Get Dataset
@@ -110,7 +152,16 @@ export default {
     },
     hasSimulation: function() {
       return this.datasetInfo.study
-    }
+    },
+    hasFiles: function() {
+      return this.fileCount >= 1
+    },
+    fileCount: function() {
+      return propOr('0', 'fileCount', this.datasetInfo)
+    },
+    embargoed: function() {
+      return propOr(false, 'embargo', this.datasetInfo)
+    },
   },
 
   methods: {
@@ -147,9 +198,13 @@ export default {
   flex-direction: column;
   border: solid 1px $lineColor1;
   text-align: center;
-  padding: .5rem;
   background: white;
-  margin: 1.25rem 0 0;
+  position: relative;
+  .sparc-pill {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+  }
   button {
     margin: .25rem 0;
   }

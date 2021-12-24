@@ -1,13 +1,13 @@
 <template>
   <div class="mt-16 similar-datasets-container">
     <div class="header">
-      <p v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search similar datasets</p>
-      <p v-else class="p-8 mb-0">Search similar models/simulations</p>
+      <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search similar datasets</div>
+      <div v-else class="p-8 mb-0">Search similar models/simulations</div>
       <hr />
     </div>
     <div v-loading="isLoadingFacets" class="px-8">
       <div v-if="associatedProject">
-        <p class="capitalize mb-8">project:</p>
+        <div class="capitalize mb-8">project:</div>
         <nuxt-link
           :to="associatedProjectLink"
         >
@@ -17,9 +17,9 @@
       </div>
       <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.label">
         <div v-if="facet.children && showFacet(facet)">
-          <p class="capitalize mb-8">{{facet.label}}:</p>
+          <div class="capitalize mb-8">{{facet.label}}:</div>
           <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
-            <sparc-tooltip placement="bottom-right" :content="child.label">
+            <sparc-tooltip placement="bottom-right" :content="capitalize(child.label)">
               <nuxt-link
                 slot="item"
                 :to="getSelectedFacetLink(getFacetId(child))"
@@ -34,18 +34,21 @@
         </div>
       </div>
       <div class="mb-16" v-if="contributors">
-        <p class="capitalize mb-8">contributors:</p>
+        <div class="capitalize mb-8">contributors:</div>
         <div
           class="ml-8"
           v-for="contributor in contributors"
           :key="contributor.id"
         >
           <li class="contributor-list">
-            <nuxt-link
-              :to="getSelectedContributorLink(contributor)"
-            >
-              <u>{{getContributorFullName(contributor)}}</u>
-            </nuxt-link>
+            <sparc-tooltip placement="bottom-right" :content="getContributorFullName(contributor)">
+              <nuxt-link
+                slot="item"
+                :to="getSelectedContributorLink(contributor)"
+              >
+                <u>{{getContributorFullName(contributor)}}</u>
+              </nuxt-link>
+            </sparc-tooltip>
           </li>
         </div>
       </div>
@@ -70,7 +73,6 @@ export default {
   data() {
     return {
       allFacetsData: [],
-      datasetFacetsData: [],
       isLoadingFacets: true,
     }
   },
@@ -83,7 +85,7 @@ export default {
   },
 
   computed: {
-    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetTypeName']),
+    ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetTypeName', 'datasetFacetsData']),
     datasetDoi: function() {
       return propOr('', 'doi', this.datasetInfo)
     },
@@ -106,20 +108,17 @@ export default {
   },
 
   created() {
-    const objectId = this.$route.params.datasetId
-    const filters = `objectID:${objectId}`
     this.isLoadingFacets = true;
     getAlgoliaFacets(algoliaIndex, facetPropPathMapping).then(data => {
         this.allFacetsData = data
       }).finally(() => {
-        getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filters).then(data => {
-          this.datasetFacetsData = data;
-        }).finally(() => {
-          this.isLoadingFacets = false
-        })
+        this.isLoadingFacets = false
       })
   },
   methods: {
+    capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    },
     getFacetId(datasetFacet) {
       const key = datasetFacet.facetPropPath;
       const label = datasetFacet.label;
@@ -127,6 +126,9 @@ export default {
         return
       }
       const category = this.allFacetsData.find(facet => facet.key === key);
+      if (category === undefined) {
+        return
+      }
       const correspondingFacet = category.children.find(child => child.label === label)
       return correspondingFacet.id
     },
@@ -172,7 +174,7 @@ hr {
 .facet-button {
   border-radius: 15px;
   max-width: fit-content;
-  background-color: $background;
+  background-color: #f9f2fc;
   border: 1px solid $purple;
   font-weight: 500;
   cursor: pointer;
@@ -192,10 +194,10 @@ hr {
   text-transform: uppercase;
 }
 
-p {
-  line-height: 1;
-}
 .contributor-list {
   list-style-type: disc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
