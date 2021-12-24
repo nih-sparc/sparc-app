@@ -31,7 +31,7 @@ import createAlgoliaClient from '@/plugins/algolia.js'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import { isEmpty, pathOr } from 'ramda'
 
-const algoliaClient = createAlgoliaClient();
+const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 export default {
   name: 'FeaturedData',
@@ -64,19 +64,36 @@ export default {
       return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], item)
     },
     loadOrganFacets: function() {
-      this.isLoadingOrganFacetIds = true;
-      getAlgoliaFacets(algoliaIndex, facetPropPathMapping).then(data => {
-        this.organFacets = data.filter(facet => facet.key === 'anatomy.organ.name')[0].children
-      }).finally(() => {
-        this.isLoadingOrganFacetIds = false
-      })
+      this.isLoadingOrganFacetIds = true
+      getAlgoliaFacets(algoliaIndex, facetPropPathMapping)
+        .then(data => {
+          this.organFacets = data.find(
+            facet => facet.key === 'anatomy.organ.name'
+          ).children
+        })
+        .finally(() => {
+          this.isLoadingOrganFacetIds = false
+        })
+    },
+    filterOrgans(contentfulFields) {
+      const normStr = str => str.toLowerCase().trim()
+      return this.organFacets.filter(
+        organ =>
+          normStr(organ.label).includes(normStr(contentfulFields.label)) ||
+          (contentfulFields.containsSearch &&
+            contentfulFields.containsSearch.some(keyword =>
+              normStr(organ.label).includes(normStr(keyword))
+            ))
+      )
     },
     getLink(contentfulFields) {
       if (isEmpty(this.organFacetIds)) {
         return contentfulFields.link
       }
-      var organ = this.organFacets.find(organ => organ.label.toLowerCase() === contentfulFields.label.toLowerCase())
-      return organ === undefined ? contentfulFields.link : `${contentfulFields.link}&selectedFacetIds=${organ.id}`
+      var organIds = this.filterOrgans(contentfulFields).map(organ => organ.id)
+      return organIds.length === 0
+        ? contentfulFields.link
+        : `${contentfulFields.link}&selectedFacetIds=${organIds.join(',')}`
     }
   }
 }

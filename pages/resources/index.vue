@@ -23,7 +23,7 @@
             v-for="resource in fields.featured"
             :key="resource.sys.id"
             :title="resource.fields.name"
-            :subtitle="resource.fields.resourceType"
+            :subtitle="resource.fields.resourceType.join(', ')"
             :tag="'SPARC'"
             :description="resource.fields.description"
             :thumbnailUrl="resource.fields.logo.fields.file.url"

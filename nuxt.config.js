@@ -1,4 +1,10 @@
 export default {
+  /**
+   * Outside of localhost visibility
+   */
+  // server: {
+  //   host: '0.0.0.0'
+  // },
   /*
    ** Headers of the page
    */
