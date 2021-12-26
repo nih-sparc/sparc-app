@@ -54,8 +54,8 @@
             </div>
             <div class="header-stats-block">
               <div>
-                <span>
-                  <strong>Usage Rights:</strong>
+                <span class="bold">
+                  Usage Rights: 
                 </span>
                 <span>
                   <template v-if="license">
@@ -66,7 +66,7 @@
                       placement="top"
                       :visible-arrow="false"
                     >
-                      <a :href="licenseLink" target="_blank">
+                      <a class="bold" :href="licenseLink" target="_blank">
                         {{ license }}
                       </a>
                     </el-tooltip>
@@ -77,8 +77,8 @@
                 </span>
               </div>
               <div class="metics-container">
-                <span class="mr-16">
-                  <strong>Citations: </strong>
+                <span class="bold mr-16">
+                  Citations: 
                   <a v-if="showCitations" class="citations-link" v-on:click="numCitationsClicked">
                     {{numCitationsText}}
                   </a>
@@ -299,6 +299,9 @@ export default {
   }
   .citations-link {
     cursor: pointer;
+  }
+  .bold {
+    font-weight: 600;
   }
 }
 </style>
