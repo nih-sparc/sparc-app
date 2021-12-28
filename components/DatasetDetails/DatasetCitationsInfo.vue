@@ -1,20 +1,20 @@
 <template>
   <div class="dataset-citations-info">
     <div v-if="primaryPublications">
-      <h2 class="section-text">
+      <div class="heading2 mb-8">
         Primary Publications for this Dataset
-      </h2>
+      </div>
       <div v-for="(item, index) in primaryPublications" :key="index">
-        <external-pub-link :publication="item" />
+        <external-pub-link class="mb-8" :publication="item" />
       </div>
       <hr v-if="associatedPublications" />
     </div>
     <div v-if="associatedPublications">
-      <h2 class="section-text">
+      <div class="heading2 mb-8">
         Associated Publications for this Dataset
-      </h2>
+      </div>
       <div v-for="(item, index) in associatedPublications" :key="index">
-        <external-pub-link :publication="item" />
+        <external-pub-link class="mb-8" :publication="item" />
       </div>
     </div>
   </div>
@@ -45,9 +45,6 @@ export default {
 
 <style lang="scss" scoped>
 .dataset-citations-info {
-  .section-text {
-    font-weight: 500;
-  }
   hr {
     margin-top: 1rem;
     border-top: none;

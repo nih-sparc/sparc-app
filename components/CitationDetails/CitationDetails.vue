@@ -1,10 +1,10 @@
 <template>
   <div class="citation-details">
-    <h2 class="section-text">
+    <div class="heading2 mb-8">
       Dataset Citation
-    </h2>
+    </div>
     <div v-for="citationType in citationTypes" :key="citationType.type">
-      <p><strong>{{citationType.label}}</strong></p>
+      <div class="mb-8"><strong>{{citationType.label}}</strong></div>
       <div class="info-citation mb-16 py-16 pl-16 pr-24" v-if="!hasCitationError" v-loading="citationLoading">
         <button class="copy-button" @click="handleCitationCopy(citationType)">
           <img src="../../static/images/copyIcon.png" />
@@ -133,13 +133,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .citation-details {
   a {
     text-decoration: underline;
   }
   .info-citation {
-    background-color: $washed-gray;
+    background-color: $background;
     position: relative;
     .copy-button {
       border: none;
@@ -156,9 +156,6 @@ export default {
   }
   .citation-text {
     word-wrap: break-word;
-  }
-  .section-text {
-    font-weight: 500;
   }
 }
 </style>

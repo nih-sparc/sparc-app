@@ -3,16 +3,14 @@
       <div class="bx--grid">
         <div class="bx--row">
           <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13">
-            <h3>
+            <h3 class="header3">
               {{ subtitle }}
             </h3>
-            <h2>
+            <h2 class="heading2">
               {{ formatTitle(title) }}
             </h2>
             <div class="dataset-owners">
-              <span>
-                <strong>Contributors:&nbsp;</strong>
-              </span>
+              <span class="label4">Contributors:&nbsp;</span>
               <div
                 v-for="(contributor, idx) in contributors"
                 :key="contributor.id"
@@ -26,7 +24,7 @@
             </div>
             <hr />
             <div>
-              <strong>Description: </strong>{{ formatDescription(description) }}
+              <span class="label4">Description: </span>{{ formatDescription(description) }}
             </div>
           </div>
           <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3">
@@ -40,9 +38,7 @@
             <div v-if="primaryPublications">
               <div class="publications-container">
                 <span class="primary-publications-title-column">
-                  <div>
-                    <strong>Primary Publication(s): </strong>
-                  </div>
+                  <span class="label4">Primary Publication(s): </span>
                 </span>
                 <span>
                   <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
@@ -54,7 +50,7 @@
             </div>
             <div class="header-stats-block">
               <div>
-                <span class="bold">
+                <span class="label4">
                   Usage Rights: 
                 </span>
                 <span>
@@ -66,7 +62,7 @@
                       placement="top"
                       :visible-arrow="false"
                     >
-                      <a class="bold" :href="licenseLink" target="_blank">
+                      <a class="link1" :href="licenseLink" target="_blank">
                         {{ license }}
                       </a>
                     </el-tooltip>
@@ -77,7 +73,7 @@
                 </span>
               </div>
               <div class="metics-container">
-                <span class="bold mr-16">
+                <span class="label4 mr-16">
                   Citations: 
                   <a v-if="showCitations" class="citations-link" v-on:click="numCitationsClicked">
                     {{numCitationsText}}
@@ -86,9 +82,7 @@
                     {{numCitationsText}}
                   </span>
                 </span>
-                <span>
-                  <strong>Downloads: </strong> {{numDownloadsText}}
-                </span>
+                <span class="label4">Downloads: {{numDownloadsText}}</span>
               </div>
             </div>
           </div>
@@ -299,9 +293,6 @@ export default {
   }
   .citations-link {
     cursor: pointer;
-  }
-  .bold {
-    font-weight: 600;
   }
 }
 </style>

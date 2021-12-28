@@ -1,8 +1,8 @@
 <template>
   <div class="dataset-about-info">
-    <h2 class="section-text">
+    <div class="heading2 mb-8">
       About this dataset
-    </h2>
+    </div>
     <p><strong>Title: </strong>{{datasetTitle}}</p>
     <p><strong>First Published: </strong>{{firstPublishedDate}}</p>
     <p><strong>Last Published: </strong>{{latestVersionDate}}</p>
@@ -32,7 +32,7 @@
     </p>
     <p><strong>Institution: </strong>{{associatedProjectInstitution}}</p>
     <hr />
-    <h2 class="section-text">
+    <h2 class="heading2 mb-8">
       About this version
     </h2>
     <p><strong>{{versionRevisionText}}: </strong>Publication date: {{publicationDate}} (Last updated: {{lastPublishedDate}})</p>
@@ -186,9 +186,6 @@ export default {
 
 <style lang="scss" scoped>
 .dataset-about-info {
-  .section-text {
-    font-weight: 500;
-  }
   hr {
     margin-top: 1rem;
     border-top: none;

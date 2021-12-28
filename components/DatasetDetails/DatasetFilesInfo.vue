@@ -1,38 +1,38 @@
 <template>
   <div>
-    <h2 class="section-text">Download Dataset</h2>
-    <p>
+    <div class="heading2 mb-8">Download Dataset</div>
+    <div class="mb-8">
       <strong>Dataset size: </strong>{{ formatMetric(datasetInfo.size) }}
-    </p>
+    </div>
     <div class="bx--row">
       <div class="bx--col-sm-4 bx--col-md-8 bx--col">
         <div v-if="!isDatasetSizeLarge">
-          <p><strong>Option 1 - Direct download: </strong>Download a zip archive of the raw files and metadata directly to your computer free of charge.</p>
+          <div><strong>Option 1 - Direct download: </strong>Download a zip archive of the raw files and metadata directly to your computer free of charge.</div>
           <a :href="downloadUrl">
-            <el-button class="mb-16">Download</el-button>
+            <el-button class="my-16">Download full dataset</el-button>
           </a>
         </div>
         <div v-else>
-          <p><strong>Option 1 - Direct download: </strong>Direct downloads are only available free of charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS. </p>
+          <div><strong>Option 1 - Direct download: </strong>Direct downloads are only available free of charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS. </div>
         </div>
       </div>
       <div class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
-        <p>
+        <div>
           <strong>Option 2 - AWS download: </strong>
           Download or transfer the dataset to your AWS Account. The raw files and metadata are stored in an AWS S3 Requester Pays bucket. You can learn more about downloading data from AWS on our
           <a href="https://sparc.science/help/zQfzadwADutviJjT19hA5" target="_blank">Help Page</a>.
-        </p>
+        </div>
         <div class="aws-block mb-16 p-16">
-          <h2 class="sub-section-text mb-0">Resource Type</h2>
-          <p>Amazon S3 Bucket (Requester Pays) *</p>
-          <h2 class="sub-section-text mb-0">Amazon S3 Bucket</h2>
+          <div class="heading2">Resource Type</div>
+          <div class="mb-8">Amazon S3 Bucket (Requester Pays) *</div>
+          <div class="heading2 mb-0">Amazon S3 Bucket</div>
           <div class="download-text-block mb-8 p-4">
             {{ datasetArn }}
             <button class="copy-button" @click="handleCitationCopy(datasetArn)">
               <img src="../../static/images/copyIcon.png" />
             </button>
           </div>
-          <h2 class="sub-section-text mb-0">AWS Region</h2>
+          <div class="heading2 mb-0">AWS Region</div>
           <div class="download-text-block p-4 aws">
             {{ awsMessage}}
             <button class="copy-button" @click="handleCitationCopy(awsMessage)">
@@ -50,7 +50,7 @@
       </div>
     </div>
     <hr />
-    <h2 class="section-text">
+    <h2 class="heading2">
       Dataset Files
     </h2>
     <div class="flex mb-16">
@@ -176,9 +176,6 @@ export default {
 a {
   text-decoration: underline;
 }
-.section-text {
-  font-weight: 500;
-}
 hr {
   margin-top: 1rem;
   border-top: none;
@@ -202,7 +199,7 @@ hr {
 }
 
 .download-text-block {
-  background-color: #f5f7fa;
+  background-color: $background;
   display: flex;
   justify-content: space-between;
   border-radius: 4px;

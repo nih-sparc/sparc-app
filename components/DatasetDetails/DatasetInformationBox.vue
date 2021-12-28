@@ -1,7 +1,7 @@
 <template>
   <div class="dataset-information-box px-8 py-4">
-    <div class="bold">Viewing version: {{versionRevisionText}}</div>
-    <div>
+    <div class="label4">Viewing version: {{versionRevisionText}}</div>
+    <div class="label1">
       DOI: 
       <a
         :href="doiLink"
@@ -9,15 +9,14 @@
         <u>{{doi}}</u>
       </a>
     </div>
-    <div>
+    <div class="label1">
       {{lastUpdatedDate}}
     </div>
     <div class="header-stats-block my-8">
       <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
-      <div>
+      <div class="label2">
         <template v-if="datasetFiles > 0">
-          <span class="bold">{{ datasetFiles }}</span>
-          Files
+          {{ datasetFiles }} Files
         </template>
         <template v-else>
           No Files
@@ -31,14 +30,13 @@
         height="20"
         width="20"
       />
-      <div>
-        <span class="bold">{{ datasetStorage.number }}</span>
-        {{ datasetStorage.unit }}
+      <div class="label2">
+        {{ datasetStorage.number }} {{ datasetStorage.unit }}
       </div>
     </div>
-    <div class="bold">Latest version: {{latestVersionRevision}}</div>
-    <div class="mb-8">{{latestVersionDate}}</div>
-    <div v-if="!embargoed" v-on:click="viewOtherVersionsClicked" class="active-link mb-8">View other versions</div>
+    <div class="label4">Latest version: {{latestVersionRevision}}</div>
+    <div class="label1 mb-8">{{latestVersionDate}}</div>
+    <div v-if="!embargoed" v-on:click="viewOtherVersionsClicked" class="active-link label1 mb-8">View other versions</div>
   </div>
 </template>
 
@@ -205,14 +203,9 @@ export default {
   .header-stats-block {
     align-items: center;
     display: flex;
-    font-size: 14px;
-    font-weight: 500;
     .svg-icon {
       margin-right: 3px;
     }
-  }
-  .bold {
-    font-weight: 600;
   }
 }
 </style>

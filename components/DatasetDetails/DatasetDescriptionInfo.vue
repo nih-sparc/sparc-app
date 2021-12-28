@@ -1,8 +1,8 @@
 <template>
   <div v-loading="loadingMarkdown" class="dataset-description-info">
-    <h2 class="section-text">
+    <div class="heading2 mb-8">
       Methodology
-    </h2>
+    </div>
     <div
       class="col-xs-12 description-container"
       v-html="parseMarkdown(markdown.markdownTop)"
@@ -13,15 +13,16 @@
       v-html="parseMarkdown(markdown.markdownBottom)"
     />
     <hr>
-    <h2 class="section-text">
+    <div class="heading2 mb-8">
       Metadata
-    </h2>
+    </div>
     <p class="mb-8"><strong>Experimental Design: </strong></p>
     <div class="experimental-design-container mb-8">
       <span class="experimental-design-section-text-column"><strong>Protocol Links: </strong></span>
       <span v-if="datasetRecords.length !== 0">
         <div v-for="record in datasetRecords" :key="record.id">
           <a
+            class="link2"
             :href="record.url"
             target="_blank"
           >
@@ -207,9 +208,6 @@ export default {
 <style lang="scss" scoped>
 .dataset-description-info {
   overflow-wrap: anywhere;
-  .section-text {
-    font-weight: 500;
-  }
   ::v-deep hr{
     margin-top: 1rem;
     border-top: none;

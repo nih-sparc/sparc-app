@@ -1,8 +1,8 @@
 <template>
   <div class="version-history-container">
-    <h2 class="section-text">Versions for this Dataset</h2>
-    <div class="mb-8"><span class="section-text">Current version: </span>{{latestVersionRevisionText}}</div>
-    <div class="mb-8"><span class="section-text">Original version: </span>{{originalVersionRevisionText}}</div>
+    <div class="heading2 mb-8">Versions for this Dataset</div>
+    <div class="mb-8"><strong>Current version: </strong>{{latestVersionRevisionText}}</div>
+    <div class="mb-8"><strong>Original version: </strong>{{originalVersionRevisionText}}</div>
     <p>
       A dataset version refers to a DOI-specific, version-controlled iteration of a dataset. A new version of a dataset must be released when there are any changes to the files or scientific metadata made within a dataset. A dataset revision refers to an update made to dataset metadata (i.e. title, subtitle, description, etc.) that does not require an updated DOI.
     </p>
@@ -59,6 +59,7 @@
         </el-col>
       </el-row>
     </div>
+    <div class="label2"><em>NOTE: If dataset is currently embargoed, you may view the metadata pertaining to the dataset and rquest that access be permitted.</em></div>
   </div>
 </template>
 
@@ -127,9 +128,6 @@ export default {
     font-size: 0.875rem;
     line-height: 1rem;
     
-  }
-  .section-text {
-    font-weight: 600;
   }
   .table-header {
     background-color: $background;
