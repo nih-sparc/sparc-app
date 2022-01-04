@@ -1,12 +1,15 @@
 <template>
   <div class="external-publication-list-item">
-    <a
-      class="dataset-about-info__container--doi-link mb-16"
-      :href="linkFromDoi(publication.doi)"
-      target="_blank"
-    >
-      {{ title }}
-    </a>
+    <u>
+      <a
+        class="dataset-about-info__container--doi-link mb-16"
+        :href="linkFromDoi(publication.doi)"
+        target="_blank"
+      >
+        {{ title }}
+      </a>
+    </u>
+    <span v-if="showDescription">: {{description}}</span>
   </div>
 </template>
 
@@ -22,24 +25,29 @@ export default {
           doi: ''
         }
       }
+    },
+    showDescription: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
-      title: ''
+      title: '',
+      description: ''
     }
   },
 
   created() {
-    this.getTitle()
+    this.getInfo()
   },
 
   methods: {
     /**
      * Get the Title from doi.org
      */
-    getTitle() {
+    getInfo() {
       fetch(this.linkFromDoi(this.publication.doi), {
         method: 'GET',
         headers: { Accept: 'application/json'}
@@ -47,6 +55,7 @@ export default {
         .then(response => response.json())
         .then(json => {
           this.title = json.title
+          this.description = json.description
           this.loading = false
         })
     },

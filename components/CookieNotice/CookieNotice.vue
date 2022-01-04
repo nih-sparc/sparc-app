@@ -9,7 +9,7 @@
           </h2>
           <p>
             To learn more, please refer to the
-            <nuxt-link to="privacy">
+            <nuxt-link to="about/policies-and-standards/privacy-policy">
               Privacy Policy.
             </nuxt-link>
             By closing this banner or clicking accept, you agree to the use of
@@ -59,7 +59,7 @@ export default {
       const today = new Date()
       const expirationDate = new Date(today.setDate(today.getDate() + 30))
       this.$cookies.set('GDPR:accepted', true, { expires: expirationDate })
-      this.$store.dispatch('setHasAcceptedGdpr', true)
+      this.$store.dispatch('layouts/default/setHasAcceptedGdpr', true)
     },
 
     /**

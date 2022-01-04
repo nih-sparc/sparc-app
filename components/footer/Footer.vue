@@ -106,7 +106,9 @@ export default {
   },
 
   computed: {
-    ...mapState(['footerData'])
+    ...mapState('layouts/default', {
+      footerData: state => state.footerData
+    })
   }
 }
 </script>

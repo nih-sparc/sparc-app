@@ -6,7 +6,7 @@
   >
     <el-table-column prop="banner" label="Image" width="160">
       <template slot-scope="scope">
-        <div>
+        <div v-if="scope.row.pennsieve">
           <nuxt-link
             :to="{
               name: 'datasets-datasetId',
@@ -35,7 +35,7 @@
       min-width="400"
     >
       <template slot-scope="scope">
-        <div>
+        <div v-if="scope.row.pennsieve">
           <nuxt-link
             :to="{
               name: 'datasets-datasetId',
@@ -163,12 +163,14 @@ export default {
                     ')'
         }
         default: {
-          return _.get(item, property.propPath)
+          return _.upperFirst(_.get(item, property.propPath))
         }
       }
     },
     getSearchResultsType(item) {
-      return item.types[0].name === 'computational model' ? 'simulation' : 'dataset'
+      return item !== undefined ? 
+        (item.types[0].name === 'computational model' ? 'simulation' : 'dataset') :
+        ''
     }
   }
 }
