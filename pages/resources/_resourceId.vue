@@ -23,7 +23,7 @@
         </span>
       </div>
       <h3>URL</h3>
-      <p>
+      <p class="resource-url">
         <a :href="resource.fields.url" target="_blank">
           {{ resource.fields.url }}
         </a>
@@ -140,5 +140,10 @@ export default {
   right: 14px;
   width: fit-content;
   margin-bottom: 10px;
+}
+
+.resource-url {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
