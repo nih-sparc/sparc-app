@@ -1,11 +1,11 @@
 <template>
   <div class="version-history-container">
     <div class="heading2 mb-8">Versions for this Dataset</div>
-    <div class="mb-8"><strong>Current version: </strong>{{latestVersionRevisionText}}</div>
-    <div class="mb-8"><strong>Original version: </strong>{{originalVersionRevisionText}}</div>
-    <p>
+    <div class="mb-8"><span class="label4">Current version: </span>{{latestVersionRevisionText}}</div>
+    <div class="mb-8"><span class="label4">Original version: </span>{{originalVersionRevisionText}}</div>
+    <div class="mb-16">
       A dataset version refers to a DOI-specific, version-controlled iteration of a dataset. A new version of a dataset must be released when there are any changes to the files or scientific metadata made within a dataset. A dataset revision refers to an update made to dataset metadata (i.e. title, subtitle, description, etc.) that does not require an updated DOI.
-    </p>
+    </div>
     <div class="version-table">
       <el-row class="table-header py-12" type="flex" justify="center">
         <el-col :span="4" :pull="1">

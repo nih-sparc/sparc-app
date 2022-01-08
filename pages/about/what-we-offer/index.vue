@@ -12,7 +12,7 @@
         <p class="share-text">
           SHARE
         </p>
-        <share-links />
+        <share-links :url="pageUrl" :title="title"/>
       </div>
       <div v-if="learnMore" class="subpage">
         <h1>Learn More</h1>
@@ -52,15 +52,16 @@ export default {
 
   mixins: [MarkedMixin],
 
-  asyncData() {
-    return Promise.all([
-      // Get page content
-      client.getEntry(process.env.ctf_what_we_offer_page_id)
-    ])
-      .then(([page]) => {
-        return { ...page.fields }
-      })
-      .catch(console.error)
+  async asyncData() {
+    const page = await client.getEntry(process.env.ctf_what_we_offer_page_id)
+    return {
+      title : page.fields.title,
+      type: page.fields.type,
+      summary: page.fields.summary,
+      description: page.fields.description,
+      learnMore: page.fields.learnMore,
+      slug: page.fields.slug,
+    }
   },
 
   data: () => {
@@ -96,7 +97,14 @@ export default {
           this.$message(failMessage(`Cannot copy to clipboard.`))
         }
       )
-    }
+    },
+    /**
+     * Construct current url 
+     * @returns {String}
+     */
+    pageUrl: function() {
+      return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    },
   }
 }
 </script>

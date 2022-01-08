@@ -142,19 +142,15 @@ export default {
           ? 'tree-counter'
           : 'hide-nr-results'
       return (
-        <el-tooltip
-          placement="top-end"
-          transition="none"
-          open-delay={tooltipDelay}
+        <sparc-tooltip
+          placement="left-center"
+          content={this.capitalize(node.label)}
         >
-          <div slot="content" class="capitalize">
-            {node.label}
-          </div>
-          <span class="custom-tree-node">
+          <span slot="item" class="custom-tree-node">
             <span class="capitalize">{node.label}</span>
             <span class={nrResultsClass}>({nrResults})</span>
           </span>
-        </el-tooltip>
+        </sparc-tooltip>
       )
     },
     onChangeShowAll: function(value) {
@@ -163,6 +159,9 @@ export default {
       } else {
         this.showAll = true
       }
+    },
+    capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
     },
     onCheckChange: function() {
       this.setShowAll()

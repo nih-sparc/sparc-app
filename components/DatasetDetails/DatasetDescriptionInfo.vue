@@ -56,7 +56,22 @@
       <span><strong>Number of subjects: </strong>{{numberSubjects}}</span>
     </div>
     <div class="mb-16">
-      <a 
+      <sparc-tooltip
+        v-if="datasetInfo.embargo"
+        placement="left-center"
+      >
+        <div slot="data">
+          This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
+        </div>
+        <el-button
+          class="secondary"
+          slot="item"
+        >
+          Download Metadata file
+        </el-button>
+      </sparc-tooltip>
+      <a
+        v-else
         :href="downloadMetadataUrl"
         @click.prevent="
           downloadItem({

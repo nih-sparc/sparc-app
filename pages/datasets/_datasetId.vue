@@ -637,7 +637,7 @@ export default {
       return !this.embargoed &&
         (('dataset_images' in this.biolucidaImageData &&
           this.biolucidaImageData.dataset_images.length > 0) ||
-        Object.getOwnPropertyNames(this.scicrunchData).length > 0)
+        Object.keys(this.scicrunchData).length > 0)
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)

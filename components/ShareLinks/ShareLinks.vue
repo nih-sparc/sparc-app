@@ -1,52 +1,39 @@
 <template>
   <div class="share-links">
-    <share-network network="facebook" :url="pageUrl" :title="title">
-      <el-tooltip enterable effect="light" placement="top">
-        <div slot="content">
-          Share On Facebook
-        </div>
-        <svg-icon
-          name="icon-share-facebook"
-          class="remove-outline"
-          height="28"
-          width="28"
-        />
-      </el-tooltip>
-    </share-network>
-    <share-network network="twitter" :url="pageUrl" :title="title">
-      <el-tooltip enterable effect="light" placement="top">
-        <div slot="content">
-          Share On Twitter
-        </div>
-        <svg-icon
-          name="icon-share-twitter"
-          class="remove-outline"
-          height="28"
-          width="28"
-        />
-      </el-tooltip>
-    </share-network>
-    <share-network network="linkedin" :url="pageUrl" :title="title">
-      <el-tooltip enterable effect="light" placement="top">
-        <div slot="content">
-          Share On LinkedIn
-        </div>
-        <svg-icon
-          name="icon-share-linked"
-          class="remove-outline"
-          height="28"
-          width="28"
-        />
-      </el-tooltip>
-    </share-network>
-    <button class="btn-copy-permalink" @click="copyUrl">
-      <el-tooltip enterable effect="light" placement="top">
-        <div slot="content">
-          Copy Link
-        </div>
-        <svg-icon name="icon-permalink" height="28" width="28" />
-      </el-tooltip>
-    </button>
+    <client-only>
+      <share-network network="facebook" :url="pageUrl" :title="title">
+        <sparc-tooltip
+          placement="bottom-center"
+          content="Share On Facebook"
+        >
+          <svg-icon slot="item" name="icon-share-facebook" class="remove-outline" height="2rem" width="1.75rem" />
+        </sparc-tooltip>
+      </share-network>
+      <share-network network="twitter" :url="pageUrl" :title="title">
+        <sparc-tooltip
+          placement="bottom-center"
+          content="Share On Twitter"
+        >
+          <svg-icon slot="item" name="icon-share-twitter" class="remove-outline" height="2rem" width="1.75rem" />
+        </sparc-tooltip>
+      </share-network>
+      <share-network network="linkedin" :url="pageUrl" :title="title">
+        <sparc-tooltip
+          placement="bottom-center"
+          content="Share On LinkedIn"
+        >
+          <svg-icon slot="item" name="icon-share-linked" class="remove-outline" height="2rem" width="1.75rem" />
+        </sparc-tooltip>
+      </share-network>
+      <button class="btn-copy-permalink" @click="copyUrl">
+        <sparc-tooltip
+          placement="bottom-center"
+          content="Copy Link"
+        >
+          <svg-icon slot="item" name="icon-permalink" height="2rem" width="1.75rem" />
+        </sparc-tooltip>
+      </button>
+    </client-only>
   </div>
 </template>
 
@@ -59,6 +46,13 @@ export default {
   computed: {
     pageUrl: function() {
       return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    }
+  },
+
+  props: {
+    title: {
+      type: String,
+      default: ""
     }
   },
 

@@ -19,12 +19,12 @@
         <div v-if="facet.children && showFacet(facet)">
           <div class="capitalize mb-8">{{facet.label}}:</div>
           <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
-            <sparc-tooltip placement="bottom-right" :content="capitalize(child.label)">
+            <sparc-tooltip placement="left-center" :content="capitalize(child.label)">
               <nuxt-link
                 slot="item"
                 :to="getSelectedFacetLink(getFacetId(child))"
               >
-                <div class="my-2 px-12 facet-button capitalize">
+                <div class="my-2 px-12 facet-button capitalize label2">
                   {{child.label}}
                 </div>
               </nuxt-link>
@@ -41,7 +41,7 @@
           :key="contributor.id"
         >
           <li class="contributor-list">
-            <sparc-tooltip placement="bottom-right" :content="getContributorFullName(contributor)">
+            <sparc-tooltip placement="left-center" :content="getContributorFullName(contributor)">
               <nuxt-link
                 slot="item"
                 :to="getSelectedContributorLink(contributor)"
@@ -175,8 +175,8 @@ hr {
   border-radius: 15px;
   max-width: fit-content;
   background-color: #f9f2fc;
+  color: $purple;
   border: 1px solid $purple;
-  font-weight: 500;
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;

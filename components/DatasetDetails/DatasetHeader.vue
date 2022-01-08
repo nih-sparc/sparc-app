@@ -7,7 +7,7 @@
               {{ subtitle }}
             </h3>
             <h2 class="heading2">
-              {{ formatTitle(title) }}
+              {{ title }}
             </h2>
             <div class="dataset-owners">
               <span class="label4">Contributors:&nbsp;</span>
@@ -55,17 +55,14 @@
                 </span>
                 <span>
                   <template v-if="license">
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
+                    <sparc-tooltip
+                      placement="left-center"
                       :content="licenseName"
-                      placement="top"
-                      :visible-arrow="false"
                     >
-                      <a class="link1" :href="licenseLink" target="_blank">
+                      <a slot="item" class="link1" :href="licenseLink" target="_blank">
                         {{ license }}
                       </a>
-                    </el-tooltip>
+                    </sparc-tooltip>
                   </template>
                   <template v-else>
                     No License Selected
@@ -208,13 +205,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Formats title length for regular viewports
-     * @param {String} title
-     */
-    formatTitle: function(title) {
-      return title.length > 150 ? title.substring(0, 150) + '...' : title
-    },
     /**
      * Formats description based on length for regular viewports
      * @param {String} description
