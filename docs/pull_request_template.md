@@ -21,4 +21,5 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have utilized components from the Design System Library where applicable
 - [ ] I have added unit tests that prove my fix is effective or that my feature works
