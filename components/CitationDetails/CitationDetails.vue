@@ -27,7 +27,7 @@
       </div>
     </div>
     <p style="text-align: end">
-      More citations avaialble at:
+      More citations available at:
       <a
         :href="`https://citation.crosscite.org/?doi=${doiValue}`"
         target="_blank"
