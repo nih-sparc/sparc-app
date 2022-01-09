@@ -92,7 +92,6 @@ import createAlgoliaClient from '@/plugins/algolia.js'
 
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
-import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
 
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
@@ -321,7 +320,6 @@ export default {
     DatasetActionBox,
     CitationDetails,
     DatasetCitationsInfo,
-    DownloadDataset,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
