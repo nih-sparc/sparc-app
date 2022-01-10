@@ -2,37 +2,36 @@
   <div>
     <div class="heading2 mb-8">Download Dataset</div>
     <div class="mb-8">
-      <strong>Dataset size: </strong>{{ formatMetric(datasetInfo.size) }}
+      <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
     </div>
     <div class="bx--row">
       <div class="bx--col-sm-4 bx--col-md-8 bx--col">
         <div v-if="!isDatasetSizeLarge">
-          <div><strong>Option 1 - Direct download: </strong>Download a zip archive of the raw files and metadata directly to your computer free of charge.</div>
+          <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of the raw files and metadata directly to your computer free of charge.</div>
           <a :href="downloadUrl">
             <el-button class="my-16">Download full dataset</el-button>
           </a>
         </div>
         <div v-else>
-          <div><strong>Option 1 - Direct download: </strong>Direct downloads are only available free of charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS. </div>
+          <div><span class="label4">Option 1 - Direct download: </span>Direct downloads are only available free of charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS. </div>
         </div>
       </div>
       <div class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
-        <div>
-          <strong>Option 2 - AWS download: </strong>
+        <div class="mb-8">
+          <span class="label4">Option 2 - AWS download: </span>
           Download or transfer the dataset to your AWS Account. The raw files and metadata are stored in an AWS S3 Requester Pays bucket. You can learn more about downloading data from AWS on our
           <a href="https://sparc.science/help/zQfzadwADutviJjT19hA5" target="_blank">Help Page</a>.
         </div>
-        <div class="aws-block mb-16 p-16">
-          <div class="heading2">Resource Type</div>
-          <div class="mb-8">Amazon S3 Bucket (Requester Pays) *</div>
-          <div class="heading2 mb-0">Amazon S3 Bucket</div>
+        <div class="aws-block mb-16 px-16 pb-16 pt-8">
+          <div class="heading3">Resource Type</div>
+          <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
           <div class="download-text-block mb-8 p-4">
             {{ datasetArn }}
             <button class="copy-button" @click="handleCitationCopy(datasetArn)">
               <img src="../../static/images/copyIcon.png" />
             </button>
           </div>
-          <div class="heading2 mb-0">AWS Region</div>
+          <div class="heading3 mb-0">AWS Region</div>
           <div class="download-text-block p-4 aws">
             {{ awsMessage}}
             <button class="copy-button" @click="handleCitationCopy(awsMessage)">
@@ -40,12 +39,9 @@
             </button>
           </div>
         </div>
-        <div class="disclosure-text-block">
-          <p>*Requester pays means that any costs associated with downloading the data will be charged to your AWS account.
-            For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS Pricing documentation.</a>
-          </p>
-          <div>
-          </div>
+        <div>
+          * Requester pays means that any costs associated with downloading the data will be charged to your AWS account.
+          For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS Pricing documentation.</a>
         </div>
       </div>
     </div>
@@ -55,7 +51,7 @@
     </h2>
     <div class="flex mb-16">
       <span>
-        <strong>Dataset size: </strong>{{ formatMetric(datasetInfo.size) }}
+        <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
       </span>
       <span class="dataset-link inline">
         <nuxt-link

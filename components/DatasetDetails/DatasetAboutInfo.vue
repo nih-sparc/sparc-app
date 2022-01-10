@@ -3,17 +3,17 @@
     <div class="heading2 mb-8">
       About this dataset
     </div>
-    <p><strong>Title: </strong>{{datasetTitle}}</p>
-    <p><strong>First Published: </strong>{{firstPublishedDate}}</p>
-    <p><strong>Last Published: </strong>{{latestVersionDate}}</p>
+    <div class="mb-16"><span class="label4">Title: </span>{{datasetTitle}}</div>
+    <div class="mb-16"><span class="label4">First Published: </span>{{firstPublishedDate}}</div>
+    <div class="mb-16"><span class="label4">Last Published: </span>{{latestVersionDate}}</div>
     <hr />
     <div class="about-section-container">
-      <span class="author-section-name-column"><strong>Contact Author: </strong></span>
+      <span class="author-section-name-column label4">Contact Author: </span>
       <span>
         <div>{{datasetOwnerName}}</div>
         <div>
           <a
-          :href="`mailto:${datasetOwnerEmail}`"
+            :href="`mailto:${datasetOwnerEmail}`"
           >
             {{ datasetOwnerEmail }}
           </a>
@@ -21,29 +21,29 @@
       </span>
     </div>
     <hr />
-    <p><strong>Award: </strong>{{awardSparcNumber}}</p>
+    <div class="mb-16"><span class="label4">Award: </span>{{awardSparcNumber}}</div>
     <hr />
-    <p><strong>Associated project: </strong>
+    <div class="mb-16"><span class="label4">Associated project: </span>
       <nuxt-link
         :to="associatedProjectLink"
       >
         {{associatedProjectTitle}}
       </nuxt-link>
-    </p>
-    <p><strong>Institution: </strong>{{associatedProjectInstitution}}</p>
+    </div>
+    <div class="mb-16"><span class="label4">Institution: </span>{{associatedProjectInstitution}}</div>
     <hr />
     <h2 class="heading2 mb-8">
       About this version
     </h2>
-    <p><strong>{{versionRevisionText}}: </strong>Publication date: {{publicationDate}} (Last updated: {{lastPublishedDate}})</p>
-    <p><strong>Dataset DOI: </strong>
+    <div class="mb-16"><span class="label4">{{versionRevisionText}}: </span>Publication date: {{publicationDate}} (Last updated: {{lastPublishedDate}})</div>
+    <div class="mb-16"><span class="label4">Dataset DOI: </span>
       <a
           :href="doiLink"
           target="_blank"
-        >
-          {{ doiLink }}
-        </a>
-    </p>
+      >
+        {{ doiLink }}
+      </a>
+    </div>
   </div>
 </template>
 

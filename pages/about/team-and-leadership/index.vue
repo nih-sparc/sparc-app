@@ -52,15 +52,16 @@ export default {
 
   mixins: [MarkedMixin],
 
-  asyncData() {
-    return Promise.all([
-      // Get page content
-      client.getEntry(process.env.ctf_team_and_leadership_page_id)
-    ])
-      .then(([page]) => {
-        return { ...page.fields }
-      })
-      .catch(console.error)
+  async asyncData() {
+    const page = await client.getEntry(process.env.ctf_team_and_leadership_page_id)
+    return {
+      title : page.fields.title,
+      type: page.fields.type,
+      summary: page.fields.summary,
+      description: page.fields.description,
+      learnMore: page.fields.learnMore,
+      slug: page.fields.slug,
+    }
   },
 
   data: () => {

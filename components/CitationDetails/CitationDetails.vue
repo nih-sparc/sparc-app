@@ -4,7 +4,7 @@
       Dataset Citation
     </div>
     <div v-for="citationType in citationTypes" :key="citationType.type">
-      <div class="mb-8"><strong>{{citationType.label}}</strong></div>
+      <div class="label4 mb-8">{{citationType.label}}</div>
       <div class="info-citation mb-16 py-16 pl-16 pr-24" v-if="!hasCitationError" v-loading="citationLoading">
         <button class="copy-button" @click="handleCitationCopy(citationType)">
           <img src="../../static/images/copyIcon.png" />
@@ -15,21 +15,19 @@
           v-html="citationType.citationText"
         />
       </div>
-      <div v-else>
-        <p>
-          <strong>Internal Server Error</strong><br />
-          Sorry, something went wrong.<br />
-          The dataset citation generator (<a
-            href="https://citation.crosscite.org/"
-            target="_blank"
-          >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
-          request.<br />
-          Please come back later.
-        </p>
+      <div class="info-citation mb-16 py-16 pl-16 pr-24" v-else>
+        <span class="label4">Internal Server Error</span><br />
+        Sorry, something went wrong.<br />
+        The dataset citation generator (<a
+          href="https://citation.crosscite.org/"
+          target="_blank"
+        >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
+        request.<br />
+        Please come back later.
       </div>
     </div>
     <p style="text-align: end">
-      More citations avaialble at:
+      More citations available at:
       <a
         :href="`https://citation.crosscite.org/?doi=${doiValue}`"
         target="_blank"

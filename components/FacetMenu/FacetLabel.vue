@@ -4,10 +4,10 @@
     <h2 class="title">
       <span>
         {{ label }}
-        <el-tooltip placement="top-start" transition="none">
-          <div slot="content" v-html="tooltip">{{tooltip}}</div>
-          <svg-icon v-show="showHelpIcon" class="purple-fill" icon="icon-help" width="26" height="26" />
-        </el-tooltip>
+        <sparc-tooltip placement="left-center">
+          <div slot="data" v-html="tooltip"/>
+          <svg-icon slot="item" v-show="showHelpIcon" class="purple-fill" icon="icon-help" width="26" height="26" />
+        </sparc-tooltip>
       </span>
       <svg-icon
         v-show="showCollapsibleArrow"

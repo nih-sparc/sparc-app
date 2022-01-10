@@ -58,7 +58,7 @@
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
                 <i class="file-icon el-icon-folder" />
-                <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                <sparc-tooltip placement="left-center" :content="scope.row.name">
                   <nuxt-link
                     slot="item"
                     class="file-name truncated"
@@ -76,21 +76,21 @@
                 />
                 <i v-else class="file-icon el-icon-document" />
                 <div v-if="isFileOpenable(scope)" class="truncated">
-                    <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                    <sparc-tooltip placement="left-center" :content="scope.row.name">
                       <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
                         {{ scope.row.name }}
                       </a>
                     </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
-                  <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name">
                     <nuxt-link slot="item" class="truncated" :to="getScaffoldLink(scope)">
                       {{ scope.row.name }}
                     </nuxt-link>
                   </sparc-tooltip>
                 </div>
                 <div v-else class="truncated">
-                  <sparc-tooltip placement="bottom-right" :content="scope.row.name">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name">
                     <nuxt-link
                       slot="item"
                       class="truncated"
@@ -143,96 +143,65 @@
                 >
                   <input v-model="zipData" type="hidden" name="data" />
                 </form>
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Download file"
                 >
-                  <div slot="content">
-                    Download file
-                  </div>
-                  <svg-icon
-                    name="icon-download"
-                    height="1.5rem"
-                    width="1.5rem"
-                  />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="isFileOpenable(scope)"
                 class="circle"
                 @click="openFile(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="View file in web viewer"
                 >
-                  <div slot="content">
-                    View file in web viewer
-                  </div>
-                  <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-open" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="isScaffoldMetaFile(scope)"
                 class="circle"
                 @click="openScaffold(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open as 3d scaffold"
                 >
-                  <div slot="content">
-                    Open as 3d scaffold
-                  </div>
-                  <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="hasOsparcViewer(scope)"
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
                 >
-                  <div slot="content">
+                  <div slot="data">
                     Open in oSPARC. More info on oSPARC can be found
                     <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
                       <u>here</u>
                     </a>
                   </div>
-                  <svg-icon name="icon-view" height="1.5em" width="1.5em" />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="isFileOpenable(scope)"
                 class="circle"
                 @click="copyS3Url(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Copy link"
                 >
-                  <div slot="content">
-                    Copy link
-                  </div>
-                  <svg-icon
-                    name="icon-permalink-nobg"
-                    height="1.5rem"
-                    width="1.5rem"
-                  />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
             </template>
             <template v-else>
@@ -316,7 +285,6 @@ export default {
       previousPath: '',
       schemaRootPath: '',
       data: [],
-      tooltipDelay: 300,
       isLoading: false,
       hasError: false,
       limit: 500,
