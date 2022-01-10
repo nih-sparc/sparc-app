@@ -14,9 +14,9 @@
     </div>
     <pagination
       v-if="allStories.length > pageSize"
+      :selected="curSearchPage"
       :page-size="pageSize"
       :total-count="allStories.length"
-      layout="prev, pager, next"
       @select-page="pageChange"
     />
   </div>
@@ -26,7 +26,6 @@
 import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import Pagination from '@/components/Pagination/Pagination.vue'
 import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue'
 
 const client = createClient()
@@ -38,7 +37,6 @@ export default {
     Breadcrumb,
     PageHero,
     CommunitySpotlightListings,
-    Pagination
   },
 
   async asyncData() {
