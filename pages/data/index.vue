@@ -107,15 +107,12 @@
                       @update-page-size="updateDataSearchLimit"
                     />
                   </p>
-                  <el-pagination
+                  <pagination
                     v-if="searchData.limit < searchData.total"
-                    :small="isMobile"
                     :page-size="searchData.limit"
-                    :pager-count="5"
-                    :current-page="curSearchPage"
-                    layout="prev, pager, next"
-                    :total="searchData.total"
-                    @current-change="onPaginationPageChange"
+                    :total-count="searchData.total"
+                    :selected="curSearchPage"
+                    @select-page="onPaginationPageChange"
                   />
                 </div>
                 <div v-loading="isLoadingSearch" class="table-wrap">
@@ -133,15 +130,12 @@
                       @update-page-size="updateDataSearchLimit"
                     />
                   </p>
-                  <el-pagination
+                  <pagination
                     v-if="searchData.limit < searchData.total"
-                    :small="isMobile"
+                    :selected="curSearchPage"
                     :page-size="searchData.limit"
-                    :pager-count="5"
-                    :current-page="curSearchPage"
-                    layout="prev, pager, next"
-                    :total="searchData.total"
-                    @current-change="onPaginationPageChange"
+                    :total-count="searchData.total"
+                    @select-page="onPaginationPageChange"
                   />
                 </div>
               </el-col>
@@ -167,7 +161,6 @@ import {
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const SparcInfoSearchResults = () =>
@@ -244,7 +237,6 @@ export default {
     PageHero,
     DatasetFacetMenu,
     SearchForm,
-    PaginationMenu,
     NewsAndEventsFacetMenu,
     ToolsAndResourcesFacetMenu,
     SparcInfoFacetMenu
@@ -808,21 +800,6 @@ export default {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
   padding: 16px;
-}
-::v-deep .el-pagination {
-  margin-top: 1.5em;
-  text-align: right;
-  background-color: transparent;
-  @media screen and (max-width: 28em) {
-    margin-top: 5px;
-    padding-left: 0;
-    .btn-prev {
-      padding-left: 0;
-    }
-  }
-  button {
-    background-color: transparent;
-  }
 }
 .search-heading {
   align-items: center;
