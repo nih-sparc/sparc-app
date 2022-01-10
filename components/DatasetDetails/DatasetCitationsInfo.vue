@@ -16,6 +16,15 @@
       <div v-for="(item, index) in associatedPublications" :key="index">
         <external-pub-link class="mb-8" :publication="item" />
       </div>
+      <hr v-if="preprints" />
+    </div>
+    <div v-if="preprints">
+      <div class="heading2 mb-8">
+        Preprints
+      </div>
+      <div v-for="(item, index) in preprints" :key="index">
+        <external-pub-link class="mb-8" :publication="item" />
+      </div>
     </div>
   </div>
 </template>
@@ -23,6 +32,9 @@
 <script>
 
 import ExternalPubLink from '@/components/ExternalPubLink/ExternalPubLink'
+import { isEmpty } from 'ramda'
+
+const PREPRINT_DOI_LINKS = ['https://doi.org/10.1101/']
 
 export default {
   name: 'DatasetCitationsInfo',
@@ -40,6 +52,20 @@ export default {
       default: []
     },
   },
+  computed: {
+    preprints: function() {
+      let preprintPublications = []
+      const allPublications = this.primaryPublications ? this.primaryPublications.concat(this.associatedPublications) : []
+      allPublications.forEach(publication => {
+        const publicationDoiLink = `https://doi.org/${publication.doi}`
+        if(PREPRINT_DOI_LINKS.some(preprintDoiLink => publicationDoiLink.includes(preprintDoiLink)))
+        {
+          preprintPublications.push(publication)
+        }
+      })
+      return isEmpty(preprintPublications) ? undefined : preprintPublications
+    }
+  }
 }
 </script>
 
