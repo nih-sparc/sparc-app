@@ -53,7 +53,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" fixed width="45" />
-        <el-table-column fixed prop="name" label="Name" min-width="150" sortable :sort-method="(a, b) => sortWithCaseInsensitive(a.name, b.name)">
+        <el-table-column fixed prop="name" label="Name" :min-width="25" sortable :sort-method="(a, b) => sortWithCaseInsensitive(a.name, b.name)">
           <template slot-scope="scope">
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
@@ -113,7 +113,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="280" sortable>
+        <el-table-column prop="fileType" label="File type" :min-width="25" sortable>
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -127,11 +127,11 @@
         <el-table-column
           prop="size"
           label="Size"
-          width="220"
+          :min-width="25"
           :formatter="formatStorage"
           sortable
         />
-        <el-table-column label="Action" width="200">
+        <el-table-column label="Action" :min-width="25">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'File'">
               <div class="circle" @click="executeDownload(scope.row)">
