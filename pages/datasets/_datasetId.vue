@@ -20,8 +20,9 @@
               :numCitations="numCitations"
               :numDownloads="numDownloads"
             />
-            <div class="tabs-container mt-16 mb-0 mx-0">
+            <div class="tabs-container mt-16 mb-0 mx-0 px-16 pt-16">
               <content-tab-card
+                class="mr-16"
                 id="datasetDetailsTabsContainer"
                 :tabs="tabs"
                 :active-tab-id="activeTabId"
@@ -30,6 +31,7 @@
                 routeName="datasetDetailsTab"
               >
                 <dataset-description-info
+                  class="p-16"
                   v-show="activeTabId === 'abstract'"
                   :markdown="markdown"
                   :dataset-records="datasetRecords"
@@ -37,21 +39,25 @@
                   :dataset-tags="datasetTags"
                 />
                 <dataset-about-info
+                  class="p-16"
                   v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision"
                   :latestVersionDate="latestVersionDate"
                   :associated-project="associatedProject"
                 />
                 <citation-details
+                  class="p-16"
                   v-show="activeTabId === 'cite'"
                   :doi-value="datasetInfo.doi"
                 />
                 <dataset-files-info
+                  class="p-16"
                   v-if="hasFiles"
                   v-show="activeTabId === 'files'"
                   :osparc-viewers="osparcViewers"
                 />
                 <images-gallery
+                  class="p-16"
                   v-if="hasGalleryImages"
                   v-show="activeTabId === 'images'"
                   :markdown="markdown.markdownTop"
@@ -59,12 +65,14 @@
                   :dataset-scicrunch="scicrunchData"
                 />
                 <dataset-citations-info
+                  class="p-16"
                   v-if="hasCitations"
                   v-show="activeTabId === 'citations'"
                   :primary-publications="primaryPublications"
                   :associated-publications="associatedPublications"
                 />
                 <version-history
+                  class="p-16"
                   v-if="canViewVersions"
                   v-show="activeTabId === 'versions'"
                   :versions="versions"
@@ -1013,6 +1021,8 @@ export default {
 }
 .tabs-container {
   border: solid 1px $lineColor1;
+  background-color: white;
+  overflow-x: auto;
 }
 ::v-deep .details-tabs__container--data {
   padding-top: 0;

@@ -122,8 +122,7 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .version-history-container {
-  min-width: 30rem;
-  width: 100%;
+  min-width: 25rem;
   .version-table {
     font-size: 0.875rem;
     line-height: 1rem;
