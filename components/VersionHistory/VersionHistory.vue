@@ -59,7 +59,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="label2"><em>NOTE: If dataset is currently embargoed, you may view the metadata pertaining to the dataset and rquest that access be permitted.</em></div>
+    <div class="label2"><em>NOTE: If dataset is currently embargoed, you may view the metadata pertaining to the dataset and request that access be permitted.</em></div>
   </div>
 </template>
 
