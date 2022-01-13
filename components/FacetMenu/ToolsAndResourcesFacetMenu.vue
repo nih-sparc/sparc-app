@@ -42,10 +42,10 @@ const typesCategory = {
     },
     {
       label: 'Data and Models',
-      id: 'Databases',
+      id: 'Data and Models',
       children: [],
       facetPropPath: 'type',
-      key: 'Databases'
+      key: 'Data and Models'
     },
     {
       label: 'Information Services',
