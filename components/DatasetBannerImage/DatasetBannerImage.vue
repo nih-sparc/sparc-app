@@ -53,7 +53,7 @@ export default {
 
 <style scoped lang="scss">
 .dataset-image {
-  width: -webkit-fill-available;
+  width: 100%;
   height: auto;
 }
 </style>
