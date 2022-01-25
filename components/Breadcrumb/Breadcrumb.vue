@@ -1,14 +1,14 @@
 <template>
-  <div class="breadcrumb">
-    <p>
+  <div class="p-12 breadcrumb nav3">
+    <div>
       <template v-for="item in breadcrumb">
         <nuxt-link :key="item.label" :to="item.to">
           {{ item.label }}
         </nuxt-link>
         >
       </template>
-      {{ formatTitle(title) }}
-    </p>
+      {{ title }}
+    </div>
   </div>
 </template>
 
@@ -30,38 +30,18 @@ export default Vue.extend<never, Methods, never, Props>({
       default: ''
     }
   },
-
-  methods: {
-    /**
-     * Formats breadcrumb length
-     * @param {String} breadcrumb
-     */
-    formatTitle: function(title) {
-      return title.length > 32 ? title.substring(0, 32) + '...' : title
-    }
-  }
 })
 </script>
 
 <style lang="scss">
-@import '../../assets/_variables.scss';
-.breadcrumb {
-  background: $purple-gray;
-  height: 2.5rem;
-  margin-top: 0;
-  p {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 16px;
-    padding-left: 1rem;
-    padding-top: 0.75rem;
-    margin-top: 0;
-    color: $midnight;
-  }
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
+.breadcrumb {
+  background: $lineColor2;
+  height: fit-content;
   a {
     text-decoration: none;
-    color: $midnight;
+    color: $darkBlue;
   }
 }
 </style>

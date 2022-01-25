@@ -1,8 +1,5 @@
 <template>
   <div v-loading="loadingMarkdown" class="dataset-description-info">
-    <div class="heading2 mb-8">
-      Methodology
-    </div>
     <div
       class="col-xs-12 description-container"
       v-html="parseMarkdown(markdown.markdownTop)"

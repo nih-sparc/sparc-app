@@ -59,7 +59,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="label2"><em>NOTE: If dataset is currently embargoed, you may view the metadata pertaining to the dataset and request that access be permitted.</em></div>
+    <div v-if="embargoed" class="label2"><em>NOTE: If dataset is currently embargoed, you may view the metadata pertaining to the dataset and request that access be permitted.</em></div>
   </div>
 </template>
 
@@ -106,6 +106,9 @@ export default {
       let revision = this.versions[originalVersionPosition].revision || '0'
       let date = this.formatDate(this.versions[originalVersionPosition].firstPublishedAt)
       return `Version ${version}, Revision ${revision}; ${date}`
+    },
+    embargoed: function() {
+      return propOr(false, 'embargo', this.datasetInfo)
     },
   },
   methods: {
