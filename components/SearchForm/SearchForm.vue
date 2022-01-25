@@ -66,7 +66,6 @@ input {
   border-radius: .2rem;
   box-sizing: border-box;
   border: none;
-  color: #909399;
   flex: 1;
   font-size: 0.875rem;
   outline: none;
