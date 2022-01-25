@@ -541,9 +541,6 @@ export default {
   .el-select {
     width: 150px;
   }
-  ::v-deep .el-input__inner {
-    color: $medium-gray;
-  }
 }
 
 .nav-main-container__search-button {
