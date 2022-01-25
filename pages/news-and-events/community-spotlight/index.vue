@@ -5,7 +5,7 @@
       <h1>Community Spotlight</h1>
       <br />
       <p>
-        Hear about how the SPARC community are using the SPARC portal, including
+        Hear about how the SPARC community are using the SPARC Portal, including
         Success Stories and Fireside Chats. Also, keep up to date with Community Announcements.
       </p>
     </page-hero>
