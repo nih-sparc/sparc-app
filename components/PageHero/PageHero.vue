@@ -41,7 +41,7 @@ export default {
     line-height: 1.2;
   }
   .bx--grid {
-    max-width: 1280px;
+    max-width: 80em;
     padding: 0;
     .bx--row {
       align-items: center;
