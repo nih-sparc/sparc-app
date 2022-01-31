@@ -1,13 +1,15 @@
 <template>
 <div class="page-hero">
   <div class="bx--grid">
-    <div class="bx--row">
-      <div class="bx--col-sm-4 bx--col-md-8 bx--col-lg-10 bx--col-xlg-10 py-32 px-0 text-container">
-        <slot />
-      </div>
-      <div class="bx--col-sm-0 bx--col-md-0 bx--col-lg-6 bx--col-xlg-6">
-        <div v-if="$slots['image']" class="graphic-container">
-          <slot name="image" />
+    <div class="container">
+      <div class="bx--row">
+        <div class="bx--col-sm-4 bx--col-md-8 bx--col-lg-11 bx--col-xlg-11 py-16 text-container">
+          <slot />
+        </div>
+        <div class="bx--col-sm-0 bx--col-md-0 bx--col-lg-5 bx--col-xlg-5">
+          <div v-if="$slots['image']" class="graphic-container">
+            <slot name="image" />
+          </div>
         </div>
       </div>
     </div>
@@ -41,14 +43,10 @@ export default {
     line-height: 1.2;
   }
   .bx--grid {
-    max-width: 80em;
     padding: 0;
     .bx--row {
       align-items: center;
       margin: 0;
-    }
-    .bx--col {
-      padding: 0;
     }
   }
   @media (min-width: 80em) {
