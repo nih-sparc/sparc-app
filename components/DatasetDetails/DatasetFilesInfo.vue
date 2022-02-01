@@ -5,7 +5,7 @@
       <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
     </div>
     <div class="bx--row">
-      <div class="bx--col-sm-4 bx--col-md-8 bx--col">
+      <div class="bx--col-sm-4 bx--col-md-8 bx--col left-column">
         <div v-if="!isDatasetSizeLarge">
           <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of the raw files and metadata directly to your computer free of charge.</div>
           <a :href="downloadUrl">
@@ -176,8 +176,17 @@ hr {
   margin-top: 1rem;
   border-top: none;
 }
-.bx--col {
-  padding-left: 1rem;
+.bx--row {
+  margin: 0;
+}
+[class*="bx--col"] {
+  padding: 0;
+  @media (min-width: 64em) {
+    padding: 1em;
+  }
+}
+.left-column {
+  padding-left: 0;
 }
 .aws-download-column {
   @media (min-width: 64rem) {
