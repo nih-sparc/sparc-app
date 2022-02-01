@@ -134,7 +134,7 @@
         <el-table-column label="Action" width="200">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'File'">
-              <div class="circle" @click="executeDownload(scope.row)">
+              <div v-if="!isFileTooLarge(scope.row)" class="circle" @click="executeDownload(scope.row)">
                 <form
                   id="zipForm"
                   ref="zipForm"
@@ -376,6 +376,11 @@ export default {
         this.isMicrosoftFileType(scope) ||
         allowableExtensions.includes(fileType)
       )
+    },
+
+    isFileTooLarge(file) {
+      const fileSize = propOr(0, 'size', file)
+      return fileSize > 5000000000
     },
 
     handleSelectionChange(val) {
