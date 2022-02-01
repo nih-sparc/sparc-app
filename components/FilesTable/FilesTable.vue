@@ -153,7 +153,7 @@
               <div v-else class="circle disabled">
                 <sparc-tooltip
                   placement="bottom-center"
-                  content="Files over 5GB in size must be downloaded via AWS S3"
+                  content="Files over 5GB in size must be downloaded via AWS"
                 >
                   <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
                 </sparc-tooltip>
@@ -225,14 +225,46 @@
         @close="() => setDialogSelectedFile(null)"
       />
     </div>
-    <bf-download-file
+    <sparc-tooltip
+      v-if="selected.length == 0"
+      class="tooltip"
+      placement="bottom-center"
+      content="You must select a file to download"
+    >
+      <bf-download-file
+        slot="item"
         class="mt-16"
-        :disabled="selected.length == 0"
+        disabled
         :selected="selected"
         :dataset="datasetInfo"
         :file-path="path"
         @remove-selection="removeSelection"
       />
+    </sparc-tooltip>
+    <sparc-tooltip
+      v-else-if="selectedFilesSizeTooLarge"
+      class="tooltip"
+      placement="bottom-center"
+      content="Selected file size(s) exceed 5GB"
+    >
+      <bf-download-file
+        slot="item"
+        class="mt-16"
+        disabled
+        :selected="selected"
+        :dataset="datasetInfo"
+        :file-path="path"
+        @remove-selection="removeSelection"
+      />
+    </sparc-tooltip>
+    <bf-download-file
+      v-else
+      class="mt-16"
+      :selected="selected"
+      :dataset="datasetInfo"
+      :file-path="path"
+      @remove-selection="removeSelection"
+    />
   </div>
 </template>
 
@@ -357,6 +389,13 @@ export default {
      */
     zipitUrl: function() {
       return process.env.zipit_api_host
+    },
+    selectedFilesSizeTooLarge: function() {
+      let totalSize = 0
+      this.selected.forEach(file => {
+        totalSize += file.size
+      })
+      return totalSize >= process.env.max_download_size
     }
   },
 
@@ -388,7 +427,7 @@ export default {
 
     isFileTooLarge(file) {
       const fileSize = propOr(0, 'size', file)
-      return fileSize > 5000000000
+      return fileSize > process.env.max_download_size
     },
 
     handleSelectionChange(val) {
@@ -656,6 +695,9 @@ export default {
   background: none;
   height: auto;
 }
+.tooltip {
+  width: fit-content;
+}
 .files-table-header {
   align-items: center;
   display: flex;
@@ -719,7 +761,7 @@ export default {
 }
 
 .disabled {
-  background-color: $lightGrey;
+  opacity: .6;
 }
 
 ::v-deep .el-table {
