@@ -150,6 +150,14 @@
                   <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
                 </sparc-tooltip>
               </div>
+              <div v-else class="circle disabled">
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Files over 5GB in size must be downloaded via AWS S3"
+                >
+                  <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
               <div
                 v-if="isFileOpenable(scope)"
                 class="circle"
@@ -704,9 +712,14 @@ export default {
   border-radius: 0.75em; /* or 50% */
 
   background-color: $purple;
+
   color: #fff;
   text-align: center;
   cursor: pointer;
+}
+
+.disabled {
+  background-color: $lightGrey;
 }
 
 ::v-deep .el-table {
