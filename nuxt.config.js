@@ -17,6 +17,11 @@ export default {
         hid: 'description',
         name: 'description',
         content: process.env.npm_package_description || ''
+      },
+      {
+        hid: 'keywords', 
+        name: 'keywords', 
+        content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
       }
     ],
     link: [
@@ -91,7 +96,7 @@ export default {
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
-    show_facet_menu: process.env.SHOW_FACET_MENU || 'false'
+    show_facet_menu: process.env.SHOW_FACET_MENU || 'false',
   },
 
   serverMiddleware: [
