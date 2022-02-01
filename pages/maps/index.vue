@@ -119,7 +119,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .maps {
-  .page-hero__copy p {
+  .text-container p {
     @media (min-width: 48em) {
       font-size: 0.9375rem;
       line-height: 1.5rem;

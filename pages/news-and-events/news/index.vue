@@ -122,9 +122,4 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
 .page-wrap {
   margin-bottom: 2.5rem;
 }
-::v-deep {
-  .page-hero__copy {
-    max-width: none;
-  }
-}
 </style>
