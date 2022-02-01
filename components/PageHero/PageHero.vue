@@ -37,10 +37,11 @@ export default {
   color: #f0f2f5;
   font-size: 1em;
   line-height: 1.5rem;
+  font-weight: 400;
   h1 {
-    font-size: 1.75em;
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
+    font-size: 2em;
+    line-height: 2.75rem;
+    font-weight: 500;
   }
   .bx--grid {
     padding: 0;
@@ -48,10 +49,6 @@ export default {
       align-items: center;
       margin: 0;
     }
-  }
-  @media (min-width: 80em) {
-    font-size: 1.25em;
-    line-height: 2rem;
   }
   .graphic-container {
     display: flex;
@@ -63,7 +60,6 @@ export default {
   .text-container {
     @media (max-width: 80em) {
       padding-left: 1em;
-      padding-right: 1em;
     }
     ::v-deep a {
       color: white;
