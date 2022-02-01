@@ -725,45 +725,36 @@ export default {
 .file-name-wrap {
   display: flex;
 }
-
 .truncated {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .file-name {
   color: $purple;
 }
-
 .file-icon {
   color: #000;
   font-size: 16px;
   flex-shrink: 0;
   margin: 3px 8px 0 0;
 }
-
 .circle {
   display: inline-flex;
   height: 1.5em;
   width: 1.5em;
   line-height: 1.5em;
   margin-right: 4px;
-
   -moz-border-radius: 0.75em; /* or 50% */
   border-radius: 0.75em; /* or 50% */
-
   background-color: $purple;
-
   color: #fff;
   text-align: center;
   cursor: pointer;
 }
-
 .disabled {
   opacity: .6;
 }
-
 ::v-deep .el-table {
   th {
     .cell {
