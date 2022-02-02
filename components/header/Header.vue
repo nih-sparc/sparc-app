@@ -350,11 +350,11 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     align-items: center;
   }
 }
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (min-width: 320px) and (max-width: 1120px) {
   .overlay {
     position: absolute;
     top: 56px;
@@ -366,7 +366,7 @@ export default {
   }
 }
 
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (min-width: 320px) and (max-width: 1120px) {
   .search-overlay {
     position: absolute;
     top: 56px;
@@ -380,7 +380,7 @@ export default {
 
 .divider {
   display: none;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     border: 0;
     clear: both;
     display: block;
@@ -419,7 +419,7 @@ export default {
     padding-right: 18px;
     text-decoration: none;
   }
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     & {
       display: none;
     }
@@ -433,7 +433,7 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
@@ -447,7 +447,7 @@ export default {
     &--social {
       display: none;
     }
-    @media (min-width: 320px) and (max-width: 1023px) {
+    @media (min-width: 320px) and (max-width: 1120px) {
       display: flex;
       flex-direction: column;
       a {
@@ -498,7 +498,7 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -512,7 +512,7 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     height: 2rem;
     width: 100%;
     margin-right: 0;
@@ -526,7 +526,7 @@ export default {
   justify-content: flex-end;
   width: 54%;
   margin-right: 1rem;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     width: 0;
   }
 }
@@ -535,7 +535,7 @@ export default {
   width: 30vw;
   height: 34px;
   border-radius: 4px;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     display: none;
   }
   .el-select {
@@ -551,7 +551,7 @@ export default {
   margin-left: 9px;
   margin-top: 1px;
   border: none;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     display: none;
   }
 }
@@ -592,7 +592,7 @@ export default {
     color: $app-primary-color;
   }
 
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     & {
       display: block;
     }
@@ -613,7 +613,7 @@ export default {
     li {
       display: inline;
       padding-right: 5rem;
-      @media screen and (min-width: 1023px) {
+      @media screen and (min-width: 1120px) {
         padding-right: 0.5rem;
       }
 
@@ -633,7 +633,7 @@ export default {
     }
   }
 
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     & {
       background: $seafoam;
       bottom: 0;
@@ -669,7 +669,7 @@ export default {
   display: none;
 }
 
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (min-width: 320px) and (max-width: 1120px) {
   .search-mobile {
     background-color: $cochlear;
     padding: 1em;
