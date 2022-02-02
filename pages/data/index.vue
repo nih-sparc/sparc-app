@@ -497,7 +497,7 @@ export default {
       const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
       var contentType = this.$route.query.type  
-      var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
+      var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate, eventTypes = undefined;
       var resourceTypes, developedBySparc = undefined;
       var aboutDetailsTypes = undefined;
       var sortOrder = undefined;
@@ -515,6 +515,7 @@ export default {
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
         sortOrder = this.$refs.newsAndEventsFacetMenu?.getSortOrder();
+        eventTypes = this.$route.query.selectedEventTypeOptions;
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
@@ -541,6 +542,7 @@ export default {
             'fields.resourceType[all]': resourceTypes,
             'fields.developedBySparc' : developedBySparc,
             'fields.type[in]' : aboutDetailsTypes,
+            'fields.eventType[in]': eventTypes
           })
           .then(async response => {
             this.searchData = { ...response }
