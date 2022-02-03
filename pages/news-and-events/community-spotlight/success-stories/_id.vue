@@ -118,10 +118,10 @@
       <nuxt-link
         class="community-link mt-16"
         :to="{
-          name: 'news-and-events-community-spotlight'
+          name: 'news-and-events-community-spotlight-success-stories'
         }"
       >
-        View All Community Spotlights &gt;
+        View All Success Stories &gt;
       </nuxt-link>
     </div>
   </div>
@@ -189,6 +189,12 @@ export default {
           label: 'Community Spotlight',
           to: {
             name: 'news-and-events-community-spotlight'
+          }
+        },
+        {
+          label: 'Success Stories',
+          to: {
+            name: 'news-and-events-community-spotlight-success-stories'
           }
         }
       ]

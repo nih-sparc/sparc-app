@@ -2,16 +2,16 @@
   <div class="subpage">
     <div v-for="(item, index) in stories" :key="index">
       <community-spotlight-item :story="item" />
-      <div v-if="index !== stories.length - 1 || inNews" class="seperator-path" />
+      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path" />
     </div>
     <nuxt-link
-      v-if="inNews"
+      v-if="bottomLink"
       class="community-link mt-16"
       :to="{
-        name: 'news-and-events-community-spotlight'
+        name: linkLocation
       }"
     >
-      View All Community Spotlights &gt;
+      {{ linkText }} &gt;
     </nuxt-link>
   </div>
 </template>
@@ -29,9 +29,17 @@ export default {
       type: Array,
       default: () => []
     },
-    inNews: {
+    bottomLink: {
       type: Boolean,
       default: false
+    },
+    linkLocation: {
+      type: String,
+      default: 'news-and-events-community-spotlight'
+    },
+    linkText: {
+      type: String,
+      default: 'View All Community Spotlights'
     }
   }
 }

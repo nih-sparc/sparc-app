@@ -10,7 +10,8 @@
       </p>
     </page-hero>
     <div class="page-wrap container">
-      <community-spotlight-listings :stories="shownStories" />
+      <h2>Success Stories</h2>
+      <community-spotlight-listings :stories="shownStories" :bottomLink="true" linkLocation="news-and-events-community-spotlight-success-stories" linkText="View all Success Stories"/>
     </div>
     <pagination
       v-if="allStories.length > pageSize"
@@ -91,7 +92,13 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
+h2 {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+}
+
 .page-wrap {
+  padding-top: 3em;
   max-width: 80em;
 }
 
