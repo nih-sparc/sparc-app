@@ -1,47 +1,58 @@
 <template>
-  <facet-menu
-    :selected-facets="selectedFacet"
-    :visible-facet-categories="visibleCategories"
-    @deselect-facet="deselectFacet"
-    @deselect-all-facets="deselectAllFacets"
-  >
-    <facet-radio-button-category
-      :label="'News/Event Type'"
-      :options="options"
-      :default-selected-option="selectedNewsAndEventTypeLabel"
-      @selection-changed="selectedTypeChanged"
+  <div>
+    <facet-menu
+      class="news-and-event-facet-menu"
+      :selected-facets="selectedFacet"
+      :visible-facet-categories="visibleCategories"
+      @deselect-facet="deselectFacet"
+      @deselect-all-facets="deselectAllFacets"
+    >
+      <facet-radio-button-category
+        label="News/Event Type"
+        :options="newsEventsTypeOptions"
+        :default-selected-option="selectedNewsAndEventTypeLabel"
+        @selection-changed="selectedTypeChanged"
+      />
+      <facet-radio-button-date-category
+        ref="publicationCategory"
+        label="Publication Date"
+        :enabled="selectedNewsAndEventTypeLabel === newsEventsTypeOptions[0].label"
+        :default-selected-option="publicationDateOption"
+        :default-selected-month="publicationMonth"
+        :default-selected-year="publicationYear"
+        @selected-date-option-changed="publicationDateOptionChanged"
+        @selected-month-changed="publicationMonthChanged"
+        @selected-year-changed="publicationYearChanged"
+      />
+      <facet-radio-button-date-category
+        ref="eventCategory"
+        label="Event Date"
+        :enabled="selectedNewsAndEventTypeLabel === newsEventsTypeOptions[1].label"
+        :default-selected-option="eventDateOption"
+        :default-selected-month="eventMonth"
+        :default-selected-year="eventYear"
+        @selected-date-option-changed="eventDateOptionChanged"
+        @selected-month-changed="eventMonthChanged"
+        @selected-year-changed="eventYearChanged"
+      />
+    </facet-menu>
+    <dropdown-multiselect
+      ref="eventTypeCategory"
+      :category="eventTypeOptions"
+      :enabled="selectedNewsAndEventTypeLabel === newsEventsTypeOptions[1].label"
+      :default-checked-ids="selectedEventTypeOptions"
+      @selection-change="selectedEventTypeOptionsChanged"
     />
-    <facet-radio-button-date-category
-      ref="publicationCategory"
-      :label="'Publication Date'"
-      :enabled="selectedNewsAndEventTypeLabel === options[0].label"
-      :default-selected-option="publicationDateOption"
-      :default-selected-month="publicationMonth"
-      :default-selected-year="publicationYear"
-      @selected-date-option-changed="publicationDateOptionChanged"
-      @selected-month-changed="publicationMonthChanged"
-      @selected-year-changed="publicationYearChanged"
-    />
-    <facet-radio-button-date-category
-      ref="eventCategory"
-      :label="'Event Date'"
-      :enabled="selectedNewsAndEventTypeLabel === options[1].label"
-      :default-selected-option="eventDateOption"
-      :default-selected-month="eventMonth"
-      :default-selected-year="eventYear"
-      @selected-date-option-changed="eventDateOptionChanged"
-      @selected-month-changed="eventMonthChanged"
-      @selected-year-changed="eventYearChanged"
-    />
-  </facet-menu>
+  </div>
 </template>
 
 <script>
+import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonCategory from './FacetRadioButtonCategory.vue'
 import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
-const options = [
+const newsEventsTypeOptions = [
   {
     label: 'news',
     id: 'news',
@@ -59,7 +70,48 @@ const options = [
   }
 ]
 
+const eventTypeOptions = {
+  label: 'Event Type',
+  id: 'event type',
+  data: [
+    {
+      label: 'Cancelled',
+      id: 'Cancelled',
+    },
+    {
+      label: 'Conference',
+      id: 'Conference',
+    },
+    {
+      label: 'Funding',
+      id: 'Funding',
+    },
+    {
+      label: 'Other Event',
+      id: 'Other Event',
+    },
+    {
+      label: 'Postponed',
+      id: 'Postponed',
+    },{
+      label: 'Virtual Conference',
+      id: 'Virtual Conference',
+    },
+    {
+      label: 'Webinar',
+      id: 'Webinar',
+    },
+    {
+      label: 'Workshop',
+      id: 'Workshop',
+    }
+  ]
+}
+
 const visibleCategories = ['newsAndEvents']
+
+const EVENT_DATE_FACET_ID = 'event date'
+const PUBLICATION_DATE_FACET_ID = 'publication date'
 
 export default {
   name: 'NewsAndEventsFacetMenu',
@@ -74,10 +126,13 @@ export default {
 
   data() {
     return {
-      options: options,
-      newsAndEventsType: options[0].id,
+      newsEventsTypeOptions: newsEventsTypeOptions,
+      newsAndEventsType: newsEventsTypeOptions[0].id,
+      eventTypeOptions: eventTypeOptions,
+      selectedEventTypeOptions: [],
       publicationDateOption: 'show all',
       eventDateOption: 'show all',
+      eventTypeOption: 'show all',
       publicationMonth: 'Mar',
       publicationYear: 2020,
       eventMonth: 'Mar',
@@ -88,43 +143,51 @@ export default {
 
   computed: {
     selectedNewsAndEventTypeLabel: function() {
-      var selectedOption = this.options.find(
+      var selectedOption = this.newsEventsTypeOptions.find(
         option => this.newsAndEventsType === option.id
       )
       return selectedOption === undefined
-        ? options[0].label
+        ? newsEventsTypeOptions[0].label
         : selectedOption.label
     },
     selectedFacet: function() {
-      var facet = {
-        label: '',
-        id: '',
-        facetPropPath: 'newsAndEvents'
-      }
-      if (this.newsAndEventsType === this.options[0].id) {
-        if (this.publicationDateOption === 'show all') {
-          return []
+      let facets = []
+      if (this.newsAndEventsType === this.newsEventsTypeOptions[0].id) {
+        if (this.publicationDateOption !== 'show all') {
+          facets.push({
+            label: `${this.publicationDateOption} ${this.publicationMonth} ${this.publicationYear}`,
+            id: PUBLICATION_DATE_FACET_ID,
+            facetPropPath: 'newsAndEvents'
+          })
         }
-        facet.label = `${this.publicationDateOption} ${this.publicationMonth} ${this.publicationYear}`
-      } else if (this.newsAndEventsType === options[1].id) {
-        if (this.eventDateOption === 'show all') {
-          return []
+      } else if (this.newsAndEventsType === newsEventsTypeOptions[1].id) {
+        if (this.eventDateOption !== 'show all') {
+          facets.push({
+            label: `${this.eventDateOption} ${this.eventMonth} ${this.eventYear}`,
+            id: EVENT_DATE_FACET_ID,
+            facetPropPath: 'newsAndEvents'
+          })
         }
-        facet.label = `${this.eventDateOption} ${this.eventMonth} ${this.eventYear}`
+        if (this.selectedEventTypeOptions !== []) {
+          this.selectedEventTypeOptions.forEach(selectedOption => {
+            facets.push({
+              label: `${selectedOption.label}`,
+              id: `${selectedOption.id}`,
+              facetPropPath: 'newsAndEvents'
+            })
+          })
+        }
       }
-      else if (this.newsAndEventsType === options[2].id) {
-        return []
-      }
-      facet.id = this.newsAndEventsType
-      return [facet]
+      return facets
     }
   },
-
-  watch: {},
 
   mounted() {
     if (this.$route.query.newsAndEventsType) {
       this.newsAndEventsType = this.$route.query.newsAndEventsType
+    }
+    if (this.$route.query.selectedEventTypeOptions) {
+      this.selectedEventTypeOptions = this.$route.query.selectedEventTypeOptions.split(",")
     }
     if (this.$route.query.publicationDateOption) {
       this.publicationDateOption = this.$route.query.publicationDateOption
@@ -203,6 +266,17 @@ export default {
         }
       )
     },
+    selectedEventTypeOptionsChanged(newValue) {
+      this.selectedEventTypeOptions = newValue.checkedNodes
+      this.$router.replace(
+        {
+          query: { ...this.$route.query, selectedEventTypeOptions: this.selectedEventTypeOptions.length === 0 ? undefined : pluck('id', this.selectedEventTypeOptions).toString() }
+        },
+        () => {
+          this.$emit('news-and-events-selections-changed')
+        }
+      )
+    },
     eventDateOptionChanged(newValue) {
       if (this.eventDateOption === newValue) {
         return
@@ -246,22 +320,22 @@ export default {
       )
     },
     getPublishedLessThanDate() {
-      return this.selectedNewsAndEventTypeLabel === this.options[0].label
+      return this.selectedNewsAndEventTypeLabel === this.newsEventsTypeOptions[0].label
         ? this.$refs.publicationCategory.getLessThanDate()
         : undefined
     },
     getEventsLessThanDate() {
-      return this.selectedNewsAndEventTypeLabel === this.options[1].label
+      return this.selectedNewsAndEventTypeLabel === this.newsEventsTypeOptions[1].label
         ? this.$refs.eventCategory.getLessThanDate()
         : undefined
     },
     getPublishedGreaterThanOrEqualToDate() {
-      return this.selectedNewsAndEventTypeLabel === this.options[0].label
+      return this.selectedNewsAndEventTypeLabel === this.newsEventsTypeOptions[0].label
         ? this.$refs.publicationCategory.getGreaterThanOrEqualToDate()
         : undefined
     },
     getEventsGreaterThanOrEqualToDate() {
-      return this.selectedNewsAndEventTypeLabel === this.options[1].label
+      return this.selectedNewsAndEventTypeLabel === this.newsEventsTypeOptions[1].label
         ? this.$refs.eventCategory.getGreaterThanOrEqualToDate()
         : undefined
     },
@@ -269,7 +343,7 @@ export default {
       return this.newsAndEventsType
     },
     getSortOrder() {
-      return options.find(option => {
+      return newsEventsTypeOptions.find(option => {
         return option.id === this.newsAndEventsType
       }).sortOrder
     },
@@ -279,21 +353,30 @@ export default {
           query: {
             ...this.$route.query,
             publicationDateOption: undefined,
-            eventDateOption: undefined
+            eventDateOption: undefined,
+            selectedEventTypeOptions: undefined
           }
         },
         () => {
-          this.$emit('tool-and-resources-selections-changed')
+          this.$emit('news-and-events-selections-changed')
           this.$refs.publicationCategory.reset()
           this.$refs.eventCategory.reset()
+          this.$refs.eventTypeCategory.uncheckAll()
         }
       )
     },
-    deselectFacet() {
-      if (this.newsAndEventsType === this.options[0].id) {
-        this.$refs.publicationCategory.reset()
-      } else if (this.newsAndEventsType === options[1].id) {
-        this.$refs.eventCategory.reset()
+    deselectFacet(facetId) {
+      if (this.newsAndEventsType === this.newsEventsTypeOptions[0].id) {
+        if (facetId === PUBLICATION_DATE_FACET_ID) {
+          this.$refs.publicationCategory.reset()
+        }
+      } else if (this.newsAndEventsType === newsEventsTypeOptions[1].id) {
+        if (facetId === EVENT_DATE_FACET_ID) {
+          this.$refs.eventCategory.reset()
+        }
+        else {
+          this.$refs.eventTypeCategory.uncheck(facetId)
+        }
       }
     }
   }
@@ -323,5 +406,9 @@ hr {
   border: none;
   border-bottom: 1px solid #dbdfe6;
   margin: 0;
+}
+.news-and-event-facet-menu {
+  // hacky fix to address placing the design system drop down for the event type category outside the facet menu since it handles its own borders
+  border-bottom: none;
 }
 </style>
