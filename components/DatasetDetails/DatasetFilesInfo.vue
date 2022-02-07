@@ -107,7 +107,7 @@ export default {
      */
     isDatasetSizeLarge: function() {
       const datasetSize = propOr(0, 'size', this.datasetInfo)
-      return datasetSize > 5000000000
+      return datasetSize > process.env.max_download_size
     },
     /**
      * Gets dataset ARN
