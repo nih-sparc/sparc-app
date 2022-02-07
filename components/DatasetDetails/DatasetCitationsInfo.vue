@@ -55,7 +55,8 @@ export default {
   computed: {
     preprints: function() {
       let preprintPublications = []
-      const allPublications = this.primaryPublications ? this.primaryPublications.concat(this.associatedPublications) : []
+      let allPublications = this.primaryPublications ? this.primaryPublications : []
+      allPublications = this.associatedPublications ? allPublications.concat(this.associatedPublications) : allPublications
       allPublications.forEach(publication => {
         const publicationDoiLink = `https://doi.org/${publication.doi}`
         if(PREPRINT_DOI_LINKS.some(preprintDoiLink => publicationDoiLink.includes(preprintDoiLink)))
