@@ -1,6 +1,12 @@
 <template>
   <div class="resources-search-results">
+    <div class="no-results" v-if="tableData.length === 0">
+      <el-table :show-header="false" empty-text="No Results">
+        <el-table-column />
+      </el-table>
+    </div>
     <div
+      v-else
       v-for="data in tableData"
       :key="data.sys.id"
       class="resources-search-results__items"

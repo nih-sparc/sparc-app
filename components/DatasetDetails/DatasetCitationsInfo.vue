@@ -5,7 +5,7 @@
         Primary Publications for this Dataset
       </div>
       <div v-for="(item, index) in primaryPublications" :key="index">
-        <external-pub-link class="mb-8" :publication="item" />
+        <apa-citation class="mb-8" :doi="item.doi" />
       </div>
       <hr v-if="associatedPublications" />
     </div>
@@ -14,7 +14,7 @@
         Associated Publications for this Dataset
       </div>
       <div v-for="(item, index) in associatedPublications" :key="index">
-        <external-pub-link class="mb-8" :publication="item" />
+        <apa-citation class="mb-8" :doi="item.doi" />
       </div>
       <hr v-if="preprints" />
     </div>
@@ -23,7 +23,7 @@
         Preprints
       </div>
       <div v-for="(item, index) in preprints" :key="index">
-        <external-pub-link class="mb-8" :publication="item" />
+        <apa-citation class="mb-8" :doi="item.doi" />
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
 
 <script>
 
-import ExternalPubLink from '@/components/ExternalPubLink/ExternalPubLink'
+import ApaCitation from '@/components/DatasetCitations/ApaCitation'
 import { isEmpty } from 'ramda'
 
 const PREPRINT_DOI_LINKS = ['https://doi.org/10.1101/']
@@ -40,7 +40,7 @@ export default {
   name: 'DatasetCitationsInfo',
 
   components: {
-    ExternalPubLink
+    ApaCitation
   },
   props: {
     primaryPublications: {
