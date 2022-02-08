@@ -117,7 +117,7 @@
         <el-table-column label="Action" width="200">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'File'">
-              <div class="circle" @click="executeDownload(scope.row)">
+              <div v-if="!isFileTooLarge(scope.row)" class="circle" @click="executeDownload(scope.row)">
                 <form
                   id="zipForm"
                   ref="zipForm"
@@ -129,6 +129,14 @@
                 <sparc-tooltip
                   placement="bottom-center"
                   content="Download file"
+                >
+                  <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div v-else class="circle disabled">
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Files over 5GB in size must be downloaded via AWS"
                 >
                   <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
                 </sparc-tooltip>
@@ -200,14 +208,46 @@
         @close="() => setDialogSelectedFile(null)"
       />
     </div>
-    <bf-download-file
+    <sparc-tooltip
+      v-if="selected.length == 0"
+      class="tooltip"
+      placement="bottom-center"
+      content="You must select a file to download"
+    >
+      <bf-download-file
+        slot="item"
         class="mt-16"
-        :disabled="selected.length == 0"
+        disabled
         :selected="selected"
         :dataset="datasetInfo"
         :file-path="path"
         @remove-selection="removeSelection"
       />
+    </sparc-tooltip>
+    <sparc-tooltip
+      v-else-if="selectedFilesSizeTooLarge"
+      class="tooltip"
+      placement="bottom-center"
+      content="Selected file size(s) exceed 5GB"
+    >
+      <bf-download-file
+        slot="item"
+        class="mt-16"
+        disabled
+        :selected="selected"
+        :dataset="datasetInfo"
+        :file-path="path"
+        @remove-selection="removeSelection"
+      />
+    </sparc-tooltip>
+    <bf-download-file
+      v-else
+      class="mt-16"
+      :selected="selected"
+      :dataset="datasetInfo"
+      :file-path="path"
+      @remove-selection="removeSelection"
+    />
   </div>
 </template>
 
@@ -332,6 +372,13 @@ export default {
      */
     zipitUrl: function() {
       return process.env.zipit_api_host
+    },
+    selectedFilesSizeTooLarge: function() {
+      let totalSize = 0
+      this.selected.forEach(file => {
+        totalSize += file.size
+      })
+      return totalSize >= process.env.max_download_size
     }
   },
 
@@ -359,6 +406,11 @@ export default {
         this.isMicrosoftFileType(scope) ||
         allowableExtensions.includes(fileType)
       )
+    },
+
+    isFileTooLarge(file) {
+      const fileSize = propOr(0, 'size', file)
+      return fileSize > process.env.max_download_size
     },
 
     handleSelectionChange(val) {
@@ -626,6 +678,9 @@ export default {
   background: none;
   height: auto;
 }
+.tooltip {
+  width: fit-content;
+}
 .files-table-header {
   align-items: center;
   display: flex;
@@ -653,40 +708,36 @@ export default {
 .file-name-wrap {
   display: flex;
 }
-
 .truncated {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .file-name {
   color: $purple;
 }
-
 .file-icon {
   color: #000;
   font-size: 16px;
   flex-shrink: 0;
   margin: 3px 8px 0 0;
 }
-
 .circle {
   display: inline-flex;
   height: 1.5em;
   width: 1.5em;
   line-height: 1.5em;
   margin-right: 4px;
-
   -moz-border-radius: 0.75em; /* or 50% */
   border-radius: 0.75em; /* or 50% */
-
   background-color: $purple;
   color: #fff;
   text-align: center;
   cursor: pointer;
 }
-
+.disabled {
+  opacity: .6;
+}
 ::v-deep .el-table {
   th {
     .cell {

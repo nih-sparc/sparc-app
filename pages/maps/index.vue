@@ -119,12 +119,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .maps {
-  .text-container p {
-    @media (min-width: 48em) {
-      font-size: 0.9375rem;
-      line-height: 1.5rem;
-    }
-  }
 
   .portalmapcontainer {
     margin-top: 1.5rem;

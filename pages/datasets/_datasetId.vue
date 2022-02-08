@@ -20,7 +20,7 @@
               :numCitations="numCitations"
               :numDownloads="numDownloads"
             />
-            <div class="tabs-container mt-16 mb-0 mx-0">
+            <div class="tabs-container mt-16 mb-0 mx-0 p-16">
               <content-tab-card
                 id="datasetDetailsTabsContainer"
                 :tabs="tabs"
@@ -1013,6 +1013,7 @@ export default {
 }
 .tabs-container {
   border: solid 1px $lineColor1;
+  background: white;
 }
 ::v-deep .details-tabs__container--data {
   padding-top: 0;

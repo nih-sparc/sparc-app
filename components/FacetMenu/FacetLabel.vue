@@ -1,7 +1,7 @@
 <template>
   <div :class="{ disabled: disabled }">
     <hr />
-    <h2 class="title">
+    <div class="body1 title">
       <span>
         {{ label }}
         <sparc-tooltip placement="left-center">
@@ -18,7 +18,7 @@
         width="15"
         @click="onArrowClicked"
       />
-    </h2>
+    </div>
     <div v-show="showContent" class="light-gray-background">
       <slot />
     </div>
@@ -87,12 +87,6 @@ export default {
 
 .light-gray-background {
   background-color: rgb(250, 251, 252);
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
 }
 
 .title {
