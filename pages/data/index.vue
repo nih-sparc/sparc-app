@@ -539,7 +539,7 @@ export default {
             'fields.publishedDate[gte]': newsPublishedGreaterThanOrEqualToDate,
             'fields.startDate[lt]': eventStartLessThanDate,
             'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
-            'fields.resourceType[all]': resourceTypes,
+            'fields.resourceType[in]': resourceTypes,
             'fields.developedBySparc' : developedBySparc,
             'fields.type[in]' : aboutDetailsTypes,
             'fields.eventType[in]': eventTypes

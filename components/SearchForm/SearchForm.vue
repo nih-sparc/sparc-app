@@ -5,7 +5,7 @@
       <button v-if="value" class="btn-clear-search" @click="$emit('clear')">
         <svg-icon
           icon="icon-clear"
-          color="#909399 #fff"
+          color="#909399"
           height="22"
           width="22"
         />
