@@ -89,10 +89,10 @@ export default {
   },
   fetchOnServer: false,
   created: function() {
-    this.api = process.env.portal_api
-    let lastChar = this.api.substr(-1)
+    this.options.sparcApi = process.env.portal_api
+    let lastChar = this.options.sparcApi.substr(-1)
     if (lastChar != '/') {
-      this.api = this.api + '/'
+      this.options.sparcApi = this.options.sparcApi + '/'
     }
   },
   methods: {
