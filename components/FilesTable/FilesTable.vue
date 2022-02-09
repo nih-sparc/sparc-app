@@ -2,23 +2,6 @@
   <div class="files-table">
     <div class="files-table-header">
       <div class="breadcrumb-list">
-        <span class="mr-4">Folder: </span>
-        <div class="breadcrumb">
-          <nuxt-link
-            class="breadcrumb-link"
-            :to="{
-              query: { ...$route.query, path: '' }
-            }"
-          >
-            home
-          </nuxt-link>
-          <span
-            v-if="breadcrumbs.length >= 1"
-            class="breadcrumb-separator"
-          >
-            /
-          </span>
-        </div>
         <div v-for="(item, idx) in breadcrumbs" :key="idx" class="breadcrumb">
           <nuxt-link
             class="breadcrumb-link"
@@ -323,7 +306,7 @@ export default {
   data: function() {
     return {
       previousPath: '',
-      schemaRootPath: '',
+      schemaRootPath: 'files',
       data: [],
       isLoading: false,
       hasError: false,
