@@ -56,7 +56,7 @@ export default {
     display: flex;
     img, video {
       height: 100%;
-      width: stretch;
+      width: 100%;
     }
   }
   .text-container {
