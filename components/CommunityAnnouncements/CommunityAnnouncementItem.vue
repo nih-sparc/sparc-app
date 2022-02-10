@@ -16,10 +16,10 @@
           />
         </client-only>
         <img
-          v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('image')"
+          v-else-if="story.fields.image"
           class="banner-asset"
-          :src="story.fields.files[0].fields.file.url"
-          :alt="story.fields.files[0].description"
+          :src="story.fields.image.fields.file.url"
+          :alt="story.fields.image.description"
         />
         <video
           v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('video')"
@@ -34,7 +34,7 @@
     </div>
     <div class="story-text">
       <div class="story-title">
-        {{ story.fields.storyTitle }}
+        {{ story.fields.title }}
       </div>
       <br />
       <div class="story-description">
@@ -44,7 +44,7 @@
       <nuxt-link
         v-if="story.fields.storyRoute"
         :to="{
-          name: 'news-and-events-community-spotlight-success-stories-id',
+          name: 'news-and-events-community-announcement-success-stories-id',
           params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
         }"
       >
@@ -64,7 +64,7 @@
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
 
 export default {
-  name: 'CommunitySpotlightItem',
+  name: 'CommunityAnnouncementItem',
   props: {
     story: {
       type: Object,
@@ -84,12 +84,9 @@ export default {
 
 .banner-wrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 80%; /* 16:9 */
   height: 0;
-  min-width: 25.68rem;
-  @media (max-width: 30em) {
-    min-width: 14rem !important;
-  }
+  min-width: 8rem;
 }
 
 .banner-wrapper .banner-asset {
@@ -110,12 +107,12 @@ export default {
 .story-result {
   display: flex;
   flex-wrap: wrap;
-  min-height: 238px;
+  min-height: 138px;
   width: 100%;
 }
 
 .story-text {
-  flex: 1.2;
+  flex: 8;
   min-width: 17.5rem;
   @media (max-width: 48em) {
     margin: 1rem 0 0;

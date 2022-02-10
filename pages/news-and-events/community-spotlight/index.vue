@@ -14,6 +14,8 @@
       <community-spotlight-listings :stories="shownStories" :bottomLink="true" linkLocation="news-and-events-community-spotlight-success-stories" linkText="View all Success Stories"/>
       <h2>Fireside Chats</h2>
       <community-spotlight-listings :stories="fireSideChats" />
+      <h2>Community Announcements</h2>
+      <community-announcement-listings :stories="communityAnnouncements" />
     </div>
     <pagination
       v-if="allStories.length > pageSize"
@@ -30,6 +32,7 @@ import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue'
+import CommunityAnnouncementListings from '@/components/CommunityAnnouncements/CommunityAnnouncementListings.vue'
 
 const client = createClient()
 
@@ -40,6 +43,7 @@ export default {
     Breadcrumb,
     PageHero,
     CommunitySpotlightListings,
+    CommunityAnnouncementListings
   },
 
   async asyncData() {
@@ -49,9 +53,13 @@ export default {
     const fireSideChats = await client.getEntries({
       content_type: 'firesideChat'
     })
+    const communityAnnouncements = await client.getEntries({
+      content_type: 'news'
+    })
     return {
       allStories: successData.items,
-      fireSideChats: fireSideChats.items
+      fireSideChats: fireSideChats.items,
+      communityAnnouncements: communityAnnouncements.items
     }
   },
 
