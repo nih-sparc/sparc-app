@@ -12,6 +12,8 @@
     <div class="page-wrap container">
       <h2>Success Stories</h2>
       <community-spotlight-listings :stories="shownStories" :bottomLink="true" linkLocation="news-and-events-community-spotlight-success-stories" linkText="View all Success Stories"/>
+      <h2>Fireside Chats</h2>
+      <community-spotlight-listings :stories="fireSideChats" />
     </div>
     <pagination
       v-if="allStories.length > pageSize"
@@ -44,8 +46,12 @@ export default {
     const successData = await client.getEntries({
       content_type: 'successStoryDisplay'
     })
+    const fireSideChats = await client.getEntries({
+      content_type: 'firesideChat'
+    })
     return {
-      allStories: successData.items
+      allStories: successData.items,
+      fireSideChats: fireSideChats.items
     }
   },
 

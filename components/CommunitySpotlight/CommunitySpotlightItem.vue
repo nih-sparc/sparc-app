@@ -42,6 +42,7 @@
       </div>
       <br />
       <nuxt-link
+        v-if="story.fields.storyRoute"
         :to="{
           name: 'news-and-events-community-spotlight-success-stories-id',
           params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
@@ -51,6 +52,11 @@
           Learn More
         </el-button>
       </nuxt-link>
+      <a v-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
+        <el-button size="small" class="secondary-button">
+          Learn More
+        </el-button>
+      </a>
     </div>
   </div>
 </template>
