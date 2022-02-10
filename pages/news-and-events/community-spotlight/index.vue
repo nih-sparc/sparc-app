@@ -13,7 +13,7 @@
       <h2>Success Stories</h2>
       <community-spotlight-listings :stories="shownStories" :bottomLink="true" linkLocation="news-and-events-community-spotlight-success-stories" linkText="View all Success Stories"/>
       <h2>Fireside Chats</h2>
-      <community-spotlight-listings :stories="fireSideChats" />
+      <community-spotlight-listings :stories="fireSideChats" :bottomLink="true" linkLocation="news-and-events-community-spotlight-fireside-chats" linkText="View all Fireside Chats"/>
       <h2>Community Announcements</h2>
       <community-announcement-listings :stories="communityAnnouncements" />
     </div>
