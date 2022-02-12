@@ -41,14 +41,16 @@ export default {
   },
 
   methods: {
-    getAuthorName: function(author, isLast) {
-      const firstName = propOr('', 'given', author)
+    getAuthorLastName(author) {
       const familyName = propOr('', 'family', author)
-      // Sometimes the middle initial is included as part of the family name. Remove it.
       let lastNameStartIndex = familyName.lastIndexOf(" ")
       lastNameStartIndex = lastNameStartIndex === -1 ? 0 : lastNameStartIndex + 1
-      const lastName = familyName.substring(lastNameStartIndex)
-      return isLast ? `and ${lastName}, ${firstName.charAt(0)}. ` : `${lastName}, ${firstName.charAt(0)}., `
+      let lastName = familyName.substring(lastNameStartIndex)
+      return lastName.charAt(0).toUpperCase() + lastName.slice(1)
+    },
+    getAuthorFirstName(author) {
+      let firstName = propOr('', 'given', author)
+      return firstName.charAt(0).toUpperCase() + firstName.slice(1)
     },
     /**
      * Get the Title from doi.org
@@ -96,10 +98,20 @@ export default {
     authorCitations() {
       let authorCitationText = ""
       let num = 0
-      this.authors.forEach(author => {
-        authorCitationText += this.getAuthorName(author, num === this.authors.length-1)
-        num++
-      })
+      if (this.authors.length == 1) {
+        let author = this.authors[0]
+        let lastName = this.getAuthorLastName(author)
+        let firstName = this.getAuthorFirstName(author)
+        authorCitationText = `${lastName}, ${firstName.charAt(0)}. `
+      }
+      else {
+        this.authors.forEach(author => {
+          let lastName = this.getAuthorLastName(author)
+          let firstName = this.getAuthorFirstName(author)
+          authorCitationText += num === this.authors.length-1 ? `and ${lastName}, ${firstName.charAt(0)}. ` : `${lastName}, ${firstName.charAt(0)}., `
+          num++
+        })
+      }
       return authorCitationText
     },
     citationText() {
