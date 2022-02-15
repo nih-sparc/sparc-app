@@ -30,7 +30,7 @@
       <div v-if="item.fields.publishedDate" class="item-description">
         {{ formatDate(item.fields.publishedDate) }}
       </div>
-      <div class="spacer" />
+      <div class="spacer mb-16" />
       <div class="item-description">
         {{ item.fields.summary }}
       </div>
@@ -116,10 +116,6 @@ export default {
   font-size: 16px;
   font-weight: normal;
   line-height: 24px;
-}
-
-.spacer {
-  margin-bottom: 0.9em;
 }
 
 .secondary-button {

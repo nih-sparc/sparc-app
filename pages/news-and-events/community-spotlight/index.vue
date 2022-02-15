@@ -150,9 +150,4 @@ h2 {
   padding-top: 3em;
   max-width: 80em;
 }
-
-.subpage {
-  margin-bottom: 20px;
-  margin-top: 1.5em;
-}
 </style>

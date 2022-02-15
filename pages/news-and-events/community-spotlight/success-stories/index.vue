@@ -99,8 +99,4 @@ export default {
 .page-wrap {
   max-width: 80em;
 }
-
-.subpage {
-  margin-bottom: 20px;
-}
 </style>

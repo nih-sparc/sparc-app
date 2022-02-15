@@ -59,12 +59,12 @@
           params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
         }"
       >
-        <el-button size="small" class="secondary-button">
+        <el-button class="secondary-button">
           Learn More
         </el-button>
       </nuxt-link>
       <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
-        <el-button size="small" class="secondary-button">
+        <el-button class="secondary-button">
           Learn More
         </el-button>
       </a>
@@ -121,7 +121,8 @@ export default {
 .story-result {
   display: flex;
   flex-wrap: wrap;
-  min-height: 14.875rem;
+  gap: 2rem;
+  min-height: 10.875rem;
   width: 100%;
 }
 
