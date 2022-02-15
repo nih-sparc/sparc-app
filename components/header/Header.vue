@@ -3,7 +3,7 @@
     <div class="header__nav">
       <div class="header__nav--parent">
         <svg-icon icon="icon-contact" width="18" height="18" />
-        <nuxt-link to="/contact-us">
+        <nuxt-link to="/contact-us" target="_blank">
           Contact Us
         </nuxt-link>
         <svg-icon icon="icon-help" width="18" height="18" />
@@ -74,7 +74,7 @@
               <ul class="mobile-navigation__links">
                 <li>
                   <svg-icon icon="icon-contact" width="18" height="18" />
-                  <nuxt-link to="/contact-us">
+                  <nuxt-link to="/contact-us" target="_blank">
                     Contact Us
                   </nuxt-link>
                 </li>
