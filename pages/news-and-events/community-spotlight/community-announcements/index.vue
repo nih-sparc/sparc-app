@@ -1,21 +1,20 @@
 <template>
   <div class="help-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="Success Stories" />
+    <breadcrumb :breadcrumb="breadcrumb" title="Fireside Chats" />
     <page-hero>
-      <h1>Success Stories</h1>
+      <h1>Community Announcements</h1>
       <br />
       <p>
-        Learn how researchers have used the SPARC Program to advance
-        neuromodulation of the ANS. Submit your success story
+        Stay up to date with the latest news from SPARC
       </p>
     </page-hero>
     <div class="page-wrap container">
-      <community-spotlight-listings :stories="shownStories" />
+      <community-announcement-listings :items="shownItems" />
     </div>
     <pagination
-      v-if="allStories.length > pageSize"
+      v-if="items.length > pageSize"
       :page-size="pageSize"
-      :total-count="allStories.length"
+      :total-count="items.length"
       @select-page="pageChange"
     />
   </div>
@@ -25,32 +24,32 @@
 import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue'
+import CommunityAnnouncementListings from '@/components/CommunityAnnouncements/CommunityAnnouncementListings.vue'
 
 const client = createClient()
 
 export default {
-  name: 'CommunityStoriesPage',
+  name: 'CommunityAnnouncementsPage',
 
   components: {
     Breadcrumb,
     PageHero,
-    CommunitySpotlightListings,
+    CommunityAnnouncementListings,
   },
 
   async asyncData() {
-    const successData = await client.getEntries({
-      content_type: 'successStoryDisplay'
+    const news = await client.getEntries({
+      content_type: 'news'
     })
     return {
-      allStories: successData.items
+      items: news.items
     }
   },
 
   data() {
     return {
-      allStories: [],
-      pageSize: 4,
+      items: [],
+      pageSize: 10,
       page: 1,
       videoSrc: '',
       isLoadingSearch: false,
@@ -78,8 +77,8 @@ export default {
   },
 
   computed: {
-    shownStories: function() {
-      return this.allStories.slice(
+    shownItems: function() {
+      return this.items.slice(
         (this.page - 1) * this.pageSize,
         this.page * this.pageSize
       )
@@ -89,6 +88,7 @@ export default {
   methods: {
     pageChange: function(val) {
       this.page = val
+      window.items = this.items
     }
   }
 }

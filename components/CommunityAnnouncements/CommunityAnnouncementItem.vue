@@ -1,80 +1,63 @@
 <template>
-  <div class="story-result">
+  <div class="item-result">
     <div class="banner">
       <div class="banner-wrapper">
-        <client-only
-          v-if="story.fields.youtubeUrl"
-          placeholder="Loading video ..."
-        >
-          <iframe
-            class="banner-asset"
-            :src="embeddedVideoSrc"
-            allowfullscreen
-            allowtransparency
-            allow="autoplay"
-            frameBorder="0"
-          />
-        </client-only>
         <img
-          v-else-if="story.fields.image"
+          v-if="item.fields.image"
           class="banner-asset"
-          :src="story.fields.image.fields.file.url"
-          :alt="story.fields.image.description"
+          :src="item.fields.image.fields.file.url"
+          :alt="item.fields.image.description"
         />
-        <video
-          v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('video')"
-          class="banner-asset"
-          controls=""
-          autoplay="false"
-          name="media"
-        >
-          <source :src="story.fields.files[0].fields.file.url" :type="story.fields.files[0].fields.file.contentType">
-        </video>
       </div>
     </div>
-    <div class="story-text">
-      <div class="story-title">
-        {{ story.fields.title }}
-      </div>
-      <br />
-      <div class="story-description">
-        {{ story.fields.summary }}
-      </div>
-      <br />
+    <div class="item-text">
       <nuxt-link
-        v-if="story.fields.storyRoute"
+        v-if="item.fields.requiresADetailsPage"
         :to="{
-          name: 'news-and-events-community-announcement-success-stories-id',
-          params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
+          name: 'news-and-events-news-id',
+          params: { id: item.sys.id }
         }"
       >
-        <el-button size="small" class="secondary-button">
-          Learn More
-        </el-button>
+        {{ item.fields.title }}
       </nuxt-link>
-      <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
-        <el-button size="small" class="secondary-button">
-          Learn More
-        </el-button>
+      <a
+        v-else
+        :href="item.fields.url"
+        :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
+      >
+        {{ item.fields.title }}
       </a>
+      <div v-if="item.fields.publishedDate" class="item-description">
+        {{ formatDate(item.fields.publishedDate) }}
+      </div>
+      <div class="spacer" />
+      <div class="item-description">
+        {{ item.fields.summary }}
+      </div>
     </div>
   </div>
 </template>
 <script>
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+import FormatDate from '@/mixins/format-date'
+import { isInternalLink } from '@/mixins/marked/index'
 
 export default {
   name: 'CommunityAnnouncementItem',
+  mixins: [FormatDate],
   props: {
-    story: {
+    item: {
       type: Object,
       default: () => {}
     }
   },
   computed: {
     embeddedVideoSrc: function() {
-      return youtubeEmbeddedSource(this.story.fields.youtubeUrl)
+      return youtubeEmbeddedSource(this.item.fields.youtubeUrl)
     }
+  },
+  methods: {
+    isInternalLink
   }
 }
 </script>
@@ -104,14 +87,14 @@ export default {
   }
 }
 
-.story-result {
+.item-result {
   display: flex;
   flex-wrap: wrap;
-  min-height: 138px;
+  min-height: 6em;
   width: 100%;
 }
 
-.story-text {
+.item-text {
   flex: 8;
   min-width: 17.5rem;
   @media (max-width: 48em) {
@@ -119,20 +102,24 @@ export default {
   }
 }
 
-.story-title {
-  color: rgb(36, 36, 91);
+.item-title {
+  color: rgb(131, 0, 191);
   font-family: Asap;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 32px;
-}
-
-.story-description {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: normal;
   line-height: 24px;
+}
+
+.item-description {
+  color: rgb(48, 49, 51);
+  font-family: Asap;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 24px;
+}
+
+.spacer {
+  margin-bottom: 0.9em;
 }
 
 .secondary-button {

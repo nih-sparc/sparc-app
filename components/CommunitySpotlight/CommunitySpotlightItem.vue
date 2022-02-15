@@ -34,7 +34,18 @@
     </div>
     <div class="story-text">
       <div class="story-title">
-        {{ story.fields.storyTitle }}
+        <nuxt-link
+          v-if="story.fields.storyRoute"
+          :to="{
+            name: 'news-and-events-community-spotlight-success-stories-id',
+            params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
+          }"
+        >
+          {{ story.fields.storyTitle }}
+        </nuxt-link>
+        <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
+          {{ story.fields.storyTitle }}
+        </a>
       </div>
       <br />
       <div class="story-description">
@@ -110,7 +121,7 @@ export default {
 .story-result {
   display: flex;
   flex-wrap: wrap;
-  min-height: 238px;
+  min-height: 14.875rem;
   width: 100%;
 }
 

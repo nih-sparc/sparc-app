@@ -1,8 +1,8 @@
 <template>
   <div class="subpage">
-    <div v-for="(item, index) in stories" :key="index">
-      <community-announcement-item :story="item" />
-      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path" />
+    <div v-for="(item, index) in items" :key="index">
+      <community-announcement-item :item="item" />
+      <div v-if="index !== items.length - 1 || bottomLink" class="seperator-path" />
     </div>
     <nuxt-link
       v-if="bottomLink"
@@ -25,7 +25,7 @@ export default {
     CommunityAnnouncementItem
   },
   props: {
-    stories: {
+    items: {
       type: Array,
       default: () => []
     },
