@@ -1,6 +1,6 @@
 <template>
   <div class="help-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="Fireside Chats" />
+    <breadcrumb :breadcrumb="breadcrumb" title="Community Spotlight" />
     <page-hero>
       <h1>Community Announcements</h1>
       <br />
