@@ -44,7 +44,7 @@ export default {
     if (this.uuid != this.$route.query.id) {
       this.uuid = this.$route.query.id
       if (this.uuid) {
-        let url = this.api + `map/getstate`
+        let url = this.options.sparcApi + `map/getstate`
         await fetch(url, {
           method: 'POST',
           headers: {
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     updateUUID: function() {
-      let url = this.api + `map/getshareid`
+      let url = this.options.sparcApi + `map/getshareid`
       let state = this.$refs.map.getState()
       fetch(url, {
         method: 'POST',
