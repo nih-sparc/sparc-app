@@ -1,6 +1,12 @@
 <template>
   <div class="events">
+    <div class="no-results px-16" v-if="tableData.length === 0">
+      <el-table :show-header="false" empty-text="No Results">
+        <el-table-column />
+      </el-table>
+    </div>
     <event-card
+      v-else
       v-for="event in tableData"
       :key="event.sys.id"
       :event="event"
@@ -32,6 +38,9 @@ export default {
   display: flex;
   flex-wrap: wrap;
   margin: 0 -1em;
+}
+.no-results {
+  width: stretch;
 }
 .upcoming-event {
   margin: 0 1em 2em;

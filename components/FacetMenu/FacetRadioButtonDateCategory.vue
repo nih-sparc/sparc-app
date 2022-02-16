@@ -93,8 +93,6 @@ export default {
     }
   },
 
-  mounted() {},
-
   methods: {
     selectedDateOptionChanged: function(newValue) {
       this.$emit('selected-date-option-changed', newValue)

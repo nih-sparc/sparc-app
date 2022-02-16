@@ -38,10 +38,12 @@ export default {
   font-size: 1em;
   line-height: 1.5rem;
   font-weight: 400;
+  color: white;
   h1 {
     font-size: 2em;
     line-height: 2.75rem;
     font-weight: 500;
+    color: white;
   }
   .bx--grid {
     padding: 0;
@@ -54,7 +56,7 @@ export default {
     display: flex;
     img, video {
       height: 100%;
-      width: stretch;
+      width: 100%;
     }
   }
   .text-container {

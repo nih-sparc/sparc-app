@@ -1,5 +1,10 @@
 <template>
-  <div class="subpage">
+  <div class="no-results" v-if="stories.length === 0">
+    <el-table :show-header="false" empty-text="No Results">
+      <el-table-column />
+    </el-table>
+  </div>
+  <div v-else class="subpage">
     <div v-for="(item, index) in stories" :key="index">
       <community-spotlight-item :story="item" />
       <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path" />

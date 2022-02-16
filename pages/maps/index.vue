@@ -18,8 +18,7 @@
           <MapContent
             ref="map"
             :state="state"
-            :api="api"
-            :flatmap-a-p-i="flatmapAPI"
+            :options="options"
             :share-link="shareLink"
             @updateShareLinkRequested="updateUUID"
           />
@@ -74,8 +73,14 @@ export default {
       ],
       uuid: undefined,
       state: undefined,
-      api: process.env.portal_api,
-      flatmapAPI: process.env.flatmap_api,
+      options:{
+        sparcApi: process.env.portal_api,
+        algoliaIndex: process.env.ALGOLIA_INDEX,
+        algoliaKey: process.env.ALGOLIA_API_KEY,
+        algoliaId: process.env.ALGOLIA_APP_ID,
+        pennsieveApi: process.env.discover_api_host,
+        flatmapAPI: process.env.flatmap_api,
+      },
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
   },
@@ -84,10 +89,10 @@ export default {
   },
   fetchOnServer: false,
   created: function() {
-    this.api = process.env.portal_api
-    let lastChar = this.api.substr(-1)
+    this.options.sparcApi = process.env.portal_api
+    let lastChar = this.options.sparcApi.substr(-1)
     if (lastChar != '/') {
-      this.api = this.api + '/'
+      this.options.sparcApi = this.options.sparcApi + '/'
     }
   },
   methods: {
@@ -119,12 +124,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .maps {
-  .text-container p {
-    @media (min-width: 48em) {
-      font-size: 0.9375rem;
-      line-height: 1.5rem;
-    }
-  }
 
   .portalmapcontainer {
     margin-top: 1.5rem;
