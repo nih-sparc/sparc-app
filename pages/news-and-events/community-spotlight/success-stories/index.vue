@@ -9,7 +9,7 @@
         neuromodulation of the ANS. Submit your success story
       </p>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="page-wrap container mb-16">
       <community-spotlight-listings :stories="shownStories" />
     </div>
     <pagination
@@ -97,6 +97,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .page-wrap {
-  max-width: 80em;
+  max-width: 80rem;
 }
 </style>

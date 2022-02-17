@@ -301,11 +301,11 @@ export default {
 
 .seperator-path {
   width: 100%;
-  height: 2px;
+  height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
-  margin-top: 32px;
-  margin-bottom: 32px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .story-bold-field {
@@ -319,7 +319,7 @@ export default {
 .story-field {
   font-family: Asap;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 1.5rem;
 }
 
 .btn-copy-permalink {

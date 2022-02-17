@@ -1,8 +1,8 @@
 <template>
-  <div class="subpage">
+  <div class="subpage mb-16">
     <div v-for="(item, index) in items" :key="index">
       <community-announcement-item :item="item" />
-      <div v-if="index !== items.length - 1 || bottomLink" class="seperator-path" />
+      <div v-if="index !== items.length - 1 || bottomLink" class="seperator-path my-32" />
     </div>
     <nuxt-link
       v-if="bottomLink"
@@ -50,15 +50,9 @@ export default {
 
 .seperator-path {
   width: 100%;
-  height: 2px;
+  height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
-  margin-bottom: 32px;
-  margin-top: 32px;
-}
-
-.subpage {
-  margin-bottom: 20px;
 }
 
 .community-link {

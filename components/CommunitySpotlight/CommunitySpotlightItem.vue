@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="story-text">
-      <div class="story-title">
+      <h3>
         <nuxt-link
           v-if="story.fields.storyRoute"
           :to="{
@@ -46,7 +46,7 @@
         <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
           {{ story.fields.storyTitle }}
         </a>
-      </div>
+      </h3>
       <br />
       <div class="story-description">
         {{ story.fields.summary }}
@@ -59,12 +59,12 @@
           params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
         }"
       >
-        <el-button class="secondary-button">
+        <el-button class="secondary">
           Learn More
         </el-button>
       </nuxt-link>
       <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
-        <el-button class="secondary-button">
+        <el-button class="secondary">
           Learn More
         </el-button>
       </a>
@@ -134,32 +134,11 @@ export default {
   }
 }
 
-.story-title {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 32px;
-}
-
 .story-description {
   color: rgb(36, 36, 91);
   font-family: Asap;
   font-size: 18px;
   font-weight: normal;
   line-height: 24px;
-}
-
-.secondary-button {
-  background: #f9f2fc;
-  color: rgb(131, 0, 191);
-  font-family: Asap;
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid $median;
-  color: $median;
-  &:hover {
-    color: #1a1489;
-  }
 }
 </style>

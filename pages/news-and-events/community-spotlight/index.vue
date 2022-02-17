@@ -140,14 +140,8 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
-h2 {
-  font-size: 1.5rem;
-  line-height: 2.25rem;
-  font-size: 30px;
-}
-
 .page-wrap {
-  padding-top: 3em;
-  max-width: 80em;
+  padding-top: 3rem;
+  max-width: 80rem;
 }
 </style>

@@ -8,7 +8,7 @@
         Stay up to date with the latest news from SPARC
       </p>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="page-wrap container mb-16">
       <community-announcement-listings :items="shownItems" />
     </div>
     <pagination
@@ -97,10 +97,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .page-wrap {
-  max-width: 80em;
-}
-
-.subpage {
-  margin-bottom: 20px;
+  max-width: 80rem;
 }
 </style>
