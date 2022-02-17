@@ -33,37 +33,37 @@
               />
             </div>
             <div class="seperator-path" />
-            <div class="story-bold-field">
+            <div class="body1 story-bold-field">
               Author
             </div>
-            <div class="story-field">
+            <div class="body1 story-field">
               {{ author }}
             </div>
             <br />
             <template v-if="entry.publishDate">
-              <div class="story-bold-field">
+              <div class="body1 story-bold-field">
                 Published Date
               </div>
-              <div class="story-field">
+              <div class="body1 story-field">
                 {{ formatDate(entry.publishDate) }}
               </div>
               <br />
             </template>
             <template v-if="entry.contributorsMarkdown">
-              <div class="story-bold-field">
+              <div class="body1 story-bold-field">
                 Team Members
               </div>
-              <div class="content story-field" v-html="parseMarkdown(entry.contributorsMarkdown)" />
+              <div class="content body1 story-field" v-html="parseMarkdown(entry.contributorsMarkdown)" />
               <br />
             </template>
             <template v-if="entry.referencesMarkdown">
-              <div class="story-bold-field">
+              <div class="body1 story-bold-field">
                 Supporting information
               </div>
-              <div class="content story-field" v-html="parseMarkdown(entry.referencesMarkdown)" />
+              <div class="content body1 story-field" v-html="parseMarkdown(entry.referencesMarkdown)" />
               <br />
             </template>
-            <div class="story-bold-field">
+            <div class="body1 story-bold-field">
               Share
             </div>
             <div class="share-links">
@@ -100,14 +100,14 @@
             </div>
             <div class="seperator-path" />
             <template v-if="entry.associatedDatasets">
-              <div class="story-bold-field">
+              <div class="body1 story-bold-field">
                 Associated Datasets
               </div>
               <br />
               <div
                 v-for="(datasetUrl, index) in entry.associatedDatasets"
                 :key="'dataset' + index"
-                class="story-field"
+                class="body1 story-field"
               >
                 <dataset-card :id="datasetIdFromUrl(datasetUrl)" />
               </div>
@@ -309,15 +309,12 @@ export default {
 }
 
 .story-bold-field {
-  color: rgb(0, 0, 0);
-  font-family: Asap;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
 }
 
 .story-field {
-  font-family: Asap;
   font-size: 14px;
   line-height: 1.5rem;
 }

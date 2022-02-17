@@ -31,7 +31,7 @@
         {{ formatDate(item.fields.publishedDate) }}
       </div>
       <div class="spacer mb-16" />
-      <div class="item-description">
+      <div class="body1">
         {{ item.fields.summary }}
       </div>
     </div>

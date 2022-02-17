@@ -48,7 +48,7 @@
         </a>
       </h3>
       <br />
-      <div class="story-description">
+      <div class="body1">
         {{ story.fields.summary }}
       </div>
       <br />
@@ -132,13 +132,5 @@ export default {
   @media (max-width: 48em) {
     margin: 1rem 0 0;
   }
-}
-
-.story-description {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 18px;
-  font-weight: normal;
-  line-height: 24px;
 }
 </style>
