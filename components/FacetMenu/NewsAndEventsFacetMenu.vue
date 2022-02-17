@@ -38,6 +38,7 @@
     </facet-menu>
     <dropdown-multiselect
       ref="eventTypeCategory"
+      :collapse-by-default="true"
       :category="eventTypeOptions"
       :enabled="selectedNewsAndEventTypeLabel === newsEventsTypeOptions[1].label"
       :default-checked-ids="selectedEventTypeOptions"
@@ -388,18 +389,6 @@ export default {
 .white-background {
   background-color: white;
   border: 0.1rem solid #e4e7ed;
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.title {
-  margin-bottom: 0;
-  padding: 0.5rem 1rem;
-  font-weight: 300;
 }
 
 hr {

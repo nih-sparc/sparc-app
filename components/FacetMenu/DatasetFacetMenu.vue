@@ -18,6 +18,7 @@
     />
     <facet-category
       v-show="visibleCategories.includes(embargoedFacetCategory.key)"
+      :collapse-by-default="false"
       :facet="embargoedFacetCategory"
       :default-checked-keys="defaultCheckedFacetIds"
       @selection-change="onSelectionChange"
