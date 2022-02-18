@@ -1,6 +1,6 @@
 <template>
   <div class="data-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -260,7 +260,16 @@ export default {
             name: 'index'
           },
           label: 'Home'
-        }
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: 'dataset'
+            }
+          },
+          label: 'Find Data'
+        },
       ],
       titleColumnWidth: 300,
       windowWidth: ''
