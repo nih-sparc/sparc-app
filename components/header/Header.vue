@@ -125,8 +125,8 @@
                 />
               </el-select>
             </el-input>
-            <button
-              class="nav-main-container__search-button"
+            <el-button
+              class="search-button px-8 py-0 ml-8"
               @click="executeSearch"
             >
               <svg-icon
@@ -136,7 +136,7 @@
                 width="25"
                 dir="left"
               />
-            </button>
+            </el-button>
           </div>
         </div>
       </div>
@@ -151,19 +151,14 @@ import { mapActions } from 'vuex'
 
 const links = [
   {
-    title: 'index',
-    displayTitle: 'Home',
-    href: '/'
-  },
-  {
     title: 'data',
     displayTitle: 'Find Data',
-    href: '/data?type=dataset'
+    href: '/data'
   },
   {
     title: 'resources',
     displayTitle: 'Tools & Resources',
-    href: `/resources?type=${process.env.ctf_resource_id}`
+    href: `/resources`
   },
   {
     title: 'maps',
@@ -264,7 +259,7 @@ export default {
      * @param {String} query
      */
     activeLink: function(query) {
-      if (this.$nuxt.$route.path === query) {
+      if (this.$nuxt.$route.path.includes(query)) {
         return true
       } else {
         return false
@@ -522,6 +517,7 @@ export default {
 
 .nav-main-container__search {
   display: flex;
+  height: 40px;
   flex-direction: row;
   justify-content: flex-end;
   width: 54%;
@@ -533,7 +529,6 @@ export default {
 
 .nav-main-container__search-input {
   width: 30vw;
-  height: 34px;
   border-radius: 4px;
   @media screen and (max-width: 1120px) {
     display: none;
@@ -543,14 +538,7 @@ export default {
   }
 }
 
-.nav-main-container__search-button {
-  background-color: $median;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  margin-left: 9px;
-  margin-top: 1px;
-  border: none;
+.search-button {
   @media screen and (max-width: 1120px) {
     display: none;
   }

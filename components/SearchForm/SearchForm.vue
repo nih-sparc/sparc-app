@@ -94,11 +94,6 @@ input {
   }
 }
 .btn-submit-search {
-  background: $median;
-  color: white;
-  border: 1px solid $median;
-  border-radius: 4px;
-  cursor: pointer;
   height: 2.5rem;
   padding: 0 1.5rem;
   @media screen and (max-width: 28rem) {
@@ -107,14 +102,5 @@ input {
       display: none;
     }
   }
-}
-.clear-search {
-  background-color: transparent;
-  display: inline-block;
-  border: none;
-  width: fit-content;
-  color: $cochlear;
-  font-size: 1rem;
-  font-family: $font-family;
 }
 </style>
