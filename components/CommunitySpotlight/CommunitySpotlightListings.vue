@@ -11,7 +11,7 @@
     </div>
     <nuxt-link
       v-if="bottomLink"
-      class="community-link mt-16"
+      class="link1 mt-16"
       :to="{
         name: linkLocation
       }"
@@ -58,20 +58,5 @@ export default {
   height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
-}
-
-.community-link {
-  background: none;
-  border: none;
-  color: $navy;
-  cursor: pointer;
-  display: block;
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
 }
 </style>

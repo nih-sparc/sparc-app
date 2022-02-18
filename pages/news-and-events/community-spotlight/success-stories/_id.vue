@@ -32,38 +32,38 @@
                 :alt="entry.files[0].description"
               />
             </div>
-            <div class="seperator-path" />
-            <div class="body1 story-bold-field">
+            <div class="seperator-path my-32" />
+            <div class="body4 story-bold-field">
               Author
             </div>
-            <div class="body1 story-field">
+            <div class="body4">
               {{ author }}
             </div>
             <br />
             <template v-if="entry.publishDate">
-              <div class="body1 story-bold-field">
+              <div class="body4 story-bold-field">
                 Published Date
               </div>
-              <div class="body1 story-field">
+              <div class="body4">
                 {{ formatDate(entry.publishDate) }}
               </div>
               <br />
             </template>
             <template v-if="entry.contributorsMarkdown">
-              <div class="body1 story-bold-field">
+              <div class="body4 story-bold-field">
                 Team Members
               </div>
-              <div class="content body1 story-field" v-html="parseMarkdown(entry.contributorsMarkdown)" />
+              <div class="content body4" v-html="parseMarkdown(entry.contributorsMarkdown)" />
               <br />
             </template>
             <template v-if="entry.referencesMarkdown">
-              <div class="body1 story-bold-field">
+              <div class="body4 story-bold-field">
                 Supporting information
               </div>
-              <div class="content body1 story-field" v-html="parseMarkdown(entry.referencesMarkdown)" />
+              <div class="content body4" v-html="parseMarkdown(entry.referencesMarkdown)" />
               <br />
             </template>
-            <div class="body1 story-bold-field">
+            <div class="body4 story-bold-field">
               Share
             </div>
             <div class="share-links">
@@ -98,16 +98,16 @@
                 <span class="visuallyhidden">Copy permalink</span>
               </button>
             </div>
-            <div class="seperator-path" />
+            <div class="seperator-path my-32" />
             <template v-if="entry.associatedDatasets">
-              <div class="body1 story-bold-field">
+              <div class="body4 story-bold-field">
                 Associated Datasets
               </div>
               <br />
               <div
                 v-for="(datasetUrl, index) in entry.associatedDatasets"
                 :key="'dataset' + index"
-                class="body1 story-field"
+                class="body4 "
               >
                 <dataset-card :id="datasetIdFromUrl(datasetUrl)" />
               </div>
@@ -304,19 +304,12 @@ export default {
   height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 .story-bold-field {
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
-}
-
-.story-field {
-  font-size: 14px;
-  line-height: 1.5rem;
 }
 
 .btn-copy-permalink {
@@ -334,21 +327,6 @@ export default {
   margin-bottom: 3em;
   .updated {
     color: #aaa;
-  }
-}
-
-.community-link {
-  background: none;
-  border: none;
-  color: $navy;
-  cursor: pointer;
-  display: block;
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
   }
 }
 </style>
