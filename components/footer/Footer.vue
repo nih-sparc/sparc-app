@@ -70,7 +70,12 @@
                   v-for="helpUsImproveLink in footerData.helpUsImproveLinks"
                   :key="helpUsImproveLink.fields.url"
                 >
-                  <footer-link :link="helpUsImproveLink" />
+                <nuxt-link
+                  :to="helpUsImproveLink.fields.url"
+                  target="_blank"
+                >
+                  {{ helpUsImproveLink.fields.title }}
+                </nuxt-link>
                 </li>
               </ul>
             </el-col>

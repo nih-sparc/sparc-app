@@ -15,6 +15,7 @@
       ref="sparcInvestigatorsCategory"
       :default-checked-keys="defaultCheckedKeys"
       :enabled="selectedTypeLabel === options[1].label"
+      :collapse-by-default="false"
       :facet="sparcInvestigatorsCategory"
       :hide-show-all-option="true"
       :show-collapsible-label-arrow="false"

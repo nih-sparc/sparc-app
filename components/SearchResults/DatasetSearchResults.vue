@@ -108,13 +108,13 @@ export default {
           propPath: 'item.modalities'
         },
         {
+          displayName: 'Publication Date',
+          propPath: 'pennsieve'
+        },
+        {
           displayName: 'Samples',
           propPath: 'item.statistics'
         },
-        {
-          displayName: 'Includes',
-          propPath: 'item.published.boolean'
-        }
       ]
     }
   },

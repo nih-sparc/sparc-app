@@ -15,6 +15,7 @@
       ref="createdBySparcCategory"
       :default-checked-keys="defaultCheckedKeys"
       :facet="createdBySparcCategory"
+      :collapse-by-default="false"
       :hide-show-all-option="true"
       :show-collapsible-label-arrow="false"
       @selection-change="onCreatedBySparcChanged"

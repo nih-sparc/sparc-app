@@ -4,6 +4,7 @@
     :tooltip="tooltip"
     :show-help-icon="showHelpIcon"
     :show-collapsible-arrow="showCollapsibleLabelArrow"
+    :collapse-by-default="collapseByDefault"
   >
     <hr v-show="showCollapsibleLabelArrow" />
     <div v-show="!hideShowAllOption" class="show-all-node">
@@ -77,6 +78,10 @@ export default {
     showHelpIcon: {
       type: Boolean,
       default: false
+    },
+    collapseByDefault: {
+      type: Boolean,
+      default: true
     },
     hideShowAllOption: {
       type: Boolean,

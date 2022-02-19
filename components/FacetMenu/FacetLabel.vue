@@ -38,7 +38,7 @@ export default {
     },
     collapseByDefault: {
       type: Boolean,
-      default: false
+      default: true
     },
     showCollapsibleArrow: {
       type: Boolean,
