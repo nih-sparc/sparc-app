@@ -36,7 +36,7 @@
         />
       </div>
     </div>
-    <div class="page-wrap container">
+    <div class="mb-48 container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
@@ -799,12 +799,6 @@ export default {
     color: white;
     background-color: $median;
     font-weight: 500;
-  }
-}
-.page-wrap {
-  padding-bottom: 1em;
-  @media (min-width: 48em) {
-    padding-bottom: 3em;
   }
 }
 .table-wrap {
