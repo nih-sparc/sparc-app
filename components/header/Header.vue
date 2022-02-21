@@ -28,7 +28,7 @@
             v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
-            @enter="executeSearch"
+            @enter="executeSearch(searchQuery)"
           >
             <svg-icon
               icon="icon-magnifying-glass"
@@ -40,9 +40,9 @@
           <div :class="[mobileSearchOpen ? 'search-overlay' : '']">
             <search-form
               v-if="mobileSearchOpen"
-              v-model="searchQuery"
-              class="search-mobile"
+              :defaultValue="searchQuery"
               placeholder="Search Datasets"
+              class="search-mobile"
               @search="executeMobileSearch"
               @clear="searchQuery = ''"
             />
@@ -114,7 +114,7 @@
               type="text"
               class="nav-main-container__search-input"
               placeholder="Search"
-              @keyup.native.enter="executeSearch"
+              @keyup.native.enter="executeSearch(searchQuery)"
             >
               <el-select slot="prepend" v-model="searchSelect">
                 <el-option
@@ -127,7 +127,7 @@
             </el-input>
             <el-button
               class="search-button px-8 py-0 ml-8"
-              @click="executeSearch"
+              @click="executeSearch(searchQuery)"
             >
               <svg-icon
                 color="white"
@@ -296,8 +296,8 @@ export default {
       this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
     },
 
-    executeMobileSearch: function() {
-      this.executeSearch()
+    executeMobileSearch: function(term) {
+      this.executeSearch(term)
       this.closeMobileSearch()
     },
 
@@ -305,7 +305,7 @@ export default {
      * Executes a search query based on selected
      * option and query
      */
-    executeSearch: function() {
+    executeSearch: function(term) {
       const option = this.searchSelectOptions.find(
         o => o.value === this.searchSelect
       )
@@ -321,7 +321,7 @@ export default {
         name: option.value,
         query: {
           type,
-          [searchKey]: this.searchQuery
+          [searchKey]: term
         }
       })
 

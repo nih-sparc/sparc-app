@@ -29,8 +29,7 @@
           Search within category
         </h5>
         <search-form
-          v-model="searchQuery"
-          :q="q"
+          :defaultValue="searchQuery"
           @search="submitSearch"
           @clear="clearSearch"
         />
@@ -642,10 +641,9 @@ export default {
     /**
      * Submit search
      */
-    submitSearch: function() {
+    submitSearch: function(term) {
       this.searchData.skip = 0
-
-      const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      const query = mergeLeft({ q: term }, this.$route.query)
       this.$router.replace({ query })
     },
 
@@ -654,10 +652,9 @@ export default {
      */
     clearSearch: function() {
       this.searchData.skip = 0
-
       const query = { ...this.$route.query, q: '' }
-      this.$router.replace({ query })
       this.searchQuery = ''
+      this.$router.replace({ query })
     },
 
     /**

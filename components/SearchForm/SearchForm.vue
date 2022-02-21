@@ -1,8 +1,12 @@
 <template>
-  <div class="search-form" @keyup.enter="$emit('search')">
+  <div class="search-form" @keyup.enter="$emit('search', term)">
     <div class="input-wrap">
-      <input :value="value" :placeholder="placeholder" @input="$emit('input', $event.target.value)" />
-      <button v-if="value" class="btn-clear-search" @click="$emit('clear')">
+      <el-input 
+        v-model="term" 
+        :placeholder="placeholder"
+        @keyup.enter="$emit('search', term)"
+      />
+      <button v-if="term" class="btn-clear-search" @click="clear">
         <svg-icon
           icon="icon-clear"
           color="#909399"
@@ -11,7 +15,7 @@
         />
       </button>
     </div>
-    <el-button class="btn-submit-search" @click="$emit('search')">
+    <el-button class="btn-submit-search" title="Search" @click="$emit('search', term)">
       <svg-icon
         icon="icon-magnifying-glass"
         height="25"
@@ -30,17 +34,32 @@ export default {
   name: 'SearchForm',
 
   props: {
-    value: {
-      type: String,
-      default: ''
-    },
-    q: {
+    defaultValue: {
       type: String,
       default: ''
     },
     placeholder: {
       type: String,
       default: 'Enter search criteria'
+    }
+  },
+
+  watch: {
+    defaultValue: function(newValue) {
+      this.term = newValue
+    }
+  },
+
+  data() {
+    return {
+      term: this.defaultValue
+    }
+  },
+
+  methods: {
+    clear() {
+      this.$emit('clear')
+      this.term = ''
     }
   }
 }
@@ -57,7 +76,6 @@ export default {
   display: flex;
   position: relative;
   width: 100%;
-  border: .05rem solid black;
   border-radius: .2rem;
   margin-right: 0.5rem;
 }
