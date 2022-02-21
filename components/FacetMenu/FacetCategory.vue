@@ -8,7 +8,7 @@
     <hr v-show="showCollapsibleLabelArrow" />
     <div v-show="!hideShowAllOption" class="show-all-node">
       <el-checkbox v-model="showAll" @change="onChangeShowAll">
-        Show all
+        <span>Show all</span>
       </el-checkbox>
       <hr />
     </div>
@@ -211,35 +211,11 @@ export default {
 }
 </script>
 
-<style>
-.tree-counter {
-  margin-left: 5px;
-  font-size: 12px;
-  vertical-align: middle;
-}
-.hide-nr-results {
-  display: none;
-}
-.capitalize {
-  text-transform: capitalize;
-}
-.custom-tree-node {
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.light-gray-background .el-tree {
-  background: rgb(250, 251, 252);
-}
-.show-all-node .el-checkbox__label {
-  font-size: 16px;
-  font-weight: normal;
-}
-</style>
-
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .show-all-node {
+  font-size: .875rem;
   .el-checkbox {
     padding-right: 0.25rem;
   }
@@ -249,8 +225,42 @@ export default {
   margin: 0.5rem 1.5rem;
 }
 
+.light-gray-background .el-tree {
+  background: rgb(250, 251, 252);
+}
+
+::v-deep .show-all-node {
+  .el-checkbox__label {
+      font-weight: normal;
+    }
+}
+
+::v-deep .el-tree-node.is-checked {
+  .custom-tree-node {
+    color: $purple;
+  }
+}
+
+::v-deep .custom-tree-node {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: .875rem;
+  font-weight: normal;
+  .capitalize {
+    text-transform: capitalize;
+  }
+  .tree-counter {
+    margin-left: 5px;
+    font-size: .875rem;
+    vertical-align: middle;
+  }
+  .hide-nr-results {
+    display: none;
+  }
+}
+
 .white-background {
-  background: white;
+  background: white !important;
 }
 
 .padding-bottom {
