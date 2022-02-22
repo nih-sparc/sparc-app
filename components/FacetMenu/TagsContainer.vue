@@ -77,7 +77,7 @@ export default {
 <style lang="scss">
 @import '../../assets/_variables.scss';
 .tags-container {
-  margin: 0.75rem;
+  padding: 0.75rem;
   hr {
     padding-bottom: 0.75rem;
     margin-bottom: 0.5rem;
