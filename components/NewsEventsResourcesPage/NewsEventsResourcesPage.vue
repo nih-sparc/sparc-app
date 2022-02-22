@@ -14,41 +14,8 @@
         <el-row :gutter="32">
           <el-col :xs="24" :sm="firstCol" class="details">
             <slot />
-
             <h3>Share</h3>
-            <div class="share-links">
-              <share-network
-                network="facebook"
-                :url="pageUrl"
-                :title="heroTitle"
-                :description="heroSummary"
-              >
-                <svg-icon name="icon-share-facebook" height="28" width="28" />
-                <span class="visuallyhidden">Share on Facebook</span>
-              </share-network>
-              <share-network
-                network="twitter"
-                class="ml-8"
-                :url="pageUrl"
-                :title="heroTitle"
-              >
-                <svg-icon name="icon-share-twitter" height="28" width="28" />
-                <span class="visuallyhidden">Share on Twitter</span>
-              </share-network>
-              <share-network
-                network="linkedin"
-                class="ml-8"
-                :url="pageUrl"
-                :title="heroTitle"
-              >
-                <svg-icon name="icon-share-linked" height="28" width="28" />
-                <span class="visuallyhidden">Share on Linkedin</span>
-              </share-network>
-              <button class="ml-8 btn-copy-permalink" @click="copyLink">
-                <svg-icon name="icon-permalink" height="28" width="28" />
-                <span class="visuallyhidden">Copy permalink</span>
-              </button>
-            </div>
+            <share-links />
           </el-col>
           <el-col :xs="24" :sm="secondCol">
             <div class="content" v-html="parseMarkdown(htmlContent)" />
@@ -69,6 +36,7 @@ import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import PageHero from '@/components/PageHero/PageHero'
+import ShareLinks from '@/components/ShareLinks/ShareLinks'
 
 import FirstCol from '@/mixins/first-col/index'
 
@@ -77,7 +45,8 @@ export default {
 
   components: {
     Breadcrumb,
-    PageHero
+    PageHero,
+    ShareLinks
   },
 
   mixins: [FormatDate, MarkedMixin, FirstCol],
@@ -166,19 +135,6 @@ export default {
       return `View All ${name} >`
     }
   },
-
-  methods: {
-    copyLink: function() {
-      this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
-        () => {
-          this.$message(successMessage('Share link copied to clipboard.'))
-        },
-        () => {
-          this.$message(failMessage('Failed to copy share link.'))
-        }
-      )
-    }
-  }
 }
 </script>
 
@@ -217,19 +173,6 @@ export default {
   img {
     height: auto;
     max-width: 100%;
-  }
-}
-.share-links {
-  display: flex;
-}
-.btn-copy-permalink {
-  border: none;
-  background: none;
-  color: $median;
-  cursor: pointer;
-  padding: 0;
-  &:active {
-    outline: none;
   }
 }
 .back-link {
