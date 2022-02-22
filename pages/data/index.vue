@@ -523,7 +523,7 @@ export default {
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
         sortOrder = this.$refs.newsAndEventsFacetMenu?.getSortOrder();
-        eventTypes = this.$route.query.selectedEventTypeOptions;
+        eventTypes = contentType === 'event' ? this.$route.query.selectedEventTypeOptions : undefined;
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
