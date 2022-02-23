@@ -1,5 +1,9 @@
 <template>
-  <facet-label :label="label" :show-collapsible-arrow="false">
+  <facet-label 
+    :label="label" 
+    :show-collapsible-arrow="false" 
+    :collapse-by-default="false"
+  >
     <el-radio-group
       v-model="selectedOption"
       class="fill-width white-background negate-label-padding"
