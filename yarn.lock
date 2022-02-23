@@ -11,7 +11,7 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmap-viewer@2.1.0-beta.14", "@abi-software/flatmap-viewer@^2.1.0-beta.14":
+"@abi-software/flatmap-viewer@2.1.0-beta.14":
   version "2.1.0-beta.14"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.1.0-beta.14.tgz#58e766f4230efec032fcad98b2078021d0469619"
   integrity sha512-WqnMFrfgVRsrIOKhIpudXCa8nO28Xc0WjN5XRrhYM8KU0LBD+QP1kBzTDBgbt/Q6ygiIiCgWvI1Wtoy8Kj5DjQ==
@@ -35,21 +35,6 @@
     maplibre-gl "^2.1.0"
     minisearch "^2.2.1"
     polylabel "^1.1.0"
-
-"@abi-software/flatmapvuer@0.2.4-beta-1":
-  version "0.2.4-beta-1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.2.4-beta-1.tgz#ecb4eaf625293b080956efd8ac96b58a4a00da11"
-  integrity sha512-jVH2bihBWdA4RVUsYfFCCiIlCvOKlvxmfODqGTo++uIwGp9dYo8vggdlaiQgi9KmUWz9D8tQUge53gMAaH8+Yw==
-  dependencies:
-    "@abi-software/flatmap-viewer" "^2.1.0-beta.14"
-    "@abi-software/svg-sprite" "^0.1.14"
-    core-js "^3.3.2"
-    css-element-queries "^1.2.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.21"
-    vue "^2.6.10"
 
 "@abi-software/flatmapvuer@0.2.4-beta-6":
   version "0.2.4-beta-6"
