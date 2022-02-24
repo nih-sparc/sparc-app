@@ -233,7 +233,7 @@ export default {
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
               const id = segmentation.id
               const file_path = segmentation.dataset.path
-              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${file_path}`
+              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=files/${file_path}`
 
               this.getSegmentationThumbnail(items, {
                 id,
