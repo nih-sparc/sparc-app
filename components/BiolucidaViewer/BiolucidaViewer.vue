@@ -14,7 +14,10 @@
           </bf-button>
         </a>
       </p>
-      <iframe ref="biolucida" :src="data.share_link" />
+      <iframe ref="biolucida" :src="data.share_link" @load="biolucidaLoaded" />
+      <bf-button @click="go">
+        Go
+      </bf-button>
     </template>
     <p v-else class="error">
       Sorry, an error has occurred
@@ -23,6 +26,8 @@
 </template>
 
 <script>
+import { successMessage, failMessage } from '@/utils/notification-messages'
+
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 export default {
@@ -43,14 +48,18 @@ export default {
         return {
           biolucida_image_id: '',
           share_link: '',
-          status: ''
+          status: '',
+          location: ''
         }
       }
     }
   },
   watch: {
     queryView() {
-      this.$refs.biolucida.contentWindow.postMessage('getImgPos')
+      this.$refs.biolucida.contentWindow.postMessage(
+        'getImgPos',
+        'https://sparc.biolucida.net'
+      )
     }
   },
   mounted() {
@@ -60,11 +69,37 @@ export default {
     window.removeEventListener('message', this.receiveMessage)
   },
   methods: {
+    go() {
+      this.$refs.biolucida.contentWindow.postMessage(
+        '262.5-226-1-38',
+        'https://sparc.biolucida.net'
+      )
+    },
+    biolucidaLoaded() {
+      if (this.data.location) {
+        this.$refs.biolucida.contentWindow.postMessage(
+          this.data.location,
+          'https://sparc.biolucida.net'
+        )
+      }
+    },
     receiveMessage(event) {
       // Waiting on changes to Biolucida that will enable us to receive the desired message.
-      // console.log('received message.')
-      // console.log(event.origin)
-      // console.log(event.data)
+      if (event.origin === 'https://sparc.biolucida.net') {
+        const message = event.data
+        if (message === 'setting x-y-z-f failed') {
+          this.$message(failMessage('Unable to set image location.'))
+        } else if (!message.startsWith('setting x-y-z-f ')) {
+          this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
+            () => {
+              this.$message(successMessage('Share link copied to clipboard.'))
+            },
+            () => {
+              this.$message(failMessage('Failed to copy share link.'))
+            }
+          )
+        }
+      }
     }
   }
 }
