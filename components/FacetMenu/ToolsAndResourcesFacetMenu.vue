@@ -10,6 +10,7 @@
     <dropdown-multiselect
       ref="typesCategory"
       class="hide-bottom-border"
+      collapse-by-default="true"
       :category="typesCategory"
       :default-checked-ids="selectedResourceTypeIds"
       @selection-change="onTypeChanged"
