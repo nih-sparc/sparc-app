@@ -1,9 +1,16 @@
 <template>
-  <div class="citation-container py-16 pl-16 pr-24" v-loading="citationLoading">
-    <button class="copy-button" @click="handleCitationCopy">
-      <img src="../../static/images/copyIcon.png" />
-    </button>
-    <div>
+  <div>
+    <div v-if="canCopyCitation" class="citation-container py-16 pl-16 pr-24" v-loading="citationLoading">
+      <button class="copy-button" @click="handleCitationCopy">
+        <img src="../../static/images/copyIcon.png" />
+      </button>
+      <div>
+        {{authorCitations}} ({{year}}) {{title}}. 
+        <em v-if="publisher.length > 0">{{publisher}}. </em>
+        <a :href="url" target="_blank">{{url}}</a>
+      </div>
+    </div>
+    <div v-else v-loading="citationLoading">
       {{authorCitations}} ({{year}}) {{title}}. 
       <em v-if="publisher.length > 0">{{publisher}}. </em>
       <a :href="url" target="_blank">{{url}}</a>
@@ -23,6 +30,10 @@ export default {
       type: String,
       default: '',
     },
+    canCopyCitation: {
+      type: Boolean,
+      default: true
+    }
   },
 
   data() {
