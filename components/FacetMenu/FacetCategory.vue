@@ -45,6 +45,7 @@
 <script>
 import { propOr, pathOr, pluck } from 'ramda'
 import FacetLabel from './FacetLabel.vue'
+import FormatString from '@/mixins/format-string'
 
 const tooltipDelay = 800
 
@@ -52,6 +53,8 @@ export default {
   name: 'FacetCategory',
 
   components: { FacetLabel },
+
+  mixins: [ FormatString ],
 
   props: {
     facet: {
@@ -164,9 +167,6 @@ export default {
       } else {
         this.showAll = true
       }
-    },
-    capitalize(text) {
-      return text.charAt(0).toUpperCase() + text.slice(1);
     },
     onCheckChange: function() {
       this.setShowAll()
