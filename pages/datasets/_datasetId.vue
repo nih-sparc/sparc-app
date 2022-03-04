@@ -293,6 +293,7 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
           }
           flatmapData[i].taxo = Uberons.species['rat']
           flatmapData[i].uberonid = scicrunchData.organs[i].curie
+          flatmapData[i].organ = scicrunchData.organs[i].name
           flatmapData[i].id = datasetId
           flatmapData[i].version = datasetVersion
         }
