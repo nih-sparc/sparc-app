@@ -1,13 +1,8 @@
 <template>
-  <div class="no-results" v-if="stories.length === 0">
-    <el-table :show-header="false" empty-text="No Results">
-      <el-table-column />
-    </el-table>
-  </div>
-  <div v-else class="subpage mb-16">
-    <div v-for="(item, index) in stories" :key="index">
-      <community-spotlight-item :story="item" />
-      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-32" />
+  <div class="subpage mb-16">
+    <div v-for="(item, index) in items" :key="index">
+      <community-announcement-item :item="item" />
+      <div v-if="index !== items.length - 1 || bottomLink" class="seperator-path my-32" />
     </div>
     <nuxt-link
       v-if="bottomLink"
@@ -22,15 +17,15 @@
 </template>
 
 <script>
-import CommunitySpotlightItem from './CommunitySpotlightItem.vue'
+import CommunityAnnouncementItem from './CommunityAnnouncementItem.vue'
 
 export default {
-  name: 'CommunitySpotlightListings',
+  name: 'CommunityAnnouncementListings',
   components: {
-    CommunitySpotlightItem
+    CommunityAnnouncementItem
   },
   props: {
-    stories: {
+    items: {
       type: Array,
       default: () => []
     },
@@ -44,7 +39,7 @@ export default {
     },
     linkText: {
       type: String,
-      default: 'View All Community Spotlights'
+      default: 'View All Community Announcements'
     }
   }
 }

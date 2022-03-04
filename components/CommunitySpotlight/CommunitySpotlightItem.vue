@@ -33,24 +33,41 @@
       </div>
     </div>
     <div class="story-text">
-      <div class="story-title">
-        {{ story.fields.storyTitle }}
-      </div>
+      <h3>
+        <nuxt-link
+          v-if="story.fields.storyRoute"
+          :to="{
+            name: 'news-and-events-community-spotlight-success-stories-id',
+            params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
+          }"
+        >
+          {{ story.fields.storyTitle }}
+        </nuxt-link>
+        <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
+          {{ story.fields.storyTitle }}
+        </a>
+      </h3>
       <br />
-      <div class="story-description">
+      <div class="body1">
         {{ story.fields.summary }}
       </div>
       <br />
       <nuxt-link
+        v-if="story.fields.storyRoute"
         :to="{
           name: 'news-and-events-community-spotlight-success-stories-id',
           params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
         }"
       >
-        <el-button size="small" class="secondary-button">
+        <el-button class="secondary">
           Learn More
         </el-button>
       </nuxt-link>
+      <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
+        <el-button class="secondary">
+          Learn More
+        </el-button>
+      </a>
     </div>
   </div>
 </template>
@@ -104,7 +121,8 @@ export default {
 .story-result {
   display: flex;
   flex-wrap: wrap;
-  min-height: 238px;
+  gap: 2rem;
+  min-height: 10.875rem;
   width: 100%;
 }
 
@@ -113,35 +131,6 @@ export default {
   min-width: 17.5rem;
   @media (max-width: 48em) {
     margin: 1rem 0 0;
-  }
-}
-
-.story-title {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 32px;
-}
-
-.story-description {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 18px;
-  font-weight: normal;
-  line-height: 24px;
-}
-
-.secondary-button {
-  background: #f9f2fc;
-  color: rgb(131, 0, 191);
-  font-family: Asap;
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid $median;
-  color: $median;
-  &:hover {
-    color: #1a1489;
   }
 }
 </style>

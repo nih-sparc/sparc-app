@@ -100,7 +100,7 @@
         </el-row>
 
         <h2>Community Spotlight</h2>
-        <community-spotlight-listings :stories="shownStories" :in-news="true" />
+        <community-spotlight-listings :stories="shownStories" :bottom-link="true" />
 
         <h2>Stay Connected</h2>
         <div class="subpage">
