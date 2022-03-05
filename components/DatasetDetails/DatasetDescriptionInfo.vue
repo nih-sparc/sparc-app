@@ -50,7 +50,7 @@
       <span><strong>Age range: </strong>{{ageRangeText}}</span>
     </div>
     <div class="experimental-design-container mb-16">
-      <span><strong>Number of subjects: </strong>{{numberSubjects}}</span>
+      <span><strong>Number of samples: </strong>{{samplesMetadataText}}</span>
     </div>
     <div class="mb-16">
       <sparc-tooltip
@@ -152,8 +152,18 @@ export default {
     ageRangeText: function() {
       return this.getFacetText('Age Categories')
     },
+    numberSamples: function() {
+      return _.get(this.datasetMetadataInfo.item, 'statistics.samples.count')
+    },
     numberSubjects: function() {
-      return _.get(this.datasetMetadataInfo.item, 'statistics.subjects.count') || 'n/a'
+      return _.get(this.datasetMetadataInfo.item, 'statistics.subjects.count')
+    },
+    samplesMetadataText: function() {
+      if (this.numberSamples && this.numberSubjects)
+      {
+        return `${this.numberSamples} samples from ${this.numberSubjects} subjects`
+      }
+      return 'n/a'
     },
     /**
      * Gets dataset id
