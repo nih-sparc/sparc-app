@@ -1,12 +1,11 @@
 <template>
   <div class="help-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="Success Stories" />
+    <breadcrumb :breadcrumb="breadcrumb" title="Fireside Chats" />
     <page-hero>
-      <h1>Success Stories</h1>
+      <h1>Fireside Chats</h1>
       <br />
       <p>
-        Learn how researchers have used the SPARC Program to advance
-        neuromodulation of the ANS. Submit your success story
+        Watch SPARC investigators share their latest research
       </p>
     </page-hero>
     <div class="page-wrap container mb-16">
@@ -30,7 +29,7 @@ import CommunitySpotlightListings from '@/components/CommunitySpotlight/Communit
 const client = createClient()
 
 export default {
-  name: 'CommunityStoriesPage',
+  name: 'CommunityChatsPage',
 
   components: {
     Breadcrumb,
@@ -39,11 +38,11 @@ export default {
   },
 
   async asyncData() {
-    const successData = await client.getEntries({
-      content_type: 'successStoryDisplay'
+    const firesideChats = await client.getEntries({
+      content_type: 'firesideChat'
     })
     return {
-      allStories: successData.items
+      allStories: firesideChats.items
     }
   },
 
