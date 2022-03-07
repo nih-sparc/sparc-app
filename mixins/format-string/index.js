@@ -2,7 +2,7 @@
 export default {
   methods: {
     /**
-     * Return the string with the first letter capitalize
+     * Return the string with the first letter capitalized
      * @param {String} text
      */
     capitalize: function(text) {
