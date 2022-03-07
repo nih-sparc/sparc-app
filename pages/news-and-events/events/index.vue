@@ -7,7 +7,7 @@
         Check out the latest events associated with the SPARC Portal
       </p>
     </page-hero>
-    <div class="page-wrap">
+    <div class="my-48">
       <div class="container">
         <div v-if="Object.keys(featuredEvent).length" class="mb-40">
           <h2>Featured Event</h2>

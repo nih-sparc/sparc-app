@@ -1,5 +1,5 @@
 <template>
-  <div class="homepage-testimonials">
+  <div class="mb-48">
     <div class="container home-container">
       <h2>Connecting the Research Community</h2>
       <div class="homepage-testimonials__testimonial-wrap">
@@ -85,12 +85,7 @@ export default {
     padding-right: 6rem;
   }
 }
-.homepage-testimonials {
-  padding: 1.75em 0;
-  @media (min-width: 768px) {
-    padding: 2em 0 4em;
-  }
-}
+
 p {
   line-height: 1.875rem;
   margin: 0 0 1.25rem;

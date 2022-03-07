@@ -19,7 +19,7 @@
     </div>
 
     <nuxt-link :to="{ name: 'data', query: { type: 'dataset' } }">
-      <el-button class="btn-view-more mt-32 secondary">
+      <el-button class="mt-32 secondary">
         View more
       </el-button>
     </nuxt-link>

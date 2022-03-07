@@ -34,8 +34,7 @@ export default {
 
 .page-hero {
   background: $darkBlue;
-  color: #f0f2f5;
-  font-size: 1em;
+  font-size: 1rem;
   line-height: 1.5rem;
   font-weight: 400;
   color: white;

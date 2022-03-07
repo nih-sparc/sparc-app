@@ -1,8 +1,8 @@
 <template>
   <div class="mt-16 similar-datasets-container">
     <div class="header">
-      <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search similar datasets</div>
-      <div v-else class="p-8 mb-0">Search similar models/simulations</div>
+      <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search related datasets</div>
+      <div v-else class="p-8 mb-0">Search related models/simulations</div>
       <hr />
     </div>
     <div v-loading="isLoadingFacets" class="px-8">

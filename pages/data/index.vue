@@ -1,6 +1,6 @@
 <template>
   <div class="data-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -29,14 +29,13 @@
           Search within category
         </h5>
         <search-form
-          v-model="searchQuery"
-          :q="q"
+          :defaultValue="searchQuery"
           @search="submitSearch"
           @clear="clearSearch"
         />
       </div>
     </div>
-    <div class="page-wrap container">
+    <div class="mb-48 container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
@@ -260,7 +259,16 @@ export default {
             name: 'index'
           },
           label: 'Home'
-        }
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: 'dataset'
+            }
+          },
+          label: 'Find Data'
+        },
       ],
       titleColumnWidth: 300,
       windowWidth: ''
@@ -515,7 +523,7 @@ export default {
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
         sortOrder = this.$refs.newsAndEventsFacetMenu?.getSortOrder();
-        eventTypes = this.$route.query.selectedEventTypeOptions;
+        eventTypes = contentType === 'event' ? this.$route.query.selectedEventTypeOptions : undefined;
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
@@ -633,10 +641,9 @@ export default {
     /**
      * Submit search
      */
-    submitSearch: function() {
+    submitSearch: function(term) {
       this.searchData.skip = 0
-
-      const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      const query = mergeLeft({ q: term }, this.$route.query)
       this.$router.replace({ query })
     },
 
@@ -645,10 +652,9 @@ export default {
      */
     clearSearch: function() {
       this.searchData.skip = 0
-
       const query = { ...this.$route.query, q: '' }
-      this.$router.replace({ query })
       this.searchQuery = ''
+      this.$router.replace({ query })
     },
 
     /**
@@ -790,12 +796,6 @@ export default {
     color: white;
     background-color: $median;
     font-weight: 500;
-  }
-}
-.page-wrap {
-  padding-bottom: 1em;
-  @media (min-width: 48em) {
-    padding-bottom: 3em;
   }
 }
 .table-wrap {

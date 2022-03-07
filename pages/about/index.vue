@@ -1,5 +1,5 @@
 <template>
-  <div class="about-page">
+  <div class="about-page mb-48">
     <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>

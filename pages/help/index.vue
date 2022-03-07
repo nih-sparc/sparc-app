@@ -116,9 +116,9 @@ export default Vue.extend<Data, Methods, never, never>({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .page-hero {
-  background-color: #292b66;
+  background-color: $darkBlue;
   background-image: none;
   h2 {
     font-size: 2rem;
