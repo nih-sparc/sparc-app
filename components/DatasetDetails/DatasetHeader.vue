@@ -42,7 +42,7 @@
                 </span>
                 <span>
                   <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
-                    <external-pub-link :publication="item" />
+                    <apa-citation class="mb-8" :doi="item.doi" :can-copy-citation="false" />
                   </div>
                 </span>
               </div>
@@ -91,9 +91,9 @@
 <script>
 import { mapState } from 'vuex'
 import { propOr } from 'ramda'
+import ApaCitation from '@/components/DatasetCitations/ApaCitation'
 import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
 import DatasetInformationBox from '@/components/DatasetDetails/DatasetInformationBox.vue'
-import ExternalPubLink from '@/components/ExternalPubLink/ExternalPubLink'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 export default {
@@ -102,7 +102,7 @@ export default {
   components: {
     ContributorItem,
     DatasetInformationBox,
-    ExternalPubLink
+    ApaCitation,
   },
 
   props: {
