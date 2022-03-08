@@ -10,16 +10,16 @@
     <dropdown-multiselect
       ref="typesCategory"
       class="hide-bottom-border"
-      collapse-by-default="true"
+      collapse-by-default
       :category="typesCategory"
       :default-checked-ids="selectedResourceTypeIds"
       @selection-change="onTypeChanged"
     />
     <dropdown-multiselect
-      ref="createdBySparcCategory"
-      :category="createdBySparcCategory"
-      :check-all-by-default="false"
-      @selection-change="onCreatedBySparcChanged"
+      :category="developedBySparcCategory"
+      :default-checked-ids="defaultCheckedIds"
+      @selection-change="onDevelopedBySparcChanged"
+      ref="developedBySparcCategory"
     />
   </div>
 </template>
@@ -57,13 +57,14 @@ const typesCategory = {
   ]
 }
 
-const createdBySparcCategory = {
-  label: 'created by sparc',
+const developedBySparcCategory = {
+  label: 'Developed By SPARC',
   id: 'developedBySparc',
   data: [
     {
-      label: 'Show only if "YES"',
-      id: 'true',
+      label: 'Developed By SPARC',
+      id: 'developedBySparc',
+      facetPropPath: 'developedBySparc'
     }
   ]
 }
@@ -76,10 +77,11 @@ export default {
   data() {
     return {
       typesCategory: typesCategory,
-      createdBySparcCategory: createdBySparcCategory,
+      developedBySparcCategory: developedBySparcCategory,
       selectedResourceTypeIds: [],
-      selectedCreatedBySparcIds: [],
-      visibleCategories: visibleCategories
+      selectedDevelopedBySparcIds: [],
+      visibleCategories: visibleCategories,
+      defaultCheckedIds: [],
     }
   },
 
@@ -95,12 +97,12 @@ export default {
           })
         })
       }
-      if (this.selectedCreatedBySparcIds !== []) {
-        this.selectedCreatedBySparcIds.forEach(selectedOption => {
+      if (this.selectedDevelopedBySparcIds !== []) {
+        this.selectedDevelopedBySparcIds.forEach(selectedOption => {
           facets.push({
-            label: `${createdBySparcCategory.label}`,
+            label: `${developedBySparcCategory.label}`,
             id: `${selectedOption.id}`,
-            facetPropPath: createdBySparcCategory.id
+            facetPropPath: developedBySparcCategory.id
           })
         })
       }
@@ -113,7 +115,9 @@ export default {
       this.selectedResourceTypeIds = this.$route.query.resourceTypes.split(',')
     }
     if (this.$route.query.developedBySparc) {
-      this.selectedCreatedBySparcIds = createdBySparcCategory.data
+      this.defaultCheckedIds = this.defaultCheckedIds.concat([
+        this.developedBySparcCategory.data[0].id
+      ])
     }
   },
 
@@ -133,11 +137,11 @@ export default {
         }
       )
     },
-    onCreatedBySparcChanged: function(newValue) {
-      this.selectedCreatedBySparcIds = newValue.checkedNodes
+    onDevelopedBySparcChanged: function(newValue) {
+      this.selectedDevelopedBySparcIds = newValue.checkedNodes
       this.$router.replace(
         {
-          query: { ...this.$route.query, developedBySparc: this.selectedCreatedBySparcIds.length === 0 ? undefined : pluck('id', this.selectedCreatedBySparcIds).toString() }
+          query: { ...this.$route.query, developedBySparc: this.selectedDevelopedBySparcIds.length === 0 ? undefined : true }
         },
         () => {
           this.$emit('tool-and-resources-selections-changed')
@@ -156,13 +160,13 @@ export default {
         () => {
           this.$emit('tool-and-resources-selections-changed')
           this.$refs.typesCategory.uncheckAll()
-          this.$refs.createdBySparcCategory.uncheckAll()
+          this.$refs.developedBySparcCategory.uncheckAll()
         }
       )
     },
     deselectFacet(id) {
       this.$refs.typesCategory.uncheck(id)
-      this.$refs.createdBySparcCategory.uncheck(id)
+      this.$refs.developedBySparcCategory.uncheck(id)
     },
   }
 }

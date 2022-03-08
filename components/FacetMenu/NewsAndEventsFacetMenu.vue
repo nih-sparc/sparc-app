@@ -38,7 +38,7 @@
     </facet-menu>
     <dropdown-multiselect
       ref="eventTypeCategory"
-      collapse-by-default="true"
+      collapse-by-default
       :category="eventTypeOptions"
       :enabled="selectedNewsAndEventTypeLabel === newsEventsTypeOptions[1].label"
       :default-checked-ids="selectedEventTypeOptions"

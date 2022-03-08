@@ -1,6 +1,5 @@
 <template>
-  <div :class="{ disabled: disabled }">
-    <hr />
+  <div :class="['facet-label', { disabled: disabled }]">
     <div class="body1 title">
       <span>
         {{ label }}
@@ -83,10 +82,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
-
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .light-gray-background {
-  background-color: rgb(250, 251, 252);
+  background-color: $background
+}
+
+.facet-label {
+  border-top: 1px solid $lineColor2;
 }
 
 .title {
@@ -104,17 +106,11 @@ export default {
 }
 
 .purple-fill {
-  fill: $median;
-}
-
-hr {
-  border: none;
-  border-bottom: 1px solid #dbdfe6;
-  margin: 0;
+  fill: $purple;
 }
 
 .disabled {
   opacity: 0.5;
-  background-color: #fafbfc;
+  background-color: $background;
 }
 </style>

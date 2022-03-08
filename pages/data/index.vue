@@ -424,12 +424,12 @@ export default {
       }
 
       if (typeof searchSources[source] === 'function') {
-        searchSources[source]()
+        this.$nextTick(() => searchSources[source]())
       }
     },
 
     facetMenuMounted: function() {
-      this.$nextTick(() => this.fetchResults())
+      this.fetchResults()
     },
 
     /**
@@ -476,7 +476,7 @@ export default {
                 this.searchData = mergeLeft(searchData, this.searchData)
                 this.isLoadingSearch = false
                 // update facet result numbers
-                for (const [key, value] of Object.entries(this.visibleFacets)) {
+                /*for (const [key, value] of Object.entries(this.visibleFacets)) {
                   if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
                     for (const [key2, value2] of Object.entries(value)) {
                       let maybeFacetCount = pathOr(null, [key, key2], response.facets)
@@ -487,7 +487,7 @@ export default {
                       }
                     }
                   }
-                }
+                }*/
               })
           }) 
     },
