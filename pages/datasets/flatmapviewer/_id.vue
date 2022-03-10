@@ -32,13 +32,25 @@
             Flatmap
           </div>
         </div>
-        <div class="file-detail">
+        <div class="file-detail" v-if="species">
+          <strong class="file-detail__column">Speices</strong>
+          <div class="file-detail__column">
+            {{ capitalize(species) }}
+          </div>
+        </div>
+        <div class="file-detail" v-else>
           <strong class="file-detail__column">taxo</strong>
           <div class="file-detail__column">
             {{ taxo }}
           </div>
         </div>
-        <div class="file-detail">
+        <div class="file-detail" v-if="organ_name">
+          <strong class="file-detail__column">Organ</strong>
+          <div class="file-detail__column">
+            {{ capitalize(organ_name) }}
+          </div>
+        </div>
+        <div class="file-detail" v-else>
           <strong class="file-detail__column">uberon</strong>
           <div class="file-detail__column">
             {{ uberonid }}
@@ -63,6 +75,10 @@
 
 <script>
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import idMaps from '@/static/js/uberon-map.js'
+import scicrunch from '@/services/scicrunch'
+import FormatString from '@/mixins/format-string'
+
 export default {
   name: 'FlatmapViewerPage',
   components: {
@@ -70,6 +86,24 @@ export default {
     FlatmapVuer: process.client
       ? () => import('@abi-software/flatmapvuer').then(m => m.FlatmapVuer)
       : null
+  },
+
+  mixins: [ FormatString ],
+
+  async asyncData({ route }) {
+    //Get the organ name from uberon id
+    const uberonid = route.query.uberonid
+    try {
+      const  organ_name = await scicrunch.getOrganFromUberonId(uberonid)
+      return {
+        organ_name
+      }
+    } catch (e) {
+      // Error caught return empty data.
+    }
+    return {
+      organ_name: undefined,
+    }
   },
   data: () => {
     return {
@@ -91,6 +125,17 @@ export default {
      */
     taxo: function() {
       return this.$route.query.taxo
+    },
+    /**
+     * Get the species name using the static mapping
+     * @returns String
+     */
+    species: function() {
+      for (const [key, value] of Object.entries(idMaps.species)) {
+        if (value === this.$route.query.taxo)
+          return key
+      }
+      return undefined;
     },
     /**
      * Get the uberon id from the query parameter.

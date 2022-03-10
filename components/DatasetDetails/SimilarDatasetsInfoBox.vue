@@ -62,6 +62,7 @@ import { propOr} from 'ramda'
 
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import createAlgoliaClient from '@/plugins/algolia.js'
+import FormatString from '@/mixins/format-string'
 
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
@@ -69,6 +70,8 @@ const EXPERIMENTAL_APPROACH_LABEL = facetPropPathMapping['item.modalities.keywor
 
 export default {
   name: 'SimilarDatasetsInfoBox',
+
+  mixins: [ FormatString ],
 
   data() {
     return {
@@ -116,9 +119,6 @@ export default {
       })
   },
   methods: {
-    capitalize(text) {
-      return text.charAt(0).toUpperCase() + text.slice(1);
-    },
     getFacetId(datasetFacet) {
       const key = datasetFacet.facetPropPath;
       const label = datasetFacet.label;
