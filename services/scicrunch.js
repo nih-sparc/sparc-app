@@ -6,6 +6,8 @@ const apiClient = axios.create({
   timeout: 10000
 })
 
+let uberonOrganPairs = undefined;
+
 const search = query => {
   return apiClient.get('search/' + query)
 }
@@ -44,11 +46,48 @@ const getCollectionInfo = async id => {
   return apiClient.get('collections/' + id)
 }
 
+/**
+ * Get the uberon organ pairs array.
+ * 
+ * @returns {String} Array containing organ, uberon id pair
+ */
+const getUberonOrganPairs = async () =>{
+  if (uberonOrganPairs)
+    return uberonOrganPairs
+  else {
+    return apiClient.get('get-organ-curies/')
+      .then(res => {
+        uberonOrganPairs = res.data['uberon']['array']
+        return uberonOrganPairs
+      })
+  }
+}
+
+/**
+ * Get the organ name from the uberon id using a 
+ * organ - uberon id map from SciCrunch
+ * @param {id} The uberon id
+ * @returns {String} the organ name
+ */
+const getOrganFromUberonId = async id => {
+  return getUberonOrganPairs()
+    .then(pairs => {
+      if (pairs) {
+        for (let i = 0; i < pairs.length; i++) {
+          if (pairs[i]['id'] === id) {
+            return pairs[i]['name']
+          }
+        }
+      }
+    })
+}
+
 export default {
   getDatasetInfoFromObjectIdentifier,
   getDatasetInfoFromDOI,
   getDatasetInfoFromPennsieveIdentifier,
   search,
   getImageInfo,
-  getCollectionInfo
+  getCollectionInfo,
+  getOrganFromUberonId
 }
