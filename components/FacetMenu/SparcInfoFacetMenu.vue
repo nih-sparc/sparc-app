@@ -1,62 +1,30 @@
 <template>
-  <facet-menu
-    :selected-facets="selectedFacetsArray"
-    :visible-facet-categories="visibleCategories"
-    @deselect-facet="deselectFacet"
-    @deselect-all-facets="deselectAllFacets"
-  >
-    <facet-radio-button-category
-      :label="'type'"
-      :options="options"
-      :default-selected-option="selectedTypeLabel"
-      @selection-changed="onSelectedTypeChanged"
-    />
-    <facet-category
-      ref="sparcInvestigatorsCategory"
-      :default-checked-keys="defaultCheckedKeys"
+  <div>
+    <facet-menu
+      :selected-facets="selectedFacetsArray"
+      :visible-facet-categories="visibleCategories"
+      :visibleFacets="facetMenuVisibleFacets"
+      @deselect-facet="deselectFacet"
+      @deselect-all-facets="deselectAllFacets"
+    >
+      <facet-radio-button-category
+        :label="'type'"
+        :options="options"
+        :default-selected-option="selectedTypeLabel"
+        @selection-changed="onSelectedTypeChanged"
+      />
+    </facet-menu>
+    <dropdown-multiselect
       :enabled="selectedTypeLabel === options[1].label"
-      :collapse-by-default="false"
-      :facet="sparcInvestigatorsCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
+      :category="sparcInvestigatorsCategory"
+      :default-checked-ids="defaultCheckedIds"
       @selection-change="onSparcInvestigatorsChanged"
+      ref="sparcInvestigatorsCategory"
     />
-    <!-- Hiding the 3 categories below. See the following wrike ticket comment: https://www.wrike.com/workspace.htm?acc=3203588#path=folder&id=745309608&c=list&vid=43893997&a=3203588&t=735304640&so=2&bso=10&sd=0&st=space-441356195 -->
-    <facet-category
-      v-if="false"
-      ref="hasPublicationsCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :enabled="selectedTypeLabel === options[3].label"
-      :facet="hasPublicationsCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onHasPublicationsChanged"
-    />
-    <facet-category
-      v-if="false"
-      ref="hasDatasetsCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :enabled="selectedTypeLabel === options[3].label"
-      :facet="hasDatasetsCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onHasDatasetsChanged"
-    />
-    <facet-category
-      v-if="false"
-      ref="hasModelsSimulationsCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :enabled="selectedTypeLabel === options[3].label"
-      :facet="hasModelsSimulationsCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onHasModelsSimulationsChanged"
-    />
-  </facet-menu>
+  </div>
 </template>
 
 <script>
-import FacetCategory from './FacetCategory.vue'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonCategory from './FacetRadioButtonCategory.vue'
 import { isEmpty } from 'ramda'
@@ -81,62 +49,13 @@ const options = [
 ]
 
 const sparcInvestigatorsCategory = {
-  label: 'information for sparc investigators',
-  key: 'sparcInvestigators',
+  label: 'Information for SPARC Investigators',
   id: 'sparcInvestigators',
-  facetPropPath: 'sparcInvestigators',
-  children: [
+  data: [
     {
-      label: 'Show only if "YES"',
+      label: 'Information for SPARC Investigators',
       id: 'sparcInvestigators',
-      children: [],
-      facetPropPath: 'sparcInvestigators',
-      key: 'sparcInvestigators'
-    }
-  ]
-}
-
-const hasPublicationsCategory = {
-  label: 'has publications',
-  key: 'hasPublications',
-  id: 'hasPublications',
-  facetPropPath: 'hasPublications',
-  children: [
-    {
-      label: 'Show only if "YES"',
-      id: 'hasPublications',
-      children: [],
-      key: 'hasPublications'
-    }
-  ]
-}
-
-const hasDatasetsCategory = {
-  label: 'has datasets',
-  key: 'hasDatasets',
-  id: 'hasDatasets',
-  facetPropPath: 'hasDatasets',
-  children: [
-    {
-      label: 'Show only if "YES"',
-      id: 'hasDatasets',
-      children: [],
-      key: 'hasDatasets'
-    }
-  ]
-}
-
-const hasModelsSimulationsCategory = {
-  label: 'has model/simulation',
-  key: 'hasModelsSimulations',
-  id: 'hasModelsSimulations',
-  facetPropPath: 'hasModelsSimulations',
-  children: [
-    {
-      label: 'Show only if "YES"',
-      id: 'hasModelsSimulations',
-      children: [],
-      key: 'hasModelsSimulations'
+      facetPropPath: 'sparcInvestigators'
     }
   ]
 }
@@ -145,7 +64,6 @@ export default {
   name: 'SparcInfoFacetMenu',
 
   components: {
-    FacetCategory,
     FacetMenu,
     FacetRadioButtonCategory
   },
@@ -157,10 +75,7 @@ export default {
       options: options,
       sparcInfoType: options[0].id,
       sparcInvestigatorsCategory: sparcInvestigatorsCategory,
-      hasPublicationsCategory: hasPublicationsCategory,
-      hasDatasetsCategory: hasDatasetsCategory,
-      hasModelsSimulationsCategory: hasModelsSimulationsCategory,
-      defaultCheckedKeys: [],
+      defaultCheckedIds: [],
       showFacetMenu: (process.env.show_facet_menu == 'true') ? true : false,
       selectedFacets: {},
       selectedFacetsArray: []
@@ -193,45 +108,26 @@ export default {
       if (this.selectedTypeLabel === options[1].label) {
         visibleCategories = ['sparcInvestigators']
       }
-      if (this.selectedTypeLabel === options[3].label) {
-        visibleCategories = [
-          'hasDatasets',
-          'hasPublications',
-          'hasModelsSimulations'
-        ]
-      }
       return visibleCategories
-    }
+    },
+    facetMenuVisibleFacets: function() {
+      const sparcInvestigators = {
+        'Information for SPARC Investigators': true,
+        facetPropPath: 'sparcInvestigators',
+      }
+      return {...this.visibleFacets, sparcInvestigators}
+    },
   },
-
-  watch: {},
-
   mounted() {
     if (this.$route.query.sparcInfoType) {
       this.sparcInfoType = this.$route.query.sparcInfoType
     }
     if (this.$route.query.sparcInvestigators) {
-      this.defaultCheckedKeys = this.defaultCheckedKeys.concat([
-        this.sparcInvestigatorsCategory.children[0].id
-      ])
-    }
-    if (this.$route.query.hasPublications) {
-      this.defaultCheckedKeys = this.defaultCheckedKeys.concat([
-        this.hasPublicationsCategory.children[0].id
-      ])
-    }
-    if (this.$route.query.hasDatasets) {
-      this.defaultCheckedKeys = this.defaultCheckedKeys.concat([
-        this.hasDatasetsCategory.children[0].id
-      ])
-    }
-    if (this.$route.query.hasModelsSimulations) {
-      this.defaultCheckedKeys = this.defaultCheckedKeys.concat([
-        this.hasModelsSimulationsCategory.children[0].id
+      this.defaultCheckedIds = this.defaultCheckedIds.concat([
+        this.sparcInvestigatorsCategory.data[0].id
       ])
     }
   },
-
   methods: {
     onSelectedTypeChanged(newValue) {
       if (this.sparcInfoType === newValue) {
@@ -248,84 +144,19 @@ export default {
       )
     },
     onSparcInvestigatorsChanged(data) {
-      if (!isEmpty(data.facets)) {
-        this.setSelectedFacetsArray({
-          facets: [sparcInvestigatorsCategory],
-          key: 'sparcInvestigators'
-        })
-      } else {
-        this.setSelectedFacetsArray(data)
+      this.selectedFacets[data.id] = data.checkedNodes
+
+      this.selectedFacetsArray = []
+      for (const [id, value] of Object.entries(this.selectedFacets)) {
+        this.selectedFacetsArray = this.selectedFacetsArray.concat(value)
       }
 
-      const sparcInvestigators = data.facets.length > 0 ? true : undefined
+      const sparcInvestigators = data.checkedNodes.length > 0 ? true : undefined
       this.$router.replace(
         {
           query: {
             ...this.$route.query,
             sparcInvestigators: sparcInvestigators
-          }
-        },
-        () => {
-          this.$emit('sparc-info-selections-changed')
-        }
-      )
-    },
-    onHasPublicationsChanged(data) {
-      if (!isEmpty(data.facets)) {
-        this.setSelectedFacetsArray({
-          facets: [hasPublicationsCategory],
-          key: 'hasPublications'
-        })
-      } else {
-        this.setSelectedFacetsArray(data)
-      }
-
-      const hasPublications = data.facets.length > 0 ? true : undefined
-      this.$router.replace(
-        {
-          query: { ...this.$route.query, hasPublications: hasPublications }
-        },
-        () => {
-          this.$emit('sparc-info-selections-changed')
-        }
-      )
-    },
-    onHasDatasetsChanged(data) {
-      if (!isEmpty(data.facets)) {
-        this.setSelectedFacetsArray({
-          facets: [hasDatasetsCategory],
-          key: 'hasDatasets'
-        })
-      } else {
-        this.setSelectedFacetsArray(data)
-      }
-
-      const hasDatasets = data.facets.length > 0 ? true : undefined
-      this.$router.replace(
-        {
-          query: { ...this.$route.query, hasDatasets: hasDatasets }
-        },
-        () => {
-          this.$emit('sparc-info-selections-changed')
-        }
-      )
-    },
-    onHasModelsSimulationsChanged(data) {
-      if (!isEmpty(data.facets)) {
-        this.setSelectedFacetsArray({
-          facets: [hasModelsSimulationsCategory],
-          key: 'hasModelsSimulations'
-        })
-      } else {
-        this.setSelectedFacetsArray(data)
-      }
-
-      const hasModelsSimulations = data.facets.length > 0 ? true : undefined
-      this.$router.replace(
-        {
-          query: {
-            ...this.$route.query,
-            hasModelsSimulations: hasModelsSimulations
           }
         },
         () => {
@@ -340,7 +171,7 @@ export default {
       return this.sparcInfoType
     },
     getTags() {
-      const selectedFacet = this.selectedFacets[sparcInvestigatorsCategory.key]
+      const selectedFacet = this.selectedFacets[sparcInvestigatorsCategory.id]
       if (
         this.selectedTypeLabel === options[1].label &&
         selectedFacet !== undefined &&
@@ -359,47 +190,14 @@ export default {
           }
         },
         () => {
-          this.$emit('sparc-info-selections-changed')
           this.$refs.sparcInvestigatorsCategory.uncheckAll()
+          this.$emit('sparc-info-selections-changed')
         }
       )
     },
     deselectFacet(id) {
       this.$refs.sparcInvestigatorsCategory.uncheck(id)
     },
-    setSelectedFacetsArray(data) {
-      this.selectedFacets[data.key] = data.facets
-      this.selectedFacetsArray = []
-      for (const [key, value] of Object.entries(this.selectedFacets)) {
-        this.selectedFacetsArray = this.selectedFacetsArray.concat(value)
-      }
-    }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '../../assets/_variables.scss';
-.white-background {
-  background-color: white;
-  border: 0.1rem solid #e4e7ed;
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.title {
-  margin-bottom: 0;
-  padding: 0.5rem 1rem;
-  font-weight: 300;
-}
-
-hr {
-  border: none;
-  border-bottom: 1px solid #dbdfe6;
-  margin: 0;
-}
-</style>

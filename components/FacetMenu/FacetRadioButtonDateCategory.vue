@@ -6,11 +6,11 @@
       class="indent"
       @input="selectedDateOptionChanged"
     >
-      <el-radio class="padding-bottom" :label="showAllOption" />
+      <el-radio class="pb-16" :label="showAllOption" />
       <radio-date-option
         v-for="(option, index) in dateOptions"
         :key="index"
-        class="padding-bottom"
+        class="pb-16"
         :label="option"
         :enabled="selectedOption === option"
         :default-month="defaultSelectedMonth"
@@ -142,25 +142,17 @@ export default {
 }
 </script>
 
-<style>
-.el-radio__input.is-checked + .el-radio__label {
-  color: #8300bf;
-}
-.el-radio__input.is-checked .el-radio__inner {
-  border-color: #8300bf;
-  background: #8300bf;
-}
-</style>
-
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .indent {
   display: block;
   text-transform: capitalize;
   padding: 1rem 0 0 2rem;
 }
 
-.padding-bottom {
-  padding-bottom: 1rem;
+hr {
+  border: none;
+  border-bottom: 1px solid $lineColor2;
+  margin: 0;
 }
 </style>
