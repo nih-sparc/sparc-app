@@ -18,13 +18,20 @@
           Get Saffold
         </el-button>
       </sparc-tooltip>
-      <el-button
-        v-else-if="hasFiles"
-        class="dataset-button"
-        @click="actionButtonClicked('files')"
-      >
-        Get Scaffold
-      </el-button>
+      <div v-else-if="hasFiles" class="button-container" >
+        <el-button
+          class="dataset-button"
+          @click="actionButtonClicked('images')"
+        >
+          View Scaffold
+        </el-button>
+        <el-button
+          class="dataset-button"
+          @click="actionButtonClicked('files')"
+        >
+          Get Scaffold
+        </el-button>
+      </div>
       <el-button class="secondary" @click="actionButtonClicked('cite')">
         Cite Scaffold
       </el-button>
