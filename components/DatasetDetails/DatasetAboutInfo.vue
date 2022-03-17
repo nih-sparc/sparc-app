@@ -21,7 +21,7 @@
       </span>
     </div>
     <hr />
-    <div class="mb-16"><span class="label4">Award: </span>{{awardSparcNumber}}</div>
+    <div class="mb-16"><span class="label4">Award: </span><nuxt-link :to="associatedProjectLink">{{awardSparcNumber}}</nuxt-link></div>
     <hr />
     <div class="mb-16"><span class="label4">Associated project: </span>
       <nuxt-link
