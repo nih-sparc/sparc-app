@@ -8,7 +8,7 @@
   >
     <el-form-item
       prop="sparcInvestigator"
-      label="Are you a SPARC investigator?*"
+      label="Are you a SPARC investigator? *"
     >
       <el-select
         v-model="form.sparcInvestigator"
@@ -42,7 +42,7 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item prop="message" label="Your question or comment:*">
+    <el-form-item prop="message" label="Your question or comment *">
       <el-input
         v-model="form.message"
         type="textarea"
@@ -59,7 +59,7 @@
       <el-input v-model="form.lastName" placeholder="Last name here" />
     </el-form-item>
 
-    <el-form-item prop="email" label="Email" class="mb-0">
+    <el-form-item prop="email" label="Email *" class="mb-0">
       <el-input v-model="form.email" placeholder="Email here" type="email" />
     </el-form-item>
 

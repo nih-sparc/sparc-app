@@ -372,6 +372,11 @@ export default {
         index < scaffold_info['abi-scaffold-thumbnail'].length
       ) {
         return scaffold_info['abi-scaffold-thumbnail'][index]
+      } else if (
+        'abi-thumbnail' in scaffold_info &&
+        index < scaffold_info['abi-thumbnail'].length
+      ) {
+        return scaffold_info['abi-thumbnail'][index]
       }
 
       return {
