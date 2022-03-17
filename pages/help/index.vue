@@ -25,6 +25,9 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 
 const client = createClient()
 
+const searchQueryReplacements: { [orig: string]: string } = {
+  'o2s2parc': 'o\u00b2s\u00b2parc'
+}
 
 export default Vue.extend<Data, Methods, never, never>({
   name: 'HelpPage',
@@ -82,10 +85,12 @@ export default Vue.extend<Data, Methods, never, never>({
       this.searchTerms = terms;
       try {
         if (terms) {
+          let query = terms
+          Object.entries(searchQueryReplacements).forEach(([term, replacement]) => query = query.replace(term, replacement))
           const { items } = await client
             .getEntries<HelpDocument>({
               content_type: 'helpDocument',
-              query: terms
+              query
             })
 
           this.helpData = {
