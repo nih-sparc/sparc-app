@@ -63,7 +63,7 @@ const visibleDatasetsFacetCategories = [
 
 const visibleModelsAndSimulationsFacetCategories = ['item.types.name', 'anatomy.organ.name', 'availability'];
 
-const embargoFacetCategoryTooltip = "SPARC data sets are subject to a 1 year embargo during which time<br/>the data sets are visible only to members of the SPARC consortium.<br/>During embargo, the public will be able to view basic metadata about<br/>these data sets as well as their release date."
+const embargoFacetCategoryTooltip = "SPARC datasets are subject to a 1 year embargo during which time<br/>the datasets are visible only to members of the SPARC consortium.<br/>During embargo, the public will be able to view basic metadata about<br/>these datasets as well as their release date."
 
 export default {
   name: 'DatasetFacetMenu',

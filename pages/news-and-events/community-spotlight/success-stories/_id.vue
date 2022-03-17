@@ -66,38 +66,7 @@
             <div class="body4 story-bold-field">
               Share
             </div>
-            <div class="share-links">
-              <share-network
-                network="facebook"
-                :url="pageUrl"
-                :title="title"
-              >
-                <svg-icon name="icon-share-facebook" height="28" width="28" />
-                <span class="visuallyhidden">Share on Facebook</span>
-              </share-network>
-              <share-network
-                network="twitter"
-                class="ml-8"
-                :url="pageUrl"
-                :title="title"
-              >
-                <svg-icon name="icon-share-twitter" height="28" width="28" />
-                <span class="visuallyhidden">Share on Twitter</span>
-              </share-network>
-              <share-network
-                network="linkedin"
-                class="ml-8"
-                :url="pageUrl"
-                :title="title"
-              >
-                <svg-icon name="icon-share-linked" height="28" width="28" />
-                <span class="visuallyhidden">Share on Linkedin</span>
-              </share-network>
-              <button class="ml-8 btn-copy-permalink" @click="copyLink">
-                <svg-icon name="icon-permalink" height="28" width="28" />
-                <span class="visuallyhidden">Copy permalink</span>
-              </button>
-            </div>
+            <share-links />
             <div class="seperator-path my-32" />
             <template v-if="entry.associatedDatasets">
               <div class="body4 story-bold-field">
@@ -136,6 +105,7 @@ import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
+import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 
 const client = createClient()
 
@@ -144,8 +114,9 @@ export default {
   components: {
     DatasetCard,
     Breadcrumb,
-    PageHero
-  },
+    PageHero,
+    ShareLinks
+},
   mixins: [FormatDate, MarkedMixin],
   async asyncData({ route }) {
     try {

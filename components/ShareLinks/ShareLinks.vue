@@ -4,7 +4,7 @@
       <share-network network="facebook" :url="pageUrl" :title="title">
         <sparc-tooltip
           placement="bottom-center"
-          content="Share On Facebook"
+          content="Share on Facebook"
         >
           <svg-icon slot="item" name="icon-share-facebook" class="remove-outline" height="2rem" width="1.75rem" />
         </sparc-tooltip>
@@ -12,7 +12,7 @@
       <share-network network="twitter" :url="pageUrl" :title="title">
         <sparc-tooltip
           placement="bottom-center"
-          content="Share On Twitter"
+          content="Share on Twitter"
         >
           <svg-icon slot="item" name="icon-share-twitter" class="remove-outline" height="2rem" width="1.75rem" />
         </sparc-tooltip>
@@ -20,7 +20,7 @@
       <share-network network="linkedin" :url="pageUrl" :title="title">
         <sparc-tooltip
           placement="bottom-center"
-          content="Share On LinkedIn"
+          content="Share on LinkedIn"
         >
           <svg-icon slot="item" name="icon-share-linked" class="remove-outline" height="2rem" width="1.75rem" />
         </sparc-tooltip>
