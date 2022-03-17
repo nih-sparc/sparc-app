@@ -85,7 +85,7 @@ export default Vue.extend<Data, Methods, never, never>({
       this.searchTerms = terms;
       try {
         if (terms) {
-          let query = terms
+          let query = terms.toLowerCase()
           Object.entries(searchQueryReplacements).forEach(([term, replacement]) => query = query.replace(term, replacement))
           const { items } = await client
             .getEntries<HelpDocument>({
