@@ -7,6 +7,14 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(heroCopy)" />
+      <a
+        class="btn-link"
+        href="https://docs.sparc.science/docs/what-can-i-do-with-sparc"
+      >
+        <el-button class="secondary">
+          What can I do with SPARC?
+        </el-button>
+      </a>
       <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
         <el-button class="secondary">
           {{ heroButtonLabel }}
