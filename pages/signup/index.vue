@@ -1,7 +1,8 @@
 <script>
-  export default {
-    middleware({ redirect }) {
-      return redirect('https:/mailchi.mp/199fe3626d97/signup')
-    }
+export default {
+  asyncData(context) {
+    context.redirect("https:/mailchi.mp/199fe3626d97/signup");
+    return {};
   }
+};
 </script>
