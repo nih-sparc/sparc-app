@@ -17,10 +17,28 @@
       </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
-          <h1>{{ imageName }}</h1>
+          <h1>{{ fileName }}</h1>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">File Details</strong>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">File location</strong>
+          <div class="file-detail__column">
+            <nuxt-link 
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId, 
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }">
+              {{ filePath }}
+            </nuxt-link>   
+          </div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
@@ -46,6 +64,11 @@
             {{ versionNumber }}
           </div>
         </div>
+        <div class="pt-16">
+          <bf-button @click="requestDownloadFile(file)">
+            Download file
+          </bf-button>
+        </div>
       </div>
     </div>
   </div>
@@ -54,6 +77,8 @@
 <script>
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import discover from '@/services/discover'
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import RequestDownloadFile from '@/mixins/request-download-file'
 
 import { baseName } from '@/utils/common'
 
@@ -61,10 +86,13 @@ export default {
   name: 'ImageViewerPage',
 
   components: {
-    DetailTabs
+    DetailTabs,
+    BfButton
   },
 
-  async asyncData({ route }) {
+  mixins: [RequestDownloadFile],
+
+  async asyncData({ route, $axios }) {
     const response = await discover.fetch(
       route.query.dataset_id,
       route.query.dataset_version,
@@ -76,11 +104,16 @@ export default {
       description: 'image description',
       name: baseName(route.query.file_path),
       src: `data:${route.query.mimetype};base64,${response.data}`,
-      size: 'XxY'
+      size: 'XxY',
+      location: `files/${route.query.file_path}`
     }
 
+    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${imageInfo.location}`
+    const file = await $axios.$get(fileUrl)
+
     return {
-      imageInfo
+      imageInfo,
+      file
     }
   },
 
@@ -93,7 +126,6 @@ export default {
         }
       ],
       activeTab: 'viewer',
-      file: {}
     }
   },
 
@@ -118,9 +150,8 @@ export default {
      * Return the image name without extension from the image information.
      * @returns String
      */
-    imageName: function() {
-      let imageName = this.imageInfo.name
-      return imageName.substring(0, imageName.lastIndexOf('.')) || imageName
+    fileName: function() {
+      return this.file.name
     },
 
     /**
@@ -128,7 +159,7 @@ export default {
      * @returns String
      */
     imageType: function() {
-      return this.$route.query.mimetype
+      return this.file.fileType
     },
 
     /**
@@ -145,7 +176,23 @@ export default {
      */
     imageSrc: function() {
       return this.imageInfo.src
-    }
+    },
+
+    /**
+     * Return the image file location.
+     * @returns String
+     */
+    filePath: function() {
+      return this.file.path
+    },
+
+    /**
+     * Get the path of the file's parent folder.
+     * @returns String
+     */
+    fileFolderLocation: function() {
+      return this.filePath.substring(0, this.filePath.lastIndexOf(this.fileName))
+    },
   },
   methods: {
     imageLoaded() {

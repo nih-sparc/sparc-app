@@ -25,9 +25,27 @@
           <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
+          <strong class="file-detail__column">File location</strong>
+          <div class="file-detail__column">
+            <nuxt-link 
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId, 
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }">
+              {{ filePath }}
+            </nuxt-link>   
+          </div>
+        </div>
+        <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
-            <p>{{ plotType }} plot</p>
+            {{ plotType }} plot
           </div>
         </div>
         <div class="file-detail">
@@ -42,6 +60,11 @@
             {{ versionNumber }}
           </div>
         </div>
+        <div class="pt-16">
+          <bf-button @click="requestDownloadFile(file)">
+            Download file
+          </bf-button>
+        </div>
       </div>
     </div>
   </div>
@@ -52,16 +75,23 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import scicrunch from '@/services/scicrunch'
 import discover from '@/services/discover'
 
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import RequestDownloadFile from '@/mixins/request-download-file'
+
 export default {
   name: 'PlotViewerPage',
 
   components: {
     DetailTabs,
+    BfButton,
     PlotVuer: process.client
       ? () => import('@abi-software/plotvuer').then(m => m.PlotVuer)
       : null
   },
-  async asyncData({ route }) {
+
+  mixins: [RequestDownloadFile],
+
+  async asyncData({ route, $axios }) {
     const identifier = route.query.identifier
 
     const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(
@@ -80,6 +110,9 @@ export default {
     if (process.env.portal_api === 'http://localhost:8000') {
       source_url = `${process.env.portal_api}/s3-resource/${file_path}`
     }
+
+    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=files/${plot_info.dataset.path}`
+    const file = await $axios.$get(fileUrl)
 
     const metadata = JSON.parse(
       plot_annotation.supplemental_json_metadata.description
@@ -110,7 +143,9 @@ export default {
     return {
       source_url,
       metadata,
-      supplemental_data
+      supplemental_data,
+      plot_info,
+      file
     }
   },
 
@@ -131,7 +166,23 @@ export default {
      * @returns String
      */
     fileName: function() {
-      return this.$route.query.id
+      return this.file.name
+    },
+
+    /**
+     * Get the file path.
+     * @returns String
+     */
+    filePath: function() {
+      return this.file.path
+    },
+
+    /**
+     * Get the path of the file's parent folder.
+     * @returns String
+     */
+    fileFolderLocation: function() {
+      return this.filePath.substring(0, this.filePath.lastIndexOf(this.fileName))
     },
 
     /**

@@ -37,6 +37,24 @@
           <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
+          <strong class="file-detail__column">File location</strong>
+          <div class="file-detail__column">
+            <nuxt-link 
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId, 
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }">
+              {{ filePath }}
+            </nuxt-link>   
+          </div>
+        </div>
+        <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
             3D Scaffold
@@ -77,6 +95,15 @@ export default {
   },
 
   mixins: [FirstCol],
+
+  async asyncData({ route, $axios }) {
+    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${route.query.file_path}`
+    const file = await $axios.$get(fileUrl)
+
+    return {
+      file,
+    }
+  },
 
   async fetch() {
     //Get id for retrieving state on the server,
@@ -128,12 +155,23 @@ export default {
      * @returns String
      */
     fileName: function() {
-      const scaffold = this.$route.query.scaffold
-      let name =
-        scaffold.substring(scaffold.lastIndexOf('/') + 1, scaffold.length) ||
-        scaffold
-      let nameWE = name.substring(0, name.lastIndexOf('.')) || name
-      return nameWE
+      return this.file.name
+    },
+
+    /**
+     * Return the image file location.
+     * @returns String
+     */
+    filePath: function() {
+      return this.file.path
+    },
+
+    /**
+     * Get the path of the file's parent folder.
+     * @returns String
+     */
+    fileFolderLocation: function() {
+      return this.filePath.substring(0, this.filePath.lastIndexOf(this.fileName))
     },
 
     /**
@@ -141,20 +179,14 @@ export default {
      * @returns Number
      */
     datasetId: function() {
-      const scaffold = this.$route.query.scaffold
-      const id = scaffold.substring(0, scaffold.indexOf('/')) || ''
-      return id
+      return this.$route.query.dataset_id
     },
     /**
      * Get the version scaffold query parameter.
      * @returns Number
      */
     versionNumber: function() {
-      const scaffold = this.$route.query.scaffold
-      const postId =
-        scaffold.substring(scaffold.indexOf('/') + 1, scaffold.length) || ''
-      const version = postId.substring(0, postId.indexOf('/')) || ''
-      return version
+      return this.$route.query.dataset_version
     },
 
     /**
@@ -162,8 +194,16 @@ export default {
      * @returns String
      */
     scaffoldUrl: function() {
-      return `${process.env.portal_api}/s3-resource/${this.$route.query.scaffold}`
-    }
+      return `${process.env.portal_api}/s3-resource/${this.datasetId}/${this.versionNumber}/${this.filePath}`
+    },
+
+    /**
+     * Get the path of the file's parent folder.
+     * @returns String
+     */
+    fileFolderLocation: function() {
+      return this.filePath.substring(0, this.filePath.lastIndexOf(this.fileName))
+    },
   },
   watch: {
     '$route.query': '$fetch'

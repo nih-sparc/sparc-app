@@ -35,6 +35,24 @@
           </div>
         </div>
         <div class="file-detail">
+          <strong class="file-detail__column_1">File location</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link 
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId, 
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }">
+              {{ filePath }}
+            </nuxt-link>   
+          </div>
+        </div>
+        <div class="file-detail">
           <strong class="file-detail__column_1">Data collection</strong>
           <div class="file-detail__column_2">
             {{ data_collection }}
@@ -98,7 +116,7 @@ export default {
 
   mixins: [MarkedMixin],
 
-  async asyncData({ route }) {
+  async asyncData({ route, $axios }) {
     const identifier = route.query.dataset_id
 
     try {
@@ -127,11 +145,15 @@ export default {
         dataset_info = { readme: '', title: '' }
       }
 
+      const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${route.query.file_path}`
+      const file = await $axios.$get(fileUrl)
+
       return {
         segmentation_info,
         human_readable_species,
         readme: dataset_info.readme,
-        title: dataset_info.title
+        title: dataset_info.title,
+        file
       }
     } catch (e) {
       // Error caught return empty data.
@@ -140,7 +162,8 @@ export default {
       segmentation_info: { subject: '', atlas: '' },
       human_readable_species: '',
       readme: '',
-      title: ''
+      title: '',
+      file: ''
     }
   },
 
@@ -187,6 +210,28 @@ export default {
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
+    },
+    /**
+     * Return the file location.
+     * @returns String
+     */
+    filePath: function() {
+      return this.file.path
+    },
+    /**
+     * Return the file name.
+     * @returns String
+     */
+    fileName: function() {
+      return this.file.name
+    },
+
+    /**
+     * Get the path of the file's parent folder.
+     * @returns String
+     */
+    fileFolderLocation: function() {
+      return this.filePath.substring(0, this.filePath.lastIndexOf(this.fileName))
     },
     /**
      * Return the type of an segmentation.

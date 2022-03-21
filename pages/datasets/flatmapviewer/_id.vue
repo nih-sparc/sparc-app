@@ -93,16 +93,14 @@ export default {
   async asyncData({ route }) {
     //Get the organ name from uberon id
     const uberonid = route.query.uberonid
+    let organ_name = undefined
     try {
-      const  organ_name = await scicrunch.getOrganFromUberonId(uberonid)
-      return {
-        organ_name
-      }
+      organ_name = await scicrunch.getOrganFromUberonId(uberonid)
     } catch (e) {
       // Error caught return empty data.
     }
     return {
-      organ_name: undefined,
+      organ_name
     }
   },
   data: () => {
@@ -161,13 +159,14 @@ export default {
   },
   methods: {
     flatmapReady: function(component) {
-      let id = this.checkForIlxtr(this.uberonid)
+      /*let id = this.checkForIlxtr(this.uberonid)
       component.mapImp.zoomTo(id)
+
       // **NOTE: This is commented out until fCCB approves the popups
       // component.checkAndCreatePopups({
       //   resource: [id],
       //   eventType: 'click'
-      // })
+      // })*/
     },
     checkForIlxtr: function(id) {
       if (id.includes('neuron-type-keast') && !id.includes('ilxtr')) {

@@ -172,11 +172,8 @@ export default {
                   mimetype: thumbnail.mimetype.name,
                   file_path: thumbnail.dataset.path
                 })
-                let linkUrl =
-                  baseRoute +
-                  'datasets/scaffoldviewer' +
-                  '?scaffold=' +
-                  `${datasetId}/${datasetVersion}/files/${file_path}`
+                let filePath = encodeURIComponent(`files/${file_path}`)
+                const linkUrl = `${baseRoute}datasets/scaffoldviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
                 index += 1
                 return {
                   id,

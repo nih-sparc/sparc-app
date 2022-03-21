@@ -47,6 +47,24 @@
           </div>
         </div>
         <div class="file-detail">
+          <strong class="file-detail__column_1">File location</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link 
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId, 
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }">
+              {{ filePath }}
+            </nuxt-link>   
+          </div>
+        </div>
+        <div class="file-detail">
           <strong class="file-detail__column_1">Data collection</strong>
           <div class="file-detail__column_2">
             {{ data_collection }}
@@ -74,6 +92,11 @@
             />
           </div>
         </div>
+        <div class="pt-16">
+          <bf-button @click="requestDownloadFile(file)">
+            Download file
+          </bf-button>
+        </div>
       </div>
     </div>
   </div>
@@ -87,7 +110,11 @@ import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ImageScaling from '@/components/Images/ImageScaling.vue'
 import ImageChannels from '@/components/Images/ImageChannels.vue'
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
+import { pathOr } from 'ramda'
+
+import RequestDownloadFile from '@/mixins/request-download-file'
 import MarkedMixin from '@/mixins/marked'
 
 import { extractSection } from '@/utils/common'
@@ -97,14 +124,15 @@ export default {
 
   components: {
     BiolucidaViewer,
+    BfButton,
     DetailTabs,
     ImageScaling,
     ImageChannels
   },
 
-  mixins: [MarkedMixin],
+  mixins: [MarkedMixin, RequestDownloadFile],
 
-  async asyncData({ route }) {
+  async asyncData({ route, $axios }) {
     const image_identifier = route.params.id
     const identifier = route.query.item_id.substring(2)
 
@@ -119,11 +147,20 @@ export default {
       dataset_info = { readme: '', title: '' }
     }
 
+    // Find the biolucida object with the same image name to determine the file path
+    const biolucidaObjects = pathOr([], ['biolucida-2d'], dataset_info).concat(pathOr([], ['biolucida-3d'], dataset_info))
+    const biolucidaObject = biolucidaObjects.find(biolucidaObject => {
+      return pathOr('', ['dataset', 'path'], biolucidaObject).includes(image_info.name)
+    })
+    const filePath = `files/${pathOr('', ['dataset', 'path'], biolucidaObject)}`
+    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${filePath}`
+    const file = await $axios.$get(fileUrl)
+
     return {
       image_info,
       xmp_metadata,
-      readme: dataset_info.readme,
-      title: dataset_info.title
+      dataset_info,
+      file,
     }
   },
 
@@ -153,6 +190,30 @@ export default {
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
         status: ''
       }
+    },
+
+    title: function() {
+      return this.dataset_info.title
+    },
+
+    /**
+     * Return the image file location.
+     * @returns String
+     */
+    filePath: function() {
+      return this.file.path
+    },
+
+    /**
+     * Get the path of the file's parent folder.
+     * @returns String
+     */
+    fileFolderLocation: function() {
+      return this.filePath.substring(0, this.filePath.lastIndexOf(this.file.name))
+    },
+
+    readme: function() {
+      return this.dataset_info.readme
     },
 
     /**
