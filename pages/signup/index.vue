@@ -1,5 +1,7 @@
 <script>
   export default {
-    middleware: ['mailchimp']
+    middleware({ redirect }) {
+      return redirect('https:/mailchi.mp/199fe3626d97/signup')
+    }
   }
 </script>
