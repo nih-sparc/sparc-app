@@ -12,7 +12,7 @@
           :data="segmentationData"
         />
       </detail-tabs>
-      <div class="subpage">
+      <div class="subpage pt-0 pb-16">
         <div class="file-detail">
           <strong class="file-detail__column_1">Dataset</strong>
           <div class="file-detail__column_2">
@@ -88,6 +88,11 @@
             {{ segmentation_info.atlas.organ }}
           </div>
         </div>
+        <div class="pt-16">
+          <bf-button @click="requestDownloadFile(file)">
+            Download file
+          </bf-button>
+        </div>
       </div>
     </div>
   </div>
@@ -100,7 +105,9 @@ import general from '@/services/general'
 
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
+import RequestDownloadFile from '@/mixins/request-download-file'
 import MarkedMixin from '@/mixins/marked'
 
 import { extractSection } from '@/utils/common'
@@ -111,10 +118,11 @@ export default {
 
   components: {
     SegmentationViewer,
-    DetailTabs
+    DetailTabs,
+    BfButton
   },
 
-  mixins: [MarkedMixin],
+  mixins: [MarkedMixin, RequestDownloadFile],
 
   async asyncData({ route, $axios }) {
     const identifier = route.query.dataset_id
