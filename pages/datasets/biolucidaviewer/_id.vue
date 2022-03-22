@@ -24,7 +24,7 @@
           :query-view="queryView"
         />
       </detail-tabs>
-      <div class="subpage">
+      <div class="subpage pt-0 pb-16">
         <div class="file-detail">
           <strong class="file-detail__column_1">Dataset</strong>
           <div class="file-detail__column_2">
