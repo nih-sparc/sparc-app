@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-button @click="onDownloadClick">
-      Download
+    <el-button class="secondary alt" @click="onDownloadClick" :disabled="disabled">
+      Download Selected Files and Folders
     </el-button>
     <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
       <input v-model="zipData" type="hidden" name="data" />
@@ -86,6 +86,10 @@ export default {
       default: () => {
         return {}
       }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
 

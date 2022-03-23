@@ -1,12 +1,12 @@
 <template>
   <div class="resources">
-    <news-events-page
+    <news-events-resources-page
       :page="resource"
       :content="resource.fields.longDescription"
       :breadcrumb="breadcrumb"
       :hero-title="resource.fields.name"
       :hero-summary="resource.fields.description"
-      type="news"
+      type="resource"
     >
       <template v-if="resourceLogoUrl">
         <img :src="resourceLogoUrl" :alt="resourceLogoAlt" />
@@ -23,12 +23,12 @@
         </span>
       </div>
       <h3>URL</h3>
-      <p>
+      <p class="resource-url">
         <a :href="resource.fields.url" target="_blank">
           {{ resource.fields.url }}
         </a>
       </p>
-    </news-events-page>
+    </news-events-resources-page>
 
     <!-- <page-hero>
       <h2>{{ resource.fields.name }}</h2>
@@ -60,7 +60,7 @@
 <script>
 import { pathOr } from 'ramda'
 
-import NewsEventsPage from '@/components/NewsEventsPage/NewsEventsPage'
+import NewsEventsResourcesPage from '@/components/NewsEventsResourcesPage/NewsEventsResourcesPage'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -70,7 +70,7 @@ export default {
   name: 'Resources',
 
   components: {
-    NewsEventsPage
+    NewsEventsResourcesPage
   },
 
   asyncData(ctx) {
@@ -140,5 +140,10 @@ export default {
   right: 14px;
   width: fit-content;
   margin-bottom: 10px;
+}
+
+.resource-url {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

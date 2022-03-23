@@ -88,13 +88,9 @@ export default {
         },
         {
           to: {
-            name: 'data',
-            query: {
-              type: 'sparcInfo',
-              sparcInfoType: 'helpDocument'
-            }
+            name: 'help',
           },
-          label: 'Find Data'
+          label: 'Help'
         }
       ]
     }

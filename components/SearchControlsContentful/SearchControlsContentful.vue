@@ -1,26 +1,28 @@
 <template>
   <div class="search-form" @keyup.enter="submit">
     <div class="input-wrap">
-      <input
+      <el-input
         v-model="terms"
         :placeholder="placeholder"
-        suffix-icon="el-icon-search"
         @keyup.enter="submit"
       />
       <button v-if="terms" class="btn-clear-search" @click="clear">
         <svg-icon
-          name="icon-clear"
-          stroke="red"
-          color="#909399 #fff"
+          icon="icon-clear"
+          color="#909399"
           height="22"
           width="22"
         />
       </button>
     </div>
-    <button title="Search" @click="submit">
-      <span class="visuallyhidden">Search</span>
-      <svg-icon name="icon-magnifying-glass" height="20" width="20" />
-    </button>
+    <el-button class="secondary px-8 py-0" title="Search" @click="submit">
+      <svg-icon
+        icon="icon-magnifying-glass"
+        height="25"
+        width="25"
+        dir="left"
+      />
+    </el-button>
   </div>
 </template>
 
@@ -56,6 +58,7 @@ export default {
     },
     clear() {
       this.$router.push({ path: this.path, query: { ...this.$route.query, search: '' } })
+      this.terms = ''
     }
   }
 }

@@ -25,6 +25,9 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 
 const client = createClient()
 
+const searchQueryReplacements: { [orig: string]: string } = {
+  'o2s2parc': 'o\u00b2s\u00b2parc'
+}
 
 export default Vue.extend<Data, Methods, never, never>({
   name: 'HelpPage',
@@ -82,10 +85,12 @@ export default Vue.extend<Data, Methods, never, never>({
       this.searchTerms = terms;
       try {
         if (terms) {
+          let query = terms.toLowerCase()
+          Object.entries(searchQueryReplacements).forEach(([term, replacement]) => query = query.replace(term, replacement))
           const { items } = await client
             .getEntries<HelpDocument>({
               content_type: 'helpDocument',
-              query: terms
+              query
             })
 
           this.helpData = {
@@ -116,9 +121,9 @@ export default Vue.extend<Data, Methods, never, never>({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .page-hero {
-  background-color: #292b66;
+  background-color: $darkBlue;
   background-image: none;
   h2 {
     font-size: 2rem;

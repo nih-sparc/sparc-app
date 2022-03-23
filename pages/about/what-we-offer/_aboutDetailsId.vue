@@ -15,7 +15,7 @@
         <p class="share-text">
           SHARE
         </p>
-        <share-links />
+        <share-links :url="pageUrl" :title="aboutDetailsItem.fields.title"/>
       </div>
     </div>
   </div>
@@ -112,7 +112,14 @@ export default {
           this.$message(failMessage(`Cannot copy to clipboard.`))
         }
       )
-    }
+    },
+    /**
+     * Construct current url 
+     * @returns {String}
+     */
+    pageUrl: function() {
+      return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    },
   }
 }
 </script>

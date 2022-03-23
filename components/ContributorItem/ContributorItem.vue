@@ -183,8 +183,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .has-orcid {
   text-decoration: underline;
+  color: $purple;
 }
 </style>
 <style lang="scss">

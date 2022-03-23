@@ -85,7 +85,7 @@
           <div v-html="parseMarkdown(item.fields.summary)" />
         </div>
         <nuxt-link v-if="item.fields.requiresADetailsPage" :to="nuxtLink(item)">
-          <el-button size="medium">
+          <el-button size="medium" class="secondary">
             Learn More
           </el-button>
         </nuxt-link>
@@ -94,7 +94,7 @@
           :href="item.fields.url"
           :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
         >
-          <el-button size="medium">
+          <el-button size="medium" class="secondary">
             Learn More
           </el-button>
         </a>

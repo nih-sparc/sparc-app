@@ -1,17 +1,22 @@
 <template>
-  <div class="subpage">
+  <div class="no-results" v-if="stories.length === 0">
+    <el-table :show-header="false" empty-text="No Results">
+      <el-table-column />
+    </el-table>
+  </div>
+  <div v-else class="subpage mb-16">
     <div v-for="(item, index) in stories" :key="index">
       <community-spotlight-item :story="item" />
-      <div v-if="index !== stories.length - 1 || inNews" class="seperator-path" />
+      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-32" />
     </div>
     <nuxt-link
-      v-if="inNews"
-      class="community-link mt-16"
+      v-if="bottomLink"
+      class="link1 mt-16"
       :to="{
-        name: 'news-and-events-community-spotlight'
+        name: linkLocation
       }"
     >
-      View All Community Spotlights &gt;
+      {{ linkText }} &gt;
     </nuxt-link>
   </div>
 </template>
@@ -29,9 +34,17 @@ export default {
       type: Array,
       default: () => []
     },
-    inNews: {
+    bottomLink: {
       type: Boolean,
       default: false
+    },
+    linkLocation: {
+      type: String,
+      default: 'news-and-events-community-spotlight'
+    },
+    linkText: {
+      type: String,
+      default: 'View All Community Spotlights'
     }
   }
 }
@@ -42,29 +55,8 @@ export default {
 
 .seperator-path {
   width: 100%;
-  height: 2px;
+  height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
-  margin-bottom: 32px;
-  margin-top: 32px;
-}
-
-.subpage {
-  margin-bottom: 20px;
-}
-
-.community-link {
-  background: none;
-  border: none;
-  color: $navy;
-  cursor: pointer;
-  display: block;
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
 }
 </style>

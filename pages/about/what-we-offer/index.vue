@@ -12,10 +12,10 @@
         <p class="share-text">
           SHARE
         </p>
-        <share-links />
+        <share-links :url="pageUrl" :title="title"/>
       </div>
       <div v-if="learnMore" class="subpage">
-        <h1>Learn More</h1>
+        <h1 class="heading1 mb-16">Learn More</h1>
         <learn-more-card
           v-for="(item, index) in learnMore"
           :key="`${item}-${index}`"
@@ -52,15 +52,16 @@ export default {
 
   mixins: [MarkedMixin],
 
-  asyncData() {
-    return Promise.all([
-      // Get page content
-      client.getEntry(process.env.ctf_what_we_offer_page_id)
-    ])
-      .then(([page]) => {
-        return { ...page.fields }
-      })
-      .catch(console.error)
+  async asyncData() {
+    const page = await client.getEntry(process.env.ctf_what_we_offer_page_id)
+    return {
+      title : page.fields.title,
+      type: page.fields.type,
+      summary: page.fields.summary,
+      description: page.fields.description,
+      learnMore: page.fields.learnMore,
+      slug: page.fields.slug,
+    }
   },
 
   data: () => {
@@ -96,7 +97,14 @@ export default {
           this.$message(failMessage(`Cannot copy to clipboard.`))
         }
       )
-    }
+    },
+    /**
+     * Construct current url 
+     * @returns {String}
+     */
+    pageUrl: function() {
+      return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    },
   }
 }
 </script>
@@ -108,20 +116,15 @@ export default {
   padding: 1em;
   border: 1px solid #dcdfe6;
   background: white;
-
   @media (min-width: 48em) {
     margin: 2.5em 0;
     padding: 1em 2em;
   }
-
   hr {
     opacity: 0.3;
   }
-
   h1 {
-    font-size: 1.75em;
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
+    font-weight: 300;
   }
 }
 

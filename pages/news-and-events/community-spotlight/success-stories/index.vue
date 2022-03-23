@@ -9,14 +9,13 @@
         neuromodulation of the ANS. Submit your success story
       </p>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="page-wrap container mb-16">
       <community-spotlight-listings :stories="shownStories" />
     </div>
     <pagination
       v-if="allStories.length > pageSize"
       :page-size="pageSize"
       :total-count="allStories.length"
-      layout="prev, pager, next"
       @select-page="pageChange"
     />
   </div>
@@ -26,19 +25,17 @@
 import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import Pagination from '@/components/Pagination/Pagination.vue'
 import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue'
 
 const client = createClient()
 
 export default {
-  name: 'CommunityPage',
+  name: 'CommunityStoriesPage',
 
   components: {
     Breadcrumb,
     PageHero,
     CommunitySpotlightListings,
-    Pagination
   },
 
   async asyncData() {
@@ -100,10 +97,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .page-wrap {
-  max-width: 80em;
-}
-
-.subpage {
-  margin-bottom: 20px;
+  max-width: 80rem;
 }
 </style>

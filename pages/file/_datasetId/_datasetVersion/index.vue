@@ -1,5 +1,5 @@
 <template>
-  <div class="file-detail-page">
+  <div class="pb-32">
     <div class="page-wrap container">
       <div class="subpage">
         <div class="page-heading">
@@ -38,18 +38,17 @@
           </div>
         </div>
       </div>
-      <detail-tabs
+      <content-tab-card
         v-if="hasViewer"
+        class="tabs p-32"
         :tabs="tabs"
-        :active-tab="activeTab"
-        class="container"
-        @set-active-tab="activeTab = $event"
+        :active-tab-id="activeTabId"
       >
         <biolucida-viewer
-          v-show="activeTab === 'viewer'"
+          v-show="activeTabId === 'imageViewer'"
           :data="biolucidaData"
         />
-      </detail-tabs>
+      </content-tab-card>
     </div>
   </div>
 </template>
@@ -81,7 +80,7 @@ export default {
 
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(
-      `${process.env.BL_SERVER_URL}/imagemap/sharelink/${sourcePackageId}`
+      `${process.env.BL_SERVER_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`
     )
 
     const hasViewer = biolucidaData.status !== 'error'
@@ -102,11 +101,11 @@ export default {
       },
       tabs: [
         {
-          label: 'Viewer',
-          type: 'viewer'
+          label: 'Image Viewer',
+          id: 'imageViewer'
         }
       ],
-      activeTab: 'viewer',
+      activeTabId: 'imageViewer',
       file: {}
     }
   },
@@ -124,21 +123,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
-}
-
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 h1 {
   flex: 1;
   font-size: 1.5em;
@@ -157,7 +142,7 @@ h1 {
 }
 
 .file-detail {
-  border-bottom: 1px solid #dbdfe6;
+  border-bottom: 1px solid $lineColor2;
   flex-direction: column;
   font-size: 0.875em;
   display: flex;
@@ -168,5 +153,9 @@ h1 {
 }
 .file-detail__column {
   flex: 1;
+}
+
+.tabs {
+  border: 1px solid $lineColor2;
 }
 </style>

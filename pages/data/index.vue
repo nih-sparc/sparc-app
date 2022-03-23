@@ -1,6 +1,6 @@
 <template>
   <div class="data-page">
-    <breadcrumb :breadcrumb="breadcrumb" title="Find Data" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -29,121 +29,116 @@
           Search within category
         </h5>
         <search-form
-          v-model="searchQuery"
-          :q="q"
+          :defaultValue="searchQuery"
           @search="submitSearch"
           @clear="clearSearch"
         />
       </div>
     </div>
-    <div class="page-wrap container">
+    <div class="mb-48 container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
-            <el-col
-              v-if="searchType.type === 'dataset'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <dataset-facet-menu
-                :facets="facets"
-                :visible-facets="visibleFacets"
-                @selected-facets-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-                ref="datasetFacetMenu"
-              />
-            </el-col>
-            <el-col
-              v-if="searchType.type === 'newsAndEvents'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <news-and-events-facet-menu
-                @news-and-events-selections-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-                ref="newsAndEventsFacetMenu"
-              />
-            </el-col>
-            <el-col
-              v-if="searchType.type === 'sparcPartners'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <tools-and-resources-facet-menu
-                @tool-and-resources-selections-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-              />
-            </el-col>
-            <el-col
-              v-if="searchType.type === 'sparcInfo'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <sparc-info-facet-menu
-                @sparc-info-selections-changed="onPaginationPageChange(1)"
-                @hook:mounted="facetMenuMounted"
-                ref="sparcInfoFacetMenu"
-              />
-            </el-col>
-            <el-col
-              :sm="searchColSpan('sm')"
-              :md="searchColSpan('md')"
-              :lg="searchColSpan('lg')"
-            >
-              <div class="search-heading">
-                <p v-show="!isLoadingSearch && searchData.items.length">
-                  {{ searchData.total }} Results | Showing
-                  <pagination-menu
+            <client-only>
+              <el-col
+                v-if="searchType.type === 'dataset' || searchType.type === 'simulation'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <dataset-facet-menu
+                  :facets="facets"
+                  :visible-facets="visibleFacets"
+                  @selected-facets-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                  ref="datasetFacetMenu"
+                />
+              </el-col>
+              <el-col
+                v-if="searchType.type === 'newsAndEvents'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <news-and-events-facet-menu
+                  @news-and-events-selections-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                  ref="newsAndEventsFacetMenu"
+                />
+              </el-col>
+              <el-col
+                v-if="searchType.type === 'sparcPartners'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <tools-and-resources-facet-menu
+                  @tool-and-resources-selections-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                />
+              </el-col>
+              <el-col
+                v-if="searchType.type === 'sparcInfo'"
+                class="facet-menu"
+                :sm="24"
+                :md="8"
+                :lg="6"
+              >
+                <sparc-info-facet-menu
+                  @sparc-info-selections-changed="onPaginationPageChange(1)"
+                  @hook:mounted="facetMenuMounted"
+                  ref="sparcInfoFacetMenu"
+                />
+              </el-col>
+              <el-col
+                :sm="searchColSpan('sm')"
+                :md="searchColSpan('md')"
+                :lg="searchColSpan('lg')"
+              >
+                <div class="search-heading">
+                  <p v-show="!isLoadingSearch && searchData.items.length">
+                    {{ searchData.total }} Results | Showing
+                    <pagination-menu
+                      :page-size="searchData.limit"
+                      @update-page-size="updateDataSearchLimit"
+                    />
+                  </p>
+                  <pagination
+                    v-if="searchData.limit < searchData.total"
                     :page-size="searchData.limit"
-                    @update-page-size="updateDataSearchLimit"
+                    :total-count="searchData.total"
+                    :selected="curSearchPage"
+                    @select-page="onPaginationPageChange"
                   />
-                </p>
-                <el-pagination
-                  v-if="searchData.limit < searchData.total"
-                  :small="isMobile"
-                  :page-size="searchData.limit"
-                  :pager-count="5"
-                  :current-page="curSearchPage"
-                  layout="prev, pager, next"
-                  :total="searchData.total"
-                  @current-change="onPaginationPageChange"
-                />
-              </div>
-              <div v-loading="isLoadingSearch" class="table-wrap">
-                <component
-                  :is="searchResultsComponent"
-                  :table-data="tableData"
-                  :title-column-width="titleColumnWidth"
-                />
-              </div>
-              <div class="search-heading">
-                <p v-if="!isLoadingSearch && searchData.items.length">
-                  {{ searchHeading }} | Showing
-                  <pagination-menu
+                </div>
+                <div v-loading="isLoadingSearch" class="table-wrap">
+                  <component
+                    :is="searchResultsComponent"
+                    :table-data="tableData"
+                    :title-column-width="titleColumnWidth"
+                  />
+                </div>
+                <div class="search-heading">
+                  <p v-if="!isLoadingSearch && searchData.items.length">
+                    {{ searchHeading }} | Showing
+                    <pagination-menu
+                      :page-size="searchData.limit"
+                      @update-page-size="updateDataSearchLimit"
+                    />
+                  </p>
+                  <pagination
+                    v-if="searchData.limit < searchData.total"
+                    :selected="curSearchPage"
                     :page-size="searchData.limit"
-                    @update-page-size="updateDataSearchLimit"
+                    :total-count="searchData.total"
+                    @select-page="onPaginationPageChange"
                   />
-                </p>
-                <el-pagination
-                  v-if="searchData.limit < searchData.total"
-                  :small="isMobile"
-                  :page-size="searchData.limit"
-                  :pager-count="5"
-                  :current-page="curSearchPage"
-                  layout="prev, pager, next"
-                  :total="searchData.total"
-                  @current-change="onPaginationPageChange"
-                />
-              </div>
-            </el-col>
+                </div>
+              </el-col>
+            </client-only>
           </el-row>
         </el-col>
       </el-row>
@@ -158,7 +153,6 @@ import {
   defaultTo,
   find,
   head,
-  isEmpty,
   mergeLeft,
   pathOr,
   propEq,
@@ -166,7 +160,6 @@ import {
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import PaginationMenu from '@/components/Pagination/PaginationMenu.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 
 const SparcInfoSearchResults = () =>
@@ -194,10 +187,10 @@ const searchTypes = [
     dataSource: 'algolia'
   },
   {
-    label: 'Simulations',
+    label: 'Models & Simulations',
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
-    dataSource: 'pennsieveIndex'
+    dataSource: 'algolia'
   },
   {
     label: 'Tools & Resources',
@@ -233,7 +226,6 @@ import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaPennseiveIndex = algoliaClient.initIndex('PENNSIEVE_DISCOVER');
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 export default {
@@ -244,7 +236,6 @@ export default {
     PageHero,
     DatasetFacetMenu,
     SearchForm,
-    PaginationMenu,
     NewsAndEventsFacetMenu,
     ToolsAndResourcesFacetMenu,
     SparcInfoFacetMenu
@@ -268,7 +259,16 @@ export default {
             name: 'index'
           },
           label: 'Home'
-        }
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: 'dataset'
+            }
+          },
+          label: 'Find Data'
+        },
       ],
       titleColumnWidth: 300,
       windowWidth: ''
@@ -420,34 +420,16 @@ export default {
 
       const searchSources = {
         contentful: this.fetchFromContentful,
-        algolia: this.fetchFromAlgolia,
-        pennsieveIndex: this.fetchFromPennsieveIndex
+        algolia: this.fetchFromAlgolia
       }
 
       if (typeof searchSources[source] === 'function') {
-        searchSources[source]()
+        this.$nextTick(() => searchSources[source]())
       }
     },
 
     facetMenuMounted: function() {
-      this.$nextTick(() => this.fetchResults())
-    },
-
-    fetchFromPennsieveIndex: function() {
-      const query = this.$route.query.q
-
-      algoliaPennseiveIndex.search(query, {
-        hitsPerPage: this.searchData.limit,
-        page: this.curSearchPage - 1,
-        filters: `organizationName:"IT'IS Foundation"`,
-      }).then(response => {
-          const searchData = {
-            items: response.hits,
-            total: response.nbHits
-          }
-          this.searchData = mergeLeft(searchData, this.searchData)
-          this.isLoadingSearch = false
-        })
+      this.fetchResults()
     },
 
     /**
@@ -458,61 +440,56 @@ export default {
       this.isLoadingSearch = true
       const query = this.$route.query.q
 
-      var filters =  this.$refs.datasetFacetMenu?.getFilters()
-
       const searchType = pathOr('', ['query', 'type'], this.$route)
-      const organizationNameFilter =
-        searchType === 'simulation' ? "IT'IS Foundation" : 'SPARC Consortium'
-
-      filters =
-        filters === undefined
-          ? `pennsieve.organization.name:"${organizationNameFilter}"`
-          : filters +
-            ` AND pennsieve.organization.name:"${organizationNameFilter}"`
+      const datasetsFilter =
+        searchType === 'dataset' ? "item.types.name:Dataset" : '(NOT item.types.name:Dataset)'
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-      if (query !== this.latestSearchTerm || !this.$refs.datasetFacetMenu?.hasKeys()) {
-        this.latestSearchTerm = query
+        this.latestSearchTerm = query     
         algoliaIndex
           .search(query, {
             facets: ['*'],
-            filters: `pennsieve.organization.name:"${organizationNameFilter}"`
+            filters: `${datasetsFilter}`
           })
           .then(response => {
             this.visibleFacets = response.facets
-          })
-      }
+          }).finally(() => {
+            var filters =  this.$refs.datasetFacetMenu?.getFilters()
+            filters = filters === undefined ? 
+              `${datasetsFilter}` : 
+              filters + ` AND ${datasetsFilter}`
 
-      algoliaIndex
-        .search(query, {
-          facets: ['*'],
-          hitsPerPage: this.searchData.limit,
-          page: this.curSearchPage - 1,
-          filters: filters
-        })
-        .then(response => {
-          const searchData = {
-            items: response.hits,
-            total: response.nbHits
-          }
-          this.searchData = mergeLeft(searchData, this.searchData)
-          this.isLoadingSearch = false
-          // update facet result numbers
-          for (const [key, value] of Object.entries(this.visibleFacets)) {
-            if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
-              for (const [key2, value2] of Object.entries(value)) {
-                let maybeFacetCount = pathOr(null, [key, key2], response.facets)
-                if (maybeFacetCount) {
-                  this.visibleFacets[key][key2] = response.facets[key][key2]
-                } else {
-                  this.visibleFacets[key][key2] = 0
+            algoliaIndex
+              .search(query, {
+                facets: ['*'],
+                hitsPerPage: this.searchData.limit,
+                page: this.curSearchPage - 1,
+                filters: filters
+              })
+              .then(response => {
+                const searchData = {
+                  items: response.hits,
+                  total: response.nbHits
                 }
-            }
-            }
-          }
-        })
+                this.searchData = mergeLeft(searchData, this.searchData)
+                this.isLoadingSearch = false
+                // update facet result numbers
+                /*for (const [key, value] of Object.entries(this.visibleFacets)) {
+                  if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
+                    for (const [key2, value2] of Object.entries(value)) {
+                      let maybeFacetCount = pathOr(null, [key, key2], response.facets)
+                      if (maybeFacetCount) {
+                        this.visibleFacets[key][key2] = response.facets[key][key2]
+                      } else {
+                        this.visibleFacets[key][key2] = 0
+                      }
+                    }
+                  }
+                }*/
+              })
+          }) 
     },
 
     /**
@@ -522,13 +499,13 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
-      const tags = this.$route.query.tags || undefined
+      var tags = this.$route.query.tags || undefined
 
       // Keep the original search data limit to get all organs before pagination
       const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
       var contentType = this.$route.query.type  
-      var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate= undefined;
+      var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate, eventTypes = undefined;
       var resourceTypes, developedBySparc = undefined;
       var aboutDetailsTypes = undefined;
       var sortOrder = undefined;
@@ -536,6 +513,8 @@ export default {
         contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
         aboutDetailsTypes = this.$refs.sparcInfoFacetMenu?.aboutDetailsTypesToCheck
         sortOrder = 'fields.title'
+        const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.getTags()
+        tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`) 
       }
       if (this.$route.query.type === process.env.ctf_news_and_events_id) {
         contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
@@ -543,7 +522,8 @@ export default {
         newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
         eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
         eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
-        sortOrder = contentType === process.env.ctf_news_id ? '-fields.publishedDate' : '-fields.startDate';
+        sortOrder = this.$refs.newsAndEventsFacetMenu?.getSortOrder();
+        eventTypes = contentType === 'event' ? this.$route.query.selectedEventTypeOptions : undefined;
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
@@ -570,6 +550,7 @@ export default {
             'fields.resourceType[in]': resourceTypes,
             'fields.developedBySparc' : developedBySparc,
             'fields.type[in]' : aboutDetailsTypes,
+            'fields.eventType[in]': eventTypes
           })
           .then(async response => {
             this.searchData = { ...response }
@@ -660,10 +641,9 @@ export default {
     /**
      * Submit search
      */
-    submitSearch: function() {
+    submitSearch: function(term) {
       this.searchData.skip = 0
-
-      const query = mergeLeft({ q: this.searchQuery }, this.$route.query)
+      const query = mergeLeft({ q: term }, this.$route.query)
       this.$router.replace({ query })
     },
 
@@ -672,10 +652,9 @@ export default {
      */
     clearSearch: function() {
       this.searchData.skip = 0
-
       const query = { ...this.$route.query, q: '' }
-      this.$router.replace({ query })
       this.searchQuery = ''
+      this.$router.replace({ query })
     },
 
     /**
@@ -728,6 +707,7 @@ export default {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
         this.searchType.type === 'newsAndEvents' || 
         this.searchType.type === 'sparcPartners' ||
+        this.searchType.type === 'simulation' ||
         this.searchType.type === 'sparcInfo'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
@@ -798,13 +778,17 @@ export default {
   text-decoration: none;
   text-transform: uppercase;
   line-height: 3.5rem;
-  @media (min-width: 54rem) {
+  @media (min-width: 40rem) {
+    font-size: 0.65rem;
+    border-right: 0.1rem solid $median;
+  }
+  @media (min-width: 50rem) {
+    font-size: .75rem;
+  }
+  @media (min-width: 64rem) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
-  }
-  @media (min-width: 40rem) {
-    border-right: 0.1rem solid $median;
   }
   &:hover,
   &:focus,
@@ -814,31 +798,10 @@ export default {
     font-weight: 500;
   }
 }
-.page-wrap {
-  padding-bottom: 1em;
-  @media (min-width: 48em) {
-    padding-bottom: 3em;
-  }
-}
 .table-wrap {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
   padding: 16px;
-}
-::v-deep .el-pagination {
-  margin-top: 1.5em;
-  text-align: right;
-  background-color: transparent;
-  @media screen and (max-width: 28em) {
-    margin-top: 5px;
-    padding-left: 0;
-    .btn-prev {
-      padding-left: 0;
-    }
-  }
-  button {
-    background-color: transparent;
-  }
 }
 .search-heading {
   align-items: center;

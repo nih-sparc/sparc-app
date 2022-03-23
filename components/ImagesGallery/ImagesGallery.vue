@@ -24,6 +24,7 @@
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
 
+import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
 
 import { baseName, extractSection } from '@/utils/common'
@@ -35,7 +36,7 @@ export default {
       ? () => import('@abi-software/gallery').then(gallery => gallery)
       : null
   },
-  mixins: [MarkedMixin],
+  mixins: [FormatString, MarkedMixin],
   props: {
     datasetScicrunch: {
       type: Object,
@@ -171,11 +172,8 @@ export default {
                   mimetype: thumbnail.mimetype.name,
                   file_path: thumbnail.dataset.path
                 })
-                let linkUrl =
-                  baseRoute +
-                  'datasets/scaffoldviewer' +
-                  '?scaffold=' +
-                  `${datasetId}/${datasetVersion}/files/${file_path}`
+                let filePath = encodeURIComponent(`files/${file_path}`)
+                const linkUrl = `${baseRoute}datasets/scaffoldviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
                 index += 1
                 return {
                   id,
@@ -211,10 +209,13 @@ export default {
         if ('flatmaps' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData.flatmaps, f => {
+              let title = f.uberonid
+              if (f.organ)
+                title = this.capitalize(f.organ)
               const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
               const item = {
                 id: f.uberonid,
-                title: f.uberonid,
+                title: title,
                 type: 'Flatmap',
                 thumbnail: null,
                 link: linkUrl
@@ -233,7 +234,7 @@ export default {
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
               const id = segmentation.id
               const file_path = segmentation.dataset.path
-              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${file_path}`
+              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=files/${file_path}`
 
               this.getSegmentationThumbnail(items, {
                 id,
@@ -371,6 +372,11 @@ export default {
         index < scaffold_info['abi-scaffold-thumbnail'].length
       ) {
         return scaffold_info['abi-scaffold-thumbnail'][index]
+      } else if (
+        'abi-thumbnail' in scaffold_info &&
+        index < scaffold_info['abi-thumbnail'].length
+      ) {
+        return scaffold_info['abi-thumbnail'][index]
       }
 
       return {

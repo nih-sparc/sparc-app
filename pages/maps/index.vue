@@ -4,10 +4,12 @@
     <page-hero>
       <h1>Maps</h1>
       <p>
-        SPARC is creating a detailed PNS map based on SPARC data and information
-        available from the literature. The map you see represents the current
-        state of the SPARC connectivity database and is not comprehensive. New
-        connectivity will be added as the SPARC program progresses.
+        SPARC is creating detailed PNS maps based on SPARC data and information
+        available from the literature. The flatmaps you see here are not yet
+        comprehensive and are largely derived from regions of the nervous system
+        where SPARC data has been published on this site, supplemented in some regions
+        by published knowledge of rat anatomy. New connectivity and species
+        specificity will be added as the SPARC program progresses.
       </p>
     </page-hero>
     <div ref="mappage" class="page-wrap portalmapcontainer">
@@ -16,8 +18,7 @@
           <MapContent
             ref="map"
             :state="state"
-            :api="api"
-            :flatmap-a-p-i="flatmapAPI"
+            :options="options"
             :share-link="shareLink"
             @updateShareLinkRequested="updateUUID"
           />
@@ -43,7 +44,7 @@ export default {
     if (this.uuid != this.$route.query.id) {
       this.uuid = this.$route.query.id
       if (this.uuid) {
-        let url = this.api + `map/getstate`
+        let url = this.options.sparcApi + `map/getstate`
         await fetch(url, {
           method: 'POST',
           headers: {
@@ -72,8 +73,14 @@ export default {
       ],
       uuid: undefined,
       state: undefined,
-      api: process.env.portal_api,
-      flatmapAPI: process.env.flatmap_api,
+      options:{
+        sparcApi: process.env.portal_api,
+        algoliaIndex: process.env.ALGOLIA_INDEX,
+        algoliaKey: process.env.ALGOLIA_API_KEY,
+        algoliaId: process.env.ALGOLIA_APP_ID,
+        pennsieveApi: process.env.discover_api_host,
+        flatmapAPI: process.env.flatmap_api,
+      },
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
   },
@@ -82,15 +89,15 @@ export default {
   },
   fetchOnServer: false,
   created: function() {
-    this.api = process.env.portal_api
-    let lastChar = this.api.substr(-1)
+    this.options.sparcApi = process.env.portal_api
+    let lastChar = this.options.sparcApi.substr(-1)
     if (lastChar != '/') {
-      this.api = this.api + '/'
+      this.options.sparcApi = this.options.sparcApi + '/'
     }
   },
   methods: {
     updateUUID: function() {
-      let url = this.api + `map/getshareid`
+      let url = this.options.sparcApi + `map/getshareid`
       let state = this.$refs.map.getState()
       fetch(url, {
         method: 'POST',
@@ -117,12 +124,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .maps {
-  .page-hero__copy p {
-    @media (min-width: 48em) {
-      font-size: 0.9375rem;
-      line-height: 1.5rem;
-    }
-  }
 
   .portalmapcontainer {
     margin-top: 1.5rem;

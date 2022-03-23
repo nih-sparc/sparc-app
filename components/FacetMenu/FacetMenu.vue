@@ -1,11 +1,13 @@
 <template>
   <div class="white-background">
-    <h2 class="title">
+    <div class="heading2 px-12 py-4">
       Refine results
-    </h2>
+    </div>
     <hr />
     <tags-container
       :selected-facets="selectedFacets"
+      :visibleFacetCategories="visibleFacetCategories"
+      :visibleFacets="visibleFacets"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
@@ -24,6 +26,14 @@ export default {
     selectedFacets: {
       type: Array,
       default: () => []
+    },
+    visibleFacetCategories: {
+      type: Array,
+      default: () => []
+    },
+    visibleFacets: {
+      type: Object,
+      default: () => {}
     }
   },
 
@@ -39,27 +49,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .white-background {
   background-color: white;
-  border: 0.1rem solid #e4e7ed;
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.title {
-  margin-bottom: 0;
-  padding: 0.5rem 1rem;
-  font-weight: 500;
+  border: 1px solid $lineColor2;
+  border-bottom: none;
 }
 
 hr {
   border: none;
-  border-bottom: 1px solid #dbdfe6;
+  border-bottom: 1px solid $lineColor2;
   margin: 0;
 }
 </style>

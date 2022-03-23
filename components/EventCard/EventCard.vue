@@ -19,7 +19,7 @@
         </div>
       </template>
 
-      <span>{{ event.fields.eventType }}</span>
+      <sparc-pill>{{ event.fields.eventType }}</sparc-pill>
     </div>
     <h3>
       <nuxt-link
@@ -56,8 +56,14 @@ import { pathOr } from 'ramda'
 
 import FormatDate from '@/mixins/format-date'
 
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
+
 export default {
   name: 'EventCard',
+
+  components: {
+    SparcPill
+  },
 
   mixins: [FormatDate],
 
@@ -119,15 +125,10 @@ export default {
       top: 0;
       width: 100%;
     }
-    span {
-      background: $median;
-      border-radius: 15px;
-      color: #fff;
-      font-size: 0.875rem;
-      top: 10px;
-      padding: 0 0.65rem;
+    div {
       position: absolute;
-      right: 14px;
+      right: 4px;
+      top: 4px;
     }
   }
   &__detail {
@@ -150,6 +151,8 @@ export default {
     font-weight: 500;
     margin-bottom: 1rem;
     line-height: 1.375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   a {
     color: $median;

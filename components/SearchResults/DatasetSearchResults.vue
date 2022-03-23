@@ -3,17 +3,16 @@
     :data="tableData"
     :show-header="false"
     empty-text="No Results"
-    @sort-change="onSortChange"
   >
     <el-table-column prop="banner" label="Image" width="160">
       <template slot-scope="scope">
-        <div v-if="scope.row.item">
+        <div v-if="scope.row.pennsieve">
           <nuxt-link
             :to="{
               name: 'datasets-datasetId',
               params: { datasetId: scope.row.object_id },
               query: {
-                type: $route.query.type
+                type: getSearchResultsType(scope.row.item)
               }
             }"
             class="img-dataset"
@@ -25,30 +24,7 @@
               height="128"
               width="128"
             />
-            <sparc-pill v-show='scope.row.item.published.status == "embargo"'>
-              Embargoed
-            </sparc-pill>
-          </nuxt-link>
-        </div>
-        <div v-else>
-          <nuxt-link
-            :to="{
-              name: 'datasets-datasetId',
-              params: { datasetId: scope.row.objectID },
-              query: {
-                type: $route.query.type
-              }
-            }"
-            class="img-dataset"
-          >
-            <img
-              v-if="scope.row.banner"
-              :src="scope.row.banner"
-              :alt="`Banner for ${scope.row.name}`"
-              height="128"
-              width="128"
-            />
-            <sparc-pill v-show='scope.row.embargo'>
+            <sparc-pill v-if="scope.row.item.published" v-show='scope.row.item.published.status == "embargo"'>
               Embargoed
             </sparc-pill>
           </nuxt-link>
@@ -57,17 +33,15 @@
     </el-table-column>
     <el-table-column
       min-width="400"
-      sortable="custom"
-      :sort-orders="sortOrders"
     >
       <template slot-scope="scope">
-        <div v-if="scope.row.item">
+        <div v-if="scope.row.pennsieve">
           <nuxt-link
             :to="{
               name: 'datasets-datasetId',
               params: { datasetId: scope.row.object_id },
               query: {
-                type: $route.query.type
+                type: getSearchResultsType(scope.row.item)
               }
             }"
           >
@@ -93,37 +67,6 @@
             </tr>
           </table>
         </div>
-        <div v-else>
-          <nuxt-link
-            :to="{
-              name: 'datasets-datasetId',
-              params: { datasetId: scope.row.objectID },
-              query: {
-                type: $route.query.type
-              }
-            }"
-          >
-            {{ scope.row.name }}
-          </nuxt-link>
-          <div class="mt-8 mb-8">
-            {{ scope.row.description }}
-          </div>
-          <table class="property-table">
-            <tr>
-              <td class="property-name-column">
-                Publication Date
-              </td>
-              <td>
-                {{ 
-                  formatDate(scope.row.createdAt) +
-                    ' (Last updated ' +
-                    formatDate(scope.row.updatedAt) +
-                    ')'
-                }}
-              </td>
-            </tr>
-          </table>
-        </div>
       </template>
     </el-table-column>
   </el-table>
@@ -133,8 +76,6 @@
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
-import { onSortChange } from '@/pages/data/utils'
-import { pathOr } from 'ramda'
 import _ from 'lodash'
 
 export default {
@@ -153,7 +94,6 @@ export default {
 
   data() {
     return {
-      sortOrders: ['ascending', 'descending'],
       PROPERTY_DATA: [
         {
           displayName: 'Anatomical Structure',
@@ -168,25 +108,14 @@ export default {
           propPath: 'item.modalities'
         },
         {
+          displayName: 'Publication Date',
+          propPath: 'pennsieve'
+        },
+        {
           displayName: 'Samples',
           propPath: 'item.statistics'
         },
-        {
-          displayName: 'Includes',
-          propPath: 'item.published.boolean'
-        }
       ]
-    }
-  },
-
-  computed: {
-    /**
-     * Compute if the search results are for simulations
-     * @returns {Boolean}
-     */
-    areSimulationResults: function() {
-      const searchType = pathOr('', ['query', 'type'], this.$route)
-      return searchType === 'simulation'
     }
   },
 
@@ -234,13 +163,14 @@ export default {
                     ')'
         }
         default: {
-          return _.get(item, property.propPath)
+          return _.upperFirst(_.get(item, property.propPath))
         }
       }
     },
-
-    onSortChange: function(payload) {
-      onSortChange(this, payload)
+    getSearchResultsType(item) {
+      return item !== undefined ? 
+        (item.types[0].name === 'computational model' ? 'simulation' : 'dataset') :
+        ''
     }
   }
 }

@@ -205,7 +205,6 @@ h2 {
   .el-input,
   .el-textarea,
   .el-select-dropdown__item {
-    font-size: 1rem;
     ::placeholder {
       color: $medium-gray;
     }

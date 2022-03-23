@@ -32,82 +32,51 @@
                 :alt="entry.files[0].description"
               />
             </div>
-            <div class="seperator-path" />
-            <div class="story-bold-field">
+            <div class="seperator-path my-32" />
+            <div class="body4 story-bold-field">
               Author
             </div>
-            <div class="story-field">
+            <div class="body4">
               {{ author }}
             </div>
             <br />
             <template v-if="entry.publishDate">
-              <div class="story-bold-field">
+              <div class="body4 story-bold-field">
                 Published Date
               </div>
-              <div class="story-field">
+              <div class="body4">
                 {{ formatDate(entry.publishDate) }}
               </div>
               <br />
             </template>
             <template v-if="entry.contributorsMarkdown">
-              <div class="story-bold-field">
+              <div class="body4 story-bold-field">
                 Team Members
               </div>
-              <div class="content story-field" v-html="parseMarkdown(entry.contributorsMarkdown)" />
+              <div class="content body4" v-html="parseMarkdown(entry.contributorsMarkdown)" />
               <br />
             </template>
             <template v-if="entry.referencesMarkdown">
-              <div class="story-bold-field">
+              <div class="body4 story-bold-field">
                 Supporting information
               </div>
-              <div class="content story-field" v-html="parseMarkdown(entry.referencesMarkdown)" />
+              <div class="content body4" v-html="parseMarkdown(entry.referencesMarkdown)" />
               <br />
             </template>
-            <div class="story-bold-field">
+            <div class="body4 story-bold-field">
               Share
             </div>
-            <div class="share-links">
-              <share-network
-                network="facebook"
-                :url="pageUrl"
-                :title="title"
-              >
-                <svg-icon name="icon-share-facebook" height="28" width="28" />
-                <span class="visuallyhidden">Share on Facebook</span>
-              </share-network>
-              <share-network
-                network="twitter"
-                class="ml-8"
-                :url="pageUrl"
-                :title="title"
-              >
-                <svg-icon name="icon-share-twitter" height="28" width="28" />
-                <span class="visuallyhidden">Share on Twitter</span>
-              </share-network>
-              <share-network
-                network="linkedin"
-                class="ml-8"
-                :url="pageUrl"
-                :title="title"
-              >
-                <svg-icon name="icon-share-linked" height="28" width="28" />
-                <span class="visuallyhidden">Share on Linkedin</span>
-              </share-network>
-              <button class="ml-8 btn-copy-permalink" @click="copyLink">
-                <svg-icon name="icon-permalink" height="28" width="28" />
-                <span class="visuallyhidden">Copy permalink</span>
-              </button>
-            </div>
-            <div class="seperator-path" />
+            <share-links />
+            <div class="seperator-path my-32" />
             <template v-if="entry.associatedDatasets">
-              <div class="story-bold-field">
+              <div class="body4 story-bold-field">
                 Associated Datasets
               </div>
               <br />
               <div
                 v-for="(datasetUrl, index) in entry.associatedDatasets"
                 :key="'dataset' + index"
-                class="story-field"
+                class="body4 "
               >
                 <dataset-card :id="datasetIdFromUrl(datasetUrl)" />
               </div>
@@ -118,10 +87,10 @@
       <nuxt-link
         class="community-link mt-16"
         :to="{
-          name: 'news-and-events-community-spotlight'
+          name: 'news-and-events-community-spotlight-success-stories'
         }"
       >
-        View All Community Spotlights &gt;
+        View All Success Stories &gt;
       </nuxt-link>
     </div>
   </div>
@@ -136,6 +105,7 @@ import createClient from '@/plugins/contentful.js'
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
+import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 
 const client = createClient()
 
@@ -144,8 +114,9 @@ export default {
   components: {
     DatasetCard,
     Breadcrumb,
-    PageHero
-  },
+    PageHero,
+    ShareLinks
+},
   mixins: [FormatDate, MarkedMixin],
   async asyncData({ route }) {
     try {
@@ -189,6 +160,12 @@ export default {
           label: 'Community Spotlight',
           to: {
             name: 'news-and-events-community-spotlight'
+          }
+        },
+        {
+          label: 'Success Stories',
+          to: {
+            name: 'news-and-events-community-spotlight-success-stories'
           }
         }
       ]
@@ -295,25 +272,15 @@ export default {
 
 .seperator-path {
   width: 100%;
-  height: 2px;
+  height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
-  margin-top: 32px;
-  margin-bottom: 32px;
 }
 
 .story-bold-field {
-  color: rgb(0, 0, 0);
-  font-family: Asap;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
-}
-
-.story-field {
-  font-family: Asap;
-  font-size: 14px;
-  line-height: 24px;
 }
 
 .btn-copy-permalink {
@@ -331,21 +298,6 @@ export default {
   margin-bottom: 3em;
   .updated {
     color: #aaa;
-  }
-}
-
-.community-link {
-  background: none;
-  border: none;
-  color: $navy;
-  cursor: pointer;
-  display: block;
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
   }
 }
 </style>

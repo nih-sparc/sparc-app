@@ -3,12 +3,12 @@
     <div class="header__nav">
       <div class="header__nav--parent">
         <svg-icon icon="icon-contact" width="18" height="18" />
-        <nuxt-link to="/contact-us">
+        <nuxt-link to="/contact-us" target="_blank">
           Contact Us
         </nuxt-link>
         <svg-icon icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
-          Need Help?
+          Help
         </nuxt-link>
       </div>
       <div class="header__nav--main">
@@ -28,7 +28,7 @@
             v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
-            @enter="executeSearch"
+            @enter="executeSearch(searchQuery)"
           >
             <svg-icon
               icon="icon-magnifying-glass"
@@ -40,9 +40,9 @@
           <div :class="[mobileSearchOpen ? 'search-overlay' : '']">
             <search-form
               v-if="mobileSearchOpen"
-              v-model="searchQuery"
-              class="search-mobile"
+              :defaultValue="searchQuery"
               placeholder="Search Datasets"
+              class="search-mobile"
               @search="executeMobileSearch"
               @clear="searchQuery = ''"
             />
@@ -74,14 +74,14 @@
               <ul class="mobile-navigation__links">
                 <li>
                   <svg-icon icon="icon-contact" width="18" height="18" />
-                  <nuxt-link to="/contact-us">
+                  <nuxt-link to="/contact-us" target="_blank">
                     Contact Us
                   </nuxt-link>
                 </li>
                 <li>
                   <svg-icon icon="icon-help" width="18" height="18" />
                   <nuxt-link :to="{ name: 'help' }">
-                    Need Help?
+                    Help
                   </nuxt-link>
                 </li>
               </ul>
@@ -114,7 +114,7 @@
               type="text"
               class="nav-main-container__search-input"
               placeholder="Search"
-              @keyup.native.enter="executeSearch"
+              @keyup.native.enter="executeSearch(searchQuery)"
             >
               <el-select slot="prepend" v-model="searchSelect">
                 <el-option
@@ -125,9 +125,9 @@
                 />
               </el-select>
             </el-input>
-            <button
-              class="nav-main-container__search-button"
-              @click="executeSearch"
+            <el-button
+              class="search-button px-8 py-0 ml-8"
+              @click="executeSearch(searchQuery)"
             >
               <svg-icon
                 color="white"
@@ -136,7 +136,7 @@
                 width="25"
                 dir="left"
               />
-            </button>
+            </el-button>
           </div>
         </div>
       </div>
@@ -151,19 +151,14 @@ import { mapActions } from 'vuex'
 
 const links = [
   {
-    title: 'index',
-    displayTitle: 'Home',
-    href: '/'
-  },
-  {
     title: 'data',
     displayTitle: 'Find Data',
-    href: '/data?type=dataset'
+    href: '/data'
   },
   {
     title: 'resources',
     displayTitle: 'Tools & Resources',
-    href: `/resources?type=${process.env.ctf_resource_id}`
+    href: `/resources`
   },
   {
     title: 'maps',
@@ -214,7 +209,7 @@ export default {
         {
           key: 'help',
           value: 'help',
-          label: 'Support Center'
+          label: 'Help'
         }
       ]
     }
@@ -251,7 +246,7 @@ export default {
     menuOpen: {
       handler: function(val) {
         if (!val) {
-          this.$store.dispatch('updateDisabledScrolling', false)
+          this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
         }
       },
       immediate: true
@@ -259,15 +254,12 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      scrolling: 'updateDisabledScrolling'
-    }),
     /**
      * Sets a link to active based on current page
      * @param {String} query
      */
     activeLink: function(query) {
-      if (this.$nuxt.$route.path === query) {
+      if (this.$nuxt.$route.path.includes(query)) {
         return true
       } else {
         return false
@@ -279,11 +271,11 @@ export default {
     openMobileNav: function() {
       if (!this.menuOpen) {
         this.mobileSearchOpen = false // just in case the search menu is open also
-        this.$store.dispatch('updateDisabledScrolling', true)
+        this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
         this.menuOpen = true
       } else {
         this.menuOpen = false
-        this.$store.dispatch('updateDisabledScrolling', false)
+        this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
       }
     },
 
@@ -293,7 +285,7 @@ export default {
     openMobileSearch: function() {
       this.mobileSearchOpen = true
       this.menuOpen = false
-      this.$store.dispatch('updateDisabledScrolling', true)
+      this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
     },
 
     /**
@@ -301,11 +293,11 @@ export default {
      */
     closeMobileSearch: function() {
       this.mobileSearchOpen = false
-      this.$store.dispatch('updateDisabledScrolling', false)
+      this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
     },
 
-    executeMobileSearch: function() {
-      this.executeSearch()
+    executeMobileSearch: function(term) {
+      this.executeSearch(term)
       this.closeMobileSearch()
     },
 
@@ -313,7 +305,7 @@ export default {
      * Executes a search query based on selected
      * option and query
      */
-    executeSearch: function() {
+    executeSearch: function(term) {
       const option = this.searchSelectOptions.find(
         o => o.value === this.searchSelect
       )
@@ -329,7 +321,7 @@ export default {
         name: option.value,
         query: {
           type,
-          [searchKey]: this.searchQuery
+          [searchKey]: term
         }
       })
 
@@ -353,11 +345,11 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     align-items: center;
   }
 }
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (min-width: 320px) and (max-width: 1120px) {
   .overlay {
     position: absolute;
     top: 56px;
@@ -369,7 +361,7 @@ export default {
   }
 }
 
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (min-width: 320px) and (max-width: 1120px) {
   .search-overlay {
     position: absolute;
     top: 56px;
@@ -383,7 +375,7 @@ export default {
 
 .divider {
   display: none;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     border: 0;
     clear: both;
     display: block;
@@ -422,7 +414,7 @@ export default {
     padding-right: 18px;
     text-decoration: none;
   }
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     & {
       display: none;
     }
@@ -436,7 +428,7 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
@@ -450,7 +442,7 @@ export default {
     &--social {
       display: none;
     }
-    @media (min-width: 320px) and (max-width: 1023px) {
+    @media (min-width: 320px) and (max-width: 1120px) {
       display: flex;
       flex-direction: column;
       a {
@@ -501,7 +493,7 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -515,7 +507,7 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     height: 2rem;
     width: 100%;
     margin-right: 0;
@@ -525,40 +517,29 @@ export default {
 
 .nav-main-container__search {
   display: flex;
+  height: 40px;
   flex-direction: row;
   justify-content: flex-end;
   width: 54%;
   margin-right: 1rem;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     width: 0;
   }
 }
 
 .nav-main-container__search-input {
   width: 30vw;
-  height: 34px;
   border-radius: 4px;
-  border: solid 1px $dark-gray;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     display: none;
   }
   .el-select {
     width: 150px;
   }
-  ::v-deep .el-input__inner {
-    color: $medium-gray;
-  }
 }
 
-.nav-main-container__search-button {
-  background-color: $median;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  margin-left: 9px;
-  margin-top: 1px;
-  border: none;
-  @media screen and (max-width: 1023px) {
+.search-button {
+  @media screen and (max-width: 1120px) {
     display: none;
   }
 }
@@ -599,7 +580,7 @@ export default {
     color: $app-primary-color;
   }
 
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     & {
       display: block;
     }
@@ -620,7 +601,7 @@ export default {
     li {
       display: inline;
       padding-right: 5rem;
-      @media screen and (min-width: 1023px) {
+      @media screen and (min-width: 1120px) {
         padding-right: 0.5rem;
       }
 
@@ -640,7 +621,7 @@ export default {
     }
   }
 
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (min-width: 320px) and (max-width: 1120px) {
     & {
       background: $seafoam;
       bottom: 0;
@@ -676,7 +657,7 @@ export default {
   display: none;
 }
 
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (min-width: 320px) and (max-width: 1120px) {
   .search-mobile {
     background-color: $cochlear;
     padding: 1em;

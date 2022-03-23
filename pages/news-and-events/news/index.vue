@@ -34,7 +34,6 @@ import Vue from 'vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
-import Pagination from '@/components/Pagination/Pagination.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -50,7 +49,6 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     Breadcrumb,
     PageHero,
     NewsListItem,
-    Pagination
   },
 
   async asyncData() {
@@ -123,10 +121,5 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
 }
 .page-wrap {
   margin-bottom: 2.5rem;
-}
-::v-deep {
-  .page-hero__copy {
-    max-width: none;
-  }
 }
 </style>

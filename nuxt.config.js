@@ -1,4 +1,10 @@
 export default {
+  /**
+   * Outside of localhost visibility
+   */
+  // server: {
+  //   host: '0.0.0.0'
+  // },
   /*
    ** Headers of the page
    */
@@ -11,6 +17,11 @@ export default {
         hid: 'description',
         name: 'description',
         content: process.env.npm_package_description || ''
+      },
+      {
+        hid: 'keywords', 
+        name: 'keywords', 
+        content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
       }
     ],
     link: [
@@ -44,6 +55,7 @@ export default {
     ctf_news_and_events_id: 'newsAndEvents',
     ctf_resource_id: 'sparcPartners',
     ctf_resource_hero_id: '3ImGx7UyDXPwM3oTag06nt',
+    ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
     ctf_help_id: 'helpDocument',
     ctf_help_list_id: 'helpSection',
     ctf_help_aws_id: 'zQfzadwADutviJjT19hA5',
@@ -84,7 +96,7 @@ export default {
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
-    show_facet_menu: process.env.SHOW_FACET_MENU || 'false'
+    show_facet_menu: process.env.SHOW_FACET_MENU || 'false',
   },
 
   serverMiddleware: [
@@ -118,11 +130,13 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['element-ui/lib/theme-chalk/index.css'],
+  css: ['element-ui/lib/theme-chalk/index.css', '@nih-sparc/sparc-design-system-components/src/assets/styles.scss'],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/bootstrap', '@/plugins/contentful'],
+  plugins: ['@/plugins/bootstrap', '@/plugins/contentful', {
+    src: '@/plugins/system-design-components', mode: 'client'
+  }],
   /*
    ** Nuxt.js dev-modules
    */
@@ -161,7 +175,7 @@ export default {
    ** Build configuration
    */
   build: {
-    transpile: [/^element-ui/],
+    transpile: [/^element-ui/, 'system-design-components'],
 
     /*
      ** You can extend webpack config here

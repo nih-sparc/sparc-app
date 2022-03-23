@@ -18,7 +18,7 @@
       />
     </page-hero>
 
-    <div class="page-wrap">
+    <div class="mt-48">
       <div class="container">
         <div v-if="Object.keys(featuredEvent).length" class="mb-48">
           <h2>Featured Event</h2>
@@ -100,7 +100,7 @@
         </el-row>
 
         <h2>Community Spotlight</h2>
-        <community-spotlight-listings :stories="shownStories" :in-news="true" />
+        <community-spotlight-listings :stories="shownStories" :bottom-link="true" />
 
         <h2>Stay Connected</h2>
         <div class="subpage">

@@ -1,56 +1,33 @@
 <template>
-  <facet-menu
-    :selected-facets="selectedFacet"
-    @deselect-facet="deselectFacet"
-    @deselect-all-facets="deselectAllFacets"
-  >
-    <facet-radio-button-category
-      :label="'type'"
-      :options="options"
-      :default-selected-option="selectedTypeLabel"
-      @selection-changed="onSelectedTypeChanged"
+  <div>
+    <facet-menu
+      :selected-facets="selectedFacetsArray"
+      :visible-facet-categories="visibleCategories"
+      :visibleFacets="facetMenuVisibleFacets"
+      @deselect-facet="deselectFacet"
+      @deselect-all-facets="deselectAllFacets"
+    >
+      <facet-radio-button-category
+        :label="'type'"
+        :options="options"
+        :default-selected-option="selectedTypeLabel"
+        @selection-changed="onSelectedTypeChanged"
+      />
+    </facet-menu>
+    <dropdown-multiselect
+      :enabled="selectedTypeLabel === options[1].label"
+      :category="sparcInvestigatorsCategory"
+      :default-checked-ids="defaultCheckedIds"
+      @selection-change="onSparcInvestigatorsChanged"
+      ref="sparcInvestigatorsCategory"
     />
-    <div v-if="showFacetMenu">
-      <facet-category
-        ref="sparcInvestigatorsCategory"
-        :default-checked-keys="defaultCheckedKeys"
-        :facet="sparcInvestigatorsCategory"
-        :hide-show-all-option="true"
-        :show-collapsible-label-arrow="false"
-        @selection-change="onSparcInvestigatorsChanged"
-      />
-      <facet-category
-        ref="hasPublicationsCategory"
-        :default-checked-keys="defaultCheckedKeys"
-        :facet="hasPublicationsCategory"
-        :hide-show-all-option="true"
-        :show-collapsible-label-arrow="false"
-        @selection-change="onHasPublicationsChanged"
-      />
-      <facet-category
-        ref="hasDatasetsCategory"
-        :default-checked-keys="defaultCheckedKeys"
-        :facet="hasDatasetsCategory"
-        :hide-show-all-option="true"
-        :show-collapsible-label-arrow="false"
-        @selection-change="onHasDatasetsChanged"
-      />
-      <facet-category
-        ref="hasModelSimulationCategory"
-        :default-checked-keys="defaultCheckedKeys"
-        :facet="hasModelSimulationCategory"
-        :hide-show-all-option="true"
-        :show-collapsible-label-arrow="false"
-        @selection-change="onHasModelSimulationChanged"
-      />
-    </div>
-  </facet-menu>
+  </div>
 </template>
 
 <script>
-import FacetCategory from './FacetCategory.vue'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonCategory from './FacetRadioButtonCategory.vue'
+import { isEmpty } from 'ramda'
 
 const options = [
   {
@@ -72,53 +49,13 @@ const options = [
 ]
 
 const sparcInvestigatorsCategory = {
-  label: 'information for sparc investigators',
-  key: 'sparcInvestigators',
-  children: [
+  label: 'Information for SPARC Investigators',
+  id: 'sparcInvestigators',
+  data: [
     {
-      label: 'Show only if "YES"',
+      label: 'Information for SPARC Investigators',
       id: 'sparcInvestigators',
-      children: [],
-      key: 'sparcInvestigators'
-    }
-  ]
-}
-
-const hasPublicationsCategory = {
-  label: 'has publications',
-  key: 'hasPublications',
-  children: [
-    {
-      label: 'Show only if "YES"',
-      id: 'hasPublications',
-      children: [],
-      key: 'hasPublications'
-    }
-  ]
-}
-
-const hasDatasetsCategory = {
-  label: 'has datasets',
-  key: 'hasDatasets',
-  children: [
-    {
-      label: 'Show only if "YES"',
-      id: 'hasDatasets',
-      children: [],
-      key: 'hasDatasets'
-    }
-  ]
-}
-
-const hasModelSimulationCategory = {
-  label: 'has model/simulation',
-  key: 'hasModelSimulation',
-  children: [
-    {
-      label: 'Show only if "YES"',
-      id: 'hasModelSimulation',
-      children: [],
-      key: 'hasModelSimulation'
+      facetPropPath: 'sparcInvestigators'
     }
   ]
 }
@@ -127,7 +64,6 @@ export default {
   name: 'SparcInfoFacetMenu',
 
   components: {
-    FacetCategory,
     FacetMenu,
     FacetRadioButtonCategory
   },
@@ -139,11 +75,10 @@ export default {
       options: options,
       sparcInfoType: options[0].id,
       sparcInvestigatorsCategory: sparcInvestigatorsCategory,
-      hasPublicationsCategory: hasPublicationsCategory,
-      hasDatasetsCategory: hasDatasetsCategory,
-      hasModelSimulationCategory: hasModelSimulationCategory,
-      defaultCheckedKeys: [],
-      showFacetMenu: process.env.show_facet_menu
+      defaultCheckedIds: [],
+      showFacetMenu: (process.env.show_facet_menu == 'true') ? true : false,
+      selectedFacets: {},
+      selectedFacetsArray: []
     }
   },
 
@@ -156,9 +91,6 @@ export default {
         ? options[0].label
         : selectedOption.label
     },
-    selectedFacet: function() {
-      return []
-    },
     aboutDetailsTypesToCheck: function() {
       if (this.sparcInfoType !== 'policies' && this.sparcInfoType !== 'about') {
         return undefined
@@ -170,17 +102,32 @@ export default {
         : process.env.ctf_about_details_page_types
             .filter(type => type !== 'Policies')
             .toString()
-    }
+    },
+    visibleCategories: function() {
+      var visibleCategories = []
+      if (this.selectedTypeLabel === options[1].label) {
+        visibleCategories = ['sparcInvestigators']
+      }
+      return visibleCategories
+    },
+    facetMenuVisibleFacets: function() {
+      const sparcInvestigators = {
+        'Information for SPARC Investigators': true,
+        facetPropPath: 'sparcInvestigators',
+      }
+      return {...this.visibleFacets, sparcInvestigators}
+    },
   },
-
-  watch: {},
-
   mounted() {
     if (this.$route.query.sparcInfoType) {
       this.sparcInfoType = this.$route.query.sparcInfoType
     }
+    if (this.$route.query.sparcInvestigators) {
+      this.defaultCheckedIds = this.defaultCheckedIds.concat([
+        this.sparcInvestigatorsCategory.data[0].id
+      ])
+    }
   },
-
   methods: {
     onSelectedTypeChanged(newValue) {
       if (this.sparcInfoType === newValue) {
@@ -196,21 +143,20 @@ export default {
         }
       )
     },
-    onSparcInvestigatorsChanged(newValue) {},
-    onHasPublicationsChanged(newValue) {},
-    onHasDatasetsChanged(newValue) {},
-    onHasModelSimulationChanged(newValue) {},
-    getSelectedType() {
-      if (this.sparcInfoType === 'policies' || this.sparcInfoType === 'about') {
-        return process.env.ctf_about_details_content_type_id
+    onSparcInvestigatorsChanged(data) {
+      this.selectedFacets[data.id] = data.checkedNodes
+
+      this.selectedFacetsArray = []
+      for (const [id, value] of Object.entries(this.selectedFacets)) {
+        this.selectedFacetsArray = this.selectedFacetsArray.concat(value)
       }
-      return this.sparcInfoType
-    },
-    deselectAllFacets() {
+
+      const sparcInvestigators = data.checkedNodes.length > 0 ? true : undefined
       this.$router.replace(
         {
           query: {
-            ...this.$route.query
+            ...this.$route.query,
+            sparcInvestigators: sparcInvestigators
           }
         },
         () => {
@@ -218,39 +164,40 @@ export default {
         }
       )
     },
-    deselectFacet() {
-      // if (this.type === this.options[0].id) {
-      //   this.$refs.publicationCategory.reset()
-      // } else if (this.type === options[1].id) {
-      //   this.$refs.eventCategory.reset()
-      // }
-    }
+    getSelectedType() {
+      if (this.sparcInfoType === 'policies' || this.sparcInfoType === 'about') {
+        return process.env.ctf_about_details_content_type_id
+      }
+      return this.sparcInfoType
+    },
+    getTags() {
+      const selectedFacet = this.selectedFacets[sparcInvestigatorsCategory.id]
+      if (
+        this.selectedTypeLabel === options[1].label &&
+        selectedFacet !== undefined &&
+        !isEmpty(selectedFacet)
+      ) {
+        return 'SPARC Investigators'
+      }
+      return undefined
+    },
+    deselectAllFacets() {
+      this.$router.replace(
+        {
+          query: {
+            ...this.$route.query,
+            sparcInvestigators: undefined,
+          }
+        },
+        () => {
+          this.$refs.sparcInvestigatorsCategory.uncheckAll()
+          this.$emit('sparc-info-selections-changed')
+        }
+      )
+    },
+    deselectFacet(id) {
+      this.$refs.sparcInvestigatorsCategory.uncheck(id)
+    },
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '../../assets/_variables.scss';
-.white-background {
-  background-color: white;
-  border: 0.1rem solid #e4e7ed;
-}
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.title {
-  margin-bottom: 0;
-  padding: 0.5rem 1rem;
-  font-weight: 300;
-}
-
-hr {
-  border: none;
-  border-bottom: 1px solid #dbdfe6;
-  margin: 0;
-}
-</style>
