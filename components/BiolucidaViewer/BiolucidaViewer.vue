@@ -71,7 +71,7 @@ export default {
   methods: {
     go() {
       this.$refs.biolucida.contentWindow.postMessage(
-        '262.5-226-1-38',
+        '262.5,226,1,38',
         'https://sparc.biolucida.net'
       )
     },
@@ -87,6 +87,8 @@ export default {
       // Waiting on changes to Biolucida that will enable us to receive the desired message.
       if (event.origin === 'https://sparc.biolucida.net') {
         const message = event.data
+        console.log("hhhh:")
+        console.log(message)
         if (message === 'setting x-y-z-f failed') {
           this.$message(failMessage('Unable to set image location.'))
         } else if (!message.startsWith('setting x-y-z-f ')) {
