@@ -243,7 +243,8 @@ export default {
             <br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
             <br><br>Email
             <br>${this.form.email}
-          `
+          `,
+          userEmail: this.form.shouldFollowUp ? this.form.email : null
         })
         .then(() => {
           if (this.form.shouldSubscribe) {
