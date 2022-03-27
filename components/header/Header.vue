@@ -2,14 +2,27 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <svg-icon icon="icon-contact" width="18" height="18" />
+        <svg-icon class="pr-4" icon="icon-contact" width="18" height="18" />
         <nuxt-link to="/contact-us" target="_blank">
           Contact Us
         </nuxt-link>
-        <svg-icon icon="icon-help" width="18" height="18" />
+        <svg-icon class="pr-4" icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
           Help
         </nuxt-link>
+        <template v-if="showLoginFeature">
+          <svg-icon icon="icon-sign-in" style="padding-top: .125rem" height="16" width="16" />
+          <a v-if="!loggedInUser" class="sign-in-link" @click="onLoginWithORCID">
+            Sign in
+          </a>
+          <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
+            <el-submenu index="user">
+              <template slot="title">{{username}}</template>
+              <!--<el-menu-item class="user-submenu" index="account">My account</el-menu-item>-->
+              <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
+            </el-submenu>
+          </el-menu>
+        </template>
       </div>
       <div class="header__nav--main">
         <div class="nav-main-container">
@@ -84,6 +97,15 @@
                     Help
                   </nuxt-link>
                 </li>
+                <li v-if="showLoginFeature">
+                  <svg-icon icon="icon-sign-in" style="padding-left: .125rem" height="18" width="18" />
+                  <a v-if="!loggedInUser" class="sign-in-link" @click="onLoginWithORCID">
+                    Sign in
+                  </a>
+                  <a v-else class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
+                    Logout
+                  </a>
+                </li>
               </ul>
               <div class="mobile-navigation__links--social">
                 <a href="https://twitter.com/sparc_science" target="_blank">
@@ -147,7 +169,8 @@
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
-import { mapActions } from 'vuex'
+import Request from '@/mixins/request'
+import { mapState } from 'vuex'
 
 const links = [
   {
@@ -183,6 +206,12 @@ export default {
     SparcLogo,
     SearchForm
   },
+  mixins: [Request],
+  mounted() {
+    if (this.showLoginFeature) {
+      this.$store.dispatch('user/fetchUser')
+    }
+  },
   data: () => {
     return {
       links,
@@ -190,6 +219,8 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
+      username: "",
+      showLoginFeature: process.env.SHOW_LOGIN_FEATURE,
       searchSelectOptions: [
         {
           key: 'data',
@@ -216,6 +247,7 @@ export default {
   },
 
   computed: {
+    ...mapState('user', ['loggedInUser']),
     /**
      * Compute if search should be visible
      * @returns {Boolean}
@@ -239,6 +271,14 @@ export default {
       immediate: true
     },
 
+    loggedInUser: {
+      handler: function(newUser) {
+        if (newUser) {
+          this.fetchUsername(this.loggedInUser)
+        }
+      },
+    },
+
     /**
      * Watches menuOpen to check if it's false
      * to enable scrolling
@@ -254,6 +294,30 @@ export default {
   },
 
   methods: {
+    handleUserMenuSelect(menuId, menuIdPath) {
+      if (menuId === 'logout') {
+        this.$store.dispatch('user/logout')
+      }
+    },
+    onLoginWithORCID: async function(x) {
+      x.preventDefault()
+      await this.$store.dispatch('user/login', 'ORCID')
+    },
+    fetchUsername: function() {
+      let token = this.$store.getters['user/userToken']
+      let url = `https://api.pennsieve.net/user?api_key=${token}`
+      this.sendXhr(url).then(this.setUsername, this.failureCallback)
+    },
+    setUsername: function(result) {
+      if (`${result.firstName[0]}` !== null && `${result.lastName}` !== null){
+        this.username = `${result.firstName[0]}. ${result.lastName}`}
+      else {
+        this.username = `${result.email}`
+      }
+    },
+    failureCallback: function(error) {
+      console.log(error)
+    },
     /**
      * Sets a link to active based on current page
      * @param {String} query
@@ -399,9 +463,8 @@ export default {
   margin-top: 8px;
   margin-bottom: 8px;
   .svg-icon {
-    color: $cochlear;
-    padding-right: 0.4rem;
-    padding-top: 0.2rem;
+    align-self: center;
+    color: white;
   }
   img {
     margin-right: 5px;
@@ -686,5 +749,37 @@ export default {
   bottom: 5px;
   margin-left: 5px;
   user-select: none;
+}
+
+.sign-in-link:hover {
+  cursor: pointer;
+}
+::v-deep .el-submenu__title:hover {
+  background-color: inherit !important;
+}
+::v-deep .el-submenu__title {
+  line-height: inherit !important;
+  height: fit-content !important;
+  color: white !important;
+  border: none !important;
+  padding: 0;
+  i {
+    color: white;
+  }
+}
+
+.user-menu {
+  border: none !important;
+}
+.user-submenu {
+  color: #303133 !important;
+  background-color: white !important;
+  font-size: 14px !important;
+  line-height: 32px !important;
+  font-weight: medium !important;
+  height: fit-content !important;
+}
+.user-submenu:hover {
+  color: #8300bf !important;
 }
 </style>

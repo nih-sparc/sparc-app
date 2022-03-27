@@ -22,6 +22,8 @@
     "@abi-software/mapintegratedvuer": "0.2.6",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/scaffoldvuer": "0.1.51",
+    "@aws-amplify/auth": "^4.4.4",
+    "@aws-amplify/core": "^4.4.2",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
     "@nih-sparc/sparc-design-system-components": "^0.26.15",
     "@nuxtjs/axios": "^5.8.0",
