@@ -13,32 +13,14 @@
       <h2>Success Stories</h2>
       <community-spotlight-listings :stories="shownStories" :bottomLink="true" linkLocation="news-and-events-community-spotlight-success-stories" linkText="View all Success Stories"/>
     </div>
-    <pagination
-      v-if="allStories.length > storiesPageSize"
-      :page-size="storiesPageSize"
-      :total-count="allStories.length"
-      @select-page="storiesPageChange"
-    />
     <div class="page-wrap container">
       <h2>Fireside Chats</h2>
       <community-spotlight-listings :stories="shownChats" :bottomLink="true" linkLocation="news-and-events-community-spotlight-fireside-chats" linkText="View all Fireside Chats"/>
     </div>
-    <pagination
-      v-if="allChats.length > chatsPageSize"
-      :page-size="chatsPageSize"
-      :total-count="allChats.length"
-      @select-page="chatsPageChange"
-    />
     <div class="page-wrap container">
       <h2>Community Announcements</h2>
       <community-announcement-listings :items="shownAnnouncements" :bottomLink="true" linkLocation="news-and-events-community-spotlight-community-announcements" linkText="View all Community Announcements"/>
     </div>
-    <pagination
-      v-if="allAnnouncements.length > announcementsPageSize"
-      :page-size="announcementsPageSize"
-      :total-count="allAnnouncements.length"
-      @select-page="announcementsPageChange"
-    />
   </div>
 </template>
 
@@ -79,43 +61,19 @@ export default {
   },
   computed: {
     shownStories: function() {
-      return this.allStories.slice(
-        (this.storiesPage - 1) * this.storiesPageSize,
-        this.storiesPage * this.storiesPageSize
-      )
+      return this.allStories.slice(0, this.storiesPageSize)
     },
     shownChats: function() {
-      return this.allChats.slice(
-        (this.chatsPage - 1) * this.chatsPageSize,
-        this.chatsPage * this.chatsPageSize
-      )
+      return this.allChats.slice(0, this.chatsPageSize)
     },
     shownAnnouncements: function() {
-      return this.allAnnouncements.slice(
-        (this.announcementsPage - 1) * this.announcementsPageSize,
-        this.announcementsPage * this.announcementsPageSize
-      )
-    },
-  },
-  methods: {
-    storiesPageChange: function(val) {
-      this.storiesPage = val
-    },
-    chatsPageChange: function(val) {
-      this.chatsPage = val
-    },
-    announcementsPageChange: function(val) {
-      this.announcementsPage = val
+      return this.allAnnouncements.slice(0, this.announcementsPageSize)
     }
   },
   data() {
     return {
-      allStories: [],
-      storiesPage: 1,
       storiesPageSize: 5,
-      chatsPage: 1,
       chatsPageSize: 5,
-      announcementsPage: 1,
       announcementsPageSize: 5,
       videoSrc: '',
       isLoadingSearch: false,

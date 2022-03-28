@@ -38,7 +38,7 @@ export default {
     ]
   },
   env: {
-    portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
+    portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
     flatmap_api:
       process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v2/',
     crosscite_api_host:
@@ -88,6 +88,7 @@ export default {
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
+    DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',
     ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev_published_time_desc',
@@ -96,7 +97,16 @@ export default {
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
-    show_facet_menu: process.env.SHOW_FACET_MENU || 'false',
+    AWS_REGION: process.env.AWS_REGION || 'us-east-1',
+    AWS_USER_POOL_ID: process.env.AWS_USER_POOL_ID || 'us-east-1_FVLhJ7CQA',
+    AWS_USER_POOL_WEB_CLIENT_ID: process.env.AWS_USER_POOL_WEB_CLIENT_ID || '',
+    AWS_USER_AUTHENTICATION_FLOW_TYPE: process.env.AWS_USER_AUTHENTICATION_FLOW_TYPE || 'USER_PASSWORD_AUTH',
+    AWS_OAUTH_DOMAIN: process.env.AWS_OAUTH_DOMAIN || 'pennsieve-dev-users2.auth.us-east-1.amazoncognito.com',
+    AWS_OAUTH_SCOPE: process.env.AWS_OAUTH_SCOPE || ["openid"],
+    AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
+    AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
+    AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
+    SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || false
   },
 
   serverMiddleware: [
@@ -134,7 +144,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/bootstrap', '@/plugins/contentful', {
+  plugins: ['@/plugins/bootstrap', '@/plugins/contentful', '@/plugins/amplify', {
     src: '@/plugins/system-design-components', mode: 'client'
   }],
   /*

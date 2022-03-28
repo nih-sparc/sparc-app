@@ -10,7 +10,7 @@ export const mutations = {
 
 const actions = {
   async nuxtServerInit({dispatch}) {
-      await dispatch('layouts/default/fetchFooterData');
+    await dispatch('layouts/default/fetchFooterData');
   },
 };
 
