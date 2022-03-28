@@ -76,7 +76,6 @@ export default {
       sparcInfoType: options[0].id,
       sparcInvestigatorsCategory: sparcInvestigatorsCategory,
       defaultCheckedIds: [],
-      showFacetMenu: (process.env.show_facet_menu == 'true') ? true : false,
       selectedFacets: {},
       selectedFacetsArray: []
     }

@@ -1,0 +1,14 @@
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.el-menu--popup {
+  min-width: fit-content !important;
+  width: fit-content !important;
+  padding: 0 !important;
+}
+
+.el-menu--popup::before, .el-menu--popup::after {
+  display: none !important;
+}
+
+.el-menu--popup-bottom-start {
+  margin-top: 8px !important;
+}

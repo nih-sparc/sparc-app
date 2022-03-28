@@ -31,7 +31,6 @@ Ensure that the following configuration variables are set in your environment pr
 * CTF_CDA_ACCESS_TOKEN
 * CTF_API_HOST
 * DEPLOY_ENV
-* SHOW_FACET_MENU
 * PORTAL_API_HOST
 
 
