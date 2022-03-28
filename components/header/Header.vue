@@ -147,7 +147,6 @@
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
-import { mapActions } from 'vuex'
 
 const links = [
   {

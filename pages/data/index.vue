@@ -344,8 +344,13 @@ export default {
        * Clear table data so the new table that is rendered can
        * properly render data and account for any missing data
        */
-      this.searchData = clone(searchData)
-      this.fetchResults()
+      if (!this.$route.query.type) {
+        const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
+        this.$router.replace({ query: { type: firstTabType } })
+      } else {
+        this.searchData = clone(searchData)
+        this.fetchResults()
+      }
     },
 
     '$route.query.q': {
@@ -367,7 +372,6 @@ export default {
   mounted: function() {
     if (!this.$route.query.type) {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
-
       this.$router.replace({ query: { type: firstTabType } })
     } else {
       /**
@@ -440,9 +444,9 @@ export default {
       this.isLoadingSearch = true
       const query = this.$route.query.q
 
-      const searchType = pathOr('', ['query', 'type'], this.$route)
+      const searchType = pathOr('dataset', ['query', 'type'], this.$route)
       const datasetsFilter =
-        searchType === 'dataset' ? "item.types.name:Dataset" : '(NOT item.types.name:Dataset)'
+        searchType === 'simulation' ? '(NOT item.types.name:Dataset)' : "item.types.name:Dataset"
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
