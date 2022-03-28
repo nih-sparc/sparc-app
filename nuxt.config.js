@@ -99,7 +99,7 @@ export default {
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
     AWS_REGION: process.env.AWS_REGION || 'us-east-1',
     AWS_USER_POOL_ID: process.env.AWS_USER_POOL_ID || 'us-east-1_FVLhJ7CQA',
-    AWS_USER_POOL_WEB_CLIENT_ID: process.env.AWS_USER_POOL_WEB_CLIENT_ID,
+    AWS_USER_POOL_WEB_CLIENT_ID: process.env.AWS_USER_POOL_WEB_CLIENT_ID || '',
     AWS_USER_AUTHENTICATION_FLOW_TYPE: process.env.AWS_USER_AUTHENTICATION_FLOW_TYPE || 'USER_PASSWORD_AUTH',
     AWS_OAUTH_DOMAIN: process.env.AWS_OAUTH_DOMAIN || 'pennsieve-dev-users2.auth.us-east-1.amazoncognito.com',
     AWS_OAUTH_SCOPE: process.env.AWS_OAUTH_SCOPE || ["openid"],
