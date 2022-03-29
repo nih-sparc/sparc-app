@@ -373,7 +373,8 @@ export default {
       const option = this.searchSelectOptions.find(
         o => o.value === this.searchSelect
       )
-      const searchKey = option.value === 'data' ? 'q' : 'search'
+      const searchKey =
+        option.value === 'data' || option.value === 'resources' ? 'q' : 'search'
       const type =
         option.value === 'data'
           ? 'dataset'
@@ -381,8 +382,11 @@ export default {
           ? 'sparcPartners'
           : undefined
 
+      // Search the 'data' page for resources
+      const route = option.value === 'resources' ? 'data' : option.value
+
       this.$router.push({
-        name: option.value,
+        name: route,
         query: {
           type,
           [searchKey]: term
