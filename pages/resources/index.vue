@@ -11,7 +11,7 @@
       <div class="mt-32">
         <p class="tab2" v-html="fields.description" />
         <div class="button-container">
-          <NuxtLink :to="'/data?type=sparcPartners'">
+          <NuxtLink :to="'/data?type=sparcPartners&developedBySparc=true&skip=0'">
             <el-button>Browse Tools &amp; Resources</el-button>
           </NuxtLink>
         </div>
