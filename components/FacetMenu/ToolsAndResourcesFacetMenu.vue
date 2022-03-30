@@ -17,7 +17,7 @@
     />
     <dropdown-multiselect
       :category="developedBySparcCategory"
-      :default-checked-ids="defaultCheckedIds"
+      :default-checked-ids="selectedDevelopedBySparcIds"
       @selection-change="onDevelopedBySparcChanged"
       ref="developedBySparcCategory"
     />
@@ -81,7 +81,6 @@ export default {
       selectedResourceTypeIds: [],
       selectedDevelopedBySparcIds: [],
       visibleCategories: visibleCategories,
-      defaultCheckedIds: [],
     }
   },
 
@@ -114,11 +113,7 @@ export default {
     if (this.$route.query.resourceTypes) {
       this.selectedResourceTypeIds = this.$route.query.resourceTypes.split(',')
     }
-    if (this.$route.query.developedBySparc) {
-      this.defaultCheckedIds = this.defaultCheckedIds.concat([
-        this.developedBySparcCategory.data[0].id
-      ])
-    }
+    this.selectedDevelopedBySparcIds = ['developedBySparc']
   },
 
   methods: {
