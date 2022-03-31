@@ -402,7 +402,8 @@ export default {
           name: 'data',
           query: {
             type,
-            q: term
+            q: term,
+            developedBySparc: true
           }
         }
       }
