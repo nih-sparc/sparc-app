@@ -380,7 +380,7 @@ export default {
         name: type,
         query: {
           type,
-          seach: term
+          search: term
         }
       }
 
