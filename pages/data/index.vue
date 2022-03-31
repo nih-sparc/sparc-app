@@ -77,7 +77,6 @@
               >
                 <tools-and-resources-facet-menu
                   @tool-and-resources-selections-changed="onPaginationPageChange(1)"
-                  @hook:mounted="facetMenuMounted"
                 />
               </el-col>
               <el-col
