@@ -373,21 +373,41 @@ export default {
       const option = this.searchSelectOptions.find(
         o => o.value === this.searchSelect
       )
-      const searchKey = option.value === 'data' ? 'q' : 'search'
-      const type =
-        option.value === 'data'
-          ? 'dataset'
-          : option.value === 'resources'
-          ? 'sparcPartners'
-          : undefined
 
-      this.$router.push({
-        name: option.value,
+      // Set up an object for the nuxt router
+      let type = option.value
+      let routeParams = {
+        name: type,
         query: {
           type,
-          [searchKey]: term
+          seach: term
         }
-      })
+      }
+
+      // Searching on 'data' takes user directly to the dataset, as opposed to the /data page
+      if (option.value === 'data'){
+        type = 'dataset'
+        routeParams = {
+          name: 'dataset',
+          query: {
+            type,
+            q: term
+          }
+        }
+      }
+      // Searching on 'resources' takes user to the /data page with thier query
+      else if (option.value === 'resources') {
+        type = 'sparcPartners'
+        routeParams = {
+          name: 'data',
+          query: {
+            type,
+            q: term
+          }
+        }
+      }
+
+      this.$router.push(routeParams)
 
       this.searchQuery = ''
       this.searchSelect = 'data'
