@@ -388,7 +388,7 @@ export default {
       if (option.value === 'data'){
         type = 'dataset'
         routeParams = {
-          name: 'dataset',
+          name: 'data',
           query: {
             type,
             q: term
