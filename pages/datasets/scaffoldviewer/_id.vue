@@ -89,7 +89,7 @@ import FirstCol from '@/mixins/first-col/index'
 //  Note that modifying routes from Vue does not change the url, only the $route objecti in this component.
 const supportOldRoutes = function(query) {
   if (query.scaffold) {
-    // filename
+    // file_name
     const scaffold = query.scaffold
     let name =
       scaffold.substring(scaffold.lastIndexOf('/') + 1, scaffold.length) ||
@@ -97,13 +97,13 @@ const supportOldRoutes = function(query) {
     let nameWE = name.substring(0, name.lastIndexOf('.')) || name
     query.file_name = nameWE
 
-    // filepath
+    // file_path
     query.file_path = scaffold
 
-    // datasetId
+    // dataset_id
     query.dataset_id = scaffold.substring(0, scaffold.indexOf('/')) || ''
 
-    // version number
+    // version_number
     const postId =
       scaffold.substring(scaffold.indexOf('/') + 1, scaffold.length) || ''
     query.dataset_version = postId.substring(0, postId.indexOf('/')) || ''
