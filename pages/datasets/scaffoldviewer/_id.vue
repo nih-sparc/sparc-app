@@ -84,6 +84,35 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import FirstCol from '@/mixins/first-col/index'
 
+// supportOldRoutes:
+//  Modifies the incoming $route.query to add the needed query parameters used in the new /scaffoldviewer route.
+//  Note that modifying routes from Vue does not change the url, only the $route objecti in this component.
+const supportOldRoutes = function(query) {
+  if (query.scaffold) {
+    // filename
+    const scaffold = query.scaffold
+    let name =
+      scaffold.substring(scaffold.lastIndexOf('/') + 1, scaffold.length) ||
+      scaffold
+    let nameWE = name.substring(0, name.lastIndexOf('.')) || name
+    query.file_name = nameWE
+
+    // filepath
+    query.file_path = scaffold
+
+    // datasetId
+    query.dataset_id = scaffold.substring(0, scaffold.indexOf('/')) || ''
+
+    // version number
+    const postId =
+      scaffold.substring(scaffold.indexOf('/') + 1, scaffold.length) || ''
+    query.dataset_version = postId.substring(0, postId.indexOf('/')) || ''
+    return query
+  } else {
+    return query
+  }
+}
+
 export default {
   name: 'ScaffoldViewerPage',
 
@@ -97,6 +126,7 @@ export default {
   mixins: [FirstCol],
 
   async asyncData({ route, $axios }) {
+    route.query = supportOldRoutes(route.query)
     const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${route.query.file_path}`
     const file = await $axios.$get(fileUrl)
 
@@ -216,6 +246,9 @@ export default {
     if (lastChar != '/') {
       this.api = this.api + '/'
     }
+  },
+  mounted: function() {
+    supportOldRoutes(this.$route.query)
   },
   methods: {
     copyLink: function() {
