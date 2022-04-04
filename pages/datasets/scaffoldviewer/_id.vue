@@ -247,7 +247,7 @@ export default {
       this.api = this.api + '/'
     }
   },
-  mounted: function() {
+  created: function() {
     supportOldRoutes(this.$route.query)
   },
   methods: {
