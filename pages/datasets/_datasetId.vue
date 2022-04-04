@@ -14,7 +14,6 @@
           <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
             <dataset-header
               class="dataset-header"
-              :subtitle="subtitles.toString()"
               :latestVersionRevision="latestVersionRevision"
               :latestVersionDate="latestVersionDate"
               :numCitations="numCitations"

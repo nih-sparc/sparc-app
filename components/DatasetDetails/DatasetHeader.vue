@@ -3,9 +3,6 @@
       <div class="bx--grid">
         <div class="bx--row">
           <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13">
-            <h3 class="header3">
-              {{ subtitle }}
-            </h3>
             <h2 class="heading2">
               {{ title }}
             </h2>
@@ -106,10 +103,6 @@ export default {
   },
 
   props: {
-    subtitle: {
-      type: String,
-      default: ''
-    },
     latestVersionRevision: {
       type: String,
       default: ''
