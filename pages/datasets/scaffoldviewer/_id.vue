@@ -240,15 +240,13 @@ export default {
   },
   fetchOnServer: false,
   created: function() {
+    supportOldRoutes(this.$route.query)
     this.currentId = undefined
     this.api = process.env.portal_api
     let lastChar = this.api.substr(-1)
     if (lastChar != '/') {
       this.api = this.api + '/'
     }
-  },
-  created: function() {
-    supportOldRoutes(this.$route.query)
   },
   methods: {
     copyLink: function() {
