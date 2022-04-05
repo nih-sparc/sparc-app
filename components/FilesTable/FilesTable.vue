@@ -84,7 +84,7 @@
                           datasetVersion: datasetInfo.version
                         },
                         query: {
-                          path: scope.row.path
+                          path: s3Path(scope.row.path)
                         }
                       }"
                     >
@@ -667,6 +667,11 @@ export default {
       if (a < b) 
          return -1 
       return 0; 
+    },
+    s3Path(path) {
+      // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
+      path = path.replaceAll(' ', '_')
+      return path.replaceAll(',', '_')
     }
   }
 }
