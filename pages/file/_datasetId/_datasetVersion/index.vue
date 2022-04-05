@@ -82,7 +82,7 @@ export default {
     // workaround to using pennsieve endpoint https://docs.pennsieve.io/reference/getfile-1 to get the file
     // we can replace this once the discrepencies between the getFile and browseFiles pennsieve endpoint responses are figured out
     // for files containing multiple extensions. i.e. the file pCm165_AAV_05Z_20x_20200212_S2.lsm.jpx found in dataset 221
-    const file = files.find(element => element.path === route.query.path || element.uri.includes(route.query.path))
+    const file = files.find(element => element.path === route.query.path || route.query.path.includes(element.uri.substring(element.uri.lastIndexOf('/'))))
 
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(
