@@ -22,13 +22,13 @@
         <div class="file-detail">
           <strong class="file-detail__column">Size</strong>
           <div class="file-detail__column">
-            {{ formatMetric(file.size) }}
+            {{ file.size ? formatMetric(file.size) : 'undefined' }}
           </div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Date Created</strong>
           <div class="file-detail__column">
-            {{ formatDate(file.createdAt) }}
+            {{ file.createdAt ? formatDate(file.createdAt) : 'undefined' }}
           </div>
         </div>
         <div class="file-detail">
@@ -74,9 +74,15 @@ export default {
   mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile],
 
   async asyncData({ route, $axios }) {
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.params.datasetId}/versions/${route.params.datasetVersion}/files?path=${route.query.path}`
-
-    const file = await $axios.$get(fileUrl)
+    const fileLocationEndIndex = route.query.path.lastIndexOf('/')
+    const filesLocation = route.query.path.substring(0, fileLocationEndIndex)
+    const filesUrl = `${process.env.discover_api_host}/datasets/${route.params.datasetId}/versions/${route.params.datasetVersion}/files/browse?path=${filesLocation}`
+    const response = await $axios.$get(filesUrl)
+    const files = response.files
+    // workaround to using pennsieve endpoint https://docs.pennsieve.io/reference/getfile-1 to get the file
+    // we can replace this once the discrepencies between the getFile and browseFiles pennsieve endpoint responses are figured out
+    // for files containing multiple extensions. i.e. the file pCm165_AAV_05Z_20x_20200212_S2.lsm.jpx found in dataset 221
+    const file = files.find(element => element.path === route.query.path || element.uri.includes(route.query.path))
 
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(
