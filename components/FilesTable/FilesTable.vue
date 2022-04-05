@@ -592,11 +592,10 @@ export default {
     getScaffoldLink: function(scope) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      let s3Path = `${id}/${version}/${scope.row.path}`
       return {
         name: 'datasets-scaffoldviewer-id',
         params: {},
-        query: { scaffold: s3Path }
+        query: { dataset_id: id, dataset_version: version, file_path: scope.row.path }
       }
     },
 
