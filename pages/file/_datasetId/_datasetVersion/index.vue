@@ -60,6 +60,7 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 import BfStorageMetrics from '@/mixins/bf-storage-metrics'
 import FormatDate from '@/mixins/format-date'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import RequestDownloadFile from '@/mixins/request-download-file'
 
 export default {
@@ -71,18 +72,11 @@ export default {
     BfButton
   },
 
-  mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile],
+  mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
-    const fileLocationEndIndex = route.query.path.lastIndexOf('/')
-    const filesLocation = route.query.path.substring(0, fileLocationEndIndex)
-    const filesUrl = `${process.env.discover_api_host}/datasets/${route.params.datasetId}/versions/${route.params.datasetVersion}/files/browse?path=${filesLocation}`
-    const response = await $axios.$get(filesUrl)
-    const files = response.files
-    // workaround to using pennsieve endpoint https://docs.pennsieve.io/reference/getfile-1 to get the file
-    // we can replace this once the discrepencies between the getFile and browseFiles pennsieve endpoint responses are figured out
-    // for files containing multiple extensions. i.e. the file pCm165_AAV_05Z_20x_20200212_S2.lsm.jpx found in dataset 221
-    const file = files.find(element => element.path === route.query.path || element.uri.includes(route.query.path))
+    const filePath = route.query.path
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.params.datasetId, route.params.datasetVersion)
 
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(

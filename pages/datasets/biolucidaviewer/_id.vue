@@ -115,6 +115,7 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import { pathOr } from 'ramda'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
 
 import { extractSection } from '@/utils/common'
@@ -130,7 +131,7 @@ export default {
     ImageChannels
   },
 
-  mixins: [MarkedMixin, RequestDownloadFile],
+  mixins: [MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const image_identifier = route.params.id
@@ -153,8 +154,7 @@ export default {
       return pathOr('', ['dataset', 'path'], biolucidaObject).includes(image_info.name)
     })
     const filePath = `files/${pathOr('', ['dataset', 'path'], biolucidaObject)}`
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${filePath}`
-    const file = await $axios.$get(fileUrl)
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
 
     return {
       image_info,
