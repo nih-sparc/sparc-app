@@ -73,7 +73,6 @@
                   </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldViewFile(scope)" class="truncated">
-                  open scaf
                   <sparc-tooltip placement="left-center" :content="scope.row.name">
                     <nuxt-link slot="item" class="truncated" :to="getScaffoldViewLink(scope)">
                       {{ scope.row.name }}
@@ -699,12 +698,10 @@ export default {
       ) {
         let shortened = scope.row.path
         shortened = shortened.replace('files/', '')
-        // Filter through the scaffold view files scicrunch has, if a name matches we return true
-        this.datasetScicrunch['abi-scaffold-view-file'].forEach(viewFile => {
-          if (viewFile.dataset.path === shortened) {
+        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-view-file'].length; i++) {
+          if (this.datasetScicrunch['abi-scaffold-view-file'][i].dataset.path === shortened)
             return true
-          }
-        })
+        }
       }
       return false
     },
@@ -719,12 +716,10 @@ export default {
       ) {
         let shortened = scope.row.path
         shortened = shortened.replace('files/', '')
-
-        this.datasetScicrunch['abi-scaffold-metadata-file'].forEach(metaFile => { 
-          if (metaFile.dataset.path === shortened){
+        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file'].length; i++) {
+          if (this.datasetScicrunch['abi-scaffold-metadata-file'][i].dataset.path === shortened)
             return true
-          }
-        })
+        }
       }
       return false
     },
