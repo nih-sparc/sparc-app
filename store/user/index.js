@@ -1,5 +1,5 @@
 import { Auth } from '@aws-amplify/auth'
-import { pathOr } from 'ramda'
+import { pathOr, isEmpty } from 'ramda'
 
 export const state = () => ({
   cognitoUser: null,
@@ -98,11 +98,11 @@ export const getters = {
   profileEmail (state, getters) {
     return pathOr('', ['email'], getters.pennsieveUser)
   },
-  profileComplete (state, getter) {
+  profileComplete (state, getters) {
     const isEmailSet = !getters.profileEmail.includes('pennsieve')
-    const sparcTermsOfServiceAccepted = pathOr('', ['customTermsOfService'], getters.pennsieveUser)
-    const pennsieveTermsOfService = pathOr('', ['pennsieveTermsOfService'], getters.pennsieveUser)
+    const sparcTermsOfServiceAccepted = !isEmpty(pathOr('', ['customTermsOfService'], getters.pennsieveUser))
+    const pennsieveTermsOfServiceAccepted = !isEmpty(pathOr('', ['pennsieveTermsOfService'], getters.pennsieveUser))
 
-    return isEmailSet && sparcTermsOfServiceAccepted && pennsieveTermsOfService
+    return isEmailSet && sparcTermsOfServiceAccepted && pennsieveTermsOfServiceAccepted
   }
 }

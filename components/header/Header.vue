@@ -170,7 +170,7 @@
 import SparcLogo from '../logo/SparcLogo.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import Request from '@/mixins/request'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 const links = [
   {
@@ -247,6 +247,7 @@ export default {
 
   computed: {
     ...mapState('user', ['cognitoUser', 'pennsieveUser']),
+    ...mapGetters('user', ['profileComplete']),
     /**
      * Compute if search should be visible
      * @returns {Boolean}
@@ -275,7 +276,7 @@ export default {
 
     cognitoUser: {
       handler: function(newUser) {
-        if (newUser) {
+        if (newUser && !this.profileComplete) {
           this.$router.push('/welcome')
         }
       },

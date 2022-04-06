@@ -137,7 +137,7 @@ export default {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['auth']
+    middleware: ['verifyUserProfileComplete']
   },
   /*
    ** Global CSS
