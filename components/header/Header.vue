@@ -12,12 +12,12 @@
         </nuxt-link>
         <template v-if="showLoginFeature">
           <svg-icon icon="icon-sign-in" style="padding-top: .125rem" height="16" width="16" />
-          <a v-if="!loggedInUser" class="sign-in-link" @click="onLoginWithORCID">
+          <a v-if="!cognitoUser" class="sign-in-link" @click="onLoginWithORCID">
             Sign in
           </a>
           <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
             <el-submenu index="user">
-              <template slot="title">{{username}}</template>
+              <template slot="title">{{pennsieveUsername}}</template>
               <!--<el-menu-item class="user-submenu" index="account">My account</el-menu-item>-->
               <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
             </el-submenu>
@@ -99,7 +99,7 @@
                 </li>
                 <li v-if="showLoginFeature">
                   <svg-icon icon="icon-sign-in" style="padding-left: .125rem" height="18" width="18" />
-                  <a v-if="!loggedInUser" class="sign-in-link" @click="onLoginWithORCID">
+                  <a v-if="!cognitoUser" class="sign-in-link" @click="onLoginWithORCID">
                     Sign in
                   </a>
                   <a v-else class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
@@ -209,7 +209,7 @@ export default {
   mixins: [Request],
   mounted() {
     if (this.showLoginFeature) {
-      this.$store.dispatch('user/fetchUser')
+      this.$store.dispatch('user/fetchCognitoUser')
     }
   },
   data: () => {
@@ -219,7 +219,6 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
-      username: "",
       showLoginFeature: process.env.SHOW_LOGIN_FEATURE,
       searchSelectOptions: [
         {
@@ -247,13 +246,16 @@ export default {
   },
 
   computed: {
-    ...mapState('user', ['loggedInUser']),
+    ...mapState('user', ['cognitoUser', 'pennsieveUser']),
     /**
      * Compute if search should be visible
      * @returns {Boolean}
      */
     shouldShowSearch: function() {
       return this.$route.name !== 'data'
+    },
+    pennsieveUsername: function() {
+      return this.$store.getters['user/pennsieveUsername']
     }
   },
 
@@ -271,10 +273,10 @@ export default {
       immediate: true
     },
 
-    loggedInUser: {
+    cognitoUser: {
       handler: function(newUser) {
         if (newUser) {
-          this.fetchUsername(this.loggedInUser)
+          this.$router.push('/welcome')
         }
       },
     },
@@ -302,21 +304,6 @@ export default {
     onLoginWithORCID: async function(x) {
       x.preventDefault()
       await this.$store.dispatch('user/login', 'ORCID')
-    },
-    fetchUsername: function() {
-      let token = this.$store.getters['user/userToken']
-      let url = `https://api.pennsieve.net/user?api_key=${token}`
-      this.sendXhr(url).then(this.setUsername, this.failureCallback)
-    },
-    setUsername: function(result) {
-      if (`${result.firstName[0]}` !== null && `${result.lastName}` !== null){
-        this.username = `${result.firstName[0]}. ${result.lastName}`}
-      else {
-        this.username = `${result.email}`
-      }
-    },
-    failureCallback: function(error) {
-      console.log(error)
     },
     /**
      * Sets a link to active based on current page
