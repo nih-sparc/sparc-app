@@ -115,6 +115,7 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import { pathOr } from 'ramda'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
 
 import { extractSection } from '@/utils/common'
@@ -130,7 +131,7 @@ export default {
     ImageChannels
   },
 
-  mixins: [MarkedMixin, RequestDownloadFile],
+  mixins: [MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const image_identifier = route.params.id
@@ -153,15 +154,7 @@ export default {
       return pathOr('', ['dataset', 'path'], biolucidaObject).includes(image_info.name)
     })
     const filePath = `files/${pathOr('', ['dataset', 'path'], biolucidaObject)}`
-    const fileLocationEndIndex = filePath.lastIndexOf('/')
-    const filesLocation = filePath.substring(0, fileLocationEndIndex)
-    const filesUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files/browse?path=${filesLocation}`
-    const response = await $axios.$get(filesUrl)
-    const files = response.files
-    // workaround to using pennsieve endpoint https://docs.pennsieve.io/reference/getfile-1 to get the file
-    // we can replace this once the discrepencies between the getFile and browseFiles pennsieve endpoint responses are figured out
-    // for files containing multiple extensions. i.e. the file pCm165_AAV_05Z_20x_20200212_S2.lsm.jpx found in dataset 221
-    const file = files.find(element => filePath === element.path || filePath.includes(element.uri.substring(element.uri.lastIndexOf('/'))))
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
 
     return {
       image_info,

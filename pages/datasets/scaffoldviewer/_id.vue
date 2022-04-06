@@ -80,6 +80,7 @@
 <script>
 // :scaffold-selected="scaffoldSelected"
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import FirstCol from '@/mixins/first-col/index'
@@ -94,11 +95,11 @@ export default {
       : null
   },
 
-  mixins: [FirstCol],
+  mixins: [FirstCol, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${route.query.file_path}`
-    const file = await $axios.$get(fileUrl)
+    const filePath = route.query.file_path
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
 
     return {
       file,
