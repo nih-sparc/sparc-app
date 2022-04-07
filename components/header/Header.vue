@@ -373,7 +373,6 @@ export default {
       const option = this.searchSelectOptions.find(
         o => o.value === this.searchSelect
       )
-
       // Set up an object for the nuxt router
       let type = option.value
       let routeParams = {
@@ -407,7 +406,6 @@ export default {
           }
         }
       }
-
       this.$router.push(routeParams)
 
       this.searchQuery = ''
