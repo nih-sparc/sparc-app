@@ -98,9 +98,6 @@ const supportOldRoutes = function(query) {
     let nameWE = name.substring(0, name.lastIndexOf('.')) || name
     query.file_name = nameWE
 
-    // file_path
-    query.file_path = scaffold
-
     // dataset_id
     query.dataset_id = scaffold.substring(0, scaffold.indexOf('/')) || ''
 
@@ -108,6 +105,11 @@ const supportOldRoutes = function(query) {
     const postId =
       scaffold.substring(scaffold.indexOf('/') + 1, scaffold.length) || ''
     query.dataset_version = postId.substring(0, postId.indexOf('/')) || ''
+
+    // file_path
+    query.file_path =
+      postId.substring(postId.indexOf('/') + 1, postId.length) || ''
+
     return query
   } else {
     return query
