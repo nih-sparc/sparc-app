@@ -131,7 +131,7 @@ export default {
   async asyncData({ route, $axios }) {
     const processedQuery = supportOldRoutes(route.query)
     const filePath = route.query.file_path
-    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, processedQuery.dataset_id, processedQuery.dataset_version)
 
     return {
       file,
