@@ -85,6 +85,37 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import FirstCol from '@/mixins/first-col/index'
 
+// supportOldRoutes:
+//  Modifies the incoming $route.query to add the needed query parameters used in the new /scaffoldviewer route.
+//  Note that modifying routes from Vue does not change the url, only the $route objecti in this component.
+const supportOldRoutes = function(query) {
+  if (query.scaffold) {
+    // file_name
+    const scaffold = query.scaffold
+    let name =
+      scaffold.substring(scaffold.lastIndexOf('/') + 1, scaffold.length) ||
+      scaffold
+    let nameWE = name.substring(0, name.lastIndexOf('.')) || name
+    query.file_name = nameWE
+
+    // dataset_id
+    query.dataset_id = scaffold.substring(0, scaffold.indexOf('/')) || ''
+
+    // version_number
+    const postId =
+      scaffold.substring(scaffold.indexOf('/') + 1, scaffold.length) || ''
+    query.dataset_version = postId.substring(0, postId.indexOf('/')) || ''
+
+    // file_path
+    query.file_path =
+      postId.substring(postId.indexOf('/') + 1, postId.length) || ''
+
+    return query
+  } else {
+    return query
+  }
+}
+
 export default {
   name: 'ScaffoldViewerPage',
 
@@ -98,11 +129,13 @@ export default {
   mixins: [FirstCol, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
-    const filePath = route.query.file_path
-    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
+    const processedQuery = supportOldRoutes(route.query)
+    const filePath = processedQuery.file_path
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, processedQuery.dataset_id, processedQuery.dataset_version)
 
     return {
       file,
+      processedQuery
     }
   },
 
@@ -180,14 +213,14 @@ export default {
      * @returns Number
      */
     datasetId: function() {
-      return this.$route.query.dataset_id
+      return this.processedQuery.dataset_id
     },
     /**
      * Get the version scaffold query parameter.
      * @returns Number
      */
     versionNumber: function() {
-      return this.$route.query.dataset_version
+      return this.processedQuery.dataset_version
     },
 
     /**
