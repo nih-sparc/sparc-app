@@ -129,12 +129,13 @@ export default {
   mixins: [FirstCol, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
-    route.query = supportOldRoutes(route.query)
+    const processedQuery = supportOldRoutes(route.query)
     const filePath = route.query.file_path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
 
     return {
       file,
+      processedQuery
     }
   },
 
@@ -212,14 +213,14 @@ export default {
      * @returns Number
      */
     datasetId: function() {
-      return this.$route.query.dataset_id
+      return this.processedQuery.dataset_id
     },
     /**
      * Get the version scaffold query parameter.
      * @returns Number
      */
     versionNumber: function() {
-      return this.$route.query.dataset_version
+      return this.processedQuery.dataset_version
     },
 
     /**
@@ -243,7 +244,6 @@ export default {
   },
   fetchOnServer: false,
   created: function() {
-    supportOldRoutes(this.$route.query)
     this.currentId = undefined
     this.api = process.env.portal_api
     let lastChar = this.api.substr(-1)
