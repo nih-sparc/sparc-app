@@ -46,7 +46,7 @@
             {{ image_info.name }}
           </div>
         </div>
-        <div class="file-detail">
+        <div v-if="filePath" class="file-detail">
           <strong class="file-detail__column_1">File location</strong>
           <div class="file-detail__column_2">
             <nuxt-link 
@@ -92,7 +92,7 @@
             />
           </div>
         </div>
-        <div class="pt-16">
+        <div v-if="filePath" class="pt-16">
           <bf-button @click="requestDownloadFile(file)">
             Download file
           </bf-button>
@@ -144,17 +144,19 @@ export default {
     ])
 
     let dataset_info = dataset_response.data.result[0]
+    let file = {}
     if (dataset_info === undefined) {
       dataset_info = { readme: '', title: '' }
     }
-
-    // Find the biolucida object with the same image name to determine the file path
-    const biolucidaObjects = pathOr([], ['biolucida-2d'], dataset_info).concat(pathOr([], ['biolucida-3d'], dataset_info))
-    const biolucidaObject = biolucidaObjects.find(biolucidaObject => {
-      return pathOr('', ['dataset', 'path'], biolucidaObject).includes(image_info.name)
-    })
-    const filePath = `files/${pathOr('', ['dataset', 'path'], biolucidaObject)}`
-    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
+    else{
+      // Find the biolucida object with the same image name to determine the file path
+      const biolucidaObjects = pathOr([], ['biolucida-2d'], dataset_info).concat(pathOr([], ['biolucida-3d'], dataset_info))
+      const biolucidaObject = biolucidaObjects.find(biolucidaObject => {
+        return pathOr('', ['dataset', 'path'], biolucidaObject).includes(image_info.name)
+      })
+      const filePath = `files/${pathOr('', ['dataset', 'path'], biolucidaObject)}`
+      file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
+    }
 
     return {
       image_info,
@@ -173,7 +175,6 @@ export default {
         }
       ],
       activeTab: 'viewer',
-      file: {},
       data_collection: '',
       queryView: false
     }
@@ -197,7 +198,7 @@ export default {
     },
 
     /**
-     * Return the image file location.
+     * Return the file location.
      * @returns String
      */
     filePath: function() {
@@ -209,7 +210,7 @@ export default {
      * @returns String
      */
     fileFolderLocation: function() {
-      return this.filePath.substring(0, this.filePath.lastIndexOf(this.file.name))
+      return this.filePath ? this.filePath.substring(0, this.filePath.lastIndexOf(this.file.name)) : ''
     },
 
     readme: function() {
