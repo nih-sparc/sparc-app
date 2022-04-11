@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
 
     <div
       v-if="this.askingForEmail"
@@ -349,6 +349,12 @@ export default {
     updateUserProfileUrl: function() {
       return `${this.apiUrl}/user`
     },
+    updateUserCustomTermsOfService: function() {
+      return `${this.apiUrl}/custom-terms-of-service`
+    },
+    updateUserPennsieveTermsOfService: function() {
+      return `${this.apiUrl}/pennsieve-terms-of-service`
+    },
     mergeUserAccountsUrl: function() {
       return `${this.apiUrl}/user/merge`
     },
@@ -456,7 +462,22 @@ export default {
         color: this.profileColor,
         ...profileForm
       }
-      this.$axios.$put(url, body, { headers }).then(user => {
+      this.$axios.$put(url, body, { headers }).then(() => {
+        /*const url = this.updateUserCustomTermsOfService
+        const headers = { 'Authorization': `bearer ${this.cognitoUserToken}` }
+        const body = {
+          version: ''
+        }
+        this.$axios.$put(url, body, { headers }).then(() => {
+          const url = this.updateUserPennsieveTermsOfService
+          const headers = { 'Authorization': `bearer ${this.cognitoUserToken}` }
+          const body = {
+            version: ''
+          }
+          this.$axios.$put(url, body, { headers }).then(() => {
+            this.toFinalizeIntegration()
+          })
+        })*/
         this.toFinalizeIntegration()
       })
       .catch(error => {

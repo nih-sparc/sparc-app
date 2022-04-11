@@ -146,9 +146,14 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/bootstrap', '@/plugins/contentful', '@/plugins/amplify', {
-    src: '@/plugins/system-design-components', mode: 'client'
-  }],
+  plugins: [
+    '@/plugins/bootstrap', 
+    '@/plugins/contentful', 
+    '@/plugins/amplify', 
+    {
+      src: '@/plugins/system-design-components', mode: 'client'
+    }
+  ],
   /*
    ** Nuxt.js dev-modules
    */

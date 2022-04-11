@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container mb-16">
     <setup-new-user />
   </div>
 </template>
@@ -11,7 +11,8 @@ export default {
   name: 'welcome',
   components: {
     SetupNewUser
-  }
+  },
+  middleware: 'authenticated'
 }
 </script>
 

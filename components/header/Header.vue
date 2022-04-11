@@ -12,13 +12,13 @@
         </nuxt-link>
         <template v-if="showLoginFeature">
           <svg-icon icon="icon-sign-in" style="padding-top: .125rem" height="16" width="16" />
-          <a v-if="!cognitoUser" class="sign-in-link" @click="onLoginWithORCID">
+          <a v-if="!pennsieveUser" class="sign-in-link" @click="onLoginWithORCID">
             Sign in
           </a>
           <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
             <el-submenu index="user">
               <template slot="title">{{pennsieveUsername}}</template>
-              <!--<el-menu-item class="user-submenu" index="account">My account</el-menu-item>-->
+              <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
               <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
             </el-submenu>
           </el-menu>
@@ -99,12 +99,17 @@
                 </li>
                 <li v-if="showLoginFeature">
                   <svg-icon icon="icon-sign-in" style="padding-left: .125rem" height="18" width="18" />
-                  <a v-if="!cognitoUser" class="sign-in-link" @click="onLoginWithORCID">
+                  <a v-if="!pennsieveUser" class="sign-in-link" @click="onLoginWithORCID">
                     Sign in
                   </a>
-                  <a v-else class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
-                    Logout
-                  </a>
+                  <div v-else>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
+                      Profile
+                    </a>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
+                      Logout
+                    </a>
+                  </div>
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
@@ -209,7 +214,7 @@ export default {
   mixins: [Request],
   mounted() {
     if (this.showLoginFeature) {
-      this.$store.dispatch('user/fetchCognitoUser')
+      this.$store.dispatch('user/fetchUser')
     }
   },
   data: () => {
@@ -247,7 +252,7 @@ export default {
 
   computed: {
     ...mapState('user', ['cognitoUser', 'pennsieveUser']),
-    ...mapGetters('user', ['profileComplete']),
+    ...mapGetters('user', ['profileComplete', 'pennsieveUsername']),
     /**
      * Compute if search should be visible
      * @returns {Boolean}
@@ -255,9 +260,6 @@ export default {
     shouldShowSearch: function() {
       return this.$route.name !== 'data'
     },
-    pennsieveUsername: function() {
-      return this.$store.getters['user/pennsieveUsername']
-    }
   },
 
   watch: {
@@ -272,14 +274,6 @@ export default {
         }
       },
       immediate: true
-    },
-
-    cognitoUser: {
-      handler: function(newUser) {
-        if (newUser && !this.profileComplete) {
-          this.$router.push('/welcome')
-        }
-      },
     },
 
     /**
@@ -300,6 +294,9 @@ export default {
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
         this.$store.dispatch('user/logout')
+      }
+      if (menuId === 'profile') {
+        this.$router.push('/user/profile')
       }
     },
     onLoginWithORCID: async function(x) {

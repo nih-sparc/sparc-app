@@ -1,4 +1,4 @@
-import { Auth } from '@aws-amplify/auth'
+import auth from '@/services/auth'
 import { pathOr, isEmpty } from 'ramda'
 
 export const state = () => ({
@@ -21,8 +21,8 @@ export const actions = {
   async login({ dispatch }, providerName){
     state.loginError = ''
     try {
-      await Auth.federatedSignIn({customProvider: providerName})
-      await dispatch('fetchCognitoUser')
+      await auth.signIn(providerName)
+      await dispatch('fetchUser')
     }
     catch(err){
       console.log(`Login Error [${err}]`)
@@ -32,33 +32,23 @@ export const actions = {
   async logout({ dispatch }){
     state.logoutError = ''
     try {
-      await Auth.signOut()
-      await dispatch('fetchCognitoUser')
+      await auth.signOut()
+      await dispatch('fetchUser')
     }
     catch(err){
       console.log(`Logout Error [${err}]`)
       state.logoutError = err.message
     }
   },
-  async fetchCognitoUser({ commit }){
-    const session = await Auth.currentSession()
-    if (session) {
-      const user = await Auth.currentAuthenticatedUser()
-      commit('SET_COGNITO_USER', user)
-      const userToken = pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], user)
-      if (userToken) {
-        const request = `https://api.pennsieve.net/user?api_key=${userToken}`
-        await this.$axios.$get(request).then(response => {
-          commit('SET_PENNSIEVE_USER', response)
-        })
-        .catch(err => {
-          console.log(`Error retrieving pennsieve user: ${err}`)
-        })
-      }
-      else {
-        commit('SET_PENNSIEVE_USER', null)
-      }
-    }
+  async fetchUser({ commit }){
+    const user = await auth.user()
+    const token = pathOr(null, ['signInUserSession', 'accessToken', 'jwtToken'], user)
+    const unixExpirationDate = pathOr('', ['signInUserSession', 'accessToken', 'payload', 'exp'], user)
+    const expirationDate = unixExpirationDate ? new Date(unixExpirationDate * 1000) : null
+    this.$cookies.set('user-token', token, expirationDate)
+    commit('SET_COGNITO_USER', user)
+    const profile = await auth.userProfile()
+    commit('SET_PENNSIEVE_USER', profile)
   },
 }
 
@@ -73,6 +63,12 @@ export const getters = {
     const firstName = pathOr('', ['firstName'], getters.pennsieveUser)
     const lastName = pathOr('', ['lastName'], getters.pennsieveUser)
     return `${firstName} ${lastName[0]}.`
+  },
+  firstName (state, getters) {
+    return pathOr('', ['firstName'], getters.pennsieveUser)
+  },
+  lastName (state, getters) {
+    return pathOr('', ['lastName'], getters.pennsieveUser)
   },
   cognitoUsername (state, getters) {
     return pathOr('', ['username'], getters.cognitoUser)
