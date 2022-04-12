@@ -50,6 +50,7 @@
                   v-if="hasFiles"
                   v-show="activeTabId === 'files'"
                   :osparc-viewers="osparcViewers"
+                  :dataset-scicrunch="scicrunchData"
                 />
                 <images-gallery
                   v-if="hasGalleryImages"
