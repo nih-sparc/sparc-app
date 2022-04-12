@@ -71,7 +71,7 @@
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.2.7":
+"@abi-software/mapintegratedvuer@0.2.7":
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.7.tgz#3ba3a7a9efbf2ea211801de4d89a2cb028c76804"
   integrity sha512-66LsOshkRl8Cp/xAzBrnAbQQAfvmFf07erB/1h/GjiWTAgXoK0OYh774ehzbGfBO1yyXWchtaQ2TtNIa1JiFgQ==
