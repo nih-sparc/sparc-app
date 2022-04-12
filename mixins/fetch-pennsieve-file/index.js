@@ -11,7 +11,8 @@ export default {
       const filesUrl = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
       const filesResponse = await axios.$get(filesUrl)
       const files = filesResponse.files
-      return files.find(element => filePath === element.path || filePath.includes(element.uri.substring(element.uri.lastIndexOf('/'))))
+      filePath = filePath.toLowerCase()
+      return files.find(element => filePath === element.path.toLowerCase() || filePath.includes(element.uri.substring(element.uri.lastIndexOf('/')).toLowerCase()))
     }
   }
 }
