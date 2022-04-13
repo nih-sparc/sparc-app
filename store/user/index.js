@@ -1,11 +1,9 @@
 import auth from '@/services/auth'
-import { pathOr, isEmpty } from 'ramda'
+import { pathOr } from 'ramda'
 
 export const state = () => ({
   cognitoUser: null,
   pennsieveUser: null,
-  loginError: '',
-  logoutError: '',
 })
 
 export const mutations = {
@@ -19,35 +17,22 @@ export const mutations = {
 
 export const actions = {
   async login({ dispatch }, providerName){
-    state.loginError = ''
-    try {
-      await auth.signIn(providerName)
-      await dispatch('fetchUser')
-    }
-    catch(err){
-      console.log(`Login Error [${err}]`)
-      state.loginError = err.message
-    }
+    await auth.signIn(providerName)
+    await dispatch('fetchUser')
   },
   async logout({ dispatch }){
-    state.logoutError = ''
-    try {
-      await auth.signOut()
-      await dispatch('fetchUser')
-    }
-    catch(err){
-      console.log(`Logout Error [${err}]`)
-      state.logoutError = err.message
-    }
+    await auth.signOut()
+    await dispatch('fetchUser')
   },
   async fetchUser({ commit }){
     const user = await auth.user()
+    const profile = await auth.userProfile()
     const token = pathOr(null, ['signInUserSession', 'accessToken', 'jwtToken'], user)
     const unixExpirationDate = pathOr('', ['signInUserSession', 'accessToken', 'payload', 'exp'], user)
     const expirationDate = unixExpirationDate ? new Date(unixExpirationDate * 1000) : null
     this.$cookies.set('user-token', token, expirationDate)
     commit('SET_COGNITO_USER', user)
-    const profile = await auth.userProfile()
+    this.$cookies.set('profile-complete', helperMethods.isProfileComplete(profile), expirationDate)
     commit('SET_PENNSIEVE_USER', profile)
   },
 }
@@ -62,7 +47,8 @@ export const getters = {
   pennsieveUsername (state, getters) {
     const firstName = pathOr('', ['firstName'], getters.pennsieveUser)
     const lastName = pathOr('', ['lastName'], getters.pennsieveUser)
-    return `${firstName} ${lastName[0]}.`
+    const abbrvLastName = lastName.length === 1 ? lastName[0] : `${lastName[0]}.`
+    return `${firstName} ${abbrvLastName}`
   },
   firstName (state, getters) {
     return pathOr('', ['firstName'], getters.pennsieveUser)
@@ -95,10 +81,17 @@ export const getters = {
     return pathOr('', ['email'], getters.pennsieveUser)
   },
   profileComplete (state, getters) {
-    const isEmailSet = !getters.profileEmail.includes('pennsieve')
-    const sparcTermsOfServiceAccepted = !isEmpty(pathOr('', ['customTermsOfService'], getters.pennsieveUser))
-    const pennsieveTermsOfServiceAccepted = !isEmpty(pathOr('', ['pennsieveTermsOfService'], getters.pennsieveUser))
+    return helperMethods.isProfileComplete(getters.pennsieveUser)
+  }
+}
 
-    return isEmailSet && sparcTermsOfServiceAccepted && pennsieveTermsOfServiceAccepted
+const helperMethods = {
+  isProfileComplete(profile) {
+    if (profile) {
+      return profile.email.split("@")[1] !== "pennsieve-nonexistent.email" && 
+      profile.firstName.toLowerCase() !== "orcid" &&
+      profile.lastName.toLowerCase() !== "login"
+    }
+    return false
   }
 }

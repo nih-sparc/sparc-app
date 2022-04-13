@@ -41,8 +41,6 @@
       </el-form>
     </div>
 
-
-
     <div
       v-if="this.askingForProfileInfo"
       class="login-wrap"
@@ -107,8 +105,6 @@
       </p>
     </div>
 
-
-
     <div
       v-if="this.askingForPassword"
       class="login-wrap"
@@ -169,8 +165,6 @@
       </el-form>
     </div>
 
-
-
     <div
       v-if="this.askingToConnect"
       class="login-wrap"
@@ -190,34 +184,6 @@
     </div>
 
 
-
-    <div
-      v-if="this.askingToFinalize"
-      class="login-wrap"
-      >
-      <h2 class="sharp-sans">
-        Let's finalize ORCID iD integration.
-      </h2>
-      <p>Clicking <strong>Finalize Integration</strong> initiates a process that allows the Pennsieve platform to access your ORCID record.</p>
-      <p>A pop-up window will appear asking you to grant access to read and write to your ORCID record.</p>
-      <p>
-      <ul>
-      <li>Granting read access permits the Pennsieve platform to retrieve information from your ORCID record: ORCID iD, email address, and your name.</li>
-      <li>Granting write access permits the Pennsieve platform to send dataset publication details to ORCID.</li>
-      </ul>
-      </p>
-      <bf-button
-        class="completeLogin"
-        :processing="isSavingProfile"
-        processing-text="Finalizing Integration"
-        @click="onClickFinalizeIntegration"
-      >
-        Finalize Integration
-      </bf-button>
-    </div>
-
-
-
     <div
       v-if="this.allDone"
       class="login-wrap"
@@ -225,14 +191,14 @@
       <h2 class="sharp-sans">
         Account setup and integration is complete!
       </h2>
-      <p>Your account setup and ORCID iD integration is complete. Click <strong>Close</strong> to start working with the SPARC Platform.</p>
+      <p>Your account setup and ORCID iD integration is complete. Click <strong>Home</strong> to start working with the SPARC Platform.</p>
       <bf-button
         class="completeLogin"
         :processing="isSavingProfile"
-        processing-text="Proceeding to Pennsieve..."
-        @click="onClickClose"
+        processing-text="Processing..."
+        @click="onClickHome"
       >
-        Close
+        Home
       </bf-button>
     </div>
 
@@ -261,8 +227,7 @@ export default {
         askingForProfileInfo: 1,
         askingForPassword: 2,
         askingToConnect: 3,
-        askingToFinalize: 4,
-        done: 5
+        done: 4
       },
       emailForm: {
         emailAddress: ''
@@ -331,9 +296,6 @@ export default {
     askingToConnect: function() {
       return this.internalState == this.internalStates.askingToConnect
     },
-    askingToFinalize: function() {
-      return this.internalState == this.internalStates.askingToFinalize
-    },
     allDone: function() {
       return this.internalState == this.internalStates.done
     },
@@ -401,9 +363,6 @@ export default {
     toAskToConnectAccounts: function() {
       this.internalState = this.internalStates.askingToConnect
     },
-    toFinalizeIntegration: function() {
-      this.internalState = this.internalStates.askingToFinalize
-    },
     toAllDone: function() {
       this.internalState = this.internalStates.done
     },
@@ -430,59 +389,44 @@ export default {
         .catch(error => {
           if (error.status === 404) {
             // email address does not exist, update the user's email address
-            this.updateUserEmailAddress()
+            this.toAskForProfileInfo()
           } else {
             this.logUserError("lookupEmailAddress()", "Error looking up email address", error)
             this.startOver()
           }
         })
     },
-    updateUserEmailAddress: function() {
-      const url = `${this.updateUserEmailUrl}`
-      const headers = { 'Authorization': `bearer ${this.cognitoUserToken}` }
-      this.$axios.$put(url, { email: this.emailForm.emailAddress }, { headers }).then(user => {
-        this.toAskForProfileInfo()
-      })
-      .catch(error => {
-        this.logUserError("updateUserEmailAddress()", "Error updating email address", error)
-        this.toAskForEmailAddress()
-      })
-    },
     onSubmitUpdateProfile: function() {
       // TODO: validate form
       this.updateUserProfile(this.profileForm)
     },
     updateUserProfile: function(profileForm) {
-      const url = this.updateUserProfileUrl
+      // Must update the email address before updating the profile. This is all done in the same step to 
+      // prevent the user from refreshing the page after updating the email address but before updating the profile info
+      const url = `${this.updateUserEmailUrl}`
       const headers = { 'Authorization': `bearer ${this.cognitoUserToken}` }
-      const body = {
-        organization: this.profilePreferredOrganization,
-        email: this.emailForm.email,
-        url: this.profileUrl,
-        color: this.profileColor,
-        ...profileForm
-      }
-      this.$axios.$put(url, body, { headers }).then(() => {
-        /*const url = this.updateUserCustomTermsOfService
+      this.$axios.$put(url, { email: this.emailForm.emailAddress }, { headers }).then(() => {
+        const url = this.updateUserProfileUrl
         const headers = { 'Authorization': `bearer ${this.cognitoUserToken}` }
         const body = {
-          version: ''
+          organization: this.profilePreferredOrganization,
+          email: this.emailForm.email,
+          url: this.profileUrl,
+          color: this.profileColor,
+          ...profileForm
         }
         this.$axios.$put(url, body, { headers }).then(() => {
-          const url = this.updateUserPennsieveTermsOfService
-          const headers = { 'Authorization': `bearer ${this.cognitoUserToken}` }
-          const body = {
-            version: ''
-          }
-          this.$axios.$put(url, body, { headers }).then(() => {
-            this.toFinalizeIntegration()
-          })
-        })*/
-        this.toFinalizeIntegration()
+          // TODO: make user accept SPARC Terms of Service and set it checked on the profile
+          this.toAllDone()
+        })
+        .catch(error => {
+          this.logUserError("updateUserProfile()", "Error updating user profile", error)
+          this.toAskForProfileInfo()
+        })
       })
       .catch(error => {
-        this.logUserError("updateUserProfile()", "Error updating user profile", error)
-        this.toAskForProfileInfo()
+        this.logUserError("updateUserEmailAddress()", "Error updating email address", error)
+        this.toAskForEmailAddress()
       })
     },
     onSubmitAuthenticate: function() {
@@ -497,15 +441,16 @@ export default {
           this.toAskForPassword()
         })
     },
-    onClickConnectAccounts: function() {
+    onClickConnectAccounts: async function() {
       const url = `${this.mergeUserAccountsUrl}/${this.pennsieveUserIntId}`
       const headers = { 'Authorization': `bearer ${this.authenticatedUser.token}` }
       const body = {
         email: this.authenticatedUser.emailAddress,
         cognitoId: this.cognitoUsername
       }
-      this.$axios.$put(url, body, { headers }).then(user => {
-        this.toFinalizeIntegration()
+      await this.$axios.$put(url, body, { headers }).then(async () => {
+        await this.$store.dispatch('user/logout')
+        this.toAllDone()
       })
       .catch(error => {
         this.logUserError("onClickConnectAccounts()", "Error connecting accounts", error)
@@ -515,43 +460,23 @@ export default {
     onClickEnterDifferentEmailAddress: function() {
       this.toAskForEmailAddress()
     },
-    onClickFinalizeIntegration: function() {
-      this.openORCID()
-      this.toAllDone()
-    },
-    /**
-     * Logic to connect to user's ORCID
-     */
-    openORCID: function() {
-      this.oauthWindow = window.open(process.env.AWS_OAUTH_DOMAIN, "_blank", "toolbar=no, scrollbars=yes, width=500, height=600, top=500, left=500");
-      window.addEventListener('message', function(event) {
-        console.log("window-event-listener")
-        console.log(event)
-        if (event.data && event.data.source && event.data.source === 'orcid-redirect-response' && event.data.code) {
-          console.log("window-event-listener - sending event: " + event.data.code)
-          EventBus.$emit('finalize-orcid-integration', {
-              oauthCode: event.data.code
-            }
-          )
-        }
-      })
-    },
-    onClickClose: function() {
+    onClickHome: async function() {
+      await this.$store.dispatch('user/fetchUser')
       this.$router.push('/')
     },
-    logError: function(fn, message, error) {
-      console.log(`${fn} [${message}] error: ${error}`)
-    },
     logUserError: function(fn, message, error) {
-      this.logError(fn, message, error)
+      console.log(`${fn} [${message}] error: ${error}`)
       this.toast(message)
     },
     toast: function(message) {
-      EventBus.$emit('toast', {
-        detail: {
-          msg: message
-        }
-      })
+      const notification = {
+        message: message,
+        showClose: true,
+        iconClass: 'el-icon-circle-close',
+        customClass: 'el-message--error',
+        duration: 5000
+      }
+      this.$notify(notification)
     }
   }
 }

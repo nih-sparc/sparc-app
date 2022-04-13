@@ -212,9 +212,9 @@ export default {
     SearchForm
   },
   mixins: [Request],
-  mounted() {
+  mounted: async function() {
     if (this.showLoginFeature) {
-      this.$store.dispatch('user/fetchUser')
+      await this.$store.dispatch('user/fetchUser')
     }
   },
   data: () => {
