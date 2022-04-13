@@ -650,7 +650,7 @@ export default {
         const currentDirectoryPath = scope.row.path.split(scope.row.name)[0]
 
         // Create paths for fetching the files from 'sparc-api/s3-resource/'
-        const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.path}`
+        const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.relative.path[0]}`
         const s3Path = `${id}/${version}/${scaffoldPath}`
 
         // View paths need to be relative
