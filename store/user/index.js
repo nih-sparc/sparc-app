@@ -21,6 +21,7 @@ export const actions = {
     await dispatch('fetchUser')
   },
   async logout({ dispatch }){
+    this.$cookies.set('user-token', null)
     await auth.signOut()
     await dispatch('fetchUser')
   },

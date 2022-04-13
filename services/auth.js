@@ -1,6 +1,28 @@
 import { Auth } from '@aws-amplify/auth'
+import { Hub } from '@aws-amplify/core';
 import { pathOr } from 'ramda'
 import axios from 'axios'
+
+// There is a cognito issue with FederatedSignIn where the first time a user attemptes to sign in it throws an 'Already+found+an+entry+for+username' error.
+// It cannot be caught in a normal try catch because it gets thrown early on in the OAuth flow so we must import Hub to listen for it. 
+// This thread outlines the issue: https://stackoverflow.com/questions/47815161/cognito-auth-flow-fails-with-already-found-an-entry-for-username-facebook-10155
+
+let signInAttempts = 0;
+
+Hub.listen('auth', async (data) => {
+  switch (data.payload.event) {
+    case 'signIn_failure':
+      if (data.payload.data.message.includes("Already+found+an+entry+for+username") && signInAttempts < 1) {
+        signInAttempts ++;
+        // We simply attempt to sign in again since this error only happens for the first sign in
+        await signIn('ORCID')
+      }
+      break;
+    case 'signOut':
+    case 'signIn':
+      signInAttempts = 0;
+  }   
+});
 
 const user = async() => {
   try {
