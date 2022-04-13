@@ -15,7 +15,7 @@ const replaceTerms = (terms?: string) => {
 
 export const fetchData = async (client: ContentfulClientApi, terms?: string, limit?: number) : Promise<AsyncData> => {
 
-  let query = replaceTerms(terms)
+  const query = replaceTerms(terms)
 
   try {
     const todaysDate = new Date()
@@ -66,8 +66,8 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
 
 export const fetchNews = async (client: ContentfulClientApi, terms?: string, limit?: number,  skip?: number) : Promise<NewsCollection> => {
 
-  let query = replaceTerms(terms)
-  
+  const query = replaceTerms(terms)
+
   try {
     return await client.getEntries<NewsEntry>({
       content_type: process.env.ctf_news_id,
