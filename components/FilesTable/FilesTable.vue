@@ -59,11 +59,11 @@
                 />
                 <i v-else class="file-icon el-icon-document" />
                 <div v-if="isFileOpenable(scope)" class="truncated">
-                    <sparc-tooltip placement="left-center" :content="scope.row.name">
-                      <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
-                        {{ scope.row.name }}
-                      </a>
-                    </sparc-tooltip>
+                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                    <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
+                      {{ scope.row.name }}
+                    </a>
+                  </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
                   <sparc-tooltip placement="left-center" :content="scope.row.name">
