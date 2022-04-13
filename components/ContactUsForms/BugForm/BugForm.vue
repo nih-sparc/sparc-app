@@ -8,7 +8,7 @@
   >
     <el-form-item
       prop="sparcInvestigator"
-      label="Are you a SPARC investigator?*"
+      label="Are you a SPARC investigator? *"
     >
       <el-select
         v-model="form.sparcInvestigator"
@@ -43,8 +43,16 @@
     </el-form-item>
 
     <el-form-item
+      v-if="form.pageOrResource === 'Other'"
+      prop="pageUrl"
+      label="Provide the problematic page's URL *"
+    >
+      <el-input v-model="form.pageUrl" placeholder="URL" />
+    </el-form-item>
+
+    <el-form-item
       prop="title"
-      label="Provide a short description of what you were doing.*"
+      label="Provide a short description of what you were doing *"
     >
       <el-input
         v-model="form.title"
@@ -52,7 +60,7 @@
       />
     </el-form-item>
 
-    <el-form-item prop="description" label="Provide a detailed description*">
+    <el-form-item prop="description" label="Provide a detailed description *">
       <el-input
         v-model="form.description"
         type="textarea"
@@ -63,7 +71,7 @@
 
     <el-form-item
       prop="howToImprove"
-      label="How would you like this experience to improve?*"
+      label="How would you like this experience to improve? *"
       class="mb-0"
     >
       <el-input
@@ -132,7 +140,8 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: false
+        shouldSubscribe: false,
+        pageUrl: ''
       },
       questionOptions: {
         sparcInvestigator,
@@ -197,6 +206,15 @@ export default {
             message: 'Please enter a description',
             trigger: 'change'
           }
+        ],
+
+        pageUrl: [
+          {
+            required: true,
+            message: "Please enter the problematic page's URL",
+            trigger: 'change',
+            type: 'url'
+          }
         ]
       }
     }
@@ -234,7 +252,9 @@ export default {
           description: `
             Are you a SPARC investigator?<br>${this.form.sparcInvestigator}
             <br><br>Is this about a specific page or resource?
-            <br>${this.form.pageOrResource}
+            <br>${this.form.pageOrResource}${
+            this.form.pageUrl ? ' - ' + this.form.pageUrl : ''
+          }
             <br><br>Description
             <br>${this.form.description}
             <br><br>How would you like this experience to improve?
