@@ -704,7 +704,7 @@ export default {
         if (newValue) {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'citations') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'Citations', id: 'citations' })
+            this.tabs.splice(5, 0, { label: 'References', id: 'citations' })
           }
         }
       },
