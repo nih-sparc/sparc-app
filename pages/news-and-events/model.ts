@@ -3,9 +3,20 @@ import { Route } from 'vue-router';
 import { sub } from 'date-fns'
 
 import { Breadcrumb } from '@/components/Breadcrumb/model.ts';
+import { searchQueryReplacements } from '../data/utils';
 
+const replaceTerms = (terms?: string) => {
+  let result = terms
+  if (result) {
+    Object.entries(searchQueryReplacements).forEach(([term, replacement]) => result = result?.replace(term, replacement))
+  }
+  return result
+}
 
-export const fetchData = async (client: ContentfulClientApi, query?: string, limit?: number) : Promise<AsyncData> => {
+export const fetchData = async (client: ContentfulClientApi, terms?: string, limit?: number) : Promise<AsyncData> => {
+
+  const query = replaceTerms(terms)
+
   try {
     const todaysDate = new Date()
 
@@ -53,7 +64,10 @@ export const fetchData = async (client: ContentfulClientApi, query?: string, lim
   }
 }
 
-export const fetchNews = async (client: ContentfulClientApi, query?: string, limit?: number,  skip?: number) : Promise<NewsCollection> => {
+export const fetchNews = async (client: ContentfulClientApi, terms?: string, limit?: number,  skip?: number) : Promise<NewsCollection> => {
+
+  const query = replaceTerms(terms)
+
   try {
     return await client.getEntries<NewsEntry>({
       content_type: process.env.ctf_news_id,

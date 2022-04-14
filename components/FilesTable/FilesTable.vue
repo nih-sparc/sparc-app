@@ -59,11 +59,11 @@
                 />
                 <i v-else class="file-icon el-icon-document" />
                 <div v-if="isFileOpenable(scope)" class="truncated">
-                    <sparc-tooltip placement="left-center" :content="scope.row.name">
-                      <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
-                        {{ scope.row.name }}
-                      </a>
-                    </sparc-tooltip>
+                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                    <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
+                      {{ scope.row.name }}
+                    </a>
+                  </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
                   <sparc-tooltip placement="left-center" :content="scope.row.name">
@@ -650,7 +650,7 @@ export default {
         const currentDirectoryPath = scope.row.path.split(scope.row.name)[0]
 
         // Create paths for fetching the files from 'sparc-api/s3-resource/'
-        const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.path}`
+        const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.relative.path[0]}`
         const s3Path = `${id}/${version}/${scaffoldPath}`
 
         // View paths need to be relative
