@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="file-detail" v-if="species">
-          <strong class="file-detail__column">Speices</strong>
+          <strong class="file-detail__column">Species</strong>
           <div class="file-detail__column">
             {{ capitalize(species) }}
           </div>
