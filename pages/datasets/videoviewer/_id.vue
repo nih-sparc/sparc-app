@@ -79,6 +79,7 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
+import discover from '@/services/discover'
 
 export default {
   name: 'VideoViewerPage',
@@ -91,18 +92,12 @@ export default {
   mixins: [RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
-    let signedUrl = await $axios
-      .$get(
-        `${process.env.portal_api}/download?key=${route.query.file_path}&contentType=${route.query.mimetype}`
-      )
-      .then(response => {
-        return response
-      })
+    const downloadLinkResponse = await discover.downloadLink(route.query.file_path, route.query.mimetype)
     let filePath = route.query.file_path
     filePath = filePath.substring(filePath.indexOf("files"))
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
     return {
-      video_src: signedUrl,
+      video_src: downloadLinkResponse.data,
       mimetype: route.query.mimetype,
       file,
     }

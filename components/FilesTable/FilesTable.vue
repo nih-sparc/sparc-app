@@ -294,6 +294,7 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 import { extractExtension } from '@/pages/data/utils'
 
 import * as path from 'path'
+import discover from '~/services/discover'
 
 export const contentTypes = {
   pdf: 'application/pdf',
@@ -574,10 +575,8 @@ export default {
       const fileType = scope.row.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
 
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}&contentType=${contentType}`
-
-      return this.$axios.$get(requestUrl).then(response => {
-        const url = response
+      return discover.downloadLink(filePath, contentType).then(response => {
+        const url = response.data
         const encodedUrl = encodeURIComponent(url)
         return this.isMicrosoftFileType(scope)
           ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`

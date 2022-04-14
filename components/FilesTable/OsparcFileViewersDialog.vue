@@ -38,6 +38,7 @@ import DialogBody from '@/components/dialog-body/DialogBody.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import { extractExtension } from '~/pages/data/utils'
 import { contentTypes } from '@/components/FilesTable/FilesTable.vue'
+import discover from '~/services/discover'
 
 export default {
   name: 'OsparcFileViewersDialog',
@@ -87,20 +88,15 @@ export default {
 
       this.isFetching = true
 
-      const requestUrl = new URL(process.env.portal_api + '/download')
-      requestUrl.searchParams.append('key', filePath)
       const fileType = this.selectedFile.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
-      if (contentType) {
-        requestUrl.searchParams.append('contentType', contentType)
-      }
 
-      this.$axios
-        .$get(requestUrl)
-        .then(fileUrl => {
+      discover
+        .downloadLink(filePath, contentType)
+        .then(response => {
           const redirectionUrl = new URL(this.selectedViewer['view_url'])
 
-          redirectionUrl.searchParams.append('download_link', fileUrl)
+          redirectionUrl.searchParams.append('download_link', response.data)
           redirectionUrl.searchParams.append('file_size', fileSize)
 
           window.open(redirectionUrl, '_blank')

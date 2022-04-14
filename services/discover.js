@@ -49,13 +49,11 @@ const getSegmentationInfo = async (id, version, path) => {
   return apiClient.get('/segmentation_info', config)
 }
 
-const downloadLink = async file_path => {
+const downloadLink = (key, contentType) => {
   const config = {
-    params: {
-      key: file_path
-    }
+    params: { key, contentType }
   }
-  return await apiClient.get('/download', config)
+  return apiClient.get('/download-link', config)
 }
 
 const getDiscoverPath = source_identifier => {
