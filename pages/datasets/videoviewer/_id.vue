@@ -29,25 +29,26 @@
         <div class="file-detail">
           <strong class="file-detail__column">File location</strong>
           <div class="file-detail__column">
-            <nuxt-link 
+            <nuxt-link
               :to="{
                 name: `datasets-datasetId`,
                 params: {
-                  datasetId: datasetId, 
+                  datasetId: datasetId
                 },
                 query: {
                   datasetDetailsTab: 'files',
                   path: fileFolderLocation
                 }
-              }">
+              }"
+            >
               {{ filePath }}
-            </nuxt-link>   
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
           <div class="file-detail__column">
-            {{fileType}}
+            {{ fileType }}
           </div>
         </div>
         <div class="file-detail">
