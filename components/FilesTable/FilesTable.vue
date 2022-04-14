@@ -230,7 +230,7 @@
     <sparc-tooltip
       v-if="selected.length == 0"
       class="tooltip"
-      placement="bottom-center"
+      placement="top-center"
       content="You must select a file to download"
     >
       <bf-download-file
