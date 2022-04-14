@@ -5,6 +5,7 @@
         <div class="page-heading">
           <h1>{{ file.name }}</h1>
           <div class="page-heading__button">
+            <download-link-button :file="file" />
             <bf-button @click="requestDownloadFile(file)">
               Download
             </bf-button>
@@ -62,6 +63,7 @@ import BfStorageMetrics from '@/mixins/bf-storage-metrics'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import RequestDownloadFile from '@/mixins/request-download-file'
+import DownloadLinkButton from '~/components/FileMetadata/DownloadLinkButton.vue'
 
 export default {
   name: 'FileDetailPage',
@@ -69,7 +71,8 @@ export default {
   components: {
     BiolucidaViewer,
     DetailTabs,
-    BfButton
+    BfButton,
+    DownloadLinkButton
   },
 
   mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile, FetchPennsieveFile],
