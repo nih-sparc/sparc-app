@@ -22,12 +22,9 @@ import {Data, HelpData, HelpDocument, Methods} from "./model";
 import HelpSection from "@/components/HelpSection/HelpSection.vue";
 import HelpHero from "@/components/HelpHero/HelpHero.vue";
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import { searchQueryReplacements } from '../data/utils';
 
 const client = createClient()
-
-const searchQueryReplacements: { [orig: string]: string } = {
-  'o2s2parc': 'o\u00b2s\u00b2parc'
-}
 
 export default Vue.extend<Data, Methods, never, never>({
   name: 'HelpPage',

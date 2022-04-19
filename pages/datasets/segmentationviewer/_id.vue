@@ -108,6 +108,7 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
 
 import { extractSection } from '@/utils/common'
@@ -122,7 +123,7 @@ export default {
     BfButton
   },
 
-  mixins: [MarkedMixin, RequestDownloadFile],
+  mixins: [MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const identifier = route.query.dataset_id
@@ -153,8 +154,8 @@ export default {
         dataset_info = { readme: '', title: '' }
       }
 
-      const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${route.query.file_path}`
-      const file = await $axios.$get(fileUrl)
+      const filePath = route.query.file_path
+      const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
 
       return {
         segmentation_info,

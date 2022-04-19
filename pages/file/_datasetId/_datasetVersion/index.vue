@@ -22,13 +22,13 @@
         <div class="file-detail">
           <strong class="file-detail__column">Size</strong>
           <div class="file-detail__column">
-            {{ formatMetric(file.size) }}
+            {{ file.size ? formatMetric(file.size) : 'undefined' }}
           </div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Date Created</strong>
           <div class="file-detail__column">
-            {{ formatDate(file.createdAt) }}
+            {{ file.createdAt ? formatDate(file.createdAt) : 'undefined' }}
           </div>
         </div>
         <div class="file-detail">
@@ -60,6 +60,7 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 import BfStorageMetrics from '@/mixins/bf-storage-metrics'
 import FormatDate from '@/mixins/format-date'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import RequestDownloadFile from '@/mixins/request-download-file'
 
 export default {
@@ -71,12 +72,11 @@ export default {
     BfButton
   },
 
-  mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile],
+  mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.params.datasetId}/versions/${route.params.datasetVersion}/files?path=${route.query.path}`
-
-    const file = await $axios.$get(fileUrl)
+    const filePath = route.query.path
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.params.datasetId, route.params.datasetVersion)
 
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(

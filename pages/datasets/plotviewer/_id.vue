@@ -77,6 +77,7 @@ import discover from '@/services/discover'
 
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 
 export default {
   name: 'PlotViewerPage',
@@ -89,7 +90,7 @@ export default {
       : null
   },
 
-  mixins: [RequestDownloadFile],
+  mixins: [RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const identifier = route.query.identifier
@@ -111,8 +112,8 @@ export default {
       source_url = `${process.env.portal_api}/s3-resource/${file_path}`
     }
 
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=files/${plot_info.dataset.path}`
-    const file = await $axios.$get(fileUrl)
+    const filePath = `files/${plot_info.dataset.path}`
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
 
     const metadata = JSON.parse(
       plot_annotation.supplemental_json_metadata.description
