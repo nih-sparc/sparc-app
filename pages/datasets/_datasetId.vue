@@ -264,7 +264,7 @@ const getBiolucidaData = async datasetId => {
  * Get data for objects that have a data specific viewer.
  * @param {Number} datasetId
  */
-const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
+const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
   let biolucidaImageData = {}
   let scicrunchData = {}
   try {
@@ -291,7 +291,15 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
           if (flatmapData.length <= i) {
             flatmapData.push({})
           }
-          flatmapData[i].taxo = Uberons.species['rat']
+
+          let taxo = Uberons.species['rat']
+
+          // Get species data from algolia if it exists
+          if (datasetFacetsData){
+            let species = datasetFacetsData.filter(i=>i.label==="Species")[0].children[0].label
+            taxo = Uberons.species[species.toLowerCase()]
+          }
+          flatmapData[i].taxo = taxo
           flatmapData[i].uberonid = scicrunchData.organs[i].curie
           flatmapData[i].organ = scicrunchData.organs[i].name
           flatmapData[i].id = datasetId
@@ -356,7 +364,8 @@ export default {
     const { biolucidaImageData, scicrunchData } = await getThumbnailData(
       datasetDetails.doi,
       datasetId,
-      datasetDetails.version
+      datasetDetails.version,
+      datasetFacetsData
     )
 
     // Get oSPARC file viewers
@@ -703,7 +712,7 @@ export default {
         if (newValue) {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'citations') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'Citations', id: 'citations' })
+            this.tabs.splice(5, 0, { label: 'References', id: 'citations' })
           }
         }
       },

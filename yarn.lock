@@ -51,10 +51,10 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/gallery@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.2.1.tgz#8ee0fea38dff02c96cea9f85c009168aef9ada53"
-  integrity sha512-mt8LmUaXNATQk+bZLQOIMvTyzGr2VVwT62QSjDx/9XEc+0hpjPhGOGXaJaXpm7lnRgwhVo/mzF5OCL3wu1vNCQ==
+"@abi-software/gallery@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.2.2.tgz#73be70f5f319c753f72211f4d9f59e61a5e2678d"
+  integrity sha512-3Yt40ON+zWEukiVECHPD72NSEU4BiLkk9RQdfoRNmz/kqRANNft7Z0cuCANyvFNVf7rd8cxQBYd604gpZEA/lA==
   dependencies:
     "@babel/code-frame" "^7.12.11"
     core-js "^3.8.3"
