@@ -78,8 +78,10 @@ export default {
         algoliaIndex: process.env.ALGOLIA_INDEX,
         algoliaKey: process.env.ALGOLIA_API_KEY,
         algoliaId: process.env.ALGOLIA_APP_ID,
-        pennsieveApi: process.env.discover_api_host,
+        pennsieveApi: (process.env.discover_api_host).replace('/discover', ''),
         flatmapAPI: process.env.flatmap_api,
+        nlLinkPrefix: process.env.NL_LINK_PREFIX,
+        rootUrl: process.env.ROOT_URL,
       },
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
