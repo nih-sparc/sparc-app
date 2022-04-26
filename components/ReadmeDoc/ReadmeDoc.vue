@@ -37,8 +37,6 @@ export default({
 }
 .truncate {
   text-overflow: ellipsis;
-
-  /* Needed to make it work */
   overflow: hidden;
   white-space: nowrap;
 }
