@@ -42,11 +42,7 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item
-      v-if="form.pageOrResource === 'Other'"
-      prop="pageUrl"
-      label="Provide the problematic page's URL *"
-    >
+    <el-form-item prop="pageUrl" label="Provide the problematic page's URL">
       <el-input v-model="form.pageUrl" placeholder="URL" />
     </el-form-item>
 
@@ -210,7 +206,6 @@ export default {
 
         pageUrl: [
           {
-            required: true,
             message: "Please enter the problematic page's URL",
             trigger: 'change',
             type: 'url'
