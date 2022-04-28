@@ -78,6 +78,7 @@
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import discover from '@/services/discover'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import RequestDownloadFile from '@/mixins/request-download-file'
 
 import { baseName } from '@/utils/common'
@@ -90,7 +91,7 @@ export default {
     BfButton
   },
 
-  mixins: [RequestDownloadFile],
+  mixins: [RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const response = await discover.fetch(
@@ -108,8 +109,8 @@ export default {
       location: `files/${route.query.file_path}`
     }
 
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${imageInfo.location}`
-    const file = await $axios.$get(fileUrl)
+    const filePath = imageInfo.location
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
 
     return {
       imageInfo,

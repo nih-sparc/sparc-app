@@ -59,15 +59,22 @@
                 />
                 <i v-else class="file-icon el-icon-document" />
                 <div v-if="isFileOpenable(scope)" class="truncated">
-                    <sparc-tooltip placement="left-center" :content="scope.row.name">
-                      <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
-                        {{ scope.row.name }}
-                      </a>
-                    </sparc-tooltip>
+                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                    <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
+                      {{ scope.row.name }}
+                    </a>
+                  </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
                   <sparc-tooltip placement="left-center" :content="scope.row.name">
                     <nuxt-link slot="item" class="truncated" :to="getScaffoldLink(scope)">
+                      {{ scope.row.name }}
+                    </nuxt-link>
+                  </sparc-tooltip>
+                </div>
+                <div v-else-if="isScaffoldViewFile(scope)" class="truncated">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                    <nuxt-link slot="item" class="truncated" :to="getScaffoldViewLink(scope)">
                       {{ scope.row.name }}
                     </nuxt-link>
                   </sparc-tooltip>
@@ -84,7 +91,7 @@
                           datasetVersion: datasetInfo.version
                         },
                         query: {
-                          path: scope.row.path
+                          path: s3Path(scope.row.path)
                         }
                       }"
                     >
@@ -157,6 +164,18 @@
                 v-if="isScaffoldMetaFile(scope)"
                 class="circle"
                 @click="openScaffold(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open as 3d scaffold"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
+                v-if="isScaffoldViewFile(scope)"
+                class="circle"
+                @click="openScaffoldView(scope)"
               >
                 <sparc-tooltip
                   placement="bottom-center"
@@ -274,6 +293,8 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import { extractExtension } from '@/pages/data/utils'
 
+import * as path from 'path'
+
 export const contentTypes = {
   pdf: 'application/pdf',
   text: 'text/plain',
@@ -298,6 +319,12 @@ export default {
     osparcViewers: {
       type: Object,
       default: function() {
+        return {}
+      }
+    },
+    datasetScicrunch: {
+      type: Object,
+      default: () => {
         return {}
       }
     }
@@ -592,12 +619,52 @@ export default {
     getScaffoldLink: function(scope) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      let s3Path = `${id}/${version}/${scope.row.path}`
       return {
         name: 'datasets-scaffoldviewer-id',
         params: {},
-        query: { scaffold: s3Path }
+        query: { dataset_id: id, dataset_version: version, file_path: scope.row.path }
       }
+    },
+
+    /**
+     * Create nuxt-link object for opening a scaffold.
+     * @param {Object} scope
+     */
+    getScaffoldViewLink: function(scope) {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = this.datasetVersion
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['abi-scaffold-view-file']
+      ) {
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        
+
+        // Find the file with a matching name
+        let viewMetadata = this.datasetScicrunch['abi-scaffold-view-file'].filter(
+          viewFile => viewFile.dataset.path === shortened
+        )[0]
+
+        // Find the current directory path. Note that the trailing '/' is included
+        const currentDirectoryPath = scope.row.path.split(scope.row.name)[0]
+
+        // Create paths for fetching the files from 'sparc-api/s3-resource/'
+        const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.relative.path[0]}`
+        const s3Path = `${id}/${version}/${scaffoldPath}`
+
+        // View paths need to be relative
+        const viewPath = path.relative(
+          path.dirname(scaffoldPath),
+          scope.row.path
+        )
+        return {
+          name: 'datasets-scaffoldviewer-id',
+          params: {},
+          query: { scaffold: s3Path, viewURL: viewPath }
+        }
+      }
+      return {}
     },
 
     /**
@@ -609,16 +676,51 @@ export default {
     },
 
     /**
+     * Open scaffold view file
+     * @param {Object} scope
+     */
+    openScaffoldView: function(scope) {
+      const scaffoldViewLink = this.getScaffoldViewLink(scope)
+      if (scaffoldViewLink) {
+        this.$router.push(scaffoldViewLink)
+      }
+    },
+
+    /**
+     * Checks if file is a scaffold view port
+     * @param {Object} scope
+     */
+    isScaffoldViewFile: function(scope) {
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['abi-scaffold-view-file']
+      ) {
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-view-file'].length; i++) {
+          if (this.datasetScicrunch['abi-scaffold-view-file'][i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
+    },
+    /**
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
      */
     isScaffoldMetaFile: function(scope) {
-      let path = scope.row.path.toLowerCase()
-      return (
-        path.includes('scaffold') &&
-        path.includes('meta') &&
-        path.includes('json')
-      )
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['abi-scaffold-metadata-file']
+      ) {
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file'].length; i++) {
+          if (this.datasetScicrunch['abi-scaffold-metadata-file'][i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
     },
 
     /**
@@ -667,6 +769,11 @@ export default {
       if (a < b) 
          return -1 
       return 0; 
+    },
+    s3Path(path) {
+      // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
+      path = path.replaceAll(' ', '_')
+      return path.replaceAll(',', '_')
     }
   }
 }

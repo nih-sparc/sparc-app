@@ -60,7 +60,6 @@
           <strong class="file-detail__column">Version</strong>
           <div class="file-detail__column">
             {{ versionNumber }}
-            {{fileQueryParam}}
           </div>
         </div>
         <div class="pt-16">
@@ -79,6 +78,7 @@ import Plyr from 'plyr'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 
 export default {
   name: 'VideoViewerPage',
@@ -88,7 +88,7 @@ export default {
     BfButton
   },
 
-  mixins: [RequestDownloadFile],
+  mixins: [RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     let signedUrl = await $axios
@@ -100,8 +100,7 @@ export default {
       })
     let filePath = route.query.file_path
     filePath = filePath.substring(filePath.indexOf("files"))
-    const fileUrl = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}/versions/${route.query.dataset_version}/files?path=${filePath}`
-    const file = await $axios.$get(fileUrl)
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
     return {
       video_src: signedUrl,
       mimetype: route.query.mimetype,

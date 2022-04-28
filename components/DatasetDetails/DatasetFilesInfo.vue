@@ -67,7 +67,7 @@
         </nuxt-link>
       </span>
     </div>
-    <files-table :osparc-viewers="osparcViewers" />
+    <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch"/>
   </div>
 </template>
 
@@ -90,6 +90,10 @@ export default {
 
   props: {
     osparcViewers: {
+      type: Object,
+      default: () => {}
+    },
+    datasetScicrunch: {
       type: Object,
       default: () => {}
     }
