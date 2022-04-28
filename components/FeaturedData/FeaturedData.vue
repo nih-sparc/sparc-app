@@ -114,7 +114,7 @@ h2 {
   display: grid;
   row-gap: 2rem;
   justify-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
 
   @media (min-width: 768px) {
     padding-left: 0.4375rem;
