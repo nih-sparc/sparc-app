@@ -10,7 +10,7 @@
         <nuxt-link :to="{ name: 'help' }">
           Help
         </nuxt-link>
-        <template v-if="showLoginFeature">
+        <template v-if="showLoginFeature === 'false'">
           <img
             class="mr-2"
             src="@/static/images/orcid_24x24.png"
