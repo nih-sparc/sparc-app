@@ -106,7 +106,7 @@ export default {
     AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
     AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
     AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
-    SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || false,
+    SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || 'false',
     USER_ACTIONS_API_URL: process.env.USER_ACTIONS_API_URL || 'https://api.pennsieve.net'
   },
 
