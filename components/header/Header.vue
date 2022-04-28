@@ -2,18 +2,25 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <svg-icon class="pr-4" icon="icon-contact" width="18" height="18" />
+        <svg-icon class="mr-4" icon="icon-contact" width="18" height="18" />
         <nuxt-link to="/contact-us" target="_blank">
           Contact Us
         </nuxt-link>
-        <svg-icon class="pr-4" icon="icon-help" width="18" height="18" />
+        <svg-icon class="mr-4" icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
           Help
         </nuxt-link>
         <template v-if="showLoginFeature">
-          <svg-icon icon="icon-sign-in" style="padding-top: .125rem" height="16" width="16" />
-          <a v-if="!pennsieveUser" class="sign-in-link" @click="onLoginWithORCID">
-            Sign in
+          <img
+            class="mr-2"
+            src="@/static/images/orcid_24x24.png"
+            style="padding-top: .2rem"
+            width="18"
+            height="18"
+            alt="Logo for ORCID"
+          />
+          <a class="sign-in-link" v-if="!pennsieveUser"  @click="onLoginWithORCID">
+            Sign in with Orcid iD
           </a>
           <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
             <el-submenu index="user">
@@ -98,9 +105,15 @@
                   </nuxt-link>
                 </li>
                 <li v-if="showLoginFeature">
-                  <svg-icon icon="icon-sign-in" style="padding-left: .125rem" height="18" width="18" />
+                  <img
+                    src="@/static/images/orcid_24x24.png"
+                    style="vertical-align: middle"
+                    width="18"
+                    height="18"
+                    alt="Logo for ORCID"
+                  />
                   <a v-if="!pennsieveUser" class="sign-in-link" @click="onLoginWithORCID">
-                    Sign in
+                    Sign in with Orcid iD
                   </a>
                   <div v-else>
                     <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
@@ -478,7 +491,7 @@ export default {
     font-weight: 400;
     line-height: 24px;
     color: $cochlear;
-    padding-right: 18px;
+    margin-right: 18px;
     text-decoration: none;
   }
   @media (min-width: 320px) and (max-width: 1120px) {
