@@ -61,27 +61,27 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.1.17":
-  version "1.1.17"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.1.17.tgz#d275a156bf937b4395ffa1ac7f5a1290f62b37ce"
-  integrity sha512-XGWDNujPD5/XjIz+bJjMvH6fJHI3X54Lg9vUVXAOkL0RE33FlU35kU/On91tGFGDsJNskZVloL+Dnh5XuJLKvg==
+"@abi-software/map-side-bar@^1.1.18-fixes-3":
+  version "1.1.18-fixes-3"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.1.18-fixes-3.tgz#277aa334df605fad616caaa9937860ee32cded58"
+  integrity sha512-fvrCFrW/7WtxZYnP6SgdQg89ktPiJOrcDWr+hYThZUYzcvLrk5vVpaSzNx1usKiQK2ersbIvxuzoo8mtnOoPzg==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.14"
     algoliasearch "^4.10.5"
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.7.tgz#3ba3a7a9efbf2ea211801de4d89a2cb028c76804"
-  integrity sha512-66LsOshkRl8Cp/xAzBrnAbQQAfvmFf07erB/1h/GjiWTAgXoK0OYh774ehzbGfBO1yyXWchtaQ2TtNIa1JiFgQ==
+"@abi-software/mapintegratedvuer@0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.2.8.tgz#ef9de74a2c57cce64f645623cf56787ca69207a2"
+  integrity sha512-h3JjTSZNfJDcKsuTxPiAgGJwdy8KdzeeT0mu1nQHsJ0Ji+88vnymG1Imqjw94vIdnPTGm2jcbxRbc2YLX9QYmg==
   dependencies:
     "@abi-software/flatmap-viewer" "2.1.0-beta.14"
     "@abi-software/flatmapvuer" "0.2.4-beta-6"
-    "@abi-software/map-side-bar" "^1.1.17"
+    "@abi-software/map-side-bar" "^1.1.18-fixes-3"
     "@abi-software/plotvuer" "^0.2.45"
     "@abi-software/scaffoldvuer" "^0.1.51"
-    "@abi-software/simulationvuer" "^0.5.2"
+    "@abi-software/simulationvuer" "^0.5.4"
     "@abi-software/svg-sprite" "^0.1.14"
     "@soda/get-current-script" "^1.0.2"
     core-js "^3.3.2"
@@ -152,10 +152,10 @@
     vue-router "^3.5.1"
     zincjs "^0.41.2"
 
-"@abi-software/simulationvuer@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.2.tgz#ddad4ac3e646221daa68ffebd6eead1802098a23"
-  integrity sha512-OuofHNWgw9UK1ZFvBkuIrTbDqzcVYdBelpyE+FdV3WtvY5qbUiFa4VOX2ILUDUMObeyFqasxGWcDSsnOmjWyWw==
+"@abi-software/simulationvuer@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.4.tgz#5c87b82fefc7990f1f201cd270650d0cf0c3d982"
+  integrity sha512-KnvmvhU32wQizOFlB6MZbnVslemxbOa98cSr0/R7g420Vri4yg3nwTb2P46uDcm3b4G/CdbllZjr8klC+zofNQ==
   dependencies:
     "@abi-software/plotvuer" "^0.2.45"
     element-ui "^2.14.1"
