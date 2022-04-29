@@ -2,23 +2,30 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <svg-icon class="pr-4" icon="icon-contact" width="18" height="18" />
+        <svg-icon class="mr-4" icon="icon-contact" width="18" height="18" />
         <nuxt-link to="/contact-us" target="_blank">
           Contact Us
         </nuxt-link>
-        <svg-icon class="pr-4" icon="icon-help" width="18" height="18" />
+        <svg-icon class="mr-4" icon="icon-help" width="18" height="18" />
         <nuxt-link :to="{ name: 'help' }">
           Help
         </nuxt-link>
-        <template v-if="showLoginFeature">
-          <svg-icon icon="icon-sign-in" style="padding-top: .125rem" height="16" width="16" />
-          <a v-if="!loggedInUser" class="sign-in-link" @click="onLoginWithORCID">
-            Sign in
+        <template v-if="showLoginFeature === 'true'">
+          <img
+            class="mr-2"
+            src="@/static/images/orcid_24x24.png"
+            style="padding-top: .2rem"
+            width="18"
+            height="18"
+            alt="Logo for ORCID"
+          />
+          <a class="sign-in-link" v-if="!pennsieveUser"  @click="onLoginWithORCID">
+            Sign in with Orcid iD
           </a>
           <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
             <el-submenu index="user">
-              <template slot="title">{{username}}</template>
-              <!--<el-menu-item class="user-submenu" index="account">My account</el-menu-item>-->
+              <template slot="title">{{pennsieveUsername}}</template>
+              <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
               <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
             </el-submenu>
           </el-menu>
@@ -97,14 +104,25 @@
                     Help
                   </nuxt-link>
                 </li>
-                <li v-if="showLoginFeature">
-                  <svg-icon icon="icon-sign-in" style="padding-left: .125rem" height="18" width="18" />
-                  <a v-if="!loggedInUser" class="sign-in-link" @click="onLoginWithORCID">
-                    Sign in
+                <li v-if="showLoginFeature === 'true'">
+                  <img
+                    src="@/static/images/orcid_24x24.png"
+                    style="vertical-align: middle"
+                    width="18"
+                    height="18"
+                    alt="Logo for ORCID"
+                  />
+                  <a v-if="!pennsieveUser" class="sign-in-link" @click="onLoginWithORCID">
+                    Sign in with Orcid iD
                   </a>
-                  <a v-else class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
-                    Logout
-                  </a>
+                  <div v-else>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
+                      Profile
+                    </a>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
+                      Logout
+                    </a>
+                  </div>
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
@@ -170,7 +188,7 @@
 import SparcLogo from '../logo/SparcLogo.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import Request from '@/mixins/request'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 const links = [
   {
@@ -207,9 +225,9 @@ export default {
     SearchForm
   },
   mixins: [Request],
-  mounted() {
+  mounted: async function() {
     if (this.showLoginFeature) {
-      this.$store.dispatch('user/fetchUser')
+      await this.$store.dispatch('user/fetchUser')
     }
   },
   data: () => {
@@ -219,7 +237,6 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
-      username: "",
       showLoginFeature: process.env.SHOW_LOGIN_FEATURE,
       searchSelectOptions: [
         {
@@ -247,14 +264,15 @@ export default {
   },
 
   computed: {
-    ...mapState('user', ['loggedInUser']),
+    ...mapState('user', ['cognitoUser', 'pennsieveUser']),
+    ...mapGetters('user', ['profileComplete', 'pennsieveUsername']),
     /**
      * Compute if search should be visible
      * @returns {Boolean}
      */
     shouldShowSearch: function() {
       return this.$route.name !== 'data'
-    }
+    },
   },
 
   watch: {
@@ -269,14 +287,6 @@ export default {
         }
       },
       immediate: true
-    },
-
-    loggedInUser: {
-      handler: function(newUser) {
-        if (newUser) {
-          this.fetchUsername(this.loggedInUser)
-        }
-      },
     },
 
     /**
@@ -298,25 +308,13 @@ export default {
       if (menuId === 'logout') {
         this.$store.dispatch('user/logout')
       }
+      if (menuId === 'profile') {
+        this.$router.push('/user/profile')
+      }
     },
     onLoginWithORCID: async function(x) {
       x.preventDefault()
       await this.$store.dispatch('user/login', 'ORCID')
-    },
-    fetchUsername: function() {
-      let token = this.$store.getters['user/userToken']
-      let url = `https://api.pennsieve.net/user?api_key=${token}`
-      this.sendXhr(url).then(this.setUsername, this.failureCallback)
-    },
-    setUsername: function(result) {
-      if (`${result.firstName[0]}` !== null && `${result.lastName}` !== null){
-        this.username = `${result.firstName[0]}. ${result.lastName}`}
-      else {
-        this.username = `${result.email}`
-      }
-    },
-    failureCallback: function(error) {
-      console.log(error)
     },
     /**
      * Sets a link to active based on current page
@@ -493,7 +491,7 @@ export default {
     font-weight: 400;
     line-height: 24px;
     color: $cochlear;
-    padding-right: 18px;
+    margin-right: 18px;
     text-decoration: none;
   }
   @media (min-width: 320px) and (max-width: 1120px) {
