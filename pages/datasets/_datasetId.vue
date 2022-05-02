@@ -58,9 +58,9 @@
                   :dataset-biolucida="biolucidaImageData"
                   :dataset-scicrunch="scicrunchData"
                 />
-                <dataset-citations-info
+                <dataset-references
                   v-if="hasCitations"
-                  v-show="activeTabId === 'citations'"
+                  v-show="activeTabId === 'references'"
                   :primary-publications="primaryPublications"
                   :associated-publications="associatedPublications"
                 />
@@ -96,7 +96,7 @@ import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
-import DatasetCitationsInfo from '@/components/DatasetDetails/DatasetCitationsInfo.vue'
+import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
@@ -331,7 +331,7 @@ export default {
     DatasetHeader,
     DatasetActionBox,
     CitationDetails,
-    DatasetCitationsInfo,
+    DatasetReferences,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
@@ -713,9 +713,9 @@ export default {
     hasCitations: {
       handler: function(newValue) {
         if (newValue) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'citations') !== undefined
+          const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'References', id: 'citations' })
+            this.tabs.splice(5, 0, { label: 'References', id: 'references' })
           }
         }
       },
