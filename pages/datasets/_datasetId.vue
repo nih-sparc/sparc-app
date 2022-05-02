@@ -14,7 +14,6 @@
           <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
             <dataset-header
               class="dataset-header"
-              :subtitle="subtitles.toString()"
               :latestVersionRevision="latestVersionRevision"
               :latestVersionDate="latestVersionDate"
               :numCitations="numCitations"
@@ -265,7 +264,7 @@ const getBiolucidaData = async datasetId => {
  * Get data for objects that have a data specific viewer.
  * @param {Number} datasetId
  */
-const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
+const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
   let biolucidaImageData = {}
   let scicrunchData = {}
   try {
@@ -284,20 +283,31 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
         id: Number(datasetId),
         version: datasetVersion
       }
-
-      // Check for flatmap neuron data
+      // Check for flatmap data
       if (scicrunchData.organs) {
-        let flatmapData = [{}]
-        for (let i in scicrunchData.organs) {
-          if (flatmapData.length <= i) {
-            flatmapData.push({})
-          }
-          flatmapData[i].taxo = Uberons.species['rat']
-          flatmapData[i].uberonid = scicrunchData.organs[i].curie
-          flatmapData[i].organ = scicrunchData.organs[i].name
-          flatmapData[i].id = datasetId
-          flatmapData[i].version = datasetVersion
+        let flatmapData = []
+        let species = undefined
+        // Get species data from algolia if it exists
+        if (datasetFacetsData){
+          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
+          if (speciesArray && speciesArray.length > 0)
+            species = speciesArray[0].children[0].label.toLowerCase()
         }
+        let taxo = Uberons.species['rat']
+        if (species && (species in Uberons.species))
+          taxo = Uberons.species[species]
+          
+        scicrunchData.organs.forEach(organ => {
+          let organData = {
+            taxo,
+            uberonid: organ.curie,
+            organ: organ.name,
+            id: datasetId,
+            version: datasetVersion
+          }
+          flatmapData.push(organData)
+
+        });
         scicrunchData['flatmaps'] = flatmapData
       }
     }
@@ -357,7 +367,8 @@ export default {
     const { biolucidaImageData, scicrunchData } = await getThumbnailData(
       datasetDetails.doi,
       datasetId,
-      datasetDetails.version
+      datasetDetails.version,
+      datasetFacetsData
     )
 
     // Get oSPARC file viewers
@@ -704,7 +715,7 @@ export default {
         if (newValue) {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'citations') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'Citations', id: 'citations' })
+            this.tabs.splice(5, 0, { label: 'References', id: 'citations' })
           }
         }
       },
