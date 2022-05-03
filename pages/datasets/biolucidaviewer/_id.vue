@@ -7,18 +7,9 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
-        <el-row :gutter="16">
-          <el-col :offset="22" :span="4" class="details">
-            <button class="ml-8 btn-copy-permalink-solid" @click="copyLink">
-              <svg-icon name="icon-permalink" height="28" width="28" />
-              <span class="visuallyhidden">Copy permalink</span>
-            </button>
-          </el-col>
-        </el-row>
         <biolucida-viewer
           v-show="activeTab === 'viewer'"
           :data="biolucidaData"
-          :query-view="queryView"
         />
       </detail-tabs>
       <div class="subpage pt-0 pb-16">
@@ -46,19 +37,20 @@
         <div v-if="filePath" class="file-detail">
           <strong class="file-detail__column_1">File location</strong>
           <div class="file-detail__column_2">
-            <nuxt-link 
+            <nuxt-link
               :to="{
                 name: `datasets-datasetId`,
                 params: {
-                  datasetId: datasetId, 
+                  datasetId: datasetId
                 },
                 query: {
                   datasetDetailsTab: 'files',
                   path: fileFolderLocation
                 }
-              }">
+              }"
+            >
               {{ filePath }}
-            </nuxt-link>   
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
@@ -114,6 +106,7 @@ import { pathOr } from 'ramda'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
+import FileDetails from '@/mixins/file-details'
 
 import { extractSection } from '@/utils/common'
 
@@ -128,7 +121,7 @@ export default {
     ImageChannels
   },
 
-  mixins: [MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [FileDetails, MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const image_identifier = route.params.id
@@ -144,22 +137,40 @@ export default {
     let file = {}
     if (dataset_info === undefined) {
       dataset_info = { readme: '', title: '' }
-    }
-    else{
+    } else {
       // Find the biolucida object with the same image name to determine the file path
-      const biolucidaObjects = pathOr([], ['biolucida-2d'], dataset_info).concat(pathOr([], ['biolucida-3d'], dataset_info))
+      const biolucidaObjects = pathOr(
+        [],
+        ['biolucida-2d'],
+        dataset_info
+      ).concat(pathOr([], ['biolucida-3d'], dataset_info))
       const biolucidaObject = biolucidaObjects.find(biolucidaObject => {
-        return pathOr('', ['dataset', 'path'], biolucidaObject).includes(image_info.name)
+        return pathOr('', ['dataset', 'path'], biolucidaObject).includes(
+          image_info.name
+        )
       })
-      const filePath = `files/${pathOr('', ['dataset', 'path'], biolucidaObject)}`
-      file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
+      const filePath = `files/${pathOr(
+        '',
+        ['dataset', 'path'],
+        biolucidaObject
+      )}`
+      file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+        $axios,
+        filePath,
+        route.query.dataset_id,
+        route.query.dataset_version
+      )
     }
+
+    console.log('==============')
+    console.log(image_identifier)
+    console.log(xmp_metadata)
 
     return {
       image_info,
       xmp_metadata,
       dataset_info,
-      file,
+      file
     }
   },
 
@@ -195,22 +206,6 @@ export default {
       return this.dataset_info.title
     },
 
-    /**
-     * Return the file location.
-     * @returns String
-     */
-    filePath: function() {
-      return this.file.path
-    },
-
-    /**
-     * Get the path of the file's parent folder.
-     * @returns String
-     */
-    fileFolderLocation: function() {
-      return this.filePath ? this.filePath.substring(0, this.filePath.lastIndexOf(this.file.name)) : ''
-    },
-
     readme: function() {
       return this.dataset_info.readme
     },
@@ -237,56 +232,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.hidden {
-  visibility: hidden;
-}
-
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
-}
-
-h1 {
-  flex: 1;
-  font-size: 1.5em;
-  line-height: 2rem;
-}
-.page-heading {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.375rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.page-heading__button {
-  flex-shrink: 0;
-}
-
-.file-detail {
-  border-bottom: 1px solid #dbdfe6;
-  flex-direction: column;
-  font-size: 0.875em;
-  display: flex;
-  padding: 1rem 0.625rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.file-detail__column_1 {
-  flex: 0.2;
-}
-.file-detail__column_2 {
-  flex: 0.8;
-}
+@import '@/assets/_viewer.scss';
 </style>

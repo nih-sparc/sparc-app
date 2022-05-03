@@ -3,7 +3,7 @@ import axios from 'axios'
 const apiClient = axios.create({
   baseURL: process.env.portal_api,
   withCredentials: false,
-  timeout: 20000
+  timeout: 25007
 })
 
 const searchDataset = async id => {
