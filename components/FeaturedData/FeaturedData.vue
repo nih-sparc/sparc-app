@@ -112,7 +112,6 @@ h2 {
 .data-wrap {
   align-items: center;
   display: grid;
-  row-gap: 2rem;
   justify-items: center;
   justify-content: space-evenly;
 
@@ -134,7 +133,7 @@ h2 {
   color: #000;
   text-decoration: none;
   width: 128px;
-  margin: 1.525em 0rem;
+  margin: 0.525em 0rem;
   &:hover,
   &:focus {
     opacity: 0.9;
