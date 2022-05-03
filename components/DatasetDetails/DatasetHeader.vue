@@ -222,7 +222,7 @@ export default {
     },
     numCitationsClicked: function() {
       this.$router.replace({
-        query: { ...this.$route.query, datasetDetailsTab: 'citations' }
+        query: { ...this.$route.query, datasetDetailsTab: 'references' }
       }).finally(() => {
         this.scrollToDatasetDetailsTabArea()
       })
