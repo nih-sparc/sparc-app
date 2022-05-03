@@ -283,28 +283,31 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         id: Number(datasetId),
         version: datasetVersion
       }
-
-      // Check for flatmap neuron data
+      // Check for flatmap data
       if (scicrunchData.organs) {
-        let flatmapData = [{}]
-        for (let i in scicrunchData.organs) {
-          if (flatmapData.length <= i) {
-            flatmapData.push({})
-          }
-
-          let taxo = Uberons.species['rat']
-
-          // Get species data from algolia if it exists
-          if (datasetFacetsData){
-            let species = datasetFacetsData.filter(i=>i.label==="Species")[0].children[0].label
-            taxo = Uberons.species[species.toLowerCase()]
-          }
-          flatmapData[i].taxo = taxo
-          flatmapData[i].uberonid = scicrunchData.organs[i].curie
-          flatmapData[i].organ = scicrunchData.organs[i].name
-          flatmapData[i].id = datasetId
-          flatmapData[i].version = datasetVersion
+        let flatmapData = []
+        let species = undefined
+        // Get species data from algolia if it exists
+        if (datasetFacetsData){
+          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
+          if (speciesArray && speciesArray.length > 0)
+            species = speciesArray[0].children[0].label.toLowerCase()
         }
+        let taxo = Uberons.species['rat']
+        if (species && (species in Uberons.species))
+          taxo = Uberons.species[species]
+          
+        scicrunchData.organs.forEach(organ => {
+          let organData = {
+            taxo,
+            uberonid: organ.curie,
+            organ: organ.name,
+            id: datasetId,
+            version: datasetVersion
+          }
+          flatmapData.push(organData)
+
+        });
         scicrunchData['flatmaps'] = flatmapData
       }
     }
