@@ -3,7 +3,7 @@ import axios from 'axios'
 const apiClient = axios.create({
   baseURL: process.env.portal_api,
   withCredentials: false,
-  timeout: 20000
+  timeout: 25007
 })
 
 const searchDataset = async id => {
@@ -41,7 +41,13 @@ const getCollectionInfo = async id => {
   return apiClient.get('collections/' + id)
 }
 
+const getBLVLink = async id => {
+  const response = await apiClient.get('/image_blv_link/' + id)
+  return response.data
+}
+
 export default {
+  getBLVLink,
   getThumbnail,
   getNeurolucidaThumbnail,
   searchDataset,

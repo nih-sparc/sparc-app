@@ -1,0 +1,19 @@
+.file-detail {
+  border-bottom: 1px solid #dbdfe6;
+  flex-direction: column;
+  font-size: 0.875em;
+  display: flex;
+  padding: 1rem 0.625rem;
+  @media (min-width: 48em) {
+    flex-direction: row;
+  }
+}
+.file-detail__column {
+  flex: 1;
+}
+.file-detail__column_1 {
+  flex: 0.2;
+}
+.file-detail__column_2 {
+  flex: 0.8;
+}

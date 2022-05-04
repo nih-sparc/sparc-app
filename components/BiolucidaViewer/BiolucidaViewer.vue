@@ -1,20 +1,16 @@
 <template>
   <div class="biolucida-viewer">
     <template v-if="data.status !== 'error'">
-      <p>
-        <a :href="data.share_link" target="_blank">
-          <bf-button>
-            View Full Screen
-            <svg-icon
-              class="icon-full-screen"
-              name="icon-full-screen"
-              height="24"
-              width="24"
-            />
-          </bf-button>
-        </a>
-      </p>
-      <iframe ref="biolucida" :src="data.share_link" />
+      <el-row class="mb-2 justify-space-between" type="flex">
+        <bf-button class="ml-8 btn-copy-permalink-solid" @click="launchViewer">
+          View in 3D
+        </bf-button>
+        <bf-button class="" @click="queryView">
+          <svg-icon name="icon-permalink" height="24" width="24" />
+          <span class="visuallyhidden">Copy permalink</span>
+        </bf-button>
+      </el-row>
+      <iframe ref="biolucida" :src="data.share_link" @load="biolucidaLoaded" />
     </template>
     <p v-else class="error">
       Sorry, an error has occurred
@@ -23,6 +19,8 @@
 </template>
 
 <script>
+import { successMessage, failMessage } from '@/utils/notification-messages'
+
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 export default {
@@ -33,24 +31,17 @@ export default {
   },
 
   props: {
-    queryView: {
-      type: Boolean,
-      default: false
-    },
     data: {
       type: Object,
       default: () => {
         return {
           biolucida_image_id: '',
+          blv_link: '',
           share_link: '',
-          status: ''
+          status: '',
+          location: ''
         }
       }
-    }
-  },
-  watch: {
-    queryView() {
-      this.$refs.biolucida.contentWindow.postMessage('getImgPos')
     }
   },
   mounted() {
@@ -60,11 +51,41 @@ export default {
     window.removeEventListener('message', this.receiveMessage)
   },
   methods: {
+    launchViewer() {
+      window.open(this.data.blv_link, '_blank')
+    },
+    queryView() {
+      this.$refs.biolucida.contentWindow.postMessage(
+        'getImgPos',
+        'https://sparc.biolucida.net'
+      )
+    },
+    biolucidaLoaded() {
+      if (this.data.location) {
+        this.$refs.biolucida.contentWindow.postMessage(
+          this.data.location,
+          'https://sparc.biolucida.net'
+        )
+      }
+    },
     receiveMessage(event) {
-      // Waiting on changes to Biolucida that will enable us to receive the desired message.
-      // console.log('received message.')
-      // console.log(event.origin)
-      // console.log(event.data)
+      if (event.origin === 'https://sparc.biolucida.net') {
+        const message = event.data
+        if (message === 'setting x,y,z,f failed') {
+          this.$message(failMessage('Unable to set image location.'))
+        } else if (!message.startsWith('setting x,y,z,f ')) {
+          this.$copyText(
+            `${process.env.ROOT_URL}${this.$route.fullPath}&location=${message}`
+          ).then(
+            () => {
+              this.$message(successMessage('Share link copied to clipboard.'))
+            },
+            () => {
+              this.$message(failMessage('Failed to copy share link.'))
+            }
+          )
+        }
+      }
     }
   }
 }
@@ -82,5 +103,9 @@ iframe {
 }
 .icon-full-screen {
   margin: -5px 0;
+}
+
+.justify-space-between {
+  justify-content: space-between;
 }
 </style>
