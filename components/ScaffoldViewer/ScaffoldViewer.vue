@@ -49,6 +49,12 @@ export default {
     region: {
       type: String,
       default: ''
+    },
+    state: {
+      type: Object,
+      default: () => {
+        return undefined
+      }
     }
   },
 
@@ -56,7 +62,6 @@ export default {
     return {
       displayMarkers: false,
       backgroundToggle: true,
-      state: undefined
     }
   },
 
