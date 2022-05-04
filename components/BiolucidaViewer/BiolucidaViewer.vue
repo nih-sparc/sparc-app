@@ -3,8 +3,7 @@
     <template v-if="data.status !== 'error'">
       <el-row class="mb-2 justify-space-between" type="flex">
         <bf-button class="ml-8 btn-copy-permalink-solid" @click="launchViewer">
-          View Full Screen
-          <svg-icon class="icon-full-screen" height="24" width="24" />
+          View in 3D
         </bf-button>
         <bf-button class="" @click="queryView">
           <svg-icon name="icon-permalink" height="24" width="24" />
@@ -37,6 +36,7 @@ export default {
       default: () => {
         return {
           biolucida_image_id: '',
+          blv_link: '',
           share_link: '',
           status: '',
           location: ''
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     launchViewer() {
-      window.open(this.data.share_link, '_blank')
+      window.open(this.data.blv_link, '_blank')
     },
     queryView() {
       this.$refs.biolucida.contentWindow.postMessage(

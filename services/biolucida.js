@@ -41,7 +41,13 @@ const getCollectionInfo = async id => {
   return apiClient.get('collections/' + id)
 }
 
+const getBLVLink = async id => {
+  const response = await apiClient.get('/image_blv_link/' + id)
+  return response.data
+}
+
 export default {
+  getBLVLink,
   getThumbnail,
   getNeurolucidaThumbnail,
   searchDataset,
