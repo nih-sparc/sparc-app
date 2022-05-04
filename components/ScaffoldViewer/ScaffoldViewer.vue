@@ -127,7 +127,8 @@ export default {
 .position-right {
   justify-content: flex-end;
 }
-
+</style>
+<style lang="scss">
 .scaffoldvuer-container {
   height: 90vh;
   max-width: calc(100% - 48px);
