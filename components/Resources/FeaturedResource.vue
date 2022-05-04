@@ -2,7 +2,15 @@
   <div class="featured-resource">
     <div v-if="thumbnailUrl !== null" class="thumbnail">
       <div class="image-container">
-        <div class="image-border">
+        <a
+          v-if="externalUrl"
+          class="image-border"
+          :href="externalUrl"
+          target="_blank"
+        >
+          <img :src="thumbnailUrl" />
+        </a>
+        <div v-else class="image-border">
           <img :src="thumbnailUrl" />
         </div>
       </div>
@@ -10,7 +18,12 @@
     <div class="resource-info">
       <div>
         <div class="header">
-          <h3>{{ title }}</h3>
+          <h3 v-if="externalUrl">
+            <a :href="externalUrl" target="_blank">
+              {{ title }}
+            </a>
+          </h3>
+          <h3 v-else >{{ title }}</h3>
           <sparc-pill v-if="tag !== null">
             {{ tag }}
           </sparc-pill>
@@ -62,7 +75,11 @@ export default {
     thumbnailUrl: {
       type: String,
       default: null
-    }
+    },
+    externalUrl: {
+      type: String,
+      default: null
+    },
   }
 }
 </script>

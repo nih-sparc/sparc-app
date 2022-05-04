@@ -27,8 +27,9 @@
             :subtitle="resource.fields.resourceType.join(', ')"
             :tag="'SPARC'"
             :description="resource.fields.description"
-            :thumbnailUrl="resource.fields.logo.fields.file.url"
-            :buttonLink="`/resources/${resource.sys.id}`"
+            :thumbnail-url="resource.fields.logo.fields.file.url"
+            :button-link="`/resources/${resource.sys.id}`"
+            :external-url="resource.fields.url"
           />
         </div>
       </div>
