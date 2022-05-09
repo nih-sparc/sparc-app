@@ -77,7 +77,7 @@
           placement="left-center"
         >
           <div slot="data">
-            oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at 
+            oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at
             <a class="ospac-tooltip" href="https://osparc.io/">
               osparc.io
             </a>

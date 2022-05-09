@@ -242,8 +242,8 @@ const getDownloadsSummary = async ($axios) => {
     const startDate = new Date('2000','1');
     const currentDate = new Date()
     const url = `${process.env.discover_api_host}/metrics/dataset/downloads/summary`
-    return $axios.$get(url, { 
-        params: { startDate: startDate, endDate: currentDate } 
+    return $axios.$get(url, {
+        params: { startDate: startDate, endDate: currentDate }
       }).then(response => {
       return response
     })
@@ -296,7 +296,7 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         let taxo = Uberons.species['rat']
         if (species && (species in Uberons.species))
           taxo = Uberons.species[species]
-          
+
         scicrunchData.organs.forEach(organ => {
           let organData = {
             taxo,
@@ -1022,7 +1022,7 @@ export default {
   @media (max-width: 47rem) {
     order: 1;
     margin-top: 0;
-  } 
+  }
 }
 .tabs-container {
   border: solid 1px $lineColor1;
