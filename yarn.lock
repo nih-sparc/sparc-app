@@ -162,6 +162,16 @@
     jsonschema "^1.4.0"
     vue "^2.6.11"
 
+"@abi-software/simulationvuer@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.6.tgz#2fa3137759c84d8a8e116e4fbb5a1619c40d0152"
+  integrity sha512-7Og/XhdDB6mWTLQkxlGTNnxCDMmESAaoJCN8Sgouvg/duaT50DinPhI+L4FolOB80J065HoDy25+OGbF6DLBtg==
+  dependencies:
+    "@abi-software/plotvuer" "^0.2.45"
+    element-ui "^2.14.1"
+    jsonschema "^1.4.0"
+    vue "^2.6.11"
+
 "@abi-software/svg-sprite@^0.1.11":
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.1.13.tgz#ab2f76b70f8a6f9d01535dab383662986762eb54"
