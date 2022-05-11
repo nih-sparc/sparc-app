@@ -116,6 +116,7 @@ import createClient from '@/plugins/contentful.js'
 
 import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
+import flatmaps from '~/services/flatmaps'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -294,24 +295,54 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
             species = speciesArray[0].children[0].label.toLowerCase()
         }
         let taxo = Uberons.species['rat']
-        if (species && (species in Uberons.species))
-          taxo = Uberons.species[species]
-          
-        scicrunchData.organs.forEach(organ => {
-          let organData = {
-            taxo,
-            uberonid: organ.curie,
-            organ: organ.name,
-            id: datasetId,
-            version: datasetVersion
-          }
-          flatmapData.push(organData)
 
-        });
+        if (species && species in Uberons.species)
+          taxo = Uberons.species[species]
+
+        // Check if flatmap has the anatomy for this species
+        let foundAnatomy = []
+        if (scicrunchData.organs[0]) {
+          const anatomy = scicrunchData.organs.map(organ => organ.curie)
+          let data = await flatmaps.anatomyQuery(taxo, anatomy)
+          window.data = data
+          if (data.data.values && data.data.values.length > 0) {
+            for (let val of data.data.values[0]){
+              // case where flatmap returns list of lists
+              if (Array.isArray(val[0])) {
+                if (anatomy.includes(val[1])) {
+                  foundAnatomy.push(val[1])
+                }
+              } else {
+                // case where flatmap reuturns on result
+                if (anatomy.includes(val)) {
+                  foundAnatomy.push(val)
+                }
+              }
+            }
+          }
+        }
+
+        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        scicrunchData.organs.forEach(organ => {
+          if (foundAnatomy.includes(organ.curie)){
+            let organData = {
+              taxo,
+              uberonid: organ.curie,
+              organ: organ.name,
+              id: datasetId,
+              version: datasetVersion
+            }
+            flatmapData.push(organData)
+          }
+        })
         scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {
+    console.error(
+      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
+      e
+    )
     return {
       biolucidaImageData: {},
       scicrunchData: {}
