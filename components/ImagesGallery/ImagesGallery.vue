@@ -228,10 +228,14 @@ export default {
                 link: linkUrl
               }
 
-              this.scaleThumbnailImage(item, {
-                mimetype: 'image/png',
-                data: this.flatmapImg[flatmaps.speciesMap[f.taxo]]
-              })
+              this.scaleThumbnailImage(
+                item,
+                {
+                  mimetype: 'image/png',
+                  data: this.flatmapImg[flatmaps.speciesMap[f.taxo]]
+                },
+                true
+              )
               return item
             })
           )
@@ -491,7 +495,7 @@ export default {
           }
         )
     },
-    scaleThumbnailImage(item, image_info) {
+    scaleThumbnailImage(item, image_info, local_file=false) {
       if (typeof window !== 'undefined') {
         let img = document.createElement('img')
         const canvas = document.createElement('canvas')
@@ -521,10 +525,7 @@ export default {
           this_.$set(item, 'thumbnail', dataurl)
         }
 
-        if (
-          image_info.data.includes('flatmap-thumbnail') ||
-          image_info.data.startsWith('data:')
-        ) {
+        if (local_file) {
           img.src = image_info.data
         } else {
           img.src = `data:${image_info.mimetype};base64,${image_info.data}`
