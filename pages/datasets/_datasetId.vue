@@ -304,7 +304,6 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         if (scicrunchData.organs[0]) {
           const anatomy = scicrunchData.organs.map(organ => organ.curie)
           let data = await flatmaps.anatomyQuery(taxo, anatomy)
-          window.data = data
           if (data.data.values && data.data.values.length > 0) {
             for (let val of data.data.values[0]){
               // case where flatmap returns list of lists

@@ -23,6 +23,7 @@
 <script>
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
+import flatmaps from '@/services/flatmaps'
 
 import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
@@ -95,7 +96,13 @@ export default {
       defaultScaffoldImg: require('~/assets/scaffold-light.png'),
       defaultPlotImg: require('~/assets/data-icon.png'),
       defaultVideoImg: require('~/assets/video-default.png'),
-      defaultFlatmapImg: require('~/assets/flatmap-thumbnail.png'),
+      flatmapImg: {
+        rat: require('~/assets/flatmap-thumbnails/rat.png'),
+        mouse: require('~/assets/flatmap-thumbnails/mouse.png'),
+        human: require('~/assets/flatmap-thumbnails/human.png'),
+        pig: require('~/assets/flatmap-thumbnails/pig.png'),
+        cat: require('~/assets/flatmap-thumbnails/cat.png')
+      },
       ro: null,
       maxWidth: 3,
       scicrunchItems: [],
@@ -211,7 +218,7 @@ export default {
             ...Array.from(scicrunchData.flatmaps, f => {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) title = this.capitalize(f.organ)
-              
+
               const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
               const item = {
                 id: f.uberonid,
@@ -220,9 +227,10 @@ export default {
                 thumbnail: null,
                 link: linkUrl
               }
+
               this.scaleThumbnailImage(item, {
                 mimetype: 'image/png',
-                data: this.defaultFlatmapImg
+                data: this.flatmapImg[flatmaps.speciesMap[f.taxo]]
               })
               return item
             })

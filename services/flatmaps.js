@@ -1,5 +1,13 @@
 import axios from 'axios'
 
+const speciesMap = {
+  'NCBITaxon:10114': 'rat',
+  'NCBITaxon:10090': 'mouse',
+  'NCBITaxon:9823': 'pig',
+  'NCBITaxon:9606': 'human',
+  'NCBITaxon:9685': 'cat'
+}
+
 const apiClient = axios.create({
   baseURL: process.env.flatmap_api,
   withCredentials: false,
@@ -39,5 +47,6 @@ const anatomyQuery = async (taxo, anatomy) => {
 
 export default {
   anatomyQuery,
-  buildConnectivitySqlStatement
+  buildConnectivitySqlStatement,
+  speciesMap
 }
