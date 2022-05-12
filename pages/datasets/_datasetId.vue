@@ -299,25 +299,15 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         if (species && species in Uberons.species)
           taxo = Uberons.species[species]
 
-        // Check if flatmap has the anatomy for this species
+        // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
+        // if a flatmap of (species) has (anatomy)
         let foundAnatomy = []
-        if (scicrunchData.organs[0]) {
+        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
           const anatomy = scicrunchData.organs.map(organ => organ.curie)
           let data = await flatmaps.anatomyQuery(taxo, anatomy)
-          if (data.data.values && data.data.values.length > 0) {
-            for (let val of data.data.values[0]){
-              // case where flatmap returns list of lists
-              if (Array.isArray(val[0])) {
-                if (anatomy.includes(val[1])) {
-                  foundAnatomy.push(val[1])
-                }
-              } else {
-                // case where flatmap reuturns on result
-                if (anatomy.includes(val)) {
-                  foundAnatomy.push(val)
-                }
-              }
-            }
+          let anatomyResponse = data.data.values
+          if (anatomyResponse && anatomyResponse.length > 0) {
+            foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
           }
         }
 
