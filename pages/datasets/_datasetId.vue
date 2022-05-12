@@ -305,7 +305,12 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
           const anatomy = scicrunchData.organs.map(organ => organ.curie)
           let data = await flatmaps.anatomyQuery(taxo, anatomy)
-          let anatomyResponse = data.data.values
+          //check request was successful
+          let anatomyResponse = data.data
+            ? data.data.values
+              ? data.data.values
+              : undefined
+            : undefined
           if (anatomyResponse && anatomyResponse.length > 0) {
             foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
           }
