@@ -22,7 +22,7 @@
     "@abi-software/mapintegratedvuer": "0.2.8",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/scaffoldvuer": "0.1.51",
-    "@abi-software/simulationvuer": "^0.5.6",
+    "@abi-software/simulationvuer": "^0.5.7",
     "@aws-amplify/auth": "^4.4.4",
     "@aws-amplify/core": "^4.4.2",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",

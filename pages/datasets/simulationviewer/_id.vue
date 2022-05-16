@@ -4,7 +4,7 @@
       <detail-tabs :active-tab="activeTab" :tabs="tabs" @set-active-tab="activeTab = $event">
         <client-only placeholder="Loading simulation ...">
           <div class="simulation-vuer-container">
-            <SimulationVuer :id="id" />
+            <SimulationVuer :apiLocation="apiLocation" :id="id" />
           </div>
         </client-only>
       </detail-tabs>
