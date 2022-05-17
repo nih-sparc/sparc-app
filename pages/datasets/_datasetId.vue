@@ -295,11 +295,8 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
             species = speciesArray[0].children[0].label.toLowerCase()
         }
         
-        let taxo = undefined
-
         // check if there is a flatmap for the given species
-        if (species && species in Uberons.species)
-          taxo = Uberons.species[species]
+        let taxo = species && species in Uberons.species ? Uberons.species[species] : undefined
 
         // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
         // if a flatmap of (species) has (anatomy)
