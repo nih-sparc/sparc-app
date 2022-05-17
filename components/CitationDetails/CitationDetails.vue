@@ -13,8 +13,9 @@
         href="https://sparc.science/help/1lmX4FWezRPTCOfGsBATnt"
         target="_blank"
       >
-        Help page.
+        Help page
       </a>
+      .
     </body>
     <br />
     <div v-for="citationType in citationTypes" :key="citationType.type">

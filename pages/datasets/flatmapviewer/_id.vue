@@ -138,7 +138,7 @@ export default {
       return undefined
     },
     /**
-     * Get the species name of the dataset. This is used if the datasts's species does not have a flatmap. (It will then use a rat flatmap)
+     * Get the species name of the dataset. This is used if the datasets's species does not have a flatmap. (It will then use a rat flatmap)
      * @returns String
      */
     forSpecies: function() {
