@@ -218,10 +218,6 @@ export default {
             ...Array.from(scicrunchData.flatmaps, f => {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) title = this.capitalize(f.organ)
-<<<<<<< HEAD
-=======
-
->>>>>>> main
               const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
               const item = {
                 id: f.uberonid,
@@ -498,7 +494,7 @@ export default {
           }
         )
     },
-    scaleThumbnailImage(item, image_info, local_file=false) {
+    scaleThumbnailImage(item, image_info, local_file = false) {
       if (typeof window !== 'undefined') {
         let img = document.createElement('img')
         const canvas = document.createElement('canvas')
@@ -585,8 +581,6 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          console.log('Maximum iterations reached aborting.')
           // return Promise.reject('Maximum iterations reached.')
         }
       )
@@ -612,8 +606,6 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          console.log('Maximum iterations reached aborting.')
           // return Promise.reject('Maximum iterations reached.')
         }
       )

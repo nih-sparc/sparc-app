@@ -157,15 +157,9 @@ export default {
     }
   },
   methods: {
-<<<<<<< HEAD
-    flatmapReady: function(/*component*/) {
-      /*let id = this.checkForIlxtr(this.uberonid)
-      component.mapImp.zoomTo(id)
-=======
     flatmapReady: function(component) {
       let id = this.checkForIlxtr(this.uberonid)
       component.mapImp.zoomToFeatures(id)
->>>>>>> main
 
       // **NOTE: This is commented out until fCCB approves the popups
       // component.checkAndCreatePopups({

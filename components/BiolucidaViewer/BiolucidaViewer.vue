@@ -74,9 +74,13 @@ export default {
         if (message === 'setting x,y,z,f failed') {
           this.$message(failMessage('Unable to set image location.'))
         } else if (!message.startsWith('setting x,y,z,f ')) {
-          this.$copyText(
-            `${process.env.ROOT_URL}${this.$route.fullPath}&location=${message}`
-          ).then(
+          let linkPath = `${process.env.ROOT_URL}${this.$route.fullPath}`
+          if (this.$route.query && this.$route.query.location) {
+            linkPath = linkPath.replace(this.$route.query.location, message)
+          } else {
+            linkPath += `&location=${message}`
+          }
+          this.$copyText(linkPath).then(
             () => {
               this.$message(successMessage('Share link copied to clipboard.'))
             },
