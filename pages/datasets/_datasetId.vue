@@ -58,9 +58,9 @@
                   :dataset-biolucida="biolucidaImageData"
                   :dataset-scicrunch="scicrunchData"
                 />
-                <dataset-citations-info
+                <dataset-references
                   v-if="hasCitations"
-                  v-show="activeTabId === 'citations'"
+                  v-show="activeTabId === 'references'"
                   :primary-publications="primaryPublications"
                   :associated-publications="associatedPublications"
                 />
@@ -96,7 +96,7 @@ import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
-import DatasetCitationsInfo from '@/components/DatasetDetails/DatasetCitationsInfo.vue'
+import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
@@ -116,6 +116,7 @@ import createClient from '@/plugins/contentful.js'
 
 import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
+import flatmaps from '~/services/flatmaps'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -283,32 +284,55 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         id: Number(datasetId),
         version: datasetVersion
       }
-
-      // Check for flatmap neuron data
+      // Check for flatmap data
       if (scicrunchData.organs) {
-        let flatmapData = [{}]
-        for (let i in scicrunchData.organs) {
-          if (flatmapData.length <= i) {
-            flatmapData.push({})
-          }
-
-          let taxo = Uberons.species['rat']
-
-          // Get species data from algolia if it exists
-          if (datasetFacetsData){
-            let species = datasetFacetsData.filter(i=>i.label==="Species")[0].children[0].label
-            taxo = Uberons.species[species.toLowerCase()]
-          }
-          flatmapData[i].taxo = taxo
-          flatmapData[i].uberonid = scicrunchData.organs[i].curie
-          flatmapData[i].organ = scicrunchData.organs[i].name
-          flatmapData[i].id = datasetId
-          flatmapData[i].version = datasetVersion
+        let flatmapData = []
+        let species = undefined
+        // Get species data from algolia if it exists
+        if (datasetFacetsData){
+          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
+          if (speciesArray && speciesArray.length > 0)
+            species = speciesArray[0].children[0].label.toLowerCase()
         }
+        let taxo = Uberons.species['rat']
+
+        if (species && species in Uberons.species)
+          taxo = Uberons.species[species]
+
+        // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
+        // if a flatmap of (species) has (anatomy)
+        let foundAnatomy = []
+        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
+          const anatomy = scicrunchData.organs.map(organ => organ.curie)
+          let data = await flatmaps.anatomyQuery(taxo, anatomy)
+          //check request was successful
+          let anatomyResponse = data.data ? data.data.values : undefined
+          if (anatomyResponse && anatomyResponse.length > 0) {
+            foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
+          }
+        }
+
+        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        scicrunchData.organs.forEach(organ => {
+          if (foundAnatomy.includes(organ.curie)){
+            let organData = {
+              taxo,
+              uberonid: organ.curie,
+              organ: organ.name,
+              id: datasetId,
+              version: datasetVersion
+            }
+            flatmapData.push(organData)
+          }
+        })
         scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {
+    console.error(
+      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
+      e
+    )
     return {
       biolucidaImageData: {},
       scicrunchData: {}
@@ -328,7 +352,7 @@ export default {
     DatasetHeader,
     DatasetActionBox,
     CitationDetails,
-    DatasetCitationsInfo,
+    DatasetReferences,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
@@ -710,9 +734,9 @@ export default {
     hasCitations: {
       handler: function(newValue) {
         if (newValue) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'citations') !== undefined
+          const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'References', id: 'citations' })
+            this.tabs.splice(5, 0, { label: 'References', id: 'references' })
           }
         }
       },

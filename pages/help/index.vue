@@ -6,9 +6,9 @@
       <div v-if="readmeSearchResults.length > 0" class="page-wrap container">
         <div class="subpage">
           <h2>
-            Readme Migration Results
+            Documentation Hub Results
             <sparc-tooltip placement="left-center">
-              <div slot="data">As the SPARC consortium continues their migration<br />process to utilize <a href="https://docs.sparc.science/" target="_blank">readme.io</a> in an effort to better<br />organize documentation, the content of the<br /><b>Readme Migration Results</b> may be incomplete and/or<br />replicated in multiple categories below</div>
+              <div slot="data">As the SPARC consortium continues their migration<br />process to the <a href="https://docs.sparc.science/" target="_blank">documentation hub</a>, the content of the<br /><b>Documentation Hub Results</b> may be incomplete and/or<br />replicated in multiple categories below</div>
               <svg-icon slot="item" class="purple-fill" icon="icon-help" width="26" height="26" />
             </sparc-tooltip>
           </h2>
