@@ -1,3 +1,5 @@
+@import './_variables.scss';
+
 .file-detail {
   border-bottom: 1px solid #dbdfe6;
   flex-direction: column;
@@ -16,4 +18,21 @@
 }
 .file-detail__column_2 {
   flex: 0.8;
+}
+
+.btn-copy-permalink {
+  border: none;
+  background: none;
+  color: $median;
+  cursor: pointer;
+  padding: 0;
+  &:active {
+    outline: none;
+  }
+}
+
+.remove-outline {
+  &:focus {
+    outline: none;
+  }
 }

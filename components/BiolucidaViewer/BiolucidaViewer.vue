@@ -5,10 +5,16 @@
         <bf-button class="ml-8 btn-copy-permalink-solid" @click="launchViewer">
           View in 3D
         </bf-button>
-        <bf-button class="" @click="queryView">
-          <svg-icon name="icon-permalink" height="24" width="24" />
-          <span class="visuallyhidden">Copy permalink</span>
-        </bf-button>
+        <button class="btn-copy-permalink" @click="queryView">
+          <sparc-tooltip placement="bottom-center" content="Copy Link">
+            <svg-icon
+              slot="item"
+              name="icon-permalink"
+              height="2rem"
+              width="1.75rem"
+            />
+          </sparc-tooltip>
+        </button>
       </el-row>
       <iframe ref="biolucida" :src="data.share_link" @load="biolucidaLoaded" />
     </template>
@@ -96,6 +102,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/_viewer.scss';
+
 iframe {
   border: none;
   height: 500px;
