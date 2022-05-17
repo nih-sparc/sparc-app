@@ -12,6 +12,7 @@
           :scaffold-u-r-l="scaffoldURL"
           :view-u-r-l="viewURL"
           :region="region"
+          :state="state"
         />
       </detail-tabs>
       <div class="subpage">
@@ -165,7 +166,8 @@ export default {
       ],
       activeTab: 'viewer',
       viewURL: '',
-      region: ''
+      region: '',
+      state: undefined
     }
   },
 

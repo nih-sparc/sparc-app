@@ -49,6 +49,12 @@ export default {
     region: {
       type: String,
       default: ''
+    },
+    state: {
+      type: Object,
+      default: () => {
+        return undefined
+      }
     }
   },
 
@@ -56,7 +62,6 @@ export default {
     return {
       displayMarkers: false,
       backgroundToggle: true,
-      state: undefined
     }
   },
 
@@ -127,7 +132,8 @@ export default {
 .position-right {
   justify-content: flex-end;
 }
-
+</style>
+<style lang="scss">
 .scaffoldvuer-container {
   height: 90vh;
   max-width: calc(100% - 48px);
