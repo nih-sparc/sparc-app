@@ -26,7 +26,7 @@ export default {
   data: function () {
     return {
       activeTab: "simulation",
-      apiLocation: process.env.portal_api,
+      apiLocation: process.env.portal_api + "/",
       id: Number(this.$route.query.id),
       tabs: [
         {
