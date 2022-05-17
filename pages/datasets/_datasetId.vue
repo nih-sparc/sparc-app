@@ -295,17 +295,13 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
             species = speciesArray[0].children[0].label.toLowerCase()
         }
 
-        // check if there is a flatmap for the given species
-        let taxo = species && species in Uberons.species ? Uberons.species[species] : undefined
+        // check if there is a flatmap for the given species, use a rat if there is not
+        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
 
         // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
         // if a flatmap of (species) has (anatomy)
         let foundAnatomy = []
         if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
-          if (!taxo) {
-            // If we do not have a flatmap for the species, we will check the rat flatmap
-            taxo = Uberons.species['rat']
-          }
           // Send a requst to flatmap knowledgebase
           const anatomy = scicrunchData.organs.map(organ => organ.curie)
           const data = await flatmaps.anatomyQuery(taxo, anatomy)
