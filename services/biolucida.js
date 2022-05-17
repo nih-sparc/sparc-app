@@ -7,12 +7,12 @@ const apiClient = axios.create({
 })
 
 const searchDataset = async id => {
-  const response = await apiClient.get('/image_search/' + id)
+  const response = await apiClient.get('image_search/' + id)
   return response.data
 }
 
 const getXMPInfo = async id => {
-  const response = await apiClient.get('/image_xmp_info/' + id)
+  const response = await apiClient.get('image_xmp_info/' + id)
   return response.data
 }
 
@@ -42,7 +42,7 @@ const getCollectionInfo = async id => {
 }
 
 const getBLVLink = async id => {
-  const response = await apiClient.get('/image_blv_link/' + id)
+  const response = await apiClient.get('image_blv_link/' + id)
   return response.data
 }
 
