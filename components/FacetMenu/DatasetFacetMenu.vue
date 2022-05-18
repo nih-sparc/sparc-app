@@ -7,6 +7,12 @@
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
+    <hr class="expand-all-separator"/>
+    <span class="flex">
+      <el-link @click="expandAllCategories">
+        Expand all
+      </el-link>
+    </span>
     <dropdown-multiselect
       v-for="item in this.facets"
       v-show="visibleCategories.includes(item.key)"
@@ -208,7 +214,14 @@ export default {
     deselectFacet(id) {
       this.$refs.facetCategories.map(facetCategory => facetCategory.uncheck(id))
       this.$refs.embargoedFacetCategory.uncheck(id)
-    }
+    },
+    expandAllCategories() {
+      this.$refs.facetCategories.map(facetCategory => {
+        if (this.visibleCategories.includes(facetCategory.category.id))
+          facetCategory.setCollapsed(false)
+      })
+      this.$refs.embargoedFacetCategory.setCollapsed(false)
+    },
 	}
 }
 </script>
@@ -216,8 +229,37 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
-.dataset-facet-menu > .sparc-design-system-component-dropdown-multiselect:not(:last-child){
+.dataset-facet-menu > .sparc-design-system-component-dropdown-multiselect:not(:last-child) {
   border-bottom: none;
+}
+
+hr {
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid $lineColor2;
+}
+
+::v-deep .el-link .el-link--inner {
+  text-decoration: underline;
+  text-transform: none;
+  color: $purple;
+  a:hover {
+    text-decoration: none;
+  }
+}
+//el-link adds a component with a border in order to underline the text.
+//The underline is too low so we cannot use it, and must instead hide it
+.el-link.el-link--default:after {
+  border: none;
+}
+
+.flex {
+  display: flex;
+  border-left: 1px solid $lineColor2;
+  border-right: 1px solid $lineColor2;
+  .el-link {
+    margin: .5rem .75rem .5rem auto;
+  }
 }
 
 </style>

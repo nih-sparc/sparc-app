@@ -6,9 +6,9 @@
     </span>
     <hr />
     <el-card shadow="never" class="facet-card">
-      <span v-if="selectedFacets.length == 0" class="no-facets"
-        >No filters applied</span
-      >
+      <span v-if="selectedFacets.length == 0" class="no-facets">
+        No filters applied
+      </span>
       <el-tag
         v-for="facet in selectedFacets"
         v-show="doShowTagFacet(facet)"
@@ -74,15 +74,15 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import '../../assets/_variables.scss';
+<style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .tags-container {
   padding: 0.75rem;
   hr {
     padding-bottom: 0.75rem;
     margin-bottom: 0.5rem;
     border: none;
-    border-bottom: 1px solid #dbdfe6;
+    border-bottom: 1px solid $lineColor2;
   }
   .flex {
     display: flex;
@@ -104,10 +104,10 @@ export default {
       text-transform: capitalize;
     }
   }
-  .el-link .el-link--inner {
+  ::v-deep .el-link .el-link--inner {
     text-decoration: underline;
     text-transform: none;
-    color: $median;
+    color: $purple;
     a:hover {
       text-decoration: none;
     }
