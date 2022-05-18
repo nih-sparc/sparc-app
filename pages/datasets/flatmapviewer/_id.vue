@@ -76,8 +76,11 @@
 <script>
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import idMaps from '@/static/js/uberon-map.js'
+import flatmaps from '@/services/flatmaps'
 import scicrunch from '@/services/scicrunch'
 import FormatString from '@/mixins/format-string'
+
+import { failMessage } from '@/utils/notification-messages'
 
 export default {
   name: 'FlatmapViewerPage',
@@ -133,6 +136,16 @@ export default {
         if (value === this.$route.query.taxo) return key
       }
       return undefined
+<<<<<<< HEAD
+=======
+    },
+    /**
+     * Get the species name of the dataset. This is used if the datasets's species does not have a flatmap. (It will then use a rat flatmap)
+     * @returns String
+     */
+    forSpecies: function() {
+      return this.$route.query.for_species
+>>>>>>> main
     },
     /**
      * Get the uberon id from the query parameter.
@@ -140,6 +153,13 @@ export default {
      */
     uberonid: function() {
       return this.$route.query.uberonid
+    },
+    /**
+     * Get the organ from the query parameter.
+     * @returns Number
+     */
+    organ: function() {
+      return this.$route.query.organ
     },
     /**
      * Return the dataset id from the route query.
@@ -155,6 +175,9 @@ export default {
     versionNumber: function() {
       return this.$route.query.dataset_version
     }
+  },
+  mounted: function() {
+    this.checkSpeciesMatch()
   },
   methods: {
     flatmapReady: function(component) {
@@ -172,6 +195,18 @@ export default {
         return 'ilxtr:' + id
       }
       return id
+    },
+    checkSpeciesMatch: function() {
+      if (
+        this.forSpecies &&
+        this.forSpecies !== flatmaps.speciesMap[this.taxo] // if they don't match, we know that a rat was used
+      ) {
+        this.$message(
+          failMessage(
+            `Sorry! A flatmap for a ${this.forSpecies} does not yet exist. The ${this.organ} of a rat has been shown instead.`
+          )
+        )
+      }
     }
   }
 }
