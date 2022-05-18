@@ -63,19 +63,19 @@ export default {
     queryView() {
       this.$refs.biolucida.contentWindow.postMessage(
         'getImgPos',
-        'https://sparc.biolucida.net'
+        process.env.BL_SERVER_URL
       )
     },
     biolucidaLoaded() {
       if (this.data.location) {
         this.$refs.biolucida.contentWindow.postMessage(
           this.data.location,
-          'https://sparc.biolucida.net'
+          process.env.BL_SERVER_URL
         )
       }
     },
     receiveMessage(event) {
-      if (event.origin === 'https://sparc.biolucida.net') {
+      if (event.origin === process.env.BL_SERVER_URL) {
         const message = event.data
         if (message === 'setting x,y,z,f failed') {
           this.$message(failMessage('Unable to set image location.'))
