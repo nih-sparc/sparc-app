@@ -218,12 +218,8 @@ export default {
             ...Array.from(scicrunchData.flatmaps, f => {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) title = this.capitalize(f.organ)
-<<<<<<< HEAD
-              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
-=======
 
               const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}&for_species=${f.species}&organ=${f.organ}`
->>>>>>> main
               const item = {
                 id: f.uberonid,
                 title: title,

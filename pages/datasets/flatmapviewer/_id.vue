@@ -136,8 +136,6 @@ export default {
         if (value === this.$route.query.taxo) return key
       }
       return undefined
-<<<<<<< HEAD
-=======
     },
     /**
      * Get the species name of the dataset. This is used if the datasets's species does not have a flatmap. (It will then use a rat flatmap)
@@ -145,7 +143,6 @@ export default {
      */
     forSpecies: function() {
       return this.$route.query.for_species
->>>>>>> main
     },
     /**
      * Get the uberon id from the query parameter.
