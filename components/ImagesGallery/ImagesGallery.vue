@@ -495,7 +495,7 @@ export default {
           }
         )
     },
-    scaleThumbnailImage(item, image_info, local_file=false) {
+    scaleThumbnailImage(item, image_info, local_file = false) {
       if (typeof window !== 'undefined') {
         let img = document.createElement('img')
         const canvas = document.createElement('canvas')
@@ -582,8 +582,7 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          return Promise.reject('Maximum iterations reached.')
+          // return Promise.reject('Maximum iterations reached.')
         }
       )
     },
@@ -608,8 +607,7 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          return Promise.reject('Maximum iterations reached.')
+          // return Promise.reject('Maximum iterations reached.')
         }
       )
     },
