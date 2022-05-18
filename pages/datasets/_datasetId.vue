@@ -327,7 +327,9 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
             flatmapData.push(organData)
           }
         })
-        scicrunchData['flatmaps'] = flatmapData
+        //Only create a flatmaps field if flatmapData is not empty
+        if (flatmapData.length > 0)
+          scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {
@@ -668,10 +670,16 @@ export default {
       return !this.embargoed && this.fileCount >= 1
     },
     hasGalleryImages: function() {
+      //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data
       return !this.embargoed &&
         (('dataset_images' in this.biolucidaImageData &&
           this.biolucidaImageData.dataset_images.length > 0) ||
-        Object.keys(this.scicrunchData).length > 0)
+        ('abi-scaffold-metadata-file' in this.scicrunchData) ||
+        ('video' in this.scicrunchData) ||
+        ('flatmaps' in this.scicrunchData) ||
+        ('mbf-segmentation' in this.scicrunchData) ||
+        ('abi-plot' in this.scicrunchData) ||
+        ('common-images' in this.scicrunchData))
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
