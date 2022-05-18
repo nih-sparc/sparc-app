@@ -212,3 +212,13 @@ export default {
 <style scoped lang="scss">
 @import '@/assets/_viewer.scss';
 </style>
+
+<style lang="scss">
+.flatmap-container {
+  margin-top: 1.5rem;
+  height: 90vh;
+  max-width: calc(100% - 48px);
+  padding-left: 24px;
+  @import '~@abi-software/flatmapvuer/dist/flatmapvuer';
+}
+</style>
