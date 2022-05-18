@@ -4,16 +4,18 @@
       Dataset Citation
     </div>
     <body>
-      To promote reproducibility and give credit to SPARC investigators who
-      publish their data, we recommend citing your usage of SPARC datasets.
-      To make it easy, the SPARC Portal provides the full data citation, including
-      the option of different formats, under the Cite tab of each dataset page. 
-      For more Information, please see our 
-      <a href="https://sparc.science/help/1lmX4FWezRPTCOfGsBATnt"
+      To promote reproducibility and give credit to investigators who publish
+      their data, we recommend citing your usage of SPARC datasets. To make it
+      easy, the SPARC Portal provides the full data citation, including the
+      option of different formats, under the Cite tab of each dataset page. For
+      more Information, please see our
+      <a
+        href="https://sparc.science/help/1lmX4FWezRPTCOfGsBATnt"
         target="_blank"
       >
         Help page
       </a>
+      .
     </body>
     <br />
     <div v-for="citationType in citationTypes" :key="citationType.type">

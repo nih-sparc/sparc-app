@@ -219,7 +219,7 @@ export default {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) title = this.capitalize(f.organ)
 
-              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
+              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}&for_species=${f.species}&organ=${f.organ}`
               const item = {
                 id: f.uberonid,
                 title: title,
