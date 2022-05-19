@@ -5,16 +5,18 @@
         <bf-button class="ml-8 btn-copy-permalink-solid" @click="launchViewer">
           View in 3D
         </bf-button>
-        <button class="btn-copy-permalink" @click="queryView">
-          <sparc-tooltip placement="bottom-center" content="Copy Link">
-            <svg-icon
-              slot="item"
-              name="icon-permalink"
-              height="2rem"
-              width="1.75rem"
-            />
-          </sparc-tooltip>
-        </button>
+        <client-only>
+          <button class="btn-copy-permalink" @click="queryView">
+            <sparc-tooltip placement="bottom-center" content="Copy Link">
+              <svg-icon
+                slot="item"
+                name="icon-permalink"
+                height="2rem"
+                width="1.75rem"
+              />
+            </sparc-tooltip>
+          </button>
+        </client-only>
       </el-row>
       <iframe ref="biolucida" :src="data.share_link" @load="biolucidaLoaded" />
     </template>
