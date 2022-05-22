@@ -85,6 +85,7 @@ export default {
     ctf_terms_id: '6XCER8v1TVVCoZdaBWg66t',
     ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
     ctf_success_story_id: 'successStory',
+    ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
@@ -138,7 +139,7 @@ export default {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['verifyUserProfileComplete']
+    middleware: ['verifyUserProfileComplete', 'documentationHubRedirects']
   },
   /*
    ** Global CSS
@@ -150,7 +151,8 @@ export default {
   plugins: [
     '@/plugins/bootstrap', 
     '@/plugins/contentful', 
-    '@/plugins/amplify', 
+    '@/plugins/amplify',
+    '@/plugins/documentation-hub-redirects',
     {
       src: '@/plugins/system-design-components', mode: 'client'
     }
