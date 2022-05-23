@@ -67,14 +67,15 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/gallery@0.3.0-beta.5":
-  version "0.3.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.0-beta.5.tgz#210842356ca90dfdfa851dfff0545f854ad03ac7"
-  integrity sha512-bf4ffSaDTvUz2+fg/v4Tl4Cif52rRE7v6otnmEOmoN8Mw16Mu0Pn9/lSQqCVSwpO68gHgpoyoK3A8VlwILlcPg==
+"@abi-software/gallery@0.3.0-beta.6":
+  version "0.3.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.0-beta.6.tgz#ea91a29212a53275f7f683cdbe57e5adf0a63dcf"
+  integrity sha512-Cw846uO7USoE5wt13+9gYumW968AKCv7fEzvlGvx0B/HrKVk3O1vcQYai0+e2d7aNW960MxPleAwi4L1FJlYGg==
   dependencies:
     "@babel/code-frame" "^7.12.11"
     axios "^0.26.1"
     babel-plugin-component "^1.1.1"
+    base64-inline-loader "^2.0.1"
     core-js "^3.8.3"
     element-ui "^2.15.0"
     vue "^2.6.11"
@@ -4096,6 +4097,14 @@ barycentric@^1.0.1:
   integrity sha1-8VYruJGyb0/sRjqC7to2V4AOxog=
   dependencies:
     robust-linear-solve "^1.0.0"
+
+base64-inline-loader@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/base64-inline-loader/-/base64-inline-loader-2.0.1.tgz#bb5f2a79007bc291f7298c32ef5295b7b450a9b2"
+  integrity sha512-PW2f2Xl2PDB+0ny7H81Ucxh3L0IcZVqbWdKrCf52OJhphy4lgv4G1KOLmhxRGwK9qVtPqqcEwvnemqOOFRSjOw==
+  dependencies:
+    loader-utils "^2.0.0"
+    mime-types "^2.1.32"
 
 base64-js@^1.0.2, base64-js@^1.3.0, base64-js@^1.3.1:
   version "1.5.1"
@@ -10200,12 +10209,24 @@ mime-db@1.46.0, "mime-db@>= 1.43.0 < 2":
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.46.0.tgz#6267748a7f799594de3cbc8cde91def349661cee"
   integrity sha512-svXaP8UQRZ5K7or+ZmfNhg2xX3yKDMUzqadsSqi4NCH/KomcH75MAMYAGVlvXn4+b/xOPhS3I2uHKRUzvjY7BQ==
 
+mime-db@1.52.0:
+  version "1.52.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
+  integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
+
 mime-types@^2.1.12, mime-types@^2.1.19, mime-types@^2.1.27, mime-types@^2.1.28, mime-types@~2.1.19, mime-types@~2.1.24:
   version "2.1.29"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.29.tgz#1d4ab77da64b91f5f72489df29236563754bb1b2"
   integrity sha512-Y/jMt/S5sR9OaqteJtslsFZKWOIIqMACsJSiHghlCAyhf7jfVYjKBmLiX8OgpWeW+fjJ2b+Az69aPFPkUOY6xQ==
   dependencies:
     mime-db "1.46.0"
+
+mime-types@^2.1.32:
+  version "2.1.35"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
+  integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
+  dependencies:
+    mime-db "1.52.0"
 
 mime@1.6.0:
   version "1.6.0"
