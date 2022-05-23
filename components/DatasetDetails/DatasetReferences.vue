@@ -1,5 +1,5 @@
 <template>
-  <div class="dataset-citations-info">
+  <div class="dataset-references">
     <div v-if="primaryPublications">
       <div class="heading2 mb-8">
         Primary Publications for this Dataset
@@ -37,7 +37,7 @@ import { isEmpty } from 'ramda'
 const PREPRINT_DOI_LINKS = ['https://doi.org/10.1101/']
 
 export default {
-  name: 'DatasetCitationsInfo',
+  name: 'DatasetReferences',
 
   components: {
     ApaCitation
@@ -45,11 +45,11 @@ export default {
   props: {
     primaryPublications: {
       type: Array,
-      default: []
+      default: () => []
     },
     associatedPublications: {
       type: Array,
-      default: []
+      default: () => []
     },
   },
   computed: {
@@ -59,8 +59,7 @@ export default {
       allPublications = this.associatedPublications ? allPublications.concat(this.associatedPublications) : allPublications
       allPublications.forEach(publication => {
         const publicationDoiLink = `https://doi.org/${publication.doi}`
-        if(PREPRINT_DOI_LINKS.some(preprintDoiLink => publicationDoiLink.includes(preprintDoiLink)))
-        {
+        if(PREPRINT_DOI_LINKS.some(preprintDoiLink => publicationDoiLink.includes(preprintDoiLink))){
           preprintPublications.push(publication)
         }
       })
@@ -71,7 +70,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dataset-citations-info {
+.dataset-references {
   hr {
     margin-top: 1rem;
     border-top: none;

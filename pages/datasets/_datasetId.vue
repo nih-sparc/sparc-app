@@ -58,9 +58,9 @@
                   :dataset-biolucida="biolucidaImageData"
                   :dataset-scicrunch="scicrunchData"
                 />
-                <dataset-citations-info
+                <dataset-references
                   v-if="hasCitations"
-                  v-show="activeTabId === 'citations'"
+                  v-show="activeTabId === 'references'"
                   :primary-publications="primaryPublications"
                   :associated-publications="associatedPublications"
                 />
@@ -96,7 +96,7 @@ import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
-import DatasetCitationsInfo from '@/components/DatasetDetails/DatasetCitationsInfo.vue'
+import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
@@ -116,6 +116,7 @@ import createClient from '@/plugins/contentful.js'
 
 import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
+import flatmaps from '~/services/flatmaps'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -293,25 +294,49 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
           if (speciesArray && speciesArray.length > 0)
             species = speciesArray[0].children[0].label.toLowerCase()
         }
-        let taxo = Uberons.species['rat']
-        if (species && (species in Uberons.species))
-          taxo = Uberons.species[species]
-          
-        scicrunchData.organs.forEach(organ => {
-          let organData = {
-            taxo,
-            uberonid: organ.curie,
-            organ: organ.name,
-            id: datasetId,
-            version: datasetVersion
-          }
-          flatmapData.push(organData)
 
-        });
-        scicrunchData['flatmaps'] = flatmapData
+        // check if there is a flatmap for the given species, use a rat if there is not
+        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
+
+        // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
+        // if a flatmap of (species) has (anatomy)
+        let foundAnatomy = []
+        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
+          // Send a requst to flatmap knowledgebase
+          const anatomy = scicrunchData.organs.map(organ => organ.curie)
+          const data = await flatmaps.anatomyQuery(taxo, anatomy)
+
+          // Check request was successful
+          const anatomyResponse = data.data ? data.data.values : undefined
+          if (anatomyResponse && anatomyResponse.length > 0) {
+            foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
+          }
+        }
+
+        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        scicrunchData.organs.forEach(organ => {
+          if (foundAnatomy.includes(organ.curie)){
+            let organData = {
+              taxo,
+              uberonid: organ.curie,
+              organ: organ.name,
+              id: datasetId,
+              version: datasetVersion,
+              species: species
+            }
+            flatmapData.push(organData)
+          }
+        })
+        //Only create a flatmaps field if flatmapData is not empty
+        if (flatmapData.length > 0)
+          scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {
+    console.error(
+      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
+      e
+    )
     return {
       biolucidaImageData: {},
       scicrunchData: {}
@@ -331,7 +356,7 @@ export default {
     DatasetHeader,
     DatasetActionBox,
     CitationDetails,
-    DatasetCitationsInfo,
+    DatasetReferences,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
@@ -645,10 +670,16 @@ export default {
       return !this.embargoed && this.fileCount >= 1
     },
     hasGalleryImages: function() {
+      //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data
       return !this.embargoed &&
         (('dataset_images' in this.biolucidaImageData &&
           this.biolucidaImageData.dataset_images.length > 0) ||
-        Object.keys(this.scicrunchData).length > 0)
+        ('abi-scaffold-metadata-file' in this.scicrunchData) ||
+        ('video' in this.scicrunchData) ||
+        ('flatmaps' in this.scicrunchData) ||
+        ('mbf-segmentation' in this.scicrunchData) ||
+        ('abi-plot' in this.scicrunchData) ||
+        ('common-images' in this.scicrunchData))
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
@@ -713,9 +744,9 @@ export default {
     hasCitations: {
       handler: function(newValue) {
         if (newValue) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'citations') !== undefined
+          const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'References', id: 'citations' })
+            this.tabs.splice(5, 0, { label: 'References', id: 'references' })
           }
         }
       },
