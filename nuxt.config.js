@@ -92,7 +92,8 @@ export default {
     ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev_published_time_desc',
-    BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
+    BL_API_URL: 'https://sparc.biolucida.net/api/v1/',
+    BL_SERVER_URL: 'https://sparc.biolucida.net',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
@@ -137,8 +138,7 @@ export default {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['verifyUserProfileComplete'],
-    base: '/sparc-app/',
+    middleware: ['verifyUserProfileComplete']
   },
   /*
    ** Global CSS
@@ -194,7 +194,6 @@ export default {
    */
   build: {
     transpile: [/^element-ui/, 'system-design-components'],
-    publicPath: '/sparc-app/',
     /*
      ** You can extend webpack config here
      */
