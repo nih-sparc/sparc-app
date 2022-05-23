@@ -24,10 +24,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmap-viewer@2.2.0-beta.7":
-  version "2.2.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.0-beta.7.tgz#ce7db0afaca3893d359d05a1e321289bb4bbf231"
-  integrity sha512-keAB4wn7nEw7eBA9Z4HyODVSbZiKqRk1l40Z9gVQXQ4ZYUwh4MqFZsYNvfdujciBsUj0hrl/mphHNKXAGIOu2g==
+"@abi-software/flatmap-viewer@2.2.0-beta.12":
+  version "2.2.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.0-beta.12.tgz#87d11b1255281e9e1c032ef0a3806275429a32f8"
+  integrity sha512-2bDHZ3DSp3AFsUHYmJ6MPYyj6BHQv0GHU6Q+NSuK8eFUQZwYKJvlw4vkx9x+rPEZwuZUmxv7RrQQdw5FgOU6qA==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@turf/area" "^6.0.1"
@@ -37,25 +37,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@0.2.4-beta-6":
-  version "0.2.4-beta-6"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.2.4-beta-6.tgz#a4f9f5ae8be5de79860cd5a3093e7924a30e88ed"
-  integrity sha512-vdrC2b259ZET95nvk7H5ilpUv9Ed0PinkEMBUomQTh5QX+fvRRNAbXTt9WTe8hRsJ42YqlsN9pPDsVOU66JcyQ==
-  dependencies:
-    "@abi-software/flatmap-viewer" "2.2.0-beta.7"
-    "@abi-software/svg-sprite" "^0.1.14"
-    core-js "^3.3.2"
-    css-element-queries "^1.2.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.21"
-    vue "^2.6.10"
-
-"@abi-software/flatmapvuer@0.2.5-beta-0":
-  version "0.2.5-beta-0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.2.5-beta-0.tgz#cd9e8a4f762d083c09c2de9a587091d0dc5023a2"
-  integrity sha512-m/7QMB7pa5fxdHxPUpLXh/GqCWU9iK1obBNRfu0ex3RNEIRCQPqqNOBDQ8juUL7RHDn6mHmOfUqVAZZipSq3cg==
+"@abi-software/flatmapvuer@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.2.5.tgz#770849dc1cd4afc8876d175ec626a92a10162396"
+  integrity sha512-M4RXGw25Rhw4cfGImT7csyxojfAHq+FfTpEDqUCzmvGez+4OZ9IQdUu3diWgH6P0r4FXCvrxj1hx2QTC+9dG8w==
   dependencies:
     "@abi-software/flatmap-viewer" "2.2.0-beta.10"
     "@abi-software/svg-sprite" "^0.1.14"
@@ -67,10 +52,25 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/gallery@0.3.0-beta.2", "@abi-software/gallery@^0.3.0-beta.2":
-  version "0.3.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.0-beta.2.tgz#a992c7522cee8b50b1e92286e9e1a651d9140065"
-  integrity sha512-sYfXNdM3jhRmEJy9gscPfafcyzL9otGqfc349SRRzFxeEsncZlFSEPU0huXgt5y3+FxF+VzKPoYhcENDmSDn9w==
+"@abi-software/flatmapvuer@0.2.5-beta-1":
+  version "0.2.5-beta-1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.2.5-beta-1.tgz#cc2681219516428aa66eef8f52e1cf2963404412"
+  integrity sha512-wKNJHqMg2+xwtrAjpAlbH/KNZWjJorYPsrAgAIcCu8qKOQU+djp8XiGTFmYOawnUwVOR6uHclb/Hn2v3QF/r6Q==
+  dependencies:
+    "@abi-software/flatmap-viewer" "2.2.0-beta.10"
+    "@abi-software/svg-sprite" "^0.1.14"
+    core-js "^3.3.2"
+    css-element-queries "^1.2.2"
+    current-script-polyfill "^1.0.0"
+    element-ui "^2.13.0"
+    file-loader "^5.0.2"
+    lodash "^4.17.21"
+    vue "^2.6.10"
+
+"@abi-software/gallery@0.3.0-beta.4", "@abi-software/gallery@^0.3.0-beta.4":
+  version "0.3.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.0-beta.4.tgz#618f4680aa7076b741ddc561ab213baefadccaab"
+  integrity sha512-IpSzTdqpRMLyg0IfMLTUtI2wP7QiqLURbaNc5JMrCp0kG8aYktv/2W4+wJbwMWeevdaFm0RdVOiWA9G5Di3lVg==
   dependencies:
     "@babel/code-frame" "^7.12.11"
     axios "^0.26.1"
@@ -79,28 +79,28 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.2.0-beta.8":
-  version "1.2.0-beta.8"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.2.0-beta.8.tgz#7aa12cb9efbbab7fb7e82c6e09c3351d4c3247fa"
-  integrity sha512-LywA0x6++KgzVBCX3lSVypr+l7mqCpmRHpN788H2SIY6OrYIZD0+7n3EqJed5BwjgHXhkJ4LoTuGvqTOiOsULA==
+"@abi-software/map-side-bar@1.2.0-beta.10":
+  version "1.2.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.2.0-beta.10.tgz#0ae5fc0d1947ea8909878cd1e7a3ea48c6d61fae"
+  integrity sha512-7C1qu47VlghlvpODn0CGKlPRiep0CRd7jT9dotKRmoBVyetnlQPnGwiGEQ6KtbpqVg1YoP3EkT2g8N8Y28P8UQ==
   dependencies:
-    "@abi-software/gallery" "^0.3.0-beta.2"
+    "@abi-software/gallery" "^0.3.0-beta.4"
     "@abi-software/svg-sprite" "^0.1.14"
     algoliasearch "^4.10.5"
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@0.3.0-beta.2":
-  version "0.3.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.0-beta.2.tgz#4e6a9fa32e3fc91c8723d83560bd6d472472200e"
-  integrity sha512-sd07ugmJzYkBMRROq9g6LIraZy0hPsvRsMs0LJVoQLwurHT9GDU0T/KfB/a7s9YJjzALmV4Ca75ymO08hMrT7Q==
+"@abi-software/mapintegratedvuer@0.3.0-beta.6":
+  version "0.3.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.0-beta.6.tgz#e7e4fc1cc93e99a8795601d4fc01b4ea81ec2655"
+  integrity sha512-Ir6PomIYhQqKQYE/zCzkYp4WDHtHt/b6LgfIsSO7I+9aU1dnMjvr4GIbFTZohRd0lMtbrkjvYHTHZ7q1kMsvvQ==
   dependencies:
-    "@abi-software/flatmap-viewer" "2.2.0-beta.10"
-    "@abi-software/flatmapvuer" "0.2.5-beta-0"
-    "@abi-software/map-side-bar" "^1.2.0-beta.8"
-    "@abi-software/plotvuer" "^0.2.45"
-    "@abi-software/scaffoldvuer" "^0.1.52-beta.4"
-    "@abi-software/simulationvuer" "^0.5.4"
+    "@abi-software/flatmap-viewer" "2.2.0-beta.12"
+    "@abi-software/flatmapvuer" "0.2.5-beta-1"
+    "@abi-software/map-side-bar" "1.2.0-beta.10"
+    "@abi-software/plotvuer" "^0.3.9"
+    "@abi-software/scaffoldvuer" "^0.1.52-beta.5"
+    "@abi-software/simulationvuer" "^0.5.8"
     "@abi-software/svg-sprite" "^0.1.15"
     "@soda/get-current-script" "^1.0.2"
     core-js "^3.3.2"
@@ -153,28 +153,27 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@0.1.51":
-  version "0.1.51"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.51.tgz#530f41d2b87b215fa341d99c55893611d33be97a"
-  integrity sha512-cC6GmMIbaEWGT7RtGvkUZ9hG7Ob1S/0btyOy7YnPhyutCkZh1GcrVBUN6hUdD/vimkWsT+uYAiPaGwzqSKn3Pw==
+"@abi-software/plotvuer@^0.3.9":
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.3.9.tgz#8c8876b9f3fc760671ad02d406102074a0ad385a"
+  integrity sha512-g53am6LPQxdHDehULKApb5sCR5C17sBvbPxwHBYQxqoPIX3KmipyqPWqQAs+7/9aoQwDqLW/2o27iayXT0na9Q==
   dependencies:
-    "@abi-software/svg-sprite" "^0.1.14"
-    axios "^0.21.2"
-    core-js "^3.3.2"
+    "@abi-software/svg-sprite" "^0.1.15"
+    core-js "^3.7.0"
+    css-element-queries "^1.2.3"
     current-script-polyfill "^1.0.0"
+    d3-time-format "^3.0.0"
     element-ui "^2.13.0"
-    google-spreadsheet "^3.1.15"
-    lodash "^4.17.21"
-    query-string "^6.11.1"
+    papaparse "^5.3.0"
+    plotly.js "^1.55.2"
     vue "^2.6.10"
-    vue-drag-resize "^1.3.2"
-    vue-router "^3.5.1"
-    zincjs "^0.41.2"
+    vue-draggable-resizable "^2.2.0"
+    vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@^0.1.52-beta.4":
-  version "0.1.52-beta.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.52-beta.4.tgz#5a1f84464f385e24ade8ec1bf7e77b719d1f9d71"
-  integrity sha512-wd+5hhyd/B14hN57K2M2YYtdN03lrZqfuHRfWLqPfWbhk4+MS5wU6MxsqbTjujS+pnLvygOliHm54P1Vl61EUw==
+"@abi-software/scaffoldvuer@0.1.52-beta.5", "@abi-software/scaffoldvuer@^0.1.52-beta.5":
+  version "0.1.52-beta.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.52-beta.5.tgz#0c480eed362a50cd1f9522a71690067ae64ce689"
+  integrity sha512-0ZLLZdFTwQ8uH2v1LtMDvPArDHbQS/czJ1/1G/sGfpA34WZC6yEK4jBEMeLs208Ih6rwPf8Fd+uhzsJeO5EFoA==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.14"
     axios "^0.21.2"
@@ -189,10 +188,10 @@
     vue-router "^3.5.1"
     zincjs "^1.0.0-alpha-3"
 
-"@abi-software/simulationvuer@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.4.tgz#5c87b82fefc7990f1f201cd270650d0cf0c3d982"
-  integrity sha512-KnvmvhU32wQizOFlB6MZbnVslemxbOa98cSr0/R7g420Vri4yg3nwTb2P46uDcm3b4G/CdbllZjr8klC+zofNQ==
+"@abi-software/simulationvuer@^0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.8.tgz#52d42874c7511684d4958014cce7926db9cba43e"
+  integrity sha512-mpKK3lrgrGAq3zdkZOejxzBviHYuSSI4illlOeqLI+ORZHdFVkQ1I2hNACKVNAI8pxnhawAHX47Vuzfluq9IFw==
   dependencies:
     "@abi-software/plotvuer" "^0.2.45"
     element-ui "^2.14.1"
@@ -5308,7 +5307,12 @@ core-js-compat@^3.8.0, core-js-compat@^3.8.1, core-js-compat@^3.9.0:
     browserslist "^4.16.3"
     semver "7.0.0"
 
-core-js@^2.4.0, core-js@^2.5.7, core-js@^2.6.5:
+core-js@3.22.5:
+  version "3.22.5"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.22.5.tgz#a5f5a58e663d5c0ebb4e680cd7be37536fb2a9cf"
+  integrity sha512-VP/xYuvJ0MJWRAobcmQ8F2H6Bsn+s7zqAAjFaHGBMc5AQm7zaelhD1LGduFn2EehEcQcU+br6t+fwbpQ5d1ZWA==
+
+core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
@@ -7066,9 +7070,9 @@ follow-redirects@^1.14.0:
   integrity sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==
 
 follow-redirects@^1.14.8:
-  version "1.14.9"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.9.tgz#dd4ea157de7bfaf9ea9b3fbd85aa16951f78d8d7"
-  integrity sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.0.tgz#06441868281c86d0dda4ad8bdaead2d02dca89d4"
+  integrity sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==
 
 font-atlas@^2.1.0:
   version "2.1.0"
@@ -15661,20 +15665,6 @@ zincjs@0.39.1:
     lodash "^4.17.19"
     promise-polyfill "^8.1.3"
     three "^0.126.0"
-    three-spritetext "^1.6.2"
-    url-loader "^2.1.0"
-    url-polyfill "^1.1.7"
-    webworkify-webpack "^2.1.5"
-
-zincjs@^0.41.2:
-  version "0.41.2"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-0.41.2.tgz#d6be791d2ddb1e047a0128b40920c65820cc24be"
-  integrity sha512-sLw6tXBIQkQhBh8ZR4TeH88nLWC4hxyoDwYAroOl50UnqRdfojYSabghkT15WA0POaOqMdneaXAX2cXZZiQrKA==
-  dependencies:
-    css-element-queries "^1.2.2"
-    lodash "^4.17.19"
-    promise-polyfill "^8.1.3"
-    three "^0.130.1"
     three-spritetext "^1.6.2"
     url-loader "^2.1.0"
     url-polyfill "^1.1.7"

@@ -137,7 +137,8 @@ export default {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['verifyUserProfileComplete']
+    middleware: ['verifyUserProfileComplete'],
+    base: '/sparc-app/',
   },
   /*
    ** Global CSS
@@ -193,7 +194,7 @@ export default {
    */
   build: {
     transpile: [/^element-ui/, 'system-design-components'],
-
+    publicPath: '/sparc-app/',
     /*
      ** You can extend webpack config here
      */
