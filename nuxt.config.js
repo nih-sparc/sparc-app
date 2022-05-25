@@ -153,6 +153,9 @@ export default {
     '@/plugins/amplify', 
     {
       src: '@/plugins/system-design-components', mode: 'client'
+    },
+    {
+      src: '@/plugins/tsviewer', mode: 'client'
     }
   ],
   /*
