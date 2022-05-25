@@ -49,6 +49,7 @@
     "ramda": "^0.26.1",
     "redirect-ssl": "^1.4.1",
     "striptags": "^3.2.0",
+    "tsviewer": "^0.1.0",
     "vue": "^2.6.10",
     "vue-clipboard2": "^0.3.1",
     "vue-infinite-loading": "^2.4.4",
