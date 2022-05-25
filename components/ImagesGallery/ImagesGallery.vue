@@ -219,7 +219,7 @@ export default {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) title = this.capitalize(f.organ)
 
-              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
+              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}&for_species=${f.species}&organ=${f.organ}`
               const item = {
                 id: f.uberonid,
                 title: title,
@@ -495,7 +495,7 @@ export default {
           }
         )
     },
-    scaleThumbnailImage(item, image_info, local_file=false) {
+    scaleThumbnailImage(item, image_info, local_file = false) {
       if (typeof window !== 'undefined') {
         let img = document.createElement('img')
         const canvas = document.createElement('canvas')
@@ -582,8 +582,7 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          return Promise.reject('Maximum iterations reached.')
+          // return Promise.reject('Maximum iterations reached.')
         }
       )
     },
@@ -608,8 +607,7 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          return Promise.reject('Maximum iterations reached.')
+          // return Promise.reject('Maximum iterations reached.')
         }
       )
     },

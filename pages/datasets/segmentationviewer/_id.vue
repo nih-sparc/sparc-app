@@ -37,19 +37,20 @@
         <div class="file-detail">
           <strong class="file-detail__column_1">File location</strong>
           <div class="file-detail__column_2">
-            <nuxt-link 
+            <nuxt-link
               :to="{
                 name: `datasets-datasetId`,
                 params: {
-                  datasetId: datasetId, 
+                  datasetId: datasetId
                 },
                 query: {
                   datasetDetailsTab: 'files',
                   path: fileFolderLocation
                 }
-              }">
+              }"
+            >
               {{ filePath }}
-            </nuxt-link>   
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
@@ -110,6 +111,7 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
+import FileDetails from '@/mixins/file-details'
 
 import { extractSection } from '@/utils/common'
 import { baseName } from '@/utils/common'
@@ -123,7 +125,7 @@ export default {
     BfButton
   },
 
-  mixins: [MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [FileDetails, MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const identifier = route.query.dataset_id
@@ -155,7 +157,12 @@ export default {
       }
 
       const filePath = route.query.file_path
-      const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
+      const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+        $axios,
+        filePath,
+        route.query.dataset_id,
+        route.query.dataset_version
+      )
 
       return {
         segmentation_info,
@@ -221,28 +228,6 @@ export default {
       return this.$route.query.dataset_version
     },
     /**
-     * Return the file location.
-     * @returns String
-     */
-    filePath: function() {
-      return this.file.path
-    },
-    /**
-     * Return the file name.
-     * @returns String
-     */
-    fileName: function() {
-      return this.file.name
-    },
-
-    /**
-     * Get the path of the file's parent folder.
-     * @returns String
-     */
-    fileFolderLocation: function() {
-      return this.filePath.substring(0, this.filePath.lastIndexOf(this.fileName))
-    },
-    /**
      * Return the type of an segmentation.
      * @returns String
      */
@@ -259,55 +244,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
-}
-
-h1 {
-  flex: 1;
-  font-size: 1.5em;
-  line-height: 2rem;
-}
-.page-heading {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.375rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.page-heading__button {
-  flex-shrink: 0;
-}
-
-.file-detail {
-  border-bottom: 1px solid #dbdfe6;
-  flex-direction: column;
-  font-size: 0.875em;
-  display: flex;
-  padding: 1rem 0.625rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.file-detail__column {
-  flex: 1;
-}
-.file-detail__column_1 {
-  flex: 0.2;
-}
-.file-detail__column_2 {
-  flex: 0.8;
-}
+@import '@/assets/_viewer.scss';
 </style>

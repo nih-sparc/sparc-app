@@ -72,15 +72,25 @@ export default {
     BfButton
   },
 
-  mixins: [BfStorageMetrics, FormatDate, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [
+    BfStorageMetrics,
+    FormatDate,
+    RequestDownloadFile,
+    FetchPennsieveFile
+  ],
 
   async asyncData({ route, $axios }) {
     const filePath = route.query.path
-    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.params.datasetId, route.params.datasetVersion)
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+      $axios,
+      filePath,
+      route.params.datasetId,
+      route.params.datasetVersion
+    )
 
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(
-      `${process.env.BL_SERVER_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`
+      `${process.env.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`
     )
 
     const hasViewer = biolucidaData.status !== 'error'
