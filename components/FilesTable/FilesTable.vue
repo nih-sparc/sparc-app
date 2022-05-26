@@ -371,7 +371,7 @@ export default {
     getFilesurl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      const url = `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}/files/browse`
+      const url = `${process.env.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
 
       return `${url}?path=${this.path}&limit=${this.limit}`
     },
@@ -383,7 +383,7 @@ export default {
     getFilesIdUrl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      return `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}`
+      return `${process.env.discover_api_host}/datasets/${id}/versions/${version}`
     },
 
     /**
