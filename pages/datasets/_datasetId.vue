@@ -243,8 +243,8 @@ const getDownloadsSummary = async ($axios) => {
     const startDate = new Date('2000','1');
     const currentDate = new Date()
     const url = `${process.env.discover_api_host}/metrics/dataset/downloads/summary`
-    return $axios.$get(url, { 
-        params: { startDate: startDate, endDate: currentDate } 
+    return $axios.$get(url, {
+        params: { startDate: startDate, endDate: currentDate }
       }).then(response => {
       return response
     })
@@ -294,19 +294,20 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
           if (speciesArray && speciesArray.length > 0)
             species = speciesArray[0].children[0].label.toLowerCase()
         }
-        let taxo = Uberons.species['rat']
 
-        if (species && species in Uberons.species)
-          taxo = Uberons.species[species]
+        // check if there is a flatmap for the given species, use a rat if there is not
+        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
 
         // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
         // if a flatmap of (species) has (anatomy)
         let foundAnatomy = []
         if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
+          // Send a requst to flatmap knowledgebase
           const anatomy = scicrunchData.organs.map(organ => organ.curie)
-          let data = await flatmaps.anatomyQuery(taxo, anatomy)
-          //check request was successful
-          let anatomyResponse = data.data ? data.data.values : undefined
+          const data = await flatmaps.anatomyQuery(taxo, anatomy)
+
+          // Check request was successful
+          const anatomyResponse = data.data ? data.data.values : undefined
           if (anatomyResponse && anatomyResponse.length > 0) {
             foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
           }
@@ -320,12 +321,15 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
               uberonid: organ.curie,
               organ: organ.name,
               id: datasetId,
-              version: datasetVersion
+              version: datasetVersion,
+              species: species
             }
             flatmapData.push(organData)
           }
         })
-        scicrunchData['flatmaps'] = flatmapData
+        //Only create a flatmaps field if flatmapData is not empty
+        if (flatmapData.length > 0)
+          scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {
@@ -391,6 +395,8 @@ export default {
       datasetDetails.version,
       datasetFacetsData
     )
+
+    datasetDetails.sciCrunch = scicrunchData;
 
     // Get oSPARC file viewers
     const osparcViewers = await $axios
@@ -666,10 +672,16 @@ export default {
       return !this.embargoed && this.fileCount >= 1
     },
     hasGalleryImages: function() {
+      //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data
       return !this.embargoed &&
         (('dataset_images' in this.biolucidaImageData &&
           this.biolucidaImageData.dataset_images.length > 0) ||
-        Object.keys(this.scicrunchData).length > 0)
+        ('abi-scaffold-metadata-file' in this.scicrunchData) ||
+        ('video' in this.scicrunchData) ||
+        ('flatmaps' in this.scicrunchData) ||
+        ('mbf-segmentation' in this.scicrunchData) ||
+        ('abi-plot' in this.scicrunchData) ||
+        ('common-images' in this.scicrunchData))
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
@@ -1043,7 +1055,7 @@ export default {
   @media (max-width: 47rem) {
     order: 1;
     margin-top: 0;
-  } 
+  }
 }
 .tabs-container {
   border: solid 1px $lineColor1;

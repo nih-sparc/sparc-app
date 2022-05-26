@@ -1,7 +1,26 @@
 <template>
   <div class="tags-container">
     <span class="flex">
-      Filters applied:
+      Filters applied
+      <el-popover
+          title="How do filters work?"
+          width="165"
+          trigger="hover"
+          :append-to-body=false
+          popper-class="popover"
+          >
+          <svg-icon slot="reference" class="purple-fill" icon="icon-help" width="26" height="26" />
+          <div >
+            <strong>Within categories:</strong> OR 
+            <br/>
+            example: 'heart' OR 'colon'
+            <br/>
+            <br/>
+            <strong>Between categories:</strong> AND
+            <br/>
+            example: 'rat' AND 'lung'
+          </div>
+        </el-popover>
       <el-link @click="deselectAllFacets">Reset all</el-link>
     </span>
     <hr />
@@ -116,6 +135,9 @@ export default {
   //The underline is too low so we cannot use it, and must instead hide it
   .el-link.el-link--default:after {
     border: none;
+  }
+  .purple-fill {
+    fill: $purple;
   }
 }
 </style>
