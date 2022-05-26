@@ -37,8 +37,11 @@
       </el-button>
     </div>
     <div class="button-container" v-else-if="datasetTypeName === 'computational model'">
+      <el-button v-if="canViewSimulation" @click="openSimulationViewer()">
+        View Simulation
+      </el-button>
       <a
-        v-if="hasSimulation"
+        v-if="canRunSimulation"
         :href="`https://osparc.io/study/${simulationId}`"
         target="_blank"
       >
@@ -69,7 +72,7 @@
         Cite Model
       </el-button>
       <a
-        v-if="hasSimulation"
+        v-if="canViewSimulation || canRunSimulation"
         href="https://osparc.io/"
         target="_blank"
       >
@@ -77,7 +80,7 @@
           placement="left-center"
         >
           <div slot="data">
-            oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at 
+            oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at
             <a class="ospac-tooltip" href="https://osparc.io/">
               osparc.io
             </a>
@@ -151,13 +154,19 @@ export default {
       return propOr('', 'banner', this.datasetInfo)
     },
     /**
+     * Returns whether a simulation can be viewed
+     */
+    canViewSimulation: function() {
+      return this.datasetInfo.sciCrunch ? this.datasetInfo.sciCrunch['abi-simulation-file'] : false
+    },
+    /**
      * Returns simulation id for run simulation button
      * @returns {String}
      */
     simulationId: function() {
-      return this.hasSimulation ? this.datasetInfo.study.uuid : ''
+      return this.canRunSimulation ? this.datasetInfo.study.uuid : ''
     },
-    hasSimulation: function() {
+    canRunSimulation: function() {
       return this.datasetInfo.study
     },
     hasFiles: function() {
@@ -192,6 +201,17 @@ export default {
       }).finally(() => {
         this.scrollToDatasetDetailsTabArea()
       })
+    },
+    openSimulationViewer: function() {
+      const link = document.createElement('a')
+
+      link.href = `${this.$router.options.base || '/'}datasets/simulationviewer?id=${this.datasetInfo.id}`
+      link.target = '_blank'
+
+      document.body.appendChild(link)
+
+      link.click()
+      link.remove()
     }
   }
 }

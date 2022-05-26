@@ -243,8 +243,8 @@ const getDownloadsSummary = async ($axios) => {
     const startDate = new Date('2000','1');
     const currentDate = new Date()
     const url = `${process.env.discover_api_host}/metrics/dataset/downloads/summary`
-    return $axios.$get(url, { 
-        params: { startDate: startDate, endDate: currentDate } 
+    return $axios.$get(url, {
+        params: { startDate: startDate, endDate: currentDate }
       }).then(response => {
       return response
     })
@@ -395,6 +395,8 @@ export default {
       datasetDetails.version,
       datasetFacetsData
     )
+
+    datasetDetails.sciCrunch = scicrunchData;
 
     // Get oSPARC file viewers
     const osparcViewers = await $axios
@@ -1053,7 +1055,7 @@ export default {
   @media (max-width: 47rem) {
     order: 1;
     margin-top: 0;
-  } 
+  }
 }
 .tabs-container {
   border: solid 1px $lineColor1;
