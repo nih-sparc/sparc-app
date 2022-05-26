@@ -208,10 +208,10 @@
     jsonschema "^1.4.0"
     vue "^2.6.11"
 
-"@abi-software/simulationvuer@^0.5.6":
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.6.tgz#2fa3137759c84d8a8e116e4fbb5a1619c40d0152"
-  integrity sha512-7Og/XhdDB6mWTLQkxlGTNnxCDMmESAaoJCN8Sgouvg/duaT50DinPhI+L4FolOB80J065HoDy25+OGbF6DLBtg==
+"@abi-software/simulationvuer@^0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.8.tgz#52d42874c7511684d4958014cce7926db9cba43e"
+  integrity sha512-mpKK3lrgrGAq3zdkZOejxzBviHYuSSI4illlOeqLI+ORZHdFVkQ1I2hNACKVNAI8pxnhawAHX47Vuzfluq9IFw==
   dependencies:
     "@abi-software/plotvuer" "^0.2.45"
     element-ui "^2.14.1"
