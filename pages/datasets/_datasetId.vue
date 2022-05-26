@@ -215,12 +215,6 @@ const getDatasetDetails = async (datasetId, version, datasetTypeName, $axios) =>
       })
     datasetDetails.ownerEmail = datasetOwnerEmail
 
-    if (datasetTypeName !== 'dataset') {
-      let sciCrunch = await $axios.$get(`${process.env.portal_api}/dataset_info/using_pennsieve_identifier?identifier=${datasetId}`)
-
-      datasetDetails.sciCrunch = sciCrunch.result[0]
-    }
-
     return datasetDetails
   } catch (error) {
     return {}
@@ -401,6 +395,8 @@ export default {
       datasetDetails.version,
       datasetFacetsData
     )
+
+    datasetDetails.sciCrunch = scicrunchData;
 
     // Get oSPARC file viewers
     const osparcViewers = await $axios
