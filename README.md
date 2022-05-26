@@ -45,7 +45,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 **Critical:** yes  
 
 #### Flatmaps
-**Source:** uknown  \
+**Source:** unknown  \
 **Summary:** Neural path map  \
 **Used on sparc-app for:** Displaying neruon maps  \
 **Critical:** Critcal to the /maps and /flatmap-viewer pages  
@@ -63,10 +63,10 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 **Critical:** yes  
 
 #### Zipit
-**Source:** uknown  \
+**Source:** unknown  \
 **Summary:** Zips files  \
 **Used on sparc-app for:** Zipping files  \
-**Critical:** yes?  
+**Critical:** Critical for mulitple file downloads  
 
 #### Contentful
 **Source:** https://www.contentful.com/  \
