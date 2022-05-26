@@ -74,7 +74,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 **Used on sparc-app for:** Contains a lot of content displayed on sparc-app. Allows changes to be made without having to modify the code  \
 **Critical:** yes  
 
-### Algolia
+#### Algolia
 **Source:** https://www.algolia.com/  \
 **Summary:** Search service  \
 **Used on sparc-app for:** Stores scicrunch and discover data to make it quickly searchable. (Algolia searches come from the front end for sparc-app)  \
