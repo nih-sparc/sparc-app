@@ -14,7 +14,12 @@
           ORCID iD Not Found
         </template>
         <template v-if="hasOrcidDataError">
-          Sorry, an error has occurred.
+          <!--If Orcid is down we can still print the contributor name and ID-->
+          <h2>{{ orcidName }}</h2>
+          <p>
+            <strong>ORCID iD</strong>:
+            {{ orcidId }}
+          </p>
         </template>
         <template
           v-if="isOrcidDataNotFound === false && hasOrcidDataError === false"
