@@ -35,3 +35,56 @@ Ensure that the following configuration variables are set in your environment pr
 
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+
+## External dependencies:
+
+#### Sparc-api 
+**Source:** https://github.com/nih-sparc/sparc-api/
+**Summary:** Python backend
+**Used on sparc-api for:** Sparc-app's back end
+**Critical:** yes
+
+#### Flatmaps
+**Source:** uknown
+**Summary:** Neural path map
+**Used on sparc-api for:** Displaying neruon maps
+**Critical:** Critcal to the /maps and /flatmap-viewer pages
+
+#### Pennsieve Discover API
+**Source:** https://developer.pennsieve.io/api/index.html
+**Summary:** API endpoint for the Pennsieve Discover data management platform
+**Used on sparc-api for:** Retrieving dataset metadata 
+**Critical:** yes
+
+#### Pennsieve API
+**Source:** https://developer.pennsieve.io/api/index.html
+**Summary:** API endpoint for the Pennsieve  data management platform
+**Used on sparc-api for:** Retrieving dataset metadata and files
+**Critical:** yes
+
+#### Zipit
+**Source:** uknown
+**Summary:** Zips files
+**Used on sparc-api for:** Zipping files
+**Critical:** yes?
+
+#### Contentful
+**Source:** https://www.contentful.com/
+**Summary:** Content management platfrom
+**Used on sparc-api for:** Contains a lot of content displayed on sparc-app. Allows changes to be made without having to modify the code
+**Critical:** yes
+
+### Algolia
+**Source:** https://www.algolia.com/
+**Summary:** Search service
+**Used on sparc-api for:** Stores scicrunch and discover data to make it quickly searchable. (Algolia searches come from the front end for sparc-app)
+**Critical:** yes
+
+
+#### Biolucida 
+**Source:** https://www.mbfbioscience.com/biolucida
+**Summary:** Image viewer and image repository
+**Used on sparc-api for:** Displaying images and image metadata
+**Critical:** Critical for image display
+
