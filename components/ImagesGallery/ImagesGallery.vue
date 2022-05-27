@@ -694,3 +694,9 @@ a.next {
   background-color: #555;
 }
 </style>
+
+<style lang="scss">
+.gallery-container {
+  @import '~@abi-software/gallery/dist/gallery';
+}
+</style>

@@ -196,7 +196,6 @@ export default {
    */
   build: {
     transpile: [/^element-ui/, 'system-design-components'],
-
     /*
      ** You can extend webpack config here
      */
