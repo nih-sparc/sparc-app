@@ -163,7 +163,27 @@ export default {
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
   @import '~@abi-software/mapintegratedvuer/dist/mapintegratedvuer';
 }
+
+.gallery-popper {
+  background: #f3ecf6 !important;
+  border: 1px solid #8300bf;
+  border-radius: 4px;
+  color: #303133 !important;
+  font-size: 12px;
+  line-height: 1rem;
+  height: 1rem;
+  padding: 10px;
+  &.el-popper[x-placement^='top'] {
+    .popper__arrow {
+      border-top-color: #8300bf !important;
+    }
+    .popper__arrow:after {
+      border-top-color: #f3ecf6 !important;
+    }
+  }
+}
 </style>
+
 <style
   src="@abi-software/mapintegratedvuer/assets/mapicon-species-style.css"
 ></style>
