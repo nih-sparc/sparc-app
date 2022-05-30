@@ -19,12 +19,12 @@
         <div v-if="facet.children && showFacet(facet)">
           <div class="capitalize mb-8">{{facet.label}}:</div>
           <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
-            <sparc-tooltip placement="left-center" :content="capitalize(child.label)">
+            <sparc-tooltip placement="left-center" :content="capitalize(child.label)" :ref="child.label">
               <nuxt-link
                 slot="item"
                 :to="getSelectedFacetLink(getFacetId(child))"
               >
-                <div class="my-2 px-12 facet-button capitalize label2">
+                <div @mouseenter="onEnterTooltipItem($event, child.label)" class="my-2 px-12 facet-button capitalize label2">
                   {{child.label}}
                 </div>
               </nuxt-link>
@@ -40,8 +40,8 @@
           v-for="contributor in contributors"
           :key="contributor.id"
         >
-          <li class="contributor-list">
-            <sparc-tooltip placement="left-center" :content="getContributorFullName(contributor)">
+          <li class="contributor-list" @mouseenter="onEnterTooltipItem($event, getContributorFullName(contributor))">
+            <sparc-tooltip placement="left-center" :content="getContributorFullName(contributor)" :ref="getContributorFullName(contributor)">
               <nuxt-link
                 slot="item"
                 :to="getSelectedContributorLink(contributor)"
@@ -153,6 +153,11 @@ export default {
       const firstName = propOr('', 'firstName', contributor)
       const lastName = propOr('', 'lastName', contributor)
       return `${firstName} ${lastName}`
+    },
+    onEnterTooltipItem: function(e, refId) {
+      const target = e.target
+      const hideTooltip = target.scrollWidth <= target.offsetWidth
+      this.$refs[refId][0].hide(hideTooltip)
     },
   }
 }
