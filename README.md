@@ -86,3 +86,28 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 **Summary:** Image viewer and image repository  \
 **Used on sparc-app for:** Displaying images and image metadata  \
 **Critical:** Critical for image display  
+
+#### pub.orcid.org 
+**Source:** https://pub.orcid.org/v3.0/ \
+**Summary:** -  \
+**Used on sparc-app for:** Populating contributor info for datasets \
+**Critical:** yes
+
+#### DOI Citation Formatter
+**Source:** https://citation.crosscite.org/ \
+**Summary:** - Online tool for making citations from DOI's \
+**Used on sparc-app for:** generating dataset citations  \
+**Critical:** yes
+
+#### Readme.io
+**Source:** https://readme.io \
+**Summary:** - Documentation platform
+**Used on sparc-app for:** Populating search help results page on portal (probably more to come once we figure out what other pages we also want on the app that we will pull from readme)  \
+**Critical:** Likely not critical, but still being added to the site
+
+#### Amazon Cognito
+**Source:** https://aws.amazon.com/cognito/ \
+**Summary:** - Login and authentication API
+**Used on sparc-app for:** Login and authentication  \
+**Critical:** yes
+
