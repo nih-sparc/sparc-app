@@ -204,10 +204,12 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../assets/_variables.scss';
+$tablet-small: 48em;
+$tablet-large: 64em;
 .home-container {
   padding-left: 1rem;
   padding-right: 1rem;
-  @media (min-width: 768px) {
+  @media (min-width: $tablet-small) {
     padding-left: 6rem;
     padding-right: 6rem;
   }
@@ -217,9 +219,21 @@ h2 a:not(:hover) {
   text-decoration: none;
 }
 .sparc-card {
-  margin-bottom: 24px;
-  @media (min-width: 768px) {
-    margin-bottom: 40px;
+  margin-bottom: 1.5rem;
+  @media (min-width: $tablet-small) {
+    margin-bottom: 2.5rem;
+  }
+  &__image {
+    flex: 3 0 0rem;
+    height: 17.5rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+    @media (min-width: $tablet-small) {
+      height: auto;
+    }
+  }
+  ::v-deep &__content-wrap {
+    flex: 7 0 0rem;
   }
   h3 {
     font-size: 1.333333333em;
