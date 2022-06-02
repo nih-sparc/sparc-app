@@ -697,6 +697,7 @@ a.next {
 
 <style lang="scss">
 .gallery-container {
+  padding-bottom: 1rem;
   @import '~@abi-software/gallery/dist/gallery';
 }
 </style>
