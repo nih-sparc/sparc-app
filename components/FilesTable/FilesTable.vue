@@ -41,13 +41,13 @@
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
                 <i class="file-icon el-icon-folder" />
-                <sparc-tooltip placement="left-center" :content="scope.row.name">
+                <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
                   <nuxt-link
                     slot="item"
                     class="file-name truncated"
                     :to="{ query: { ...$route.query, path: scope.row.path } }"
                   >
-                    {{ scope.row.name }}
+                    <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
                   </nuxt-link>
                 </sparc-tooltip>
               </template>
@@ -59,28 +59,28 @@
                 />
                 <i v-else class="file-icon el-icon-document" />
                 <div v-if="isFileOpenable(scope)" class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
                     <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
-                      {{ scope.row.name }}
+                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
                     </a>
                   </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
                     <nuxt-link slot="item" class="truncated" :to="getScaffoldLink(scope)">
-                      {{ scope.row.name }}
+                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
                     </nuxt-link>
                   </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldViewFile(scope)" class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
                     <nuxt-link slot="item" class="truncated" :to="getScaffoldViewLink(scope)">
-                      {{ scope.row.name }}
+                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
                     </nuxt-link>
                   </sparc-tooltip>
                 </div>
                 <div v-else class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
                     <nuxt-link
                       slot="item"
                       class="truncated"
@@ -95,7 +95,7 @@
                         }
                       }"
                     >
-                      {{ scope.row.name }}
+                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
                     </nuxt-link>
                   </sparc-tooltip>
                 </div>
@@ -774,7 +774,12 @@ export default {
       // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
       path = path.replaceAll(' ', '_')
       return path.replaceAll(',', '_')
-    }
+    },
+    onEnterTooltipItem: function(e, refId) {
+      const target = e.target
+      const hideTooltip = target.scrollWidth <= target.offsetWidth
+      this.$refs[refId].hide(hideTooltip)
+    },
   }
 }
 </script>
