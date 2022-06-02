@@ -38,6 +38,7 @@
           </div>
         </div>
       </div>
+      <client-only>
       <content-tab-card
         v-if="hasViewer"
         class="tabs p-32"
@@ -45,10 +46,22 @@
         :active-tab-id="activeTabId"
       >
         <biolucida-viewer
+          v-if="hasBiolucidaViewer"
           v-show="activeTabId === 'imageViewer'"
           :data="biolucidaData"
         />
+        <ts-viewer
+          v-if="hasTimeseriesViewer && userToken"
+          v-show="activeTabId === 'timeseriesViewer'"
+          :user-token="userToken"
+          :package-id="sourcePackageId"
+          :package-type="packageType"
+        />
+        <div v-else-if="hasTimeseriesViewer && !userToken">
+          Sign in to view timeseries data
+        </div>
       </content-tab-card>
+      </client-only>
     </div>
   </div>
 </template>
@@ -93,12 +106,25 @@ export default {
       `${process.env.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`
     )
 
-    const hasViewer = biolucidaData.status !== 'error'
+    const hasBiolucidaViewer = biolucidaData.status !== 'error'
+
+    let packageType = "None"
+    if (sourcePackageId !== 'details') {
+      packageType = file.packageType
+    }
+    const hasTimeseriesViewer = packageType === 'TimeSeries'
+
+    let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
+      hasTimeseriesViewer ? 'timeseriesViewer' : ''
 
     return {
       biolucidaData,
       file,
-      hasViewer
+      hasBiolucidaViewer,
+      hasTimeseriesViewer,
+      sourcePackageId,
+      packageType,
+      activeTabId
     }
   },
 
@@ -109,14 +135,37 @@ export default {
         share_link: '',
         status: ''
       },
-      tabs: [
-        {
-          label: 'Image Viewer',
-          id: 'imageViewer'
-        }
-      ],
-      activeTabId: 'imageViewer',
+      tabs: [],
       file: {}
+    }
+  },
+
+  watch: {
+    hasBiolucidaViewer: {
+      handler: function(hasViewer) {
+        if (hasViewer) {
+          this.tabs.push({
+            label: 'Image Viewer',
+            id: 'imageViewer'
+          })
+        } else {
+          this.tabs = this.tabs.filter(tab => tab.id !== 'imageViewer')
+        }
+      },
+      immediate: true
+    },
+    hasTimeseriesViewer: {
+      handler: function(hasViewer) {
+        if (hasViewer) {
+          this.tabs.push({
+            label: 'Timeseries Viewer',
+            id: 'timeseriesViewer'
+          })
+        } else {
+          this.tabs = this.tabs.filter(tab => tab.id !== 'timeseriesViewer')
+        }
+      },
+      immediate: true
     }
   },
 
@@ -127,6 +176,15 @@ export default {
      */
     location: function() {
       return this.file.path.replace(`/${this.file.name}`, '')
+    },
+    userToken: function() {
+      return this.$store.getters['user/cognitoUserToken']
+    },
+    showTimeseriesViewer: function() {
+      return this.userToken && this.sourcePackageId && this.packageType
+    },
+    hasViewer: function() {
+      return this.hasTimeseriesViewer || this.hasBiolucidaViewer
     }
   }
 }

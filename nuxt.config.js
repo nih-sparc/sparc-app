@@ -44,9 +44,7 @@ export default {
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
-      process.env.PENNSIEVE_DISCOVER_API_HOST ||
-      'https://api.pennsieve.io/discover',
-    bf_api_host: process.env.BF_API_HOST || 'https://api.pennsieve.io',
+      process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
     zipit_api_host:
       process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
     osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
@@ -155,6 +153,9 @@ export default {
     '@/plugins/documentation-hub-redirects',
     {
       src: '@/plugins/system-design-components', mode: 'client'
+    },
+    {
+      src: '@/plugins/tsviewer', mode: 'client'
     }
   ],
   /*
