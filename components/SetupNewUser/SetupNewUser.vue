@@ -300,7 +300,7 @@ export default {
       return this.internalState == this.internalStates.done
     },
     apiUrl: function() {
-      return process.env.USER_ACTIONS_API_URL
+      return process.env.LOGIN_API_URL
     },
     getUserByEmailRequest: function() {
       return `${this.apiUrl}/user/email/`
