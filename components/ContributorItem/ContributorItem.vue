@@ -15,16 +15,18 @@
         </template>
         <template v-if="hasOrcidDataError">
           <!--If Orcid is down we can still print the contributor name and ID-->
-          <h2>{{ orcidName }}</h2>
+          <h2>{{ fullName }}</h2>
           <p>
             <strong>ORCID iD</strong>:
-            {{ orcidId }}
+            <a :href="orcidUri" target="_blank">
+                {{ orcidId }}
+              </a>
           </p>
         </template>
         <template
           v-if="isOrcidDataNotFound === false && hasOrcidDataError === false"
         >
-          <h2>{{ orcidName }}</h2>
+          <h2>{{ fullName }}</h2>
           <p>
             <strong>ORCID iD</strong>:
             <template v-if="orcidUri">
@@ -137,7 +139,7 @@ export default {
      * @returns {String}
      */
     orcidUri: function() {
-      return pathOr('', ['orcid-identifier', 'uri'], this.orcidData)
+      return `https://orcid.org/${this.orcidId}`
     },
 
     /**
@@ -162,7 +164,7 @@ export default {
 
       if (this.hasOrcid && Object.keys(this.orcidData).length === 0) {
         this.$axios
-          .get(`https://pub.orcid.org/v2.1/${this.orcidId}`, {
+          .get(`${process.env.ORCID_API_URL}/${this.orcidId}`, {
             headers: { Accept: 'application/json' }
           })
           .then(response => {
