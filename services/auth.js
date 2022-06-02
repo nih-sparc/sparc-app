@@ -40,7 +40,7 @@ const userProfile = async() => {
   if (cognitoUser) {
     const userToken = pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], cognitoUser)
     if (userToken) {
-      const request = `${process.env.USER_ACTIONS_API_URL}/user?api_key=${userToken}`
+      const request = `${process.env.LOGIN_API_URL}/user?api_key=${userToken}`
       return await axios.get(request).then(userProfile => {
         return userProfile.data
       })
