@@ -67,7 +67,7 @@
               {{ item.fields.title }}
             </a>
           </h3>
-          <div class="sparc-card__detail">
+          <div class="sparc-card__detail" v-if="eventDate(item) && item.fields.location">
             <template v-if="eventDate(item)">
               <svg-icon name="icon-calendar" height="16" width="16" />
               <p>{{ eventDate(item) }}</p>
@@ -208,6 +208,7 @@ export default {
 @import '../../assets/_variables.scss';
 $tablet-small: 48em;
 $tablet-large: 64em;
+
 .home-container {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -240,34 +241,43 @@ div.sparc-card {
 
   ::v-deep &__content-wrap {
     flex: 7 0 0rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     &__content {
-      @media (min-width: $tablet-small + 1) {
-        font-size: 1em;
+      @media (min-width: $tablet-small) {
+        font-size: 0.9rem;
         line-height: 1.5rem;
-        padding: 2em;
+        padding: 2rem;
+        .markdown-text {
+          p {
+            margin: 0 0 1.5rem;
+          }
+        }
+      }
+      @media (min-width: $tablet-large) {
+        font-size: 1rem;
       }
     }
   }
   h3 {
-    font-size: 1.333333333em;
+    font-size: 1.333333333rem;
+    line-height:1.33333333rem;
+    margin:0 0 1rem;
   }
   &__detail {
     align-items: baseline;
     display: flex;
-    margin-bottom: 0.625rem;
+    margin-bottom: 1rem;
     .svg-icon {
       flex-shrink: 0;
       margin-right: 0.5rem;
     }
     p {
       margin-bottom: 0rem;
+      margin-right: 2rem;
     }
     &--location {
       margin-left: 1.25rem;
     }
   }
+
 }
 </style>
