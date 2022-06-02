@@ -68,8 +68,10 @@
             </a>
           </h3>
           <div class="sparc-card__detail">
-            <svg-icon name="icon-calendar" height="16" width="16" />
-            <p>{{ eventDate(item) }}</p>
+            <template v-if="eventDate(item)">
+              <svg-icon name="icon-calendar" height="16" width="16" />
+              <p>{{ eventDate(item) }}</p>
+            </template>
             <template v-if="item.fields.location">
               <svg-icon
                 class="sparc-card__detail--location"
@@ -82,7 +84,7 @@
           </div>
           <!-- eslint-disable vue/no-v-html -->
           <!-- marked will sanitize the HTML injected -->
-          <div v-html="parseMarkdown(item.fields.summary)" />
+          <div class="markdown-text" v-html="parseMarkdown(item.fields.summary)" />
         </div>
         <nuxt-link v-if="item.fields.requiresADetailsPage" :to="nuxtLink(item)">
           <el-button size="medium" class="secondary">
@@ -218,22 +220,36 @@ h2 a:not(:hover) {
   color: #000;
   text-decoration: none;
 }
-.sparc-card {
+
+a.sparc-card__image {
+  flex: 3 0 0rem;
+  height: 17.5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  @media (min-width: $tablet-small) {
+    height: auto;
+  }
+}
+
+div.sparc-card {
   margin-bottom: 1.5rem;
   @media (min-width: $tablet-small) {
     margin-bottom: 2.5rem;
+    height:18rem;
   }
-  &__image {
-    flex: 3 0 0rem;
-    height: 17.5rem;
-    background-size: contain;
-    background-repeat: no-repeat;
-    @media (min-width: $tablet-small) {
-      height: auto;
-    }
-  }
+
   ::v-deep &__content-wrap {
     flex: 7 0 0rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    &__content {
+      @media (min-width: $tablet-small + 1) {
+        font-size: 1em;
+        line-height: 1.5rem;
+        padding: 2em;
+      }
+    }
   }
   h3 {
     font-size: 1.333333333em;
