@@ -1,7 +1,6 @@
 <template>
   <div id="top" class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="helpItem.fields.title" />
-    <help-hero :title="helpHeroData.title" :summary="helpHeroData.summary" />
     <div class="page-wrap container">
       <div class="subpage">
         <div class="header">
@@ -86,12 +85,6 @@ export default {
           },
           label: 'Home'
         },
-        {
-          to: {
-            name: 'help',
-          },
-          label: 'Help'
-        }
       ]
     }
   },
