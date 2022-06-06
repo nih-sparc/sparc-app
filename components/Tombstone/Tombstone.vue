@@ -33,12 +33,6 @@ export default {
       return this.datasetDetails.doi
     }
   },
-  methods: {
-  },
-  data: function() {
-    return {
-    }
-  },
 }
 </script>
 
