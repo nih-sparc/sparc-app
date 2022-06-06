@@ -2,74 +2,81 @@
   <div class="dataset-details">
     <client-only>
       <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
-      <div class="bx--grid">
-        <div class="bx--row">
-          <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
-            <dataset-action-box />
-            <similar-datasets-info-box
-              :associated-project="associatedProject"
-              :dataset-type-name="datasetTypeName"
-            />
-          </div>
-          <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
-            <dataset-header
-              class="dataset-header"
-              :latestVersionRevision="latestVersionRevision"
-              :latestVersionDate="latestVersionDate"
-              :numCitations="numCitations"
-              :numDownloads="numDownloads"
-            />
-            <div class="tabs-container mt-16 mb-0 mx-0 p-16">
-              <content-tab-card
-                id="datasetDetailsTabsContainer"
-                :tabs="tabs"
-                :active-tab-id="activeTabId"
-                @tab-changed="tabChanged"
-                linkComponent="nuxt-link"
-                routeName="datasetDetailsTab"
-              >
-                <dataset-description-info
-                  v-show="activeTabId === 'abstract'"
-                  :markdown="markdown"
-                  :dataset-records="datasetRecords"
-                  :loading-markdown="loadingMarkdown"
-                  :dataset-tags="datasetTags"
-                />
-                <dataset-about-info
-                  v-show="activeTabId === 'about'"
-                  :latestVersionRevision="latestVersionRevision"
-                  :latestVersionDate="latestVersionDate"
-                  :associated-project="associatedProject"
-                />
-                <citation-details
-                  v-show="activeTabId === 'cite'"
-                  :doi-value="datasetInfo.doi"
-                />
-                <dataset-files-info
-                  v-if="hasFiles"
-                  v-show="activeTabId === 'files'"
-                  :osparc-viewers="osparcViewers"
-                  :dataset-scicrunch="scicrunchData"
-                />
-                <images-gallery
-                  v-if="hasGalleryImages"
-                  v-show="activeTabId === 'images'"
-                  :markdown="markdown.markdownTop"
-                  :dataset-biolucida="biolucidaImageData"
-                  :dataset-scicrunch="scicrunchData"
-                />
-                <dataset-references
-                  v-if="hasCitations"
-                  v-show="activeTabId === 'references'"
-                  :primary-publications="primaryPublications"
-                  :associated-publications="associatedPublications"
-                />
-                <version-history
-                  v-if="canViewVersions"
-                  v-show="activeTabId === 'versions'"
-                  :versions="versions"
-                />
-              </content-tab-card>
+      <div v-if="showTombstone">
+        <tombstone
+          :dataset-details="datasetInfo"
+        />
+      </div>
+      <div v-else>
+        <div class="bx--grid">
+          <div class="bx--row">
+            <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
+              <dataset-action-box />
+              <similar-datasets-info-box
+                :associated-project="associatedProject"
+                :dataset-type-name="datasetTypeName"
+              />
+            </div>
+            <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
+              <dataset-header
+                class="dataset-header"
+                :latestVersionRevision="latestVersionRevision"
+                :latestVersionDate="latestVersionDate"
+                :numCitations="numCitations"
+                :numDownloads="numDownloads"
+              />
+              <div class="tabs-container mt-16 mb-0 mx-0 p-16">
+                <content-tab-card
+                  id="datasetDetailsTabsContainer"
+                  :tabs="tabs"
+                  :active-tab-id="activeTabId"
+                  @tab-changed="tabChanged"
+                  linkComponent="nuxt-link"
+                  routeName="datasetDetailsTab"
+                >
+                  <dataset-description-info
+                    v-show="activeTabId === 'abstract'"
+                    :markdown="markdown"
+                    :dataset-records="datasetRecords"
+                    :loading-markdown="loadingMarkdown"
+                    :dataset-tags="datasetTags"
+                  />
+                  <dataset-about-info
+                    v-show="activeTabId === 'about'"
+                    :latestVersionRevision="latestVersionRevision"
+                    :latestVersionDate="latestVersionDate"
+                    :associated-project="associatedProject"
+                  />
+                  <citation-details
+                    v-show="activeTabId === 'cite'"
+                    :doi-value="datasetInfo.doi"
+                  />
+                  <dataset-files-info
+                    v-if="hasFiles"
+                    v-show="activeTabId === 'files'"
+                    :osparc-viewers="osparcViewers"
+                    :dataset-scicrunch="scicrunchData"
+                  />
+                  <images-gallery
+                    v-if="hasGalleryImages"
+                    v-show="activeTabId === 'images'"
+                    :markdown="markdown.markdownTop"
+                    :dataset-biolucida="biolucidaImageData"
+                    :dataset-scicrunch="scicrunchData"
+                  />
+                  <dataset-references
+                    v-if="hasCitations"
+                    v-show="activeTabId === 'references'"
+                    :primary-publications="primaryPublications"
+                    :associated-publications="associatedPublications"
+                  />
+                  <version-history
+                    v-if="canViewVersions"
+                    v-show="activeTabId === 'versions'"
+                    :versions="versions"
+                  />
+                </content-tab-card>
+              </div>
             </div>
           </div>
         </div>
@@ -103,6 +110,7 @@ import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsI
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
+import Tombstone from '@/components/Tombstone/Tombstone.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -144,13 +152,9 @@ const tabs = [
 const getDatasetFacetsData = async (route) => {
   const objectId = route.params.datasetId
   const filter = `objectID:${objectId}`
-  try {
-    return await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
-      return data
-    })
-  } catch (error) {
-
-  }
+  return await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
+    return data
+  })
 }
 
 /**
@@ -198,27 +202,41 @@ const getDatasetDetails = async (datasetId, version, datasetTypeName, $axios) =>
 
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
-  try {
-    const datasetDetails =
-      datasetTypeName === 'dataset'
-        ? await $axios.$get(datasetUrl)
-        : await $axios.$get(simulationUrl)
+  const datasetDetails =
+    datasetTypeName === 'dataset'
+      ? await $axios.$get(datasetUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
+      : await $axios.$get(simulationUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
 
-    const datasetOwnerId = datasetDetails.ownerId || ''
-    const datasetOwnerEmail = await $axios
-      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-      .then(resp => {
-        return resp.email
-      })
-      .catch(() => {
-        return ''
-      })
-    datasetDetails.ownerEmail = datasetOwnerEmail
+  const datasetOwnerId = propOr('', 'ownerId', datasetDetails)
+  const datasetOwnerEmail = await $axios
+    .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
+    .then(resp => {
+      return resp.email
+    })
+    .catch(() => {
+      return ''
+    })
+  datasetDetails.ownerEmail = datasetOwnerEmail
 
-    return datasetDetails
-  } catch (error) {
-    return {}
-  }
+  return datasetDetails
 }
 
 /**
@@ -363,7 +381,8 @@ export default {
     ImagesGallery,
     VersionHistory,
     DatasetVersionMessage,
-    SimilarDatasetsInfoBox
+    SimilarDatasetsInfoBox,
+    Tombstone
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -419,6 +438,7 @@ export default {
       versions,
       datasetTypeName,
       downloadsSummary,
+      showTombstone: datasetDetails.isUnpublished
     }
   },
 
