@@ -209,6 +209,18 @@
                 </sparc-tooltip>
               </div>
               <div
+                v-if="isTimeseriesFile(scope.row)"
+                class="circle"
+                @click="openTimeseriesView(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open timeseries viewer"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
                 v-if="isFileOpenable(scope)"
                 class="circle"
                 @click="copyS3Url(scope)"
@@ -451,6 +463,11 @@ export default {
       this.selected = val
     },
 
+    isTimeseriesFile(file) {
+      const type = propOr('', 'packageType', file)
+      return type === 'TimeSeries'
+    },
+
     /**
      * Converts a semver version string to an integer
      * @param {String} semverVersion
@@ -691,6 +708,21 @@ export default {
       if (scaffoldViewLink) {
         this.$router.push(scaffoldViewLink)
       }
+    },
+
+    openTimeseriesView: function(scope) {
+      const route = {
+        name: 'file-datasetId-datasetVersion',
+        params: {
+          datasetId: this.datasetInfo.id,
+          datasetVersion: this.datasetInfo.version
+        },
+        query: {
+          path: this.s3Path(scope.row.path)
+        }
+      }
+
+      this.$router.push(route)
     },
 
     /**
