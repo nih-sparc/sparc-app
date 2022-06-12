@@ -67,15 +67,6 @@
                 </span>
               </div>
               <div class="metics-container">
-                <span class="label4 mr-16">
-                  Citations: 
-                  <a v-if="showCitations" class="citations-link" v-on:click="numCitationsClicked">
-                    {{numCitationsText}}
-                  </a>
-                  <span v-else>
-                    {{numCitationsText}}
-                  </span>
-                </span>
                 <span class="label4">Downloads: {{numDownloadsText}}</span>
               </div>
             </div>

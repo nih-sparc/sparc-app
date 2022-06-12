@@ -201,6 +201,8 @@ export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMap
         }
       })
       return facetData
+    }).catch(() => {
+      return {}
     })
 }
 
