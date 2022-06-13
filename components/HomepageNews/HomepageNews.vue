@@ -67,7 +67,7 @@
               {{ item.fields.title }}
             </a>
           </h3>
-          <div class="sparc-card__detail" v-if="eventDate(item) && item.fields.location">
+          <div class="sparc-card__detail" v-if="eventDate(item) || item.fields.location">
             <template v-if="eventDate(item)">
               <svg-icon name="icon-calendar" height="16" width="16" />
               <p>{{ eventDate(item) }}</p>
