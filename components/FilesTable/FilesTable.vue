@@ -41,13 +41,13 @@
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
                 <i class="file-icon el-icon-folder" />
-                <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
+                <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
                   <nuxt-link
                     slot="item"
                     class="file-name truncated"
                     :to="{ query: { ...$route.query, path: scope.row.path } }"
                   >
-                    <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
+                    {{ scope.row.name }}
                   </nuxt-link>
                 </sparc-tooltip>
               </template>
@@ -59,44 +59,51 @@
                 />
                 <i v-else class="file-icon el-icon-document" />
                 <div v-if="isFileOpenable(scope)" class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
-                    <a class="truncated" slot="item" href="#" @click.prevent="openFile(scope)">
-                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
-                    </a>
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <a href="#" @click.prevent="openFile(scope)">
+                        {{ scope.row.name }}
+                      </a>
+                    </div>
                   </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
-                    <nuxt-link slot="item" class="truncated" :to="getScaffoldLink(scope)">
-                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
-                    </nuxt-link>
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <nuxt-link slot="item" :to="getScaffoldLink(scope)">
+                        {{ scope.row.name }}
+                      </nuxt-link>
+                    </div>
                   </sparc-tooltip>
                 </div>
                 <div v-else-if="isScaffoldViewFile(scope)" class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
-                    <nuxt-link slot="item" class="truncated" :to="getScaffoldViewLink(scope)">
-                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
-                    </nuxt-link>
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <nuxt-link slot="item" :to="getScaffoldViewLink(scope)">
+                        {{ scope.row.name }}
+                      </nuxt-link>
+                    </div>
                   </sparc-tooltip>
                 </div>
                 <div v-else class="truncated">
-                  <sparc-tooltip placement="left-center" :content="scope.row.name" :ref="scope.row.name">
-                    <nuxt-link
-                      slot="item"
-                      class="truncated"
-                      :to="{
-                        name: 'file-datasetId-datasetVersion',
-                        params: {
-                          datasetId: datasetInfo.id,
-                          datasetVersion: datasetInfo.version
-                        },
-                        query: {
-                          path: s3Path(scope.row.path)
-                        }
-                      }"
-                    >
-                      <div @mouseenter="onEnterTooltipItem($event, scope.row.name)">{{ scope.row.name }}</div>
-                    </nuxt-link>
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <nuxt-link
+                        slot="item"
+                        :to="{
+                          name: 'file-datasetId-datasetVersion',
+                          params: {
+                            datasetId: datasetInfo.id,
+                            datasetVersion: datasetInfo.version
+                          },
+                          query: {
+                            path: s3Path(scope.row.path)
+                          }
+                        }"
+                      >
+                        {{ scope.row.name }}
+                      </nuxt-link>
+                    </div>
                   </sparc-tooltip>
                 </div>
               </template>
@@ -198,6 +205,18 @@
                       <u>here</u>
                     </a>
                   </div>
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
+                v-if="isTimeseriesFile(scope.row)"
+                class="circle"
+                @click="openTimeseriesView(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open timeseries viewer"
+                >
                   <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
                 </sparc-tooltip>
               </div>
@@ -444,6 +463,11 @@ export default {
       this.selected = val
     },
 
+    isTimeseriesFile(file) {
+      const type = propOr('', 'packageType', file)
+      return type === 'TimeSeries'
+    },
+
     /**
      * Converts a semver version string to an integer
      * @param {String} semverVersion
@@ -686,6 +710,21 @@ export default {
       }
     },
 
+    openTimeseriesView: function(scope) {
+      const route = {
+        name: 'file-datasetId-datasetVersion',
+        params: {
+          datasetId: this.datasetInfo.id,
+          datasetVersion: this.datasetInfo.version
+        },
+        query: {
+          path: this.s3Path(scope.row.path)
+        }
+      }
+
+      this.$router.push(route)
+    },
+
     /**
      * Checks if file is a scaffold view port
      * @param {Object} scope
@@ -775,11 +814,6 @@ export default {
       path = path.replaceAll(' ', '_')
       return path.replaceAll(',', '_')
     },
-    onEnterTooltipItem: function(e, refId) {
-      const target = e.target
-      const hideTooltip = target.scrollWidth <= target.offsetWidth
-      this.$refs[refId].hide(hideTooltip)
-    },
   }
 }
 </script>
@@ -835,7 +869,7 @@ export default {
   margin: 3px 8px 0 0;
 }
 .circle {
-  display: inline-flex;
+  display: inline-block;
   height: 1.5em;
   width: 1.5em;
   line-height: 1.5em;
@@ -844,8 +878,10 @@ export default {
   border-radius: 0.75em; /* or 50% */
   background-color: $purple;
   color: #fff;
-  text-align: center;
   cursor: pointer;
+  writing-mode: vertical-rl;
+  -webkit-writing-mode: vertical-rl;
+  vertical-align: top;
 }
 .disabled {
   opacity: .6;

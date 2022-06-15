@@ -19,7 +19,7 @@
               name="subscribe"
               class="el-button secondary"
             >
-              Sign-up <svg-icon icon="icon-open" height="20" width="20" />
+              Sign Up <svg-icon icon="icon-open" height="20" width="20" />
             </el-button>
           </div>
         </div>
