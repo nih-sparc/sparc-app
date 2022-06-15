@@ -2,74 +2,81 @@
   <div class="dataset-details">
     <client-only>
       <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
-      <div class="bx--grid">
-        <div class="bx--row">
-          <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
-            <dataset-action-box />
-            <similar-datasets-info-box
-              :associated-project="associatedProject"
-              :dataset-type-name="datasetTypeName"
-            />
-          </div>
-          <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
-            <dataset-header
-              class="dataset-header"
-              :latestVersionRevision="latestVersionRevision"
-              :latestVersionDate="latestVersionDate"
-              :numCitations="numCitations"
-              :numDownloads="numDownloads"
-            />
-            <div class="tabs-container mt-16 mb-0 mx-0 p-16">
-              <content-tab-card
-                id="datasetDetailsTabsContainer"
-                :tabs="tabs"
-                :active-tab-id="activeTabId"
-                @tab-changed="tabChanged"
-                linkComponent="nuxt-link"
-                routeName="datasetDetailsTab"
-              >
-                <dataset-description-info
-                  v-show="activeTabId === 'abstract'"
-                  :markdown="markdown"
-                  :dataset-records="datasetRecords"
-                  :loading-markdown="loadingMarkdown"
-                  :dataset-tags="datasetTags"
-                />
-                <dataset-about-info
-                  v-show="activeTabId === 'about'"
-                  :latestVersionRevision="latestVersionRevision"
-                  :latestVersionDate="latestVersionDate"
-                  :associated-project="associatedProject"
-                />
-                <citation-details
-                  v-show="activeTabId === 'cite'"
-                  :doi-value="datasetInfo.doi"
-                />
-                <dataset-files-info
-                  v-if="hasFiles"
-                  v-show="activeTabId === 'files'"
-                  :osparc-viewers="osparcViewers"
-                  :dataset-scicrunch="scicrunchData"
-                />
-                <images-gallery
-                  v-if="hasGalleryImages"
-                  v-show="activeTabId === 'images'"
-                  :markdown="markdown.markdownTop"
-                  :dataset-biolucida="biolucidaImageData"
-                  :dataset-scicrunch="scicrunchData"
-                />
-                <dataset-citations-info
-                  v-if="hasCitations"
-                  v-show="activeTabId === 'citations'"
-                  :primary-publications="primaryPublications"
-                  :associated-publications="associatedPublications"
-                />
-                <version-history
-                  v-if="canViewVersions"
-                  v-show="activeTabId === 'versions'"
-                  :versions="versions"
-                />
-              </content-tab-card>
+      <div v-if="showTombstone">
+        <tombstone
+          :dataset-details="datasetInfo"
+        />
+      </div>
+      <div v-else>
+        <div class="bx--grid">
+          <div class="bx--row">
+            <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
+              <dataset-action-box />
+              <similar-datasets-info-box
+                :associated-project="associatedProject"
+                :dataset-type-name="datasetTypeName"
+              />
+            </div>
+            <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
+              <dataset-header
+                class="dataset-header"
+                :latestVersionRevision="latestVersionRevision"
+                :latestVersionDate="latestVersionDate"
+                :numCitations="numCitations"
+                :numDownloads="numDownloads"
+              />
+              <div class="tabs-container mt-16 mb-0 mx-0 p-16">
+                <content-tab-card
+                  id="datasetDetailsTabsContainer"
+                  :tabs="tabs"
+                  :active-tab-id="activeTabId"
+                  @tab-changed="tabChanged"
+                  linkComponent="nuxt-link"
+                  routeName="datasetDetailsTab"
+                >
+                  <dataset-description-info
+                    v-show="activeTabId === 'abstract'"
+                    :markdown="markdown"
+                    :dataset-records="datasetRecords"
+                    :loading-markdown="loadingMarkdown"
+                    :dataset-tags="datasetTags"
+                  />
+                  <dataset-about-info
+                    v-show="activeTabId === 'about'"
+                    :latestVersionRevision="latestVersionRevision"
+                    :latestVersionDate="latestVersionDate"
+                    :associated-project="associatedProject"
+                  />
+                  <citation-details
+                    v-show="activeTabId === 'cite'"
+                    :doi-value="datasetInfo.doi"
+                  />
+                  <dataset-files-info
+                    v-if="hasFiles"
+                    v-show="activeTabId === 'files'"
+                    :osparc-viewers="osparcViewers"
+                    :dataset-scicrunch="scicrunchData"
+                  />
+                  <images-gallery
+                    v-if="hasGalleryImages"
+                    v-show="activeTabId === 'images'"
+                    :markdown="markdown.markdownTop"
+                    :dataset-biolucida="biolucidaImageData"
+                    :dataset-scicrunch="scicrunchData"
+                  />
+                  <dataset-references
+                    v-if="hasCitations"
+                    v-show="activeTabId === 'references'"
+                    :primary-publications="primaryPublications"
+                    :associated-publications="associatedPublications"
+                  />
+                  <version-history
+                    v-if="canViewVersions"
+                    v-show="activeTabId === 'versions'"
+                    :versions="versions"
+                  />
+                </content-tab-card>
+              </div>
             </div>
           </div>
         </div>
@@ -96,13 +103,14 @@ import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
-import DatasetCitationsInfo from '@/components/DatasetDetails/DatasetCitationsInfo.vue'
+import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
+import Tombstone from '@/components/Tombstone/Tombstone.vue'
 
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
@@ -116,6 +124,7 @@ import createClient from '@/plugins/contentful.js'
 
 import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
+import flatmaps from '~/services/flatmaps'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -143,13 +152,9 @@ const tabs = [
 const getDatasetFacetsData = async (route) => {
   const objectId = route.params.datasetId
   const filter = `objectID:${objectId}`
-  try {
-    return await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
-      return data
-    })
-  } catch (error) {
-
-  }
+  return await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
+    return data
+  })
 }
 
 /**
@@ -197,27 +202,41 @@ const getDatasetDetails = async (datasetId, version, datasetTypeName, $axios) =>
 
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
-  try {
-    const datasetDetails =
-      datasetTypeName === 'dataset'
-        ? await $axios.$get(datasetUrl)
-        : await $axios.$get(simulationUrl)
+  const datasetDetails =
+    datasetTypeName === 'dataset'
+      ? await $axios.$get(datasetUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
+      : await $axios.$get(simulationUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
 
-    const datasetOwnerId = datasetDetails.ownerId || ''
-    const datasetOwnerEmail = await $axios
-      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-      .then(resp => {
-        return resp.email
-      })
-      .catch(() => {
-        return ''
-      })
-    datasetDetails.ownerEmail = datasetOwnerEmail
+  const datasetOwnerId = propOr('', 'ownerId', datasetDetails)
+  const datasetOwnerEmail = await $axios
+    .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
+    .then(resp => {
+      return resp.email
+    })
+    .catch(() => {
+      return ''
+    })
+  datasetDetails.ownerEmail = datasetOwnerEmail
 
-    return datasetDetails
-  } catch (error) {
-    return {}
-  }
+  return datasetDetails
 }
 
 /**
@@ -242,8 +261,8 @@ const getDownloadsSummary = async ($axios) => {
     const startDate = new Date('2000','1');
     const currentDate = new Date()
     const url = `${process.env.discover_api_host}/metrics/dataset/downloads/summary`
-    return $axios.$get(url, { 
-        params: { startDate: startDate, endDate: currentDate } 
+    return $axios.$get(url, {
+        params: { startDate: startDate, endDate: currentDate }
       }).then(response => {
       return response
     })
@@ -283,32 +302,59 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         id: Number(datasetId),
         version: datasetVersion
       }
-
-      // Check for flatmap neuron data
+      // Check for flatmap data
       if (scicrunchData.organs) {
-        let flatmapData = [{}]
-        for (let i in scicrunchData.organs) {
-          if (flatmapData.length <= i) {
-            flatmapData.push({})
-          }
-
-          let taxo = Uberons.species['rat']
-
-          // Get species data from algolia if it exists
-          if (datasetFacetsData){
-            let species = datasetFacetsData.filter(i=>i.label==="Species")[0].children[0].label
-            taxo = Uberons.species[species.toLowerCase()]
-          }
-          flatmapData[i].taxo = taxo
-          flatmapData[i].uberonid = scicrunchData.organs[i].curie
-          flatmapData[i].organ = scicrunchData.organs[i].name
-          flatmapData[i].id = datasetId
-          flatmapData[i].version = datasetVersion
+        let flatmapData = []
+        let species = undefined
+        // Get species data from algolia if it exists
+        if (datasetFacetsData){
+          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
+          if (speciesArray && speciesArray.length > 0)
+            species = speciesArray[0].children[0].label.toLowerCase()
         }
-        scicrunchData['flatmaps'] = flatmapData
+
+        // check if there is a flatmap for the given species, use a rat if there is not
+        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
+
+        // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
+        // if a flatmap of (species) has (anatomy)
+        let foundAnatomy = []
+        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
+          // Send a requst to flatmap knowledgebase
+          const anatomy = scicrunchData.organs.map(organ => organ.curie)
+          const data = await flatmaps.anatomyQuery(taxo, anatomy)
+
+          // Check request was successful
+          const anatomyResponse = data.data ? data.data.values : undefined
+          if (anatomyResponse && anatomyResponse.length > 0) {
+            foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
+          }
+        }
+
+        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        scicrunchData.organs.forEach(organ => {
+          if (foundAnatomy.includes(organ.curie)){
+            let organData = {
+              taxo,
+              uberonid: organ.curie,
+              organ: organ.name,
+              id: datasetId,
+              version: datasetVersion,
+              species: species
+            }
+            flatmapData.push(organData)
+          }
+        })
+        //Only create a flatmaps field if flatmapData is not empty
+        if (flatmapData.length > 0)
+          scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {
+    console.error(
+      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
+      e
+    )
     return {
       biolucidaImageData: {},
       scicrunchData: {}
@@ -328,14 +374,15 @@ export default {
     DatasetHeader,
     DatasetActionBox,
     CitationDetails,
-    DatasetCitationsInfo,
+    DatasetReferences,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
     ImagesGallery,
     VersionHistory,
     DatasetVersionMessage,
-    SimilarDatasetsInfoBox
+    SimilarDatasetsInfoBox,
+    Tombstone
   },
 
   mixins: [Request, DateUtils, FormatStorage],
@@ -368,6 +415,8 @@ export default {
       datasetFacetsData
     )
 
+    datasetDetails.sciCrunch = scicrunchData;
+
     // Get oSPARC file viewers
     const osparcViewers = await $axios
       .$get(`${process.env.portal_api}/get_osparc_data`)
@@ -389,6 +438,7 @@ export default {
       versions,
       datasetTypeName,
       downloadsSummary,
+      showTombstone: datasetDetails.isUnpublished
     }
   },
 
@@ -642,10 +692,16 @@ export default {
       return !this.embargoed && this.fileCount >= 1
     },
     hasGalleryImages: function() {
+      //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data
       return !this.embargoed &&
         (('dataset_images' in this.biolucidaImageData &&
           this.biolucidaImageData.dataset_images.length > 0) ||
-        Object.keys(this.scicrunchData).length > 0)
+        ('abi-scaffold-metadata-file' in this.scicrunchData) ||
+        ('video' in this.scicrunchData) ||
+        ('flatmaps' in this.scicrunchData) ||
+        ('mbf-segmentation' in this.scicrunchData) ||
+        ('abi-plot' in this.scicrunchData) ||
+        ('common-images' in this.scicrunchData))
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
@@ -710,9 +766,9 @@ export default {
     hasCitations: {
       handler: function(newValue) {
         if (newValue) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'citations') !== undefined
+          const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'References', id: 'citations' })
+            this.tabs.splice(5, 0, { label: 'References', id: 'references' })
           }
         }
       },
@@ -1019,7 +1075,7 @@ export default {
   @media (max-width: 47rem) {
     order: 1;
     margin-top: 0;
-  } 
+  }
 }
 .tabs-container {
   border: solid 1px $lineColor1;

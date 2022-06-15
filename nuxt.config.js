@@ -44,9 +44,7 @@ export default {
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
-      process.env.PENNSIEVE_DISCOVER_API_HOST ||
-      'https://api.pennsieve.io/discover',
-    bf_api_host: process.env.BF_API_HOST || 'https://api.pennsieve.io',
+      process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
     zipit_api_host:
       process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
     osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
@@ -85,6 +83,7 @@ export default {
     ctf_terms_id: '6XCER8v1TVVCoZdaBWg66t',
     ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
     ctf_success_story_id: 'successStory',
+    ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
@@ -92,7 +91,8 @@ export default {
     ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev_published_time_desc',
-    BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
+    BL_API_URL: 'https://sparc.biolucida.net/api/v1/',
+    BL_SERVER_URL: 'https://sparc.biolucida.net',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
@@ -106,7 +106,9 @@ export default {
     AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
     AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
     AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
-    SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || false
+    SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || 'false',
+    LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
+    ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1'
   },
 
   serverMiddleware: [
@@ -135,7 +137,8 @@ export default {
         path: '/datasets/:datasetId/version/:version',
         component: '@/pages/datasets/_datasetId.vue'
       })
-    }
+    },
+    middleware: ['verifyUserProfileComplete', 'documentationHubRedirects']
   },
   /*
    ** Global CSS
@@ -144,9 +147,18 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/bootstrap', '@/plugins/contentful', '@/plugins/amplify', {
-    src: '@/plugins/system-design-components', mode: 'client'
-  }],
+  plugins: [
+    '@/plugins/bootstrap', 
+    '@/plugins/contentful', 
+    '@/plugins/amplify',
+    '@/plugins/documentation-hub-redirects',
+    {
+      src: '@/plugins/system-design-components', mode: 'client'
+    },
+    {
+      src: '@/plugins/tsviewer', mode: 'client'
+    }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -186,7 +198,6 @@ export default {
    */
   build: {
     transpile: [/^element-ui/, 'system-design-components'],
-
     /*
      ** You can extend webpack config here
      */

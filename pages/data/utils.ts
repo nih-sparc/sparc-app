@@ -201,9 +201,12 @@ export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMap
         }
       })
       return facetData
+    }).catch(() => {
+      return {}
     })
 }
 
 export const searchQueryReplacements: { [orig: string]: string } = {
-  'o2s2parc': 'o\u00b2s\u00b2parc'
+  'o2s2parc': 'o\u00b2s\u00b2parc',
+  'osparc': 'o\u00b2s\u00b2parc'
 }

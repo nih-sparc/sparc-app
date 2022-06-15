@@ -3,8 +3,8 @@
     <div class="page-wrap container">
       <div class="subpage">
         <p>
-          One of our external resource is down. This part of the site is not
-          accessible. Please come back later
+          One of our external resources is down. This part of the site is not
+          accessible. Please come back later.
         </p>
       </div>
     </div>

@@ -184,7 +184,7 @@ export default {
      * @returns {String}
      */
     downloadMetadataUrl: function() {
-      return `${process.env.bf_api_host}/discover/datasets/${this.datasetId}/versions/${this.versionId}/metadata`
+      return `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${this.versionId}/metadata`
     }
   },
 
