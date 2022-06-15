@@ -19,15 +19,16 @@
         <div v-if="facet.children && showFacet(facet)">
           <div class="capitalize mb-8">{{facet.label}}:</div>
           <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
-            <sparc-tooltip placement="left-center" :content="capitalize(child.label)">
-              <nuxt-link
-                slot="item"
-                :to="getSelectedFacetLink(getFacetId(child))"
-              >
-                <div class="my-2 px-12 facet-button capitalize label2">
-                  {{child.label}}
-                </div>
-              </nuxt-link>
+            <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
+              <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
+                <nuxt-link
+                  :to="getSelectedFacetLink(getFacetId(child))"
+                >
+                  <div class="facet-label capitalize">
+                    {{child.label}}
+                  </div>
+                </nuxt-link>
+              </div>
             </sparc-tooltip> 
           </div>
           <hr class="my-16"/>
@@ -40,16 +41,20 @@
           v-for="contributor in contributors"
           :key="contributor.id"
         >
-          <li class="contributor-list">
-            <sparc-tooltip placement="left-center" :content="getContributorFullName(contributor)">
-              <nuxt-link
-                slot="item"
-                :to="getSelectedContributorLink(contributor)"
-              >
-                <u>{{getContributorFullName(contributor)}}</u>
-              </nuxt-link>
-            </sparc-tooltip>
-          </li>
+          <ul class="contributor-list">
+            <li>
+              <sparc-tooltip placement="left-center" :content="getContributorFullName(contributor)" is-repeating-item-content>
+                <div slot="item" class="tooltip-item">
+                  <nuxt-link
+                    slot="item"
+                    :to="getSelectedContributorLink(contributor)"
+                  >
+                    <u>{{getContributorFullName(contributor)}}</u>
+                  </nuxt-link>
+                </div>
+              </sparc-tooltip>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -178,9 +183,6 @@ hr {
   color: $purple;
   border: 1px solid $purple;
   cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .facet-button-container {
@@ -196,8 +198,17 @@ hr {
 
 .contributor-list {
   list-style-type: disc;
+  padding-left: 18px;
+  margin: 0;
+}
+
+.facet-label {
+  display: contents;
+}
+
+.tooltip-item {
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

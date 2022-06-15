@@ -27,8 +27,8 @@
           <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">File location</strong>
-          <div class="file-detail__column">
+          <strong class="file-detail__column_1">File location</strong>
+          <div class="file-detail__column_2">
             <nuxt-link
               :to="{
                 name: `datasets-datasetId`,
@@ -46,20 +46,20 @@
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
+          <strong class="file-detail__column_1">Type</strong>
+          <div class="file-detail__column_2">
             {{ fileType }}
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Dataset id</strong>
-          <div class="file-detail__column">
+          <strong class="file-detail__column_1">Dataset id</strong>
+          <div class="file-detail__column_2">
             {{ datasetId }}
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Version</strong>
-          <div class="file-detail__column">
+          <strong class="file-detail__column_1">Version</strong>
+          <div class="file-detail__column_2">
             {{ versionNumber }}
           </div>
         </div>
@@ -78,9 +78,11 @@ import Plyr from 'plyr'
 
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
+
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import discover from '@/services/discover'
+import FileDetails from '@/mixins/file-details'
 
 export default {
   name: 'VideoViewerPage',
@@ -90,17 +92,22 @@ export default {
     BfButton
   },
 
-  mixins: [RequestDownloadFile, FetchPennsieveFile],
+  mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, $axios }) {
     const downloadLinkResponse = await discover.downloadLink(route.query.file_path, route.query.mimetype)
     let filePath = route.query.file_path
-    filePath = filePath.substring(filePath.indexOf("files"))
-    const file = await FetchPennsieveFile.methods.fetchPennsieveFile($axios, filePath, route.query.dataset_id, route.query.dataset_version)
+    filePath = filePath.substring(filePath.indexOf('files'))
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+      $axios,
+      filePath,
+      route.query.dataset_id,
+      route.query.dataset_version
+    )
     return {
       video_src: downloadLinkResponse.data,
       mimetype: route.query.mimetype,
-      file,
+      file
     }
   },
 
@@ -119,26 +126,6 @@ export default {
     }
   },
   computed: {
-    /**
-     * Get the file name from the file prop.
-     * @returns String
-     */
-    fileName: function() {
-      return this.file.name
-    },
-
-    /**
-     * Get the file name from the file prop.
-     * @returns String
-     */
-    filePath: function() {
-      return this.file.path
-    },
-
-    fileFolderLocation: function() {
-      return this.filePath.substring(0, this.filePath.lastIndexOf(this.fileName))
-    },
-
     /**
      * Get the file type from the file prop.
      * @returns String
@@ -170,55 +157,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
-}
-
-h1 {
-  flex: 1;
-  font-size: 1.5em;
-  line-height: 2rem;
-}
-.page-heading {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.375rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.page-heading__button {
-  flex-shrink: 0;
-}
-
-.file-detail {
-  border-bottom: 1px solid #dbdfe6;
-  flex-direction: column;
-  font-size: 0.875em;
-  display: flex;
-  padding: 1rem 0.625rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.file-detail__column {
-  flex: 1;
-}
+@import '@/assets/_viewer.scss';
 </style>
 <style lang="scss">
 .video-container {
-  padding-top: 8px;
+  padding-top: 0.5rem;
 }
 .video {
   width: 100%;

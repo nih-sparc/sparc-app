@@ -300,7 +300,7 @@ export default {
       return this.internalState == this.internalStates.done
     },
     apiUrl: function() {
-      return process.env.USER_ACTIONS_API_URL
+      return process.env.LOGIN_API_URL
     },
     getUserByEmailRequest: function() {
       return `${this.apiUrl}/user/email/`
@@ -444,9 +444,11 @@ export default {
     onClickConnectAccounts: async function() {
       const url = `${this.mergeUserAccountsUrl}/${this.pennsieveUserIntId}`
       const headers = { 'Authorization': `bearer ${this.authenticatedUser.token}` }
+      // include password in order to pass it on to new Cognito user so that a new one doesn't need to be requested
       const body = {
         email: this.authenticatedUser.emailAddress,
-        cognitoId: this.cognitoUsername
+        cognitoId: this.cognitoUsername,
+        password: this.passwordForm.password
       }
       await this.$axios.$put(url, body, { headers }).then(async () => {
         await this.$store.dispatch('user/logout')

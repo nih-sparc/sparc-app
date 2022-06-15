@@ -7,10 +7,10 @@
           Contact Us
         </nuxt-link>
         <svg-icon class="mr-4" icon="icon-help" width="18" height="18" />
-        <nuxt-link :to="{ name: 'help' }">
+        <a href="https://docs.sparc.science/">
           Help
-        </nuxt-link>
-        <template v-if="showLoginFeature === 'true'">
+        </a>
+        <template v-if="showLoginFeature">
           <img
             class="mr-2"
             src="@/static/images/orcid_24x24.png"
@@ -100,11 +100,11 @@
                 </li>
                 <li>
                   <svg-icon icon="icon-help" width="18" height="18" />
-                  <nuxt-link :to="{ name: 'help' }">
+                  <a href="https://docs.sparc.science/">
                     Help
-                  </nuxt-link>
+                  </a>
                 </li>
-                <li v-if="showLoginFeature === 'true'">
+                <li v-if="showLoginFeature">
                   <img
                     src="@/static/images/orcid_24x24.png"
                     style="vertical-align: middle"
@@ -237,7 +237,7 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
-      showLoginFeature: process.env.SHOW_LOGIN_FEATURE,
+      showLoginFeature: (process.env.SHOW_LOGIN_FEATURE == 'true') ? true : false,
       searchSelectOptions: [
         {
           key: 'data',
