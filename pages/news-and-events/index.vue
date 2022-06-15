@@ -109,6 +109,14 @@
               <h3 class="mb-24">Sign up for the SPARC Newsletter</h3>
               <p class="mb-40">Keep up to date with all the latest news and events from the SPARC Portal.</p>
               <newsletter-form />
+              <div class="newsletter-archive">
+                <style type="text/css">
+                  .campaign { margin-top: .5em; }
+                </style>
+                <h3 class="mb-24">View previous Newsletters</h3>
+                <div id="newsletter-archive" />
+                <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">View all Newsletters</a>
+              </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
               <div v-twitter-widgets>
@@ -244,6 +252,10 @@ export default Vue.extend<Data, Methods, Computed, never>({
       const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     }
+  },
+
+  mounted() {
+    this.$injectNewsletterArchive('#newsletter-archive')
   }
 })
 </script>
@@ -362,6 +374,14 @@ h3 {
   &:hover,
   &:active {
     text-decoration: underline;
+  }
+}
+
+.newsletter-archive {
+  margin-top: 3em;
+  & > a {
+    display: inline-block;
+    margin-top: 1em;
   }
 }
 </style>

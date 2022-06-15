@@ -148,16 +148,13 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    '@/plugins/bootstrap', 
-    '@/plugins/contentful', 
+    '@/plugins/bootstrap',
+    '@/plugins/contentful',
     '@/plugins/amplify',
     '@/plugins/documentation-hub-redirects',
-    {
-      src: '@/plugins/system-design-components', mode: 'client'
-    },
-    {
-      src: '@/plugins/tsviewer', mode: 'client'
-    }
+    { src: '@/plugins/postscribe', mode: 'client' },
+    { src: '@/plugins/system-design-components', mode: 'client' },
+    { src: '@/plugins/tsviewer', mode: 'client' }
   ],
   /*
    ** Nuxt.js dev-modules
