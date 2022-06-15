@@ -48,9 +48,9 @@
 
         <div v-if="isBugSubmitted" class="msg-success">
           <p>
-            Thank you for letting us know about this error or technical issue.
-            If you requested a response, a member of the SPARC team will contact
-            you within two business days.
+            Thank you for letting us know about this error or issue. If you
+            requested a response, a member of the SPARC team will contact you
+            within two business days.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
         </div>
@@ -111,7 +111,7 @@ export default {
           value: 'general'
         },
         {
-          label: 'I want to report an error or a technical issue',
+          label: 'I want to report an error or an issue',
           value: 'bug'
         }
       ],

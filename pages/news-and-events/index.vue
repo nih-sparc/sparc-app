@@ -111,9 +111,7 @@
               <newsletter-form />
               <div class="newsletter-archive">
                 <style type="text/css">
-                <!--
-                .campaign { margin-top: .5em; }
-                //-->
+                  .campaign { margin-top: .5em; }
                 </style>
                 <h3 class="mb-24">View previous Newsletters</h3>
                 <div id="newsletter-archive" />
