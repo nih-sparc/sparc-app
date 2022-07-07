@@ -5,9 +5,16 @@
         <div class="page-heading">
           <h1>{{ file.name }}</h1>
           <div class="page-heading__button">
-            <bf-button @click="requestDownloadFile(file)">
+            <bf-button @click="executeDownload(file)">
               Download
             </bf-button>
+            <form
+              ref="zipForm"
+              method="POST"
+              :action="zipitUrl"
+            >
+              <input v-model="zipData" type="hidden" name="data" />
+            </form>
           </div>
         </div>
         <div class="file-detail">
@@ -74,7 +81,6 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import BfStorageMetrics from '@/mixins/bf-storage-metrics'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
-import RequestDownloadFile from '@/mixins/request-download-file'
 
 export default {
   name: 'FileDetailPage',
@@ -88,7 +94,6 @@ export default {
   mixins: [
     BfStorageMetrics,
     FormatDate,
-    RequestDownloadFile,
     FetchPennsieveFile
   ],
 
@@ -136,7 +141,9 @@ export default {
         status: ''
       },
       tabs: [],
-      file: {}
+      file: {},
+      zipData: '',
+      zipitUrl: process.env.zipit_api_host
     }
   },
 
@@ -167,6 +174,24 @@ export default {
       },
       immediate: true
     }
+  },
+
+  methods: {
+    executeDownload(file) {
+      const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+      const matches = file.uri.match(datasetVersionRegexp)
+
+      const payload = {
+        paths: [matches.groups.filePath],
+        datasetId: matches.groups.datasetId,
+        version: matches.groups.version
+      }
+
+      this.zipData = JSON.stringify(payload, undefined)
+      this.$nextTick(() => {
+        this.$refs.zipForm.submit() // eslint-disable-line no-undef
+      })
+    },
   },
 
   computed: {
