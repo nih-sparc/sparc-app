@@ -306,6 +306,7 @@ export default {
   methods: {
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
+        this.$cookies.set('auth-redirect-url', this.$nuxt.$route.fullPath)
         this.$store.dispatch('user/logout')
       }
       if (menuId === 'profile') {
@@ -314,6 +315,7 @@ export default {
     },
     onLoginWithORCID: async function(x) {
       x.preventDefault()
+      this.$cookies.set('auth-redirect-url', this.$nuxt.$route.fullPath)
       await this.$store.dispatch('user/login', 'ORCID')
     },
     /**
