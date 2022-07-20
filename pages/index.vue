@@ -70,6 +70,17 @@ export default {
       .catch(console.error)
   },
 
+  mounted() {
+    // When trying to do this using a middleware, the server would redirect correctly initially after login,
+    // but then another unknown redirect back to / was happening that would cause the page to load incorrectly.
+    // The only downside to doing it this way is a momentary display of the home page first before redirecting.
+    const authRedirectUrl = this.$cookies.get('auth-redirect-url')
+    if (authRedirectUrl) {
+      this.$cookies.set('auth-redirect-url', null)
+      this.$router.push(authRedirectUrl)
+    }
+  },
+
   data: () => {
     return {
       featuredData: [],
