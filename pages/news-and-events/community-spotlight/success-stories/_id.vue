@@ -40,12 +40,12 @@
               {{ author }}
             </div>
             <br />
-            <template v-if="entry.publishDate">
+            <template v-if="entry.publishedDate">
               <div class="body4 story-bold-field">
                 Published Date
               </div>
               <div class="body4">
-                {{ formatDate(entry.publishDate) }}
+                {{ formatDate(entry.publishedDate) }}
               </div>
               <br />
             </template>
@@ -124,6 +124,7 @@ export default {
         content_type: 'successStoryDisplay',
         'fields.storyRoute[match]': route.params.id,
         include: 1,
+        order: '-fields.publishedDate',
       })
       return {
         entry: results.items[0].fields,

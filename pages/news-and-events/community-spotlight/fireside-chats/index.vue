@@ -39,7 +39,8 @@ export default {
 
   async asyncData() {
     const firesideChats = await client.getEntries({
-      content_type: 'firesideChat'
+      content_type: 'firesideChat',
+      order: '-fields.publishedDate',
     })
     return {
       allStories: firesideChats.items
