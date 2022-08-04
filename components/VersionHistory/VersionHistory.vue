@@ -17,7 +17,10 @@
         <el-col :span="4">
           Date 
         </el-col>
-        <el-col :span="8" :push="2">
+        <el-col :span="4">
+          Changelog 
+        </el-col>
+        <el-col :span="4" :push="1">
           DOI
         </el-col>
       </el-row>
@@ -50,7 +53,15 @@
         <el-col :span="4">
           {{ formatDate(getVersionRevisionDate(version)) }}
         </el-col>
-        <el-col :span="8" :push="2">
+        <el-col v-if="isChangelogAvailable" :span="4">
+          <a class="changelog-file" @click="requestDownloadFile(changelogFile)">
+            Download
+          </a>
+        </el-col>
+        <el-col v-else :span="4">
+          Not available
+        </el-col>
+        <el-col :span="4" :push="1">
           <a
             :href="getDoiLink(version.doi)"
           >
@@ -65,20 +76,25 @@
 
 <script>
 import { mapState } from 'vuex'
-import { propOr } from 'ramda'
+import { propOr, isEmpty } from 'ramda'
 
+import RequestDownloadFile from '@/mixins/request-download-file'
 import FormatDate from '@/mixins/format-date'
 
 export default {
   name: 'VersionHistory',
 
-  mixins: [FormatDate],
+  mixins: [FormatDate, RequestDownloadFile],
 
   props: {
     versions: {
       type: Array,
       default: () => []
     },
+    changelogFile: {
+      type: Object,
+      default: () => {}
+    }
   },
   computed: {
     /**
@@ -110,6 +126,9 @@ export default {
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
     },
+    isChangelogAvailable: function() {
+      return !isEmpty(this.changelogFile)
+    }
   },
   methods: {
     getDoiLink(doi) {
@@ -142,6 +161,9 @@ export default {
     a {
       text-decoration: underline;
     }
+  }
+  .changelog-file {
+    cursor: pointer;
   }
 }
 </style>
