@@ -42,7 +42,8 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
     const stories = await client.getEntries<StoryEntry>({
-      content_type: 'successStoryDisplay'
+      content_type: 'successStoryDisplay',
+      order: '-fields.publishedDate',
     })
 
     return {
