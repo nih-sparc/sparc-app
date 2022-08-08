@@ -21,7 +21,7 @@ export default {
         }
 
         // check if uri matches filePath query param
-        if (file.uri) {
+        else if (file.uri) {
           let uriFile = file.uri.substring(file.uri.lastIndexOf('/'))
           if (uriFile) {
             uriFile = uriFile.toLowerCase()
