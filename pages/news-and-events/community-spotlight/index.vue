@@ -44,37 +44,32 @@ export default {
   },
 
   async asyncData() {
+    const storiesPageSize = 5
+    const chatsPageSize = 5
+    const announcementsPageSize = 5
     const successData = await client.getEntries({
-      content_type: 'successStoryDisplay'
+      content_type: 'successStoryDisplay',
+      limit: storiesPageSize,
+      order: '-fields.publishedDate',
     })
     const fireSideChats = await client.getEntries({
-      content_type: 'firesideChat'
+      content_type: 'firesideChat',
+      limit: chatsPageSize,
+      order: '-fields.publishedDate',
     })
     const communityAnnouncements = await client.getEntries({
-      content_type: 'news'
+      content_type: 'news',
+      limit: announcementsPageSize,
+      order: '-fields.publishedDate',
     })
     return {
-      allStories: successData.items,
-      allChats: fireSideChats.items,
-      allAnnouncements: communityAnnouncements.items
-    }
-  },
-  computed: {
-    shownStories: function() {
-      return this.allStories.slice(0, this.storiesPageSize)
-    },
-    shownChats: function() {
-      return this.allChats.slice(0, this.chatsPageSize)
-    },
-    shownAnnouncements: function() {
-      return this.allAnnouncements.slice(0, this.announcementsPageSize)
+      shownStories: successData.items,
+      shownChats: fireSideChats.items,
+      shownAnnouncements: communityAnnouncements.items
     }
   },
   data() {
     return {
-      storiesPageSize: 5,
-      chatsPageSize: 5,
-      announcementsPageSize: 5,
       videoSrc: '',
       isLoadingSearch: false,
       breadcrumb: [

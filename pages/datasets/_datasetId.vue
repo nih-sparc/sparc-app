@@ -74,6 +74,7 @@
                     v-if="canViewVersions"
                     v-show="activeTabId === 'versions'"
                     :versions="versions"
+                    :changelog-file="changelogFile"
                   />
                 </content-tab-card>
               </div>
@@ -425,6 +426,14 @@ export default {
         return {}
       })
 
+    const changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${route.params.version || 1}/files?path=changelog.md`
+    const changelogFile = await $axios.$get(changelogEndpoint).then(response => {
+        return response 
+      }).catch(() => {
+        console.log("There is no changelog file associated with this dataset")
+        return {}
+      })
+
     store.dispatch('pages/datasets/datasetId/setDatasetInfo', datasetDetails)
     store.dispatch('pages/datasets/datasetId/setDatasetFacetsData', datasetFacetsData)
     store.dispatch('pages/datasets/datasetId/setDatasetTypeName', datasetTypeName)
@@ -438,7 +447,8 @@ export default {
       versions,
       datasetTypeName,
       downloadsSummary,
-      showTombstone: datasetDetails.isUnpublished
+      showTombstone: datasetDetails.isUnpublished,
+      changelogFile
     }
   },
 

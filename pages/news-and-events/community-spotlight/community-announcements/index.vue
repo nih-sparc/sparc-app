@@ -39,7 +39,8 @@ export default {
 
   async asyncData() {
     const news = await client.getEntries({
-      content_type: 'news'
+      content_type: 'news',
+      order: '-fields.publishedDate'
     })
     return {
       items: news.items

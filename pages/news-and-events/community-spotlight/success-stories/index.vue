@@ -40,7 +40,8 @@ export default {
 
   async asyncData() {
     const successData = await client.getEntries({
-      content_type: 'successStoryDisplay'
+      content_type: 'successStoryDisplay',
+      order: '-fields.publishedDate',
     })
     return {
       allStories: successData.items
