@@ -12,7 +12,27 @@ export default {
       const filesResponse = await axios.$get(filesUrl)
       const files = filesResponse.files
       filePath = filePath.toLowerCase()
-      return files.find(element => filePath === element.path.toLowerCase() || filePath.includes(element.uri.substring(element.uri.lastIndexOf('/')).toLowerCase()))
+      let foundFile = {}
+
+      files.forEach(file => {
+        // Check if path matches query param
+        if (filePath.toLowerCase() === file.path.toLowerCase) {
+          foundFile = file
+        }
+
+        // check if uri matches filePath query param
+        if (file.uri) {
+          let uriFile = file.uri.substring(file.uri.lastIndexOf('/'))
+          if (uriFile) {
+            uriFile = uriFile.toLowerCase()
+          }
+          if (filePath.includes(uriFile)) {
+            foundFile = file
+          }
+        }
+      })
+
+      return foundFile
     }
   }
 }
