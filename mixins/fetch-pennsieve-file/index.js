@@ -11,6 +11,11 @@ export default {
       const filesUrl = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
       const filesResponse = await axios.$get(filesUrl)
       const files = filesResponse.files
+      if (files.length === 0) {
+        console.warn(`
+        WARNING! the file "${filePath}" was just attempted to download from ${filesUrl} , This will likely crash the page using this file`)
+      }
+
       filePath = filePath.toLowerCase()
       let foundFile = {}
 
