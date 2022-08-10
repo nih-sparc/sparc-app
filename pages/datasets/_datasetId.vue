@@ -74,7 +74,7 @@
                     v-if="canViewVersions"
                     v-show="activeTabId === 'versions'"
                     :versions="versions"
-                    :changelog-file="changelogFile"
+                    :changelog-files="changelogFiles"
                   />
                 </content-tab-card>
               </div>
@@ -426,13 +426,23 @@ export default {
         return {}
       })
 
-    const changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${route.params.version || 1}/files?path=changelog.md`
-    const changelogFile = await $axios.$get(changelogEndpoint).then(response => {
-        return response 
-      }).catch(() => {
-        console.log("There is no changelog file associated with this dataset")
-        return {}
-      })
+    const changelogFileRequests = []
+    versions.forEach(({ version }) => {
+      const changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
+      changelogFileRequests.push(
+        $axios.$get(changelogEndpoint).then(response => {
+          return [{
+            ...response,
+            version: version
+          }]
+        }).catch(() => {
+          console.log("There is no changelog file associated with this dataset")
+          return [{}]
+        })
+      )
+    })
+
+    const [changelogFiles] = await Promise.all(changelogFileRequests)
 
     store.dispatch('pages/datasets/datasetId/setDatasetInfo', datasetDetails)
     store.dispatch('pages/datasets/datasetId/setDatasetFacetsData', datasetFacetsData)
@@ -448,7 +458,7 @@ export default {
       datasetTypeName,
       downloadsSummary,
       showTombstone: datasetDetails.isUnpublished,
-      changelogFile
+      changelogFiles
     }
   },
 

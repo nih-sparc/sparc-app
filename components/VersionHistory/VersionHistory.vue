@@ -53,8 +53,8 @@
         <el-col :span="4">
           {{ formatDate(getVersionRevisionDate(version)) }}
         </el-col>
-        <el-col v-if="isChangelogAvailable" :span="4">
-          <a class="changelog-file" @click="requestDownloadFile(changelogFile)">
+        <el-col v-if="isChangelogAvailable(version.version)" :span="4">
+          <a class="changelog-file" @click="requestDownloadFile(getChangelogFile(version.version))">
             Download
           </a>
         </el-col>
@@ -65,7 +65,7 @@
           <a
             :href="getDoiLink(version.doi)"
           >
-            <u>{{version.doi}}</u>
+            <u>{{ version.doi }}</u>
           </a>
         </el-col>
       </el-row>
@@ -91,9 +91,9 @@ export default {
       type: Array,
       default: () => []
     },
-    changelogFile: {
-      type: Object,
-      default: () => {}
+    changelogFiles: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -126,9 +126,6 @@ export default {
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
     },
-    isChangelogAvailable: function() {
-      return !isEmpty(this.changelogFile)
-    }
   },
   methods: {
     getDoiLink(doi) {
@@ -136,6 +133,12 @@ export default {
     },
     getVersionRevisionDate: function(version) {
       return version.revisedAt || version.versionPublishedAt
+    },
+    isChangelogAvailable: function(version) {
+      return this.changelogFiles.some(file => file.version === version)
+    },
+    getChangelogFile(version) {
+      return this.changelogFiles.find(file => file.version === version) || {}
     }
   }
 }
