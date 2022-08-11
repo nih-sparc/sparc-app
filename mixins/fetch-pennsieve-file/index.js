@@ -11,8 +11,35 @@ export default {
       const filesUrl = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
       const filesResponse = await axios.$get(filesUrl)
       const files = filesResponse.files
+      if (files.length === 0) {
+        console.warn(`
+        WARNING! the file "${filePath}" was just attempted to download from ${filesUrl} , This will likely crash the page using this file`)
+      }
+
       filePath = filePath.toLowerCase()
-      return files.find(element => filePath === element.path.toLowerCase() || filePath.includes(element.uri.substring(element.uri.lastIndexOf('/')).toLowerCase()))
+      let foundFile = {}
+      let keepLooking = true
+
+      files.every(file => {
+        // Check if path matches query param.
+        if (filePath.toLowerCase() === file.path.toLowerCase) {
+          foundFile = file
+          keepLooking = false
+        } else if (file.uri) {
+          // Check if uri matches filePath query param.
+          let uriFile = file.uri.substring(file.uri.lastIndexOf('/'))
+          if (uriFile) {
+            uriFile = uriFile.toLowerCase()
+          }
+          if (filePath.includes(uriFile)) {
+            foundFile = file
+            keepLooking = false
+          }
+        }
+        return keepLooking
+      })
+
+      return foundFile
     }
   }
 }
