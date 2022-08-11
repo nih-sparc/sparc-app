@@ -18,23 +18,25 @@ export default {
 
       filePath = filePath.toLowerCase()
       let foundFile = {}
+      let keepLooking = true
 
-      files.forEach(file => {
-        // Check if path matches query param
+      files.every(file => {
+        // Check if path matches query param.
         if (filePath.toLowerCase() === file.path.toLowerCase) {
           foundFile = file
-        }
-
-        // check if uri matches filePath query param
-        else if (file.uri) {
+          keepLooking = false
+        } else if (file.uri) {
+          // Check if uri matches filePath query param.
           let uriFile = file.uri.substring(file.uri.lastIndexOf('/'))
           if (uriFile) {
             uriFile = uriFile.toLowerCase()
           }
           if (filePath.includes(uriFile)) {
             foundFile = file
+            keepLooking = false
           }
         }
+        return keepLooking
       })
 
       return foundFile
