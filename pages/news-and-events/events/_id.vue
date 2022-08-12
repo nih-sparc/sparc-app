@@ -125,7 +125,7 @@ export default {
     },
 
     eventDetails: function() {
-      return pathOr('', ['fields', 'eventDetails'], this.page)
+      return pathOr(null, ['fields', 'eventDetails'], this.page)
     },
 
     /**
@@ -141,8 +141,7 @@ export default {
     },
 
     hasEventDetailsPage: function() {
-      const eventDetails = pathOr(null, ['fields', 'eventDetails'], this.page)
-      return eventDetails !== null
+      return this.eventDetails !== null
     },
   }
 }
