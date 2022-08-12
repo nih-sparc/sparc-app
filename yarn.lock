@@ -52,10 +52,10 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/flatmapvuer@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.3.0.tgz#f43d3974da1c61d6e176f716a1e1e3a18723b5b0"
-  integrity sha512-k3Wf23X407DbU5Uw+tNwYkfgtymRvjAXIFl8IFdFBb5R9qpiqDcz759+1kTlX1Tb9XKyS0t72LiscZOtvtWDvQ==
+"@abi-software/flatmapvuer@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.3.1.tgz#01301193df8e7e176cced3939e382cd0705c094a"
+  integrity sha512-7YVt7IMHC8AMtbHODEDu1qXidxV0b2vPbATvZna87Nt8vTBpLKwcAo5j/LlqiOM6aT2so0SRqSwPtYLy5/87Lw==
   dependencies:
     "@abi-software/flatmap-viewer" "^2.2.0-beta.16"
     "@abi-software/svg-sprite" "^0.1.14"
@@ -80,10 +80,10 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.3.18":
-  version "1.3.18"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.18.tgz#bd8afecfcb2fa4a18881bbd21d099f803df0df80"
-  integrity sha512-1BxGBjcjzo45BVrTTU/uy7g/2/qLiLoYFwF9s9pbJ/GHVJA/DdzATKgYF2RVwjIh8cd72qrzktY12Fw3uEHrIQ==
+"@abi-software/map-side-bar@^1.3.20":
+  version "1.3.20"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.20.tgz#47675bc8601baca863d5393f2d4abcecacf44840"
+  integrity sha512-8pRB8BcPLiaOEc2K+Ljhp4RWeVntheHb4+STd9Mlj6mqIUyqeR7ksVeL6ESZwLkpg5paWbaYwB4NiYw0tHZtEg==
   dependencies:
     "@abi-software/gallery" "^0.3.1"
     "@abi-software/svg-sprite" "^0.1.14"
@@ -91,13 +91,13 @@
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.2.tgz#4e697e7c162cc74807455ee0e5b7544dda1f8d8b"
-  integrity sha512-CRp+UHdDCZt0qmnRxwvs3DH43XnzyJfDtNJntOdqFBjpgFew9UXkcPF916hzMbY30FNzgrkS1z5FX+D/pvx8Ew==
+"@abi-software/mapintegratedvuer@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.5.tgz#2c757a2a63520bb229caa48a747676c017292e11"
+  integrity sha512-kgRKCIP1hLFwRNgqS32Lp2i1t2a6GgnmVCXl6JUOAUFwxOuomzNUvIgvdYRijTYiThND+2Y4Df3o1kC7U3Y55w==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.3.0"
-    "@abi-software/map-side-bar" "^1.3.18"
+    "@abi-software/flatmapvuer" "^0.3.1"
+    "@abi-software/map-side-bar" "^1.3.20"
     "@abi-software/plotvuer" "^0.3.9"
     "@abi-software/scaffoldvuer" "^0.1.52"
     "@abi-software/simulationvuer" "^0.5.9"

@@ -19,7 +19,7 @@
   "dependencies": {
     "@abi-software/flatmapvuer": "0.2.5",
     "@abi-software/gallery": "0.3.1",
-    "@abi-software/mapintegratedvuer": "0.3.2",
+    "@abi-software/mapintegratedvuer": "^0.3.5",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/scaffoldvuer": "0.1.52",
     "@abi-software/simulationvuer": "^0.5.9",
