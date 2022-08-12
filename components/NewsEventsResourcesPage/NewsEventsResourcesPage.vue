@@ -19,6 +19,9 @@
           </el-col>
           <el-col :xs="24" :sm="secondCol">
             <div class="content" v-html="parseMarkdown(htmlContent)" />
+            <nuxt-link class="back-link" v-if="hasEventDetailsPage" :to="{ path: eventDetailsRoute }">
+              View Additional Event Details >
+            </nuxt-link>
           </el-col>
         </el-row>
       </div>
@@ -31,7 +34,6 @@
 </template>
 
 <script>
-import { successMessage, failMessage } from '@/utils/notification-messages'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
@@ -79,6 +81,10 @@ export default {
       default: () => {
         return []
       }
+    },
+    hasEventDetailsPage: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -133,6 +139,9 @@ export default {
       const name = nameLookup[this.type]
 
       return `View All ${name} >`
+    },
+    eventDetailsRoute: function() {
+      return `${this.$route.path}/event-details`
     }
   },
 }
