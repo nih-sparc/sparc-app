@@ -15,13 +15,14 @@
         />
       </button>
     </div>
-    <el-button class="secondary px-8 py-0" title="Search" @click="submit">
+    <el-button :class="['px-8', 'py-0', searchButtonClass]" title="Search" @click="submit">
       <svg-icon
         icon="icon-magnifying-glass"
         height="25"
         width="25"
         dir="left"
       />
+      <span class="search-text pr-2" v-if="showSearchText">Search</span>
     </el-button>
   </div>
 </template>
@@ -34,6 +35,14 @@ export default {
       default: ''
     },
     path: {
+      type: String,
+      default: ''
+    },
+    showSearchText: {
+      type: Boolean,
+      default: false
+    },
+    searchButtonClass: {
       type: String,
       default: ''
     }
@@ -57,7 +66,7 @@ export default {
       this.$router.push({ path: this.path, query: { ...this.$route.query, search: this.terms } })
     },
     clear() {
-      this.$router.push({ path: this.path, query: { ...this.$route.query, search: '' } })
+      this.$router.push({ path: this.path, query: { ...this.$route.query, search: undefined } })
       this.terms = ''
     }
   }
@@ -112,12 +121,7 @@ input {
     opacity: 0.75;
   }
 }
-button {
-  background: #f9f2fc;
-  border: 1px solid $median;
-  border-radius: 4px;
-  cursor: pointer;
-  height: 2.5rem;
-  width: 2.5rem;
+.search-text {
+  vertical-align: middle !important;
 }
 </style>

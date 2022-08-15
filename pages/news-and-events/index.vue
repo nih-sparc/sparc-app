@@ -9,6 +9,7 @@
       <search-controls-contentful
         placeholder="Search news and events"
         path="/news-and-events"
+        searchButtonClass="secondary"
       />
       <img
         v-if="page.fields.heroImage"
@@ -249,7 +250,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
      * Get all news
      */
     getAllNews: async function() {
-      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 2)
+      const news = await fetchNews(client, this.$route.query.search as string, undefined, undefined, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     }
   },

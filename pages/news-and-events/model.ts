@@ -37,7 +37,7 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
       limit
     })
 
-    const news = await fetchNews(client, query, limit)
+    const news = await fetchNews(client, query, undefined, undefined, limit)
 
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
@@ -65,7 +65,7 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
   }
 }
 
-export const fetchNews = async (client: ContentfulClientApi, terms?: string, limit?: number,  skip?: number) : Promise<NewsCollection> => {
+export const fetchNews = async (client: ContentfulClientApi, terms?: string, publishedLessThanDate?: string, publishedGreaterThanOrEqualToDate?: string, limit?: number,  skip?: number) : Promise<NewsCollection> => {
 
   const query = replaceTerms(terms)
 
@@ -75,7 +75,9 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, lim
       order: '-fields.publishedDate',
       query,
       limit,
-      skip
+      skip,
+      'fields.publishedDate[lt]': publishedLessThanDate,
+      'fields.publishedDate[gte]': publishedGreaterThanOrEqualToDate,
     })
   } catch (e) {
     console.error(e)
@@ -159,11 +161,14 @@ export interface NewsData {
   breadcrumb: Breadcrumb[]
 }
 export interface NewsComputed {
-  curSearchPage: number
+  curSearchPage: number,
+  publishedLessThanDate?: string
+  publishedGreaterThanOrEqualToDate?: string
 }
 
 export interface NewsMethods {
   onPaginationPageChange: (page: number) => void
+  onPaginationLimitChange: (limit: string) => void
 }
 
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }
