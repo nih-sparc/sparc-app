@@ -100,10 +100,8 @@ export type PageEntry = Entry<PageData>
 export interface Event {
   endDate?: string;
   eventType?: string;
-  hasSparcEvent?: boolean;
   image?: Asset;
   location?: string;
-  sparcRepresentatives?: string[];
   startDate?: string;
   summary?: string;
   title?: string;
