@@ -220,7 +220,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .news-list-item {
-  border-top: 2px solid #d8d8d8;
+  border-top: 1px solid #d8d8d8;
   padding: 1.5em 0;
   &:first-child {
     border: none;

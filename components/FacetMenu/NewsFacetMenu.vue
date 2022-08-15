@@ -25,22 +25,12 @@
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
-const newsEventsTypeOptions = [
+const SortOptions = [
   {
-    label: 'news',
-    id: 'news',
+    label: 'Latest',
+    id: 'latest',
     sortOrder: '-fields.publishedDate'
   },
-  {
-    label: 'events',
-    id: 'event',
-    sortOrder: '-fields.startDate'
-  },
-  {
-    label: 'community spotlight',
-    id: 'successStoryDisplay',
-    sortOrder: '-fields.storyTitle'
-  }
 ]
 
 const visibleCategories = ['news']
@@ -54,8 +44,6 @@ export default {
     FacetMenu,
     FacetRadioButtonDateCategory
   },
-
-  props: {},
 
   data() {
     return {
@@ -141,11 +129,11 @@ export default {
     getPublishedGreaterThanOrEqualToDate() {
       return this.$refs.publicationCategory.getGreaterThanOrEqualToDate()
     },
-    getSortOrder() {
-      return newsEventsTypeOptions.find(option => {
-        return option.id === this.newsAndEventsType
+    /*getSortOrder() {
+      return SortOptions.find(option => {
+        return option.id === this.sortOptionId
       }).sortOrder
-    },
+    },*/
     deselectAllFacets() {
       this.$router.replace(
         {

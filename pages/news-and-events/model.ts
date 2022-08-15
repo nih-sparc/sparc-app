@@ -65,7 +65,28 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
   }
 }
 
-export const fetchNews = async (client: ContentfulClientApi, terms?: string, publishedLessThanDate?: string, publishedGreaterThanOrEqualToDate?: string, limit?: number,  skip?: number) : Promise<NewsCollection> => {
+export const fetchEvents = async (client: ContentfulClientApi, terms?: string, eventStartLessThanDate?: string, eventStartGreaterThanOrEqualToDate?: string, eventTypes?: Array<string>, limit?: number, skip?: number) : Promise<EventsCollection> => {
+
+  const query = replaceTerms(terms)
+
+  try {
+    return await client.getEntries<EventsEntry>({
+      content_type: process.env.ctf_event_id,
+      order: '-fields.startDate',
+      query,
+      limit,
+      skip,
+      'fields.startDate[lt]': eventStartLessThanDate,
+      'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
+      'fields.eventType[in]': eventTypes
+    })
+  } catch (e) {
+    console.error(e)
+    return {} as unknown as EventsCollection
+  }
+}
+
+export const fetchNews = async (client: ContentfulClientApi, terms?: string, publishedLessThanDate?: string, publishedGreaterThanOrEqualToDate?: string, limit?: number, skip?: number) : Promise<NewsCollection> => {
 
   const query = replaceTerms(terms)
 
@@ -96,7 +117,6 @@ export interface PageData {
 
 export type PageEntry = Entry<PageData>
 
-
 export interface Event {
   endDate?: string;
   eventType?: string;
@@ -114,7 +134,6 @@ export interface SuccessStory {
 }
 
 export type StoryEntry = Entry<SuccessStory>
-
 export type StoryCollection = EntryCollection<StoryEntry>
 
 export type EventsEntry = Entry<Event>
@@ -128,7 +147,6 @@ export interface News {
 }
 
 export type NewsEntry = Entry<News>
-
 export type NewsCollection = EntryCollection<NewsEntry>
 
 export interface Tab {
@@ -163,11 +181,24 @@ export interface NewsComputed {
   publishedLessThanDate?: string
   publishedGreaterThanOrEqualToDate?: string
 }
-
 export interface NewsMethods {
+  onPaginationPageChange: (page: number) => void
+  onPaginationLimitChange: (limit: string) => void
+}
+export interface EventsData {
+  breadcrumb: Breadcrumb[]
+}
+export interface EventsComputed {
+  curSearchPage: number,
+  startLessThanDate?: string 
+  startGreaterThanOrEqualToDate?: string
+  eventTypes?: Array<string>
+}
+export interface EventsMethods {
   onPaginationPageChange: (page: number) => void
   onPaginationLimitChange: (limit: string) => void
 }
 
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }
 export type NewsPage = NewsData & NewsComputed & NewsMethods & { $route: Route }
+export type EventsPage = EventsData & EventsComputed & EventsMethods & { $route: Route }
