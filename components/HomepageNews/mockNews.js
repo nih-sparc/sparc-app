@@ -56,9 +56,6 @@ export const events = [
           }
         }
       },
-      hasSparcEvent: true,
-      sparcEventDescription:
-        'Vote for your favorite images and videos. \nCast Your Vote Now: https://go.usa.gov/xGRMg'
     }
   },
   {
@@ -120,7 +117,6 @@ export const events = [
           }
         }
       },
-      hasSparcEvent: true
     }
   },
   {
@@ -180,7 +176,6 @@ export const events = [
           }
         }
       },
-      hasSparcEvent: true
     }
   },
   {
@@ -240,7 +235,6 @@ export const events = [
           }
         }
       },
-      hasSparcEvent: true
     }
   }
 ]
@@ -303,9 +297,6 @@ export const internalEvent = [
           }
         }
       },
-      hasSparcEvent: true,
-      sparcEventDescription:
-        'Vote for your favorite images and videos. \nCast Your Vote Now: https://go.usa.gov/xGRMg'
     }
   }
 ]
