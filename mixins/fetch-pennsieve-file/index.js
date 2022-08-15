@@ -22,7 +22,7 @@ export default {
 
       files.every(file => {
         // Check if path matches query param.
-        if (filePath.toLowerCase() === file.path.toLowerCase) {
+        if (filePath.toLowerCase() === file.path.toLowerCase()) {
           foundFile = file
           keepLooking = false
         } else if (file.uri) {

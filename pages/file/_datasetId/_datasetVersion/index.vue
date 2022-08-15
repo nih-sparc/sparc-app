@@ -222,6 +222,9 @@ export default {
      * - Vector Drawings (svg)
      */
     isFileOpenable(file) {
+      if (!file.fileType) {
+        return false
+      }
       const allowableExtensions = Object.keys(contentTypes).map(key => key)
       const fileType = file.fileType.toLowerCase()
       return (
