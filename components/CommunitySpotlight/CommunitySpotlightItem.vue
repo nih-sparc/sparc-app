@@ -1,6 +1,6 @@
 <template>
   <div class="story-result">
-    <div class="banner">
+    <div>
       <div class="banner-wrapper">
         <client-only
           v-if="story.fields.youtubeUrl"
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="story-text">
-      <h3>
+      <div class="link1 mb-8">
         <nuxt-link
           v-if="story.fields.storyRoute"
           :to="{
@@ -46,28 +46,10 @@
         <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
           {{ story.fields.storyTitle }}
         </a>
-      </h3>
-      <br />
+      </div>
       <div class="body1">
         {{ story.fields.summary }}
       </div>
-      <br />
-      <nuxt-link
-        v-if="story.fields.storyRoute"
-        :to="{
-          name: 'news-and-events-community-spotlight-success-stories-id',
-          params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
-        }"
-      >
-        <el-button class="secondary">
-          Learn More
-        </el-button>
-      </nuxt-link>
-      <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
-        <el-button class="secondary">
-          Learn More
-        </el-button>
-      </a>
     </div>
   </div>
 </template>
@@ -97,10 +79,7 @@ export default {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 */
   height: 0;
-  min-width: 25.68rem;
-  @media (max-width: 30em) {
-    min-width: 14rem !important;
-  }
+  width: 12rem;
 }
 
 .banner-wrapper .banner-asset {
@@ -108,14 +87,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-}
-
-.banner {
-  flex: 1;
-  @media (min-width: 48rem) {
-    margin-right: 2rem;
-  }
+  height: fit-content;
 }
 
 .story-result {

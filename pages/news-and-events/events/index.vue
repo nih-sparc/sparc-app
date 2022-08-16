@@ -114,7 +114,6 @@ import EventsFacetMenu from '@/components/FacetMenu/EventsFacetMenu.vue'
 import EventListItem from '@/components/EventListItem/EventListItem.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
-
 import createClient from '@/plugins/contentful.js'
 
 import { fetchEvents, EventsData, EventsComputed, EventsMethods } from '../model'

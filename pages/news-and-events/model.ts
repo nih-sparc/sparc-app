@@ -106,6 +106,24 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, pub
   }
 }
 
+export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, terms?: string, sortOrder?: string, limit?: number, skip?: number) : Promise<CommunitySpotlightItemsCollection> => {
+
+  const query = replaceTerms(terms)
+
+  try {
+    return await client.getEntries<CommunitySpotlightItemEntry>({
+      content_type: process.env.ctf_community_spotlight_item_id,
+      order: sortOrder || '-fields.publishedDate',
+      query,
+      limit,
+      skip,
+    })
+  } catch (e) {
+    console.error(e)
+    return {} as unknown as NewsCollection
+  }
+}
+
 export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "page" | "stories">
 
 export interface PageData {
@@ -148,6 +166,15 @@ export interface News {
 
 export type NewsEntry = Entry<News>
 export type NewsCollection = EntryCollection<NewsEntry>
+
+// CommunitySpotlightItem is a wrapper model in contentful that is used to combine success stories and fireside chats so that we can query off both content types simutaneously
+export interface CommunitySpotlightItem {
+  publishedDate?: string;
+  title?: string;
+}
+
+export type CommunitySpotlightItemEntry = Entry<CommunitySpotlightItem>
+export type CommunitySpotlightItemsCollection = EntryCollection<CommunitySpotlightItemEntry>
 
 export interface Tab {
   label: string;
@@ -203,6 +230,21 @@ export interface EventsMethods {
   onSortOptionChange: (option: Object) => void
 }
 
+export interface CommunitySpotlightData {
+  breadcrumb: Breadcrumb[]
+}
+export interface CommunitySpotlightComputed {
+  curSearchPage: number
+  sortOrder: string,
+  linkedItems: Array<Object>
+}
+export interface CommunitySpotlightMethods {
+  onPaginationPageChange: (page: number) => void
+  onPaginationLimitChange: (limit: string) => void
+  onSortOptionChange: (option: Object) => void
+}
+
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }
 export type NewsPage = NewsData & NewsComputed & NewsMethods & { $route: Route }
 export type EventsPage = EventsData & EventsComputed & EventsMethods & { $route: Route }
+export type CommunitySpotlightPage = CommunitySpotlightData & CommunitySpotlightComputed & CommunitySpotlightMethods & { $route: Route }
