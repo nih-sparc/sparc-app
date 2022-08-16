@@ -95,24 +95,35 @@
           </el-col>
         </el-row>
 
-        <div class="heading1 my-16">Community Spotlight</div>
-        <community-spotlight-listings :stories="shownStories" :bottom-link="true" />
+        <div>
+          <div class="heading1 my-16">Community Spotlight</div>
+          <community-spotlight-listings :stories="shownStories" :bottom-link="true" />
+        </div>
 
-        <div class="heading1 my-16">Stay Connected</div>
+        <div class="heading1 mt-32 mb-16">Stay Connected</div>
         <div class="subpage py-16">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
               <div class="heading2">Sign up for the SPARC Newsletter</div>
               <div class="body1">Keep up to date with all the latest news and events from the SPARC Portal.</div>
-              <newsletter-form class="mt-16"/>
+              <newsletter-form class="mt-8"/>
               <div class="newsletter-archive mt-16">
                 <style type="text/css">
                   .campaign { margin-top: .5em; }
                 </style>
-                <div class="heading2">View previous Newsletters</div>
+                <div class="heading2">Current Newsletter</div>
                 <div id="newsletter-archive" />
-                <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">View all Newsletters</a>
+                <a class="my-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">
+                  View all Newsletters<svg-icon icon="icon-open" height="30" width="30" />
+                </a>
               </div>
+              <div class="heading2">Get Involved</div>
+              <div class="body1">Empower SPARC to promote your science and interests by submitting your science story, news, or event.</div>
+              <el-button class="secondary mt-8">
+                <a target="_blank" href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjM0MzA5MH0JNDc2NjA2NTY2MTgzOAlmMDFkNTM5ZGFjZDUwNGYwNGNmZWRlZjVkY2Y3MzMxOGU4MzJkZDcyYWNiOWI2ZDA3MWRkZGNlYmE1NjQ3ZTFi">
+                  Share news or events<svg-icon icon="icon-open" height="20" width="20" />
+                </a>
+              </el-button>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
               <div v-twitter-widgets>
@@ -360,7 +371,11 @@ export default Vue.extend<Data, Methods, Computed, never>({
 .newsletter-archive {
   & > a {
     display: inline-block;
-    margin-top: 1em;
+  }
+}
+::v-deep .el-button {
+  a {
+    text-decoration: none !important;
   }
 }
 </style>
