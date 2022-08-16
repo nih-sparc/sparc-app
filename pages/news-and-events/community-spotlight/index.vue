@@ -17,10 +17,6 @@
       <h2>Fireside Chats</h2>
       <community-spotlight-listings :stories="shownChats" :bottomLink="true" linkLocation="news-and-events-community-spotlight-fireside-chats" linkText="View all Fireside Chats"/>
     </div>
-    <div class="page-wrap container">
-      <h2>Community Announcements</h2>
-      <community-announcement-listings :items="shownAnnouncements" :bottomLink="true" linkLocation="news-and-events-community-spotlight-community-announcements" linkText="View all Community Announcements"/>
-    </div>
   </div>
 </template>
 
@@ -57,15 +53,9 @@ export default {
       limit: chatsPageSize,
       order: '-fields.publishedDate',
     })
-    const communityAnnouncements = await client.getEntries({
-      content_type: 'news',
-      limit: announcementsPageSize,
-      order: '-fields.publishedDate',
-    })
     return {
       shownStories: successData.items,
       shownChats: fireSideChats.items,
-      shownAnnouncements: communityAnnouncements.items
     }
   },
   data() {
