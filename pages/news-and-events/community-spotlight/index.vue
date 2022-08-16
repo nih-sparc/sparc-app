@@ -25,7 +25,6 @@ import createClient from '@/plugins/contentful.js'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue'
-import CommunityAnnouncementListings from '@/components/CommunityAnnouncements/CommunityAnnouncementListings.vue'
 
 const client = createClient()
 
@@ -35,8 +34,7 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    CommunitySpotlightListings,
-    CommunityAnnouncementListings
+    CommunitySpotlightListings
   },
 
   async asyncData() {
