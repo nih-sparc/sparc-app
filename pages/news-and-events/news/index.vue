@@ -57,14 +57,22 @@
                 :md='18'
                 :lg='18'
               >
-                <div class="search-heading">
-                  <p v-show="news.items.length">
+                <div class="search-heading mt-32 mb-16">
+                  <div class="label1" v-show="news.items.length">
                     {{ news.total }} Results | Showing
                     <pagination-menu
                       :page-size="news.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
-                  </p>
+                  </div>
+                  <span class="label1">
+                    Sort
+                    <sort-menu
+                      :options="sortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </span>
                 </div>
                 <div ref="newsWrap" class="subpage">
                   <news-list-item
@@ -74,13 +82,13 @@
                   />
                 </div>
                 <div class="search-heading">
-                  <p v-if="news.items.length">
+                  <div class="label1" v-if="news.items.length">
                     {{ news.total }} Results | Showing
                     <pagination-menu
                       :page-size="news.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
-                  </p>
+                  </div>
                   <pagination
                     v-if="news.limit < news.total"
                     :selected="curSearchPage"
@@ -100,11 +108,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
+import { propOr } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import NewsFacetMenu from '@/components/FacetMenu/NewsFacetMenu.vue'
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
+import SortMenu from '@/components/SortMenu/SortMenu.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -127,6 +136,19 @@ const searchTypes = [
   }
 ]
 
+const sortOptions = [
+  {
+    label: 'Latest',
+    id: 'latest',
+    sortOrder: '-fields.publishedDate'
+  },
+  {
+    label: 'A-Z',
+    id: 'alphabatical',
+    sortOrder: 'fields.title'
+  },
+]
+
 export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
   name: 'NewsPage',
 
@@ -134,11 +156,12 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     Breadcrumb,
     NewsFacetMenu,
     NewsListItem,
-    SearchControlsContentful
+    SearchControlsContentful,
+    SortMenu
   },
 
   async asyncData({ route }) {
-    const news = await fetchNews(client, route.query.search, undefined, undefined, 10, 0)
+    const news = await fetchNews(client, route.query.search, undefined, undefined, undefined, 10, 0)
 
     return {
       news
@@ -148,6 +171,8 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
   data() {
     return {
       searchTypes,
+      selectedSortOption: sortOptions[0],
+      sortOptions,
       breadcrumb: [
         {
           label: 'Home',
@@ -170,7 +195,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
       handler: function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          this.news = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, 10, 0)
+          this.news = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, 10, 0)
         })
       },
       immediate: true
@@ -190,6 +215,9 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     },
     publishedGreaterThanOrEqualToDate: function() {
       return this.$refs.newsFacetMenu?.getPublishedGreaterThanOrEqualToDate()
+    },
+    sortOrder: function() {
+      return propOr('-fields.publishedDate', 'sortOrder', this.selectedSortOption)
     }
   },
 
@@ -201,7 +229,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     async onPaginationPageChange(page) {
       const { limit } = this.news
       const offset = (page - 1) * limit
-      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, limit, offset)
+      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, limit, offset)
       this.news = response
     },
     /**
@@ -210,9 +238,14 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.news.total : limit
-      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, newLimit, 0)
+      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, newLimit, 0)
       this.news = response
     },
+    async onSortOptionChange(option) {
+      this.selectedSortOption = option
+      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, this.news.limit, 0)
+      this.news = response
+    }
   }
 })
 </script>
@@ -314,19 +347,13 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
   }
 }
 .search-heading {
-  align-items: center;
+  align-items: flex-end;
   display: flex;
-  margin-bottom: 1rem;
   justify-content: space-between;
   @media screen and (max-width: 28em) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 0;
-  }
-  p {
-    font-size: 0.875em;
-    flex-shrink: 0;
-    margin: 2em 0 0 0;
   }
 }
 .news-facet-menu {

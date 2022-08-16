@@ -37,7 +37,7 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
       limit
     })
 
-    const news = await fetchNews(client, query, undefined, undefined, limit)
+    const news = await fetchNews(client, query, undefined, undefined, undefined, limit)
 
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
@@ -65,14 +65,14 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
   }
 }
 
-export const fetchEvents = async (client: ContentfulClientApi, terms?: string, eventStartLessThanDate?: string, eventStartGreaterThanOrEqualToDate?: string, eventTypes?: Array<string>, limit?: number, skip?: number) : Promise<EventsCollection> => {
+export const fetchEvents = async (client: ContentfulClientApi, terms?: string, eventStartLessThanDate?: string, eventStartGreaterThanOrEqualToDate?: string, eventTypes?: Array<string>, sortOrder?: string, limit?: number, skip?: number) : Promise<EventsCollection> => {
 
   const query = replaceTerms(terms)
 
   try {
     return await client.getEntries<EventsEntry>({
       content_type: process.env.ctf_event_id,
-      order: '-fields.startDate',
+      order: sortOrder || '-fields.startDate',
       query,
       limit,
       skip,
@@ -86,14 +86,14 @@ export const fetchEvents = async (client: ContentfulClientApi, terms?: string, e
   }
 }
 
-export const fetchNews = async (client: ContentfulClientApi, terms?: string, publishedLessThanDate?: string, publishedGreaterThanOrEqualToDate?: string, limit?: number, skip?: number) : Promise<NewsCollection> => {
+export const fetchNews = async (client: ContentfulClientApi, terms?: string, publishedLessThanDate?: string, publishedGreaterThanOrEqualToDate?: string, sortOrder?: string, limit?: number, skip?: number) : Promise<NewsCollection> => {
 
   const query = replaceTerms(terms)
 
   try {
     return await client.getEntries<NewsEntry>({
       content_type: process.env.ctf_news_id,
-      order: '-fields.publishedDate',
+      order: sortOrder || '-fields.publishedDate',
       query,
       limit,
       skip,
@@ -177,13 +177,15 @@ export interface NewsData {
   breadcrumb: Breadcrumb[]
 }
 export interface NewsComputed {
-  curSearchPage: number,
+  curSearchPage: number
   publishedLessThanDate?: string
   publishedGreaterThanOrEqualToDate?: string
+  sortOrder: string
 }
 export interface NewsMethods {
   onPaginationPageChange: (page: number) => void
   onPaginationLimitChange: (limit: string) => void
+  onSortOptionChange: (option: Object) => void
 }
 export interface EventsData {
   breadcrumb: Breadcrumb[]
@@ -193,10 +195,12 @@ export interface EventsComputed {
   startLessThanDate?: string 
   startGreaterThanOrEqualToDate?: string
   eventTypes?: Array<string>
+  sortOrder: string
 }
 export interface EventsMethods {
   onPaginationPageChange: (page: number) => void
   onPaginationLimitChange: (limit: string) => void
+  onSortOptionChange: (option: Object) => void
 }
 
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }

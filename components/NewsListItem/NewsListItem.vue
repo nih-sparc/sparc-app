@@ -16,6 +16,7 @@
         :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
       >
         {{ item.fields.title }}
+        <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
       </a>
     </h3>
     <p>{{ item.fields.summary }}</p>

@@ -57,14 +57,22 @@
                 :md='18'
                 :lg='18'
               >
-                <div class="search-heading">
-                  <p v-show="events.items.length">
+                <div class="search-heading mt-32 mb-16">
+                  <div class="label1" v-show="events.items.length">
                     {{ events.total }} Results | Showing
                     <pagination-menu
                       :page-size="events.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
-                  </p>
+                  </div>
+                  <span class="label1">
+                    Sort
+                    <sort-menu
+                      :options="sortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </span>
                 </div>
                 <div ref="eventsWrap" class="subpage">
                   <event-list-item
@@ -74,13 +82,13 @@
                   />
                 </div>
                 <div class="search-heading">
-                  <p v-if="events.items.length">
+                  <div class="label1" v-if="events.items.length">
                     {{ events.total }} Results | Showing
                     <pagination-menu
                       :page-size="events.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
-                  </p>
+                  </div>
                   <pagination
                     v-if="events.limit < events.total"
                     :selected="curSearchPage"
@@ -100,11 +108,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
+import { propOr } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import EventsFacetMenu from '@/components/FacetMenu/EventsFacetMenu.vue'
 import EventListItem from '@/components/EventListItem/EventListItem.vue'
-import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
+import SortMenu from '@/components/SortMenu/SortMenu.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -127,6 +136,19 @@ const searchTypes = [
   }
 ]
 
+const sortOptions = [
+  {
+    label: 'Latest',
+    id: 'latest',
+    sortOrder: '-fields.startDate'
+  },
+  {
+    label: 'A-Z',
+    id: 'alphabatical',
+    sortOrder: 'fields.title'
+  },
+]
+
 export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   name: 'EventsPage',
 
@@ -134,11 +156,12 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     Breadcrumb,
     EventsFacetMenu,
     EventListItem,
-    SearchControlsContentful
+    SearchControlsContentful,
+    SortMenu
   },
 
   async asyncData({ route }) {
-    const events = await fetchEvents(client, route.query.search, undefined, undefined, undefined, 10, 0)
+    const events = await fetchEvents(client, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
 
     return {
       events
@@ -148,6 +171,8 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   data() {
     return {
       searchTypes,
+      selectedSortOption: sortOptions[0],
+      sortOptions,
       breadcrumb: [
         {
           label: 'Home',
@@ -167,10 +192,10 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
 
   watch: {
     '$route.query': {
-      handler: function() {
+      handler: async function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          this.events = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, 10, 0)
+          this.events = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, 10, 0)
         })
       },
       immediate: true
@@ -193,6 +218,9 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     },
     eventTypes: function() {
       return this.$route.query.selectedEventTypeOptions || undefined
+    },
+    sortOrder: function() {
+      return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
     }
   },
 
@@ -204,7 +232,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     async onPaginationPageChange(page) {
       const { limit } = this.events
       const offset = (page - 1) * limit
-      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, limit, offset)
+      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, limit, offset)
       this.events = response
     },
     /**
@@ -213,9 +241,14 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.events.total : limit
-      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, newLimit, 0)
+      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, newLimit, 0)
       this.events = response
     },
+    async onSortOptionChange(option) {
+      this.selectedSortOption = option
+      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, this.events.limit, 0)
+      this.events = response
+    }
   }
 })
 </script>
@@ -317,19 +350,13 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   }
 }
 .search-heading {
-  align-items: center;
+  align-items: flex-end;
   display: flex;
-  margin-bottom: 1rem;
   justify-content: space-between;
   @media screen and (max-width: 28em) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 0;
-  }
-  p {
-    font-size: 0.875em;
-    flex-shrink: 0;
-    margin: 2em 0 0 0;
   }
 }
 .events-facet-menu {
