@@ -1,5 +1,5 @@
 <template>
-  <div class="data-page">
+  <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" title="Events" />
     <div class="container">
       <div class="search-tabs__container">
@@ -35,7 +35,7 @@
         />
       </div>
     </div>
-    <div class="mb-48 container">
+    <div class="pb-16 container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
@@ -254,9 +254,12 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
+}
 .event-list-item {
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid $lineColor2;
   padding: 1.5em 0;
   &:first-child {
     border: none;
@@ -277,7 +280,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   margin-top: 2rem;
   padding-top: 0.5rem;
   background-color: white;
-  border: 0.1rem solid $purple-gray;
+  border: 0.1rem solid $lineColor2;
   h3 {
     padding-left: 0.75rem;
     font-weight: 600;
@@ -287,7 +290,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
 .search-bar__container {
   margin-top: 1em;
   padding: 0.75rem;
-  border: 0.1rem solid $purple-gray;
+  border: 0.1rem solid $lineColor2;
   background: white;
   h5 {
     line-height: 1rem;
@@ -306,21 +309,21 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   overflow: auto;
   margin: 0 0 0 0;
   padding: 0 0;
-  outline: 0.1rem solid $median;
+  outline: 0.1rem solid $purple;
   @media (max-width: 40rem) {
     display: block;
   }
   li {
     width: 100%;
     text-align: center;
-    color: $median;
+    color: $purple;
   }
   li:last-child > a {
     border-right: none;
   }
 }
 .search-tabs__button {
-  background: $light-purple;
+  background: #f9f2fc;
   display: block;
   font-size: 0.75rem;
   font-weight: 500;
@@ -331,7 +334,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   line-height: 3.5rem;
   @media (min-width: 40rem) {
     font-size: 0.65rem;
-    border-right: 0.1rem solid $median;
+    border-right: 0.1rem solid $purple;
   }
   @media (min-width: 50rem) {
     font-size: .75rem;
@@ -345,7 +348,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   &:focus,
   &.active {
     color: white;
-    background-color: $median;
+    background-color: $purple;
     font-weight: 500;
   }
 }

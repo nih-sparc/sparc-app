@@ -1,5 +1,5 @@
 <template>
-  <div class="about-page mb-48">
+  <div class="about-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
@@ -11,21 +11,21 @@
       <div class="row">
         <div class="col">
           <div
-            class="about-page-text top-margin"
+            class="about-page-text mt-32"
             v-html="parseMarkdown(overview)"
           />
         </div>
       </div>
 
       <paper
-        class="row top-margin"
+        class="row mt-32"
         :text="parseMarkdown(sparcPortal)"
         :button-text="' About the SPARC Portal '"
         :button-link="aboutLink(aboutPortalPageId)"
         :img-src="sparcPortalImage ? sparcPortalImage.fields.file.url : null"
       />
 
-      <div class="row top-margin">
+      <div class="row mt-32">
         <paper
           class="row-item"
           :text="parseMarkdown(whatWeOffer)"
@@ -46,7 +46,7 @@
         />
       </div>
 
-      <div class="row top-margin about-page-border">
+      <div class="row mt-32 about-page-border">
         <img
           v-if="sparcPortalImage"
           slot="image"
@@ -141,7 +141,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.about-page {
+  background-color: $background;
+}
 .page {
   display: flex;
   margin-top: 7rem;
@@ -194,19 +197,12 @@ export default {
   }
 }
 
-.top-margin {
-  margin-top: 4rem;
-  @media screen and (max-width: 767px) {
-    margin-top: 1rem;
-  }
-}
-
 .margin-top-auto {
   margin-top: auto;
 }
 
 .midnightblue-background {
-  background-color: midnightblue;
+  background-color: $darkBlue;
 }
 
 .white-text {
@@ -214,6 +210,6 @@ export default {
 }
 
 .about-page-border {
-  border: 1px solid #dcdfe6;
+  border: 1px solid $lineColor2;
 }
 </style>

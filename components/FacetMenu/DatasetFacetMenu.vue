@@ -8,7 +8,7 @@
       @deselect-all-facets="deselectAllFacets"
     />
     <hr class="expand-all-separator"/>
-    <span class="flex">
+    <span class="flex expand-all-container">
       <el-link @click="expandAllCategories">
         Expand all
       </el-link>
@@ -260,6 +260,10 @@ hr {
   .el-link {
     margin: .5rem .75rem .5rem auto;
   }
+}
+
+.expand-all-container {
+  background-color: white;
 }
 
 </style>

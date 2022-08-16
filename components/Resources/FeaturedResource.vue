@@ -85,8 +85,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .featured-resource {
+  background-color: white;
   display: flex;
   flex-direction: row;
   & > div.thumbnail {
@@ -113,13 +114,13 @@ export default {
     }
   }
   & > div.resource-info {
+    border: 1px solid $lineColor2;
+    border-left: none;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  }
-  & > div + div {
-    margin-left: 2em;
+    padding: 1rem;
   }
 }
 h3 {

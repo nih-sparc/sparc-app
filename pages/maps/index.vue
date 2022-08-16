@@ -126,6 +126,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .maps {
+  background-color: #f5f7fa;
 
   .portalmapcontainer {
     margin-top: 1.5rem;

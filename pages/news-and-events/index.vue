@@ -1,16 +1,11 @@
 <template>
-  <div class="events-page">
+  <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
       <h1>{{ page.fields.page_title }}</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(page.fields.heroCopy)" />
-      <search-controls-contentful
-        placeholder="Search news and events"
-        path="/news-and-events"
-        searchButtonClass="secondary"
-      />
       <img
         v-if="page.fields.heroImage"
         slot="image"
@@ -19,7 +14,7 @@
       />
     </page-hero>
 
-    <div class="mt-48">
+    <div class="pt-32 pb-16">
       <div class="container">
         <div v-if="Object.keys(featuredEvent).length" class="mb-48">
           <h2>Featured Event</h2>
@@ -28,7 +23,7 @@
 
         <el-row :gutter="32">
           <el-col :sm="12">
-            <h2>Latest News</h2>
+            <div class="heading1 mb-16">Latest News</div>
             <div class="subpage news-wrap">
               <div>
                 <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
@@ -45,13 +40,13 @@
             </div>
           </el-col>
           <el-col :sm="12">
-            <h2>Events</h2>
+            <div class="heading1 mb-16">Events</div>
             <tab-nav
               :tabs="eventsTabs"
               :active-tab="activeTab"
               @set-active-tab="activeTab = $event"
             />
-            <div class="events-wrap">
+            <div>
               <template v-if="activeTab === 'upcoming'">
                 <div class="upcoming-events">
                   <event-card
@@ -100,21 +95,21 @@
           </el-col>
         </el-row>
 
-        <h2>Community Spotlight</h2>
+        <div class="heading1 my-16">Community Spotlight</div>
         <community-spotlight-listings :stories="shownStories" :bottom-link="true" />
 
-        <h2>Stay Connected</h2>
-        <div class="subpage">
+        <div class="heading1 my-16">Stay Connected</div>
+        <div class="subpage py-16">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
-              <h3 class="mb-24">Sign up for the SPARC Newsletter</h3>
-              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC Portal.</p>
-              <newsletter-form />
-              <div class="newsletter-archive">
+              <div class="heading2">Sign up for the SPARC Newsletter</div>
+              <div class="body1">Keep up to date with all the latest news and events from the SPARC Portal.</div>
+              <newsletter-form class="mt-16"/>
+              <div class="newsletter-archive mt-16">
                 <style type="text/css">
                   .campaign { margin-top: .5em; }
                 </style>
-                <h3 class="mb-24">View previous Newsletters</h3>
+                <div class="heading2">View previous Newsletters</div>
                 <div id="newsletter-archive" />
                 <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">View all Newsletters</a>
               </div>
@@ -158,7 +153,6 @@ import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEvents
 import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 
 const client = createClient()
-const MAX_PAST_EVENTS = 8
 
 export default Vue.extend<Data, Methods, Computed, never>({
   name: 'NewsAndEventPage',
@@ -262,27 +256,15 @@ export default Vue.extend<Data, Methods, Computed, never>({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-
-h2 {
-  font-size: 1.5rem;
-  line-height: 2.25rem;
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
 }
-
-h3 {
-  color: $navy;
-  font-size: 1.375rem;
-  line-height: 2rem;
+.heading1 {
+  font-weight: 300;
 }
 .subpage {
-  @media (min-width: 48em) {
-    margin: 3rem 0;
-  }
-  &.news-wrap {
-    @media (min-width: 48em) {
-      margin: 2rem 0 0;
-    }
-  }
+  margin: 0;
 }
 .event-card {
   margin-bottom: 2em;
@@ -309,7 +291,7 @@ h3 {
   text-align: center;
   &__btn {
     align-items: center;
-    color: $navy;
+    color: $darkBlue;
     display: inline-flex;
     font-weight: 500;
     text-decoration: none;
@@ -327,17 +309,14 @@ h3 {
   text-align: center;
   &__btn {
     display: inline-flex;
-    border: 1px solid $dark-gray;
+    border: 1px solid $lineColor1;
     border-radius: 5px;
     text-decoration: none;
     padding: 8px 10px;
     font-size: 11pt;
     font-weight: bold;
-    color: $dark-gray;
+    color: $lineColor1;
   }
-}
-.events-wrap {
-  margin-bottom: 2.625em;
 }
 .news-list-item {
   border-bottom: 2px solid #d8d8d8;
@@ -354,7 +333,7 @@ h3 {
     margin-bottom: 0;
   }
   p {
-    color: $navy
+    color: $darkBlue
   }
 }
 .twitter-wrap {
@@ -366,7 +345,7 @@ h3 {
 .btn-load-more {
   background: none;
   border: none;
-  color: $navy;
+  color: $darkBlue;
   cursor: pointer;
   display: block;
   font-size: 1rem;
@@ -379,7 +358,6 @@ h3 {
 }
 
 .newsletter-archive {
-  margin-top: 3em;
   & > a {
     display: inline-block;
     margin-top: 1em;

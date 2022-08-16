@@ -1,5 +1,5 @@
 <template>
-  <div class="data-page">
+  <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
       <div class="search-tabs__container">
@@ -35,7 +35,7 @@
         />
       </div>
     </div>
-    <div class="mb-48 container">
+    <div class="container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
@@ -688,6 +688,9 @@ export default {
 <style scoped lang="scss">
 @import '../../assets/_variables.scss';
 
+.page-data {
+  background-color: #f5f7fa;
+}
 .page-hero {
   padding-bottom: 1.3125em;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="dataset-details">
+  <div class="dataset-details pb-16">
     <client-only>
       <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
       <div v-if="showTombstone">
@@ -1105,6 +1105,7 @@ export default {
   padding-top: 0;
 }
 .dataset-details {
+  background-color: $background;
   width: 100%;
   overflow-x: hidden;
 }

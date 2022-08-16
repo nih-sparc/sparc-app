@@ -84,7 +84,7 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .light-gray-background {
-  background-color: $background
+  background-color: #FAFBFC
 }
 
 .facet-label {
