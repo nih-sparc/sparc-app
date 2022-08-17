@@ -35,14 +35,6 @@ import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
-const SortOptions = [
-  {
-    label: 'Latest',
-    id: 'latest',
-    sortOrder: '-fields.startDate'
-  },
-]
-
 const eventTypeOptions = {
   label: 'Event Type',
   id: 'event type',
@@ -204,11 +196,6 @@ export default {
     getStartGreaterThanOrEqualToDate() {
       return this.$refs.eventCategory.getGreaterThanOrEqualToDate()
     },
-    /*getSortOrder() {
-      return SortOptions.find(option => {
-        return option.id === this.sortOptionId
-      }).sortOrder
-    },*/
     deselectAllFacets() {
       this.$router.replace(
         {
@@ -238,15 +225,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .white-background {
   background-color: white;
-  border: 0.1rem solid #e4e7ed;
+  border: 0.1rem solid $lineColor2;
 }
 
 hr {
   border: none;
-  border-bottom: 1px solid #dbdfe6;
+  border-bottom: 1px solid $lineColor1;
   margin: 0;
 }
 

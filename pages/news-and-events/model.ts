@@ -106,7 +106,7 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, pub
   }
 }
 
-export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, terms?: string, sortOrder?: string, limit?: number, skip?: number) : Promise<CommunitySpotlightItemsCollection> => {
+export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, terms?: string, spotlightTypes?: Array<string>, sortOrder?: string, limit?: number, skip?: number) : Promise<CommunitySpotlightItemsCollection> => {
 
   const query = replaceTerms(terms)
 
@@ -117,6 +117,7 @@ export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, 
       query,
       limit,
       skip,
+      'fields.itemType[in]': spotlightTypes
     })
   } catch (e) {
     console.error(e)
@@ -235,8 +236,9 @@ export interface CommunitySpotlightData {
 }
 export interface CommunitySpotlightComputed {
   curSearchPage: number
-  sortOrder: string,
+  sortOrder: string
   linkedItems: Array<Object>
+  spotlightTypes?:  Array<string>
 }
 export interface CommunitySpotlightMethods {
   onPaginationPageChange: (page: number) => void

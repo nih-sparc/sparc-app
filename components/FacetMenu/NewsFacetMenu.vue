@@ -25,14 +25,6 @@
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
-const SortOptions = [
-  {
-    label: 'Latest',
-    id: 'latest',
-    sortOrder: '-fields.publishedDate'
-  },
-]
-
 const visibleCategories = ['news']
 
 const PUBLICATION_DATE_FACET_ID = 'publication date'
@@ -129,11 +121,6 @@ export default {
     getPublishedGreaterThanOrEqualToDate() {
       return this.$refs.publicationCategory.getGreaterThanOrEqualToDate()
     },
-    /*getSortOrder() {
-      return SortOptions.find(option => {
-        return option.id === this.sortOptionId
-      }).sortOrder
-    },*/
     deselectAllFacets() {
       this.$router.replace(
         {
@@ -158,15 +145,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .white-background {
   background-color: white;
-  border: 0.1rem solid #e4e7ed;
+  border: 0.1rem solid $lineColor2;
 }
 
 hr {
   border: none;
-  border-bottom: 1px solid #dbdfe6;
+  border-bottom: 1px solid $lineColor1;
   margin: 0;
 }
 </style>
