@@ -50,6 +50,16 @@
       <div class="body1">
         {{ story.fields.summary }}
       </div>
+      <table v-if="story.spotlightType" class="property-table mt-8">
+        <tr>
+          <td class="property-name-column">
+            Spotlight Type
+          </td>
+          <td>
+            {{ story.spotlightType }}
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -62,7 +72,7 @@ export default {
     story: {
       type: Object,
       default: () => {}
-    }
+    },
   },
   computed: {
     embeddedVideoSrc: function() {
@@ -73,7 +83,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
 
 .banner-wrapper {
   position: relative;
@@ -104,5 +113,27 @@ export default {
   @media (max-width: 48em) {
     margin: 1rem 0 0;
   }
+}
+
+.el-table {
+  width: 100%;
+}
+.property-table {
+  td {
+    background-color: transparent !important;
+    padding: 0.25rem 0 0 0;
+    border: none;
+    cursor: default;
+  }
+  border: none;
+  padding: 0;
+}
+// The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
+table:not([class^='el-table__'])::before {
+  display: none;
+}
+.property-name-column {
+  width: 180px;
+  font-weight: bold;
 }
 </style>

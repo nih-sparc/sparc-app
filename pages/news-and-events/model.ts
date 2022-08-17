@@ -237,13 +237,13 @@ export interface CommunitySpotlightData {
 export interface CommunitySpotlightComputed {
   curSearchPage: number
   sortOrder: string
-  linkedItems: Array<Object>
   spotlightTypes?:  Array<string>
 }
 export interface CommunitySpotlightMethods {
   onPaginationPageChange: (page: number) => void
   onPaginationLimitChange: (limit: string) => void
   onSortOptionChange: (option: Object) => void
+  getLinkedItem: (communitySpotlightItem: Object) => Object
 }
 
 export type NewsAndEventsComponent = Data & Computed & Methods & { $route: Route }

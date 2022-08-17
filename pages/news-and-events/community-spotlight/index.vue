@@ -76,9 +76,9 @@
                 </div>
                 <div ref="communitySpotlightWrap" class="subpage">
                   <community-spotlight-item
-                    v-for="(item, index) in linkedItems"
+                    v-for="(item, index) in communitySpotlightItems.items"
                     :key="index"
-                    :story="item"
+                    :story="getLinkedItem(item)"
                   />
                 </div>
                 <div class="search-heading">
@@ -108,7 +108,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { pluck, propOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 import createClient from '@/plugins/contentful.js'
 import CommunitySpotlightItem from '@/components/CommunitySpotlight/CommunitySpotlightItem.vue'
 import CommunitySpotlightFacetMenu from '@/components/FacetMenu/CommunitySpotlightFacetMenu.vue'
@@ -146,6 +146,17 @@ const sortOptions = [
     id: 'alphabatical',
     sortOrder: 'fields.title'
   },
+]
+
+const SPOTLIGHT_TYPE_MAPPING = [
+  {
+    label: 'Fireside Chat',
+    id: 'firesideChat',
+  },
+  {
+    label: 'Success Story',
+    id: 'successStory',
+  }
 ]
 
 export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, CommunitySpotlightComputed, never>({
@@ -203,11 +214,6 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     },
   },
   computed: {
-    // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
-    linkedItems: function() {
-      const fields = pluck('fields', this.communitySpotlightItems.items)
-      return pluck('linkedItem', fields)
-    },
     spotlightTypes: function() {
       return this.$route.query.selectedSpotlightTypeOptions || undefined
     },
@@ -239,6 +245,18 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
       this.selectedSortOption = option
       const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.sortOrder, this.communitySpotlightItems.limit, 0)
       this.communitySpotlightItems = response
+    },
+    // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
+    getLinkedItem(communitySpotlightItem) {
+      const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
+      const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
+      const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
+        return item.id == spotlightTypeId
+      })?.label
+      return {
+        ...linkedItem,
+        spotlightType
+      }
     }
   },
 })
