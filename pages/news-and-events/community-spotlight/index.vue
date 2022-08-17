@@ -282,7 +282,7 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
 .subpage {
   margin-bottom: 1rem;
   margin-top: .5rem;
-  padding-bottom: 0;
+  padding-bottom: 1rem;
 }
 .page-wrap {
   margin-bottom: 2.5rem;
