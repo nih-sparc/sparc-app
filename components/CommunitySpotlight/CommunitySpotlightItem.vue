@@ -43,8 +43,8 @@
         >
           {{ story.fields.storyTitle }}
         </nuxt-link>
-        <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
-          {{ story.fields.storyTitle }}
+        <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl" target="_blank">
+          {{ story.fields.storyTitle }}<svg-icon name="icon-open" height="30" width="30" />
         </a>
       </div>
       <div class="body1">
