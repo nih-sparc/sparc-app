@@ -1,5 +1,5 @@
 <template>
-  <div class="contact-us-page">
+  <div class="community-spotlight-submit-page">
     <breadcrumb :breadcrumb="breadcrumb" title="Submit" />
     <page-hero>
       <h1>Share your Community Spotlight story</h1>
@@ -7,15 +7,15 @@
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
-        <template v-if="!isGeneralSubmitted">
-          <general-form
-            @submit="onGeneralFormSubmit($event)"
+        <template v-if="!isCommunitySpotlightFormSubmitted">
+          <community-spotlight-form
+            @submit="onCommunitySpotlightFormSubmit($event)"
           />
         </template>
 
-        <div v-if="isGeneralSubmitted" class="msg-success">
-          <template v-if="firstName">
-            <p>{{ firstName }},</p>
+        <div v-if="isCommunitySpotlightFormSubmitted" class="msg-success">
+          <template v-if="name">
+            <p>{{ name }},</p>
           </template>
           <p>
             Thank you for your inquiry. A member of the SPARC team will contact
@@ -31,12 +31,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import GeneralForm from '@/components/ContactUsForms/GeneralForm/GeneralForm.vue'
-
-import MarkedMixin from '@/mixins/marked'
-import createClient from '@/plugins/contentful.js'
-
-const client = createClient()
+import CommunitySpotlightForm from '@/components/CommunitySpotlightForm/CommunitySpotlightForm.vue'
 
 export default {
   name: 'SubmitNewsAndEventsPage',
@@ -44,10 +39,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    GeneralForm,
+    CommunitySpotlightForm,
   },
-
-  mixins: [MarkedMixin],
 
   data: () => {
     return {
@@ -71,8 +64,8 @@ export default {
           }
         },
       ],
-      isGeneralSubmitted: false,
-      firstName: ''
+      isCommunitySpotlightFormSubmitted: false,
+      name: ''
     }
   },
 
@@ -81,31 +74,22 @@ export default {
      * Reset all form data
      */
     resetForms: function() {
-      this.isGeneralSubmitted = false
-      this.firstName = ''
+      this.isCommunitySpotlightFormSubmitted = false
+      this.name = ''
     },
-
-    /**
-     * On general form meetings
-     * @param {String} firstName
-     */
-    onGeneralFormSubmit: function(firstName) {
-      this.firstName = firstName
-      this.isGeneralSubmitted = true
+    onCommunitySpotlightFormSubmit: function(name) {
+      this.name = name
+      this.isCommunitySpotlightFormSubmitted = true
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .page {
   display: flex;
   margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
 }
 h2 {
   font-size: 1.5rem;
@@ -118,8 +102,8 @@ h2 {
 </style>
 
 <style lang="scss">
-@import '@/assets/_variables.scss';
-.contact-us-page {
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.community-spotlight-submit-page {
   .el-form-item:not(.mb-0) {
     margin-bottom: 3.25rem;
   }
@@ -138,12 +122,12 @@ h2 {
   .el-textarea,
   .el-select-dropdown__item {
     ::placeholder {
-      color: $medium-gray;
+      color: $lightGrey;
     }
   }
   .el-input__inner,
   .el-textarea__inner {
-    border-color: $medium-gray;
+    border-color: $lightGrey;
     border-radius: 4px;
     padding: 0.5rem 1rem;
   }
@@ -154,7 +138,7 @@ h2 {
     max-width: 36rem;
     width: 100%;
     ::placeholder {
-      color: $dark-sky;
+      color: $grey;
     }
   }
 }
