@@ -41,10 +41,7 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
 
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
-    const stories = await client.getEntries<StoryEntry>({
-      content_type: 'successStoryDisplay',
-      order: '-fields.publishedDate',
-    })
+    const stories = await fetchCommunitySpotlightItems(client, query, undefined, undefined, 2, 0)
 
     return {
       upcomingEvents,
@@ -60,7 +57,7 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
       pastEvents: {} as unknown as EventsCollection,
       news: {} as unknown as NewsCollection,
       page: {} as unknown as PageEntry,
-      stories: {} as unknown as StoryCollection
+      stories: {} as unknown as CommunitySpotlightItemsCollection
     }
   }
 }
@@ -102,7 +99,7 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, pub
     })
   } catch (e) {
     console.error(e)
-    return {} as unknown as NewsCollection
+    return {} as unknown as CommunitySpotlightItemsCollection
   }
 }
 
@@ -121,7 +118,7 @@ export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, 
     })
   } catch (e) {
     console.error(e)
-    return {} as unknown as NewsCollection
+    return {} as unknown as CommunitySpotlightItemsCollection
   }
 }
 
@@ -146,14 +143,6 @@ export interface Event {
   title?: string;
   url?: string;
 }
-
-export interface SuccessStory {
-  title?: string;
-  youtubeUrl?: string;
-}
-
-export type StoryEntry = Entry<SuccessStory>
-export type StoryCollection = EntryCollection<StoryEntry>
 
 export type EventsEntry = Entry<Event>
 export type EventsCollection = EntryCollection<EventsEntry>
@@ -191,12 +180,11 @@ export interface Data {
   pastEvents: EventsCollection;
   news: NewsCollection;
   page: PageEntry;
-  stories: StoryCollection
+  stories: CommunitySpotlightItemsCollection
 }
 
 export interface Computed {
   featuredEvent: EventsEntry,
-  shownStories: StoryCollection
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;

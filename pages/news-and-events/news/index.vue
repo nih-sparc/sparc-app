@@ -257,7 +257,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
 }
 .news-list-item {
   border-top: 1px solid $lineColor2;
-  padding: 1.5em 0;
+  padding: 1rem 0;
   &:first-child {
     border: none;
     padding-top: 0;

@@ -97,7 +97,7 @@
 
         <div>
           <div class="heading1 my-16">Community Spotlight</div>
-          <community-spotlight-listings :stories="shownStories" :bottom-link="true" />
+          <community-spotlight-listings :stories="stories.items" :bottom-link="true" />
         </div>
 
         <div class="heading1 mt-32 mb-16">Stay Connected</div>
@@ -155,13 +155,13 @@ import PageHero from '@/components/PageHero/PageHero.vue';
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
+import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 
 import MarkedMixin from '@/mixins/marked'
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection, StoryCollection } from './model';
-import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
+import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection, CommunitySpotlightItemsCollection } from './model';
 
 const client = createClient()
 
@@ -229,7 +229,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
       pastEvents: {} as EventsCollection,
       news: {} as NewsCollection,
       page: {} as PageEntry,
-      stories: {} as StoryCollection
+      stories: {} as CommunitySpotlightItemsCollection
     }
   },
 
@@ -241,13 +241,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
     featuredEvent: function() {
       return this.page.fields.featuredEvent || {}
     },
-    /**
-     * Filter to only show two stories
-     * @returns {Array}
-     */
-    shownStories: function() {
-      return this.stories.items.slice(0,2)
-    }
   },
 
   methods: {

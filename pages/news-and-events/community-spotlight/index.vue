@@ -269,7 +269,8 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
 }
 .story-result {
   border-top: 1px solid $lineColor2;
-  padding: 1.5em 0;
+  padding-top: 1.5em;
+  padding-bottom: 0;
   &:first-child {
     border: none;
     padding-top: 0;
@@ -279,8 +280,9 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
   }
 }
 .subpage {
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
   margin-top: .5rem;
+  padding-bottom: 0;
 }
 .page-wrap {
   margin-bottom: 2.5rem;

@@ -259,7 +259,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
 }
 .event-list-item {
   border-top: 1px solid $lineColor2;
-  padding: 1.5em 0;
+  padding: 1rem 0;
   &:first-child {
     border: none;
     padding-top: 0;
@@ -269,8 +269,9 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   }
 }
 .subpage {
-  margin-bottom: .5rem;
-  margin-top: .5rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
 }
 .page-wrap {
   margin-bottom: 2.5rem;

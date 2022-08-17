@@ -6,8 +6,8 @@
   </div>
   <div v-else class="subpage mb-16">
     <div v-for="(item, index) in stories" :key="index">
-      <community-spotlight-item :story="item" />
-      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-32" />
+      <community-spotlight-item :story="getLinkedItem(item)" />
+      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-16" />
     </div>
     <nuxt-link
       v-if="bottomLink"
@@ -22,7 +22,19 @@
 </template>
 
 <script>
+import { pathOr } from 'ramda'
 import CommunitySpotlightItem from './CommunitySpotlightItem.vue'
+
+const SPOTLIGHT_TYPE_MAPPING = [
+  {
+    label: 'Fireside Chat',
+    id: 'firesideChat',
+  },
+  {
+    label: 'Success Story',
+    id: 'successStory',
+  }
+]
 
 export default {
   name: 'CommunitySpotlightListings',
@@ -45,6 +57,20 @@ export default {
     linkText: {
       type: String,
       default: 'View All Community Spotlights'
+    }
+  },
+  methods: {
+    // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
+    getLinkedItem(communitySpotlightItem) {
+      const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
+      const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
+      const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
+        return item.id == spotlightTypeId
+      })?.label
+      return {
+        ...linkedItem,
+        spotlightType
+      }
     }
   }
 }
