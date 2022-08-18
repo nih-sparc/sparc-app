@@ -34,14 +34,14 @@
     <el-form-item prop="fileAttachment" label="File Upload">
       <div class="body4 mb-8"><i>To help other users understand your research, an image or video can really help. We recommend images of 1200px by 675px and videos at 16:9.</i></div>
       <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        :before-upload="beforeUpload"
-        :file-list="fileList">
-        <el-button class="secondary">Select file</el-button>
-        <div slot="tip" class="el-upload__tip">jpeg/png/mp4 file with a size less than 5MB</div>
+        ref="fileUploader"
+        action=""
+        :limit="limit"
+        :auto-upload="false"
+        :on-change="onUploadChange"
+        :before-remove="beforeRemove" >
+        <el-button slot="trigger" class="secondary">Select file</el-button>
+        <div slot="tip" class="el-upload__tip">jpeg/png/gif/mp4 file with a size less than 5MB</div>
       </el-upload>
     </el-form-item>
 
@@ -77,6 +77,7 @@ export default {
 
   data() {
     return {
+      allowVideos: true,
       hasError: false,
       form: {
         name: '',

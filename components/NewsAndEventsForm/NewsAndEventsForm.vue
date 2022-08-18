@@ -35,13 +35,13 @@
       <div class="body4 mb-8"><i>To help other users understand your news or event, an image can really help. We recommend images of 600px by 600px.</i></div>
       <!--<input type="file" ref="file" @change="onSelectFileAttachment" />-->
       <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        :before-upload="beforeUpload"
-        :file-list="fileList">
-        <el-button class="secondary">Select file</el-button>
+        ref="fileUploader"
+        action=""
+        :limit="limit"
+        :auto-upload="false"
+        :on-change="onUploadChange"
+        :before-remove="beforeRemove" >
+        <el-button slot="trigger" class="secondary">Select file</el-button>
         <div slot="tip" class="el-upload__tip">jpg/png file with a size less than 5MB</div>
       </el-upload>
     </el-form-item>
