@@ -2,18 +2,18 @@
   <div>
     <breadcrumb :breadcrumb="breadcrumb" title="Submit" />
     <page-hero>
-      <h1>Share your News or Event</h1>
-      <p>Submit your news or event with SPARC. We will then be in contact about how we share this to the SPARC community.</p>
+      <h1>Share your Community Spotlight story</h1>
+      <p>Submit your story on how you have used the SPARC Program to advance neuromodulation of the ANS. We will then be in contact about how we share this to the SPARC community.</p>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
-        <template v-if="!isNewsAndEventsFormSubmitted">
-          <news-and-events-form
-            @submit="onNewsAndEventsFormSubmit($event)"
+        <template v-if="!isCommunitySpotlightFormSubmitted">
+          <community-spotlight-form
+            @submit="onCommunitySpotlightFormSubmit($event)"
           />
         </template>
 
-        <div v-if="isNewsAndEventsFormSubmitted" class="msg-success">
+        <div v-if="isCommunitySpotlightFormSubmitted" class="msg-success">
           <template v-if="name">
             <p>{{ name }},</p>
           </template>
@@ -31,15 +31,15 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import NewsAndEventsForm from '@/components/NewsAndEventsForm/NewsAndEventsForm.vue'
+import CommunitySpotlightForm from '@/components/CommunitySpotlightForm/CommunitySpotlightForm.vue'
 
 export default {
-  name: 'SubmitNewsAndEventsPage',
+  name: 'SubmitCommunitySpotlightPage',
 
   components: {
     Breadcrumb,
     PageHero,
-    NewsAndEventsForm,
+    CommunitySpotlightForm,
   },
 
   data: () => {
@@ -57,8 +57,14 @@ export default {
             name: 'news-and-events'
           }
         },
+        {
+          label: 'Community Spotlight',
+          to: {
+            name: 'news-and-events-community-spotlight'
+          }
+        },
       ],
-      isNewsAndEventsFormSubmitted: false,
+      isCommunitySpotlightFormSubmitted: false,
       name: ''
     }
   },
@@ -68,12 +74,12 @@ export default {
      * Reset all form data
      */
     resetForms: function() {
-      this.isNewsAndEventsFormSubmitted = false
+      this.isCommunitySpotlightFormSubmitted = false
       this.name = ''
     },
-    onNewsAndEventsFormSubmit: function(name) {
+    onCommunitySpotlightFormSubmit: function(name) {
       this.name = name
-      this.isNewsAndEventsFormSubmitted = true
+      this.isCommunitySpotlightFormSubmitted = true
     }
   }
 }

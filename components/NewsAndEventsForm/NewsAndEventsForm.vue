@@ -17,15 +17,15 @@
     <hr/>
 
     <el-form-item prop="title" label="Title">
-      <el-input v-model="form.title" placeholder="Enter a title for your success story / fireside chat" />
+      <el-input v-model="form.title" placeholder="Enter a title for your news or event" />
     </el-form-item>
 
-    <el-form-item prop="message" label="Summary">
+    <el-form-item prop="summary" label="Summary">
       <el-input
         v-model="form.summary"
         type="textarea"
         :rows="3"
-        placeholder="Tell us some details about your success story / fireside chat"
+        placeholder="Tell us some details about your news or event"
       />
     </el-form-item>
 
@@ -43,7 +43,7 @@
 <script>
 
 export default {
-  name: 'CommunitySpotlightForm',
+  name: 'NewsAndEventsForm',
 
   data() {
     return {
@@ -69,6 +69,7 @@ export default {
             required: true,
             message: 'Please enter your name',
             trigger: 'blur',
+            validator: this.validateForNewsletter
           }
         ],
         title: [
