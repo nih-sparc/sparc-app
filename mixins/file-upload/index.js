@@ -29,7 +29,7 @@ export default {
       if (!isLessThan5MB) {
         this.$message.error('Upload file size cannot exceed 5 MB!');
       }
-      return /* isIMAGE && */ isLt1M;
+      return /* isIMAGE && */ isLessThan5MB;
     }
   }
 }
