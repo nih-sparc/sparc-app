@@ -39,10 +39,10 @@
         :on-preview="handlePreview"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
-        :on-exceed="handleExceed"
+        :before-upload="beforeUpload"
         :file-list="fileList">
         <el-button class="secondary">Select file</el-button>
-        <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+        <div slot="tip" class="el-upload__tip">jpg/png file with a size less than 5MB</div>
       </el-upload>
     </el-form-item>
 

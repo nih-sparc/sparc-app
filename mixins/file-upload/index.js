@@ -1,7 +1,8 @@
 export default {
   data() {
     return {
-      fileList: []
+      fileList: [],
+      limit: 1
     };
   },
   methods: {
@@ -12,10 +13,23 @@ export default {
       console.log(file);
     },
     handleExceed(files, fileList) {
-      this.$message.warning(`The limit is 3, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
+      this.$message.warning(`The limit is ${this.limit}, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
     },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`Cancel the transfert of ${ file.name } ?`);
+    beforeRemove(file) {
+      return this.$confirm(`Cancel the transfer of ${ file.name } ?`);
+    },
+    beforeUpload(file)
+    {
+      //const isIMAGE = file.type === 'image/jpeg'||'image/gif'||'image/png';
+      const isLessThan5MB = file.size / 1024 / 1024 < 5;
+
+      /*if (!isIMAGE) {
+        this.$message.error('Upload file can only be in picture format!');
+      }*/
+      if (!isLessThan5MB) {
+        this.$message.error('Upload file size cannot exceed 5 MB!');
+      }
+      return /* isIMAGE && */ isLt1M;
     }
   }
 }
