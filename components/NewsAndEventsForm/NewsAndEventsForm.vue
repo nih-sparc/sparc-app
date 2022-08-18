@@ -33,9 +33,17 @@
 
     <el-form-item prop="fileAttachment" label="Image Upload">
       <div class="body4 mb-8"><i>To help other users understand your news or event, an image can really help. We recommend images of 600px by 600px.</i></div>
-      <el-button class="secondary" @click="onSelectFileAttachment">
-        Select image
-      </el-button>
+      <!--<input type="file" ref="file" @change="onSelectFileAttachment" />-->
+      <el-upload
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-exceed="handleExceed"
+        :file-list="fileList">
+        <el-button class="secondary">Select file</el-button>
+        <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+      </el-upload>
     </el-form-item>
 
     <el-form-item prop="url" label="Supporting Information">
@@ -77,8 +85,12 @@
 
 <script>
 
+import FileUploadMixin from '@/mixins/file-upload/index'
+
 export default {
   name: 'NewsAndEventsForm',
+
+  mixins: [FileUploadMixin],
 
   data() {
     return {

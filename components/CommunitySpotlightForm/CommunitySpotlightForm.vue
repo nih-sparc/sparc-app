@@ -33,9 +33,16 @@
 
     <el-form-item prop="fileAttachment" label="File Upload">
       <div class="body4 mb-8"><i>To help other users understand your research, an image or video can really help. We recommend images of 1200px by 675px and videos at 16:9.</i></div>
-      <el-button class="secondary" @click="onSelectFileAttachment">
-        Select file
-      </el-button>
+      <el-upload
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-exceed="handleExceed"
+        :file-list="fileList">
+        <el-button class="secondary">Select file</el-button>
+        <div slot="tip" class="el-upload__tip">jpg/png/mpg/mp4 files with a size less than 500kb</div>
+      </el-upload>
     </el-form-item>
 
     <el-form-item prop="url" label="Supporting Information">
@@ -61,8 +68,12 @@
 
 <script>
 
+import FileUploadMixin from '@/mixins/file-upload/index'
+
 export default {
   name: 'CommunitySpotlightForm',
+
+  mixins: [FileUploadMixin],
 
   data() {
     return {

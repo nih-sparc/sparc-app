@@ -131,4 +131,7 @@ h2 {
     color: $grey;
   }
 }
+::v-deep .el-upload__tip{
+  margin-top: 0;
+}
 </style>
