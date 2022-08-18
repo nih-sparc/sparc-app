@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="submit-page">
     <breadcrumb :breadcrumb="breadcrumb" title="Submit" />
     <page-hero>
       <h1>Share your News or Event</h1>
@@ -81,9 +81,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
-.page {
-  display: flex;
-  margin-top: 7rem;
+.submit-page {
+  background-color: $background;
+  padding-bottom: 2rem;
 }
 h2 {
   font-size: 1.5rem;
@@ -93,8 +93,11 @@ h2 {
   font-size: 1.5rem;
   line-height: 2rem;
 }
+.subpage {
+  margin-bottom: 0;
+}
 ::v-deep .el-form-item:not(.mb-0) {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 ::v-deep .el-form-item__label {
   color: #000;
@@ -115,10 +118,11 @@ h2 {
 ::v-deep .el-input__inner, ::v-deep .el-textarea__inner {
   border-color: $lightGrey;
   border-radius: 4px;
-  padding: 0.5rem 1rem;
+  padding-right: 1rem;
 }
 ::v-deep .el-textarea__inner {
   font-family: inherit;
+  padding-top: .75rem;
 }
 ::v-deep .input-reason {
   max-width: 36rem;

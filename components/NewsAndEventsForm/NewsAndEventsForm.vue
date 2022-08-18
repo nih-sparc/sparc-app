@@ -29,6 +29,41 @@
       />
     </el-form-item>
 
+    <hr/>
+
+    <el-form-item prop="fileAttachment" label="Image Upload">
+      <div class="body4 mb-8"><i>To help other users understand your news or event, an image can really help. We recommend images of 600px by 600px.</i></div>
+      <el-button class="secondary" @click="onSelectFileAttachment">
+        Select image
+      </el-button>
+    </el-form-item>
+
+    <el-form-item prop="url" label="Supporting Information">
+      <el-input placeholder="Enter URL" v-model="form.url">
+        <template slot="prepend">Http://</template>
+      </el-input>
+    </el-form-item>
+
+    <hr/>
+
+    <div class="heading1 mb-16">Event specific details</div>
+
+    <el-form-item prop="location" label="Location">
+      <el-input v-model="form.location" placeholder="Enter the location of the event" />
+    </el-form-item>
+
+    <el-form-item prop="date" label="Date">
+      <el-date-picker
+        v-model="form.date"
+        type="date"
+        placeholder="Enter the date of the event"
+      />
+    </el-form-item>
+
+    <hr/>
+
+    <div class="body4 mb-16"><i>Before your news or event is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
+
     <el-form-item class="submit-button">
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
@@ -53,6 +88,10 @@ export default {
         email: '',
         title: '',
         summary: '',
+        fileAttachment: '',
+        url: '',
+        location: '',
+        date: '',
       },
       isSubmitting: false,
       formRules: {
@@ -122,6 +161,9 @@ export default {
           name: this.form.name,
           email: this.form.email,
           title: this.form.title,
+          url: this.form.url,
+          location: this.form.location,
+          date: this.form.date,
           message: `
             <br>Summary
             <br>${this.form.summary}
@@ -151,6 +193,7 @@ hr {
   border-top: none;
   border-width: 2px;
   border-color: $lineColor1;
+  margin: 2.5rem 0;
 }
 .error {
   color: $danger;

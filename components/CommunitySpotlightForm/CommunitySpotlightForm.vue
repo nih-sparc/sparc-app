@@ -20,7 +20,7 @@
       <el-input v-model="form.title" placeholder="Enter a title for your success story / fireside chat" />
     </el-form-item>
 
-    <el-form-item prop="message" label="Summary">
+    <el-form-item prop="summary" label="Summary">
       <el-input
         v-model="form.summary"
         type="textarea"
@@ -28,6 +28,25 @@
         placeholder="Tell us some details about your success story / fireside chat"
       />
     </el-form-item>
+
+    <hr/>
+
+    <el-form-item prop="fileAttachment" label="File Upload">
+      <div class="body4 mb-8"><i>To help other users understand your research, an image or video can really help. We recommend images of 1200px by 675px and videos at 16:9.</i></div>
+      <el-button class="secondary" @click="onSelectFileAttachment">
+        Select file
+      </el-button>
+    </el-form-item>
+
+    <el-form-item prop="url" label="Supporting Information">
+      <el-input placeholder="Enter URL" v-model="form.url">
+        <template slot="prepend">Http://</template>
+      </el-input>
+    </el-form-item>
+
+    <hr/>
+
+    <div class="body4 mb-16"><i>Before your story is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
 
     <el-form-item class="submit-button">
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
@@ -53,6 +72,8 @@ export default {
         email: '',
         title: '',
         summary: '',
+        fileAttachment: '',
+        url: '',
       },
       isSubmitting: false,
       formRules: {
@@ -121,6 +142,7 @@ export default {
           name: this.form.name,
           email: this.form.email,
           title: this.form.title,
+          url: this.form.url,
           message: `
             <br>Summary
             <br>${this.form.summary}
@@ -150,6 +172,7 @@ hr {
   border-top: none;
   border-width: 2px;
   border-color: $lineColor1;
+  margin: 2.5rem 0;
 }
 .error {
   color: $danger;
