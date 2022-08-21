@@ -433,7 +433,8 @@ export default {
 
     const changelogFileRequests = []
     versions.forEach(({ version }) => {
-      const changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
+      var changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
+      if (userToken) { changelogEndpoint += `&api_key=${userToken}` }
       changelogFileRequests.push(
         $axios.$get(changelogEndpoint).then(response => {
           return [{

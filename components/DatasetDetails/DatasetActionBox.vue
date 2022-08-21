@@ -9,14 +9,14 @@
         <sparc-tooltip
           placement="left-center"
         >
-          <div v-if="!cognitoUserToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+          <div v-if="!userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
             This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
           </div>
           <div v-else slot="data">
             This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
           </div>
           <el-button
-            v-if="cognitoUserToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            v-if="userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
             :disabled="datasetInfo.embargoAccess != null"
             @click="requestAccess()"
@@ -70,14 +70,14 @@
         <sparc-tooltip
           placement="left-center"
         >
-          <div v-if="!cognitoUserToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+          <div v-if="!userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
             This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
           </div>
           <div v-else slot="data">
             This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
           </div>
           <el-button
-            v-if="cognitoUserToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            v-if="userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
             :disabled="datasetInfo.embargoAccess != null"
             @click="requestAccess()"
@@ -130,14 +130,14 @@
         <sparc-tooltip
           placement="left-center"
         >
-          <div v-if="!cognitoUserToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+          <div v-if="!userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
             This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
           </div>
           <div v-else slot="data">
             This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
           </div>
           <el-button
-            v-if="cognitoUserToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            v-if="userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
             :disabled="datasetInfo.embargoAccess != null"
             @click="requestAccess()"
@@ -189,6 +189,9 @@ export default {
   computed: {
     ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetTypeName']),
     ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
     EMBARGO_ACCESS() {
       return EMBARGO_ACCESS
     },
@@ -267,7 +270,7 @@ export default {
       link.remove()
     },
     requestAccess(){
-       const url = `${process.env.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.cognitoUserToken}`
+       const url = `${process.env.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
 
        this.$axios
         .$post(url, {
