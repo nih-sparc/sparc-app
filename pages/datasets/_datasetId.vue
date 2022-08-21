@@ -197,9 +197,12 @@ const getAssociatedProject = async (sparcAwardNumber) => {
  * @param {Function} $axios
  * @returns {Object}
  */
-const getDatasetDetails = async (datasetId, version, datasetTypeName, $axios) => {
+const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName, $axios) => {
   const url = `${process.env.discover_api_host}/datasets/${datasetId}`
-  const datasetUrl = version ? `${url}/versions/${version}` : url
+  var datasetUrl = version ? `${url}/versions/${version}` : url
+  if (userToken) {
+    datasetUrl += `?api_key=${userToken}`
+  }
 
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
@@ -388,7 +391,7 @@ export default {
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios, store }) {
+  async asyncData({ route, $axios, store, app }) {
     let tabsData = clone(tabs)
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
@@ -396,12 +399,14 @@ export default {
     const datasetFacetsData = await getDatasetFacetsData(route)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
+    const userToken = app.$cookies.get('user-token')
 
     const [organEntries, datasetDetails, versions, downloadsSummary] = await Promise.all([
       getOrganEntries(),
       getDatasetDetails(
         datasetId,
         route.params.version,
+        userToken,
         datasetTypeName,
         $axios
       ),
