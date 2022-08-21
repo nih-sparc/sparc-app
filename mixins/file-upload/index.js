@@ -1,6 +1,8 @@
 const kB_IN_MB = 1024;
 const MAX_FILE_SIZE_IN_MB = 5;
 const MAX_FILE_SIZE = kB_IN_MB * MAX_FILE_SIZE_IN_MB;
+import { failMessage } from '@/utils/notification-messages'
+
 export default {
   data() {
     return {
@@ -14,7 +16,7 @@ export default {
       return ( file.size / kB_IN_MB ) >= MAX_FILE_SIZE
     },
     handleExceed(files, fileList) {
-      this.$message.warning(`The limit is ${this.limit}, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
+      this.$message(failMessage(`The limit is ${this.limit}, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`))
     },
     onUploadChange(file)
     {
@@ -22,17 +24,17 @@ export default {
       const isVideo = (file.raw.type === 'video/mp4');
       const isFileSizeTooLarge = this.isFileSizeTooLarge(file);
       if (!isImage && !this.allowVideos) {
-        this.$message.error('Upload file must be an image!');
+        this.$message(failMessage('Upload file must be an image!'));
         this.$refs.fileUploader.clearFiles()
         return false;
       }
       if (!isImage && !isVideo && this.allowVideos) {
-        this.$message.error('Upload file must be an image or video!');
+        this.$message(failMessage('Upload file must be an image or video!'));
         this.$refs.fileUploader.clearFiles()
         return false;
       }
       if (isFileSizeTooLarge) {
-        this.$message.error(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`);
+        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`));
         this.$refs.fileUploader.clearFiles()
         return false;
       }
@@ -54,7 +56,7 @@ export default {
     {
       const isFileSizeTooLarge = this.isFileSizeTooLarge(file);
       if (isFileSizeTooLarge) {
-        this.$message.error(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`);
+        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`));
       }
       return !isFileSizeTooLarge;
     }

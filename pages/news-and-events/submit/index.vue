@@ -134,4 +134,7 @@ h2 {
 ::v-deep .el-upload__tip{
   margin-top: 0;
 }
+::v-deep .el-upload-list {
+  width: fit-content;
+}
 </style>
