@@ -57,12 +57,13 @@
         v-if="datasetInfo.embargo"
         placement="left-center"
       >
-        <div slot="data">
+        <div v-if="embargoed && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
           This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
         </div>
         <el-button
           class="secondary"
           slot="item"
+          :disabled="embargoed && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
         >
           Download Metadata file
         </el-button>
@@ -101,6 +102,7 @@ import createAlgoliaClient from '@/plugins/algolia.js'
 import { propOr } from 'ramda'
 import _ from 'lodash'
 import axios from 'axios'
+import { EMBARGO_ACCESS } from '@/utils/constants'
 
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
@@ -137,6 +139,12 @@ export default {
 
   computed: {
     ...mapState('pages/datasets/datasetId', ['datasetFacetsData','datasetInfo']),
+    EMBARGO_ACCESS() {
+      return EMBARGO_ACCESS
+    },
+    embargoed: function() {
+      return propOr(false, 'embargo', this.datasetInfo)
+    },
     anatomicalStructureText: function() {
       return this.getFacetText('Anatomical Structure')
     },
