@@ -33,7 +33,6 @@
 
     <el-form-item prop="fileAttachment" label="Image Upload">
       <div class="body4 mb-8"><i>To help other users understand your news or event, an image can really help. We recommend images of 600px by 600px.</i></div>
-      <!--<input type="file" ref="file" @change="onSelectFileAttachment" />-->
       <el-upload
         ref="fileUploader"
         action=""
@@ -100,7 +99,6 @@ export default {
         email: '',
         title: '',
         summary: '',
-        fileAttachment: '',
         url: '',
         location: '',
         date: '',
@@ -169,17 +167,19 @@ export default {
       this.isSubmitting = true
 
       this.$axios
-        .post(`${process.env.portal_api}/contact`, {
+        .post(`${process.env.portal_api}/email_comms`, {
           name: this.form.name,
           email: this.form.email,
           title: this.form.title,
+          summary: this.form.summary,
           url: this.form.url,
           location: this.form.location,
           date: this.form.date,
-          message: `
-            <br>Summary
-            <br>${this.form.summary}
-          `
+          form_type: 'newsOrEvent',
+          has_attachment: this.hasAttachment,
+          encoded_file: this.base64FileData,
+          file_name: this.fileName,
+          file_type: this.fileType
         })
         .then(() => {
           this.$emit('submit', this.form.name)

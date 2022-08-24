@@ -84,7 +84,6 @@ export default {
         email: '',
         title: '',
         summary: '',
-        fileAttachment: '',
         url: '',
       },
       isSubmitting: false,
@@ -107,7 +106,7 @@ export default {
         title: [
           {
             required: true,
-            message: 'Please a title',
+            message: 'Please enter a title',
             trigger: 'blur',
           }
         ],
@@ -150,15 +149,17 @@ export default {
       this.isSubmitting = true
 
       this.$axios
-        .post(`${process.env.portal_api}/contact`, {
+        .post(`${process.env.portal_api}/email_comms`, {
           name: this.form.name,
           email: this.form.email,
           title: this.form.title,
+          summary: this.form.summary,
           url: this.form.url,
-          message: `
-            <br>Summary
-            <br>${this.form.summary}
-          `
+          form_type: 'communitySpotlight',
+          has_attachment: this.hasAttachment,
+          encoded_file: this.base64FileData,
+          file_name: this.fileName,
+          file_type: this.fileType
         })
         .then(() => {
           this.$emit('submit', this.form.name)
