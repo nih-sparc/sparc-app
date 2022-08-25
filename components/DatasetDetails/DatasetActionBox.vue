@@ -148,6 +148,7 @@
             v-else
             slot="item"
             :disabled="datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
+            @click="actionButtonClicked('files')"
           >
             Get Dataset
           </el-button>
@@ -294,7 +295,7 @@ export default {
         embargoAccess: access
       }
 
-      store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
+      this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
     }
   }
 }

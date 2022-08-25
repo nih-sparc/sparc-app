@@ -64,6 +64,12 @@
           class="secondary"
           slot="item"
           :disabled="embargoed && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+           @click.prevent="
+            downloadItem({
+              url: downloadMetadataUrl,
+              label: 'metadata.json',
+            })
+        "
         >
           Download Metadata file
         </el-button>
@@ -97,7 +103,7 @@
 
 <script>
 import marked from '@/mixins/marked/index'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { propOr } from 'ramda'
 import _ from 'lodash'
@@ -139,6 +145,10 @@ export default {
 
   computed: {
     ...mapState('pages/datasets/datasetId', ['datasetFacetsData','datasetInfo']),
+    ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
     EMBARGO_ACCESS() {
       return EMBARGO_ACCESS
     },
@@ -192,7 +202,11 @@ export default {
      * @returns {String}
      */
     downloadMetadataUrl: function() {
-      return `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${this.versionId}/metadata`
+      var url = `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${this.versionId}/metadata`
+      if (this.userToken) {
+        url += `?api_key=${this.userToken}`
+      }
+      return url
     }
   },
 
