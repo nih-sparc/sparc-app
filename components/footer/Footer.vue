@@ -24,6 +24,17 @@
                 />
               </a>
               <a
+                href="https://www.linkedin.com/groups/12694019"
+                target="_blank"
+              >
+                <svg-icon
+                  icon="icon-linkedin"
+                  color="#606266"
+                  height="32px"
+                  width="32px"
+                />
+              </a>
+              <a
                 href="https://www.youtube.com/channel/UCCmUx4tOSlTAwlUrjSGz2mw"
                 target="_blank"
               >
