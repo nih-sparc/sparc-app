@@ -112,7 +112,7 @@ export default {
       if (this.embargoed) {
         return 'To be confirmed'
       }
-      return propOr('', 'fileCount', this.datasetInfo)
+      return propOr('0', 'fileCount', this.datasetInfo)
     },
     /**
      * Get the dataset DOI and return the url

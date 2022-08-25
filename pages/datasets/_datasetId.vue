@@ -97,6 +97,7 @@ import { mapState } from 'vuex'
 import { clone, propOr, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import createAlgoliaClient from '@/plugins/algolia.js'
+import { EMBARGO_ACCESS } from '@/utils/constants'
 
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
@@ -511,6 +512,9 @@ export default {
      * Compute if the dataset is the latest version
      * @returns {Boolean}
      */
+    embargoAccess() {
+      return propOr(null, 'embargoAccess', this.datasetInfo)
+    },
     isLatestVersion() {
       if (this.versions !== undefined && this.versions.length) {
         const latestVersion = compose(propOr(1, 'version'), head)(this.versions)
@@ -715,7 +719,10 @@ export default {
       return numDownloads
     },
     hasFiles: function() {
-      return !this.embargoed && this.fileCount >= 1
+      if (this.embargoed && this.embargoAccess !== EMBARGO_ACCESS.GRANTED) {
+        return false
+      }
+      return this.fileCount >= 1
     },
     hasGalleryImages: function() {
       //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data

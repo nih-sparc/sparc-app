@@ -145,7 +145,7 @@ export default {
     downloadUrl: function() {
       var url = `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${this.versionId}/download?downloadOrigin=SPARC`
       if (this.userToken) {
-        url += `?api_key=${this.userToken}`
+        url += `&api_key=${this.userToken}`
       }
       return url
     }
