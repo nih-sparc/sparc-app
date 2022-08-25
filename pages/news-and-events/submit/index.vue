@@ -21,7 +21,7 @@
             Thank you for your inquiry. A member of the SPARC team will contact
             you within two business days.
           </p>
-          <a href="#" @click="resetForms">Submit another inquiry</a>
+          <a href="#" @click="resetForms">Share another News or Event</a>
         </div>
       </div>
     </div>

@@ -39,6 +39,7 @@
         :limit="limit"
         :auto-upload="false"
         :on-change="onUploadChange"
+        :on-remove="onRemove"
         :before-remove="beforeRemove" >
         <el-button slot="trigger" class="secondary">Select file</el-button>
         <div slot="tip" class="el-upload__tip">jpg/png file with a size less than 5MB</div>
@@ -166,21 +167,24 @@ export default {
     sendForm() {
       this.isSubmitting = true
 
+      let formData = new FormData();
+      // Required inputs
+      formData.append("name", this.form.name)
+      formData.append("email", this.form.email)
+      formData.append("title", this.form.title)
+      formData.append("summary", this.form.summary)
+      // Optional inputs
+      formData.append("url", this.form.url)
+      formData.append("location", this.form.location)
+      formData.append("date", this.form.date)
+      formData.append("form_type", 'newsOrEvent')
+      formData.append("has_attachment", this.hasAttachment)
+      if (this.hasAttachment){
+        formData.append("attachment_file", this.file, this.file.name)
+      }
+
       this.$axios
-        .post(`${process.env.portal_api}/email_comms`, {
-          name: this.form.name,
-          email: this.form.email,
-          title: this.form.title,
-          summary: this.form.summary,
-          url: this.form.url,
-          location: this.form.location,
-          date: this.form.date,
-          form_type: 'newsOrEvent',
-          has_attachment: this.hasAttachment,
-          encoded_file: this.base64FileData,
-          file_name: this.fileName,
-          file_type: this.fileType
-        })
+        .post(`${process.env.portal_api}/email_comms`, formData)
         .then(() => {
           this.$emit('submit', this.form.name)
         })
