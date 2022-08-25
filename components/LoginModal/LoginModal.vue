@@ -5,12 +5,18 @@
     @close-download-dialog="dialogVisible = false"
   >
     <div class="content" slot="mainContent">
-      <h1>Log into SPARC</h1>
-      <p>
-        Learn about the new and current features the SPARC Portal has to offer
-        <a href="/#" target="_blank">here</a>.
+      <h1 class="heading1 mb-8">
+        Sign into SPARC
+      </h1>
+      <p class="body1">
+        SPARC Portal login authentication is provided by <a href="https://orcid.org" target="_blank">ORCID iD</a>. Create a SPARC account or sign in to your existing SPARC account via your existing ORCID iD.
+        
+        Upon initial login to the SPARC Portal via ORCID iD, you will also be creating* an account on <a href="https://pennsieve.io" target="_blank">Pennsieve</a> to unlock all the features SPARC has to offer.
       </p>
-      <el-button class="secondary"  @click="onLoginWithORCID">
+      <p class="body1">
+        Learn more <a href="https://docs.sparc.science/" target="_blank">here</a> about what features you gain access to by signing into the SPARC Portal.
+      </p>
+      <el-button class="secondary" @click="onLoginWithORCID">
         <img
           class="orcid-logo mr-2"
           src="@/static/images/orcid_24x24.png"
@@ -18,8 +24,14 @@
           height="16"
           alt="Logo for ORCID"
         />
-        Sign in with Orcid iD
+        Sign in with ORCID iD
       </el-button>
+      <p class="mt-16 body4">
+        By signing in to SPARC, you are accepting the <a href="https://docs.sparc.science/docs/terms-of-service" target="_blank">SPARC Terms of Service</a> and <a href="https://docs.sparc.science/docs/policies" target="_blank">SPARC DRC Privacy Policy</a> in addition to the <a href="https://docs.pennsieve.io/page/pennsieve-terms-of-use" target="_blank">Pennsieve Terms of Service</a> and <a href="https://docs.pennsieve.io/page/privacy-policy" target="_blank">Pennsieve Privacy Policy</a>.
+      </p>
+      <p class="body4">
+        * If you already have an account on Pennsieve, you will be able to link your newly created SPARC account to it by entering your existing Pennsieve account's e-mail address when prompted.
+      </p>
       <div class="close-button-container pt-16">
         <el-button @click="dialogVisible = false">
           Close
