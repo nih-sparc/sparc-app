@@ -46,6 +46,7 @@ import { propOr, compose, split } from 'ramda'
 
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import DateUtils from '@/mixins/format-date'
+import { EMBARGO_ACCESS } from '@/utils/constants'
 
 export default {
   name: 'DatasetInformationBox',
@@ -69,6 +70,12 @@ export default {
      * @returns {Object}
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetTypeName','showAllVersionsModal']),
+    embargoAccess() {
+      return propOr(null, 'embargoAccess', this.datasetInfo)
+    },
+    fileCount() {
+      return propOr('0', 'fileCount', this.datasetInfo)
+    },
     /**
      * Gets dataset version
      * @returns {Number}
@@ -109,10 +116,10 @@ export default {
      * @returns {String}
      */
     datasetFiles: function() {
-      if (this.embargoed) {
-        return 'To be confirmed'
+      if (this.embargoed && this.embargoAccess !== EMBARGO_ACCESS.GRANTED) {
+        return 0
       }
-      return propOr('0', 'fileCount', this.datasetInfo)
+      return this.fileCount
     },
     /**
      * Get the dataset DOI and return the url

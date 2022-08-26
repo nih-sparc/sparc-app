@@ -434,11 +434,13 @@ export default {
   },
 
   watch: {
-    '$route.query.path': 'pathQueryChanged'
-  },
-
-  created: function() {
-    this.getFiles()
+    '$route.query.path': 'pathQueryChanged',
+    userToken: {
+      handler: function() {
+        this.getFiles()
+      },
+      immediate: true
+    }
   },
 
   methods: {

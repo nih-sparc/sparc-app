@@ -1,7 +1,7 @@
 <template>
   <div class="dataset-action-box mt-16 p-8">
     <dataset-banner-image :src="datasetImage" />
-    <sparc-pill class="sparc-pill" v-if="datasetInfo.embargo">
+    <sparc-pill class="sparc-pill" v-if="embargoed">
       Embargoed
     </sparc-pill>
     <div class="button-container" v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
@@ -9,16 +9,16 @@
         <sparc-tooltip
           placement="left-center"
         >
-          <div v-if="!userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+          <div v-if="!userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
             This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
           </div>
           <div v-else slot="data">
             This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
           </div>
           <el-button
-            v-if="userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
-            :disabled="datasetInfo.embargoAccess != null"
+            :disabled="embargoAccess != null"
             @click="requestAccess()"
           >
             Request Access
@@ -26,12 +26,12 @@
           <el-button
             v-else
             slot="item"
-            :disabled="datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
+            :disabled="embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
           >
             Get Scaffold
           </el-button>
         </sparc-tooltip>
-        <div class="body4" v-if="datasetInfo.embargoAccess === EMBARGO_ACCESS.REQUESTED">
+        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
           Your request is pending approval...
         </div>
       </div>
@@ -70,16 +70,16 @@
         <sparc-tooltip
           placement="left-center"
         >
-          <div v-if="!userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+          <div v-if="!userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
             This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
           </div>
           <div v-else slot="data">
             This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
           </div>
           <el-button
-            v-if="userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
-            :disabled="datasetInfo.embargoAccess != null"
+            :disabled="embargoAccess != null"
             @click="requestAccess()"
           >
             Request Access
@@ -87,12 +87,12 @@
           <el-button
             v-else
             slot="item"
-            :disabled="datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
+            :disabled="embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
           >
             Get Model
           </el-button>
         </sparc-tooltip>
-        <div class="body4" v-if="datasetInfo.embargoAccess === EMBARGO_ACCESS.REQUESTED">
+        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
           Your request is pending approval...
         </div>
       </div>
@@ -130,16 +130,16 @@
         <sparc-tooltip
           placement="left-center"
         >
-          <div v-if="!userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+          <div v-if="!userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
             This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
           </div>
           <div v-else slot="data">
             This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
           </div>
           <el-button
-            v-if="userToken && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
-            :disabled="datasetInfo.embargoAccess != null"
+            :disabled="embargoAccess != null"
             @click="requestAccess()"
           >
             Request Access
@@ -147,13 +147,13 @@
           <el-button
             v-else
             slot="item"
-            :disabled="datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
+            :disabled="embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
             @click="actionButtonClicked('files')"
           >
             Get Dataset
           </el-button>
         </sparc-tooltip>
-        <div class="body4" v-if="datasetInfo.embargoAccess === EMBARGO_ACCESS.REQUESTED">
+        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
           Your request is pending approval...
         </div>
       </div>
@@ -195,6 +195,9 @@ export default {
     },
     EMBARGO_ACCESS() {
       return EMBARGO_ACCESS
+    },
+    embargoAccess() {
+      return propOr(null, 'embargoAccess', this.datasetInfo)
     },
     /**
      * Gets dataset version
