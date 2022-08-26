@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { propOr } from 'ramda'
 
 import { successMessage, failMessage } from '@/utils/notification-messages'
@@ -105,6 +105,10 @@ export default {
      * @returns {Object}
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
+    ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
     /**
      * Checks whether the dataset download size is larger or smaller than 5GB
      * @returns {Boolean}
@@ -139,7 +143,11 @@ export default {
      * @returns {String}
      */
     downloadUrl: function() {
-      return `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${this.versionId}/download?downloadOrigin=SPARC`
+      var url = `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${this.versionId}/download?downloadOrigin=SPARC`
+      if (this.userToken) {
+        url += `&api_key=${this.userToken}`
+      }
+      return url
     }
   },
 
