@@ -67,7 +67,6 @@ export default {
   async asyncData({ route, redirect }) {
     try {
       const page = await getEventPage(route.params.id)
-      //const page = await client.getEntry(route.params.id)
       const slug = pathOr(null, ['fields', 'slug'], page)
       if (slug !== null && route.params.id !== slug) {
         redirect(`/news-and-events/events/${slug}`)

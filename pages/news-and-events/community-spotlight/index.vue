@@ -107,6 +107,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import Vue from 'vue'
 import { pathOr, propOr } from 'ramda'
 import createClient from '@/plugins/contentful.js'

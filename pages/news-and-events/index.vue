@@ -105,25 +105,40 @@
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
               <div class="heading2">Sign up for the SPARC Newsletter</div>
-              <div class="body1">Keep up to date with all the latest news and events from the SPARC Portal.</div>
-              <newsletter-form class="mt-8"/>
+              <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
+              <newsletter-form />
               <div class="newsletter-archive mt-16">
                 <style type="text/css">
-                  .campaign { margin-top: .5em; }
+                  .campaign { margin-top: .5rem; }
                 </style>
-                <div class="heading2">Current Newsletter</div>
+                <div class="heading2 mt-24">Current Newsletter</div>
                 <div id="newsletter-archive" />
-                <a class="my-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">
-                  View all Newsletters<svg-icon icon="icon-open" height="30" width="30" />
+                <a class="mt-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">
+                  View all Newsletters<svg-icon icon="icon-open" height="20" width="20" />
                 </a>
               </div>
-              <div class="heading2">Get Involved</div>
-              <div class="body1">Empower SPARC to promote your science and interests by submitting your science story, news, or event.</div>
-              <el-button class="secondary mt-8">
-                <a target="_blank" href="https://www.wrike.com/frontend/requestforms/index.html?token=eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjM0MzA5MH0JNDc2NjA2NTY2MTgzOAlmMDFkNTM5ZGFjZDUwNGYwNGNmZWRlZjVkY2Y3MzMxOGU4MzJkZDcyYWNiOWI2ZDA3MWRkZGNlYmE1NjQ3ZTFi">
-                  Share news or events<svg-icon icon="icon-open" height="20" width="20" />
-                </a>
-              </el-button>
+              <div class="heading2 mt-24">Get Involved</div>
+              <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your science story, news, or event.</div>
+              <div class="get-involved-buttons-container">
+                <el-button class="get-involved-button secondary">
+                  <nuxt-link
+                    :to="{
+                      name: 'news-and-events-submit',
+                    }"
+                  >
+                    Share news or events
+                  </nuxt-link>
+                </el-button>
+                <el-button class="get-involved-button secondary mt-8">
+                  <nuxt-link
+                    :to="{
+                      name: 'news-and-events-community-spotlight-submit',
+                    }"
+                  >
+                    Submit a community spotlight idea
+                  </nuxt-link>
+                </el-button>
+              </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
               <div v-twitter-widgets>
@@ -370,5 +385,16 @@ export default Vue.extend<Data, Methods, Computed, never>({
   a {
     text-decoration: none !important;
   }
+}
+
+.get-involved-buttons-container {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.get-involved-button {
+  width: 100%;
+  margin-left: 0 !important;
 }
 </style>
