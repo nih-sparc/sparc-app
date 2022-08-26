@@ -1,5 +1,5 @@
 <template>
-  <div class="data-page">
+  <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
       <div class="search-tabs__container">
@@ -35,7 +35,7 @@
         />
       </div>
     </div>
-    <div class="mb-48 container">
+    <div class="container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
@@ -53,19 +53,6 @@
                   @selected-facets-changed="onPaginationPageChange(1)"
                   @hook:mounted="facetMenuMounted"
                   ref="datasetFacetMenu"
-                />
-              </el-col>
-              <el-col
-                v-if="searchType.type === 'newsAndEvents'"
-                class="facet-menu"
-                :sm="24"
-                :md="8"
-                :lg="6"
-              >
-                <news-and-events-facet-menu
-                  @news-and-events-selections-changed="onPaginationPageChange(1)"
-                  @hook:mounted="facetMenuMounted"
-                  ref="newsAndEventsFacetMenu"
                 />
               </el-col>
               <el-col
@@ -165,8 +152,6 @@ const SparcInfoSearchResults = () =>
   import('@/components/SearchResults/SparcInfoSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const NewsAndEventsSearchResults = () =>
-  import('@/components/SearchResults/NewsAndEventsSearchResults.vue')
 const ResourcesSearchResults = () =>
   import('@/components/Resources/ResourcesSearchResults.vue')
 
@@ -175,7 +160,6 @@ const searchResultsComponents = {
   sparcInfo: SparcInfoSearchResults,
   sparcPartners: ResourcesSearchResults,
   simulation: DatasetSearchResults,
-  newsAndEvents: NewsAndEventsSearchResults,
 }
 
 const searchTypes = [
@@ -197,11 +181,6 @@ const searchTypes = [
     dataSource: 'contentful'
   },
   {
-    label: 'News & Events',
-    type: process.env.ctf_news_and_events_id,
-    dataSource: 'contentful'
-  },
-  {
     label: 'SPARC Information',
     type: 'sparcInfo',
     filterId: process.env.ctf_filters_project_id,
@@ -219,7 +198,6 @@ import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { facetPropPathMapping, getAlgoliaFacets } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
-import NewsAndEventsFacetMenu from '~/components/FacetMenu/NewsAndEventsFacetMenu.vue'
 import ToolsAndResourcesFacetMenu from '~/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
@@ -235,7 +213,6 @@ export default {
     PageHero,
     DatasetFacetMenu,
     SearchForm,
-    NewsAndEventsFacetMenu,
     ToolsAndResourcesFacetMenu,
     SparcInfoFacetMenu
   },
@@ -508,7 +485,6 @@ export default {
       const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
       var contentType = this.$route.query.type  
-      var newsPublishedLessThanDate, newsPublishedGreaterThanOrEqualToDate, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate, eventTypes = undefined;
       var resourceTypes, developedBySparc = undefined;
       var aboutDetailsTypes = undefined;
       var sortOrder = undefined;
@@ -518,15 +494,6 @@ export default {
         sortOrder = 'fields.title'
         const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.getTags()
         tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`) 
-      }
-      if (this.$route.query.type === process.env.ctf_news_and_events_id) {
-        contentType = this.$refs.newsAndEventsFacetMenu?.getSelectedType();
-        newsPublishedLessThanDate = this.$refs.newsAndEventsFacetMenu?.getPublishedLessThanDate();
-        newsPublishedGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getPublishedGreaterThanOrEqualToDate();
-        eventStartLessThanDate = this.$refs.newsAndEventsFacetMenu?.getEventsLessThanDate();
-        eventStartGreaterThanOrEqualToDate = this.$refs.newsAndEventsFacetMenu?.getEventsGreaterThanOrEqualToDate();
-        sortOrder = this.$refs.newsAndEventsFacetMenu?.getSortOrder();
-        eventTypes = contentType === 'event' ? this.$route.query.selectedEventTypeOptions : undefined;
       }
       if (this.$route.query.type === process.env.ctf_resource_id) {
         resourceTypes = this.$route.query.resourceTypes;
@@ -546,14 +513,9 @@ export default {
             order: sortOrder,
             include: 2,
             'fields.tags[all]': tags,
-            'fields.publishedDate[lt]': newsPublishedLessThanDate,
-            'fields.publishedDate[gte]': newsPublishedGreaterThanOrEqualToDate,
-            'fields.startDate[lt]': eventStartLessThanDate,
-            'fields.startDate[gte]': eventStartGreaterThanOrEqualToDate,
             'fields.resourceType[in]': resourceTypes,
             'fields.developedBySparc' : developedBySparc,
             'fields.type[in]' : aboutDetailsTypes,
-            'fields.eventType[in]': eventTypes
           })
           .then(async response => {
             this.searchData = { ...response }
@@ -708,7 +670,6 @@ export default {
      */
     searchColSpan(viewport) {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
-        this.searchType.type === 'newsAndEvents' || 
         this.searchType.type === 'sparcPartners' ||
         this.searchType.type === 'simulation' ||
         this.searchType.type === 'sparcInfo'
@@ -727,6 +688,9 @@ export default {
 <style scoped lang="scss">
 @import '../../assets/_variables.scss';
 
+.page-data {
+  background-color: #f5f7fa;
+}
 .page-hero {
   padding-bottom: 1.3125em;
 }

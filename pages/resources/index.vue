@@ -33,7 +33,7 @@
           />
         </div>
       </div>
-      <div>
+      <div class="pb-16">
         <h2 class="heading2 mt-32">Contribute</h2>
         <paper
           :text="parseMarkdown(fields.paperText)"
@@ -44,14 +44,6 @@
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-
-.button-container {
-  text-align: center;
-}
-</style>
 
 <script lang="ts">
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
@@ -98,3 +90,12 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.resources {
+  background-color: $background;
+}
+.button-container {
+  text-align: center;
+}
+</style>

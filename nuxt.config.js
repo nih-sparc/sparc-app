@@ -50,6 +50,7 @@ export default {
     osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
+    ctf_community_spotlight_item_id: 'communitySpotlight',
     ctf_news_and_events_id: 'newsAndEvents',
     ctf_resource_id: 'sparcPartners',
     ctf_resource_hero_id: '3ImGx7UyDXPwM3oTag06nt',

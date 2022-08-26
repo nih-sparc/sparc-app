@@ -7,6 +7,7 @@
     <search-controls-contentful
       placeholder="Search help topics"
       path="/help"
+      searchButtonClass="secondary"
     />
 
     <img

@@ -130,6 +130,7 @@ export default {
 .flex {
   display: flex;
   justify-content: space-around;
+  max-width: fit-content;
 }
 
 .margin-y {

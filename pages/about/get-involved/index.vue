@@ -1,21 +1,21 @@
 <template>
-  <div>
+    <div class="page-data pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="type" />
     <page-hero>
       <h1>{{ title }}</h1>
       <p>{{ summary }}</p>
     </page-hero>
     <div class="container">
-      <div class="subpage">
+      <div class="subpage px-32 py-16">
         <div v-html="parseMarkdown(description)" />
         <hr />
-        <p class="share-text">
+        <div class="body1">
           SHARE
-        </p>
+        </div>
         <share-links />
       </div>
-      <div v-if="learnMore" class="subpage">
-        <h1 class="heading1 mb-16">Learn More</h1>
+      <div v-if="learnMore" class="subpage px-32 mb-0">
+        <div class="heading1 mb-16">Learn More</div>
         <learn-more-card
           v-for="(item, index) in learnMore"
           :key="`${item}-${index}`"
@@ -103,26 +103,18 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/_variables.scss';
-.subpage {
-  margin: 1em 0;
-  padding: 1em;
-  border: 1px solid #dcdfe6;
-  background: white;
-  @media (min-width: 48em) {
-    margin: 2.5em 0;
-    padding: 1em 2em;
-  }
-  hr {
-    opacity: 0.3;
-  }
-  h1 {
-    font-weight: 300;
-  }
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
+}
+.heading1 {
+  font-weight: 300;
 }
 
-.share-text {
-  font-weight: 500;
-  margin-bottom: 0;
+hr {
+  opacity: 0.3;
+}
+h1 {
+  font-weight: 300;
 }
 </style>

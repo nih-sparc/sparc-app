@@ -67,7 +67,7 @@ export default {
 .learn-more-card {
   h3 {
     font-size: 24px;
-    font-weight: 500;
+    font-weight: 300;
     line-height: 1.2;
     margin-bottom: .5rem;
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="story-result">
-    <div class="banner">
+    <div>
       <div class="banner-wrapper">
         <client-only
           v-if="story.fields.youtubeUrl"
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="story-text">
-      <h3>
+      <div class="link1 mb-8">
         <nuxt-link
           v-if="story.fields.storyRoute"
           :to="{
@@ -43,31 +43,23 @@
         >
           {{ story.fields.storyTitle }}
         </nuxt-link>
-        <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
-          {{ story.fields.storyTitle }}
+        <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl" target="_blank">
+          {{ story.fields.storyTitle }}<svg-icon name="icon-open" height="30" width="30" />
         </a>
-      </h3>
-      <br />
+      </div>
       <div class="body1">
         {{ story.fields.summary }}
       </div>
-      <br />
-      <nuxt-link
-        v-if="story.fields.storyRoute"
-        :to="{
-          name: 'news-and-events-community-spotlight-success-stories-id',
-          params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
-        }"
-      >
-        <el-button class="secondary">
-          Learn More
-        </el-button>
-      </nuxt-link>
-      <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl">
-        <el-button class="secondary">
-          Learn More
-        </el-button>
-      </a>
+      <table v-if="story.spotlightType" class="property-table mt-8">
+        <tr>
+          <td class="property-name-column">
+            Spotlight Type
+          </td>
+          <td>
+            {{ story.spotlightType }}
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -80,7 +72,7 @@ export default {
     story: {
       type: Object,
       default: () => {}
-    }
+    },
   },
   computed: {
     embeddedVideoSrc: function() {
@@ -91,16 +83,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
 
 .banner-wrapper {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 */
   height: 0;
-  min-width: 25.68rem;
-  @media (max-width: 30em) {
-    min-width: 14rem !important;
-  }
+  width: 12rem;
 }
 
 .banner-wrapper .banner-asset {
@@ -108,14 +96,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-}
-
-.banner {
-  flex: 1;
-  @media (min-width: 48rem) {
-    margin-right: 2rem;
-  }
+  height: fit-content;
 }
 
 .story-result {
@@ -132,5 +113,27 @@ export default {
   @media (max-width: 48em) {
     margin: 1rem 0 0;
   }
+}
+
+.el-table {
+  width: 100%;
+}
+.property-table {
+  td {
+    background-color: transparent !important;
+    padding: 0.25rem 0 0 0;
+    border: none;
+    cursor: default;
+  }
+  border: none;
+  padding: 0;
+}
+// The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
+table:not([class^='el-table__'])::before {
+  display: none;
+}
+.property-name-column {
+  width: 180px;
+  font-weight: bold;
 }
 </style>

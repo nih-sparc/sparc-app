@@ -1,15 +1,11 @@
 <template>
-  <div class="events-page">
+  <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero>
       <h1>{{ page.fields.page_title }}</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(page.fields.heroCopy)" />
-      <search-controls-contentful
-        placeholder="Search news and events"
-        path="/news-and-events"
-      />
       <img
         v-if="page.fields.heroImage"
         slot="image"
@@ -18,7 +14,7 @@
       />
     </page-hero>
 
-    <div class="mt-48">
+    <div class="pt-32 pb-16">
       <div class="container">
         <div v-if="Object.keys(featuredEvent).length" class="mb-48">
           <h2>Featured Event</h2>
@@ -27,7 +23,7 @@
 
         <el-row :gutter="32">
           <el-col :sm="12">
-            <h2>Latest News</h2>
+            <div class="heading1 mb-16">Latest News</div>
             <div class="subpage news-wrap">
               <div>
                 <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
@@ -44,14 +40,14 @@
             </div>
           </el-col>
           <el-col :sm="12">
-            <h2>Events</h2>
-            <tab-nav
+            <div class="heading1 mb-16">Events</div>
+            <content-tab-card
+              class="tabs p-32"
               :tabs="eventsTabs"
-              :active-tab="activeTab"
-              @set-active-tab="activeTab = $event"
-            />
-            <div class="events-wrap">
-              <template v-if="activeTab === 'upcoming'">
+              :active-tab-id="activeTabId"
+              @tab-changed="eventsTabChanged"
+            >
+              <template v-if="activeTabId === 'upcoming'">
                 <div class="upcoming-events">
                   <event-card
                     v-for="event in upcomingEvents.items"
@@ -60,19 +56,9 @@
                   />
                 </div>
 
-                <div class="show-all-upcoming-events">
-                  <nuxt-link
-                    class="show-all-upcoming-events__btn"
-                    :to="{
-                      name: 'news-and-events-events'
-                    }"
-                  >
-                    Show All ({{ upcomingEvents.total }}) Events
-                  </nuxt-link>
-                </div>
               </template>
 
-              <template v-if="activeTab === 'past'">
+              <template v-if="activeTabId === 'past'">
                 <div class="past-events">
                   <event-card
                     v-for="event in pastEvents.items"
@@ -80,42 +66,64 @@
                     :event="event"
                   />
                 </div>
-
-                <div class="show-all-upcoming-events">
-                  <nuxt-link
-                    class="show-all-upcoming-events__btn"
-                    :to="{
-                      name: 'news-and-events-events',
-                      query: {
-                        tab: 'past'
-                      }
-                    }"
-                  >
-                    Show All ({{ pastEvents.total }}) Past Events
-                  </nuxt-link>
-                </div>
               </template>
-            </div>
+              <div class="mt-16">
+                <nuxt-link
+                  class="btn-load-more"
+                  :to="{
+                    name: 'news-and-events-events',
+                  }"
+                >
+                  View All Events >
+                </nuxt-link>
+              </div>
+            </content-tab-card>
           </el-col>
         </el-row>
 
-        <h2>Community Spotlight</h2>
-        <community-spotlight-listings :stories="shownStories" :bottom-link="true" />
+        <div>
+          <div class="heading1 my-16">Community Spotlight</div>
+          <community-spotlight-listings :stories="stories.items" :bottom-link="true" />
+        </div>
 
-        <h2>Stay Connected</h2>
-        <div class="subpage">
+        <div class="heading1 mt-32 mb-16">Stay Connected</div>
+        <div class="subpage py-16">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
-              <h3 class="mb-24">Sign up for the SPARC Newsletter</h3>
-              <p class="mb-40">Keep up to date with all the latest news and events from the SPARC Portal.</p>
+              <div class="heading2">Sign up for the SPARC Newsletter</div>
+              <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
               <newsletter-form />
-              <div class="newsletter-archive">
+              <div class="newsletter-archive mt-16">
                 <style type="text/css">
-                  .campaign { margin-top: .5em; }
+                  .campaign { margin-top: .5rem; }
                 </style>
-                <h3 class="mb-24">View previous Newsletters</h3>
+                <div class="heading2 mt-24">Current Newsletter</div>
                 <div id="newsletter-archive" />
-                <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">View all Newsletters</a>
+                <a class="mt-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">
+                  View all Newsletters<svg-icon icon="icon-open" height="20" width="20" />
+                </a>
+              </div>
+              <div class="heading2 mt-24">Get Involved</div>
+              <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your science story, news, or event.</div>
+              <div class="get-involved-buttons-container">
+                <el-button class="get-involved-button secondary">
+                  <nuxt-link
+                    :to="{
+                      name: 'news-and-events-submit',
+                    }"
+                  >
+                    Share news or events
+                  </nuxt-link>
+                </el-button>
+                <el-button class="get-involved-button secondary mt-8">
+                  <nuxt-link
+                    :to="{
+                      name: 'news-and-events-community-spotlight-submit',
+                    }"
+                  >
+                    Submit a community spotlight idea
+                  </nuxt-link>
+                </el-button>
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
@@ -138,6 +146,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import Vue from 'vue';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue';
 import TabNav from '@/components/TabNav/TabNav.vue';
@@ -148,16 +157,15 @@ import PageHero from '@/components/PageHero/PageHero.vue';
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
+import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 
 import MarkedMixin from '@/mixins/marked'
 
 import createClient from '@/plugins/contentful.js';
 
-import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection, StoryCollection } from './model';
-import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
+import { Computed, Data, Methods, fetchData, fetchNews, PageEntry, NewsAndEventsComponent, NewsCollection, EventsCollection, CommunitySpotlightItemsCollection } from './model';
 
 const client = createClient()
-const MAX_PAST_EVENTS = 8
 
 export default Vue.extend<Data, Methods, Computed, never>({
   name: 'NewsAndEventPage',
@@ -208,22 +216,22 @@ export default Vue.extend<Data, Methods, Computed, never>({
           label: 'Home'
         }
       ],
-      activeTab: 'upcoming',
+      activeTabId: 'upcoming',
       eventsTabs: [
         {
           label: 'Upcoming',
-          type: 'upcoming'
+          id: 'upcoming'
         },
         {
           label: 'Past',
-          type: 'past'
+          id: 'past'
         }
       ],
       upcomingEvents: {} as EventsCollection,
       pastEvents: {} as EventsCollection,
       news: {} as NewsCollection,
       page: {} as PageEntry,
-      stories: {} as StoryCollection
+      stories: {} as CommunitySpotlightItemsCollection
     }
   },
 
@@ -235,13 +243,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
     featuredEvent: function() {
       return this.page.fields.featuredEvent || {}
     },
-    /**
-     * Filter to only show two stories
-     * @returns {Array}
-     */
-    shownStories: function() {
-      return this.stories.items.slice(0,2)
-    }
   },
 
   methods: {
@@ -249,8 +250,25 @@ export default Vue.extend<Data, Methods, Computed, never>({
      * Get all news
      */
     getAllNews: async function() {
-      const news = await fetchNews(client, this.$route.query.search as string, this.news.total, 2)
+      const news = await fetchNews(client, this.$route.query.search as string, undefined, undefined, undefined, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
+    },
+    eventsTabChanged(newTab) {
+      this.activeTabId = newTab.id
+    },
+    // Calculate the eventYear param based off the tab being shown
+    eventYear() {
+      if (this.activeTabId === 'upcoming')
+      {
+
+      }
+      else if (this.activeTabId === 'past') {
+
+      }
+      return undefined
+    },
+    currentMonth() {
+      return new Date().getMonth()
     }
   },
 
@@ -261,27 +279,15 @@ export default Vue.extend<Data, Methods, Computed, never>({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-
-h2 {
-  font-size: 1.5rem;
-  line-height: 2.25rem;
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
 }
-
-h3 {
-  color: $navy;
-  font-size: 1.375rem;
-  line-height: 2rem;
+.heading1 {
+  font-weight: 300;
 }
 .subpage {
-  @media (min-width: 48em) {
-    margin: 3rem 0;
-  }
-  &.news-wrap {
-    @media (min-width: 48em) {
-      margin: 2rem 0 0;
-    }
-  }
+  margin: 0;
 }
 .event-card {
   margin-bottom: 2em;
@@ -293,50 +299,16 @@ h3 {
   padding: 0;
 }
 .upcoming-events, .past-events {
+  justify-content: space-between;
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -1em;
 }
 .upcoming-event {
-  margin: 0 1rem 1rem;
+  margin: 0;
   width: 100%;
   @media (min-width: 48em) {
-    width: calc(50% - 4.25em); // Account for the margins and the border
+    width: calc(50% - 2.4rem); // Account for the margins and the border
   }
-}
-.show-all-upcoming-events {
-  text-align: center;
-  &__btn {
-    align-items: center;
-    color: $navy;
-    display: inline-flex;
-    font-weight: 500;
-    text-decoration: none;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
-  }
-  .svg-icon {
-    margin-left: 0.5rem;
-  }
-}
-
-.show-more-past-events {
-  text-align: center;
-  &__btn {
-    display: inline-flex;
-    border: 1px solid $dark-gray;
-    border-radius: 5px;
-    text-decoration: none;
-    padding: 8px 10px;
-    font-size: 11pt;
-    font-weight: bold;
-    color: $dark-gray;
-  }
-}
-.events-wrap {
-  margin-bottom: 2.625em;
 }
 .news-list-item {
   border-bottom: 2px solid #d8d8d8;
@@ -353,7 +325,7 @@ h3 {
     margin-bottom: 0;
   }
   p {
-    color: $navy
+    color: $darkBlue
   }
 }
 .twitter-wrap {
@@ -365,7 +337,7 @@ h3 {
 .btn-load-more {
   background: none;
   border: none;
-  color: $navy;
+  color: $darkBlue;
   cursor: pointer;
   display: block;
   font-size: 1rem;
@@ -378,10 +350,28 @@ h3 {
 }
 
 .newsletter-archive {
-  margin-top: 3em;
   & > a {
     display: inline-block;
-    margin-top: 1em;
   }
+}
+::v-deep .el-button {
+  a {
+    text-decoration: none !important;
+  }
+}
+
+.get-involved-buttons-container {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.get-involved-button {
+  width: 100%;
+  margin-left: 0 !important;
+}
+
+::v-deep .tabs {
+  padding: 0;
 }
 </style>

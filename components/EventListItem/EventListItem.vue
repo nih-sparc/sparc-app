@@ -5,22 +5,50 @@
         <event-banner-image :src="bannerUrl" />
       </div>
       <div class="event-content-wrap">
-        <h3>
-          <a :href="event.fields.url" target="_blank">
-            {{ event.fields.title }}
-          </a>
-        </h3>
-        <div class="subtitle">
-          <div>{{ event.fields.location }}</div>
-        </div>
-        <div class="details">
-          <div class="detail">
-            {{ event.fields.summary }}
+        <nuxt-link
+          class="link1"
+          v-if="item.fields.requiresADetailsPage"
+          :to="{
+            name: 'news-and-events-events-id',
+            params: { id: item.sys.id }
+          }"
+        >
+          {{ item.fields.title }}
+        </nuxt-link>
+        <a v-else class="link1" :href="item.fields.url" :target="isInternalLink('item.fields.url') ? '_self' : '_blank'">
+          {{ item.fields.title }}
+          <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
+        </a>
+        <div>
+          <div class="body1 my-8">
+            {{ item.fields.summary }}
           </div>
-          <div class="detail eventinfo">
-            {{ event.fields.eventType }} - SPARC Attendees:
-            {{ event.fields.sparcAttendees }}
-          </div>
+          <table class="property-table">
+            <tr>
+              <td class="property-name-column">
+                Event Type
+              </td>
+              <td>
+                {{ item.fields.eventType }}
+              </td>
+            </tr>
+            <tr>
+              <td class="property-name-column">
+                Event Date(s)
+              </td>
+              <td>
+                {{ dateRange }}
+              </td>
+            </tr>
+            <tr>
+              <td class="property-name-column">
+                Location
+              </td>
+              <td>
+                {{ item.fields.location }}
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
@@ -28,10 +56,11 @@
 </template>
 
 <script>
-import { format, parseISO } from 'date-fns'
-import { pathOr } from 'ramda'
+import { isEmpty, pathOr } from 'ramda'
 import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
 import FormatDate from '@/mixins/format-date'
+
+import { isInternalLink } from '@/mixins/marked/index'
 
 export default {
   name: 'EventCard',
@@ -40,22 +69,9 @@ export default {
   },
   mixins: [FormatDate],
   props: {
-    event: {
+    item: {
       type: Object,
-      default: () => {
-        return {
-          banner: '',
-          description: '',
-          name: '',
-          image: {
-            fields: {
-              file: {
-                url: ''
-              }
-            }
-          }
-        }
-      }
+      default: () => {}
     }
   },
   computed: {
@@ -67,7 +83,7 @@ export default {
       return pathOr(
         '',
         ['fields', 'image', 'fields', 'file', 'url'],
-        this.event
+        this.item
       )
     },
 
@@ -76,7 +92,7 @@ export default {
      * @returns {String}
      */
     startDate: function() {
-      return format(parseISO(this.event.fields.startDate), 'MM/dd/yyyy')
+      return this.formatDate(this.item.fields.startDate || '')
     },
 
     /**
@@ -84,56 +100,45 @@ export default {
      * @returns {String}
      */
     endDate: function() {
-      return format(parseISO(this.event.fields.endDate), 'MM/dd/yyyy')
-    }
+      return this.formatDate(this.item.fields.endDate || '')
+    },
+    dateRange: function() {
+      return this.startDate == this.endDate || isEmpty(this.endDate) ? this.startDate : `${this.startDate} - ${this.endDate}`
+    },
   },
-  methods: {}
+  methods: {
+    isInternalLink,
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
+.el-table {
+  width: 100%;
+}
+.property-table {
+  td {
+    background-color: transparent !important;
+    padding: 0.25rem 0 0 0;
+    border: none;
+    cursor: default;
+  }
+  border: none;
+  padding: 0;
+}
+// The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
+table:not([class^='el-table__'])::before {
+  display: none;
+}
+.property-name-column {
+  width: 180px;
+  font-weight: bold;
+}
 .event-list-item {
   border-radius: 3px 3px 0 0;
   background-color: white;
   margin-bottom: 5px;
-}
-h3 {
-  color: $vagus;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.2;
-  word-break: break-word;
-}
-.subtitle {
-  color: #000;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 24px;
-  margin-bottom: 16px;
-}
-.details {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  .detail {
-    align-items: center;
-    display: flex;
-    padding-right: 24px;
-    color: #404554;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0px;
-    line-height: 16px;
-    margin-bottom: 8px;
-    .svg-icon {
-      margin-right: 8px;
-    }
-    .eventinfo {
-      margin-top: 8px;
-    }
-  }
 }
 .event-content {
   display: flex;
@@ -150,26 +155,6 @@ h3 {
 
   .event-content-wrap {
     margin-left: 16px;
-  }
-}
-.meta {
-  border-top: solid 1px $pudendal;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 8px 16px;
-  .author {
-    font-size: 12px;
-    line-height: 14px;
-  }
-  .tags {
-    font-size: 12px;
-    line-height: 14px;
-  }
-}
-a {
-  &:focus {
-    color: $vagus;
   }
 }
 </style>
