@@ -11,7 +11,7 @@
     </div>
     <nuxt-link
       v-if="bottomLink"
-      class="link1 mt-16"
+      class="btn-load-more mt-16"
       :to="{
         name: linkLocation
       }"
@@ -77,12 +77,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .seperator-path {
   width: 100%;
   height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
+}
+
+.btn-load-more {
+  background: none;
+  border: none;
+  color: $darkBlue;
+  cursor: pointer;
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  &:hover,
+  &:active {
+    text-decoration: underline;
+  }
 }
 </style>

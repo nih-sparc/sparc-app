@@ -188,6 +188,7 @@ export interface Computed {
 }
 export interface Methods {
   getAllNews: (this: NewsAndEventsComponent) => void;
+  eventsTabChanged: (newTab: { id: string }) => void;
 }
 export interface NewsData {
   breadcrumb: Breadcrumb[]

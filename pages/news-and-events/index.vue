@@ -41,13 +41,13 @@
           </el-col>
           <el-col :sm="12">
             <div class="heading1 mb-16">Events</div>
-            <tab-nav
+            <content-tab-card
+              class="tabs p-32"
               :tabs="eventsTabs"
-              :active-tab="activeTab"
-              @set-active-tab="activeTab = $event"
-            />
-            <div>
-              <template v-if="activeTab === 'upcoming'">
+              :active-tab-id="activeTabId"
+              @tab-changed="eventsTabChanged"
+            >
+              <template v-if="activeTabId === 'upcoming'">
                 <div class="upcoming-events">
                   <event-card
                     v-for="event in upcomingEvents.items"
@@ -56,19 +56,9 @@
                   />
                 </div>
 
-                <div class="show-all-upcoming-events">
-                  <nuxt-link
-                    class="show-all-upcoming-events__btn"
-                    :to="{
-                      name: 'news-and-events-events'
-                    }"
-                  >
-                    Show All ({{ upcomingEvents.total }}) Events
-                  </nuxt-link>
-                </div>
               </template>
 
-              <template v-if="activeTab === 'past'">
+              <template v-if="activeTabId === 'past'">
                 <div class="past-events">
                   <event-card
                     v-for="event in pastEvents.items"
@@ -76,22 +66,18 @@
                     :event="event"
                   />
                 </div>
-
-                <div class="show-all-upcoming-events">
-                  <nuxt-link
-                    class="show-all-upcoming-events__btn"
-                    :to="{
-                      name: 'news-and-events-events',
-                      query: {
-                        tab: 'past'
-                      }
-                    }"
-                  >
-                    Show All ({{ pastEvents.total }}) Past Events
-                  </nuxt-link>
-                </div>
               </template>
-            </div>
+              <div class="mt-16">
+                <nuxt-link
+                  class="btn-load-more"
+                  :to="{
+                    name: 'news-and-events-events',
+                  }"
+                >
+                  View All Events >
+                </nuxt-link>
+              </div>
+            </content-tab-card>
           </el-col>
         </el-row>
 
@@ -160,6 +146,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import Vue from 'vue';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue';
 import TabNav from '@/components/TabNav/TabNav.vue';
@@ -229,15 +216,15 @@ export default Vue.extend<Data, Methods, Computed, never>({
           label: 'Home'
         }
       ],
-      activeTab: 'upcoming',
+      activeTabId: 'upcoming',
       eventsTabs: [
         {
           label: 'Upcoming',
-          type: 'upcoming'
+          id: 'upcoming'
         },
         {
           label: 'Past',
-          type: 'past'
+          id: 'past'
         }
       ],
       upcomingEvents: {} as EventsCollection,
@@ -265,6 +252,23 @@ export default Vue.extend<Data, Methods, Computed, never>({
     getAllNews: async function() {
       const news = await fetchNews(client, this.$route.query.search as string, undefined, undefined, undefined, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
+    },
+    eventsTabChanged(newTab) {
+      this.activeTabId = newTab.id
+    },
+    // Calculate the eventYear param based off the tab being shown
+    eventYear() {
+      if (this.activeTabId === 'upcoming')
+      {
+
+      }
+      else if (this.activeTabId === 'past') {
+
+      }
+      return undefined
+    },
+    currentMonth() {
+      return new Date().getMonth()
     }
   },
 
@@ -295,46 +299,15 @@ export default Vue.extend<Data, Methods, Computed, never>({
   padding: 0;
 }
 .upcoming-events, .past-events {
+  justify-content: space-between;
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -1em;
 }
 .upcoming-event {
-  margin: 0 1rem 1rem;
+  margin: 0;
   width: 100%;
   @media (min-width: 48em) {
-    width: calc(50% - 4.25em); // Account for the margins and the border
-  }
-}
-.show-all-upcoming-events {
-  text-align: center;
-  &__btn {
-    align-items: center;
-    color: $darkBlue;
-    display: inline-flex;
-    font-weight: 500;
-    text-decoration: none;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
-  }
-  .svg-icon {
-    margin-left: 0.5rem;
-  }
-}
-
-.show-more-past-events {
-  text-align: center;
-  &__btn {
-    display: inline-flex;
-    border: 1px solid $lineColor1;
-    border-radius: 5px;
-    text-decoration: none;
-    padding: 8px 10px;
-    font-size: 11pt;
-    font-weight: bold;
-    color: $lineColor1;
+    width: calc(50% - 2.4rem); // Account for the margins and the border
   }
 }
 .news-list-item {
@@ -396,5 +369,9 @@ export default Vue.extend<Data, Methods, Computed, never>({
 .get-involved-button {
   width: 100%;
   margin-left: 0 !important;
+}
+
+::v-deep .tabs {
+  padding: 0;
 }
 </style>
