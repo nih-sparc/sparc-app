@@ -57,13 +57,13 @@
         v-if="datasetInfo.embargo"
         placement="left-center"
       >
-        <div v-if="embargoed && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+        <div v-if="embargoed && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
           This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
         </div>
         <el-button
           class="secondary"
           slot="item"
-          :disabled="embargoed && datasetInfo.embargoAccess !== EMBARGO_ACCESS.GRANTED"
+          :disabled="embargoed && embargoAccess !== EMBARGO_ACCESS.GRANTED"
            @click.prevent="
             downloadItem({
               url: downloadMetadataUrl,
@@ -151,6 +151,9 @@ export default {
     },
     EMBARGO_ACCESS() {
       return EMBARGO_ACCESS
+    },
+    embargoAccess() {
+      return propOr(null, 'embargoAccess', this.datasetInfo)
     },
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
