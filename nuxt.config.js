@@ -108,7 +108,9 @@ export default {
     AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
     SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || 'false',
     LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
-    ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1'
+    ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
+    google_analytics_ga4: process.env.GOOGLE_ANALYTICS_GA4,
+    google_analytics_ua: process.env.GOOGLE_ANALYTICS_UA,
   },
 
   serverMiddleware: [
@@ -152,6 +154,7 @@ export default {
     '@/plugins/contentful',
     '@/plugins/amplify',
     '@/plugins/documentation-hub-redirects',
+    "@/plugins/vue-gtag.client.js",
     { src: '@/plugins/postscribe', mode: 'client' },
     { src: '@/plugins/system-design-components', mode: 'client' },
     { src: '@/plugins/tsviewer', mode: 'client' }
@@ -164,7 +167,7 @@ export default {
     [
       '@nuxtjs/google-analytics',
       {
-        id: 'UA-143804703-1'
+        id: process.env.GOOGLE_ANALYTICS_UA
       }
     ]
   ],
