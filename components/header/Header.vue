@@ -250,14 +250,19 @@ export default {
           label: 'Resources'
         },
         {
-          key: 'news-and-events',
-          value: 'news-and-events',
-          label: 'News and Events'
+          key: 'news-and-events-news',
+          value: 'news-and-events-news',
+          label: 'News'
         },
         {
-          key: 'help',
-          value: 'help',
-          label: 'Help'
+          key: 'news-and-events-events',
+          value: 'news-and-events-events',
+          label: 'Events'
+        },
+        {
+          key: 'news-and-events-community-spotlight',
+          value: 'news-and-events-community-spotlight',
+          label: 'Community Spotlight'
         }
       ]
     }
