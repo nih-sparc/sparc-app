@@ -87,7 +87,6 @@ export default {
 
   data() {
     return {
-      eventTypeOptions,
       eventTypeOptions: eventTypeOptions,
       selectedEventTypeOptions: [],
       eventDateOption: 'show all',

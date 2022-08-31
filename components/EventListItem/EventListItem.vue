@@ -146,11 +146,12 @@ table:not([class^='el-table__'])::before {
   img {
     display: block;
     object-fit: cover;
-    width: 86px;
-    height: 86px;
+    width: 8rem;
+    height: 8rem;
   }
 
   .image {
+    position: relative;
     margin: 2px;
   }
 

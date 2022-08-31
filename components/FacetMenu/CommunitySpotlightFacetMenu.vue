@@ -1,19 +1,28 @@
 <template>
   <div>
     <facet-menu
-      class="community-spotlight-facet-menu"
+      class="remove-bottom-border"
       :selected-facets="selectedFacet"
       :visible-facet-categories="visibleCategories"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
     />
     <dropdown-multiselect
+      class="remove-bottom-border"
       ref="spotlightTypeCategory"
       collapse-by-default
-      :category="spotlightTypeOptions"
+      :category="spotlightTypes"
       enabled
-      :default-checked-ids="selectedSpotlightTypeOptions"
-      @selection-change="selectedSpotlightTypeOptionsChanged"
+      :default-checked-ids="selectedSpotlightTypes"
+      @selection-change="selectedSpotlightTypesChanged"
+    />
+    <dropdown-multiselect
+      ref="anatomicalStructuresCategory"
+      collapse-by-default
+      :category="anatomicalStructures"
+      enabled
+      :default-checked-ids="selectedAnatomicalStructures"
+      @selection-change="selectedAnatomicalStructuresChanged"
     />
   </div>
 </template>
@@ -23,9 +32,9 @@ import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
-const spotlightTypeOptions = {
+const SPOTLIGHT_TYPE_OPTIONS = {
   label: 'Spotlight Type',
-  id: 'spotlight type',
+  id: 'spotlightType',
   data: [
     {
       label: 'Fireside Chat',
@@ -38,7 +47,26 @@ const spotlightTypeOptions = {
   ]
 }
 
-const visibleCategories = ['spotlightType']
+const ANATOMICAL_STRUCTURE_OPTIONS = {
+  label: 'Anatomical Structure',
+  id: 'spotlightAnatomicalStructure',
+  data: [
+    {
+      label: 'Bladder',
+      id: 'Bladder',
+    },
+    {
+      label: 'Nerves & Ganglia',
+      id: 'Nerves & Ganglia',
+    },
+    {
+      label: 'Stomach',
+      id: 'Stomach',
+    },
+  ]
+}
+
+const visibleCategories = ['spotlightType', 'spotlightAnatomicalStructure']
 
 export default {
   name: 'CommunitySpotlightFacetMenu',
@@ -50,9 +78,10 @@ export default {
 
   data() {
     return {
-      spotlightTypeOptions,
-      spotlightTypeOptions: spotlightTypeOptions,
-      selectedSpotlightTypeOptions: [],
+      spotlightTypes: SPOTLIGHT_TYPE_OPTIONS,
+      anatomicalStructures: ANATOMICAL_STRUCTURE_OPTIONS,
+      selectedAnatomicalStructures: [],
+      selectedSpotlightTypes: [],
       visibleCategories: visibleCategories,
     }
   },
@@ -60,12 +89,21 @@ export default {
   computed: {
     selectedFacet: function() {
       let facets = []
-      if (this.selectedSpotlightTypeOptions !== []) {
-        this.selectedSpotlightTypeOptions.forEach(selectedOption => {
+      if (this.selectedAnatomicalStructures !== []) {
+        this.selectedAnatomicalStructures.forEach(selectedOption => {
           facets.push({
             label: `${selectedOption.label}`,
             id: `${selectedOption.id}`,
-            facetPropPath: 'spotlightType'
+            facetPropPath: this.anatomicalStructures.id
+          })
+        })
+      }
+      if (this.selectedSpotlightTypes !== []) {
+        this.selectedSpotlightTypes.forEach(selectedOption => {
+          facets.push({
+            label: `${selectedOption.label}`,
+            id: `${selectedOption.id}`,
+            facetPropPath: this.spotlightTypes.id
           })
         })
       }
@@ -74,17 +112,31 @@ export default {
   },
 
   mounted() {
-    if (this.$route.query.selectedSpotlightTypeOptions) {
-      this.selectedSpotlightTypeOptions = this.$route.query.selectedSpotlightTypeOptions.split(",")
+    if (this.$route.query.selectedAnatomicalStructures) {
+      this.selectedAnatomicalStructures = this.$route.query.selectedAnatomicalStructures.split(",")
+    }
+    if (this.$route.query.selectedSpotlightTypes) {
+      this.selectedSpotlightTypes = this.$route.query.selectedSpotlightTypes.split(",")
     }
   },
 
   methods: {
-    selectedSpotlightTypeOptionsChanged(newValue) {
-      this.selectedSpotlightTypeOptions = newValue.checkedNodes
+    selectedAnatomicalStructuresChanged(newValue) {
+      this.selectedAnatomicalStructures = newValue.checkedNodes
       this.$router.replace(
         {
-          query: { ...this.$route.query, selectedSpotlightTypeOptions: this.selectedSpotlightTypeOptions.length === 0 ? undefined : pluck('id', this.selectedSpotlightTypeOptions).toString() }
+          query: { ...this.$route.query, selectedAnatomicalStructures: this.selectedAnatomicalStructures.length === 0 ? undefined : pluck('id', this.selectedAnatomicalStructures).toString() }
+        },
+        () => {
+          this.$emit('community-spotlight-selections-changed')
+        }
+      )
+    },
+    selectedSpotlightTypesChanged(newValue) {
+      this.selectedSpotlightTypes = newValue.checkedNodes
+      this.$router.replace(
+        {
+          query: { ...this.$route.query, selectedSpotlightTypes: this.selectedSpotlightTypes.length === 0 ? undefined : pluck('id', this.selectedSpotlightTypes).toString() }
         },
         () => {
           this.$emit('community-spotlight-selections-changed')
@@ -96,7 +148,8 @@ export default {
         {
           query: {
             ...this.$route.query,
-            selectedSpotlightTypeOptions: undefined
+            selectedSpotlightTypes: undefined,
+            selectedAnatomicalStructures: undefined
           }
         },
         () => {
@@ -106,6 +159,7 @@ export default {
       )
     },
     deselectFacet(facetId) {
+      this.$refs.anatomicalStructuresCategory.uncheck(facetId)
       this.$refs.spotlightTypeCategory.uncheck(facetId)
     }
   }
@@ -125,7 +179,7 @@ hr {
   margin: 0;
 }
 
-.community-spotlight-facet-menu {
+.remove-bottom-border {
   // hacky fix to address placing the design system drop down for the event type category outside the facet menu since it handles its own borders
   border-bottom: none;
 }

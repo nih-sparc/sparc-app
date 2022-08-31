@@ -59,6 +59,14 @@
             {{ story.spotlightType }}
           </td>
         </tr>
+        <tr>
+          <td class="property-name-column">
+            Anatomical Structure
+          </td>
+          <td>
+            {{ anatomicalStructureText }}
+          </td>
+        </tr>
       </table>
     </div>
   </div>
@@ -77,6 +85,9 @@ export default {
   computed: {
     embeddedVideoSrc: function() {
       return youtubeEmbeddedSource(this.story.fields.youtubeUrl)
+    },
+    anatomicalStructureText: function() {
+      return this.story.anatomicalStructure ? this.story.anatomicalStructure.join(', ') : 'n/a'
     }
   }
 }
@@ -127,6 +138,7 @@ export default {
   }
   border: none;
   padding: 0;
+  padding-bottom: 1rem;
 }
 // The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
 table:not([class^='el-table__'])::before {

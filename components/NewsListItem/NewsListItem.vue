@@ -1,7 +1,10 @@
 <template>
   <div class="news-list-item">
     <div v-if="item.fields.image" class="image">
-      <event-banner-image :src="item.fields.image.fields.file.url" />
+      <event-banner-image :src="item.fields.image.fields.file.url"/>
+      <sparc-pill class="sparc-pill" v-if="fundingOpportunity">
+        Funding
+      </sparc-pill>
     </div>
     <div class="news-content-wrap">
       <h3>
@@ -32,8 +35,10 @@
 </template>
 
 <script>
+import { pathOr } from 'ramda'
 import FormatDate from '@/mixins/format-date'
 import EventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
+import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
 import { isInternalLink } from '@/mixins/marked/index'
 
@@ -41,7 +46,8 @@ export default {
   name: 'NewsListItem',
 
   components: {
-    EventBannerImage
+    EventBannerImage,
+    SparcPill
   },
 
   mixins: [FormatDate],
@@ -50,7 +56,7 @@ export default {
     item: {
       type: Object,
       default: () => {}
-    }
+    },
   },
 
   computed: {
@@ -60,6 +66,10 @@ export default {
      */
     publishedDate: function() {
       return this.formatDate(this.item.fields.publishedDate || '')
+    },
+    fundingOpportunity: function() {
+      const subjectTag = pathOr([], ['fields', 'subject'], this.item)
+      return subjectTag == 'Funding Opportunity'
     }
   },
 
@@ -90,16 +100,22 @@ p {
   img {
     display: block;
     object-fit: cover;
-    width: 86px;
-    height: 86px;
+    width: 8rem;
+    height: 8rem;
   }
 
   .image {
+    position: relative;
     margin: 2px;
   }
 
   .news-content-wrap {
     margin-left: 16px;
   }
+}
+.sparc-pill {
+  position: absolute;
+  right: .25rem;
+  top: .25rem;
 }
 </style>

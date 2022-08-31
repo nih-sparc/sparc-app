@@ -181,7 +181,7 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
   // multiple content types while applying a field filter or order in contentful api as outlined here:
   // https://www.contentfulcommunity.com/t/how-to-query-on-multiple-content-types/473
   async asyncData({ route }) {
-    const communitySpotlightItems = await fetchCommunitySpotlightItems(client, route.query.search, undefined, undefined, 10, 0)
+    const communitySpotlightItems = await fetchCommunitySpotlightItems(client, route.query.search, undefined, undefined, undefined, 10, 0)
 
     return {
       communitySpotlightItems
@@ -213,7 +213,7 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
       handler: async function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          this.communitySpotlightItems = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.sortOrder, 10, 0)
+          this.communitySpotlightItems = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.anatomicalStructures, this.sortOrder, 10, 0)
         })
       },
       immediate: true
@@ -221,7 +221,10 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
   },
   computed: {
     spotlightTypes: function() {
-      return this.$route.query.selectedSpotlightTypeOptions || undefined
+      return this.$route.query.selectedSpotlightTypes || undefined
+    },
+    anatomicalStructures: function() {
+      return this.$route.query.selectedAnatomicalStructures || undefined
     },
     sortOrder: function() {
       return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
@@ -235,7 +238,7 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     async onPaginationPageChange(page) {
       const { limit } = this.communitySpotlightItems
       const offset = (page - 1) * limit
-      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.sortOrder, limit, offset)
+      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.anatomicalStructures, this.sortOrder, limit, offset)
       this.communitySpotlightItems = response
     },
     /**
@@ -244,24 +247,26 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.communitySpotlightItems.total : limit
-      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.sortOrder, newLimit, 0)
+      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.anatomicalStructures, this.sortOrder, newLimit, 0)
       this.communitySpotlightItems = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.sortOrder, this.communitySpotlightItems.limit, 0)
+      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.anatomicalStructures, this.sortOrder, this.communitySpotlightItems.limit, 0)
       this.communitySpotlightItems = response
     },
     // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
     getLinkedItem(communitySpotlightItem) {
       const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
+      const anatomicalStructure = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
       const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
       const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
         return item.id == spotlightTypeId
       })?.label
       return {
         ...linkedItem,
-        spotlightType
+        spotlightType,
+        anatomicalStructure
       }
     }
   },

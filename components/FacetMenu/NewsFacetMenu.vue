@@ -18,16 +18,39 @@
         @selected-year-changed="publicationYearChanged"
       />
     </facet-menu>
+    <dropdown-multiselect
+      ref="newsSubjects"
+      collapse-by-default
+      :category="newsSubjects"
+      :default-checked-ids="selectedNewsSubjectIds"
+      @selection-change="selectedNewsSubjectIdsChanged"
+    />
   </div>
 </template>
 
 <script>
+import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
-const visibleCategories = ['news']
+const visibleCategories = ['news', 'subject']
 
 const PUBLICATION_DATE_FACET_ID = 'publication date'
+
+const SUBJECT_CATEGORY = {
+  label: 'Subject',
+  id: 'subject',
+  data: [
+    {
+      label: 'News article',
+      id: 'News Article',
+    },
+    {
+      label: 'Funding oppotunity',
+      id: 'Funding Opportunity',
+    }
+  ]
+}
 
 export default {
   name: 'NewsFacetMenu',
@@ -39,6 +62,8 @@ export default {
 
   data() {
     return {
+      newsSubjects: SUBJECT_CATEGORY,
+      selectedNewsSubjectIds: [],
       publicationDateOption: 'show all',
       publicationMonth: 'Mar',
       publicationYear: 2020,
@@ -49,6 +74,15 @@ export default {
   computed: {
     selectedFacet: function() {
       let facets = []
+      if (this.selectedNewsSubjectIds !== []) {
+        this.selectedNewsSubjectIds.forEach(selectedOption => {
+          facets.push({
+            label: `${selectedOption.label}`,
+            id: `${selectedOption.id}`,
+            facetPropPath: this.newsSubjects.id
+          })
+        })
+      }
       if (this.publicationDateOption !== 'show all') {
         facets.push({
           label: `${this.publicationDateOption} ${this.publicationMonth} ${this.publicationYear}`,
@@ -61,6 +95,9 @@ export default {
   },
 
   mounted() {
+    if (this.$route.query.selectedNewsSubjectIds) {
+      this.selectedNewsSubjectIds = this.$route.query.selectedNewsSubjectIds.split(',')
+    }
     if (this.$route.query.publicationDateOption) {
       this.publicationDateOption = this.$route.query.publicationDateOption
     }
@@ -73,6 +110,18 @@ export default {
   },
 
   methods: {
+    selectedNewsSubjectIdsChanged(newValue) {
+      this.selectedNewsSubjectIds = newValue.checkedNodes
+
+      this.$router.replace(
+        {
+          query: { ...this.$route.query, selectedNewsSubjectIds: this.selectedNewsSubjectIds.length === 0 ? undefined : pluck('id', this.selectedNewsSubjectIds).toString() }
+        },
+        () => {
+          this.$emit('news-selections-changed')
+        }
+      )
+    },
     publicationDateOptionChanged(newValue) {
       if (this.publicationDateOption === newValue) {
         return
@@ -121,21 +170,27 @@ export default {
     getPublishedGreaterThanOrEqualToDate() {
       return this.$refs.publicationCategory.getGreaterThanOrEqualToDate()
     },
+    getSelectedNewsSubjects() {
+      return this.selectedNewsSubjectIds
+    },
     deselectAllFacets() {
       this.$router.replace(
         {
           query: {
             ...this.$route.query,
             publicationDateOption: undefined,
+            selectedNewsSubjectIds: undefined
           }
         },
         () => {
           this.$emit('news-selections-changed')
+          this.$refs.newsSubjects.uncheckAll()
           this.$refs.publicationCategory.reset()
         }
       )
     },
     deselectFacet(facetId) {
+      this.$refs.newsSubjects.uncheck(facetId)
       if (facetId === PUBLICATION_DATE_FACET_ID) {
         this.$refs.publicationCategory.reset()
       }
@@ -146,14 +201,4 @@ export default {
 
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
-.white-background {
-  background-color: white;
-  border: 0.1rem solid $lineColor2;
-}
-
-hr {
-  border: none;
-  border-bottom: 1px solid $lineColor1;
-  margin: 0;
-}
 </style>
