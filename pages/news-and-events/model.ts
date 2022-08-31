@@ -37,11 +37,11 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
       limit
     })
 
-    const news = await fetchNews(client, query, undefined, undefined, undefined, limit)
+    const news = await fetchNews(client, query, undefined, undefined, undefined, undefined, limit)
 
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
 
-    const stories = await fetchCommunitySpotlightItems(client, query, undefined, undefined, 2, 0)
+    const stories = await fetchCommunitySpotlightItems(client, query, undefined, undefined, undefined, 2, 0)
 
     return {
       upcomingEvents,
@@ -83,7 +83,7 @@ export const fetchEvents = async (client: ContentfulClientApi, terms?: string, e
   }
 }
 
-export const fetchNews = async (client: ContentfulClientApi, terms?: string, publishedLessThanDate?: string, publishedGreaterThanOrEqualToDate?: string, sortOrder?: string, limit?: number, skip?: number) : Promise<NewsCollection> => {
+export const fetchNews = async (client: ContentfulClientApi, terms?: string, publishedLessThanDate?: string, publishedGreaterThanOrEqualToDate?: string, subjects?: Array<string>, sortOrder?: string, limit?: number, skip?: number) : Promise<NewsCollection> => {
 
   const query = replaceTerms(terms)
 
@@ -96,6 +96,7 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, pub
       skip,
       'fields.publishedDate[lt]': publishedLessThanDate,
       'fields.publishedDate[gte]': publishedGreaterThanOrEqualToDate,
+      'fields.subject[in]': subjects
     })
   } catch (e) {
     console.error(e)
@@ -103,7 +104,7 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, pub
   }
 }
 
-export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, terms?: string, spotlightTypes?: Array<string>, sortOrder?: string, limit?: number, skip?: number) : Promise<CommunitySpotlightItemsCollection> => {
+export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, terms?: string, spotlightTypes?: Array<string>, anatomicalStructures?: Array<string>, sortOrder?: string, limit?: number, skip?: number) : Promise<CommunitySpotlightItemsCollection> => {
 
   const query = replaceTerms(terms)
 
@@ -114,7 +115,8 @@ export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, 
       query,
       limit,
       skip,
-      'fields.itemType[in]': spotlightTypes
+      'fields.itemType[in]': spotlightTypes,
+      'fields.anatomicalStructure[in]': anatomicalStructures
     })
   } catch (e) {
     console.error(e)

@@ -148,6 +148,11 @@ const sortOptions = [
     id: 'alphabatical',
     sortOrder: 'fields.title'
   },
+  {
+    label: 'Z-A',
+    id: 'reverseAlphabatical',
+    sortOrder: '-fields.title'
+  },
 ]
 
 export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
@@ -162,7 +167,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
   },
 
   async asyncData({ route }) {
-    const news = await fetchNews(client, route.query.search, undefined, undefined, undefined, 10, 0)
+    const news = await fetchNews(client, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
 
     return {
       news
@@ -196,7 +201,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
       handler: function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          this.news = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, 10, 0)
+          this.news = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, 10, 0)
         })
       },
       immediate: true
@@ -217,6 +222,9 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     publishedGreaterThanOrEqualToDate: function() {
       return this.$refs.newsFacetMenu?.getPublishedGreaterThanOrEqualToDate()
     },
+    subjects: function() {
+      return this.$route.query.selectedNewsSubjectIds || undefined
+    },
     sortOrder: function() {
       return propOr('-fields.publishedDate', 'sortOrder', this.selectedSortOption)
     }
@@ -230,7 +238,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     async onPaginationPageChange(page) {
       const { limit } = this.news
       const offset = (page - 1) * limit
-      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, limit, offset)
+      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, limit, offset)
       this.news = response
     },
     /**
@@ -239,12 +247,12 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.news.total : limit
-      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, newLimit, 0)
+      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, newLimit, 0)
       this.news = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.sortOrder, this.news.limit, 0)
+      const response = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, this.news.limit, 0)
       this.news = response
     }
   }

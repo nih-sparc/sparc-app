@@ -145,11 +145,13 @@ table:not([class^='el-table__'])::before {
   flex-direction: row;
   img {
     display: block;
-    width: 86px;
-    height: 86px;
+    object-fit: cover;
+    width: 8rem;
+    height: 8rem;
   }
 
   .image {
+    position: relative;
     margin: 2px;
   }
 
