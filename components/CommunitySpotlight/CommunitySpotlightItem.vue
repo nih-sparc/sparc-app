@@ -96,7 +96,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: fit-content;
+  height: auto;
 }
 
 .story-result {

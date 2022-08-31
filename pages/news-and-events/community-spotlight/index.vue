@@ -147,6 +147,11 @@ const sortOptions = [
     id: 'alphabatical',
     sortOrder: 'fields.title'
   },
+  {
+    label: 'Z-A',
+    id: 'reverseAlphabatical',
+    sortOrder: '-fields.title'
+  },
 ]
 
 const SPOTLIGHT_TYPE_MAPPING = [
