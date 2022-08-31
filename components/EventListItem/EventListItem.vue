@@ -145,6 +145,7 @@ table:not([class^='el-table__'])::before {
   flex-direction: row;
   img {
     display: block;
+    object-fit: cover;
     width: 86px;
     height: 86px;
   }

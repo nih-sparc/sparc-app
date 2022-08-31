@@ -1,38 +1,48 @@
 <template>
   <div class="news-list-item">
-    <h3>
-      <nuxt-link
-        v-if="item.fields.requiresADetailsPage"
-        :to="{
-          name: 'news-and-events-news-id',
-          params: { id: item.sys.id }
-        }"
-      >
-        {{ item.fields.title }}
-      </nuxt-link>
-      <a
-        v-else
-        :href="item.fields.url"
-        :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
-      >
-        {{ item.fields.title }}
-        <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
-      </a>
-    </h3>
-    <p>{{ item.fields.summary }}</p>
-    <p class="news-list-item__date">
-      {{ publishedDate }}
-    </p>
+    <div v-if="item.fields.image" class="image">
+      <event-banner-image :src="item.fields.image.fields.file.url" />
+    </div>
+    <div class="news-content-wrap">
+      <h3>
+        <nuxt-link
+          v-if="item.fields.requiresADetailsPage"
+          :to="{
+            name: 'news-and-events-news-id',
+            params: { id: item.sys.id }
+          }"
+        >
+          {{ item.fields.title }}
+        </nuxt-link>
+        <a
+          v-else
+          :href="item.fields.url"
+          :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
+        >
+          {{ item.fields.title }}
+          <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
+        </a>
+      </h3>
+      <p>{{ item.fields.summary }}</p>
+      <p class="news-list-item__date">
+        {{ publishedDate }}
+      </p>
+    </div>
   </div>
 </template>
 
 <script>
 import FormatDate from '@/mixins/format-date'
+import EventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
 
 import { isInternalLink } from '@/mixins/marked/index'
 
 export default {
   name: 'NewsListItem',
+
+  components: {
+    EventBannerImage
+  },
 
   mixins: [FormatDate],
 
@@ -73,5 +83,23 @@ p {
   font-size: 0.875rem;
   font-style: italic;
   margin: 0;
+}
+.news-list-item {
+  display: flex;
+  flex-direction: row;
+  img {
+    display: block;
+    object-fit: cover;
+    width: 86px;
+    height: 86px;
+  }
+
+  .image {
+    margin: 2px;
+  }
+
+  .news-content-wrap {
+    margin-left: 16px;
+  }
 }
 </style>
