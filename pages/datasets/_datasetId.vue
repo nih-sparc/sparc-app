@@ -63,6 +63,7 @@
                     :markdown="markdown.markdownTop"
                     :dataset-biolucida="biolucidaImageData"
                     :dataset-scicrunch="scicrunchData"
+                    :timeseries-data="timeseriesData"
                   />
                   <dataset-references
                     v-if="hasCitations"
@@ -431,6 +432,29 @@ export default {
       .catch(() => {
         return {}
       })
+    
+    // Get all timeseries files (those with an '.edf' extension)
+    const timeseriesData = await $axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${datasetId}`)
+        .then(({ files }) => {
+          let data = []
+          files.forEach(file => {
+            const filePath = file.uri.substring(file.uri.indexOf('files'))
+            const linkUrl =
+                process.env.ROOT_URL +
+                `/datasets/timeseriesviewer?&dataset_id=${file.datasetId}&dataset_version=${file.datasetVersion}&file_path=${filePath}`
+
+            data.push({
+              title: file.name,
+              type: 'Timeseries',
+              thumbnail: undefined,
+              link: linkUrl
+            })
+          })
+          return data
+        })
+        .catch(() => {
+          return []
+        })
 
     const changelogFileRequests = []
     versions.forEach(({ version }) => {
@@ -465,7 +489,8 @@ export default {
       datasetTypeName,
       downloadsSummary,
       showTombstone: datasetDetails.isUnpublished,
-      changelogFiles
+      changelogFiles,
+      timeseriesData
     }
   },
 
@@ -734,7 +759,8 @@ export default {
         ('flatmaps' in this.scicrunchData) ||
         ('mbf-segmentation' in this.scicrunchData) ||
         ('abi-plot' in this.scicrunchData) ||
-        ('common-images' in this.scicrunchData))
+        ('common-images' in this.scicrunchData) ||
+        this.timeseriesData != [])
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
