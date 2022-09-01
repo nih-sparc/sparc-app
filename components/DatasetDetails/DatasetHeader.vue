@@ -244,6 +244,7 @@ export default {
   }
   .bx--grid {
     padding: 0;
+    width: 100%;
     [class*="bx--col"] {
       padding: 0 0.5rem;
     }
