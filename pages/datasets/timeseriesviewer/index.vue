@@ -1,23 +1,30 @@
 <template>
   <div class="file-detail-page">
+    <breadcrumb
+      class="mb-16"
+      :breadcrumb="breadcrumb"
+      :title="file.name"
+    />
     <div class="page-wrap container">
-      <content-tab-card
-        v-if="hasTimeseriesViewer"
-        class="tabs p-32"
-        :tabs="tabs"
-        :active-tab-id="activeTabId"
-      >
-        <ts-viewer
-          v-if="userToken"
-          v-show="activeTabId === 'timeseriesViewer'"
-          :user-token="userToken"
-          :package-id="sourcePackageId"
-          :package-type="packageType"
-        />
-        <div v-else>
-          Sign in to the SPARC Portal to view timeseries data
-        </div>
-      </content-tab-card>
+      <client-only>
+        <content-tab-card
+          v-if="hasTimeseriesViewer"
+          class="tabs p-32"
+          :tabs="tabs"
+          :active-tab-id="activeTabId"
+        >
+          <ts-viewer
+            v-if="userToken"
+            v-show="activeTabId === 'timeseriesViewer'"
+            :user-token="userToken"
+            :package-id="sourcePackageId"
+            :package-type="packageType"
+          />
+          <div v-else>
+            Sign in to the SPARC Portal to view timeseries data
+          </div>
+        </content-tab-card>
+      </client-only>
       <div class="subpage pt-0 pb-16">
         <div class="file-detail">
           <strong class="file-detail__column_1">Dataset</strong>
@@ -71,10 +78,11 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import { mapGetters } from 'vuex'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
-import { pathOr, propOr } from 'ramda'
+import { propOr } from 'ramda'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
@@ -86,6 +94,7 @@ export default {
   components: {
     BfButton,
     DetailTabs,
+    Breadcrumb
   },
 
   mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
@@ -122,7 +131,7 @@ export default {
     }
   },
 
-  data: () => {
+  data: function() {
     return {
       tabs: [
         {
@@ -150,6 +159,34 @@ export default {
     },
     filePath: function() {
       return this.$route.query.file_path
+    },
+    breadcrumb: function() {
+      return [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: 'dataset'
+            }
+          },
+          label: 'Find Data'
+        },
+        {
+          to: {
+            path: `/datasets/${this.$route.query.dataset_id}`,
+            query: {
+              type: 'dataset'
+            }
+          },
+          label: `${this.title}`
+        },
+      ]
     }
   },
 }
