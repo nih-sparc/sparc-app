@@ -13,7 +13,7 @@
         If you do not have an existing ORCID iD, please <a href="https://orcid.org/register" target="_blank">register here</a> for a free account.
       </p>
       <p class="body1">
-        Upon initial login to the SPARC Portal via ORCID iD, you will also be creating* an account on <a href="https://pennsieve.io" target="_blank">Pennsieve</a> to unlock all the features SPARC Portal has to offer.
+        Upon initial login to the SPARC Portal via ORCID iD, you will also be creating* an account on <a href="https://pennsieve.io" target="_blank">Pennsieve</a> to unlock all the features the SPARC Portal has to offer.
       </p>
       <p class="body1">
         Learn more <a href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">here</a> about why a Pennsieve account is being created for you and which features are enabled by the SPARC Portal login.
