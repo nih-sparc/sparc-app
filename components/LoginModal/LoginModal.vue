@@ -29,7 +29,7 @@
         Sign in with ORCID iD
       </el-button>
       <p class="mt-16 body4">
-        By signing in to SPARC, you are accepting the <a href="https://docs.sparc.science/docs/terms-of-service" target="_blank">SPARC Terms of Use</a> and <a href="https://docs.sparc.science/docs/policies" target="_blank">SPARC DRC Privacy Policy</a> in addition to the <a href="https://docs.pennsieve.io/page/pennsieve-terms-of-use" target="_blank">Pennsieve Terms of Service</a> and <a href="https://docs.pennsieve.io/page/privacy-policy" target="_blank">Pennsieve Privacy Policy</a>. Contact us at support@sparc.science
+        By signing in to SPARC, you are accepting the <a href="https://docs.sparc.science/docs/terms-of-service" target="_blank">SPARC Terms of Service</a> and <a href="https://docs.sparc.science/docs/policies" target="_blank">SPARC DRC Privacy Policy</a> in addition to the <a href="https://docs.pennsieve.io/page/pennsieve-terms-of-use" target="_blank">Pennsieve Terms of Use</a> and <a href="https://docs.pennsieve.io/page/privacy-policy" target="_blank">Pennsieve Privacy Policy</a>. Contact us at support@sparc.science
       </p>
       <p class="body4">
         * If you already have an account on Pennsieve, you will be able to link your newly created SPARC account to it by entering your existing Pennsieve account's e-mail address when prompted.
