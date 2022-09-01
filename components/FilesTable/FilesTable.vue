@@ -305,7 +305,7 @@ import {
 
 import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
@@ -369,6 +369,10 @@ export default {
      * @returns {Object}
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
+    ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
     /**
      * Compute the current path for the dataset's files.
      * @returns {String}
@@ -391,8 +395,9 @@ export default {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       const url = `${process.env.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
-
-      return `${url}?path=${this.path}&limit=${this.limit}`
+      var filesUrl = `${url}?path=${this.path}&limit=${this.limit}`
+      if (this.userToken) { filesUrl += `&api_key=${this.userToken}`}
+      return filesUrl
     },
 
     /**
@@ -429,11 +434,13 @@ export default {
   },
 
   watch: {
-    '$route.query.path': 'pathQueryChanged'
-  },
-
-  created: function() {
-    this.getFiles()
+    '$route.query.path': 'pathQueryChanged',
+    userToken: {
+      handler: function() {
+        this.getFiles()
+      },
+      immediate: true
+    }
   },
 
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="dataset-details">
+  <div class="dataset-details pb-16">
     <client-only>
       <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
       <div v-if="showTombstone">
@@ -63,6 +63,7 @@
                     :markdown="markdown.markdownTop"
                     :dataset-biolucida="biolucidaImageData"
                     :dataset-scicrunch="scicrunchData"
+                    :timeseries-data="timeseriesData"
                   />
                   <dataset-references
                     v-if="hasCitations"
@@ -97,6 +98,7 @@ import { mapState } from 'vuex'
 import { clone, propOr, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import createAlgoliaClient from '@/plugins/algolia.js'
+import { EMBARGO_ACCESS } from '@/utils/constants'
 
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
@@ -197,9 +199,12 @@ const getAssociatedProject = async (sparcAwardNumber) => {
  * @param {Function} $axios
  * @returns {Object}
  */
-const getDatasetDetails = async (datasetId, version, datasetTypeName, $axios) => {
+const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName, $axios) => {
   const url = `${process.env.discover_api_host}/datasets/${datasetId}`
-  const datasetUrl = version ? `${url}/versions/${version}` : url
+  var datasetUrl = version ? `${url}/versions/${version}` : url
+  if (userToken) {
+    datasetUrl += `?api_key=${userToken}`
+  }
 
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
@@ -388,7 +393,7 @@ export default {
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios, store }) {
+  async asyncData({ route, $axios, store, app }) {
     let tabsData = clone(tabs)
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
@@ -396,12 +401,14 @@ export default {
     const datasetFacetsData = await getDatasetFacetsData(route)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
+    const userToken = app.$cookies.get('user-token')
 
     const [organEntries, datasetDetails, versions, downloadsSummary] = await Promise.all([
       getOrganEntries(),
       getDatasetDetails(
         datasetId,
         route.params.version,
+        userToken,
         datasetTypeName,
         $axios
       ),
@@ -425,10 +432,34 @@ export default {
       .catch(() => {
         return {}
       })
+    
+    // Get all timeseries files (those with an '.edf' extension)
+    const timeseriesData = await $axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${datasetId}`)
+        .then(({ files }) => {
+          let data = []
+          files.forEach(file => {
+            const filePath = file.uri.substring(file.uri.indexOf('files'))
+            const linkUrl =
+                process.env.ROOT_URL +
+                `/datasets/timeseriesviewer?&dataset_id=${file.datasetId}&dataset_version=${file.datasetVersion}&file_path=${filePath}`
+
+            data.push({
+              title: file.name,
+              type: 'Timeseries',
+              thumbnail: undefined,
+              link: linkUrl
+            })
+          })
+          return data
+        })
+        .catch(() => {
+          return []
+        })
 
     const changelogFileRequests = []
     versions.forEach(({ version }) => {
-      const changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
+      var changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
+      if (userToken) { changelogEndpoint += `&api_key=${userToken}` }
       changelogFileRequests.push(
         $axios.$get(changelogEndpoint).then(response => {
           return [{
@@ -458,7 +489,8 @@ export default {
       datasetTypeName,
       downloadsSummary,
       showTombstone: datasetDetails.isUnpublished,
-      changelogFiles
+      changelogFiles,
+      timeseriesData
     }
   },
 
@@ -505,6 +537,9 @@ export default {
      * Compute if the dataset is the latest version
      * @returns {Boolean}
      */
+    embargoAccess() {
+      return propOr(null, 'embargoAccess', this.datasetInfo)
+    },
     isLatestVersion() {
       if (this.versions !== undefined && this.versions.length) {
         const latestVersion = compose(propOr(1, 'version'), head)(this.versions)
@@ -709,7 +744,10 @@ export default {
       return numDownloads
     },
     hasFiles: function() {
-      return !this.embargoed && this.fileCount >= 1
+      if (this.embargoed && this.embargoAccess !== EMBARGO_ACCESS.GRANTED) {
+        return false
+      }
+      return this.fileCount >= 1
     },
     hasGalleryImages: function() {
       //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data
@@ -721,7 +759,8 @@ export default {
         ('flatmaps' in this.scicrunchData) ||
         ('mbf-segmentation' in this.scicrunchData) ||
         ('abi-plot' in this.scicrunchData) ||
-        ('common-images' in this.scicrunchData))
+        ('common-images' in this.scicrunchData) ||
+        this.timeseriesData != [])
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
@@ -1105,6 +1144,7 @@ export default {
   padding-top: 0;
 }
 .dataset-details {
+  background-color: $background;
   width: 100%;
   overflow-x: hidden;
 }

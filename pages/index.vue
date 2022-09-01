@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-data">
     <page-hero>
       <h1 v-if="heroHeading">
         {{ heroHeading }}
@@ -140,6 +140,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
+}
 ::v-deep h2 {
   font-size: 1.5em;
   font-weight: 500;

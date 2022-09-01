@@ -2318,10 +2318,12 @@
   resolved "https://registry.yarnpkg.com/@miyaoka/nuxt-twitter-widgets-module/-/nuxt-twitter-widgets-module-0.0.1.tgz#fdca759252e7496c783e69b926623551bf8a4a01"
   integrity sha512-vYJkz9EemNS4Ur4uXI8R/tKFyXWrGypQwpFF/PSA/JZaGx19gpAfzTxHg0e7EQ1VIS+GTN2U6AUXz9MD05P+Nw==
 
+
 "@nih-sparc/sparc-design-system-components@^0.26.22":
   version "0.26.22"
   resolved "https://registry.yarnpkg.com/@nih-sparc/sparc-design-system-components/-/sparc-design-system-components-0.26.22.tgz#e09804725a8a6f7f331fbadac58125dfa0295209"
   integrity sha512-6ZantMhPFzSZIZrRtvyOkPSHuILMcYF0eXc7bLYOoTymjhuGLTkJH2V+LsCLsK3dS4DPgjTVy66LwWkM5ruvVA==
+
   dependencies:
     "@carbon/grid" "10.17.0"
     core-js "^3.6.5"
@@ -3359,6 +3361,11 @@
     vue-template-es2015-compiler "^1.9.0"
   optionalDependencies:
     prettier "^1.18.2"
+
+"@vue/shared@^3.2.37":
+  version "3.2.37"
+  resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.37.tgz#8e6adc3f2759af52f0e85863dfb0b711ecc5c702"
+  integrity sha512-4rSJemR2NQIo9Klm1vabqWjD8rs/ZaJSzMxkMNeJS6lHiUjjUeYFbooN19NgFjztubEKh3WlZUeOLVdbbUWHsw==
 
 "@vue/test-utils@1.1.0":
   version "1.1.0"
@@ -15232,6 +15239,11 @@ vue-eslint-parser@^7.0.0:
     espree "^6.2.1"
     esquery "^1.4.0"
     lodash "^4.17.15"
+
+vue-gtag@1.16.1:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/vue-gtag/-/vue-gtag-1.16.1.tgz#edb2f20ab4f6c4d4d372dfecf8c1fcc8ab890181"
+  integrity sha512-5vs0pSGxdqrfXqN1Qwt0ZFXG0iTYjRMu/saddc7QIC5yp+DKgjWQRpGYVa7Pq+KbThxwzzMfo0sGi7ISa6NowA==
 
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"

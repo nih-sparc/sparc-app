@@ -1,4 +1,9 @@
 export default {
+  computed: {
+    userToken: function() {
+      return this.$store.getters['user/cognitoUserToken'] || this.$cookies.get('user-token')
+    },
+  },
   methods: {
     /**
      * Workaround to using pennsieve endpoint https://docs.pennsieve.io/reference/getfile-1 to get the file
@@ -9,6 +14,7 @@ export default {
       const fileLocationEndIndex = filePath.lastIndexOf('/')
       const filesLocation = filePath.substring(0, fileLocationEndIndex)
       const filesUrl = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
+      if (this.userToken) { filesUrl += `&api_key=${this.userToken}` }
       const filesResponse = await axios.$get(filesUrl)
       const files = filesResponse.files
       if (files.length === 0) {

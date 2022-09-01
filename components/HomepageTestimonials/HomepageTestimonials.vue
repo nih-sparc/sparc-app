@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-48">
+  <div class="pb-32">
     <div class="container home-container">
       <h2>Connecting the Research Community</h2>
       <div class="homepage-testimonials__testimonial-wrap">

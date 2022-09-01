@@ -1,23 +1,40 @@
 <template>
   <div class="dataset-action-box mt-16 p-8">
     <dataset-banner-image :src="datasetImage" />
-    <sparc-pill class="sparc-pill" v-if="datasetInfo.embargo">
+    <sparc-pill class="sparc-pill" v-if="embargoed">
       Embargoed
     </sparc-pill>
     <div class="button-container" v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
-      <sparc-tooltip
-        v-if="embargoed"
-        placement="left-center"
-      >
-        <div slot="data">
-          This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
-        </div>
-        <el-button
-          slot="item"
+      <div v-if="embargoed">
+        <sparc-tooltip
+          placement="left-center"
         >
-          Get Saffold
-        </el-button>
-      </sparc-tooltip>
+          <div v-if="!userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+            This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
+          </div>
+          <div v-else slot="data">
+            This scaffold is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
+          </div>
+          <el-button
+            v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            slot="item"
+            :disabled="embargoAccess != null"
+            @click="requestAccess()"
+          >
+            Request Access
+          </el-button> 
+          <el-button
+            v-else
+            slot="item"
+            :disabled="embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
+          >
+            Get Scaffold
+          </el-button>
+        </sparc-tooltip>
+        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
+          Your request is pending approval...
+        </div>
+      </div>
       <div v-else-if="hasFiles" class="button-container" >
         <el-button
           class="dataset-button"
@@ -49,19 +66,36 @@
           Run Simulation
         </el-button>
       </a>
-      <sparc-tooltip
-        v-if="embargoed"
-        placement="left-center"
-      >
-        <div slot="data">
-          This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
-        </div>
-        <el-button
-          slot="item"
+      <div v-if="embargoed">
+        <sparc-tooltip
+          placement="left-center"
         >
-          Get Model
-        </el-button>
-      </sparc-tooltip>
+          <div v-if="!userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+            This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
+          </div>
+          <div v-else slot="data">
+            This model is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
+          </div>
+          <el-button
+            v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            slot="item"
+            :disabled="embargoAccess != null"
+            @click="requestAccess()"
+          >
+            Request Access
+          </el-button> 
+          <el-button
+            v-else
+            slot="item"
+            :disabled="embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
+          >
+            Get Model
+          </el-button>
+        </sparc-tooltip>
+        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
+          Your request is pending approval...
+        </div>
+      </div>
       <el-button
         v-else-if="hasFiles"
         @click="actionButtonClicked('files')"
@@ -92,19 +126,37 @@
       </a>
     </div>
     <div class="button-container" v-else>
-      <sparc-tooltip
-        v-if="embargoed"
-        placement="left-center"
-      >
-        <div slot="data">
-          This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
-        </div>
-        <el-button
-          slot="item"
+      <div v-if="embargoed">
+        <sparc-tooltip
+          placement="left-center"
         >
-          Get Dataset
-        </el-button>
-      </sparc-tooltip>
+          <div v-if="!userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
+            This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. Log in to request<br />access to embargoed data
+          </div>
+          <div v-else slot="data">
+            This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date. You may request<br />access to the embargoed data<br />from the author
+          </div>
+          <el-button
+            v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
+            slot="item"
+            :disabled="embargoAccess != null"
+            @click="requestAccess()"
+          >
+            Request Access
+          </el-button> 
+          <el-button
+            v-else
+            slot="item"
+            :disabled="embargoAccess !== EMBARGO_ACCESS.GRANTED || !hasFiles"
+            @click="actionButtonClicked('files')"
+          >
+            Get Dataset
+          </el-button>
+        </sparc-tooltip>
+        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
+          Your request is pending approval...
+        </div>
+      </div>
       <el-button
         v-else-if="hasFiles"
         @click="actionButtonClicked('files')"
@@ -119,11 +171,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { propOr } from 'ramda'
 
+import { successMessage, failMessage } from '@/utils/notification-messages'
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
+import { EMBARGO_ACCESS } from '@/utils/constants'
 
 export default {
   name: 'DatasetActionBox',
@@ -134,11 +188,17 @@ export default {
   },
 
   computed: {
-    /**
-     * Get dataset info from the store
-     * @returns {Object}
-     */
     ...mapState('pages/datasets/datasetId', ['datasetInfo', 'datasetTypeName']),
+    ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
+    EMBARGO_ACCESS() {
+      return EMBARGO_ACCESS
+    },
+    embargoAccess() {
+      return propOr(null, 'embargoAccess', this.datasetInfo)
+    },
     /**
      * Gets dataset version
      * @returns {Number}
@@ -212,6 +272,33 @@ export default {
 
       link.click()
       link.remove()
+    },
+    requestAccess(){
+       const url = `${process.env.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
+
+       this.$axios
+        .$post(url, {
+          datasetId: this.datasetInfo.id,
+        })
+        .then(() => {
+          this.updateEmbargoAccess(EMBARGO_ACCESS.REQUESTED)
+
+          this.$message(successMessage('Your request has been successfully submitted.'))
+        })
+        .catch((error) => {
+          this.$message(failMessage('Unable to submit request at this time.'))
+
+          throw error
+        })
+
+    },
+    updateEmbargoAccess(access) {
+      const newDatasetInfo = {
+        ...this.datasetDetails,
+        embargoAccess: access
+      }
+
+      this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
     }
   }
 }

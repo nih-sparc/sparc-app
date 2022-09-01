@@ -123,8 +123,6 @@ export default {
     FacetRadioButtonDateCategory
   },
 
-  props: {},
-
   data() {
     return {
       newsEventsTypeOptions: newsEventsTypeOptions,

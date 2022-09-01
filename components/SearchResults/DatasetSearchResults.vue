@@ -47,7 +47,7 @@
           >
             {{ scope.row.pennsieve.name }}
           </nuxt-link>
-          <div class="mt-8 mb-8">
+          <div class="my-8">
             {{ scope.row.pennsieve.description }}
           </div>
           <table class="property-table">

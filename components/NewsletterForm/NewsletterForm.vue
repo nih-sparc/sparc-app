@@ -17,9 +17,9 @@
               id="mc-embedded-subscribe"
               native-type="submit"
               name="subscribe"
-              class="el-button secondary"
+              class="secondary"
             >
-              Sign Up <svg-icon icon="icon-open" height="20" width="20" />
+              Sign Up <svg-icon icon="icon-open" height="16" width="16" />
             </el-button>
           </div>
         </div>

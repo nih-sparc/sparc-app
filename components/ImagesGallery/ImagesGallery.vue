@@ -7,13 +7,13 @@
       </p>
     </div>
     <client-only placeholder="Loading gallery ...">
-      <div class="gallery-container">
+      <div :class="['gallery-container', { 'one-item': galleryItems.length === 1 }]">
         <gallery
           :items="galleryItems"
           :max-width="maxWidth"
           :show-indicator-bar="true"
           :show-card-details="true"
-          :highlight-active="true"
+          :highlight-active="shouldHighlight"
         />
       </div>
     </client-only>
@@ -75,6 +75,12 @@ export default {
         return []
       }
     },
+    timeseriesData: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
     markdown: {
       type: String,
       default: ''
@@ -106,7 +112,8 @@ export default {
       ro: null,
       maxWidth: 3,
       scicrunchItems: [],
-      biolucidaItems: []
+      biolucidaItems: [],
+      timeseriesItems: []
     }
   },
   computed: {
@@ -134,16 +141,27 @@ export default {
       return this.datasetThumbnailData
     },
     galleryItems() {
-      return this.biolucidaItems.concat(this.scicrunchItems)
+      return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
     },
     hasDescription() {
       return this.description !== ''
+    },
+    // Highlighting the items looks weird if there is only one item and there is no description above it
+    shouldHighlight() {
+      return this.hasDescription || this.galleryItems.length > 1
     }
   },
   watch: {
     markdown: function(text) {
       const html = this.parseMarkdown(text)
       this.description = extractSection(/data collect[^:]+:/i, html)
+    },
+    timeseriesData: {
+      deep: true,
+      immediate: true,
+      handler: function(data) {
+        this.timeseriesItems = data
+      }
     },
     datasetScicrunch: {
       deep: true,
@@ -692,6 +710,10 @@ a.next {
   width: 2em;
   border-radius: 3px;
   background-color: #555;
+}
+
+::v-deep .one-item .card-line {
+  flex-grow: unset !important;
 }
 </style>
 

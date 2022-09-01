@@ -49,28 +49,18 @@
         </div>
       </div>
       <client-only>
-      <content-tab-card
-        v-if="hasViewer"
-        class="tabs p-32"
-        :tabs="tabs"
-        :active-tab-id="activeTabId"
-      >
-        <biolucida-viewer
-          v-if="hasBiolucidaViewer"
-          v-show="activeTabId === 'imageViewer'"
-          :data="biolucidaData"
-        />
-        <ts-viewer
-          v-if="hasTimeseriesViewer && userToken"
-          v-show="activeTabId === 'timeseriesViewer'"
-          :user-token="userToken"
-          :package-id="sourcePackageId"
-          :package-type="packageType"
-        />
-        <div v-else-if="hasTimeseriesViewer && !userToken">
-          Sign in to view timeseries data
-        </div>
-      </content-tab-card>
+        <content-tab-card
+          v-if="hasViewer"
+          class="tabs p-32"
+          :tabs="tabs"
+          :active-tab-id="activeTabId"
+        >
+          <biolucida-viewer
+            v-if="hasBiolucidaViewer"
+            v-show="activeTabId === 'imageViewer'"
+            :data="biolucidaData"
+          />
+        </content-tab-card>
       </client-only>
     </div>
   </div>
@@ -118,7 +108,7 @@ export default {
     FetchPennsieveFile
   ],
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ redirect, route, $axios }) {
     const filePath = route.query.path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
@@ -139,6 +129,9 @@ export default {
       packageType = file.packageType
     }
     const hasTimeseriesViewer = packageType === 'TimeSeries'
+    if (hasTimeseriesViewer) {
+      redirect(`/datasets/timeseriesviewer?dataset_id=${route.params.datasetId}&dataset_version=${route.params.datasetVersion}&file_path=${filePath}`)
+    }
 
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' : ''
@@ -147,7 +140,6 @@ export default {
       biolucidaData,
       file,
       hasBiolucidaViewer,
-      hasTimeseriesViewer,
       sourcePackageId,
       packageType,
       activeTabId
@@ -182,19 +174,6 @@ export default {
       },
       immediate: true
     },
-    hasTimeseriesViewer: {
-      handler: function(hasViewer) {
-        if (hasViewer) {
-          this.tabs.push({
-            label: 'Timeseries Viewer',
-            id: 'timeseriesViewer'
-          })
-        } else {
-          this.tabs = this.tabs.filter(tab => tab.id !== 'timeseriesViewer')
-        }
-      },
-      immediate: true
-    }
   },
 
   methods: {
@@ -284,14 +263,8 @@ export default {
     location: function() {
       return this.file.path.replace(`/${this.file.name}`, '')
     },
-    userToken: function() {
-      return this.$store.getters['user/cognitoUserToken']
-    },
-    showTimeseriesViewer: function() {
-      return this.userToken && this.sourcePackageId && this.packageType
-    },
     hasViewer: function() {
-      return this.hasTimeseriesViewer || this.hasBiolucidaViewer
+      return this.hasBiolucidaViewer
     }
   }
 }

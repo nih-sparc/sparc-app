@@ -1,0 +1,198 @@
+<template>
+  <el-form
+    ref="submitForm"
+    label-position="top"
+    :model="form"
+    :rules="formRules"
+    :hide-required-asterisk="true"
+  >
+    <el-form-item prop="name" label="Your name">
+      <el-input v-model="form.name" placeholder="Enter your name" />
+    </el-form-item>
+
+    <el-form-item prop="email" label="Email address">
+      <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
+    </el-form-item>
+
+    <hr/>
+
+    <el-form-item prop="title" label="Title">
+      <el-input v-model="form.title" placeholder="Enter a title for your success story / fireside chat" />
+    </el-form-item>
+
+    <el-form-item prop="summary" label="Summary">
+      <el-input
+        v-model="form.summary"
+        type="textarea"
+        :rows="3"
+        placeholder="Tell us some details about your success story / fireside chat"
+      />
+    </el-form-item>
+
+    <hr/>
+
+    <el-form-item prop="fileAttachment" label="File Upload">
+      <div class="body4 mb-8"><i>To help other users understand your research, an image or video can really help. We recommend images of 1200px by 675px and videos at 16:9.</i></div>
+      <el-upload
+        ref="fileUploader"
+        action=""
+        :limit="limit"
+        :auto-upload="false"
+        :on-remove="onRemove"
+        :on-change="onUploadChange"
+        :before-remove="beforeRemove" >
+        <el-button slot="trigger" class="secondary">Select file</el-button>
+        <div slot="tip" class="el-upload__tip">jpeg/png/mp4 file with a size less than 5MB</div>
+      </el-upload>
+    </el-form-item>
+
+    <el-form-item prop="url" label="Supporting Information">
+      <el-input placeholder="Enter URL" v-model="form.url">
+        <template slot="prepend">Http://</template>
+      </el-input>
+    </el-form-item>
+
+    <hr/>
+
+    <div class="body4 mb-16"><i>Before your story is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
+
+    <el-form-item class="submit-button">
+      <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
+        Submit
+      </el-button>
+      <p v-if="hasError" class="error">
+        An error has occurred, please try again.
+      </p>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script>
+
+import FileUploadMixin from '@/mixins/file-upload/index'
+
+export default {
+  name: 'CommunitySpotlightForm',
+
+  mixins: [FileUploadMixin],
+
+  data() {
+    return {
+      allowVideos: true,
+      hasError: false,
+      form: {
+        name: '',
+        email: '',
+        title: '',
+        summary: '',
+        url: '',
+      },
+      isSubmitting: false,
+      formRules: {
+        email: [
+          {
+            required: true,
+            message: 'Please enter your email',
+            type: 'email',
+            trigger: 'blur'
+          }
+        ],
+        name: [
+          {
+            required: true,
+            message: 'Please enter your name',
+            trigger: 'blur',
+          }
+        ],
+        title: [
+          {
+            required: true,
+            message: 'Please enter a title',
+            trigger: 'blur',
+          }
+        ],
+        summary: [
+          {
+            required: true,
+            message: 'Please enter a summary',
+            trigger: 'change'
+          }
+        ]
+      }
+    }
+  },
+
+  mounted() {
+    // Reset form fields when showing the form
+    this.$refs.submitForm.resetFields()
+    this.hasError = false
+  },
+
+  methods: {
+    /**
+     * Submit the form and validate
+     */
+    onSubmit() {
+      this.hasError = false
+
+      this.$refs.submitForm.validate(valid => {
+        if (!valid) {
+          return
+        }
+        this.sendForm()
+      })
+    },
+
+    /**
+     * Send form to endpoint
+     */
+    sendForm() {
+      this.isSubmitting = true
+
+      let formData = new FormData();
+      // Required inputs
+      formData.append("name", this.form.name)
+      formData.append("email", this.form.email)
+      formData.append("title", this.form.title)
+      formData.append("summary", this.form.summary)
+      // Optional inputs
+      formData.append("url", this.form.url)
+      formData.append("form_type", 'communitySpotlight')
+      formData.append("has_attachment", this.hasAttachment)
+      if (this.hasAttachment){
+        formData.append("attachment_file", this.file, this.file.name)
+      }
+      
+      
+      this.$axios
+        .post(`${process.env.portal_api}/email_comms`, formData)
+        .then(() => {
+          this.$emit('submit', this.form.name)
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+        .finally(() => {
+          this.isSubmitting = false
+        })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.submit-button {
+  text-align: right;
+  margin-bottom: 0 !important;
+}
+hr {
+  border-top: none;
+  border-width: 2px;
+  border-color: $lineColor1;
+  margin: 2.5rem 0;
+}
+.error {
+  color: $danger;
+}
+</style>

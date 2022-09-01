@@ -8,7 +8,7 @@
         {{ entry.summary }}
       </p>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="page-wrap container pb-24">
       <div class="subpage">
         <el-row :gutter="38">
           <el-col :sm="13">
@@ -85,13 +85,19 @@
         </el-row>
       </div>
       <nuxt-link
-        class="community-link mt-16"
+        class="btn-load-more mt-16"
         :to="{
           name: 'news-and-events-community-spotlight-success-stories'
         }"
       >
         View All Success Stories &gt;
       </nuxt-link>
+      <div class="subpage">
+        Have something to share with the community? We would love to hear from you! Submit your success story
+        <nuxt-link to="/news-and-events/community-spotlight/submit">
+          here
+        </nuxt-link>
+      </div>
     </div>
   </div>
 </template>
@@ -208,8 +214,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.events-page {
+  background-color: $background;
+}
 .page-wrap {
   max-width: 66.75rem;
   @media (max-width: 48em) {
@@ -242,7 +250,7 @@ export default {
 
 .content {
   & ::v-deep {
-    color: $vestibular;
+    color: $grey;
   }
   & ::v-deep p {
     margin-bottom: 1em;
@@ -274,7 +282,7 @@ export default {
 .seperator-path {
   width: 100%;
   height: 0.125rem;
-  background: rgb(216, 216, 216);
+  background: $lineColor1;
   border-radius: 0px;
 }
 
@@ -287,7 +295,7 @@ export default {
 .btn-copy-permalink {
   border: none;
   background: none;
-  color: $median;
+  color: $purple;
   cursor: pointer;
   padding: 0;
   &:active {
@@ -300,5 +308,24 @@ export default {
   .updated {
     color: #aaa;
   }
+}
+
+.btn-load-more {
+  background: none;
+  border: none;
+  color: $darkBlue;
+  cursor: pointer;
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  &:hover,
+  &:active {
+    text-decoration: underline;
+  }
+}
+
+.subpage {
+  margin-bottom: 0 !important;
 }
 </style>

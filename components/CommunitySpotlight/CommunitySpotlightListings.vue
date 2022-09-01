@@ -6,12 +6,12 @@
   </div>
   <div v-else class="subpage mb-16">
     <div v-for="(item, index) in stories" :key="index">
-      <community-spotlight-item :story="item" />
-      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-32" />
+      <community-spotlight-item :story="getLinkedItem(item)" />
+      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-16" />
     </div>
     <nuxt-link
       v-if="bottomLink"
-      class="link1 mt-16"
+      class="btn-load-more mt-16"
       :to="{
         name: linkLocation
       }"
@@ -22,7 +22,19 @@
 </template>
 
 <script>
+import { pathOr } from 'ramda'
 import CommunitySpotlightItem from './CommunitySpotlightItem.vue'
+
+const SPOTLIGHT_TYPE_MAPPING = [
+  {
+    label: 'Fireside Chat',
+    id: 'firesideChat',
+  },
+  {
+    label: 'Success Story',
+    id: 'successStory',
+  }
+]
 
 export default {
   name: 'CommunitySpotlightListings',
@@ -46,17 +58,48 @@ export default {
       type: String,
       default: 'View All Community Spotlights'
     }
+  },
+  methods: {
+    // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
+    getLinkedItem(communitySpotlightItem) {
+      const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
+      const anatomicalStructure = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
+      const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
+      const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
+        return item.id == spotlightTypeId
+      })?.label
+      return {
+        ...linkedItem,
+        spotlightType,
+        anatomicalStructure
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .seperator-path {
   width: 100%;
   height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
+}
+
+.btn-load-more {
+  background: none;
+  border: none;
+  color: $darkBlue;
+  cursor: pointer;
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  &:hover,
+  &:active {
+    text-decoration: underline;
+  }
 }
 </style>

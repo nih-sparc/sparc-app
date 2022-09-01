@@ -1,5 +1,5 @@
 <template>
-  <div class="contact-us-page">
+  <div class="contact-us-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
@@ -8,7 +8,7 @@
       <div v-html="parseMarkdown(heroCopy)" />
     </page-hero>
     <div class="page-wrap container">
-      <div class="subpage">
+      <div class="subpage mb-0">
         <template v-if="!isBugSubmitted && !isGeneralSubmitted">
           <h2>Let us know why you’re contacting us:</h2>
           <el-select
@@ -167,6 +167,9 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/_variables.scss';
+.contact-us-page {
+  background-color: #f5f7fa;
+}
 .page {
   display: flex;
   margin-top: 7rem;
