@@ -2,9 +2,9 @@
   <div>
     <breadcrumb :breadcrumb="breadcrumb" title="Profile" />
     <page-hero>
-      <h1>SPARC Profile</h1>
+      <h1 class="heading1">SPARC Profile</h1>
     </page-hero>
-    <div class="container my-48">
+    <div class="container my-32">
       <div class="heading3">First name: <span class="heading2">{{firstName}}</span></div>
       <div class="heading3">Last name: <span class="heading2">{{lastName}}</span></div>
       <div class="heading3">E-mail: <span class="heading2">{{profileEmail}}</span></div>

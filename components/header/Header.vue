@@ -11,16 +11,14 @@
           Help
         </a>
         <template v-if="showLoginFeature">
-          <img
-            class="mr-2"
-            src="@/static/images/orcid_24x24.png"
-            style="padding-top: .2rem"
-            width="18"
-            height="18"
-            alt="Logo for ORCID"
+          <svg-icon
+            name="icon-sign-in"
+            class="login-logo"
+            height="1rem"
+            width="1rem"
           />
-          <a class="sign-in-link" v-if="!pennsieveUser"  @click="onLoginWithORCID">
-            Sign in with Orcid iD
+          <a class="sign-in-link" v-if="!pennsieveUser" @click="showLoginDialog = true">
+            Sign in
           </a>
           <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
             <el-submenu index="user">
@@ -105,24 +103,23 @@
                   </a>
                 </li>
                 <li v-if="showLoginFeature">
-                  <img
-                    src="@/static/images/orcid_24x24.png"
-                    style="vertical-align: middle"
-                    width="18"
-                    height="18"
-                    alt="Logo for ORCID"
+                  <svg-icon
+                    name="icon-sign-in"
+                    class="login-menu-logo"
+                    height="1rem"
+                    width="1rem"
                   />
-                  <a v-if="!pennsieveUser" class="sign-in-link" @click="onLoginWithORCID">
-                    Sign in with Orcid iD
+                  <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
+                    Sign in
                   </a>
-                  <div v-else>
+                  <span v-else>
                     <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
                       Profile
                     </a>
                     <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
                       Logout
                     </a>
-                  </div>
+                  </span>
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
@@ -181,6 +178,10 @@
         </div>
       </div>
     </div>
+    <login-modal
+      :show-dialog="showLoginDialog"
+      @dialog-closed="showLoginDialog = false"
+    />
   </div>
 </template>
 
@@ -188,6 +189,7 @@
 import SparcLogo from '../logo/SparcLogo.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import Request from '@/mixins/request'
+import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { mapState, mapGetters } from 'vuex'
 
 const links = [
@@ -222,7 +224,8 @@ export default {
   name: 'SparcHeader',
   components: {
     SparcLogo,
-    SearchForm
+    SearchForm,
+    LoginModal
   },
   mixins: [Request],
   mounted: async function() {
@@ -237,6 +240,7 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
+      showLoginDialog: false,
       showLoginFeature: (process.env.SHOW_LOGIN_FEATURE == 'true') ? true : false,
       searchSelectOptions: [
         {
@@ -317,11 +321,6 @@ export default {
       if (menuId === 'profile') {
         this.$router.push('/user/profile')
       }
-    },
-    onLoginWithORCID: async function(x) {
-      x.preventDefault()
-      this.$cookies.set('auth-redirect-url', this.$nuxt.$route.fullPath)
-      await this.$store.dispatch('user/login', 'ORCID')
     },
     /**
      * Sets a link to active based on current page
@@ -805,5 +804,11 @@ export default {
 }
 .user-submenu:hover {
   color: #8300bf !important;
+}
+.login-logo {
+  margin-top: .2rem;
+}
+.login-menu-logo {
+  margin-left: .2rem;
 }
 </style>
