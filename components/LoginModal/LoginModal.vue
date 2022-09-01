@@ -9,12 +9,12 @@
         Sign into SPARC
       </h1>
       <p class="body1">
-        SPARC Portal login authentication is provided by <a href="https://orcid.org" target="_blank">ORCID iD</a>. Create a SPARC account or sign in to your existing SPARC account via your existing ORCID iD.
-        
-        Upon initial login to the SPARC Portal via ORCID iD, you will also be creating* an account on <a href="https://pennsieve.io" target="_blank">Pennsieve</a> to unlock all the features SPARC has to offer.
+        SPARC Portal login authentication is provided by <a href="https://orcid.org" target="_blank">ORCID iD</a>. Create a SPARC Portal account or sign in to your existing SPARC Portal account by using your existing ORCID iD credentials.
+        If you do not have an existing ORCID iD, please <a href="https://orcid.org/register" target="_blank">register here</a> for a free account.
+        Upon initial login to the SPARC Portal via ORCID iD, you will also be creating* an account on <a href="https://pennsieve.io" target="_blank">Pennsieve</a> to unlock all the features SPARC Portal has to offer.
       </p>
       <p class="body1">
-        Learn more <a href="https://docs.sparc.science/" target="_blank">here</a> about what features you gain access to by signing into the SPARC Portal.
+        Learn more <a href="https://docs.sparc.science/" target="_blank">here</a> about why a Pennsieve account is being created for you and which features are enabled by the SPARC Portal login.
       </p>
       <el-button class="secondary" @click="onLoginWithORCID">
         <img
@@ -27,7 +27,7 @@
         Sign in with ORCID iD
       </el-button>
       <p class="mt-16 body4">
-        By signing in to SPARC, you are accepting the <a href="https://docs.sparc.science/docs/terms-of-service" target="_blank">SPARC Terms of Service</a> and <a href="https://docs.sparc.science/docs/policies" target="_blank">SPARC DRC Privacy Policy</a> in addition to the <a href="https://docs.pennsieve.io/page/pennsieve-terms-of-use" target="_blank">Pennsieve Terms of Service</a> and <a href="https://docs.pennsieve.io/page/privacy-policy" target="_blank">Pennsieve Privacy Policy</a>.
+        By signing in to SPARC, you are accepting the <a href="https://docs.sparc.science/docs/terms-of-service" target="_blank">SPARC Terms of Service</a> and <a href="https://docs.sparc.science/docs/policies" target="_blank">SPARC DRC Privacy Policy</a> in addition to the <a href="https://docs.pennsieve.io/page/pennsieve-terms-of-use" target="_blank">Pennsieve Terms of Service</a> and <a href="https://docs.pennsieve.io/page/privacy-policy" target="_blank">Pennsieve Privacy Policy</a>. Contact us at support@sparc.science
       </p>
       <p class="body4">
         * If you already have an account on Pennsieve, you will be able to link your newly created SPARC account to it by entering your existing Pennsieve account's e-mail address when prompted.
