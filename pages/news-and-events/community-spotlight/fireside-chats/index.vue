@@ -3,7 +3,7 @@ export default {
   name: 'CommunityChatsPage',
 
   async asyncData({ redirect }) {
-    redirect("/news-and-events/community-spotlight?selectedSpotlightTypeOptions=firesideChat")
+    redirect("/news-and-events/community-spotlight?selectedSpotlightTypes=firesideChat")
   },
 }
 </script>
