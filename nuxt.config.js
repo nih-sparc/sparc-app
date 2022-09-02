@@ -112,6 +112,7 @@ export default {
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
     GOOGLE_ANALYTICS_GA4: process.env.GOOGLE_ANALYTICS_GA4,
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
+    SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false
   },
 
   serverMiddleware: [
