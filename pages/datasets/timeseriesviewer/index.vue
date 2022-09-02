@@ -120,7 +120,7 @@ export default {
     if (sourcePackageId !== 'details') {
       packageType = file.packageType
     }
-    const hasTimeseriesViewer = packageType === 'TimeSeries'
+    const hasTimeseriesViewer = packageType === 'TimeSeries' && process.env.SHOW_TIMESERIES_VIEWER
 
     return {
       datasetInfo,

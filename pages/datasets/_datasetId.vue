@@ -95,7 +95,7 @@
 <script>
 import marked from 'marked'
 import { mapState } from 'vuex'
-import { clone, propOr, pathOr, head, compose } from 'ramda'
+import { clone, propOr, isEmpty, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { EMBARGO_ACCESS } from '@/utils/constants'
@@ -434,7 +434,8 @@ export default {
       })
     
     // Get all timeseries files (those with an '.edf' extension)
-    const timeseriesData = await $axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${datasetId}`)
+    const timeseriesData = process.env.SHOW_TIMESERIES_VIEWER
+      ? await $axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${datasetId}`)
         .then(({ files }) => {
           let data = []
           files.forEach(file => {
@@ -454,7 +455,8 @@ export default {
         })
         .catch(() => {
           return []
-        })
+        }) 
+      : []
 
     const changelogFileRequests = []
     versions.forEach(({ version }) => {
@@ -760,7 +762,7 @@ export default {
         ('mbf-segmentation' in this.scicrunchData) ||
         ('abi-plot' in this.scicrunchData) ||
         ('common-images' in this.scicrunchData) ||
-        this.timeseriesData != [])
+        !isEmpty(this.timeseriesData))
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
