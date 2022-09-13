@@ -4,18 +4,32 @@
       <div class="subpage">
         <div class="page-heading">
           <h1>{{ file.name }}</h1>
+          <nuxt-link
+            class="link-to-dataset"
+            :to="{
+              name: `datasets-datasetId`,
+              params: {
+                datasetId
+              },
+              query: {
+                datasetDetailsTab: 'files',
+                path: fileFolderLocation
+              }
+            }"
+          >
+            View file in Dataset
+          </nuxt-link>
           <div class="page-heading__button">
             <bf-button v-if="isFileOpenable(file)" @click="openFile(file)">
               View in web viewer
             </bf-button>
+            <bf-button @click="citeFile(file)">
+              Cite file
+            </bf-button>
             <bf-button @click="executeDownload(file)">
               Download
             </bf-button>
-            <form
-              ref="zipForm"
-              method="POST"
-              :action="zipitUrl"
-            >
+            <form ref="zipForm" method="POST" :action="zipitUrl">
               <input v-model="zipData" type="hidden" name="data" />
             </form>
           </div>
@@ -74,6 +88,7 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import BfStorageMetrics from '@/mixins/bf-storage-metrics'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
+import FileDetails from '@/mixins/file-details'
 
 import {
   compose,
@@ -105,7 +120,8 @@ export default {
   mixins: [
     BfStorageMetrics,
     FormatDate,
-    FetchPennsieveFile
+    FetchPennsieveFile,
+    FileDetails
   ],
 
   async asyncData({ redirect, route, $axios }) {
@@ -159,7 +175,6 @@ export default {
       zipitUrl: process.env.zipit_api_host
     }
   },
-
   watch: {
     hasBiolucidaViewer: {
       handler: function(hasViewer) {
@@ -253,6 +268,9 @@ export default {
           : url
       })
     },
+    citeFile(file) {
+      alert(file)
+    }
   },
 
   computed: {
@@ -265,6 +283,9 @@ export default {
     },
     hasViewer: function() {
       return this.hasBiolucidaViewer
+    },
+    datasetId: function() {
+      return this.$route.params.datasetId
     }
   }
 }
@@ -284,6 +305,7 @@ h1 {
   @media (min-width: 48em) {
     flex-direction: row;
   }
+  align-items: center;
 }
 .page-heading__button {
   flex-shrink: 0;
@@ -305,5 +327,8 @@ h1 {
 
 .tabs {
   border: 1px solid $lineColor2;
+}
+.link-to-dataset {
+  margin-right: 10px;
 }
 </style>

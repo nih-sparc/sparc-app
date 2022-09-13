@@ -25,6 +25,14 @@ export default {
         0,
         this.filePath.lastIndexOf(this.fileName)
       )
+    },
+
+    /**
+     * File breadcrumbs
+     * @returns {{ url: String, label: String }[]}
+     */
+    breadcrumbs: function() {
+      return this.fileFolderLocation.split('/').filter(segment => segment)
     }
   }
 }
