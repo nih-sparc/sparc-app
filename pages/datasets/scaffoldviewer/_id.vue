@@ -16,11 +16,8 @@
         />
       </detail-tabs>
       <div class="subpage">
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Filename</strong>
-          <div class="file-detail__column_2">
-            {{ fileName }}
-          </div>
+        <div class="page-heading">
+          <h2>{{ fileName }}</h2>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column_1">Type</strong>
@@ -39,7 +36,7 @@
                 }
               }"
             >
-              Go to dataset
+              {{ datasetTitle }}
             </nuxt-link>
           </div>
         </div>
@@ -144,7 +141,7 @@ export default {
     }
   },
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ app, route, $axios }) {
     const processedQuery = supportOldRoutes(route.query)
     const filePath = processedQuery.file_path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
@@ -153,10 +150,20 @@ export default {
       processedQuery.dataset_id,
       processedQuery.dataset_version
     )
+    const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
+    var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
+    const userToken = app.$cookies.get('user-token')
+    if (userToken) {
+      datasetUrl += `?api_key=${userToken}`
+    }
+    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
+      console.log(`Could not get the dataset's info: ${error}`)
+    })
 
     return {
       file,
-      processedQuery
+      processedQuery,
+      datasetInfo
     }
   },
   data: () => {
@@ -195,6 +202,13 @@ export default {
      */
     scaffoldURL: function() {
       return `${process.env.portal_api}/s3-resource/${this.datasetId}/${this.versionNumber}/${this.filePath}`
+    },
+    /**
+     * Return the dataset's name.
+     * @returns String
+     */
+    datasetTitle: function() {
+      return this.datasetInfo ? this.datasetInfo.name : 'Go to dataset'
     }
   },
   created: function() {
@@ -210,4 +224,7 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/_viewer.scss';
+.page-heading {
+  margin-bottom: 1.375rem;
+}
 </style>

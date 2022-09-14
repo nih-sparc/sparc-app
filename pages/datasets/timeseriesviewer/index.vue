@@ -67,6 +67,12 @@
             </nuxt-link>
           </div>
         </div>
+        <div v-if="filePath" class="file-detail">
+          <strong class="file-detail__column_1">Cite file</strong>
+          <div class="file-detail__column_2">
+            TODO
+          </div>
+        </div>
         <div v-if="filePath" class="pt-16">
           <bf-button @click="requestDownloadFile(file)">
             Download file
@@ -106,7 +112,7 @@ export default {
     if (userToken) {
       datasetUrl += `?api_key=${userToken}`
     }
-    const datasetInfo = await $axios.$get(datasetUrl).catch((error) => {
+    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
       console.log(`Could not get the dataset's info: ${error}`)
     })
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(

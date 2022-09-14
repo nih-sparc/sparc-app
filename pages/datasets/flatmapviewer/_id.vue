@@ -40,7 +40,7 @@
                 }
               }"
             >
-              Go to dataset
+              {{ datasetTitle }}
             </nuxt-link>
           </div>
         </div>
@@ -99,7 +99,7 @@ export default {
 
   mixins: [FormatString],
 
-  async asyncData({ route }) {
+  async asyncData({ $axios, app, route }) {
     //Get the organ name from uberon id
     const uberonid = route.query.uberonid
     let organ_name = undefined
@@ -108,8 +108,18 @@ export default {
     } catch (e) {
       // Error caught return empty data.
     }
+    const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
+    var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
+    const userToken = app.$cookies.get('user-token')
+    if (userToken) {
+      datasetUrl += `?api_key=${userToken}`
+    }
+    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
+      console.log(`Could not get the dataset's info: ${error}`)
+    })
     return {
-      organ_name
+      organ_name,
+      datasetInfo
     }
   },
   data: () => {
@@ -177,6 +187,13 @@ export default {
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
+    },
+    /**
+     * Return the dataset's name.
+     * @returns String
+     */
+    datasetTitle: function() {
+      return this.datasetInfo ? this.datasetInfo.name : 'Go to dataset'
     }
   },
   mounted: function() {

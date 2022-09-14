@@ -19,10 +19,28 @@
       </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
-          <h1>{{ fileName }}</h1>
+          <h2>{{ fileName }}</h2>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
+          <strong class="file-detail__column_1">Type</strong>
+          <div class="file-detail__column_2">
+            {{ plotType.charAt(0).toUpperCase() + plotType.slice(1) }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Dataset</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              {{ datasetTitle }}
+            </nuxt-link>
+          </div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column_1">File location</strong>
@@ -41,22 +59,6 @@
             >
               {{ filePath }}
             </nuxt-link>
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Type</strong>
-          <div class="file-detail__column_2">{{ plotType }} plot</div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Dataset id</strong>
-          <div class="file-detail__column_2">
-            {{ datasetId }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Version</strong>
-          <div class="file-detail__column_2">
-            {{ versionNumber }}
           </div>
         </div>
         <div class="pt-16">
@@ -92,7 +94,7 @@ export default {
 
   mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ route, $axios, app }) {
     const identifier = route.query.identifier
 
     const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(
@@ -146,12 +148,23 @@ export default {
       })
     }
 
+    const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
+    var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
+    const userToken = app.$cookies.get('user-token')
+    if (userToken) {
+      datasetUrl += `?api_key=${userToken}`
+    }
+    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
+      console.log(`Could not get the dataset's info: ${error}`)
+    })
+
     return {
       source_url,
       metadata,
       supplemental_data,
       plot_info,
-      file
+      file,
+      datasetInfo
     }
   },
 
@@ -185,6 +198,13 @@ export default {
 
     plotType: function() {
       return this.metadata.attrs.style
+    },
+    /**
+     * Return the dataset's name.
+     * @returns String
+     */
+    datasetTitle: function() {
+      return this.datasetInfo ? this.datasetInfo.name : 'Go to dataset'
     }
   }
 }
@@ -199,5 +219,8 @@ export default {
   height: 90vh;
   max-width: calc(100% - 48px);
   @import '~@abi-software/plotvuer/dist/plotvuer';
+}
+.page-heading {
+  margin-bottom: 1.375rem;
 }
 </style>

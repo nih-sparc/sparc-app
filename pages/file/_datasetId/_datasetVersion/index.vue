@@ -4,28 +4,7 @@
       <div class="subpage">
         <div class="page-heading">
           <h1>{{ file.name }}</h1>
-          <nuxt-link
-            class="link-to-dataset"
-            :to="{
-              name: `datasets-datasetId`,
-              params: {
-                datasetId
-              },
-              query: {
-                datasetDetailsTab: 'files',
-                path: fileFolderLocation
-              }
-            }"
-          >
-            View file in Dataset
-          </nuxt-link>
           <div class="page-heading__button">
-            <bf-button v-if="isFileOpenable(file)" @click="openFile(file)">
-              View in web viewer
-            </bf-button>
-            <bf-button @click="citeFile(file)">
-              Cite file
-            </bf-button>
             <bf-button @click="executeDownload(file)">
               Download
             </bf-button>
@@ -33,9 +12,6 @@
               <input v-model="zipData" type="hidden" name="data" />
             </form>
           </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
@@ -56,9 +32,43 @@
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Location</strong>
+          <strong class="file-detail__column">Dataset</strong>
           <div class="file-detail__column">
-            {{ location }}
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              {{ datasetTitle }}
+            </nuxt-link>
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">File location</strong>
+          <div class="file-detail__column">
+            <nuxt-link
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: location
+                }
+              }"
+            >
+              {{ location }}
+            </nuxt-link>
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">Cite file</strong>
+          <div class="file-detail__column">
+            TODO
           </div>
         </div>
       </div>
@@ -124,7 +134,7 @@ export default {
     FileDetails
   ],
 
-  async asyncData({ redirect, route, $axios }) {
+  async asyncData({ redirect, route, $axios, app }) {
     const filePath = route.query.path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
@@ -152,13 +162,24 @@ export default {
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' : ''
 
+    const url = `${process.env.discover_api_host}/datasets/${route.params.datasetId}`
+    var datasetUrl = route.query.datasetVersion ? `${url}/versions/${route.query.datasetVersion}` : url
+    const userToken = app.$cookies.get('user-token')
+    if (userToken) {
+      datasetUrl += `?api_key=${userToken}`
+    }
+    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
+      console.log(`Could not get the dataset's info: ${error}`)
+    })
+
     return {
       biolucidaData,
       file,
       hasBiolucidaViewer,
       sourcePackageId,
       packageType,
-      activeTabId
+      activeTabId,
+      datasetInfo
     }
   },
 
@@ -175,6 +196,30 @@ export default {
       zipitUrl: process.env.zipit_api_host
     }
   },
+
+  computed: {
+    /**
+     * Compute location of the file
+     * @returns {String}
+     */
+    location: function() {
+      return this.file.path.replace(`/${this.file.name}`, '')
+    },
+    hasViewer: function() {
+      return this.hasBiolucidaViewer
+    },
+    datasetId: function() {
+      return this.$route.params.datasetId
+    },
+    /**
+     * Return the dataset's name.
+     * @returns String
+     */
+    datasetTitle: function() {
+      return this.datasetInfo ? this.datasetInfo.name : 'Go to dataset'
+    }
+  },
+
   watch: {
     hasBiolucidaViewer: {
       handler: function(hasViewer) {
@@ -188,7 +233,7 @@ export default {
         }
       },
       immediate: true
-    },
+    }
   },
 
   methods: {
@@ -222,8 +267,7 @@ export default {
       const allowableExtensions = Object.keys(contentTypes).map(key => key)
       const fileType = file.fileType.toLowerCase()
       return (
-        this.isMicrosoftFileType(file) ||
-        allowableExtensions.includes(fileType)
+        this.isMicrosoftFileType(file) || allowableExtensions.includes(fileType)
       )
     },
     /**
@@ -270,22 +314,6 @@ export default {
     },
     citeFile(file) {
       alert(file)
-    }
-  },
-
-  computed: {
-    /**
-     * Compute location of the file
-     * @returns {String}
-     */
-    location: function() {
-      return this.file.path.replace(`/${this.file.name}`, '')
-    },
-    hasViewer: function() {
-      return this.hasBiolucidaViewer
-    },
-    datasetId: function() {
-      return this.$route.params.datasetId
     }
   }
 }
