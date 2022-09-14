@@ -12,19 +12,10 @@
     </page-hero>
     <div class="page-wrap container">
       <div v-if="fields.featured !== undefined">
-        <h2 class="heading2 mt-32">Featured Tools &amp; Resources</h2>
+        <h2 class="heading2 my-32">Featured Tools &amp; Resources</h2>
         <div>
-          <featured-resource
-            class="mt-32"
-            v-for="resource in fields.featured"
-            :key="resource.sys.id"
-            :title="resource.fields.name"
-            :subtitle="resource.fields.resourceType.join(', ')"
-            :tag="'SPARC'"
-            :description="resource.fields.description"
-            :thumbnail-url="resource.fields.logo.fields.file.url"
-            :button-link="`/resources/${resource.sys.id}`"
-            :external-url="resource.fields.url"
+          <resources-gallery
+            :items="fields.featured"
           />
         </div>
       </div>
@@ -45,8 +36,8 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 import marked from '@/mixins/marked/index'
-import FeaturedResource from '@/components/Resources/FeaturedResource.vue'
 import Paper from '~/components/Paper/Paper.vue'
+import ResourcesGallery from '~/components/ResourcesGallery/ResourcesGallery.vue'
 
 const client = createClient()
 
@@ -58,8 +49,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    FeaturedResource,
     Paper,
+    ResourcesGallery,
   },
 
   asyncData() {
