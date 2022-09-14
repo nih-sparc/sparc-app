@@ -29,6 +29,21 @@
             Flatmap
           </div>
         </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Dataset</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              Go to dataset
+            </nuxt-link>
+          </div>
+        </div>
         <div v-if="species" class="file-detail">
           <strong class="file-detail__column_1">Species</strong>
           <div class="file-detail__column_2">
@@ -51,21 +66,6 @@
           <strong class="file-detail__column_1">uberon</strong>
           <div class="file-detail__column_2">
             {{ uberonid }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Dataset</strong>
-          <div class="file-detail__column_2">
-            <nuxt-link
-              :to="{
-                name: 'datasets-datasetId',
-                params: {
-                  datasetId
-                }
-              }"
-            >
-              Go to dataset
-            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
