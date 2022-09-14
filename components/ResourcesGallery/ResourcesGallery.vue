@@ -1,17 +1,18 @@
 <template>
   <div ref="myButton" class="gallery">
     <div class="resources-gallery-strip">
-      <a v-if="items.length > 1" href="#" :class="['oval', 'prev', { disabled: !isPrevPossible }]" @click.prevent="goPrev">
+      <a v-if="items.length > 1" href="#" :class="['arrow-button', 'prev', { disabled: !isPrevPossible }]" @click.prevent="goPrev">
         <span class="progress-button">&lsaquo;</span>
       </a>
       <div v-else style="width: 2rem" />
       <div class="filler" />
       <div class="card-line">
-        <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span', { active: isActive(index) }]">
+        <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
           <ResourceCard
             v-if="item"
             :width="cardWidth"
             :key="item.sys.id"
+            :showShadow="isActive(index)"
             :title="item.fields.name"
             :subtitle="item.fields.resourceType.join(', ')"
             :showSparcTag="item.fields.developedBySparc"
@@ -24,7 +25,7 @@
         </span>
       </div>
       <div class="filler" />
-      <a v-if="items.length > 1" href="#" :class="['oval', 'next', { disabled: !isNextPossible }]" @click.prevent="goNext">
+      <a v-if="items.length > 1" href="#" :class="['arrow-button', 'next', { disabled: !isNextPossible }]" @click.prevent="goNext">
         <span class="progress-button">&rsaquo;</span>
       </a>
       <div v-else style="width: 2rem" />
@@ -54,7 +55,7 @@ export default {
     },
     cardWidth: {
       type: Number,
-      default: 19,
+      default: 21,
     },
     showIndicatorBar: {
       type: Boolean,
@@ -153,14 +154,10 @@ export default {
 <style scoped lang="scss">
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
-.oval {
+.arrow-button {
   width: 2rem;
   height: 2rem;
   line-height: 2rem;
-  box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.25);
-  border: solid 1px $lineColor2;
-  background-color: #ffffff;
-  border-radius: 1rem;
   display: flex;
   justify-content: center;
   user-select: none;
@@ -177,15 +174,12 @@ export default {
   flex-grow: 2;
 }
 .progress-button {
-  font-size: 1.5rem;
+  font-size: 3rem;
   font-weight: bold;
   color: $purple;
 }
 .filler {
-  flex-grow: 1;
-}
-.key-image-span.active {
-  transform: scale(1.1);
+  flex-grow: .5;
 }
 a.prev:not(.underline),
 a.next:not(.underline) {

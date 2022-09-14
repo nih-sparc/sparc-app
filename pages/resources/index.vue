@@ -7,16 +7,19 @@
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(fields.summary)" />
       <NuxtLink :to="'/data?type=sparcPartners&developedBySparc=true&skip=0'">
-        <el-button class="secondary">Browse all Tools &amp; Resources</el-button>
+        <el-button class="secondary mb-16">Browse all Tools &amp; Resources</el-button>
       </NuxtLink>
     </page-hero>
     <div class="page-wrap container">
       <div v-if="fields.featured !== undefined">
-        <h2 class="heading2 my-32">Featured Tools &amp; Resources</h2>
-        <div>
-          <resources-gallery
-            :items="fields.featured"
-          />
+        <div class="heading1 my-32">Featured Tools &amp; Resources</div>
+        <resources-gallery
+          :items="fields.featured"
+        />
+        <div class="link-container mt-16">
+          <NuxtLink class="browse-all-link" :to="'/data?type=sparcPartners&developedBySparc=true&skip=0'">
+            Browse All Tools &amp; Resources
+          </NuxtLink>
         </div>
       </div>
       <div class="pb-16">
@@ -82,6 +85,13 @@ export default {
   background-color: $background;
 }
 .button-container {
+  text-align: center;
+}
+.browse-all-link {
+  text-decoration: underline;
+  font-weight: 500;
+}
+.link-container {
   text-align: center;
 }
 </style>

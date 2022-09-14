@@ -59,9 +59,8 @@ export default {
     }
   }
   .text-container {
-    @media (max-width: 80em) {
-      padding-left: 1em;
-    }
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     ::v-deep a {
       color: white;
       text-decoration: underline;

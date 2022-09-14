@@ -1,5 +1,5 @@
 <template>
-  <el-card shadow="always" :style="{ padding: '0px', maxWidth: width + 'rem' }" class="card">
+  <el-card :shadow="shadow" :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
     <div class="image-container mb-16">
       <img class="thumbnail" :src="thumbnailUrl" alt="thumbnail loading ..." />
     </div>
@@ -15,7 +15,7 @@
       {{subtitle}}
     </div>
     <div class="body1 mb-16">
-      {{description}}
+      {{truncatedDescription}}
     </div>
     <a v-if="buttonLink !== null" :href="buttonLink">
       <el-button class="secondary">
@@ -36,6 +36,10 @@ export default {
     width: {
       type: Number,
       default: 13.8
+    },
+    showShadow: {
+      type: Boolean,
+      default: false
     },
     title: {
       type: String,
@@ -65,6 +69,16 @@ export default {
       type: String,
       default: null
     },
+  },
+  computed: {
+    shadow() {
+      return this.showShadow ? 'always' : 'never'
+    },
+    truncatedDescription() {
+      return this.description.length > 134 ? 
+        `${this.description.substring(0, 134)}...` :
+        this.description
+    }
   },
   methods: {
     /**
