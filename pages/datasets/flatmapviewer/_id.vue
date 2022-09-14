@@ -24,9 +24,6 @@
       <div class="subpage">
         <div class="page-heading" />
         <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
-        </div>
-        <div class="file-detail">
           <strong class="file-detail__column_1">Type</strong>
           <div class="file-detail__column_2">
             Flatmap
@@ -57,15 +54,24 @@
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column_1">Dataset id</strong>
+          <strong class="file-detail__column_1">Dataset</strong>
           <div class="file-detail__column_2">
-            {{ datasetId }}
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              Go to dataset
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column_1">Version</strong>
+          <strong class="file-detail__column_1">Cite flatmap</strong>
           <div class="file-detail__column_2">
-            {{ versionNumber }}
+            TODO
           </div>
         </div>
       </div>
