@@ -6,16 +6,11 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(fields.summary)" />
+      <NuxtLink :to="'/data?type=sparcPartners&developedBySparc=true&skip=0'">
+        <el-button class="secondary">Browse all Tools &amp; Resources</el-button>
+      </NuxtLink>
     </page-hero>
     <div class="page-wrap container">
-      <div class="mt-32">
-        <p class="tab2" v-html="fields.description" />
-        <div class="button-container">
-          <NuxtLink :to="'/data?type=sparcPartners&developedBySparc=true&skip=0'">
-            <el-button>Browse Tools &amp; Resources</el-button>
-          </NuxtLink>
-        </div>
-      </div>
       <div v-if="fields.featured !== undefined">
         <h2 class="heading2 mt-32">Featured Tools &amp; Resources</h2>
         <div>
