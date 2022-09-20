@@ -47,22 +47,40 @@ const SPOTLIGHT_TYPE_OPTIONS = {
   ]
 }
 
+// Ideally we would pull these values from all the possible field values in Contentful, but there is no simple way to do that as shown here: https://www.contentfulcommunity.com/t/all-possible-values-of-the-field/3307.
+// These values should be in sync with CommunitySpotlightItem's field 'Anatomical Structure' validation list
 const ANATOMICAL_STRUCTURE_OPTIONS = {
   label: 'Anatomical Structure',
   id: 'spotlightAnatomicalStructure',
   data: [
     {
-      label: 'Bladder',
-      id: 'Bladder',
+      label: 'Colon',
+      id: 'Colon',
+    },
+    {
+      label: 'Heart',
+      id: 'Heart',
+    },
+    {
+      label: 'Lung',
+      id: 'Lung',
     },
     {
       label: 'Nerves & Ganglia',
       id: 'Nerves & Ganglia',
     },
     {
+      label: 'Pancreas',
+      id: 'Pancreas',
+    },
+    {
       label: 'Stomach',
       id: 'Stomach',
     },
+    {
+      label: 'Urinary System',
+      id: 'Urinary System',
+    }
   ]
 }
 
