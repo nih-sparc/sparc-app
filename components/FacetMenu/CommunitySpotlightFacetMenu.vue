@@ -70,10 +70,6 @@ const ANATOMICAL_STRUCTURE_OPTIONS = {
       id: 'Nerves & Ganglia',
     },
     {
-      label: 'Pancreas',
-      id: 'Pancreas',
-    },
-    {
       label: 'Stomach',
       id: 'Stomach',
     },
