@@ -406,7 +406,6 @@ export default {
           query: {
             type,
             q: term,
-            developedBySparc: true
           }
         }
       }

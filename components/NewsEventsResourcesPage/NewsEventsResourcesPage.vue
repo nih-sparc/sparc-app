@@ -134,7 +134,7 @@ export default {
       const nameLookup = {
         event: 'Events',
         news: 'News',
-        resource: 'Resources'
+        resource: 'Tools & Resources'
       }
       const name = nameLookup[this.type]
 

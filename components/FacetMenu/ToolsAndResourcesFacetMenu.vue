@@ -8,14 +8,6 @@
       @deselect-all-facets="deselectAllFacets"
     />
     <dropdown-multiselect
-      ref="typesCategory"
-      class="hide-bottom-border"
-      collapse-by-default
-      :category="typesCategory"
-      :default-checked-ids="selectedResourceTypeIds"
-      @selection-change="onTypeChanged"
-    />
-    <dropdown-multiselect
       :category="developedBySparcCategory"
       :default-checked-ids="selectedDevelopedBySparcIds"
       @selection-change="onDevelopedBySparcChanged"
@@ -25,37 +17,9 @@
 </template>
 
 <script>
-import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 
-const visibleCategories = ['type', 'developedBySparc']
-
-const typesCategory = {
-  label: 'Type',
-  id: 'type',
-  data: [
-    {
-      label: 'Devices',
-      id: 'Devices',
-    },
-    {
-      label: 'Data and Models',
-      id: 'Data and Models',
-    },
-    {
-      label: 'Information Services',
-      id: 'Information Services',
-    },
-    {
-      label: 'Software',
-      id: 'Software',
-    },
-    {
-      label: 'Biologicals',
-      id: 'Biologicals',
-    }
-  ]
-}
+const visibleCategories = ['developedBySparc']
 
 const developedBySparcCategory = {
   label: 'Developed By SPARC',
@@ -76,9 +40,7 @@ export default {
 
   data() {
     return {
-      typesCategory: typesCategory,
       developedBySparcCategory: developedBySparcCategory,
-      selectedResourceTypeIds: [],
       selectedDevelopedBySparcIds: [],
       visibleCategories: visibleCategories,
     }
@@ -87,15 +49,6 @@ export default {
   computed: {
     selectedFacets: function() {
       let facets = []
-      if (this.selectedResourceTypeIds !== []) {
-        this.selectedResourceTypeIds.forEach(selectedOption => {
-          facets.push({
-            label: `${selectedOption.label}`,
-            id: `${selectedOption.id}`,
-            facetPropPath: typesCategory.id
-          })
-        })
-      }
       if (this.selectedDevelopedBySparcIds !== []) {
         this.selectedDevelopedBySparcIds.forEach(selectedOption => {
           facets.push({
@@ -110,27 +63,14 @@ export default {
   },
 
   mounted() {
-    if (this.$route.query.resourceTypes) {
-      this.selectedResourceTypeIds = this.$route.query.resourceTypes.split(',')
+    if (this.$route.query.developedBySparc) {
+      this.selectedDevelopedBySparcIds = ['developedBySparc']
     }
-    this.selectedDevelopedBySparcIds = ['developedBySparc']
   },
 
   methods: {
     visibleFacetsForCategory: function(key) {
       return this.visibleFacets[key]
-    },
-    onTypeChanged: function(newValue) {
-      this.selectedResourceTypeIds = newValue.checkedNodes
-
-      this.$router.replace(
-        {
-          query: { ...this.$route.query, resourceTypes: this.selectedResourceTypeIds.length === 0 ? undefined : pluck('id', this.selectedResourceTypeIds).toString() }
-        },
-        () => {
-          this.$emit('tool-and-resources-selections-changed')
-        }
-      )
     },
     onDevelopedBySparcChanged: function(newValue) {
       this.selectedDevelopedBySparcIds = newValue.checkedNodes
@@ -148,19 +88,16 @@ export default {
         {
           query: {
             ...this.$route.query,
-            developedBySparc: undefined,
-            resourceTypes: undefined
+            developedBySparc: undefined
           }
         },
         () => {
           this.$emit('tool-and-resources-selections-changed')
-          this.$refs.typesCategory.uncheckAll()
           this.$refs.developedBySparcCategory.uncheckAll()
         }
       )
     },
     deselectFacet(id) {
-      this.$refs.typesCategory.uncheck(id)
       this.$refs.developedBySparcCategory.uncheck(id)
     },
   }

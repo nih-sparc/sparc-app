@@ -56,17 +56,6 @@
                 />
               </el-col>
               <el-col
-                v-if="searchType.type === 'sparcPartners'"
-                class="facet-menu"
-                :sm="24"
-                :md="8"
-                :lg="6"
-              >
-                <tools-and-resources-facet-menu
-                  @tool-and-resources-selections-changed="onPaginationPageChange(1)"
-                />
-              </el-col>
-              <el-col
                 v-if="searchType.type === 'sparcInfo'"
                 class="facet-menu"
                 :sm="24"
@@ -152,13 +141,10 @@ const SparcInfoSearchResults = () =>
   import('@/components/SearchResults/SparcInfoSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
-const ResourcesSearchResults = () =>
-  import('@/components/Resources/ResourcesSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcInfo: SparcInfoSearchResults,
-  sparcPartners: ResourcesSearchResults,
   simulation: DatasetSearchResults,
 }
 
@@ -174,11 +160,6 @@ const searchTypes = [
     type: 'simulation',
     filterId: process.env.ctf_filters_simulation_id,
     dataSource: 'algolia'
-  },
-  {
-    label: 'Tools & Resources',
-    type: process.env.ctf_resource_id,
-    dataSource: 'contentful'
   },
   {
     label: 'SPARC Information',
@@ -198,7 +179,6 @@ import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import { facetPropPathMapping, getAlgoliaFacets } from './utils'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
-import ToolsAndResourcesFacetMenu from '~/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
@@ -213,7 +193,6 @@ export default {
     PageHero,
     DatasetFacetMenu,
     SearchForm,
-    ToolsAndResourcesFacetMenu,
     SparcInfoFacetMenu
   },
 
@@ -485,7 +464,6 @@ export default {
       const origSearchDataLimit = this.searchData.limit
       this.$route.query.type === 'organ' ? (this.searchData.limit = 999) : ''
       var contentType = this.$route.query.type  
-      var resourceTypes, developedBySparc = undefined;
       var aboutDetailsTypes = undefined;
       var sortOrder = undefined;
       if (this.$route.query.type === "sparcInfo") {
@@ -494,11 +472,6 @@ export default {
         sortOrder = 'fields.title'
         const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.getTags()
         tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`) 
-      }
-      if (this.$route.query.type === process.env.ctf_resource_id) {
-        resourceTypes = this.$route.query.resourceTypes;
-        developedBySparc = this.$route.query.developedBySparc;
-        sortOrder = 'fields.name'
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false;
@@ -513,8 +486,6 @@ export default {
             order: sortOrder,
             include: 2,
             'fields.tags[all]': tags,
-            'fields.resourceType[in]': resourceTypes,
-            'fields.developedBySparc' : developedBySparc,
             'fields.type[in]' : aboutDetailsTypes,
           })
           .then(async response => {
@@ -670,7 +641,6 @@ export default {
      */
     searchColSpan(viewport) {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
-        this.searchType.type === 'sparcPartners' ||
         this.searchType.type === 'simulation' ||
         this.searchType.type === 'sparcInfo'
       const viewports = {
