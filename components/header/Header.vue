@@ -282,6 +282,15 @@ export default {
     shouldShowSearch: function() {
       return this.$route.name !== 'data'
     },
+    firstPath: function() {
+      const path = this.$nuxt.$route.path
+      // ignore the first backslash
+      const endIndex = path.indexOf('/', 1)
+      if (endIndex == -1) {
+        return path.substring(0)
+      }
+      return path.substring(0, endIndex)
+    }
   },
 
   watch: {
@@ -327,7 +336,7 @@ export default {
      * @param {String} query
      */
     activeLink: function(query) {
-      if (this.$nuxt.$route.path.includes(query)) {
+      if (this.firstPath.includes(query)) {
         return true
       } else {
         return false
