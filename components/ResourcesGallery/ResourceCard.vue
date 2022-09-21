@@ -79,16 +79,7 @@ export default {
         `${this.description.substring(0, 134)}...` :
         this.description
     }
-  },
-  methods: {
-    /**
-     * Open a new link if link is provide.
-     * Fire an event if userData is provide.
-     */
-    cardClicked: function () {
-      
-    },
-  },
+  }
 }
 </script>
 
