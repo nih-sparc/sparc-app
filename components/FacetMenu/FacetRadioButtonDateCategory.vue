@@ -68,7 +68,7 @@ export default {
 
   computed: {
     monthNumber: function() {
-      return new Date(this.month + '-1-01').getMonth() + 1
+      return new Date(this.month + '/1/01').getMonth() + 1
     }
   },
   watch: {

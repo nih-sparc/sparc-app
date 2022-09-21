@@ -22,8 +22,8 @@
     <h3>Location</h3>
     <p>{{ page.fields.location }}</p>
 
-    <h3>External Link</h3>
-    <p>
+    <h3 v-if="page.fields.url">External Link</h3>
+    <p v-if="page.fields.url">
       <a :href="page.fields.url" target="_blank">{{ page.fields.url }}</a>
     </p>
   </news-events-resources-page>
