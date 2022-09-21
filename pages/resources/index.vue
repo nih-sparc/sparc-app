@@ -6,31 +6,20 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(fields.summary)" />
+      <NuxtLink to="/resources/biological">
+        <el-button class="secondary mb-16">Browse all Tools &amp; Resources</el-button>
+      </NuxtLink>
     </page-hero>
     <div class="page-wrap container">
-      <div class="mt-32">
-        <p class="tab2" v-html="fields.description" />
-        <div class="button-container">
-          <NuxtLink :to="'/data?type=sparcPartners&developedBySparc=true&skip=0'">
-            <el-button>Browse Tools &amp; Resources</el-button>
-          </NuxtLink>
-        </div>
-      </div>
       <div v-if="fields.featured !== undefined">
-        <h2 class="heading2 mt-32">Featured Tools &amp; Resources</h2>
-        <div>
-          <featured-resource
-            class="mt-32"
-            v-for="resource in fields.featured"
-            :key="resource.sys.id"
-            :title="resource.fields.name"
-            :subtitle="resource.fields.resourceType.join(', ')"
-            :tag="'SPARC'"
-            :description="resource.fields.description"
-            :thumbnail-url="resource.fields.logo.fields.file.url"
-            :button-link="`/resources/${resource.sys.id}`"
-            :external-url="resource.fields.url"
-          />
+        <div class="heading1 my-32">Featured Tools &amp; Resources</div>
+        <resources-gallery
+          :items="fields.featured"
+        />
+        <div class="link-container mt-16">
+          <NuxtLink class="browse-all-link" to="/resources/biological">
+            Browse All Tools &amp; Resources
+          </NuxtLink>
         </div>
       </div>
       <div class="pb-16">
@@ -50,8 +39,8 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
 import marked from '@/mixins/marked/index'
-import FeaturedResource from '@/components/Resources/FeaturedResource.vue'
 import Paper from '~/components/Paper/Paper.vue'
+import ResourcesGallery from '~/components/ResourcesGallery/ResourcesGallery.vue'
 
 const client = createClient()
 
@@ -63,8 +52,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    FeaturedResource,
     Paper,
+    ResourcesGallery,
   },
 
   asyncData() {
@@ -96,6 +85,13 @@ export default {
   background-color: $background;
 }
 .button-container {
+  text-align: center;
+}
+.browse-all-link {
+  text-decoration: underline;
+  font-weight: 500;
+}
+.link-container {
   text-align: center;
 }
 </style>

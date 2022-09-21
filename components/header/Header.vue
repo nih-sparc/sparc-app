@@ -282,6 +282,15 @@ export default {
     shouldShowSearch: function() {
       return this.$route.name !== 'data'
     },
+    firstPath: function() {
+      const path = this.$nuxt.$route.path
+      // ignore the first backslash
+      const endIndex = path.indexOf('/', 1)
+      if (endIndex == -1) {
+        return path.substring(0)
+      }
+      return path.substring(0, endIndex)
+    }
   },
 
   watch: {
@@ -327,7 +336,7 @@ export default {
      * @param {String} query
      */
     activeLink: function(query) {
-      if (this.$nuxt.$route.path.includes(query)) {
+      if (this.firstPath.includes(query)) {
         return true
       } else {
         return false
@@ -406,7 +415,6 @@ export default {
           query: {
             type,
             q: term,
-            developedBySparc: true
           }
         }
       }
@@ -432,11 +440,11 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     align-items: center;
   }
 }
-@media (min-width: 320px) and (max-width: 1120px) {
+@media (max-width: 1120px) {
   .overlay {
     position: absolute;
     top: 56px;
@@ -448,7 +456,7 @@ export default {
   }
 }
 
-@media (min-width: 320px) and (max-width: 1120px) {
+@media (max-width: 1120px) {
   .search-overlay {
     position: absolute;
     top: 56px;
@@ -500,7 +508,7 @@ export default {
     margin-right: 18px;
     text-decoration: none;
   }
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     & {
       display: none;
     }
@@ -514,7 +522,7 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
@@ -528,7 +536,7 @@ export default {
     &--social {
       display: none;
     }
-    @media (min-width: 320px) and (max-width: 1120px) {
+    @media (max-width: 1120px) {
       display: flex;
       flex-direction: column;
       a {
@@ -579,7 +587,7 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -593,7 +601,7 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     height: 2rem;
     width: 100%;
     margin-right: 0;
@@ -608,7 +616,7 @@ export default {
   justify-content: flex-end;
   width: 54%;
   margin-right: 1rem;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     width: 0;
   }
 }
@@ -707,7 +715,7 @@ export default {
     }
   }
 
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     & {
       background: $seafoam;
       bottom: 0;
@@ -743,7 +751,7 @@ export default {
   display: none;
 }
 
-@media (min-width: 320px) and (max-width: 1120px) {
+@media (max-width: 1120px) {
   .search-mobile {
     background-color: $cochlear;
     padding: 1em;
