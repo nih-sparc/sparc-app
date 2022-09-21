@@ -74,12 +74,20 @@
                     />
                   </span>
                 </div>
-                <div ref="communitySpotlightWrap" class="subpage">
-                  <community-spotlight-item
-                    v-for="(item, index) in communitySpotlightItems.items"
-                    :key="index"
-                    :story="getLinkedItem(item)"
-                  />
+                <div class="subpage">
+                  <template v-if="communitySpotlightItems.items.length > 0">
+                    <community-spotlight-item
+                      v-for="(item, index) in communitySpotlightItems.items"
+                      :key="index"
+                      :story="getLinkedItem(item)"
+                    />
+                  </template>
+                  <template v-else>
+                    <div class="no-results-container">
+                      No Results
+                      <hr />
+                    </div>
+                  </template>
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="communitySpotlightItems.items.length">
@@ -386,5 +394,13 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
 }
 .community-spotlight-facet-menu {
   margin-top: 2rem;
+}
+.no-results-container {
+  text-align: center;
+  color: $lightGrey;
+  hr {
+    border-top: none;
+    margin-top: 1rem;
+  }
 }
 </style>

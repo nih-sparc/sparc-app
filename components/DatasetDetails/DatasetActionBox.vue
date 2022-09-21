@@ -19,7 +19,7 @@
             v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
             :disabled="embargoAccess != null"
-            @click="requestAccess()"
+            @click="openAgreementPopup()"
           >
             Request Access
           </el-button> 
@@ -80,7 +80,7 @@
             v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
             :disabled="embargoAccess != null"
-            @click="requestAccess()"
+            @click="openAgreementPopup()"
           >
             Request Access
           </el-button> 
@@ -140,7 +140,7 @@
             v-if="userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED"
             slot="item"
             :disabled="embargoAccess != null"
-            @click="requestAccess()"
+            @click="openAgreementPopup()"
           >
             Request Access
           </el-button> 
@@ -167,24 +167,36 @@
         Cite Dataset
       </el-button>
     </div>
+    <data-use-agreement-popup
+      :show-dialog="showAgreementPopup"
+      @dialog-closed="showAgreementPopup = false"
+      @agreement-signed="requestAccess"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { propOr } from 'ramda'
-
 import { successMessage, failMessage } from '@/utils/notification-messages'
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
+import DataUseAgreementPopup from '@/components/DataUseAgreementPopup/DataUseAgreementPopup.vue'
 import { EMBARGO_ACCESS } from '@/utils/constants'
 
 export default {
   name: 'DatasetActionBox',
 
   components: {
+    DataUseAgreementPopup,
     DatasetBannerImage,
     SparcPill
+  },
+
+  data() {
+    return {
+      showAgreementPopup: false
+    }
   },
 
   computed: {
@@ -273,10 +285,13 @@ export default {
       link.click()
       link.remove()
     },
-    requestAccess(){
-       const url = `${process.env.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
+    openAgreementPopup: function() {
+      this.showAgreementPopup = true
+    },
+    requestAccess() {
+      const url = `${process.env.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
 
-       this.$axios
+      this.$axios
         .$post(url, {
           datasetId: this.datasetInfo.id,
         })
@@ -290,7 +305,6 @@ export default {
 
           throw error
         })
-
     },
     updateEmbargoAccess(access) {
       const newDatasetInfo = {
