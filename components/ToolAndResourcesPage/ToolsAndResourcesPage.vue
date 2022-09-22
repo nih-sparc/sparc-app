@@ -13,6 +13,25 @@
         <!-- marked will sanitize the HTML injected -->
         <slot />
         <div class="content" v-html="parseMarkdown(htmlContent)" />
+        <hr v-if="hasTutorial || hasWebinar" class="my-24"/>
+        <div class="mb-16" v-if="hasTutorial">
+          <div class="label4 mb-4" >
+            TUTORIALS & GUIDES
+          </div>
+          <a class="resource-link" v-for="(tutorial, index) in tutorials" :key="index" :href="tutorial.fields.url" :target="isInternalLink(tutorial.fields.url) ? '_self' : '_blank'">
+            {{ tutorial.fields.title }}
+            <svg-icon v-if="!isInternalLink(tutorial.fields.url)" name="icon-open" height="25" width="25" />
+          </a>
+        </div>
+        <div v-if="hasWebinar">
+          <div class="label4 mb-4" >
+            VIDEOS & WEBINARS
+          </div>
+          <a class="resource-link" v-for="(webinar, index) in webinars" :key="index" :href="webinar.fields.url" :target="isInternalLink(webinar.fields.url) ? '_self' : '_blank'">
+            {{ webinar.fields.title }}
+            <svg-icon v-if="!isInternalLink(webinar.fields.url)" name="icon-open" height="25" width="25" />
+          </a>
+        </div>
       </div>
       <nuxt-link class="back-link" to="/resources/biological">
         View All Tools & Resources >
@@ -26,6 +45,8 @@ import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import PageHero from '@/components/PageHero/PageHero'
+import { pathOr } from 'ramda'
+import { isInternalLink } from '@/mixins/marked/index'
 
 export default {
   name: 'ToolsAndResourcesPage',
@@ -64,6 +85,10 @@ export default {
     }
   },
 
+  methods: {
+    isInternalLink,
+  },
+
   computed: {
     /**
      * Compute HTML Content for the page
@@ -80,6 +105,18 @@ export default {
     pageUrl: function() {
       return `${process.env.ROOT_URL}${this.$route.fullPath}`
     },
+    tutorials: function() {
+      return pathOr(null, ['fields', 'tutorials'], this.page)
+    },
+    hasTutorial: function() {
+      return this.tutorials != null
+    },
+    webinars: function() {
+      return pathOr(null, ['fields', 'webinars'], this.page)
+    },
+    hasWebinar: function() {
+      return this.webinars != null
+    }
   },
 }
 </script>
@@ -106,5 +143,14 @@ export default {
 .back-link {
   color: $darkBlue;
   font-weight: 700;
+}
+hr {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.resource-link {
+  display: block;
+  text-decoration: underline;
 }
 </style>

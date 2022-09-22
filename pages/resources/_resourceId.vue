@@ -8,31 +8,31 @@
       :hero-summary="resource.fields.description"
       type="resource"
     >
-    <div class="row">
-      <div class="image-container mr-16 mb-16">
-        <img v-if="resourceLogoUrl" class="resource-image" :src="resourceLogoUrl" :alt="resourceLogoAlt" />
-      </div>
-      <div class="truncated">
-        <sparc-tooltip placement="bottom-center" :content="resource.fields.name" is-repeating-item-content>
-          <div slot="item" class="heading1 truncated">
-            {{ resource.fields.name }}
+      <div class="row">
+        <div class="image-container mr-16 mb-16">
+          <img v-if="resourceLogoUrl" class="resource-image" :src="resourceLogoUrl" :alt="resourceLogoAlt" />
+        </div>
+        <div class="truncated">
+          <sparc-tooltip placement="bottom-center" :content="resource.fields.name" is-repeating-item-content>
+            <div slot="item" class="heading1 truncated">
+              {{ resource.fields.name }}
+            </div>
+          </sparc-tooltip>
+          <span v-if="resource.fields.developedBySparc" class="mb-16 resource-category">
+            SPARC
+          </span>
+          <div class="label4">
+            URL
           </div>
-        </sparc-tooltip>
-        <span v-if="resource.fields.developedBySparc" class="mb-16 resource-category">
-          SPARC
-        </span>
-        <div class="label4">
-          URL
+          <a class="resource-url truncated" :href="resource.fields.url" target="_blank">
+            {{ resource.fields.url }}
+          </a>
+          <div class="mt-16 label4">
+            Share
+          </div>
+          <share-links class="mb-16"/>
         </div>
-        <a class="resource-url truncated" :href="resource.fields.url" target="_blank">
-          {{ resource.fields.url }}
-        </a>
-        <div class="mt-16 label4">
-          Share
-        </div>
-        <share-links class="mb-16"/>
       </div>
-    </div> 
     </tools-and-resources-page>
   </div>
 </template>
