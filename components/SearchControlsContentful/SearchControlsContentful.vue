@@ -78,7 +78,7 @@ export default {
 .search-form {
   display: flex;
   min-width: 275px;
-  margin: 0 0 1rem;
+  margin: 0;
 }
 .input-wrap {
   display: flex;

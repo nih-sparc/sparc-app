@@ -41,7 +41,7 @@
           <el-row :gutter="32">
             <client-only>
               <el-col
-                v-if="searchType.type === 'dataset' || searchType.type === 'simulation'"
+                v-if="searchType.type === 'dataset' || searchType.type === 'model' || searchType.type === 'simulation'"
                 class="facet-menu"
                 :sm="24"
                 :md="8"
@@ -81,13 +81,14 @@
                       @update-page-size="updateDataSearchLimit"
                     />
                   </p>
-                  <pagination
-                    v-if="searchData.limit < searchData.total"
-                    :page-size="searchData.limit"
-                    :total-count="searchData.total"
-                    :selected="curSearchPage"
-                    @select-page="onPaginationPageChange"
-                  />
+                  <span class="label1">
+                    Sort
+                    <sort-menu
+                      :options="algoliaSortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </span>
                 </div>
                 <div v-loading="isLoadingSearch" class="table-wrap">
                   <component
@@ -136,6 +137,7 @@ import {
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
+import SortMenu from '@/components/SortMenu/SortMenu.vue'
 
 const SparcInfoSearchResults = () =>
   import('@/components/SearchResults/SparcInfoSearchResults.vue')
@@ -146,27 +148,53 @@ const searchResultsComponents = {
   dataset: DatasetSearchResults,
   sparcInfo: SparcInfoSearchResults,
   simulation: DatasetSearchResults,
+  model: DatasetSearchResults
 }
 
 const searchTypes = [
   {
     label: 'Data',
     type: 'dataset',
-    filterId: process.env.ctf_filters_dataset_id,
     dataSource: 'algolia'
   },
   {
-    label: 'Models & Simulations',
+    label: 'Models',
+    type: 'model',
+    dataSource: 'algolia'
+  },
+  {
+    label: 'Simulations',
     type: 'simulation',
-    filterId: process.env.ctf_filters_simulation_id,
     dataSource: 'algolia'
   },
   {
     label: 'SPARC Information',
     type: 'sparcInfo',
-    filterId: process.env.ctf_filters_project_id,
     dataSource: 'contentful'
   }
+]
+
+const algoliaSortOptions = [
+  {
+    label: 'Published (desc)',
+    id: 'newest',
+    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
+  },
+  {
+    label: 'Published (asc)',
+    id: 'oldest',
+    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
+  },
+  {
+    label: 'A-Z',
+    id: 'alphabatical',
+    algoliaIndexName: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z
+  },
+  {
+    label: 'Z-A',
+    id: 'reverseAlphabatical',
+    algoliaIndexName: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A
+  },
 ]
 
 const searchData = {
@@ -183,7 +211,6 @@ import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
-const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 export default {
   name: 'DataPage',
@@ -193,13 +220,17 @@ export default {
     PageHero,
     DatasetFacetMenu,
     SearchForm,
-    SparcInfoFacetMenu
+    SparcInfoFacetMenu,
+    SortMenu
   },
 
   mixins: [],
 
   data: () => {
     return {
+      algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC),
+      selectedSortOption: algoliaSortOptions[0],
+      algoliaSortOptions,
       searchQuery: '',
       facets: [],
       visibleFacets: {},
@@ -315,6 +346,10 @@ export default {
       },
       immediate: true
     },
+
+    selectedSortOption: function(option) {
+      this.algoliaIndex = algoliaClient.initIndex(option.algoliaIndexName)
+    }
   },
 
   beforeMount: function() {
@@ -348,7 +383,7 @@ export default {
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
-    getAlgoliaFacets(algoliaIndex, facetPropPathMapping).then(data => this.facets = data).finally(() => {
+    getAlgoliaFacets(this.algoliaIndex, facetPropPathMapping).then(data => this.facets = data).finally(() => {
       this.fetchResults()
     })
   },
@@ -401,13 +436,15 @@ export default {
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
       const datasetsFilter =
-        searchType === 'simulation' ? '(NOT item.types.name:Dataset)' : "item.types.name:Dataset"
+        searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)' 
+          : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)' 
+          : "item.types.name:Dataset"
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
         this.latestSearchTerm = query     
-        algoliaIndex
+        this.algoliaIndex
           .search(query, {
             facets: ['*'],
             filters: `${datasetsFilter}`
@@ -420,7 +457,7 @@ export default {
               `${datasetsFilter}` : 
               filters + ` AND ${datasetsFilter}`
 
-            algoliaIndex
+            this.algoliaIndex
               .search(query, {
                 facets: ['*'],
                 hitsPerPage: this.searchData.limit,
@@ -642,6 +679,7 @@ export default {
     searchColSpan(viewport) {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
         this.searchType.type === 'simulation' ||
+        this.searchType.type === 'model' ||
         this.searchType.type === 'sparcInfo'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
@@ -650,6 +688,11 @@ export default {
       }
 
       return viewports[viewport] || 24
+    },
+    
+    async onSortOptionChange(option) {
+      this.selectedSortOption = option
+      this.onPaginationPageChange(1)
     }
   }
 }
@@ -741,7 +784,7 @@ export default {
   padding: 16px;
 }
 .search-heading {
-  align-items: center;
+  align-items: flex-end;
   display: flex;
   margin-bottom: 1em;
   justify-content: space-between;
