@@ -81,7 +81,7 @@
                       @update-page-size="updateDataSearchLimit"
                     />
                   </p>
-                  <span class="label1">
+                  <span v-if="searchType.type !== 'sparcInfo'" class="label1">
                     Sort
                     <sort-menu
                       :options="algoliaSortOptions"
