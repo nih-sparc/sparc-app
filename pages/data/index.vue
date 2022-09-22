@@ -158,12 +158,12 @@ const searchTypes = [
     dataSource: 'algolia'
   },
   {
-    label: 'Models',
+    label: 'Anatomical Models',
     type: 'model',
     dataSource: 'algolia'
   },
   {
-    label: 'Simulations',
+    label: 'Computational Models',
     type: 'simulation',
     dataSource: 'algolia'
   },
