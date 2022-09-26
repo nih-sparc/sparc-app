@@ -132,11 +132,10 @@ export default {
           to: {
             name: 'data',
             query: {
-              type: 'sparcInfo',
-              sparcInfoType: 'sparcAward'
+              type: 'projects'
             }
           },
-          label: 'Find Data'
+          label: 'Projects'
         }
       ]
     }
@@ -214,8 +213,8 @@ export default {
 .image-container {
   display: flex;
   aspect-ratio: 1;
-
-border: 1px solid $lineColor2;}
+  border: 1px solid $lineColor2;
+}
 .image {
   height: auto;
   width: 100%;
