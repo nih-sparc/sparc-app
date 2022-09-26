@@ -1,59 +1,79 @@
 <template>
-  <div class="project-details">
-    <details-header
-      :subtitle="projectSection"
-      :title="fields.title"
-      :description="fields.description"
-      :full-description="true"
-      :breadcrumb="breadcrumb"
-    >
-      <img
-        slot="banner image"
-        :src="getImageSrc"
-        :alt="getImageAlt"
-        height="368"
-        width="368"
-      />
-      <div slot="meta content" class="details-header__container--content-meta">
-        <div class="content-meta__item">
-          <h3>NIH Award</h3>
-          <p>{{ fields.awardId }}</p>
-        </div>
-        <div class="content-meta__item">
-          <h3>Principal Investigator</h3>
-          <p>{{ fields.principleInvestigator }}</p>
-        </div>
-        <div class="content-meta__item">
-          <h3>Institution</h3>
-          <p>{{ fields.institution.fields.name }}</p>
+  <div class="page">
+    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <div class="page-wrap container">
+      <div class="subpage">
+        <div class="row">
+          <el-col class="first-column mr-24">
+            <div class="image-container p-16 mx-32 mb-32">
+              <img
+                class="image"
+                :src="getImageSrc"
+                :alt="getImageAlt"
+              />
+            </div>
+            <hr />
+            <div class="body1">
+              <template v-if="projectSection">
+                <div class="label4">
+                  ANATOMICAL FOCUS
+                </div>
+                <div class="mb-16">
+                  {{ projectSection }}
+                </div>
+              </template>
+              <template v-if="investigator">
+                <div class="label4">
+                  PRINCIPAL INVESTIGATOR
+                </div>
+                <div class="mb-16">
+                  {{ investigator }}
+                </div>
+              </template>
+              <template v-if="institution">
+                <div class="label4">
+                  INSTITUTION
+                </div>
+                <div class="mb-16">
+                  {{ institution }}
+                </div>
+              </template>
+              <template v-if="awardId">
+                <div class="label4">
+                  NIH AWARD
+                </div>
+                <div class="mb-16">
+                  <a :href="nihReporterUrl" target="_blank">
+                    {{ awardId }}
+                    <svg-icon v-if="!isInternalLink(nihReporterUrl)" name="icon-open" height="25" width="25" />
+                  </a>
+                </div>
+              </template>
+              <div class="label4">
+                SHARE
+              </div>
+              <share-links class="share-links" />
+            </div>
+          </el-col>
+          <el-col>
+            <div class="heading2 mb-32">
+              {{ title }}
+            </div>
+            <div class="body1">
+              {{ description }}
+            </div>
+          </el-col>
         </div>
       </div>
-      <div slot="meta content" class="details-header__container--content-links">
-        <button>
-          <a :href="fields.nihReporterUrl" target="_blank">
-            View on NIH Website
-          </a>
-        </button>
-      </div>
-    </details-header>
-    <!-- <detail-tabs
-      :tabs="tabs"
-      :active-tab="activeTab"
-      class="container"
-      @set-active-tab="setActiveTab"
-    >
-      <dataset-search-results
-        v-show="activeTab === 'datasets'"
-        :table-data="datasets.datasets"
-      />
-    </detail-tabs> -->
+    </div>
   </div>
 </template>
 
 <script>
-import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
-import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
+import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
+import { isInternalLink } from '@/mixins/marked/index'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -62,9 +82,9 @@ const client = createClient()
 export default {
   name: 'ProjectDetails',
   components: {
+    Breadcrumb,
     DatasetSearchResults,
-    DetailsHeader,
-    DetailTabs
+    ShareLinks
   },
 
   async asyncData({ route, $axios }) {
@@ -132,7 +152,24 @@ export default {
         ? this.fields.institution.fields.logo.fields.file.url
         : ''
     },
-
+    title: function() {
+      return this.fields.title
+    },
+    description: function() {
+      return this.fields.description
+    },
+    awardId: function() {
+      return this.fields.awardId
+    },
+    institution: function() {
+      return this.fields.institution.fields.name
+    },
+    investigator: function() {
+      return this.fields.principleInvestigator
+    },
+    nihReporterUrl: function() {
+      return this.fields.nihReporterUrl || '#'
+    },
     /**
      * Get image source
      * @returns {String}
@@ -160,39 +197,41 @@ export default {
      */
     setActiveTab: function(activeLabel) {
       this.activeTab = activeLabel
-    }
+    },
+    isInternalLink,
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
-.project-details {
-  &__page-route {
-    background: $purple-gray;
-    height: 2.5rem;
-    margin-top: 0;
-    p {
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 16px;
-      padding-left: 2rem;
-      padding-top: 0.75rem;
-      margin-top: 0;
-      color: $midnight;
-    }
-
-    a {
-      text-decoration: none;
-      color: $midnight;
-    }
-  }
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.row {
+  display: flex;
 }
-@media screen and (max-width: 768px) {
-  .project-details {
-    &__page-route {
-      height: 3.5rem;
-    }
+.first-column {
+  max-width: 25rem;
+}
+.image-container {
+  display: flex;
+  aspect-ratio: 1;
+
+border: 1px solid $lineColor2;}
+.image {
+  height: auto;
+  width: 100%;
+  margin: auto;
+}
+hr {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+@media screen and (max-width: 760px) {
+  .row {
+    flex-direction: column;
+  }
+  .share-links {
+    margin-bottom: 1rem;
   }
 }
 </style>

@@ -42,10 +42,6 @@ const options = [
     label: 'policies',
     id: 'policies'
   },
-  {
-    label: 'projects',
-    id: process.env.ctf_project_id
-  }
 ]
 
 const sparcInvestigatorsCategory = {
