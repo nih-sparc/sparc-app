@@ -99,18 +99,18 @@
                     Sort
                     <sort-menu
                       :options="algoliaSortOptions"
-                      :selected-option="selectedSortOption"
-                      @update-selected-option="onSortOptionChange"
+                      :selected-option="selectedAlgoliaSortOption"
+                      @update-selected-option="onAlgoliaSortOptionChange"
                     />
                   </span>
-                  <!--<span v-else class="label1">
+                  <span v-else-if="searchType.type == 'projects'" class="label1">
                     Sort
                     <sort-menu
                       :options="projectsSortOptions"
-                      :selected-option="selectedSortOption"
-                      @update-selected-option="onSortOptionChange"
+                      :selected-option="selectedProjectsSortOption"
+                      @update-selected-option="onProjectsSortOptionChange"
                     />
-                  </span>-->
+                  </span>
                 </div>
                 <div v-loading="isLoadingSearch" class="table-wrap">
                   <component
@@ -227,6 +227,19 @@ const algoliaSortOptions = [
   },
 ]
 
+const projectsSortOptions = [
+  {
+    label: 'A-Z',
+    id: 'alphabatical',
+    sortOrder: 'fields.title'
+  },
+  {
+    label: 'Z-A',
+    id: 'reverseAlphabatical',
+    sortOrder: '-fields.title'
+  },
+]
+
 const searchData = {
   limit: 10,
   skip: 0,
@@ -284,8 +297,10 @@ export default {
   data: () => {
     return {
       algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC),
-      selectedSortOption: algoliaSortOptions[0],
+      selectedAlgoliaSortOption: algoliaSortOptions[0],
       algoliaSortOptions,
+      selectedProjectsSortOption: projectsSortOptions[0],
+      projectsSortOptions,
       searchQuery: '',
       facets: [],
       visibleFacets: {},
@@ -402,7 +417,7 @@ export default {
       immediate: true
     },
 
-    selectedSortOption: function(option) {
+    selectedAlgoliaSortOption: function(option) {
       this.algoliaIndex = algoliaClient.initIndex(option.algoliaIndexName)
     }
   },
@@ -555,7 +570,7 @@ export default {
       if (this.$route.query.type === "projects") {
         linkedEntriesTargetType = 'awardSection'
         contentType = 'sparcAward',
-        sortOrder = 'fields.title',
+        sortOrder = this.selectedProjectsSortOption.sortOrder,
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
       }
       if (this.$route.query.type === "sparcInfo") {
@@ -688,8 +703,12 @@ export default {
       return viewports[viewport] || 24
     },
     
-    async onSortOptionChange(option) {
-      this.selectedSortOption = option
+    async onAlgoliaSortOptionChange(option) {
+      this.selectedAlgoliaSortOption = option
+      this.onPaginationPageChange(1)
+    },
+    async onProjectsSortOptionChange(option) {
+      this.selectedProjectsSortOption = option
       this.onPaginationPageChange(1)
     }
   }
