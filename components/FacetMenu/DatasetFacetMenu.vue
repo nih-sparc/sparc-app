@@ -89,7 +89,11 @@ export default {
 
   computed: {
     visibleCategories: function() {
-      return this.$route.query.type === 'simulation' || 'model' ? visibleModelsAndSimulationsFacetCategories : visibleDatasetsFacetCategories
+      const menuType = this.$route.query.type
+      if (menuType === 'simulation' || menuType === 'model') {
+        return visibleModelsAndSimulationsFacetCategories
+      }
+      return visibleDatasetsFacetCategories
     },
     facetMenuVisibleFacets: function() {
       const availability = {
