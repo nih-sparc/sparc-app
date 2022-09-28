@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="Policies" />
+    <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -10,7 +10,7 @@
           <li v-for="type in searchTypes" :key="type.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: type.path === 'policies-and-standards' }"
+              :class="{ active: type.path === 'about-sparc' }"
               :to="{
                 path: type.path,
                 query: {
@@ -141,7 +141,7 @@ const fetchSearchData = async function(query, limit, skip, sortOrder, types) {
 }
 
 export default {
-  name: 'PoliciesPage',
+  name: 'AboutSparcPage',
 
   components: {
     AboutDetailsSearchResults,
@@ -151,7 +151,7 @@ export default {
   },
 
   async asyncData({ route, env }) {
-    const detailsTypes = env.ctf_about_details_page_types.filter(type => type == 'Policies').toString()
+    const detailsTypes = env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
     let searchData = await fetchSearchData(route.query.search, 10, 0, 'fields.title', detailsTypes)
     return {
       searchData
@@ -191,7 +191,7 @@ export default {
 
   computed: {
     detailsTypes: function() {
-      return process.env.ctf_about_details_page_types.filter(type => type == 'Policies').toString()
+      return process.env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
     },
     curSearchPage: function() {
       return this.tableData.skip / this.tableData.limit + 1

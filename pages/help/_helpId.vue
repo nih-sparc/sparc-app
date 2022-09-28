@@ -24,7 +24,6 @@
 import { format, parseISO } from 'date-fns'
 import { pathOr } from 'ramda'
 
-import HelpHero from '@/components/HelpHero/HelpHero'
 import MarkedMixin from '@/mixins/marked'
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb'
 
@@ -52,7 +51,6 @@ export default {
   name: 'EventPage',
 
   components: {
-    HelpHero,
     Breadcrumb
   },
 

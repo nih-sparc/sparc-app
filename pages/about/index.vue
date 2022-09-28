@@ -1,6 +1,6 @@
 <template>
   <div class="about-page pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
+    <breadcrumb :breadcrumb="breadcrumb" title="About" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
       <!-- eslint-disable vue/no-v-html -->

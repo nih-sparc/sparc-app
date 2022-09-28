@@ -28,10 +28,11 @@
         <h5>
           Search within category
         </h5>
-        <search-form
-          :defaultValue="searchQuery"
-          @search="submitSearch"
-          @clear="clearSearch"
+        <search-controls-contentful
+          class="search-bar"
+          placeholder="Enter search criteria"
+          :path="$route.path"
+          showSearchText
         />
       </div>
     </div>
@@ -70,19 +71,6 @@
                 />
               </el-col>
               <el-col
-                v-if="searchType.type === 'sparcInfo'"
-                class="facet-menu"
-                :sm="24"
-                :md="8"
-                :lg="6"
-              >
-                <sparc-info-facet-menu
-                  @sparc-info-selections-changed="onPaginationPageChange(1)"
-                  @hook:mounted="facetMenuMounted"
-                  ref="sparcInfoFacetMenu"
-                />
-              </el-col>
-              <el-col
                 :sm="searchColSpan('sm')"
                 :md="searchColSpan('md')"
                 :lg="searchColSpan('lg')"
@@ -95,7 +83,7 @@
                       @update-page-size="updateDataSearchLimit"
                     />
                   </p>
-                  <span v-if="searchType.type !== 'sparcInfo' && searchType.type !== 'projects' && searchData.items.length" class="label1">
+                  <span v-if="searchType.type !== 'projects' && searchData.items.length" class="label1">
                     Sort
                     <sort-menu
                       :options="algoliaSortOptions"
@@ -158,19 +146,23 @@ import {
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
+import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
+import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
+import { facetPropPathMapping, getAlgoliaFacets } from './utils'
+import createClient from '@/plugins/contentful.js'
+import createAlgoliaClient from '@/plugins/algolia.js'
+const client = createClient()
+const algoliaClient = createAlgoliaClient()
 
-const SparcInfoSearchResults = () =>
-  import('@/components/SearchResults/SparcInfoSearchResults.vue')
-  const ProjectSearchResults = () =>
+const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
 const DatasetSearchResults = () =>
   import('@/components/SearchResults/DatasetSearchResults.vue')
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
-  sparcInfo: SparcInfoSearchResults,
   projects: ProjectSearchResults,
   simulation: DatasetSearchResults,
   model: DatasetSearchResults
@@ -178,7 +170,7 @@ const searchResultsComponents = {
 
 const searchTypes = [
   {
-    label: 'Data',
+    label: 'Datasets',
     type: 'dataset',
     dataSource: 'algolia'
   },
@@ -195,11 +187,6 @@ const searchTypes = [
   {
     label: 'Projects',
     type: 'projects',
-    dataSource: 'contentful'
-  },
-  {
-    label: 'SPARC Information',
-    type: 'sparcInfo',
     dataSource: 'contentful'
   }
 ]
@@ -246,16 +233,6 @@ const searchData = {
   items: [],
 }
 
-import createClient from '@/plugins/contentful.js'
-import createAlgoliaClient from '@/plugins/algolia.js'
-import { facetPropPathMapping, getAlgoliaFacets } from './utils'
-import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
-import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
-import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
-
-const client = createClient()
-const algoliaClient = createAlgoliaClient()
-
 export default {
   name: 'DataPage',
 
@@ -263,9 +240,8 @@ export default {
     Breadcrumb,
     PageHero,
     DatasetFacetMenu,
-    SearchForm,
+    SearchControlsContentful,
     ProjectsFacetMenu,
-    SparcInfoFacetMenu,
     SortMenu
   },
 
@@ -284,7 +260,6 @@ export default {
           facetData.push({
             label: label,
             id: label,
-            facetPropPath: 'anatomicalFocus'
           })
         })
         projectsFacets = facetData
@@ -369,7 +344,7 @@ export default {
      * @returns {String}
      */
     searchHeading: function() {
-      const query = pathOr('', ['query', 'q'], this.$route)
+      const query = pathOr('', ['query', 'search'], this.$route)
 
       const searchTypeLabel = compose(
         propOr('', 'label'),
@@ -381,8 +356,8 @@ export default {
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
 
-    q: function() {
-      return this.$route.query.q || ''
+    search: function() {
+      return this.$route.query.search || ''
     },
 
     /**
@@ -409,9 +384,9 @@ export default {
       }
     },
 
-    '$route.query.q': {
-      handler: function(val) {
-        this.searchQuery = this.$route.query.q
+    '$route.query.search': {
+      handler: function() {
+        this.searchQuery = this.$route.query.search
         this.fetchResults()
       },
       immediate: true
@@ -441,7 +416,7 @@ export default {
       const queryParams = {
         skip: Number(this.$route.query.skip || searchData.skip),
         limit: Number(this.$route.query.limit || searchData.limit),
-        q: this.$route.query.q || ''
+        search: this.$route.query.search || ''
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
@@ -497,7 +472,7 @@ export default {
      */
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
-      const query = this.$route.query.q
+      const query = this.$route.query.search
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
       const datasetsFilter =
@@ -560,25 +535,15 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
-      var tags = this.$route.query.tags || undefined
-
       var contentType = this.$route.query.type  
-      var aboutDetailsTypes = undefined;
       var sortOrder = undefined;
       var anatomicalFocus = undefined;
       var linkedEntriesTargetType = undefined
       if (this.$route.query.type === "projects") {
-        linkedEntriesTargetType = 'awardSection'
         contentType = 'sparcAward',
         sortOrder = this.selectedProjectsSortOption.sortOrder,
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
-      }
-      if (this.$route.query.type === "sparcInfo") {
-        contentType = this.$refs.sparcInfoFacetMenu?.getSelectedType();
-        aboutDetailsTypes = this.$refs.sparcInfoFacetMenu?.aboutDetailsTypesToCheck
-        sortOrder = 'fields.title'
-        const sparcInfoTags = this.$refs.sparcInfoFacetMenu?.getTags()
-        tags = tags === undefined ? sparcInfoTags : (sparcInfoTags === undefined ? tags : `${tags}, ${sparcInfoTags}`) 
+        linkedEntriesTargetType = 'awardSection'
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false;
@@ -587,13 +552,11 @@ export default {
         client
           .getEntries({
             content_type: contentType,
-            query: this.$route.query.q,
+            query: this.$route.query.search,
             limit: this.searchData.limit,
             skip: this.searchData.skip,
             order: sortOrder,
             include: 2,
-            'fields.tags[all]' : tags,
-            'fields.type[in]' : aboutDetailsTypes,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
             'fields.projectSection.fields.title[in]' : anatomicalFocus
           })
@@ -621,25 +584,6 @@ export default {
       })
 
       this.fetchResults()
-    },
-
-    /**
-     * Submit search
-     */
-    submitSearch: function(term) {
-      this.searchData.skip = 0
-      const query = mergeLeft({ q: term }, this.$route.query)
-      this.$router.replace({ query })
-    },
-
-    /**
-     * Submit search
-     */
-    clearSearch: function() {
-      this.searchData.skip = 0
-      const query = { ...this.$route.query, q: '' }
-      this.searchQuery = ''
-      this.$router.replace({ query })
     },
 
     /**
@@ -692,8 +636,7 @@ export default {
       const hasFacetMenu = this.searchType.type === 'dataset' ||
         this.searchType.type === 'simulation' ||
         this.searchType.type === 'model' ||
-        this.searchType.type === 'projects' ||
-        this.searchType.type === 'sparcInfo'
+        this.searchType.type === 'projects'
       const viewports = {
         sm: hasFacetMenu ? 24 : 24,
         md: hasFacetMenu ? 16 : 24,

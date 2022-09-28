@@ -43,7 +43,6 @@
             </nuxt-link>
           </div>
           <button
-            v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch(searchQuery)"
@@ -145,7 +144,7 @@
               </div>
             </div>
           </div>
-          <div v-if="shouldShowSearch" class="nav-main-container__search">
+          <div class="nav-main-container__search">
             <el-input
               v-model="searchQuery"
               type="text"
@@ -249,25 +248,20 @@ export default {
           label: 'Datasets'
         },
         {
-          key: 'resources',
-          value: 'resources',
-          label: 'Resources'
+          key: 'resources-biological',
+          value: 'resources-biological',
+          label: 'Tools & Resources'
         },
         {
           key: 'news-and-events-news',
           value: 'news-and-events-news',
-          label: 'News'
+          label: 'News & Events'
         },
         {
-          key: 'news-and-events-events',
-          value: 'news-and-events-events',
-          label: 'Events'
+          key: 'about-about-sparc',
+          value: 'about-about-sparc',
+          label: 'About'
         },
-        {
-          key: 'news-and-events-community-spotlight',
-          value: 'news-and-events-community-spotlight',
-          label: 'Community Spotlight'
-        }
       ]
     }
   },
@@ -275,13 +269,6 @@ export default {
   computed: {
     ...mapState('user', ['cognitoUser', 'pennsieveUser']),
     ...mapGetters('user', ['profileComplete', 'pennsieveUsername']),
-    /**
-     * Compute if search should be visible
-     * @returns {Boolean}
-     */
-    shouldShowSearch: function() {
-      return this.$route.name !== 'data'
-    },
     firstPath: function() {
       const path = this.$nuxt.$route.path
       // ignore the first backslash
@@ -391,7 +378,6 @@ export default {
       let routeParams = {
         name: type,
         query: {
-          type,
           search: term
         }
       }
@@ -403,18 +389,7 @@ export default {
           name: 'data',
           query: {
             type,
-            q: term
-          }
-        }
-      }
-      // Searching on 'resources' takes user to the /data page with thier query
-      else if (option.value === 'resources') {
-        type = 'sparcPartners'
-        routeParams = {
-          name: 'data',
-          query: {
-            type,
-            q: term,
+            search: term
           }
         }
       }
