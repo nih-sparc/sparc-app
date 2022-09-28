@@ -28,10 +28,11 @@
         <h5>
           Search within category
         </h5>
-        <search-form
-          :defaultValue="searchQuery"
-          @search="submitSearch"
-          @clear="clearSearch"
+        <search-controls-contentful
+          class="search-bar"
+          placeholder="Enter search criteria"
+          :path="$route.path"
+          showSearchText
         />
       </div>
     </div>
@@ -158,8 +159,17 @@ import {
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
+import SparcInfoFacetMenu from '@/components/FacetMenu/SparcInfoFacetMenu.vue'
+import createClient from '@/plugins/contentful.js'
+import createAlgoliaClient from '@/plugins/algolia.js'
+import { facetPropPathMapping, getAlgoliaFacets } from './utils'
+import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
+import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
+
+const client = createClient()
+const algoliaClient = createAlgoliaClient()
 
 const SparcInfoSearchResults = () =>
   import('@/components/SearchResults/SparcInfoSearchResults.vue')
@@ -246,16 +256,6 @@ const searchData = {
   items: [],
 }
 
-import createClient from '@/plugins/contentful.js'
-import createAlgoliaClient from '@/plugins/algolia.js'
-import { facetPropPathMapping, getAlgoliaFacets } from './utils'
-import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
-import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
-import SparcInfoFacetMenu from '~/components/FacetMenu/SparcInfoFacetMenu.vue'
-
-const client = createClient()
-const algoliaClient = createAlgoliaClient()
-
 export default {
   name: 'DataPage',
 
@@ -263,7 +263,7 @@ export default {
     Breadcrumb,
     PageHero,
     DatasetFacetMenu,
-    SearchForm,
+    SearchControlsContentful,
     ProjectsFacetMenu,
     SparcInfoFacetMenu,
     SortMenu
@@ -369,7 +369,7 @@ export default {
      * @returns {String}
      */
     searchHeading: function() {
-      const query = pathOr('', ['query', 'q'], this.$route)
+      const query = pathOr('', ['query', 'search'], this.$route)
 
       const searchTypeLabel = compose(
         propOr('', 'label'),
@@ -381,8 +381,8 @@ export default {
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
 
-    q: function() {
-      return this.$route.query.q || ''
+    search: function() {
+      return this.$route.query.search || ''
     },
 
     /**
@@ -409,9 +409,9 @@ export default {
       }
     },
 
-    '$route.query.q': {
-      handler: function(val) {
-        this.searchQuery = this.$route.query.q
+    '$route.query.search': {
+      handler: function() {
+        this.searchQuery = this.$route.query.search
         this.fetchResults()
       },
       immediate: true
@@ -441,7 +441,7 @@ export default {
       const queryParams = {
         skip: Number(this.$route.query.skip || searchData.skip),
         limit: Number(this.$route.query.limit || searchData.limit),
-        q: this.$route.query.q || ''
+        search: this.$route.query.search || ''
       }
 
       this.searchData = { ...this.searchData, ...queryParams }
@@ -497,7 +497,7 @@ export default {
      */
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
-      const query = this.$route.query.q
+      const query = this.$route.query.search
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
       const datasetsFilter =
@@ -587,7 +587,7 @@ export default {
         client
           .getEntries({
             content_type: contentType,
-            query: this.$route.query.q,
+            query: this.$route.query.search,
             limit: this.searchData.limit,
             skip: this.searchData.skip,
             order: sortOrder,
@@ -621,25 +621,6 @@ export default {
       })
 
       this.fetchResults()
-    },
-
-    /**
-     * Submit search
-     */
-    submitSearch: function(term) {
-      this.searchData.skip = 0
-      const query = mergeLeft({ q: term }, this.$route.query)
-      this.$router.replace({ query })
-    },
-
-    /**
-     * Submit search
-     */
-    clearSearch: function() {
-      this.searchData.skip = 0
-      const query = { ...this.$route.query, q: '' }
-      this.searchQuery = ''
-      this.$router.replace({ query })
     },
 
     /**

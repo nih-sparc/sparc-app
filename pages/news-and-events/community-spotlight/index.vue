@@ -327,11 +327,6 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     font-weight: 600;
     font-size: 1rem;
   }
-  .search-bar {
-    ::v-deep .input-wrap {
-      width: 100% !important;
-    }
-  }
 }
 .search-tabs {
   display: flex;

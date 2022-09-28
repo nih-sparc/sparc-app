@@ -84,9 +84,7 @@ export default {
   display: flex;
   margin-right: 0.5rem;
   position: relative;
-  @media (min-width: 768px) {
-    width: 28.0625rem;
-  }
+  width: 100%;
 }
 input {
   background: #fff;

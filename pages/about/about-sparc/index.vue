@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="Devices" />
+    <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -10,7 +10,7 @@
           <li v-for="type in searchTypes" :key="type.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: type.path === 'devices' }"
+              :class="{ active: type.path === 'about-sparc' }"
               :to="{
                 path: type.path,
                 query: {
@@ -30,40 +30,30 @@
         <search-controls-contentful
           class="search-bar"
           placeholder="Enter search criteria"
-          path="/resources/devices"
+          path="/about/about-sparc"
           showSearchText
         />
       </div>
     </div>
-    <div class="pb-16 container mt-32">
+    <div class="pb-16 container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
             <client-only>
               <el-col
-                class="facet-menu"
-                :sm="24"
-                :md="6"
-                :lg="6"
-              >
-                <tools-and-resources-facet-menu
-                  @tool-and-resources-selections-changed="onPaginationPageChange(1)"
-                />
-              </el-col>
-              <el-col
                 :sm='24'
-                :md='18'
-                :lg='18'
+                :md='24'
+                :lg='24'
               >
-                <div class="search-heading mb-16">
-                  <div class="label1" v-show="resources.items.length">
-                    {{ resources.total }} Results | Showing
+                <div class="search-heading mt-32 mb-16">
+                  <div class="label1" v-show="tableData.length">
+                    {{ searchData.total }} Results | Showing
                     <pagination-menu
-                      :page-size="resources.limit"
+                      :page-size="searchData.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </div>
-                  <span v-if="resources.items.length" class="label1">
+                  <span class="label1">
                     Sort
                     <sort-menu
                       :options="sortOptions"
@@ -73,23 +63,21 @@
                   </span>
                 </div>
                 <div class="subpage">
-                  <resources-search-results
-                    :table-data="resources.items"
-                  />
+                  <about-details-search-results :table-data="tableData" />
                 </div>
                 <div class="search-heading">
-                  <div class="label1" v-if="resources.items.length">
-                    {{ resources.total }} Results | Showing
+                  <div class="label1" v-if="tableData.length">
+                    {{ searchData.total }} Results | Showing
                     <pagination-menu
-                      :page-size="resources.limit"
+                      :page-size="searchData.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </div>
                   <pagination
-                    v-if="resources.limit < resources.total"
+                    v-if="searchData.limit < searchData.total"
                     :selected="curSearchPage"
-                    :page-size="resources.limit"
-                    :total-count="resources.total"
+                    :page-size="searchData.limit"
+                    :total-count="searchData.total"
                     @select-page="onPaginationPageChange"
                   />
                 </div>
@@ -104,28 +92,69 @@
 
 <script>
 import { propOr } from 'ramda'
+import AboutDetailsSearchResults from '@/components/SearchResults/AboutDetailsSearchResults.vue'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
-import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
-import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
-import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
+
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
+
+const searchTypes = [
+  {
+    label: 'About Sparc',
+    path: 'about-sparc'
+  },
+  {
+    label: 'Policies',
+    path: 'policies-and-standards'
+  }
+]
+
+const sortOptions = [
+  {
+    label: 'A-Z',
+    id: 'alphabatical',
+    sortOrder: 'fields.title'
+  },
+  {
+    label: 'Z-A',
+    id: 'reverseAlphabatical',
+    sortOrder: '-fields.title'
+  },
+]
+
+const fetchSearchData = async function(query, limit, skip, sortOrder, types) {
+  return client
+      .getEntries({
+        content_type: 'aboutPageSecondLevel',
+        query: query,
+        limit: limit,
+        skip: skip,
+        order: sortOrder,
+        'fields.type[in]' : types
+      })
+      .then(async response => {
+        return response
+      })
+}
 
 export default {
-  name: 'DevicesPage',
+  name: 'AboutSparcPage',
 
   components: {
+    AboutDetailsSearchResults,
     Breadcrumb,
     SearchControlsContentful,
-    ResourcesSearchResults,
-    ToolsAndResourcesFacetMenu,
     SortMenu
   },
 
-  async asyncData({ route }) {
-    const resources = await fetchResources('Devices', route.query.search, undefined, undefined, 10, 0)
+  async asyncData({ route, env }) {
+    const detailsTypes = env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
+    let searchData = await fetchSearchData(route.query.search, 10, 0, 'fields.title', detailsTypes)
     return {
-      resources
+      searchData
     }
   },
 
@@ -142,9 +171,9 @@ export default {
           }
         },
         {
-          label: 'Tools & Resources',
+          label: 'About',
           to: {
-            name: 'resources'
+            name: 'about'
           }
         }
       ]
@@ -154,55 +183,40 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        // we use next tick to wait for the facet menu to be mounted
-        this.$nextTick(async () => {
-          this.resources = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, 10, 0)
-        })
+        this.searchData = await fetchSearchData(this.$route.query.search, 10, 0, this.sortOrder, this.detailsTypes)
       },
       immediate: true
     },
   },
 
   computed: {
-    /**
-     * Compute the current page based off the limit and the offset
-     * @returns {Number}
-     */
+    detailsTypes: function() {
+      return process.env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
+    },
     curSearchPage: function() {
-      return this.resources.skip / this.resources.limit + 1
+      return this.tableData.skip / this.tableData.limit + 1
     },
     sortOrder: function() {
-      return propOr('-fields.name', 'sortOrder', this.selectedSortOption)
+      return propOr('fields.title', 'sortOrder', this.selectedSortOption)
     },
-    developedBySparc: function() {
-      return this.$route.query.developedBySparc || undefined
+    tableData: function() {
+      return propOr([], 'items', this.searchData)
     },
   },
 
   methods: {
-    /**
-     * Get more events for the new page
-     * @param {Number} page
-     */
     async onPaginationPageChange(page) {
-      const { limit } = this.resources
+      const { limit } = this.searchData
       const offset = (page - 1) * limit
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, limit, offset)
-      this.resources = response
+      this.searchData = await fetchSearchData(this.$route.query.search, limit, offset, this.sortOrder, this.detailsTypes)
     },
-    /**
-     * Update limit based on pagination menu selection and get more events
-     * @param {Number} limit
-     */
     async onPaginationLimitChange(limit) {
-      const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, newLimit, 0)
-      this.resources = response
+      const newLimit = limit === 'View All' ? this.this.searchData.total : limit
+      this.searchData = await fetchSearchData(this.$route.query.search, newLimit, 0, this.sortOrder, this.detailsTypes)
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, this.resources.limit, 0)
-      this.resources = response
+      this.searchData = await fetchSearchData(this.$route.query.search, this.searchData.limit, 0, this.sortOrder, this.detailsTypes)
     }
   }
 }
@@ -213,21 +227,9 @@ export default {
 .page-data {
   background-color: $background;
 }
-.event-list-item {
-  border-top: 1px solid $lineColor2;
-  padding: 1rem 0;
-  &:first-child {
-    border: none;
-    padding-top: 0;
-  }
-  &:last-child {
-    padding-bottom: 0;
-  }
-}
 .subpage {
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  padding-bottom: 1rem;
+  margin-bottom: .5rem;
+  margin-top: .5rem;
 }
 .page-wrap {
   margin-bottom: 2.5rem;
@@ -312,8 +314,5 @@ export default {
     align-items: flex-start;
     margin-bottom: 0;
   }
-}
-.events-facet-menu {
-  margin-top: 2rem;
 }
 </style>
