@@ -260,7 +260,6 @@ export default {
           facetData.push({
             label: label,
             id: label,
-            facetPropPath: 'anatomicalFocus'
           })
         })
         projectsFacets = facetData
