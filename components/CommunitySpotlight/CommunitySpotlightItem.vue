@@ -61,7 +61,7 @@
         </tr>
         <tr>
           <td class="property-name-column">
-            Anatomical Structure
+            Anatomical Structure(s)
           </td>
           <td>
             {{ anatomicalStructureText }}
@@ -87,7 +87,7 @@ export default {
       return youtubeEmbeddedSource(this.story.fields.youtubeUrl)
     },
     anatomicalStructureText: function() {
-      return this.story.anatomicalStructure ? this.story.anatomicalStructure.join(', ') : 'n/a'
+      return this.story.anatomicalStructures ? this.story.anatomicalStructures.join(', ') : 'n/a'
     }
   }
 }
