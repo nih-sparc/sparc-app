@@ -8,7 +8,7 @@
       </p>
     </page-hero>
     <div class="page-wrap container">
-      <div class="subpage">
+      <div class="subpage mb-32">
         <!-- eslint-disable vue/no-v-html -->
         <!-- marked will sanitize the HTML injected -->
         <slot />
@@ -123,9 +123,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
-.subpage {
-  margin-bottom: 2rem;
-}
 .content {
   & ::v-deep img,
   & ::v-deep video {

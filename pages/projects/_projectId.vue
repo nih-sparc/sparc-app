@@ -1,8 +1,8 @@
 <template>
-  <div class="page">
+  <div class="page pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="page-wrap container">
-      <div class="subpage">
+      <div class="subpage mb-32">
         <div class="row">
           <el-col class="first-column mr-24">
             <div class="image-container p-16 mx-32 mb-32">
@@ -54,6 +54,22 @@
               </div>
               <share-links class="share-links" />
             </div>
+            <template v-if="showAssociatedDatasets">
+              <hr class="mt-16" />
+              <div class="label4">
+                ASSOCIATED DATASETS
+              </div>
+              <br />
+              <div class="associated-datasets-container">
+                <div
+                  v-for="(dataset, index) in associatedDatasets"
+                  :key="index"
+                  class="body4 "
+                >
+                  <dataset-card :id="dataset.id" />
+                </div>
+              </div>
+            </template>
           </el-col>
           <el-col>
             <div class="heading2 mb-32">
@@ -65,15 +81,19 @@
           </el-col>
         </div>
       </div>
+      <nuxt-link class="back-link" to="/data?type=projects">
+        View All Projects >
+      </nuxt-link>
     </div>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
+import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
 import { isInternalLink } from '@/mixins/marked/index'
+import { propOr, isEmpty } from 'ramda'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -83,7 +103,7 @@ export default {
   name: 'ProjectDetails',
   components: {
     Breadcrumb,
-    DatasetSearchResults,
+    DatasetCard,
     ShareLinks
   },
 
@@ -91,15 +111,15 @@ export default {
     try {
       const project = await client.getEntry(route.params.projectId)
 
-      const datasets = await $axios
-        .$get(`${process.env.portal_api}/projects/${project.fields.awardId}`)
+      const associatedDatasets = await $axios
+        .$get(`${process.env.portal_api}/project/${project.fields.awardId}`)
         .catch(() => {
           return {}
         })
 
       return {
         fields: project.fields,
-        datasets
+        associatedDatasets: propOr([], 'datasets', associatedDatasets)
       }
     } catch (e) {
       console.error(e)
@@ -108,19 +128,6 @@ export default {
 
   data() {
     return {
-      datasets: {
-        datasets: [],
-        limit: 0,
-        offset: 0,
-        totalCount: 0
-      },
-      tabs: [
-        {
-          label: 'Datasets',
-          type: 'datasets'
-        }
-      ],
-      activeTab: 'datasets',
       breadcrumb: [
         {
           to: {
@@ -186,17 +193,13 @@ export default {
       return this.fields.projectSection
         ? this.fields.projectSection.fields.title
         : ''
+    },
+    showAssociatedDatasets: function() {
+      return !isEmpty(this.associatedDatasets)
     }
   },
 
   methods: {
-    /**
-     * Sets active tab
-     * @param {String} activeLabel
-     */
-    setActiveTab: function(activeLabel) {
-      this.activeTab = activeLabel
-    },
     isInternalLink,
   }
 }
@@ -204,8 +207,15 @@ export default {
 
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page {
+  background-color: $background;
+}
 .row {
   display: flex;
+}
+.back-link {
+  color: $darkBlue;
+  font-weight: 700;
 }
 .first-column {
   max-width: 25rem;
@@ -225,11 +235,20 @@ hr {
   border-left: none;
   border-right: none;
 }
+.associated-datasets-container {
+  max-height: 20rem;
+  overflow: auto;
+  overflow-x: hidden;
+  text-overflow: hidden;
+}
 @media screen and (max-width: 760px) {
   .row {
     flex-direction: column;
   }
   .share-links {
+    margin-bottom: 1rem;
+  }
+  .associated-datasets-container {
     margin-bottom: 1rem;
   }
 }
