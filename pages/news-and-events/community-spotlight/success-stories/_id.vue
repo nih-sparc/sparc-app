@@ -33,44 +33,44 @@
               />
             </div>
             <div class="seperator-path my-32" />
-            <div class="body4 story-bold-field">
-              Author
+            <div class="label4">
+              AUTHOR
             </div>
-            <div class="body4">
+            <div class="content body4">
               {{ author }}
             </div>
             <br />
             <template v-if="entry.publishedDate">
-              <div class="body4 story-bold-field">
-                Published Date
+              <div class="label4">
+                PUBLISHED DATE
               </div>
-              <div class="body4">
+              <div class="content body4">
                 {{ formatDate(entry.publishedDate) }}
               </div>
               <br />
             </template>
             <template v-if="entry.contributorsMarkdown">
-              <div class="body4 story-bold-field">
-                Team Members
+              <div class="label4">
+                TEAM MEMBERS
               </div>
               <div class="content body4" v-html="parseMarkdown(entry.contributorsMarkdown)" />
               <br />
             </template>
             <template v-if="entry.referencesMarkdown">
-              <div class="body4 story-bold-field">
-                Supporting information
+              <div class="label4">
+                SUPPORTING INFORMATION
               </div>
               <div class="content body4" v-html="parseMarkdown(entry.referencesMarkdown)" />
               <br />
             </template>
-            <div class="body4 story-bold-field">
+            <div class="label4">
               Share
             </div>
             <share-links />
             <div class="seperator-path my-32" />
             <template v-if="entry.associatedDatasets">
-              <div class="body4 story-bold-field">
-                Associated Datasets
+              <div class="label4">
+                ASSOCIATED DATASETS
               </div>
               <br />
               <div
@@ -284,12 +284,6 @@ export default {
   height: 0.125rem;
   background: $lineColor1;
   border-radius: 0px;
-}
-
-.story-bold-field {
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
 }
 
 .btn-copy-permalink {

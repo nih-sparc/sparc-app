@@ -103,7 +103,7 @@ const client = createClient()
 
 const searchTypes = [
   {
-    label: 'About Sparc',
+    label: 'About SPARC',
     path: 'about-sparc'
   },
   {

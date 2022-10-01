@@ -245,7 +245,7 @@ export default {
         {
           key: 'data',
           value: 'data',
-          label: 'Datasets'
+          label: 'Data'
         },
         {
           key: 'resources-biological',
