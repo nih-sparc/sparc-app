@@ -119,7 +119,6 @@ export default {
             required: true,
             message: 'Please enter your name',
             trigger: 'blur',
-            validator: this.validateForNewsletter
           }
         ],
         title: [
