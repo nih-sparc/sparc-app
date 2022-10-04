@@ -27,7 +27,7 @@
         <paper
           :text="parseMarkdown(fields.paperText)"
           :button-text="'Submit a recommendation'"
-          :button-link-external="'https://www.wrike.com/form/eyJhY2NvdW50SWQiOjMyMDM1ODgsInRhc2tGb3JtSWQiOjQ1Mjg4MX0JNDc3NjMzODM2NzUxMAk3MThkYTgzMDA5NTA4OGE1YmQ1YzdiZmQzY2YyZTA4MTQ4ZDQyNDhkYWFjZTU0OTMxN2U0ZmQ5MTAzYmY0MWRh'"
+          button-link="/resources/submit"
         />
       </div>
     </div>
