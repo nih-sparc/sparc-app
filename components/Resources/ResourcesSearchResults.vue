@@ -105,12 +105,14 @@ export default {
     }
 
     &--image {
+      display: flex;
       margin-right: 1rem;
       @media (min-width: 48em) {
         flex-shrink: 0;
         width: 128px;
       }
       img {
+        margin: auto;
         width: 100%;
         height: auto;
       }
