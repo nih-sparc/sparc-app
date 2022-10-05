@@ -19,7 +19,7 @@
     </div>
     <a v-if="buttonLink !== null" :href="buttonLink">
       <el-button class="secondary">
-        View resource
+        Learn More
       </el-button>
     </a>
   </el-card>
