@@ -63,7 +63,7 @@
       <el-input v-model="form.email" placeholder="Email here" type="email" />
     </el-form-item>
 
-    <el-form-item prop="shouldSubscribe">
+    <el-form-item prop="shouldSubscribe" class="mt-16">
       <el-checkbox v-model="form.shouldSubscribe">
         Subscribe to the SPARC Newsletter
       </el-checkbox>

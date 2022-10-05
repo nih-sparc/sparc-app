@@ -319,6 +319,13 @@ export default {
             trigger: 'change'
           }
         ],
+        otherCategoryDescription: [
+          {
+            message: 'Please enter a description',
+            trigger: 'change',
+            validator: this.validateCategoryDescription
+          }
+        ],
         isFree: [
           {
             required: true,
@@ -354,11 +361,25 @@ export default {
             trigger: 'blur',
           }
         ],
+        primaryGoal: [
+          {
+            message: 'Please enter your goal',
+            trigger: 'change',
+            validator: this.validatePrimaryGoal
+          }
+        ],
         hasBeenUsed: [
           {
             required: true,
             message: 'Please select one',
             trigger: 'blur',
+          }
+        ],
+        howUsed: [
+          {
+            message: 'Please enter how it was used',
+            trigger: 'change',
+            validator: this.validateHowUsed
           }
         ],
         isWilling: [
@@ -416,6 +437,26 @@ export default {
       })
     },
 
+    validateHowUsed: function(rule, value, callback) {
+      if (this.form.hasBeenUsed == 'Yes' && value === '') {
+        callback(new Error(rule.message))
+      }
+      callback()
+    },
+
+    validateCategoryDescription: function(rule, value, callback) {
+      if (this.isOtherSelected && value === '') {
+        callback(new Error(rule.message))
+      }
+      callback()
+    },
+
+    validatePrimaryGoal: function(rule, value, callback) {
+      if (this.form.isCreator == 'Yes' && value === '') {
+        callback(new Error(rule.message))
+      }
+      callback()
+    },
     /**
      * Send form to endpoint
      */
@@ -452,7 +493,7 @@ export default {
           <br>
           <b>If you answered 'Other', please describe the category for this tool/resource:</b>
           <br>
-          ${this.isOtherSelected ?this.form.otherCategoryDescription == '' ? '&lt;submitter left blank&gt;' : this.form.otherCategoryDescription : 'N/A'}
+          ${this.isOtherSelected ? this.form.otherCategoryDescription : 'N/A'}
           <br>
           <br>
           <b>Is it free and/or open-source?</b>
@@ -482,7 +523,7 @@ export default {
           <br>
           <b>If yes, what was your primary goal in creating this tool/resource?</b>
           <br>
-          ${this.form.isCreator == 'No' ? 'N/A' : this.form.primaryGoal == '' ? '&lt;submitter left blank&gt;' : this.form.primaryGoal}
+          ${this.form.isCreator == 'Yes' ? this.form.primaryGoal : 'N/A'}
           <br>
           <br>
           <b>To date, has this tool been used in an NIH SPARC-funded project?</b>
@@ -492,7 +533,7 @@ export default {
           <br>
           <b>If yes, how has it been used in NIH SPARC-funded research?</b>
           <br>
-          ${this.form.hasBeenUsed == 'Yes' ? this.form.howUsed == '' ? '&lt;submitter left blank&gt;' : this.form.howUsed : 'N/A'}
+          ${this.form.hasBeenUsed == 'Yes' ? this.form.howUsed : 'N/A'}
           <br>
           <br>
           <b>Are you willing to participate in other user research to support the development of the SPARC Portal?</b>

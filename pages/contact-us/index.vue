@@ -191,9 +191,6 @@ h2 {
 <style lang="scss">
 @import '@/assets/_variables.scss';
 .contact-us-page {
-  .el-form-item:not(.mb-0) {
-    margin-bottom: 3.25rem;
-  }
   .el-form-item__label {
     color: #000;
     font-size: 1.625rem;
