@@ -43,10 +43,11 @@
             </a>
           </p>
         </template>
-
-        <p class="resources-search-results__items--content-description">
-          {{ data.fields.description }}
-        </p>
+        <!-- eslint-disable vue/no-v-html -->
+        <p
+          class="resources-search-results__items--content-description"
+          v-html="parseMarkdown(data.fields.description)"
+        />
       </div>
     </div>
   </div>
@@ -54,12 +55,13 @@
 
 <script>
 import { pathOr } from 'ramda'
+import marked from '@/mixins/marked/index'
 
 import FormatDate from '@/mixins/format-date'
 export default {
   name: 'ResourceSearchResults',
 
-  mixins: [FormatDate],
+  mixins: [FormatDate, marked],
   props: {
     tableData: {
       type: Array,
