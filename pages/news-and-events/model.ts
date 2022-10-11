@@ -104,10 +104,8 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, pub
   }
 }
 
-export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, terms?: string, spotlightTypes?: Array<string>, anatomicalStructures?: Array<string>, sortOrder?: string, limit?: number, skip?: number) : Promise<CommunitySpotlightItemsCollection> => {
-
+export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, terms?: string, spotlightTypes?: Array<string>, anatomicalStructuresEntryIds?: Array<string>, sortOrder?: string, limit?: number, skip?: number) : Promise<CommunitySpotlightItemsCollection> => {
   const query = replaceTerms(terms)
-
   try {
     return await client.getEntries<CommunitySpotlightItemEntry>({
       content_type: process.env.ctf_community_spotlight_item_id,
@@ -115,8 +113,10 @@ export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, 
       query,
       limit,
       skip,
-      'fields.itemType[in]': spotlightTypes,
-      'fields.anatomicalStructure[in]': anatomicalStructures
+      'fields.itemType[in]': spotlightTypes?.toString(),
+      // we need to use the entry ID instead of name field like we do for the projects 'anatomical focus' facet because it is a multiple references field and not a singular
+      // https://www.contentfulcommunity.com/t/searching-on-multiple-reference-fields/377
+      'fields.anatomicalFocus.sys.id[in]': anatomicalStructuresEntryIds?.toString(),
     })
   } catch (e) {
     console.error(e)

@@ -1,4 +1,10 @@
-export const sparcInvestigator = ['No', 'Yes', 'Other']
+export const typeOfUser = [
+  'DRC member', 
+  'Investigator', 
+  'RE-JOIN',
+  'non-SPARC user',
+  'Other'
+]
 
 export const pageOrResource = [
   'About',

@@ -7,19 +7,19 @@
     :hide-required-asterisk="true"
   >
     <el-form-item
-      prop="sparcInvestigator"
-      label="Are you a SPARC investigator? *"
+      prop="typeOfUser"
+      label="What type of user are you? *"
     >
       <el-select
-        v-model="form.sparcInvestigator"
+        v-model="form.typeOfUser"
         aria-placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="sparcInvestigatorOption in questionOptions.sparcInvestigator"
-          :key="sparcInvestigatorOption"
-          :label="sparcInvestigatorOption"
-          :value="sparcInvestigatorOption"
+          v-for="typeOfUserOption in questionOptions.typeOfUser"
+          :key="typeOfUserOption"
+          :label="typeOfUserOption"
+          :value="typeOfUserOption"
         />
       </el-select>
     </el-form-item>
@@ -43,7 +43,9 @@
     </el-form-item>
 
     <el-form-item prop="pageUrl" label="Provide the problematic page's URL">
-      <el-input v-model="form.pageUrl" placeholder="URL" />
+      <el-input v-model="form.pageUrl" placeholder="URL">
+        <template slot="prepend">Http://</template>
+      </el-input>
     </el-form-item>
 
     <el-form-item
@@ -78,14 +80,13 @@
       />
     </el-form-item>
 
-    <el-form-item prop="shouldFollowUp" class="mb-0">
+    <el-form-item prop="shouldFollowUp" class="mt-16">
       <el-checkbox v-model="form.shouldFollowUp">
         Let me know when you resolve this issue
       </el-checkbox>
     </el-form-item>
 
-    <template v-if="form.shouldFollowUp">
-      <el-form-item prop="firstName" label="First Name" class="mt-32">
+      <el-form-item prop="firstName" label="First Name" class="">
         <el-input v-model="form.firstName" placeholder="First name here" />
       </el-form-item>
 
@@ -97,12 +98,11 @@
         <el-input v-model="form.email" placeholder="Email here" type="email" />
       </el-form-item>
 
-      <el-form-item prop="shouldSubscribe">
+      <el-form-item prop="shouldSubscribe" class="mt-16">
         <el-checkbox v-model="form.shouldSubscribe">
           Subscribe to the SPARC Newsletter
         </el-checkbox>
       </el-form-item>
-    </template>
 
     <el-form-item>
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import { sparcInvestigator, pageOrResource } from '../questions'
+import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
 
 export default {
@@ -127,7 +127,7 @@ export default {
   data() {
     return {
       form: {
-        sparcInvestigator: '',
+        typeOfUser: '',
         pageOrResource: '',
         title: '',
         description: '',
@@ -140,12 +140,12 @@ export default {
         pageUrl: ''
       },
       questionOptions: {
-        sparcInvestigator,
+        typeOfUser,
         pageOrResource
       },
       isSubmitting: false,
       formRules: {
-        sparcInvestigator: [
+        typeOfUser: [
           {
             required: true,
             message: 'Please select one',
@@ -155,16 +155,16 @@ export default {
 
         email: [
           {
-            required: true,
             message: 'Please enter your email',
             type: 'email',
-            trigger: 'blur'
+            trigger: 'blur',
+            validator: this.validateEmail
           }
         ],
 
         firstName: [
           {
-            required: true,
+            required: false,
             message: 'Please enter your first name',
             trigger: 'blur',
             validator: this.validateForNewsletter
@@ -173,7 +173,7 @@ export default {
 
         lastName: [
           {
-            required: true,
+            required: false,
             message: 'Please enter your last name',
             trigger: 'blur',
             validator: this.validateForNewsletter
@@ -235,6 +235,13 @@ export default {
       })
     },
 
+     validateEmail: function(rule, value, callback) {
+      if (this.form.shouldFollowUp && value === '') {
+        callback(new Error(rule.message))
+      }
+      callback()
+    },
+
     /**
      * Send form to endpoint
      */
@@ -245,7 +252,7 @@ export default {
         .post(`${process.env.portal_api}/tasks`, {
           title: this.form.title,
           description: `
-            Are you a SPARC investigator?<br>${this.form.sparcInvestigator}
+          What type of user are you?<br>${this.form.typeOfUser}
             <br><br>Is this about a specific page or resource?
             <br>${this.form.pageOrResource}${
             this.form.pageUrl ? ' - ' + this.form.pageUrl : ''

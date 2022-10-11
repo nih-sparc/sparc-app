@@ -83,7 +83,7 @@ export default {
           label: 'Home'
         },
         {
-          label: 'About SPARC',
+          label: 'About',
           to: {
             name: 'about'
           }

@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div class="page pb-32">
     <breadcrumb :breadcrumb="breadcrumb" title="Event Details" />
     <page-hero>
       <h1>{{ heroTitle }}</h1>
-      <p>
+      <div class="body2">
         {{ heroSummary }}
-      </p>
+      </div>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="page-wrap container pt-32">
       <div class="subpage">
         <div class="header mb-32">
           <h2>Event Details</h2>
@@ -17,7 +17,7 @@
         </div>
         <!-- eslint-disable vue/no-v-html -->
         <!-- marked will sanitize the HTML injected -->
-        <div v-html="parseMarkdown(htmlDetails)" />
+        <div class="content" v-html="parseMarkdown(htmlDetails)" />
       </div>
     </div>
   </div>
@@ -148,3 +148,19 @@ export default {
 }
 
 </script>
+<style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page {
+  background-color: $background;
+}
+.content {
+  ::v-deep img {
+    height: auto;
+    margin: 0.5em 0;
+    max-width: 100%;
+  }
+}
+.subpage {
+  margin: 0;
+}
+</style>

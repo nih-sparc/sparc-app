@@ -25,7 +25,7 @@
           <h2>{{ data.fields.name }}</h2>
         </router-link>
         <a v-else :href="data.fields.url" target="blank">
-          <h2>{{ data.fields.name }}</h2>
+          <h2>{{ data.fields.name }}<svg-icon name="icon-open" height="30" width="30" /></h2>
         </a>
         <p v-if="data.fields.developedBySparc" class="resource-category">
           SPARC
@@ -105,12 +105,14 @@ export default {
     }
 
     &--image {
+      display: flex;
       margin-right: 1rem;
       @media (min-width: 48em) {
         flex-shrink: 0;
         width: 128px;
       }
       img {
+        margin: auto;
         width: 100%;
         height: auto;
       }

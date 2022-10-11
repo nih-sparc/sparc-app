@@ -82,7 +82,7 @@
         </el-row>
 
         <div>
-          <div class="heading1 my-16">Community Spotlight</div>
+          <div class="heading1 mb-16 mt-32">Community Spotlight</div>
           <community-spotlight-listings :stories="stories.items" :bottom-link="true" />
         </div>
 
