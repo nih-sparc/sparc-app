@@ -14,6 +14,14 @@
         </div>
         <div v-else>
           <div><span class="label4">Option 1 - Direct download: </span>Direct downloads are only available free of charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS. </div>
+          <sparc-tooltip
+            placement="top-center"
+          >
+            <div slot="data">
+              Dataset size is over 5GB
+            </div>
+            <el-button slot="item" disabled class="my-16">Download full dataset</el-button>
+          </sparc-tooltip>
         </div>
       </div>
       <div class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
