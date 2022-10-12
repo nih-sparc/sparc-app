@@ -98,7 +98,6 @@ import { mapState } from 'vuex'
 import { clone, propOr, isEmpty, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import createAlgoliaClient from '@/plugins/algolia.js'
-import { EMBARGO_ACCESS } from '@/utils/constants'
 
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
@@ -746,9 +745,6 @@ export default {
       return numDownloads
     },
     hasFiles: function() {
-      if (this.embargoed && this.embargoAccess !== EMBARGO_ACCESS.GRANTED) {
-        return false
-      }
       return this.fileCount >= 1
     },
     hasGalleryImages: function() {
