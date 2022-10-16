@@ -31,7 +31,7 @@
       <div class="bx--row">
         <div class="bx--col-sm-4 bx--col-md-8 bx--col left-column">
           <div v-if="!isDatasetSizeLarge">
-            <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of the raw files and metadata directly to your computer free of charge.</div>
+            <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of the raw files and metadata directly to your computer free of charge. Please note that the files will be compressed upon download.</div>
             <a :href="downloadUrl">
               <el-button class="my-16">Download full dataset</el-button>
             </a>
