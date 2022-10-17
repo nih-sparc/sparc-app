@@ -17,13 +17,13 @@
     <div class="pt-32 pb-16">
       <div class="container">
         <div v-if="Object.keys(featuredEvent).length" class="mb-48">
-          <h2>Featured Event</h2>
+          <div class="heading2 mb-16">Featured Event</div>
           <featured-event :event="featuredEvent" />
         </div>
 
         <el-row :gutter="32">
-          <el-col :sm="12">
-            <div class="heading1 mb-16">Latest News</div>
+          <el-col class="mb-16" :sm="12">
+            <div class="heading2 mb-16">Latest News</div>
             <div class="subpage news-wrap">
               <div>
                 <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
@@ -40,7 +40,7 @@
             </div>
           </el-col>
           <el-col :sm="12">
-            <div class="heading1 mb-16">Events</div>
+            <div class="heading2 mb-16">Events</div>
             <content-tab-card
               class="tabs p-32"
               :tabs="eventsTabs"
@@ -82,11 +82,11 @@
         </el-row>
 
         <div>
-          <div class="heading1 mb-16 mt-32">Community Spotlight</div>
+          <div class="heading2 mb-16 mt-32">Community Spotlight</div>
           <community-spotlight-listings :stories="stories.items" :bottom-link="true" />
         </div>
 
-        <div class="heading1 mt-32 mb-16">Stay Connected</div>
+        <div class="heading2 mt-32 mb-16">Stay Connected</div>
         <div class="subpage py-16">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
