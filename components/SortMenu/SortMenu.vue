@@ -84,7 +84,7 @@ export default {
   border: solid 1px $mediumGrey;
   background-color: transparent;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: normal;
   color: $purple;
   margin-left: 5px;
 }

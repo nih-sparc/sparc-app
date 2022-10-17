@@ -12,7 +12,7 @@
     </page-hero>
     <div class="page-wrap container">
       <div v-if="fields.featured !== undefined">
-        <div class="heading1 my-32">Featured Tools &amp; Resources</div>
+        <div class="heading2 my-32">Featured Tools &amp; Resources</div>
         <resources-gallery
           :items="fields.featured"
         />
