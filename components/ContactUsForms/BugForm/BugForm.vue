@@ -82,7 +82,7 @@
 
     <el-form-item prop="shouldFollowUp" class="mt-16">
       <el-checkbox v-model="form.shouldFollowUp">
-        Let me know when you resolve this issue
+        <span class="body1">Let me know when you resolve this issue</span>
       </el-checkbox>
     </el-form-item>
 
@@ -100,7 +100,7 @@
 
       <el-form-item prop="shouldSubscribe" class="mt-16">
         <el-checkbox v-model="form.shouldSubscribe">
-          Subscribe to the SPARC Newsletter
+          <span class="body1">Subscribe to the SPARC Newsletter</span>
         </el-checkbox>
       </el-form-item>
 
@@ -206,9 +206,10 @@ export default {
 
         pageUrl: [
           {
+            required: true,
             message: "Please enter the problematic page's URL",
             trigger: 'change',
-            type: 'url'
+            validator: this.validateUrl
           }
         ]
       }
@@ -235,8 +236,15 @@ export default {
       })
     },
 
-     validateEmail: function(rule, value, callback) {
+    validateEmail: function(rule, value, callback) {
       if (this.form.shouldFollowUp && value === '') {
+        callback(new Error(rule.message))
+      }
+      callback()
+    },
+
+    validateUrl: function(rule, value, callback) {
+      if (!value.includes('.') || value.lastIndexOf('.') == value.length - 1 || value.indexOf('.') == 0) {
         callback(new Error(rule.message))
       }
       callback()

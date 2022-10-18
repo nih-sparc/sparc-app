@@ -9,8 +9,12 @@
       SPARC consortium. During embargo, the
       public will be able to view basic
       metadata about these datasets as well
-      as their release date. Sign in to request
+      as their release date. <b>Sign in</b> 
+      to the SPARC Portal to request
       access to embargoed data
+    </div>
+    <div v-else-if="embargoed && requestPending">
+      Your request to view the embargoed dataset is pending.
     </div>
     <div v-else-if="embargoed && !accessGranted">
       This dataset is currently embargoed.
@@ -145,6 +149,9 @@ export default {
     },
     accessGranted: function() {
       return this.embargoAccess == EMBARGO_ACCESS.GRANTED
+    },
+    requestPending: function() {
+      return this.embargoAccess == EMBARGO_ACCESS.REQUESTED
     },
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)

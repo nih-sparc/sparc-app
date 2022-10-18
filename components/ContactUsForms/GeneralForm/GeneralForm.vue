@@ -65,7 +65,7 @@
 
     <el-form-item prop="shouldSubscribe" class="mt-16">
       <el-checkbox v-model="form.shouldSubscribe">
-        Subscribe to the SPARC Newsletter
+        <span class="body1">Subscribe to the SPARC Newsletter</span>
       </el-checkbox>
     </el-form-item>
 
