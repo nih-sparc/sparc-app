@@ -1,5 +1,22 @@
 <template>
   <div class="version-history-container">
+    <large-modal
+      :visible="dialogVisible"
+      @close-download-dialog="dialogVisible = false"
+    >
+      <div class="content" slot="optionalContent">
+        <h1>Download</h1>
+        <p>Download changelog file</p>
+        <el-button class="download-button" @click="downloadChangeLogFile(changeLogFileVersion)">Download</el-button>
+      </div>
+     <div class="content" slot="mainContent">
+      <h1>Changelog</h1>
+      <div v-html="parseMarkdown(markdown)"/>
+      <el-button class="secondary" @click="dialogVisible = false">
+          Close
+      </el-button>
+     </div>
+    </large-modal>
     <div class="heading2 mb-8">Versions for this Dataset</div>
     <div class="mb-8"><span class="label4">Current version: </span>{{latestVersionRevisionText}}</div>
     <div class="mb-8"><span class="label4">Original version: </span>{{originalVersionRevisionText}}</div>
@@ -54,9 +71,16 @@
           {{ formatDate(getVersionRevisionDate(version)) }}
         </el-col>
         <el-col v-if="isChangelogAvailable(version.version)" :span="4">
-          <a class="changelog-file" @click="requestDownloadFile(getChangelogFile(version.version))">
-            Download
-          </a>
+          <div class="circle" @click="viewChangeLogFile(version.version)">
+            <sparc-tooltip placement="bottom-center" content="View changelog">
+              <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+            </sparc-tooltip>
+          </div>
+          <div class="circle" @click="downloadChangeLogFile(version.version)">
+            <sparc-tooltip placement="bottom-center" content="Download changelog file">
+              <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
+            </sparc-tooltip>
+          </div>
         </el-col>
         <el-col v-else :span="4">
           Not available
@@ -80,11 +104,13 @@ import { propOr, isEmpty } from 'ramda'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FormatDate from '@/mixins/format-date'
+import { retry } from '@aws-amplify/core'
+import marked from '@/mixins/marked/index'
 
 export default {
   name: 'VersionHistory',
 
-  mixins: [FormatDate, RequestDownloadFile],
+  mixins: [FormatDate, RequestDownloadFile, marked],
 
   props: {
     versions: {
@@ -94,6 +120,13 @@ export default {
     changelogFiles: {
       type: Array,
       default: () => []
+    }
+  },
+  data: function() {
+    return {
+      markdown: '',
+      dialogVisible: false,
+      changeLogFileVersion: undefined
     }
   },
   computed: {
@@ -139,6 +172,17 @@ export default {
     },
     getChangelogFile(version) {
       return this.changelogFiles.find(file => file.version === version) || {}
+    },
+    viewChangeLogFile(version) {
+      // Note that requestFileContent is a mixin
+      this.requestFileContent(this.getChangelogFile(version)).then(content => {
+        this.markdown = content
+        this.dialogVisible = true
+        this.changeLogFileVersion = version // Set the version which is currently stored in markdown
+      })
+    },
+    downloadChangeLogFile(version) {
+      this.requestDownloadFile(this.getChangelogFile(version))
     }
   }
 }
@@ -152,7 +196,6 @@ export default {
   .version-table {
     font-size: 0.875rem;
     line-height: 1rem;
-    
   }
   .table-header {
     background-color: $background;
@@ -167,6 +210,22 @@ export default {
   }
   .changelog-file {
     cursor: pointer;
+  }
+  .circle {
+    font-size: 1rem;
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+    line-height: 1.5em;
+    margin-right: 4px;
+    -moz-border-radius: 0.75em; /* or 50% */
+    border-radius: 0.75em; /* or 50% */
+    background-color: $purple;
+    color: #fff;
+    cursor: pointer;
+    writing-mode: vertical-rl;
+    -webkit-writing-mode: vertical-rl;
+    vertical-align: top;
   }
 }
 </style>
