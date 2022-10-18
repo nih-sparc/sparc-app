@@ -4,24 +4,41 @@
       :visible="dialogVisible"
       @close-download-dialog="dialogVisible = false"
     >
-      <div class="content" slot="optionalContent">
+      <div slot="optionalContent" class="content">
         <h1>Download</h1>
         <p>Download changelog file</p>
-        <el-button class="download-button" @click="downloadChangeLogFile(changeLogFileVersion)">Download</el-button>
+        <el-button
+          class="download-button"
+          @click="downloadChangeLogFile(changeLogFileVersion)"
+        >
+          Download
+        </el-button>
       </div>
-     <div class="content" slot="mainContent">
-      <h1>Changelog</h1>
-      <div v-html="parseMarkdown(markdown)"/>
-      <el-button class="secondary" @click="dialogVisible = false">
+      <div slot="mainContent" class="content">
+        <h1>Changelog</h1>
+        <div v-html="parseMarkdown(markdown)" />
+        <el-button class="secondary" @click="dialogVisible = false">
           Close
-      </el-button>
-     </div>
+        </el-button>
+      </div>
     </large-modal>
-    <div class="heading2 mb-8">Versions for this Dataset</div>
-    <div class="mb-8"><span class="label4">Current version: </span>{{latestVersionRevisionText}}</div>
-    <div class="mb-8"><span class="label4">Original version: </span>{{originalVersionRevisionText}}</div>
+    <div class="heading2 mb-8">
+      Versions for this Dataset
+    </div>
+    <div class="mb-8">
+      <span class="label4">Current version: </span
+      >{{ latestVersionRevisionText }}
+    </div>
+    <div class="mb-8">
+      <span class="label4">Original version: </span
+      >{{ originalVersionRevisionText }}
+    </div>
     <div class="mb-16">
-      A dataset version refers to a DOI-specific, version-controlled iteration of a dataset. A new version of a dataset must be released when there are any changes to the files or scientific metadata made within a dataset. A dataset revision refers to an update made to dataset metadata (i.e. title, subtitle, description, etc.) that does not require an updated DOI.
+      A dataset version refers to a DOI-specific, version-controlled iteration
+      of a dataset. A new version of a dataset must be released when there are
+      any changes to the files or scientific metadata made within a dataset. A
+      dataset revision refers to an update made to dataset metadata (i.e. title,
+      subtitle, description, etc.) that does not require an updated DOI.
     </div>
     <div class="version-table">
       <el-row class="table-header py-12" type="flex" justify="center">
@@ -32,10 +49,10 @@
           Revisions
         </el-col>
         <el-col :span="4">
-          Date 
+          Date
         </el-col>
         <el-col :span="4">
-          Changelog 
+          Changelog
         </el-col>
         <el-col :span="4" :push="1">
           DOI
@@ -73,12 +90,25 @@
         <el-col v-if="isChangelogAvailable(version.version)" :span="4">
           <div class="circle" @click="viewChangeLogFile(version.version)">
             <sparc-tooltip placement="bottom-center" content="View changelog">
-              <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+              <svg-icon
+                slot="item"
+                name="icon-view"
+                height="1.5rem"
+                width="1.5rem"
+              />
             </sparc-tooltip>
           </div>
           <div class="circle" @click="downloadChangeLogFile(version.version)">
-            <sparc-tooltip placement="bottom-center" content="Download changelog file">
-              <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
+            <sparc-tooltip
+              placement="bottom-center"
+              content="Download changelog file"
+            >
+              <svg-icon
+                slot="item"
+                name="icon-download"
+                height="1.5rem"
+                width="1.5rem"
+              />
             </sparc-tooltip>
           </div>
         </el-col>
@@ -86,15 +116,18 @@
           Not available
         </el-col>
         <el-col :span="4" :push="1">
-          <a
-            :href="getDoiLink(version.doi)"
-          >
+          <a :href="getDoiLink(version.doi)">
             <u>{{ version.doi }}</u>
           </a>
         </el-col>
       </el-row>
     </div>
-    <div v-if="embargoed" class="label2"><em>NOTE: If dataset is currently embargoed, you may view the metadata pertaining to the dataset and request that access be permitted.</em></div>
+    <div v-if="embargoed" class="label2">
+      <em
+        >NOTE: If dataset is currently embargoed, you may view the metadata
+        pertaining to the dataset and request that access be permitted.</em
+      >
+    </div>
   </div>
 </template>
 
@@ -145,20 +178,23 @@ export default {
     latestVersionRevisionText: function() {
       let version = this.versions[0].version
       let revision = this.versions[0].revision || '0'
-      let latestDate = this.versions[0].revisedAt || this.versions[0].firstPublishedAt
+      let latestDate =
+        this.versions[0].revisedAt || this.versions[0].firstPublishedAt
       let date = this.formatDate(latestDate)
       return `Version ${version}, Revision ${revision}; ${date}`
     },
     originalVersionRevisionText: function() {
-      const originalVersionPosition = this.versions.length-1;
+      const originalVersionPosition = this.versions.length - 1
       let version = this.versions[originalVersionPosition].version
       let revision = this.versions[originalVersionPosition].revision || '0'
-      let date = this.formatDate(this.versions[originalVersionPosition].firstPublishedAt)
+      let date = this.formatDate(
+        this.versions[originalVersionPosition].firstPublishedAt
+      )
       return `Version ${version}, Revision ${revision}; ${date}`
     },
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
-    },
+    }
   },
   methods: {
     getDoiLink(doi) {
