@@ -133,11 +133,10 @@
 
 <script>
 import { mapState } from 'vuex'
-import { propOr, isEmpty } from 'ramda'
+import { propOr } from 'ramda'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FormatDate from '@/mixins/format-date'
-import { retry } from '@aws-amplify/core'
 import marked from '@/mixins/marked/index'
 
 export default {
