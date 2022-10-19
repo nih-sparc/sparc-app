@@ -15,7 +15,6 @@
             v-model="formType"
             class="input-reason"
             placeholder="Select a reason"
-            aria-placeholder="Select a reason"
             :popper-append-to-body="false"
           >
             <el-option
