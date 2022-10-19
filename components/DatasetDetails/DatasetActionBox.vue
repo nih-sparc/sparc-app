@@ -13,7 +13,7 @@
           Request Access
         </el-button> 
         <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
-          Your request is pending approval...
+          Your request is pending approval.
         </div>
       </div>
       <div v-else-if="hasFiles" class="button-container">
@@ -55,7 +55,7 @@
           Request Access
         </el-button>
         <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
-          Your request is pending approval...
+          Your request is pending approval.
         </div>
       </div>
       <el-button
@@ -96,7 +96,7 @@
           Request Access
         </el-button> 
         <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
-          Your request is pending approval...
+          Your request is pending approval.
         </div>
       </div>
       <el-button
