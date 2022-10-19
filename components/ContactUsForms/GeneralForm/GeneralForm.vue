@@ -16,7 +16,7 @@
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="sparcInvestigatorOption in questionOptions.sparcInvestigator"
+          v-for="sparcInvestigatorOption in questionOptions.typeOfUser"
           :key="sparcInvestigatorOption"
           :label="sparcInvestigatorOption"
           :value="sparcInvestigatorOption"
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { sparcInvestigator, pageOrResource } from '../questions'
+import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
 
 export default {
@@ -101,7 +101,7 @@ export default {
         shouldSubscribe: false
       },
       questionOptions: {
-        sparcInvestigator,
+        typeOfUser,
         pageOrResource
       },
       isSubmitting: false,

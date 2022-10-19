@@ -57,14 +57,16 @@
       class="mt-32"
       prop="resourceCategories"
       label="Which category, or categories, would you place this tool/resource? Select all that apply. *"
-    >   
-      <sparc-checkbox
-        v-for="item in questionOptions.resourceCategories"
-        v-bind:key="item.label"
-        v-model="form.resourceCategories"
-        :label="item.label"
-        :display="item.display"
-      />
+    >  
+      <client-only>
+        <sparc-checkbox
+          v-for="item in questionOptions.resourceCategories"
+          v-bind:key="item.label"
+          v-model="form.resourceCategories"
+          :label="item.label"
+          :display="item.display"
+        />
+      </client-only> 
     </el-form-item>
 
     <el-form-item prop="otherCategoryDescription" label="If you answered 'Other', please describe the category for this tool/resource.">
@@ -76,16 +78,18 @@
       prop="isFree"
       label="Is it free and/or open-source? *"
     >
-      <sparc-radio
-        v-model="form.isFree"
-        label="Yes"
-        display="Yes"
-      />
-      <sparc-radio
-        v-model="form.isFree"
-        label="No"
-        display="No"
-      />
+      <client-only>
+        <sparc-radio
+          v-model="form.isFree"
+          label="Yes"
+          display="Yes"
+        />
+        <sparc-radio
+          v-model="form.isFree"
+          label="No"
+          display="No"
+        />
+      </client-only>
     </el-form-item>
 
     <el-form-item
@@ -93,31 +97,33 @@
       prop="howBroadlyUsed"
       label="How broadly is it used in biomedical science? (Uncommon 1 2 3 4 5 Common) *"
     >
-      <sparc-radio
-        v-model="form.howBroadlyUsed"
-        label="1"
-        display="1"
-      />
-      <sparc-radio
-        v-model="form.howBroadlyUsed"
-        label="2"
-        display="2"
-      />
-      <sparc-radio
-        v-model="form.howBroadlyUsed"
-        label="3"
-        display="3"
-      />
-      <sparc-radio
-        v-model="form.howBroadlyUsed"
-        label="4"
-        display="4"
-      />
-      <sparc-radio
-        v-model="form.howBroadlyUsed"
-        label="5"
-        display="5"
-      />
+      <client-only>
+        <sparc-radio
+          v-model="form.howBroadlyUsed"
+          label="1"
+          display="1"
+        />
+        <sparc-radio
+          v-model="form.howBroadlyUsed"
+          label="2"
+          display="2"
+        />
+        <sparc-radio
+          v-model="form.howBroadlyUsed"
+          label="3"
+          display="3"
+        />
+        <sparc-radio
+          v-model="form.howBroadlyUsed"
+          label="4"
+          display="4"
+        />
+        <sparc-radio
+          v-model="form.howBroadlyUsed"
+          label="5"
+          display="5"
+        />
+      </client-only>
     </el-form-item>
 
     <el-form-item
@@ -125,16 +131,18 @@
       prop="hasSpecificApplications"
       label="Does it have specific applications to the autonomic nervous system and the neural control of organs? *"
     >
-      <sparc-radio
-        v-model="form.hasSpecificApplications"
-        label="Yes"
-        display="Yes"
-      />
-      <sparc-radio
-        v-model="form.hasSpecificApplications"
-        label="No"
-        display="No"
-      />
+      <client-only>
+        <sparc-radio
+          v-model="form.hasSpecificApplications"
+          label="Yes"
+          display="Yes"
+        />
+        <sparc-radio
+          v-model="form.hasSpecificApplications"
+          label="No"
+          display="No"
+        />
+      </client-only>
     </el-form-item>
 
     <el-form-item class="mt-32" prop="experienceDescription" label="Briefly describe your experience using this tool. *">
@@ -151,16 +159,18 @@
       prop="isCreator"
       label="Are you the tool/resource creator? *"
     >
-      <sparc-radio
-        v-model="form.isCreator"
-        label="Yes"
-        display="Yes"
-      />
-      <sparc-radio
-        v-model="form.isCreator"
-        label="No"
-        display="No"
-      />
+      <client-only>
+        <sparc-radio
+          v-model="form.isCreator"
+          label="Yes"
+          display="Yes"
+        />
+        <sparc-radio
+          v-model="form.isCreator"
+          label="No"
+          display="No"
+        />
+      </client-only>
     </el-form-item>
 
     <el-form-item class="mt-32" prop="primaryGoal" label="If yes, what was your primary goal in creating this tool/resource?">
@@ -178,21 +188,23 @@
       prop="hasBeenUsed"
       label="To date, has this tool been used in an NIH SPARC-funded project? *"
     >
-      <sparc-radio
-        v-model="form.hasBeenUsed"
-        label="Yes"
-        display="Yes"
-      />
-      <sparc-radio
-        v-model="form.hasBeenUsed"
-        label="No"
-        display="No"
-      />
-      <sparc-radio
-        v-model="form.hasBeenUsed"
-        label="Not sure"
-        display="Not sure"
-      />
+      <client-only>
+        <sparc-radio
+          v-model="form.hasBeenUsed"
+          label="Yes"
+          display="Yes"
+        />
+        <sparc-radio
+          v-model="form.hasBeenUsed"
+          label="No"
+          display="No"
+        />
+        <sparc-radio
+          v-model="form.hasBeenUsed"
+          label="Not sure"
+          display="Not sure"
+        />
+      </client-only>
     </el-form-item>
 
     <el-form-item class="mt-32" prop="howUsed" label="If yes, how has it been used in NIH SPARC-funded research?">
@@ -210,16 +222,18 @@
       prop="isWilling"
       label="Are you willing to participate in other user research to support the development of the SPARC Portal? *"
     >
-      <sparc-radio
-        v-model="form.isWilling"
-        label="Yes"
-        display="Yes"
-      />
-      <sparc-radio
-        v-model="form.isWilling"
-        label="No"
-        display="No"
-      />
+      <client-only>
+        <sparc-radio
+          v-model="form.isWilling"
+          label="Yes"
+          display="Yes"
+        />
+        <sparc-radio
+          v-model="form.isWilling"
+          label="No"
+          display="No"
+        />
+      </client-only>
     </el-form-item>
 
     <hr/>
