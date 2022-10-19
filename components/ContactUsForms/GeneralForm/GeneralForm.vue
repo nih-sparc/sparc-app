@@ -12,7 +12,7 @@
     >
       <el-select
         v-model="form.sparcInvestigator"
-        aria-placeholder="Select one"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
@@ -30,7 +30,7 @@
     >
       <el-select
         v-model="form.pageOrResource"
-        aria-placeholder="Select one"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option

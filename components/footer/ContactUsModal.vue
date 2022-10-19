@@ -14,20 +14,20 @@
         <el-form-item prop="name" label="Your Name">
           <el-input
             v-model="contactUsForm.name"
-            aria-placeholder="Enter your name"
+            placeholder="Enter your name"
           />
         </el-form-item>
         <el-form-item prop="email" label="Your Email">
           <el-input
             v-model="contactUsForm.email"
-            aria-placeholder="Enter your email"
+            placeholder="Enter your email"
             type="email"
           />
         </el-form-item>
         <el-form-item prop="message" label="Your Message">
           <el-input
             v-model="contactUsForm.message"
-            aria-placeholder="Your message"
+            placeholder="Your message"
             type="textarea"
           />
         </el-form-item>

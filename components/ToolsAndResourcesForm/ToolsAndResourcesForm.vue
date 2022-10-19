@@ -12,7 +12,7 @@
     >
       <el-select
         v-model="form.sparcFunded"
-        aria-placeholder="Select one"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
@@ -31,7 +31,7 @@
     >
       <el-select
         v-model="form.levelOfInvolvement"
-        aria-placeholder="Select one"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
