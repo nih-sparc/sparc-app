@@ -1,21 +1,23 @@
 <template>
   <div class="version-history-container">
     <large-modal
+      v-if="dialogVisible"
       :visible="dialogVisible"
       @close-download-dialog="dialogVisible = false"
     >
       <div slot="optionalContent" class="content">
         <h1>Download</h1>
-        <p>Download changelog file</p>
+        <p>Download changelog file for Version {{changeLogFileInfo.version}} </p>
+        <p>Published on: {{formatDate(changeLogFileInfo.versionPublishedAt)}}</p>
         <el-button
           class="download-button"
-          @click="downloadChangeLogFile(changeLogFileVersion)"
+          @click="downloadChangeLogFile(changeLogFileInfo.version)"
         >
           Download
         </el-button>
       </div>
       <div slot="mainContent" class="content">
-        <h1>Changelog</h1>
+        <h1>Changelog for Version {{changeLogFileInfo.version}}</h1>
         <div v-html="parseMarkdown(markdown)" />
         <el-button class="secondary" @click="dialogVisible = false">
           Close
@@ -88,7 +90,7 @@
           {{ formatDate(getVersionRevisionDate(version)) }}
         </el-col>
         <el-col v-if="isChangelogAvailable(version.version)" :span="4">
-          <div class="circle" @click="viewChangeLogFile(version.version)">
+          <div class="circle" @click="viewChangeLogFile(version)">
             <sparc-tooltip placement="bottom-center" content="View changelog">
               <svg-icon
                 slot="item"
@@ -158,7 +160,7 @@ export default {
     return {
       markdown: '',
       dialogVisible: false,
-      changeLogFileVersion: undefined
+      changeLogFileInfo: {}
     }
   },
   computed: {
@@ -208,12 +210,12 @@ export default {
     getChangelogFile(version) {
       return this.changelogFiles.find(file => file.version === version) || {}
     },
-    viewChangeLogFile(version) {
+    viewChangeLogFile(versionInfo) {
       // Note that requestFileContent is a mixin
-      this.requestFileContent(this.getChangelogFile(version)).then(content => {
+      this.requestFileContent(this.getChangelogFile(versionInfo.version)).then(content => {
         this.markdown = content
         this.dialogVisible = true
-        this.changeLogFileVersion = version // Set the version which is currently stored in markdown
+        this.changeLogFileInfo = versionInfo // Set the version metadata for the currently stored markdown
       })
     },
     downloadChangeLogFile(version) {
