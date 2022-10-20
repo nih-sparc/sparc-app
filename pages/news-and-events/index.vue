@@ -41,6 +41,10 @@
           </el-col>
           <el-col :sm="12">
             <div class="heading2 mb-16">Events</div>
+            <!--
+              Server side rendering does not work with the following
+              combination of components
+            -->
             <client-only>
               <content-tab-card
                 class="tabs p-32"
