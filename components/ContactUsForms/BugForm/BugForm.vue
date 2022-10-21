@@ -80,29 +80,29 @@
       />
     </el-form-item>
 
-    <el-form-item prop="shouldFollowUp" class="mt-16">
+    <el-form-item prop="firstName" label="First Name" class="mt-16">
+      <el-input v-model="form.firstName" placeholder="First name here" />
+    </el-form-item>
+
+    <el-form-item prop="lastName" label="Last Name">
+      <el-input v-model="form.lastName" placeholder="Last name here" />
+    </el-form-item>
+
+    <el-form-item prop="email" label="Email" class="mb-0">
+      <el-input v-model="form.email" placeholder="Email here" type="email" />
+    </el-form-item>
+
+    <el-form-item prop="shouldFollowUp" class="mt-16 mb-0">
       <el-checkbox v-model="form.shouldFollowUp">
         <span class="body1">Let me know when you resolve this issue</span>
       </el-checkbox>
     </el-form-item>
 
-      <el-form-item prop="firstName" label="First Name" class="">
-        <el-input v-model="form.firstName" placeholder="First name here" />
-      </el-form-item>
-
-      <el-form-item prop="lastName" label="Last Name">
-        <el-input v-model="form.lastName" placeholder="Last name here" />
-      </el-form-item>
-
-      <el-form-item prop="email" label="Email" class="mb-0">
-        <el-input v-model="form.email" placeholder="Email here" type="email" />
-      </el-form-item>
-
-      <el-form-item prop="shouldSubscribe" class="mt-16">
-        <el-checkbox v-model="form.shouldSubscribe">
-          <span class="body1">Subscribe to the SPARC Newsletter</span>
-        </el-checkbox>
-      </el-form-item>
+    <el-form-item prop="shouldSubscribe">
+      <el-checkbox v-model="form.shouldSubscribe">
+        <span class="body1">Subscribe to the SPARC Newsletter</span>
+      </el-checkbox>
+    </el-form-item>
 
     <el-form-item>
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
@@ -216,10 +216,21 @@ export default {
     }
   },
 
+  computed: {
+    bugSourceUrl() {
+      return this.$route.query.source_url
+    }
+  },
+
   mounted() {
     // Reset form fields when showing the form
     this.$refs.contactForm.resetFields()
     this.hasError = false
+
+    if (this.bugSourceUrl != undefined) {
+      const fullUrl = process.env.ROOT_URL + this.bugSourceUrl
+      this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
+    }
   },
 
   methods: {
