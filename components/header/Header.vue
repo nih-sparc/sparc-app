@@ -3,11 +3,11 @@
     <div class="header__nav">
       <div class="header__nav--parent">
         <svg-icon class="mr-4" icon="icon-contact" width="18" height="18" />
-        <nuxt-link to="/contact-us" target="_blank">
+        <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
           Contact Us
         </nuxt-link>
         <svg-icon class="mr-4" icon="icon-help" width="18" height="18" />
-        <a href="https://docs.sparc.science/">
+        <a href="https://docs.sparc.science/" target="_blank">
           Help
         </a>
         <template v-if="showLoginFeature">
@@ -91,13 +91,13 @@
               <ul class="mobile-navigation__links">
                 <li>
                   <svg-icon icon="icon-contact" width="18" height="18" />
-                  <nuxt-link to="/contact-us" target="_blank">
+                  <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
                     Contact Us
                   </nuxt-link>
                 </li>
                 <li>
                   <svg-icon icon="icon-help" width="18" height="18" />
-                  <a href="https://docs.sparc.science/">
+                  <a href="https://docs.sparc.science/" target="_blank">
                     Help
                   </a>
                 </li>
@@ -277,6 +277,9 @@ export default {
         return path.substring(0)
       }
       return path.substring(0, endIndex)
+    },
+    currentUrl: function() {
+      return this.$nuxt.$route.fullPath;
     }
   },
 

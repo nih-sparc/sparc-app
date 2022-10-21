@@ -10,7 +10,7 @@
     <div class="page-wrap container">
       <div class="subpage mb-0">
         <template v-if="!isBugSubmitted && !isGeneralSubmitted">
-          <h2>Let us know why you’re contacting us:</h2>
+          <h2>Let us know why you are contacting us:</h2>
           <el-select
             v-model="formType"
             class="input-reason"
@@ -106,7 +106,7 @@ export default {
       formType: '',
       formTypeOptions: [
         {
-          label: 'I couldn’t find the information in Help',
+          label: 'I could not find the information in Help',
           value: 'general'
         },
         {
@@ -137,7 +137,7 @@ export default {
      * @param {String} val
      */
     formType(val) {
-      this.$router.push({ query: { type: val } })
+      this.$router.push({ query: { ...this.$route.query, type: val } })
     }
   },
 
