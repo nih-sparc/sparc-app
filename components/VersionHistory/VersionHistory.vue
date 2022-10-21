@@ -1,14 +1,13 @@
 <template>
   <div class="version-history-container">
     <large-modal
-      v-if="dialogVisible"
       :visible="dialogVisible"
       @close-download-dialog="dialogVisible = false"
     >
       <div slot="optionalContent" class="content">
         <h1>Download</h1>
         <p>Download changelog file for Version {{changeLogFileInfo.version}} </p>
-        <p>Published on: {{formatDate(changeLogFileInfo.versionPublishedAt)}}</p>
+        <p>Published on: {{logPublishedAt}}</p>
         <el-button
           class="download-button"
           @click="downloadChangeLogFile(changeLogFileInfo.version)"
@@ -195,7 +194,13 @@ export default {
     },
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
-    }
+    },
+    logPublishedAt: function(){
+      if (this.changeLogFileInfo.versionPublishedAt) {
+        return formatDate(this.changeLogFileInfo.versionPublishedAt)
+      }
+      return ''
+    },
   },
   methods: {
     getDoiLink(doi) {
