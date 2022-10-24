@@ -197,7 +197,7 @@ export default {
     },
     logPublishedAt: function(){
       if (this.changeLogFileInfo.versionPublishedAt) {
-        return formatDate(this.changeLogFileInfo.versionPublishedAt)
+        return this.formatDate(this.changeLogFileInfo.versionPublishedAt)
       }
       return ''
     },
