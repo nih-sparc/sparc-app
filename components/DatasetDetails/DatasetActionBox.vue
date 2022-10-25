@@ -5,18 +5,7 @@
       Embargoed
     </sparc-pill>
     <div class="button-container" v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
-      <div v-if="hasFiles && embargoed && userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED">
-        <el-button
-          :disabled="embargoAccess != null"
-          @click="openAgreementPopup()"
-        >
-          Request Access
-        </el-button> 
-        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
-          Your request is pending approval.
-        </div>
-      </div>
-      <div v-else-if="hasFiles" class="button-container">
+      <div v-if="hasFiles" class="button-container">
         <el-button
           class="dataset-button"
           @click="actionButtonClicked('images')"
@@ -47,19 +36,8 @@
           Run Simulation
         </el-button>
       </a>
-      <div v-if="hasFiles && embargoed && userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED">
-        <el-button
-          :disabled="embargoAccess != null"
-          @click="openAgreementPopup()"
-        >
-          Request Access
-        </el-button>
-        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
-          Your request is pending approval.
-        </div>
-      </div>
       <el-button
-        v-else-if="hasFiles"
+        v-if="hasFiles"
         @click="actionButtonClicked('files')"
       >
         Get Model
@@ -88,19 +66,8 @@
       </a>
     </div>
     <div class="button-container" v-else>
-      <div v-if="hasFiles && embargoed && userToken && embargoAccess !== EMBARGO_ACCESS.GRANTED">
-        <el-button
-          :disabled="embargoAccess != null"
-          @click="openAgreementPopup()"
-        >
-          Request Access
-        </el-button> 
-        <div class="body4" v-if="embargoAccess === EMBARGO_ACCESS.REQUESTED">
-          Your request is pending approval.
-        </div>
-      </div>
       <el-button
-        v-else-if="hasFiles"
+        v-if="hasFiles"
         @click="actionButtonClicked('files')"
       >
         Get Dataset
@@ -109,36 +76,21 @@
         Cite Dataset
       </el-button>
     </div>
-    <data-use-agreement-popup
-      :show-dialog="showAgreementPopup"
-      @dialog-closed="showAgreementPopup = false"
-      @agreement-signed="requestAccess"
-    />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { propOr } from 'ramda'
-import { successMessage, failMessage } from '@/utils/notification-messages'
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
-import DataUseAgreementPopup from '@/components/DataUseAgreementPopup/DataUseAgreementPopup.vue'
-import { EMBARGO_ACCESS } from '@/utils/constants'
 
 export default {
   name: 'DatasetActionBox',
 
   components: {
-    DataUseAgreementPopup,
     DatasetBannerImage,
     SparcPill
-  },
-
-  data() {
-    return {
-      showAgreementPopup: false
-    }
   },
 
   computed: {
@@ -146,12 +98,6 @@ export default {
     ...mapGetters('user', ['cognitoUserToken']),
     userToken() {
       return this.cognitoUserToken || this.$cookies.get('user-token')
-    },
-    EMBARGO_ACCESS() {
-      return EMBARGO_ACCESS
-    },
-    embargoAccess() {
-      return propOr(null, 'embargoAccess', this.datasetInfo)
     },
     /**
      * Gets dataset version
@@ -227,35 +173,6 @@ export default {
       link.click()
       link.remove()
     },
-    openAgreementPopup: function() {
-      this.showAgreementPopup = true
-    },
-    requestAccess() {
-      const url = `${process.env.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
-
-      this.$axios
-        .$post(url, {
-          datasetId: this.datasetInfo.id,
-        })
-        .then(() => {
-          this.updateEmbargoAccess(EMBARGO_ACCESS.REQUESTED)
-
-          this.$message(successMessage('Your request has been successfully submitted.'))
-        })
-        .catch((error) => {
-          this.$message(failMessage('Unable to submit request at this time.'))
-
-          throw error
-        })
-    },
-    updateEmbargoAccess(access) {
-      const newDatasetInfo = {
-        ...this.datasetDetails,
-        embargoAccess: access
-      }
-
-      this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
-    }
   }
 }
 </script>
