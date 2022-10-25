@@ -40,7 +40,7 @@
           </template>
           <p>
             Thank you for your inquiry. A member of the SPARC team will contact
-            you within two business days.
+            you as soon as possible.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
         </div>
@@ -49,7 +49,7 @@
           <p>
             Thank you for letting us know about this error or issue. If you
             requested a response, a member of the SPARC team will contact you
-            within two business days.
+            as soon as possible.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
         </div>

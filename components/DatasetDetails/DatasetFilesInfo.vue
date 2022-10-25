@@ -9,12 +9,35 @@
       SPARC consortium. During embargo, the
       public will be able to view basic
       metadata about these datasets as well
-      as their release date. <b>Sign in</b> 
-      to the SPARC Portal to request
-      access to embargoed data
+      as their release date. The embargoed release 
+      date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
+      and will become available to the public on that day.
+      <a class="sign-in-link" @click="showLoginDialog = true">
+      Sign in</a> to the SPARC Portal to request
+      access to or view the status of an access request to embargoed data.
+      <div>
+        <el-button
+          class="mt-8"
+          disabled
+        >
+          Request Access
+        </el-button>
+      </div>
     </div>
     <div v-else-if="embargoed && requestPending">
-      Your request to view the embargoed dataset is pending.
+      Your access request is pending. The author has received your 
+      request and an email confirming or denying your request will 
+      be sent to you once the author has made a decision. The embargoed 
+      release date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
+      and will become available to the public on that day.
+      <div>
+        <el-button
+          class="mt-8"
+          disabled
+        >
+          Request Access
+        </el-button>
+      </div>
     </div>
     <div v-else-if="embargoed && !accessGranted">
       This dataset is currently embargoed.
@@ -24,9 +47,20 @@
       SPARC consortium. During embargo, the
       public will be able to view basic
       metadata about these datasets as well
-      as their release date. Click 'Request
-      Access' to request permission from
+      as their release date. The embargoed release 
+      date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
+      and will become available to the public on that day. 
+      Click 'Request Access' to request permission from
       the author to view the embargoed data.
+      <div>
+        <el-button
+          class="my-8"
+          :disabled="embargoAccess != null"
+          @click="openAgreementPopup()"
+        >
+          Request Access
+        </el-button>
+      </div>
     </div>
     <div v-else>
       <div class="mb-8">
@@ -105,6 +139,15 @@
       </div>
       <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch"/>
     </div>
+    <data-use-agreement-popup
+      :show-dialog="showAgreementPopup"
+      @dialog-closed="showAgreementPopup = false"
+      @agreement-signed="requestAccess"
+    />
+    <login-modal
+      :show-dialog="showLoginDialog"
+      @dialog-closed="showLoginDialog = false"
+    />
   </div>
 </template>
 
@@ -112,19 +155,24 @@
 import { mapGetters, mapState } from 'vuex'
 import { propOr } from 'ramda'
 
-import { successMessage, failMessage } from '@/utils/notification-messages'
-import { EMBARGO_ACCESS } from '@/utils/constants'
+import LoginModal from '@/components/LoginModal/LoginModal.vue'
+import DataUseAgreementPopup from '@/components/DataUseAgreementPopup/DataUseAgreementPopup.vue'
 import FilesTable from '@/components/FilesTable/FilesTable.vue'
 import FormatMetric from '../../mixins/bf-storage-metrics'
+import DateUtils from '@/mixins/format-date'
+import { EMBARGO_ACCESS } from '@/utils/constants'
+import { successMessage, failMessage } from '@/utils/notification-messages'
 
 export default {
   name: 'DatasetFilesInfo',
 
   components: {
+    DataUseAgreementPopup,
     FilesTable,
+    LoginModal
   },
 
-  mixins: [FormatMetric],
+  mixins: [DateUtils, FormatMetric],
 
   props: {
     osparcViewers: {
@@ -158,6 +206,11 @@ export default {
     },
     embargoAccess() {
       return propOr(null, 'embargoAccess', this.datasetInfo)
+    },
+    embargoedReleaseDate() {
+      const embargoPublishDate = this.formatDate(propOr('', 'firstPublishedAt', this.datasetInfo))
+      const embargoReleaseDate = this.formatDate(propOr('', 'embargoReleaseDate', this.datasetInfo))
+      return embargoReleaseDate != '' ? embargoReleaseDate : `1 year after ${embargoPublishDate}`
     },
     /**
      * Checks whether the dataset download size is larger or smaller than 5GB
@@ -203,9 +256,10 @@ export default {
 
   data() {
     return {
-      ctfDatasetNavigationInfoPageId:
-        process.env.ctf_dataset_navigation_info_page_id,
-      awsMessage: 'us-east-1'
+      ctfDatasetNavigationInfoPageId: process.env.ctf_dataset_navigation_info_page_id,
+      awsMessage: 'us-east-1',
+      showAgreementPopup: false,
+      showLoginDialog: false,
     }
   },
 
@@ -225,6 +279,35 @@ export default {
           this.$message(failMessage('Failed to copy.'))
         }
     },
+    openAgreementPopup: function() {
+      this.showAgreementPopup = true
+    },
+    requestAccess() {
+      const url = `${process.env.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
+
+      this.$axios
+        .$post(url, {
+          datasetId: this.datasetInfo.id,
+        })
+        .then(() => {
+          this.updateEmbargoAccess(EMBARGO_ACCESS.REQUESTED)
+
+          this.$message(successMessage('Your request has been successfully submitted.'))
+        })
+        .catch((error) => {
+          this.$message(failMessage('Unable to submit request at this time.'))
+
+          throw error
+        })
+    },
+    updateEmbargoAccess(access) {
+      const newDatasetInfo = {
+        ...this.datasetInfo,
+        embargoAccess: access
+      }
+
+      this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
+    }
   }
 }
 </script>
@@ -282,5 +365,9 @@ hr {
 }
 .aws-block {
   border: 1px solid $lineColor1;
+}
+
+.sign-in-link:hover {
+  cursor: pointer;
 }
 </style>

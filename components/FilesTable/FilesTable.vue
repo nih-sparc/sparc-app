@@ -249,7 +249,7 @@
     <sparc-tooltip
       v-if="selected.length == 0"
       class="tooltip"
-      placement="bottom-center"
+      placement="left-center"
       content="You must select a file to download"
     >
       <bf-download-file
@@ -265,7 +265,7 @@
     <sparc-tooltip
       v-else-if="selectedFilesSizeTooLarge"
       class="tooltip"
-      placement="bottom-center"
+      placement="left-center"
       content="Selected file size(s) exceed 5GB"
     >
       <bf-download-file
@@ -832,6 +832,7 @@ export default {
   height: auto;
 }
 .tooltip {
+  display: flex;
   width: fit-content;
 }
 .files-table-header {
