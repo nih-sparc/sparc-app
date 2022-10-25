@@ -1,5 +1,5 @@
 <template>
-  <div :class="['facet-label', { disabled: disabled }]">
+  <div @click="onArrowClicked" :class="['facet-label', { disabled: disabled }]">
     <div class="body1 title">
       <span>
         {{ label }}
@@ -15,7 +15,6 @@
         :dir="collapsibleArrowDir"
         height="15"
         width="15"
-        @click="onArrowClicked"
       />
     </div>
     <div v-show="showContent" class="light-gray-background">
@@ -72,7 +71,7 @@ export default {
   },
   methods: {
     onArrowClicked() {
-      if (!this.disabled) {
+      if (this.showCollapsibleArrow && !this.disabled) {
         this.collapsed = !this.collapsed
       }
       return this.collapsed
@@ -99,7 +98,7 @@ export default {
   font-weight: 500;
   align-items: center;
   text-transform: uppercase;
-  cursor: default;
+  cursor: pointer;
   svg {
     cursor: pointer
   }
