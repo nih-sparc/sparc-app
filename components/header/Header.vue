@@ -3,11 +3,11 @@
     <div class="header__nav">
       <div class="header__nav--parent">
         <svg-icon class="mr-4" icon="icon-contact" width="18" height="18" />
-        <nuxt-link to="/contact-us" target="_blank">
+        <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
           Contact Us
         </nuxt-link>
         <svg-icon class="mr-4" icon="icon-help" width="18" height="18" />
-        <a href="https://docs.sparc.science/">
+        <a href="https://docs.sparc.science/" target="_blank">
           Help
         </a>
         <template v-if="showLoginFeature">
@@ -43,7 +43,6 @@
             </nuxt-link>
           </div>
           <button
-            v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch(searchQuery)"
@@ -92,13 +91,13 @@
               <ul class="mobile-navigation__links">
                 <li>
                   <svg-icon icon="icon-contact" width="18" height="18" />
-                  <nuxt-link to="/contact-us" target="_blank">
+                  <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
                     Contact Us
                   </nuxt-link>
                 </li>
                 <li>
                   <svg-icon icon="icon-help" width="18" height="18" />
-                  <a href="https://docs.sparc.science/">
+                  <a href="https://docs.sparc.science/" target="_blank">
                     Help
                   </a>
                 </li>
@@ -145,7 +144,7 @@
               </div>
             </div>
           </div>
-          <div v-if="shouldShowSearch" class="nav-main-container__search">
+          <div class="nav-main-container__search">
             <el-input
               v-model="searchQuery"
               type="text"
@@ -246,28 +245,23 @@ export default {
         {
           key: 'data',
           value: 'data',
-          label: 'Datasets'
+          label: 'Data'
         },
         {
-          key: 'resources',
-          value: 'resources',
-          label: 'Resources'
+          key: 'resources-biological',
+          value: 'resources-biological',
+          label: 'Tools & Resources'
         },
         {
           key: 'news-and-events-news',
           value: 'news-and-events-news',
-          label: 'News'
+          label: 'News & Events'
         },
         {
-          key: 'news-and-events-events',
-          value: 'news-and-events-events',
-          label: 'Events'
+          key: 'about-about-sparc',
+          value: 'about-about-sparc',
+          label: 'About'
         },
-        {
-          key: 'news-and-events-community-spotlight',
-          value: 'news-and-events-community-spotlight',
-          label: 'Community Spotlight'
-        }
       ]
     }
   },
@@ -275,13 +269,18 @@ export default {
   computed: {
     ...mapState('user', ['cognitoUser', 'pennsieveUser']),
     ...mapGetters('user', ['profileComplete', 'pennsieveUsername']),
-    /**
-     * Compute if search should be visible
-     * @returns {Boolean}
-     */
-    shouldShowSearch: function() {
-      return this.$route.name !== 'data'
+    firstPath: function() {
+      const path = this.$nuxt.$route.path
+      // ignore the first backslash
+      const endIndex = path.indexOf('/', 1)
+      if (endIndex == -1) {
+        return path.substring(0)
+      }
+      return path.substring(0, endIndex)
     },
+    currentUrl: function() {
+      return this.$nuxt.$route.fullPath;
+    }
   },
 
   watch: {
@@ -327,7 +326,7 @@ export default {
      * @param {String} query
      */
     activeLink: function(query) {
-      if (this.$nuxt.$route.path.includes(query)) {
+      if (this.firstPath.includes(query)) {
         return true
       } else {
         return false
@@ -382,7 +381,6 @@ export default {
       let routeParams = {
         name: type,
         query: {
-          type,
           search: term
         }
       }
@@ -394,19 +392,7 @@ export default {
           name: 'data',
           query: {
             type,
-            q: term
-          }
-        }
-      }
-      // Searching on 'resources' takes user to the /data page with thier query
-      else if (option.value === 'resources') {
-        type = 'sparcPartners'
-        routeParams = {
-          name: 'data',
-          query: {
-            type,
-            q: term,
-            developedBySparc: true
+            search: term
           }
         }
       }
@@ -432,11 +418,11 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     align-items: center;
   }
 }
-@media (min-width: 320px) and (max-width: 1120px) {
+@media (max-width: 1120px) {
   .overlay {
     position: absolute;
     top: 56px;
@@ -448,7 +434,7 @@ export default {
   }
 }
 
-@media (min-width: 320px) and (max-width: 1120px) {
+@media (max-width: 1120px) {
   .search-overlay {
     position: absolute;
     top: 56px;
@@ -500,7 +486,7 @@ export default {
     margin-right: 18px;
     text-decoration: none;
   }
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     & {
       display: none;
     }
@@ -514,7 +500,7 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
@@ -528,7 +514,7 @@ export default {
     &--social {
       display: none;
     }
-    @media (min-width: 320px) and (max-width: 1120px) {
+    @media (max-width: 1120px) {
       display: flex;
       flex-direction: column;
       a {
@@ -579,7 +565,7 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -593,7 +579,7 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     height: 2rem;
     width: 100%;
     margin-right: 0;
@@ -608,7 +594,7 @@ export default {
   justify-content: flex-end;
   width: 54%;
   margin-right: 1rem;
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     width: 0;
   }
 }
@@ -707,7 +693,7 @@ export default {
     }
   }
 
-  @media (min-width: 320px) and (max-width: 1120px) {
+  @media (max-width: 1120px) {
     & {
       background: $seafoam;
       bottom: 0;
@@ -743,7 +729,7 @@ export default {
   display: none;
 }
 
-@media (min-width: 320px) and (max-width: 1120px) {
+@media (max-width: 1120px) {
   .search-mobile {
     background-color: $cochlear;
     padding: 1em;

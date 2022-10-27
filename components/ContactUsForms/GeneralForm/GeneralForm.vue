@@ -12,11 +12,11 @@
     >
       <el-select
         v-model="form.sparcInvestigator"
-        aria-placeholder="Select one"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="sparcInvestigatorOption in questionOptions.sparcInvestigator"
+          v-for="sparcInvestigatorOption in questionOptions.typeOfUser"
           :key="sparcInvestigatorOption"
           :label="sparcInvestigatorOption"
           :value="sparcInvestigatorOption"
@@ -30,7 +30,7 @@
     >
       <el-select
         v-model="form.pageOrResource"
-        aria-placeholder="Select one"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
@@ -63,9 +63,9 @@
       <el-input v-model="form.email" placeholder="Email here" type="email" />
     </el-form-item>
 
-    <el-form-item prop="shouldSubscribe">
+    <el-form-item prop="shouldSubscribe" class="mt-16">
       <el-checkbox v-model="form.shouldSubscribe">
-        Subscribe to the SPARC Newsletter
+        <span class="body1">Subscribe to the SPARC Newsletter</span>
       </el-checkbox>
     </el-form-item>
 
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { sparcInvestigator, pageOrResource } from '../questions'
+import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
 
 export default {
@@ -101,7 +101,7 @@ export default {
         shouldSubscribe: false
       },
       questionOptions: {
-        sparcInvestigator,
+        typeOfUser,
         pageOrResource
       },
       isSubmitting: false,

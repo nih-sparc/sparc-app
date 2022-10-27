@@ -25,7 +25,7 @@
           <h2>{{ data.fields.name }}</h2>
         </router-link>
         <a v-else :href="data.fields.url" target="blank">
-          <h2>{{ data.fields.name }}</h2>
+          <h2>{{ data.fields.name }}<svg-icon name="icon-open" height="30" width="30" /></h2>
         </a>
         <p v-if="data.fields.developedBySparc" class="resource-category">
           SPARC
@@ -43,10 +43,11 @@
             </a>
           </p>
         </template>
-
-        <p class="resources-search-results__items--content-description">
-          {{ data.fields.description }}
-        </p>
+        <!-- eslint-disable vue/no-v-html -->
+        <p
+          class="resources-search-results__items--content-description"
+          v-html="parseMarkdown(data.fields.description)"
+        />
       </div>
     </div>
   </div>
@@ -54,12 +55,13 @@
 
 <script>
 import { pathOr } from 'ramda'
+import marked from '@/mixins/marked/index'
 
 import FormatDate from '@/mixins/format-date'
 export default {
   name: 'ResourceSearchResults',
 
-  mixins: [FormatDate],
+  mixins: [FormatDate, marked],
   props: {
     tableData: {
       type: Array,
@@ -105,12 +107,14 @@ export default {
     }
 
     &--image {
+      display: flex;
       margin-right: 1rem;
       @media (min-width: 48em) {
         flex-shrink: 0;
         width: 128px;
       }
       img {
+        margin: auto;
         width: 100%;
         height: auto;
       }

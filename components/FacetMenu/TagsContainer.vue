@@ -110,7 +110,7 @@ export default {
     }
   }
   .facet-card {
-    .el-card__body {
+    ::v-deep .el-card__body {
       padding: 10px;
       height: 6rem;
       overflow-y: auto;

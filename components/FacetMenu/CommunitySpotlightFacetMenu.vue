@@ -32,9 +32,12 @@ import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
+const SPOTLIGHT_TYPE_CATEGORY_ID = 'spotlightType'
+const ANATOMICAL_STRUCTURES_CATEGORY_ID = 'spotlightAnatomicalStructure'
+
 const SPOTLIGHT_TYPE_OPTIONS = {
   label: 'Spotlight Type',
-  id: 'spotlightType',
+  id: SPOTLIGHT_TYPE_CATEGORY_ID,
   data: [
     {
       label: 'Fireside Chat',
@@ -46,27 +49,7 @@ const SPOTLIGHT_TYPE_OPTIONS = {
     }
   ]
 }
-
-const ANATOMICAL_STRUCTURE_OPTIONS = {
-  label: 'Anatomical Structure',
-  id: 'spotlightAnatomicalStructure',
-  data: [
-    {
-      label: 'Bladder',
-      id: 'Bladder',
-    },
-    {
-      label: 'Nerves & Ganglia',
-      id: 'Nerves & Ganglia',
-    },
-    {
-      label: 'Stomach',
-      id: 'Stomach',
-    },
-  ]
-}
-
-const visibleCategories = ['spotlightType', 'spotlightAnatomicalStructure']
+const visibleCategories = ['spotlightType', ANATOMICAL_STRUCTURES_CATEGORY_ID]
 
 export default {
   name: 'CommunitySpotlightFacetMenu',
@@ -79,10 +62,16 @@ export default {
   data() {
     return {
       spotlightTypes: SPOTLIGHT_TYPE_OPTIONS,
-      anatomicalStructures: ANATOMICAL_STRUCTURE_OPTIONS,
       selectedAnatomicalStructures: [],
       selectedSpotlightTypes: [],
       visibleCategories: visibleCategories,
+    }
+  },
+
+  props: {
+    anatomicalStructures: {
+      type: Object,
+      default: () =>  {}
     }
   },
 

@@ -21,7 +21,7 @@
             :package-type="packageType"
           />
           <div v-else>
-            Sign in to the SPARC Portal to view timeseries data
+            <b>Sign in</b> to the SPARC Portal to view timeseries data
           </div>
         </content-tab-card>
       </client-only>

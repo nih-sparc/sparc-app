@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="page">
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero>
       <h1>{{ heroTitle }}</h1>
-      <p>
+      <div class="body2">
         {{ heroSummary }}
-      </p>
+      </div>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
@@ -134,7 +134,7 @@ export default {
       const nameLookup = {
         event: 'Events',
         news: 'News',
-        resource: 'Resources'
+        resource: 'Tools & Resources'
       }
       const name = nameLookup[this.type]
 
@@ -148,15 +148,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .content {
-  & ::v-deep {
-    color: $vestibular;
-  }
-  & ::v-deep p {
-    margin-bottom: 1em;
-  }
   & ::v-deep img,
   & ::v-deep video {
     height: auto;
@@ -185,7 +179,11 @@ export default {
   }
 }
 .back-link {
-  color: $navy;
+  color: $darkBlue;
   font-weight: 700;
+}
+.page {
+  background-color: $background;
+  padding-bottom: 2rem;
 }
 </style>

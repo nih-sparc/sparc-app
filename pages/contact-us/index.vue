@@ -10,12 +10,11 @@
     <div class="page-wrap container">
       <div class="subpage mb-0">
         <template v-if="!isBugSubmitted && !isGeneralSubmitted">
-          <h2>Let us know why you’re contacting us:</h2>
+          <h2>Let us know why you are contacting us:</h2>
           <el-select
             v-model="formType"
             class="input-reason"
             placeholder="Select a reason"
-            aria-placeholder="Select a reason"
             :popper-append-to-body="false"
           >
             <el-option
@@ -41,7 +40,7 @@
           </template>
           <p>
             Thank you for your inquiry. A member of the SPARC team will contact
-            you within two business days.
+            you as soon as possible.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
         </div>
@@ -50,7 +49,7 @@
           <p>
             Thank you for letting us know about this error or issue. If you
             requested a response, a member of the SPARC team will contact you
-            within two business days.
+            as soon as possible.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
         </div>
@@ -107,7 +106,7 @@ export default {
       formType: '',
       formTypeOptions: [
         {
-          label: 'I couldn’t find the information in Help',
+          label: 'I could not find the information in Help',
           value: 'general'
         },
         {
@@ -138,7 +137,7 @@ export default {
      * @param {String} val
      */
     formType(val) {
-      this.$router.push({ query: { type: val } })
+      this.$router.push({ query: { ...this.$route.query, type: val } })
     }
   },
 
@@ -191,9 +190,6 @@ h2 {
 <style lang="scss">
 @import '@/assets/_variables.scss';
 .contact-us-page {
-  .el-form-item:not(.mb-0) {
-    margin-bottom: 3.25rem;
-  }
   .el-form-item__label {
     color: #000;
     font-size: 1.625rem;

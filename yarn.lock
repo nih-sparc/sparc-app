@@ -80,10 +80,10 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.3.25":
-  version "1.3.25"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.25.tgz#c6373f2ec785f13e4ce2fd4f8b10ab7b3ebf9e74"
-  integrity sha512-puDs/tTL/XO218GfV0M0bSodLu3s9fDTNdxZ+1FaJlrOYMDBZBU5vVIEomEc4EdZ64ZfAM9iZIxiRTfkLwSUIg==
+"@abi-software/map-side-bar@^1.3.27":
+  version "1.3.27"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.27.tgz#cbaaafa56f62779993a11245ded1f42b24683e80"
+  integrity sha512-Uohx2yMgegvKIwRyhTzhn+XY5ptjK4TWXvw+/U4XpH7HGJUDp5w6/rYnXObVbLpu55ngjhSLWJGDM8R2Cz4gow==
   dependencies:
     "@abi-software/gallery" "^0.3.1"
     "@abi-software/svg-sprite" "^0.1.14"
@@ -91,13 +91,13 @@
     element-ui "^2.13.0"
     vue "^2.6.10"
 
-"@abi-software/mapintegratedvuer@^0.3.8-fixes-0":
-  version "0.3.8-fixes-0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.8-fixes-0.tgz#57b150c50baf2529f67ad3fdf54dbf6f1ecc1e02"
-  integrity sha512-KwQSi8/Zxew0WZwDYB84xc5ezo2HTXxhu5hB2/DKmqSuC4DNv7NArT6+3tVRP51f89lZfZ0pefaKD8Ab+hMa7Q==
+"@abi-software/mapintegratedvuer@0.3.9-beta.0":
+  version "0.3.9-beta.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.9-beta.0.tgz#e069b3761b4b91d55e7d682e2778616f82757e4c"
+  integrity sha512-eDhun1HLBgahqSWnIaQa4qal5ijVy6g4ngBSbCq+0/CJ7Eq/kIIN1pdEz2dRFcg1gVW6rFfSkS20KNVSeOEtCw==
   dependencies:
     "@abi-software/flatmapvuer" "^0.3.3"
-    "@abi-software/map-side-bar" "^1.3.25"
+    "@abi-software/map-side-bar" "^1.3.27"
     "@abi-software/plotvuer" "^0.3.9"
     "@abi-software/scaffoldvuer" "^0.1.53"
     "@abi-software/simulationvuer" "^0.5.9"
@@ -2318,12 +2318,10 @@
   resolved "https://registry.yarnpkg.com/@miyaoka/nuxt-twitter-widgets-module/-/nuxt-twitter-widgets-module-0.0.1.tgz#fdca759252e7496c783e69b926623551bf8a4a01"
   integrity sha512-vYJkz9EemNS4Ur4uXI8R/tKFyXWrGypQwpFF/PSA/JZaGx19gpAfzTxHg0e7EQ1VIS+GTN2U6AUXz9MD05P+Nw==
 
-
-"@nih-sparc/sparc-design-system-components@^0.26.22":
-  version "0.26.22"
-  resolved "https://registry.yarnpkg.com/@nih-sparc/sparc-design-system-components/-/sparc-design-system-components-0.26.22.tgz#e09804725a8a6f7f331fbadac58125dfa0295209"
-  integrity sha512-6ZantMhPFzSZIZrRtvyOkPSHuILMcYF0eXc7bLYOoTymjhuGLTkJH2V+LsCLsK3dS4DPgjTVy66LwWkM5ruvVA==
-
+"@nih-sparc/sparc-design-system-components@^0.26.26":
+  version "0.26.26"
+  resolved "https://registry.yarnpkg.com/@nih-sparc/sparc-design-system-components/-/sparc-design-system-components-0.26.26.tgz#7702a0405d7a058b451f06903f7431a2e3ecb85e"
+  integrity sha512-cU3jyBvv0K/l9jA+zhUkNU4lJTW7mmfsMo2ULlMzFLwHcln13oCOxdeje7Y5xkazM/e5W0diHh+04gf6xzjBKA==
   dependencies:
     "@carbon/grid" "10.17.0"
     core-js "^3.6.5"
