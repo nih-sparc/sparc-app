@@ -7,19 +7,19 @@
     :hide-required-asterisk="true"
   >
     <el-form-item
-      prop="sparcInvestigator"
-      label="Are you a SPARC investigator? *"
+      prop="typeOfUser"
+      label="What type of user are you? *"
     >
       <el-select
-        v-model="form.sparcInvestigator"
+        v-model="form.typeOfUser"
         placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="sparcInvestigatorOption in questionOptions.typeOfUser"
-          :key="sparcInvestigatorOption"
-          :label="sparcInvestigatorOption"
-          :value="sparcInvestigatorOption"
+          v-for="typeOfUserOption in questionOptions.typeOfUser"
+          :key="typeOfUserOption"
+          :label="typeOfUserOption"
+          :value="typeOfUserOption"
         />
       </el-select>
     </el-form-item>
@@ -92,7 +92,7 @@ export default {
   data() {
     return {
       form: {
-        sparcInvestigator: '',
+        typeOfUser: '',
         pageOrResource: '',
         message: '',
         firstName: '',
@@ -106,7 +106,7 @@ export default {
       },
       isSubmitting: false,
       formRules: {
-        sparcInvestigator: [
+        typeOfUser: [
           {
             required: true,
             message: 'Please select one',
@@ -184,7 +184,7 @@ export default {
           name: `${this.form.firstName} ${this.form.lastName}`,
           email: this.form.email,
           message: `
-            Are you a SPARC investigator?<br>${this.form.sparcInvestigator}
+            What type of user are you?<br>${this.form.typeOfUser}
             <br><br>Is this about a specific page or resource?
             <br>${this.form.pageOrResource}
             <br><br>Message
