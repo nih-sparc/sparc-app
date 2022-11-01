@@ -305,9 +305,6 @@ export default {
           ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
           : url
       })
-    },
-    citeFile(file) {
-      alert(file)
     }
   }
 }
