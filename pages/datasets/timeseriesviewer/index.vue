@@ -67,12 +67,6 @@
             </nuxt-link>
           </div>
         </div>
-        <div v-if="filePath" class="file-detail">
-          <strong class="file-detail__column_1">Cite file</strong>
-          <div class="file-detail__column_2">
-            TODO
-          </div>
-        </div>
         <div v-if="filePath" class="pt-16">
           <bf-button @click="requestDownloadFile(file)">
             Download file

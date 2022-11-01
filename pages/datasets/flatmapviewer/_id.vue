@@ -68,12 +68,6 @@
             {{ uberonid }}
           </div>
         </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Cite flatmap</strong>
-          <div class="file-detail__column_2">
-            TODO
-          </div>
-        </div>
       </div>
     </div>
   </div>

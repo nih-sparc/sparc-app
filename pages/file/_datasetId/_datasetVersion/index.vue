@@ -65,12 +65,6 @@
             </nuxt-link>
           </div>
         </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Cite file</strong>
-          <div class="file-detail__column">
-            TODO
-          </div>
-        </div>
       </div>
       <client-only>
         <content-tab-card
