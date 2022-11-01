@@ -41,43 +41,49 @@
           </el-col>
           <el-col :sm="12">
             <div class="heading2 mb-16">Events</div>
-            <content-tab-card
-              class="tabs p-32"
-              :tabs="eventsTabs"
-              :active-tab-id="activeTabId"
-              @tab-changed="eventsTabChanged"
-            >
-              <template v-if="activeTabId === 'upcoming'">
-                <div class="upcoming-events">
-                  <event-card
-                    v-for="event in upcomingEvents.items"
-                    :key="event.sys.id"
-                    :event="event"
-                  />
-                </div>
+            <!--
+              Server side rendering does not work with the following
+              combination of components
+            -->
+            <client-only>
+              <content-tab-card
+                class="tabs p-32"
+                :tabs="eventsTabs"
+                :active-tab-id="activeTabId"
+                @tab-changed="eventsTabChanged"
+              >
+                <template v-if="activeTabId === 'upcoming'">
+                  <div class="upcoming-events">
+                    <event-card
+                      v-for="event in upcomingEvents.items"
+                      :key="event.sys.id"
+                      :event="event"
+                    />
+                  </div>
 
-              </template>
+                </template>
 
-              <template v-if="activeTabId === 'past'">
-                <div class="past-events">
-                  <event-card
-                    v-for="event in pastEvents.items"
-                    :key="event.sys.id"
-                    :event="event"
-                  />
+                <template v-if="activeTabId === 'past'">
+                  <div class="past-events">
+                    <event-card
+                      v-for="event in pastEvents.items"
+                      :key="event.sys.id"
+                      :event="event"
+                    />
+                  </div>
+                </template>
+                <div class="mt-16">
+                  <nuxt-link
+                    class="btn-load-more"
+                    :to="{
+                      name: 'news-and-events-events',
+                    }"
+                  >
+                    View All Events >
+                  </nuxt-link>
                 </div>
-              </template>
-              <div class="mt-16">
-                <nuxt-link
-                  class="btn-load-more"
-                  :to="{
-                    name: 'news-and-events-events',
-                  }"
-                >
-                  View All Events >
-                </nuxt-link>
-              </div>
-            </content-tab-card>
+              </content-tab-card>
+            </client-only>
           </el-col>
         </el-row>
 
