@@ -6,12 +6,10 @@
       <hr />
     </div>
     <div v-loading="isLoadingFacets" class="px-8">
-      <div v-if="associatedProject">
-        <div class="capitalize mb-8">project:</div>
-        <nuxt-link
-          :to="associatedProjectLink"
-        >
-          <u>{{associatedProjectTitle}}</u>
+      <div v-if="associatedProjects">
+        <div class="capitalize mb-8">project(s):</div>
+        <nuxt-link v-for="(project, index) in associatedProjects" :key="index" :to="getProjectLink(project)">
+          <u>{{ getProjectTitle(project) }}</u>
         </nuxt-link>
         <hr class="mt-16"/>
       </div>
@@ -86,9 +84,9 @@ export default {
   },
 
   props: {
-    associatedProject: {
-      type: Object,
-      default: () => {}
+    associatedProjects: {
+      type: Array,
+      default: () => []
     },
   },
 
@@ -99,16 +97,6 @@ export default {
     },
     showExperimentalApproachFacet: function() {
       return this.datasetTypeName === 'dataset'
-    },
-    associatedProjectLink: function() {
-      const sys = propOr(null, 'sys', this.associatedProject)
-      const entryId = propOr(null, 'id', sys)
-      return entryId != null ? `/projects/${entryId}` : ''
-    },
-    associatedProjectTitle: function() {
-      const fields = propOr(null, 'fields', this.associatedProject)
-      const title = propOr(null, 'title', fields)
-      return title ?? ''
     },
     contributors: function() {
       return propOr([], 'contributors', this.datasetInfo)
@@ -124,6 +112,16 @@ export default {
       })
   },
   methods: {
+    getProjectLink: function(associatedProject) {
+      const sys = propOr(null, 'sys', associatedProject)
+      const entryId = propOr(null, 'id', sys)
+      return entryId != null ? `/projects/${entryId}` : ''
+    },
+    getProjectTitle: function(associatedProject) {
+      const fields = propOr(null, 'fields', associatedProject)
+      const title = propOr(null, 'title', fields)
+      return title ?? ''
+    },
     getFacetId(datasetFacet) {
       const key = datasetFacet.facetPropPath;
       const label = datasetFacet.label;

@@ -13,7 +13,7 @@
             <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
               <dataset-action-box />
               <similar-datasets-info-box
-                :associated-project="associatedProject"
+                :associated-projects="associatedProjects"
                 :dataset-type-name="datasetTypeName"
               />
             </div>
@@ -45,7 +45,7 @@
                     v-show="activeTabId === 'about'"
                     :latestVersionRevision="latestVersionRevision"
                     :latestVersionDate="latestVersionDate"
-                    :associated-project="associatedProject"
+                    :associated-projects="associatedProjects"
                   />
                   <citation-details
                     v-show="activeTabId === 'cite'"
@@ -178,13 +178,15 @@ const getOrganEntries = async () => {
  * Get associated project from contentful
  * @returns {Array}
  */
-const getAssociatedProject = async (sparcAwardNumber) => {
+const getAssociatedProjects = async (sparcAwardNumbers) => {
   try {
-    const associatedProject = await client.getEntries({
+    const projects = await client.getEntries({
       content_type: process.env.ctf_project_id,
-      'fields.awardId': sparcAwardNumber
     })
-    return associatedProject.items || []
+    const associatedProjects = projects.items?.filter((project) => {
+      return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project) ) 
+    })
+    return associatedProjects || []
   } catch (error) {
     return []
   }
@@ -501,11 +503,11 @@ export default {
       isLoadingDataset: false,
       errorLoading: false,
       loadingMarkdown: false,
-      associatedProject: {},
+      associatedProjects: [],
       markdown: {},
       activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
       datasetRecords: [],
-      sparcAwardNumber: '',
+      sparcAwardNumbers: [],
       tabs: [],
       breadcrumb: [
         {
@@ -909,36 +911,22 @@ export default {
      */
     getDatasetRecords: async function() {
       try {
-        const summary = await this.$axios
-          .$get(`${this.getRecordsUrl}&model=summary`)
-          .catch(
-            // handle error
-            (this.errorLoading = true)
-          )
-        const award = await this.$axios
-          .$get(`${this.getRecordsUrl}&model=award`)
-          .catch(
-            // handle error
-            (this.errorLoading = true)
-          )
-
-        const summaryId = compose(
-          propOr('', 'hasAwardNumber'),
-          propOr([], 'properties'),
-          head,
-          propOr([], 'records')
-        )(summary)
-
-        const awardId = compose(
-          propOr('', 'award_id'),
-          propOr([], 'properties'),
-          head,
-          propOr([], 'records')
-        )(award)
-
-        this.sparcAwardNumber = summaryId || awardId
-        let project = await getAssociatedProject(this.sparcAwardNumber)
-        this.associatedProject = project.length > 0 ? project[0] : null
+        algoliaIndex
+          .getObject(this.datasetId, {
+            attributesToRetrieve: 'supportingAwards',
+          })
+          .then(( { supportingAwards } ) => {
+            supportingAwards = supportingAwards.filter(award => propOr(null, 'identifier', award) != null)
+            supportingAwards.forEach(award => {
+              this.sparcAwardNumbers.push(`${award.identifier}`)
+            })
+          }).finally(async () => {
+            if (this.sparcAwardNumbers.length > 0)
+            {
+              let projects = await getAssociatedProjects(this.sparcAwardNumbers)
+              this.associatedProjects = projects.length > 0 ? projects : null
+            }
+          })
       } catch (e) {
         console.error(e)
       }
