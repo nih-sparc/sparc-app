@@ -106,7 +106,7 @@ export default {
     if (userToken) {
       datasetUrl += `?api_key=${userToken}`
     }
-    const datasetInfo = await $axios.$get(datasetUrl).catch((error) => {
+    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
       console.log(`Could not get the dataset's info: ${error}`)
     })
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(

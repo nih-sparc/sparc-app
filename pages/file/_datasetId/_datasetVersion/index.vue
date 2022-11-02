@@ -5,23 +5,13 @@
         <div class="page-heading">
           <h1>{{ file.name }}</h1>
           <div class="page-heading__button">
-            <bf-button v-if="isFileOpenable(file)" @click="openFile(file)">
-              View in web viewer
-            </bf-button>
             <bf-button @click="executeDownload(file)">
               Download
             </bf-button>
-            <form
-              ref="zipForm"
-              method="POST"
-              :action="zipitUrl"
-            >
+            <form ref="zipForm" method="POST" :action="zipitUrl">
               <input v-model="zipData" type="hidden" name="data" />
             </form>
           </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column">Type</strong>
@@ -42,9 +32,37 @@
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Location</strong>
+          <strong class="file-detail__column">Dataset</strong>
           <div class="file-detail__column">
-            {{ location }}
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              {{ datasetTitle }}
+            </nuxt-link>
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column">File location</strong>
+          <div class="file-detail__column">
+            <nuxt-link
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: location
+                }
+              }"
+            >
+              {{ location }}
+            </nuxt-link>
           </div>
         </div>
       </div>
@@ -74,6 +92,7 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import BfStorageMetrics from '@/mixins/bf-storage-metrics'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
+import FileDetails from '@/mixins/file-details'
 
 import {
   compose,
@@ -105,10 +124,11 @@ export default {
   mixins: [
     BfStorageMetrics,
     FormatDate,
-    FetchPennsieveFile
+    FetchPennsieveFile,
+    FileDetails
   ],
 
-  async asyncData({ redirect, route, $axios }) {
+  async asyncData({ redirect, route, $axios, app }) {
     const filePath = route.query.path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
@@ -136,13 +156,24 @@ export default {
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' : ''
 
+    const url = `${process.env.discover_api_host}/datasets/${route.params.datasetId}`
+    var datasetUrl = route.query.datasetVersion ? `${url}/versions/${route.query.datasetVersion}` : url
+    const userToken = app.$cookies.get('user-token')
+    if (userToken) {
+      datasetUrl += `?api_key=${userToken}`
+    }
+    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
+      console.log(`Could not get the dataset's info: ${error}`)
+    })
+
     return {
       biolucidaData,
       file,
       hasBiolucidaViewer,
       sourcePackageId,
       packageType,
-      activeTabId
+      activeTabId,
+      datasetInfo
     }
   },
 
@@ -160,6 +191,29 @@ export default {
     }
   },
 
+  computed: {
+    /**
+     * Compute location of the file
+     * @returns {String}
+     */
+    location: function() {
+      return this.file.path.replace(`/${this.file.name}`, '')
+    },
+    hasViewer: function() {
+      return this.hasBiolucidaViewer
+    },
+    datasetId: function() {
+      return this.$route.params.datasetId
+    },
+    /**
+     * Return the dataset's name.
+     * @returns String
+     */
+    datasetTitle: function() {
+      return this.datasetInfo ? this.datasetInfo.name : 'Go to dataset'
+    }
+  },
+
   watch: {
     hasBiolucidaViewer: {
       handler: function(hasViewer) {
@@ -173,7 +227,7 @@ export default {
         }
       },
       immediate: true
-    },
+    }
   },
 
   methods: {
@@ -207,8 +261,7 @@ export default {
       const allowableExtensions = Object.keys(contentTypes).map(key => key)
       const fileType = file.fileType.toLowerCase()
       return (
-        this.isMicrosoftFileType(file) ||
-        allowableExtensions.includes(fileType)
+        this.isMicrosoftFileType(file) || allowableExtensions.includes(fileType)
       )
     },
     /**
@@ -252,19 +305,6 @@ export default {
           ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
           : url
       })
-    },
-  },
-
-  computed: {
-    /**
-     * Compute location of the file
-     * @returns {String}
-     */
-    location: function() {
-      return this.file.path.replace(`/${this.file.name}`, '')
-    },
-    hasViewer: function() {
-      return this.hasBiolucidaViewer
     }
   }
 }
@@ -284,6 +324,7 @@ h1 {
   @media (min-width: 48em) {
     flex-direction: row;
   }
+  align-items: center;
 }
 .page-heading__button {
   flex-shrink: 0;
@@ -305,5 +346,8 @@ h1 {
 
 .tabs {
   border: 1px solid $lineColor2;
+}
+.link-to-dataset {
+  margin-right: 10px;
 }
 </style>
