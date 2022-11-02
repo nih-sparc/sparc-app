@@ -7,10 +7,12 @@
     </div>
     <div v-loading="isLoadingFacets" class="px-8">
       <div v-if="associatedProjects">
-        <div class="capitalize mb-8">project(s):</div>
-        <nuxt-link v-for="(project, index) in associatedProjects" :key="index" :to="getProjectLink(project)">
-          <u>{{ getProjectTitle(project) }}</u>
-        </nuxt-link>
+        <div class="capitalize">project(s):</div>
+        <div class="mt-8" v-for="(project, index) in associatedProjects" :key="index">
+          <nuxt-link :to="getProjectLink(project)">
+            <u>{{ getProjectTitle(project) }}</u>
+          </nuxt-link>
+        </div>
         <hr class="mt-16"/>
       </div>
       <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.label">
