@@ -4,7 +4,9 @@
       Dataset does not exist anymore: <b>{{datasetName}}</b>
       <hr class="my-16"/>
       <div class="heading3">
-        The dataset with identifier: <b>{{doiUrl}}</b> has been unpublished by the owner and is no longer available on the SPARC portal.
+        The dataset with the identifier: <b>{{ doiUrl }}</b> has been removed and is no longer available on the SPARC portal.
+        <br/>
+        Please refer to the <a href="https://docs.sparc.science/?redirect=%2Fv1.0%2Fdocs%2Fsparc-changes-to-published-datasets-policy" target="_blank">SPARC Changes to Published Datasets</a> Policy for its full bibliographic citation and its statement of unavailability. 
       </div>
     </div>
   </div>
