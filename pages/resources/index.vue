@@ -27,7 +27,7 @@
         <paper
           :text="parseMarkdown(fields.paperText)"
           :button-text="'Submit a recommendation'"
-          button-link="/resources/submit"
+          :button-link="submissionLink"
         />
       </div>
     </div>
@@ -77,6 +77,13 @@ export default {
       ],
     }
   },
+
+  computed: {
+    submissionLink() {
+      const route = 'resources-submit'
+      return { name: route }
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
