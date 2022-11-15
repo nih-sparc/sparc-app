@@ -7,19 +7,6 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(heroCopy)" />
-      <a
-        class="btn-link"
-        href="https://docs.sparc.science/docs/what-can-i-do-with-sparc"
-      >
-        <el-button class="secondary">
-          What can I do with SPARC?
-        </el-button>
-      </a>
-      <a v-if="heroButtonLink" class="btn-link" :href="heroButtonLink">
-        <el-button class="secondary">
-          {{ heroButtonLabel }}
-        </el-button>
-      </a>
       <img
         v-if="heroImage"
         slot="image"
@@ -29,10 +16,10 @@
     </page-hero>
 
     <featured-data :featured-data="featuredData" />
+    
+    <portal-features :features="portalFeatures" />
 
     <homepage-news :news="newsAndEvents" />
-
-    <homepage-testimonials :testimonials="testimonials" />
   </div>
 </template>
 
@@ -41,6 +28,7 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTestimonials.vue'
+import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 
 import createClient from '@/plugins/contentful.js'
 import marked from '@/mixins/marked/index'
@@ -53,6 +41,7 @@ export default {
   components: {
     PageHero,
     FeaturedData,
+    PortalFeatures,
     HomepageNews,
     HomepageTestimonials
   },
@@ -86,6 +75,7 @@ export default {
       featuredData: [],
       newsAndEvents: [],
       testimonials: [],
+      portalFeatures: [],
       heroCopy: '',
       heroHeading: '',
       heroButtonLink: '',

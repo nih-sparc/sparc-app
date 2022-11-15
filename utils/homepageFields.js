@@ -11,6 +11,7 @@ export default (fields = {}) => {
     heroImage: fields.heroImage || {},
     heroButtonLink: fields.heroButtonLink || '',
     featuredData: fields.featuredData || [],
+    portalFeatures: fields.portalFeatures || [],
     newsAndEvents: fields.newsAndEvents || [],
     testimonials: fields.testimonials || [],
     title: fields.title || ''
