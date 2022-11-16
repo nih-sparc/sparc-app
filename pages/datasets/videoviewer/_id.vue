@@ -93,7 +93,7 @@ export default {
 
   mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ route, error, $axios }) {
     let signedUrl = await $axios
       .$get(
         `${process.env.portal_api}/download?key=${route.query.file_path}&contentType=${route.query.mimetype}`
@@ -107,7 +107,8 @@ export default {
       $axios,
       filePath,
       route.query.dataset_id,
-      route.query.dataset_version
+      route.query.dataset_version,
+      error
     )
     return {
       video_src: signedUrl,

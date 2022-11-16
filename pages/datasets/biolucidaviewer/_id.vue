@@ -123,7 +123,7 @@ export default {
 
   mixins: [FileDetails, MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ route, error, $axios }) {
     const image_identifier = route.params.id
     const identifier = route.query.item_id.substring(2)
 
@@ -164,7 +164,8 @@ export default {
         $axios,
         filePath,
         route.query.dataset_id,
-        route.query.dataset_version
+        route.query.dataset_version,
+        error
       )
     }
 

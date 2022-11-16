@@ -141,15 +141,17 @@ export default {
     }
   },
 
-  async asyncData({ app, route, $axios }) {
+  async asyncData({ app, route, error, $axios }) {
     const processedQuery = supportOldRoutes(route.query)
     const filePath = processedQuery.file_path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
       filePath,
       processedQuery.dataset_id,
-      processedQuery.dataset_version
+      processedQuery.dataset_version,
+      error
     )
+
     const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
     var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
     const userToken = app.$cookies.get('user-token')
