@@ -43,6 +43,7 @@ import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTestimonials.vue'
 
 import createClient from '@/plugins/contentful.js'
+import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 
@@ -57,9 +58,9 @@ export default {
     HomepageTestimonials
   },
 
-  mixins: [marked],
+  mixins: [ContentfulErrorHandle, marked],
 
-  asyncData() {
+  asyncData({error}) {
     return Promise.all([
       // Get homepage content
       client.getEntry(process.env.ctf_home_page_id)
@@ -67,7 +68,10 @@ export default {
       .then(([homepage]) => {
         return getHomepageFields(homepage.fields)
       })
-      .catch(console.error)
+      .catch(e => {
+        console.error(e);
+        return { contentfulError: true }
+      })
   },
 
   mounted() {

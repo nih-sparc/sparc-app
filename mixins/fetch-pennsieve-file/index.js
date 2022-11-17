@@ -1,3 +1,5 @@
+import ErrorMessages from '@/mixins/error-messages'
+
 export default {
   computed: {
     userToken: function() {
@@ -57,10 +59,8 @@ export default {
       }
       catch {
         if (errorReporting) {
-          const message = 'Sorry, we have encountered an unexpected \
-            error while trying to load the file information. \
-            Please try again later.'
-          return errorReporting({ statusCode: 404, message: message});
+          const message = ErrorMessages.methods.pennsieveFile()
+          return errorReporting({ statusCode: 404, message: message, display: true})
         }
         else
           return {};
