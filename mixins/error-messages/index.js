@@ -16,6 +16,10 @@ export default {
     biolucida: function() {
       return 'Sorry, the image you are looking for is currently \
         unavailable, please try again later.'
-    }
+    },
+    crosscite: function() {
+      return 'Sorry, we cannot retrieve the information on \
+      citations at this moment, please try again later.'
+    },
   }
 }
