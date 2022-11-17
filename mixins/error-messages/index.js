@@ -4,14 +4,18 @@ export default {
      * The following is a list of methods returning error 
      * messages for different services.
      */
-     pennsieveFile: function() {
-      return 'Sorry, we have encountered an unexpected \
-        error while trying to load the file information. \
-        Please try again later.'
-     },
-     contentful: function() {
-       return 'Sorry, the resource you are looking for is \
-        currently unavailable, please try again later.'
-     }
+    pennsieveFile: function() {
+    return 'Sorry, we have encountered an unexpected \
+      error while trying to load the file information. \
+      Please try again later.'
+    },
+    contentful: function() {
+      return 'Sorry, the resource you are looking for is \
+      currently unavailable, please try again later.'
+    },
+    biolucida: function() {
+      return 'Sorry, the image you are looking for is currently \
+        unavailable, please try again later.'
+    }
   }
 }

@@ -108,6 +108,7 @@ import SegmentationViewer from '@/components/SegmentationViewer/SegmentationView
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
+import ErrorMessages from '@/mixins/error-messages'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
@@ -173,14 +174,8 @@ export default {
         file
       }
     } catch (e) {
-      // Error caught return empty data.
-    }
-    return {
-      segmentation_info: { subject: '', atlas: '' },
-      human_readable_species: '',
-      readme: '',
-      title: '',
-      file: ''
+      const message = ErrorMessages.methods.biolucida()
+      return error({ statusCode: 404, message: message, display: true})
     }
   },
 
