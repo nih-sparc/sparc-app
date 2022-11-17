@@ -1,5 +1,5 @@
 <template>
-  <div class="feature-container p-16">
+  <div class="feature-container pt-0 px-16 pb-16">
     <img
       class="icon"
       :src=iconUrl
@@ -10,7 +10,7 @@
     <div class="body1 my-16">
       {{ description }}
     </div>
-    <a :href="buttonLink">
+    <a class="button-link" :href="buttonLink">
       <el-button class="secondary">
         {{ buttonText }}
       </el-button>
@@ -56,14 +56,20 @@ export default {
 .feature-container {
   border: 2px solid $grey;
   border-radius: .75rem;
+  display: flex;
+  flex-direction: column;
 }
 .icon {
-  max-width: 25%;
+  max-width: 50%;
+  margin: 0 auto;
 }
 .centered {
   text-align: center;
 }
 .body1 {
   text-align: left;
+}
+.button-link {
+  margin-top: auto;
 }
 </style>
