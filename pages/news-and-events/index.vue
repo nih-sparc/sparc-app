@@ -165,6 +165,7 @@ import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
 import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 
+import ErrorMessages from '@/mixins/error-messages'
 import MarkedMixin from '@/mixins/marked'
 
 import createClient from '@/plugins/contentful.js';
@@ -193,8 +194,16 @@ export default Vue.extend<Data, Methods, Computed, never>({
     CommunitySpotlightListings
   },
 
-  asyncData() {
-    return fetchData(client, '', 2)
+  asyncData({ error }) {
+    try {
+      return fetchData(client, '', 2)
+    }
+    catch(e) {
+      //Handle uncaught error
+      console.error(e)
+      const message = ErrorMessages.methods.contentful()
+      return error({ statusCode: 404, message: message, display: true})
+    }
   },
 
   watch: {

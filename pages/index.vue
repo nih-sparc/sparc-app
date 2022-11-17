@@ -60,7 +60,7 @@ export default {
 
   mixins: [ContentfulErrorHandle, marked],
 
-  asyncData({error}) {
+  asyncData() {
     return Promise.all([
       // Get homepage content
       client.getEntry(process.env.ctf_home_page_id)
@@ -70,6 +70,8 @@ export default {
       })
       .catch(e => {
         console.error(e);
+        //The contentful error handle mixin will
+        //emit a message on the failure.
         return { contentfulError: true }
       })
   },
