@@ -1,12 +1,13 @@
 <template>
-  <div v-loading="isLoadingOrganFacetIds" class="featured-data container">
+  <div v-loading="isLoadingOrganFacetIds" class="featured-data container pt-32 pb-16">
     <h2>Find Data by Category</h2>
     <div class="data-wrap">
       <nuxt-link
-        v-for="item in featuredData"
+        v-for="(item, index) in featuredData"
         :key="item.sys.id"
         class="featured-data__item"
         :to="`${getLink(item.fields)}`"
+        v-show="isVisible(index)"
       >
         <img
           :src="imageUrl(item)"
@@ -17,12 +18,9 @@
         </p>
       </nuxt-link>
     </div>
-
-    <nuxt-link :to="{ name: 'data', query: { type: 'dataset' } }">
-      <el-button class="mt-32 secondary">
-        View more
-      </el-button>
-    </nuxt-link>
+    <el-button @click="viewMoreClicked" class="mt-32 secondary">
+      {{ viewMoreText }}
+    </el-button>
   </div>
 </template>
 
@@ -31,6 +29,7 @@ import createAlgoliaClient from '@/plugins/algolia.js'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import { isEmpty, pathOr } from 'ramda'
 
+const MINIMUM_TO_SHOW = 6
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 export default {
@@ -46,12 +45,19 @@ export default {
   data: () => {
     return {
       organFacets: [],
-      isLoadingOrganFacetIds: true
+      isLoadingOrganFacetIds: true,
+      viewMore: false
     }
   },
 
   created() {
     this.loadOrganFacets()
+  },
+
+  computed: {
+    viewMoreText() {
+      return this.viewMore ? 'View less' : 'View more'
+    }
   },
 
   methods: {
@@ -94,6 +100,12 @@ export default {
       return organIds.length === 0
         ? contentfulFields.link
         : `${contentfulFields.link}&selectedFacetIds=${organIds.join(',')}`
+    },
+    viewMoreClicked() {
+      this.viewMore = !this.viewMore
+    },
+    isVisible(index) {
+      return this.viewMore ? true : index < MINIMUM_TO_SHOW
     }
   }
 }
@@ -104,7 +116,6 @@ export default {
 
 .featured-data {
   text-align: center;
-  padding: 3em 0 4em;
 }
 h2 {
   margin-bottom: 1.5625em;
