@@ -58,6 +58,7 @@ export default {
   border-radius: .75rem;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .icon {
   max-width: 50%;
