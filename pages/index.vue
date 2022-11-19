@@ -21,17 +21,19 @@
 
     <projects-and-datasets :project="featuredProject" :dataset="featuredDataset" />
 
-    <homepage-news :news="newsAndEvents" />
+    <latest-news-and-events />
+
+    <stay-connected />
   </div>
 </template>
 
 <script>
 import PageHero from '@/components/PageHero/PageHero.vue'
 import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
-import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
-import HomepageTestimonials from '@/components/HomepageTestimonials/HomepageTestimonials.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
+import LatestNewsAndEvents from '@/components/LatestNewsAndEvents/LatestNewsAndEvents.vue'
+import StayConnected from '@/components/StayConnected/StayConnected.vue'
 
 import createClient from '@/plugins/contentful.js'
 import marked from '@/mixins/marked/index'
@@ -46,8 +48,8 @@ export default {
     FeaturedData,
     PortalFeatures,
     ProjectsAndDatasets,
-    HomepageNews,
-    HomepageTestimonials
+    LatestNewsAndEvents,
+    StayConnected
   },
 
   mixins: [marked],
@@ -89,16 +91,13 @@ export default {
   data: () => {
     return {
       featuredData: [],
-      newsAndEvents: [],
-      testimonials: [],
       portalFeatures: [],
       featuredProject: {},
       featuredDatasetId: '',
       featuredDataset: {},
       heroCopy: '',
       heroHeading: '',
-      heroButtonLink: '',
-      heroButtonLabel: ''
+      heroImage: {}
     }
   },
 
