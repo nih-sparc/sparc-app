@@ -77,7 +77,7 @@ export default {
       }).catch(console.error)
   },
 
-  mounted() {
+  beforeMount() {
     // When trying to do federated sign in using a middleware (like we do for sign out), Cognito's callback would only
     // execute client-side (after the middleware had already redirected to the new page) causing it to overwrite the 
     // previous redirect. This issue was supposed to be addressed by https://github.com/aws-amplify/amplify-js/pull/3588, 
