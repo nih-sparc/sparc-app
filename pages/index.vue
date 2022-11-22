@@ -78,12 +78,14 @@ export default {
   },
 
   mounted() {
-    // When trying to do this using a middleware, the server would redirect correctly initially after login,
-    // but then another unknown redirect back to / was happening that would cause the page to load incorrectly.
-    // The only downside to doing it this way is a momentary display of the home page first before redirecting.
-    const authRedirectUrl = this.$cookies.get('auth-redirect-url')
+    // When trying to do federated sign in using a middleware (like we do for sign out), Cognito's callback would only
+    // execute client-side (after the middleware had already redirected to the new page) causing it to overwrite the 
+    // previous redirect. This issue was supposed to be addressed by https://github.com/aws-amplify/amplify-js/pull/3588, 
+    // but attempting to handle dynamic routing after amplify federated sign in via a custom state hook as suggested 
+    // here: https://github.com/aws-amplify/amplify-js/issues/3125#issuecomment-814265328 did not work
+    const authRedirectUrl = this.$cookies.get('sign-in-redirect-url')
     if (authRedirectUrl) {
-      this.$cookies.set('auth-redirect-url', null)
+      this.$cookies.set('sign-in-redirect-url', null)
       this.$router.push(authRedirectUrl)
     }
   },
