@@ -210,7 +210,7 @@ const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName,
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
   const datasetDetails =
-    datasetTypeName === 'dataset'
+    (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
       ? await $axios.$get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
@@ -241,7 +241,8 @@ const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName,
     .catch(() => {
       return ''
     })
-  datasetDetails.ownerEmail = datasetOwnerEmail
+  if (datasetDetails)
+    datasetDetails.ownerEmail = datasetOwnerEmail
 
   return datasetDetails
 }
@@ -400,6 +401,7 @@ export default {
     const datasetId = pathOr('', ['params', 'datasetId'], route)
 
     const datasetFacetsData = await getDatasetFacetsData(route)
+
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const userToken = app.$cookies.get('user-token')
