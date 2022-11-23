@@ -44,12 +44,12 @@
                 type: getSearchResultsType(scope.row.item)
               }
             }"
-          >
-            {{ scope.row.pennsieve.name }}
-          </nuxt-link>
-          <div class="my-8">
-            {{ scope.row.pennsieve.description }}
-          </div>
+            v-html="scope.row._highlightResult.item.name.value"
+          />
+          <div
+            class="my-8"
+            v-html="scope.row._highlightResult.item.description.value"
+          />
           <table class="property-table">
             <tr
               v-for="(property, index) in PROPERTY_DATA"
@@ -59,11 +59,9 @@
               <td class="property-name-column">
                 {{ property.displayName }}
               </td>
-              <td>
-                {{
-                  getPropertyValue(scope.row, property)
-                }}
-              </td>
+              <td
+                v-html="getPropertyValue(scope.row, property)"
+              />
             </tr>
           </table>
         </div>
@@ -77,6 +75,7 @@ import SparcPill from '@/components/SparcPill/SparcPill.vue'
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 import _ from 'lodash'
+import { ALGOLIA_HIGHLIGHT_TAG } from '~/pages/data/index.vue'
 
 export default {
   name: 'DatasetSearchResults',
@@ -97,15 +96,15 @@ export default {
       PROPERTY_DATA: [
         {
           displayName: 'Anatomical Structure',
-          propPath: 'anatomy.organ'
+          propPath: '_highlightResult.anatomy.organ'
         },
         {
           displayName: 'Species',
-          propPath: 'organisms.primary[0].species.name'
+          propPath: '_highlightResult.organisms.primary[0].species.name.value'
         },
         {
           displayName: 'Experimental Approach',
-          propPath: 'item.modalities'
+          propPath: '_highlightResult.item.modalities'
         },
         {
           displayName: 'Publication Date',
@@ -114,12 +113,20 @@ export default {
         {
           displayName: 'Samples',
           propPath: 'item.statistics'
-        },
+        }
       ]
     }
   },
 
   methods: {
+    toTermUppercase: function(term) {
+      let value = _.upperFirst(term)
+      if (value.indexOf(`<${ALGOLIA_HIGHLIGHT_TAG}>`) === 0) {
+        // If first word is a search term coincidence, set first letter to uppercase
+        value = value.slice(0, 3) + value.charAt(3).toUpperCase() + value.slice(4)
+      }
+      return value
+    },
     getPropertyValue: function(item, property) {
       if (item == undefined) {
         return undefined
@@ -128,7 +135,7 @@ export default {
         case 'Anatomical Structure': {
           const organs = _.get(item, property.propPath)
           return organs
-            ? organs.map(item => _.upperFirst(item.name)).join(', ')
+            ? organs.map(item => this.toTermUppercase(item.name.value)).join(', ')
             : undefined
         }
         case 'Includes': {
@@ -149,7 +156,7 @@ export default {
           const techniques = _.get(item, property.propPath)
           return techniques
             ? techniques
-                .map(item => _.upperFirst(item.keyword))
+                .map(item => this.toTermUppercase(item.keyword.value))
                 .join(', ')
             : undefined
         }

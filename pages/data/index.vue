@@ -156,6 +156,8 @@ import createAlgoliaClient from '@/plugins/algolia.js'
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
 
+export const ALGOLIA_HIGHLIGHT_TAG = 'b'
+
 const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
 const DatasetSearchResults = () =>
@@ -502,7 +504,16 @@ export default {
                 facets: ['*'],
                 hitsPerPage: this.searchData.limit,
                 page: this.curSearchPage - 1,
-                filters: filters
+                filters: filters,
+                attributesToHighlight: [
+                  'item.name',
+                  'item.description',
+                  'item.modalities',
+                  'anatomy.organ',
+                  'organisms.primary.species.name'
+                ],
+                highlightPreTag: `<${ALGOLIA_HIGHLIGHT_TAG}>`,
+                highlightPostTag: `</${ALGOLIA_HIGHLIGHT_TAG}>`
               })
               .then(response => {
                 const searchData = {
