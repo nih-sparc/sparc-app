@@ -21,5 +21,14 @@ export default {
       return 'Sorry, we cannot retrieve the information on \
       citations at this moment, please try again later.'
     },
+    scicrunch: function() {
+      return 'Sorry, some details may not be available at \
+        this moment, please try again later.'
+    },
+    discover: function() {
+      return 'Sorry, we have encountered an unexpected error \
+        while trying to load the information. Please try again later.'
+
+    }
   }
 }
