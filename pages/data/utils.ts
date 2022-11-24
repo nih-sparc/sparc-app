@@ -213,7 +213,7 @@ export const searchQueryReplacements: { [orig: string]: string } = {
 
 export const HIGHLIGHT_HTML_TAG = 'b'
 
-export const highlightMatches = (text: string, search: string) => {
+export const highlightMatches = (text: string, search: string): string => {
   if (search) {
     const terms = search.split(' ')
     let result = text
