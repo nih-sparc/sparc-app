@@ -212,7 +212,12 @@ export const searchQueryReplacements: { [orig: string]: string } = {
 }
 
 export const HIGHLIGHT_HTML_TAG = 'b'
-
+/**
+ * Function that takes a text and search input and wraps matching substrings with the given HTML tag.
+ * @param {String} text Input text to be processed
+ * @param {String} search Search terms
+ * @returns {String} Output text with matching terms wrapped by given HTML tag. Original text if search is empty.
+ */
 export const highlightMatches = (text: string, search: string): string => {
   if (search) {
     const terms = search.split(' ')
