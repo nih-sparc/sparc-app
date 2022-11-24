@@ -223,7 +223,8 @@ export const highlightMatches = (text: string, search: string): string => {
     const terms = search.split(' ')
     let result = text
     terms.forEach(t => {
-      result = result.replace(new RegExp(t, 'ig'), `<${HIGHLIGHT_HTML_TAG}>$&</${HIGHLIGHT_HTML_TAG}>`)
+      const trimmed = t.replace(/^"|"$/, '')
+      result = result.replace(new RegExp(trimmed, 'ig'), `<${HIGHLIGHT_HTML_TAG}>$&</${HIGHLIGHT_HTML_TAG}>`)
     })
     return result
   }
