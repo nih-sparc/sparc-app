@@ -156,7 +156,7 @@ import createAlgoliaClient from '@/plugins/algolia.js'
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
 
-export const ALGOLIA_HIGHLIGHT_TAG = 'b'
+export const HIGHLIGHT_TAG = 'b'
 
 const ProjectSearchResults = () =>
   import('@/components/SearchResults/ProjectSearchResults.vue')
@@ -512,8 +512,8 @@ export default {
                   'anatomy.organ',
                   'organisms.primary.species.name'
                 ],
-                highlightPreTag: `<${ALGOLIA_HIGHLIGHT_TAG}>`,
-                highlightPostTag: `</${ALGOLIA_HIGHLIGHT_TAG}>`
+                highlightPreTag: `<${HIGHLIGHT_TAG}>`,
+                highlightPostTag: `</${HIGHLIGHT_TAG}>`
               })
               .then(response => {
                 const searchData = {

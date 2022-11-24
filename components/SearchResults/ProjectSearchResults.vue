@@ -21,36 +21,27 @@
             path: 'projects/:scope.row.sys.id',
             params: { projectId: scope.row.sys.id }
           }"
-        >
-          {{ scope.row.fields.title }}
-        </nuxt-link>
-        <div class="mt-8 mb-8">
-          {{ scope.row.fields.shortDescription }}
-        </div>
+          v-html="getHighlighted(scope.row.fields.title)"
+        />
+        <div class="mt-8 mb-8" v-html="getHighlighted(scope.row.fields.shortDescription)"/>
         <table class="property-table">
           <tr v-if="scope.row.fields.projectSection">
             <td class="property-name-column">
               Anatomical Focus
             </td>
-            <td>
-              {{ scope.row.fields.projectSection.fields.title }}
-            </td>
+            <td v-html="getHighlighted(scope.row.fields.projectSection.fields.title)"/>
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">
               Principle Investigator
             </td>
-            <td>
-              {{ reverseName(scope.row.fields.principleInvestigator) }}
-            </td>
+            <td v-html="getHighlighted(reverseName(scope.row.fields.principleInvestigator))"/>
           </tr>
           <tr v-if="scope.row.fields.institution">
             <td class="property-name-column">
               Institution
             </td>
-            <td>
-              {{ scope.row.fields.institution.fields.name }}
-            </td>
+            <td v-html="getHighlighted(scope.row.fields.institution.fields.name)"/>
           </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">
@@ -72,6 +63,7 @@
 <script>
 import Truncate from '@/mixins/truncate'
 import { isInternalLink } from '@/mixins/marked/index'
+import { HIGHLIGHT_TAG } from '../../pages/data/index.vue'
 
 export default {
   name: 'ProjectSearchResults',
@@ -136,7 +128,20 @@ export default {
       }
       return `${fullName[2]}, ${fullName[0]} ${fullName[1]}`
     },
-    isInternalLink
+    isInternalLink,
+
+    getHighlighted: function(text='') {
+      const search = this.$route.query.search
+      if (search) {
+        const terms = search.split(' ')
+        let result = text
+        terms.forEach(t => {
+          result = result.replace(new RegExp(t, 'ig'), `<${HIGHLIGHT_TAG}>$&</${HIGHLIGHT_TAG}>`)
+        })
+        return result
+      }
+      return text
+    }
   }
 }
 </script>

@@ -75,7 +75,7 @@ import SparcPill from '@/components/SparcPill/SparcPill.vue'
 import FormatDate from '@/mixins/format-date'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 import _ from 'lodash'
-import { ALGOLIA_HIGHLIGHT_TAG } from '~/pages/data/index.vue'
+import { HIGHLIGHT_TAG } from '~/pages/data/index.vue'
 
 export default {
   name: 'DatasetSearchResults',
@@ -121,7 +121,7 @@ export default {
   methods: {
     toTermUppercase: function(term) {
       let value = _.upperFirst(term)
-      if (value.indexOf(`<${ALGOLIA_HIGHLIGHT_TAG}>`) === 0) {
+      if (value.indexOf(`<${HIGHLIGHT_TAG}>`) === 0) {
         // If first word is a search term coincidence, set first letter to uppercase
         value = value.slice(0, 3) + value.charAt(3).toUpperCase() + value.slice(4)
       }
