@@ -21,27 +21,29 @@
             path: 'projects/:scope.row.sys.id',
             params: { projectId: scope.row.sys.id }
           }"
-          v-html="getHighlighted(scope.row.fields.title)"
+          v-html="highlightMatches(scope.row.fields.title, $route.query.search)"
         />
-        <div class="mt-8 mb-8" v-html="getHighlighted(scope.row.fields.shortDescription)"/>
+        <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)"/>
         <table class="property-table">
           <tr v-if="scope.row.fields.projectSection">
             <td class="property-name-column">
               Anatomical Focus
             </td>
-            <td v-html="getHighlighted(scope.row.fields.projectSection.fields.title)"/>
+            <td v-html="highlightMatches(scope.row.fields.projectSection.fields.title, $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">
               Principle Investigator
             </td>
-            <td v-html="getHighlighted(reverseName(scope.row.fields.principleInvestigator))"/>
+            <td v-html="highlightMatches(reverseName(scope.row.fields.principleInvestigator), $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.institution">
             <td class="property-name-column">
               Institution
             </td>
-            <td v-html="getHighlighted(scope.row.fields.institution.fields.name)"/>
+            <td>
+              {{ scope.row.fields.institution.fields.name }}
+            </td>
           </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">
@@ -63,7 +65,7 @@
 <script>
 import Truncate from '@/mixins/truncate'
 import { isInternalLink } from '@/mixins/marked/index'
-import { HIGHLIGHT_TAG } from '../../pages/data/index.vue'
+import { highlightMatches } from '@/pages/data/utils'
 
 export default {
   name: 'ProjectSearchResults',
@@ -129,24 +131,7 @@ export default {
       return `${fullName[2]}, ${fullName[0]} ${fullName[1]}`
     },
     isInternalLink,
-
-    /**
-     * Function that takes a string and wraps matching substrings with the given HTML tag.
-     * @param {String} text Input text to be processed
-     * @returns {String} Output text with matching terms wrapped by given HTML tag. Original text if search is empty.
-     */
-    getHighlighted: function(text='') {
-      const search = this.$route.query.search
-      if (search) {
-        const terms = search.split(' ')
-        let result = text
-        terms.forEach(t => {
-          result = result.replace(new RegExp(t, 'ig'), `<${HIGHLIGHT_TAG}>$&</${HIGHLIGHT_TAG}>`)
-        })
-        return result
-      }
-      return text
-    }
+    highlightMatches
   }
 }
 </script>

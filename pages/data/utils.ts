@@ -210,3 +210,17 @@ export const searchQueryReplacements: { [orig: string]: string } = {
   'o2s2parc': 'o\u00b2s\u00b2parc',
   'osparc': 'o\u00b2s\u00b2parc'
 }
+
+export const HIGHLIGHT_HTML_TAG = 'b'
+
+export const highlightMatches = (text: string, search: string) => {
+  if (search) {
+    const terms = search.split(' ')
+    let result = text
+    terms.forEach(t => {
+      result = result.replace(new RegExp(t, 'ig'), `<${HIGHLIGHT_HTML_TAG}>$&</${HIGHLIGHT_HTML_TAG}>`)
+    })
+    return result
+  }
+  return text
+}
