@@ -223,7 +223,7 @@ export const highlightMatches = (text: string, search: string): string => {
     const terms = search.split(' ')
     let result = text
     terms.forEach(t => {
-      const trimmed = t.replace(/^"|"$/, '')
+      const trimmed = t.replace(/^"|"$/, '') // Trims out double quotes that could be used in searching
       result = result.replace(new RegExp(trimmed, 'ig'), `<${HIGHLIGHT_HTML_TAG}>$&</${HIGHLIGHT_HTML_TAG}>`)
     })
     return result
