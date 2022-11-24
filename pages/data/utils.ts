@@ -219,7 +219,7 @@ export const HIGHLIGHT_HTML_TAG = 'b'
  * @returns {String} Output text with matching terms wrapped by given HTML tag. Original text if search is empty.
  */
 export const highlightMatches = (text: string, search: string): string => {
-  if (search) {
+  if (text && search) {
     const terms = search.split(' ')
     let result = text
     terms.forEach(t => {
