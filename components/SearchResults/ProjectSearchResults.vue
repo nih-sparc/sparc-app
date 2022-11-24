@@ -130,6 +130,11 @@ export default {
     },
     isInternalLink,
 
+    /**
+     * Function that takes a string and wraps matching substrings with the given HTML tag.
+     * @param {String} text Input text to be processed
+     * @returns {String} Output text with matching terms wrapped by given HTML tag. Original text if search is empty.
+     */
     getHighlighted: function(text='') {
       const search = this.$route.query.search
       if (search) {
