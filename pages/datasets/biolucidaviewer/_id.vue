@@ -179,9 +179,9 @@ export default {
         file
       }
     }
-    catch {
+    catch (e) {
       const message = ErrorMessages.methods.biolucida()
-      return error({ statusCode: 404, message: message, display: true})
+      return error({ statusCode: 400, message: message, display: true, error: e})
     }
   },
 

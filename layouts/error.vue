@@ -1,51 +1,27 @@
 <template>
-  <div>
-    <div class="page-wrap container">
-      <div class="subpage">
-        <!-- only display custom message if it is available -->
-        <p v-if="error && error.display && error.message">
-          {{ error.message }}
-        </p>
-        <p v-else>
-          One of our external resources is down. This part of the site is not
-          accessible. Please come back later.
-        </p>
-        <p>
-          Please check our service status or consider submit a bug report if the issue persists.
-        </p>
-        <br>
-        <el-row>
-          <el-col :span="3">
-            <a
-              href="https://docs.sparc.science/docs/portal-status"
-              target="_blank"
-            >
-              Service Status
-            </a>
-          </el-col>
-          <el-col :span="4">
-            <nuxt-link
-                :to="{
-                  name: 'contact-us',
-                  query: {
-                    type: 'bug'
-                  }
-                }"
-              >
-                Submit A Bug Report
-            </nuxt-link>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
+  <div class="nuxt-error">
+    <component :is="errorPage" :error="error" />
   </div>
 </template>
-
 <script>
+import error404 from '~/components/Error/404.vue'
+import error400 from '~/components/Error/400.vue'
 export default {
   name: 'ErrorPage',
-  props: [
-    'error'
-  ]
+  props: {
+    error: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  computed: {
+    errorPage() {
+      if (this.error.statusCode === 404) {
+        return error404
+      }
+      // catch everything else
+      return error400
+    }
+  }
 }
 </script>
