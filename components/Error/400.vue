@@ -14,7 +14,6 @@
           Please check our service status or consider submit a bug report if the
           issue persists.
         </p>
-        <body4>{{ error.error }}</body4>
         <br />
         <el-row>
           <el-col :span="3">
