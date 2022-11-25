@@ -198,8 +198,6 @@ export default {
      * @returns {String}
      */
     location: function() {
-      console.log('made it to location in files page!')
-      console.log(this.file.path)
       return this.file.path.replace(`/${this.file.name}`, '')
     },
     hasViewer: function() {
