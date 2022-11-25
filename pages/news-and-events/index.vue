@@ -202,7 +202,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
       //Handle uncaught error
       console.error(e)
       const message = ErrorMessages.methods.contentful()
-      return error({ statusCode: 404, message: message, display: true})
+      return error({ statusCode: 400, message: message, display: true, error: e})
     }
   },
 

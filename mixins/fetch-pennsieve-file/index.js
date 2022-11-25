@@ -60,7 +60,7 @@ export default {
       catch {
         if (errorReporting) {
           const message = ErrorMessages.methods.pennsieveFile()
-          return errorReporting({ statusCode: 404, message: message, display: true})
+          return errorReporting({ statusCode: 400, message: message, display: true})
         }
         else
           return {};

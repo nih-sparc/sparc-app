@@ -65,7 +65,7 @@ export default {
       .catch( e => {
         console.error(e)
         //Display the error page with an custom message
-        error({ statusCode: 404, message: ErrorMessages.methods.contentful(), display: true} )
+        error({ statusCode: 400, message: ErrorMessages.methods.contentful(), display: true, error: e} )
       })
   },
 

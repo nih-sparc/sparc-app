@@ -426,7 +426,7 @@ export default {
     
     if (!datasetDetails) {
       //critical error messages
-      error({ statusCode: 404, message: ErrorMessages.methods.discover(), display: true})
+      error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true})
     }
 
     const { biolucidaImageData, scicrunchData } = await getThumbnailData(
