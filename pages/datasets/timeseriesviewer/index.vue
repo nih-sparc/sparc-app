@@ -99,7 +99,7 @@ export default {
 
   mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ app, route, $axios }) {
+  async asyncData({ app, route, error, $axios }) {
     const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
     var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
     const userToken = app.$cookies.get('user-token')
@@ -113,7 +113,8 @@ export default {
       $axios,
       route.query.file_path,
       route.query.dataset_id,
-      route.query.dataset_version
+      route.query.dataset_version,
+      error
     )
     const sourcePackageId = file.sourcePackageId
     let packageType = "None"

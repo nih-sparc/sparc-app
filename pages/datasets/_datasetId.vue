@@ -114,6 +114,7 @@ import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
 import Tombstone from '@/components/Tombstone/Tombstone.vue'
 
+import ErrorMessages from '@/mixins/error-messages'
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
@@ -127,6 +128,8 @@ import createClient from '@/plugins/contentful.js'
 import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
 import flatmaps from '~/services/flatmaps'
+
+import { failMessage } from '@/utils/notification-messages'
 
 const client = createClient()
 const algoliaClient = createAlgoliaClient()
@@ -210,7 +213,7 @@ const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName,
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
   const datasetDetails =
-    datasetTypeName === 'dataset'
+    (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
       ? await $axios.$get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
@@ -241,7 +244,9 @@ const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName,
     .catch(() => {
       return ''
     })
-  datasetDetails.ownerEmail = datasetOwnerEmail
+
+  if (datasetDetails)
+    datasetDetails.ownerEmail = datasetOwnerEmail
 
   return datasetDetails
 }
@@ -394,7 +399,7 @@ export default {
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios, store, app }) {
+  async asyncData({ route, $axios, store, app, error }) {
     let tabsData = clone(tabs)
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
@@ -403,6 +408,8 @@ export default {
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const userToken = app.$cookies.get('user-token')
+
+    const errorMessages = []
 
     const [organEntries, datasetDetails, versions, downloadsSummary] = await Promise.all([
       getOrganEntries(),
@@ -416,6 +423,11 @@ export default {
       getDatasetVersions(datasetId, $axios),
       getDownloadsSummary($axios),
     ])
+    
+    if (!datasetDetails) {
+      //critical error messages
+      error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true})
+    }
 
     const { biolucidaImageData, scicrunchData } = await getThumbnailData(
       datasetDetails.doi,
@@ -423,6 +435,12 @@ export default {
       datasetDetails.version,
       datasetFacetsData
     )
+ 
+    if ( Object.keys(biolucidaImageData).length === 0 &&
+      Object.keys(scicrunchData).length === 0 ) {
+      //Non critical error
+      errorMessages.push(ErrorMessages.methods.scicrunch())
+    }
 
     datasetDetails.sciCrunch = scicrunchData;
 
@@ -493,7 +511,8 @@ export default {
       downloadsSummary,
       showTombstone: datasetDetails.isUnpublished,
       changelogFiles,
-      timeseriesData
+      timeseriesData,
+      errorMessages
     }
   },
 
@@ -528,6 +547,7 @@ export default {
       ],
       subtitles: [],
       ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
+      errorMessages: [],
     }
   },
 
@@ -797,6 +817,18 @@ export default {
     datasetInfo: {
       handler: function() {
         this.getMarkdown()
+      },
+      immediate: true
+    },
+    errorMessages: {
+      handler: function() {
+        //Non critical error messages
+        console.log(this.errorMessages)
+        this.errorMessages.forEach(message => {
+          this.$message(failMessage(message))
+        })
+        //Clean up the error messages
+        this.errorMessages.length = 0
       },
       immediate: true
     },

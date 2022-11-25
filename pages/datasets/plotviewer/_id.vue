@@ -94,7 +94,7 @@ export default {
 
   mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, $axios, app }) {
+  async asyncData({ route, error, $axios, app }) {
     const identifier = route.query.identifier
 
     const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(
@@ -119,7 +119,8 @@ export default {
       $axios,
       filePath,
       route.query.dataset_id,
-      route.query.dataset_version
+      route.query.dataset_version,
+      error
     )
 
     const metadata = JSON.parse(

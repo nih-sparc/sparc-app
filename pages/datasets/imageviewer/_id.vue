@@ -96,7 +96,7 @@ export default {
 
   mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, $axios, app }) {
+  async asyncData({ route, error, $axios, app }) {
     const response = await discover.fetch(
       route.query.dataset_id,
       route.query.dataset_version,
@@ -117,7 +117,8 @@ export default {
       $axios,
       filePath,
       route.query.dataset_id,
-      route.query.dataset_version
+      route.query.dataset_version,
+      error
     )
 
     const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
