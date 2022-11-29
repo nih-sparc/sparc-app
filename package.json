@@ -17,11 +17,11 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/flatmapvuer": "0.2.5",
+    "@abi-software/flatmapvuer": "0.3.8",
     "@abi-software/gallery": "0.3.1",
-    "@abi-software/mapintegratedvuer": "0.3.9-beta.4",
+    "@abi-software/mapintegratedvuer": "0.3.9",
     "@abi-software/plotvuer": "^0.3.0",
-    "@abi-software/scaffoldvuer": "0.1.53",
+    "@abi-software/scaffoldvuer": "0.1.55",
     "@abi-software/simulationvuer": "^0.5.9",
     "@aws-amplify/auth": "^4.4.4",
     "@aws-amplify/core": "^4.4.2",
@@ -35,7 +35,7 @@
     "babel-eslint": "^10.0.3",
     "contentful": "^7.10.0",
     "cookie-universal-nuxt": "^2.1.1",
-    "core-js": "3.22.5",
+    "core-js": "3.25.1",
     "date-fns": "^2.8.1",
     "element-ui": "^2.4.11",
     "eslint": "^6.8.0",
