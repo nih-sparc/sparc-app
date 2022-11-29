@@ -155,7 +155,7 @@ import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
 import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
-import { facetPropPathMapping, getAlgoliaFacets } from './utils'
+import { facetPropPathMapping, getAlgoliaFacets, HIGHLIGHT_HTML_TAG } from './utils'
 import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 const client = createClient()
@@ -514,7 +514,16 @@ export default {
                 facets: ['*'],
                 hitsPerPage: this.searchData.limit,
                 page: this.curSearchPage - 1,
-                filters: filters
+                filters: filters,
+                attributesToHighlight: [
+                  'item.name',
+                  'item.description',
+                  'item.modalities',
+                  'anatomy.organ',
+                  'organisms.primary.species.name'
+                ],
+                highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
+                highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
               })
               .then(response => {
                 const searchData = {

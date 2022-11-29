@@ -14,19 +14,18 @@
             name: 'news-and-events-news-id',
             params: { id: item.sys.id }
           }"
-        >
-          {{ item.fields.title }}
-        </nuxt-link>
+          v-html="highlightMatches(item.fields.title, $route.query.search)"
+        />
         <a
           v-else
           :href="item.fields.url"
           :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
         >
-          {{ item.fields.title }}
+          <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
           <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
         </a>
       </h3>
-      <p>{{ item.fields.summary }}</p>
+      <p v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
       <p class="news-list-item__date">
         {{ publishedDate }}
       </p>
@@ -41,6 +40,7 @@ import EventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
 import { isInternalLink } from '@/mixins/marked/index'
+import { highlightMatches } from '~/pages/data/utils'
 
 export default {
   name: 'NewsListItem',
@@ -74,7 +74,8 @@ export default {
   },
 
   methods: {
-    isInternalLink
+    isInternalLink,
+    highlightMatches
   }
 }
 </script>
