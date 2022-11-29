@@ -6,18 +6,11 @@
   >
     <div class="content" slot="mainContent">
       <h1 class="heading1 mb-8">
-        Sign into SPARC
+        {{ fields.title }}
       </h1>
-      <p class="body1">
-        SPARC Portal login authentication is provided by <a href="https://orcid.org" target="_blank">ORCID iD</a>. Create a SPARC Portal account or sign in to your existing SPARC Portal account by using your existing ORCID iD credentials.
-        If you do not have an existing ORCID iD, please <a href="https://orcid.org/register" target="_blank">register here</a> for a free account.
-      </p>
-      <p class="body1">
-        Upon initial login to the SPARC Portal via ORCID iD, you will also be creating* an account on <a href="https://app.pennsieve.io" target="_blank">Pennsieve</a> to unlock all the features the SPARC Portal has to offer.
-      </p>
-      <p class="body1">
-        Learn more <a href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">here</a> about why a Pennsieve account is being created for you and which features are enabled by the SPARC Portal login.
-      </p>
+      <!-- eslint-disable vue/no-v-html -->
+      <!-- marked will sanitize the HTML injected -->
+      <div class="body1" v-html="parseMarkdown(fields.description)" />
       <el-button class="secondary" @click="onLoginWithORCID">
         <img
           class="orcid-logo mr-2"
@@ -28,9 +21,9 @@
         />
         Sign in with ORCID iD
       </el-button>
-      <p class="mt-16 body4">
-        By signing in to SPARC, you are accepting the <a href="https://docs.sparc.science/docs/terms-of-service" target="_blank">SPARC Terms of Service</a> and <a href="https://docs.sparc.science/docs/policies" target="_blank">SPARC DRC Privacy Policy</a> in addition to the <a href="https://docs.pennsieve.io/page/pennsieve-terms-of-use" target="_blank">Pennsieve Terms of Use</a> and <a href="https://docs.pennsieve.io/page/privacy-policy" target="_blank">Pennsieve Privacy Policy</a>. Contact us at support@sparc.science
-      </p>
+      <!-- eslint-disable vue/no-v-html -->
+      <!-- marked will sanitize the HTML injected -->
+      <div class="mt-16 body4" v-html="parseMarkdown(fields.termsAndConditions)" />
       <p class="body4">
         * If you already have an account on Pennsieve, you will be able to link your newly created SPARC account to it by entering your existing Pennsieve account's e-mail address when prompted.
       </p>
@@ -43,12 +36,21 @@
   </large-modal>
 </template>
 <script>
+import createClient from '@/plugins/contentful.js'
+import ErrorMessages from '@/mixins/error-messages'
+import marked from '@/mixins/marked/index'
+
+const client = createClient()
 
 export default {
   name: 'LoginModal',
+
+  mixins: [marked],
+
   data() {
     return {
-      dialogVisible: false
+      dialogVisible: false,
+      fields: {}
     }
   },
   props: {
@@ -56,6 +58,19 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  fetch() {
+    return client
+      .getEntry(process.env.ctf_sparc_login_modal_id)
+      .then(({ fields }) => {
+          this.fields = fields
+        }
+      )
+      .catch( e => {
+        console.error(e)
+        //Display the error page with an custom message
+        error({ statusCode: 400, message: ErrorMessages.methods.contentful(), display: true, error: e} )
+      })
   },
   watch: {
     showDialog: {
