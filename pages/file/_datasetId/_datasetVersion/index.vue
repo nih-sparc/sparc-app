@@ -128,13 +128,14 @@ export default {
     FileDetails
   ],
 
-  async asyncData({ redirect, route, $axios, app }) {
+  async asyncData({ redirect, route, error, $axios, app }) {
     const filePath = route.query.path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
       filePath,
       route.params.datasetId,
-      route.params.datasetVersion
+      route.params.datasetVersion,
+      error
     )
 
     const sourcePackageId = file.sourcePackageId

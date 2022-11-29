@@ -56,6 +56,8 @@
 <script>
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
+import ErrorMessages from '@/mixins/error-messages'
+
 export default {
   name: 'CitationDetails',
   props: {
@@ -118,6 +120,7 @@ export default {
             citationType.citationText = text
           })
           .catch(() => {
+            this.$message(failMessage(ErrorMessages.methods.crosscite()))
             this.hasCitationError = true
           })
           .finally(() => {

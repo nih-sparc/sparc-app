@@ -75,8 +75,10 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Paper from '@/components/Paper/Paper.vue'
 
-import MarkedMixin from '@/mixins/marked'
 import createClient from '@/plugins/contentful.js'
+
+import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
+import MarkedMixin from '@/mixins/marked'
 
 const client = createClient()
 
@@ -89,7 +91,7 @@ export default {
     Paper
   },
 
-  mixins: [MarkedMixin],
+  mixins: [ContentfulErrorHandle, MarkedMixin],
 
   asyncData() {
     return Promise.all([
@@ -99,7 +101,12 @@ export default {
       .then(([page]) => {
         return { ...page.fields }
       })
-      .catch(console.error)
+      .catch((e) => {
+        console.error(e);
+        //The ContentfulErrorHandle mixins will display out an
+        //error message
+        return { contentfulError: true }
+      })
   },
 
   data: () => {

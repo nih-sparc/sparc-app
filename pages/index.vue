@@ -36,6 +36,7 @@ import LatestNewsAndEvents from '@/components/LatestNewsAndEvents/LatestNewsAndE
 import StayConnected from '@/components/StayConnected/StayConnected.vue'
 
 import createClient from '@/plugins/contentful.js'
+import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 
@@ -52,7 +53,7 @@ export default {
     StayConnected
   },
 
-  mixins: [marked],
+  mixins: [ContentfulErrorHandle, marked],
 
   asyncData({ $axios }) {
     return Promise.all([
@@ -74,7 +75,12 @@ export default {
           })
         }
         return fields
-      }).catch(console.error)
+      }).catch(e => {
+        console.error(e);
+        //The contentful error handle mixin will
+        //emit a message on the failure.
+        return { contentfulError: true }
+      })
   },
 
   beforeMount() {

@@ -40,7 +40,7 @@ export default {
   env: {
     portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
     flatmap_api:
-      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v2/',
+      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
