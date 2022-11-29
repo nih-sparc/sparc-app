@@ -40,11 +40,10 @@
             name: 'news-and-events-community-spotlight-success-stories-id',
             params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
           }"
-        >
-          {{ story.fields.storyTitle }}
-        </nuxt-link>
+          v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"
+        />
         <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl" target="_blank">
-          {{ story.fields.storyTitle }}<svg-icon name="icon-open" height="30" width="30" />
+          <span v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"/><svg-icon name="icon-open" height="30" width="30" />
         </a>
       </div>
       <div class="body1">
@@ -73,6 +72,7 @@
 </template>
 <script>
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+import { highlightMatches } from '../../pages/data/utils'
 
 export default {
   name: 'CommunitySpotlightItem',
@@ -89,6 +89,9 @@ export default {
     anatomicalStructureText: function() {
       return this.story.anatomicalStructures ? this.story.anatomicalStructures.join(', ') : 'n/a'
     }
+  },
+  methods: {
+    highlightMatches
   }
 }
 </script>

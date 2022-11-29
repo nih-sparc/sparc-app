@@ -78,7 +78,7 @@ export default {
     onLoginWithORCID: async function(x) {
       x.preventDefault()
       this.dialogVisible = false
-      this.$cookies.set('auth-redirect-url', this.$nuxt.$route.fullPath)
+      this.$cookies.set('sign-in-redirect-url', this.$nuxt.$route.fullPath)
       await this.$store.dispatch('user/login', 'ORCID')
       
     },

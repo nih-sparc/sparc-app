@@ -314,7 +314,7 @@ export default {
   methods: {
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
-        this.$cookies.set('auth-redirect-url', this.$nuxt.$route.fullPath)
+        this.$cookies.set('sign-out-redirect-url', this.$nuxt.$route.fullPath)
         this.$store.dispatch('user/logout')
       }
       if (menuId === 'profile') {
