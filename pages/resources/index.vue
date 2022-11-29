@@ -60,7 +60,7 @@ export default {
   asyncData( { error } ) {
     // Get page content
     return client
-      .getEntry('process.env.ctf_tools_and_resources_page_id')
+      .getEntry(process.env.ctf_tools_and_resources_page_id)
       .then(({ fields }) => ({ fields }))
       .catch( e => {
         console.error(e)

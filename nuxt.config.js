@@ -85,6 +85,7 @@ export default {
     ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
     ctf_success_story_id: 'successStory',
     ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
+    ctf_sparc_login_modal_id: '4FSEoB6SW8xrEAsh4t0vGt',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
