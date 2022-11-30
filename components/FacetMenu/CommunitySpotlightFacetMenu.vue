@@ -30,7 +30,6 @@
 <script>
 import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
-import FacetRadioButtonDateCategory from './FacetRadioButtonDateCategory.vue'
 
 const SPOTLIGHT_TYPE_CATEGORY_ID = 'spotlightType'
 const ANATOMICAL_STRUCTURES_CATEGORY_ID = 'spotlightAnatomicalStructure'
@@ -55,8 +54,7 @@ export default {
   name: 'CommunitySpotlightFacetMenu',
 
   components: {
-    FacetMenu,
-    FacetRadioButtonDateCategory
+    FacetMenu
   },
 
   data() {
