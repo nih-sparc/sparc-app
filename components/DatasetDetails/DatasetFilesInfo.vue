@@ -2,7 +2,7 @@
   <div>
     <div class="heading2 mb-8">Download Dataset</div>
     <div v-if="embargoed && userToken == null">
-      This dataset is currently embargoed.
+      This dataset is currently <a href="https://docs.sparc.science/docs/embargoed-data" target="_blank">embargoed</a>.
       SPARC datasets are subject to a 1-year
       embargo during which time the datasets
       are visible only to members of the
@@ -40,7 +40,7 @@
       </div>
     </div>
     <div v-else-if="embargoed && !accessGranted">
-      This dataset is currently embargoed.
+      This dataset is currently <a href="https://docs.sparc.science/docs/embargoed-data" target="_blank">embargoed</a>.
       SPARC datasets are subject to a 1-year
       embargo during which time the datasets
       are visible only to members of the

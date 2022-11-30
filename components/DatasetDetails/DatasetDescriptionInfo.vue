@@ -58,7 +58,7 @@
         placement="left-center"
       >
         <div v-if="embargoed && embargoAccess !== EMBARGO_ACCESS.GRANTED" slot="data">
-          This dataset is currently embargoed.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
+          This dataset is currently <a href="https://docs.sparc.science/docs/embargoed-data" target="_blank">embargoed</a>.<br />SPARC datasets are subject to a 1-year<br />embargo during which time the datasets<br />are visible only to members of the<br />SPARC consortium. During embargo, the<br />public will be able to view basic<br />metadata about these datasets as well<br />as their release date.
         </div>
         <el-button
           class="secondary"
