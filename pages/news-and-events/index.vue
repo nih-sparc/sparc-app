@@ -92,7 +92,7 @@
           <community-spotlight-listings :stories="stories.items" :bottom-link="true" />
         </div>
 
-        <div class="heading2 mt-32 mb-16">Stay Connected</div>
+        <div id="stayConnected" class="heading2 mt-32 mb-16">Stay Connected</div>
         <div class="subpage py-16">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">

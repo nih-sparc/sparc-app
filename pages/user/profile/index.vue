@@ -30,7 +30,7 @@
           <template v-else>
             <span class="heading3">You are currently subscribed.</span>
             <div class="body1">
-              View all past newsletters <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">here</a>.
+              View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
             </div>
             <div class="mt-8">
               <el-button class='secondary' v-on:click='unsubscribeFromNewsletter(profileEmail)'>Un-subscribe from newsletter</el-button>
