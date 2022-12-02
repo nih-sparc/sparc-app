@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-16">
+  <div class="container py-32">
     <div class="heading2 mb-16 section-title">Stay up to date</div>
     <el-row :gutter="32">
       <el-col class="mb-16" :sm="12">

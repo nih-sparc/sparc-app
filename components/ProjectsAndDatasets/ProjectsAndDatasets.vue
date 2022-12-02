@@ -1,5 +1,5 @@
 <template>
-  <div class="section-container container py-16">
+  <div class="section-container container py-32">
     <div class="heading2 mb-32">Projects and Datasets</div>
     <div class="row">
       <div class="col p-16">

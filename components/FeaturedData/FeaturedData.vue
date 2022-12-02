@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="isLoadingOrganFacetIds" class="featured-data container pt-32 pb-16">
+  <div v-loading="isLoadingOrganFacetIds" class="featured-data container py-32">
     <h2>Find Data by Category</h2>
     <div class="data-wrap">
       <nuxt-link
