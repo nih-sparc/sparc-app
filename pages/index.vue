@@ -14,15 +14,17 @@
         :src="heroImage.fields.file.url"
       />
     </page-hero>
-
-    <featured-data :featured-data="featuredData" />
-    
+    <div class="secondary-background">
+      <featured-data :featured-data="featuredData" />
+    </div>
+    <hr />
     <portal-features :features="portalFeatures" />
-
-    <projects-and-datasets :project="featuredProject" :dataset="featuredDataset" />
-
+    <hr />
+    <div class="secondary-background">
+      <projects-and-datasets :project="featuredProject" :dataset="featuredDataset" />
+    </div>
+    <hr />
     <latest-news-and-events />
-
     <stay-connected />
   </div>
 </template>
@@ -160,6 +162,9 @@ export default {
 .page-data {
   background-color: $background;
 }
+.secondary-background {
+  background-color: #f8faff;
+}
 ::v-deep h2 {
   font-size: 1.5em;
   font-weight: 500;
@@ -173,5 +178,12 @@ export default {
 }
 .page-hero-video {
   width: 406px;
+}
+
+hr {
+  margin: 0;
+  padding: 0;
+  border-top: none;
+  border-color: $lineColor1;
 }
 </style>
