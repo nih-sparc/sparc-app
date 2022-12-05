@@ -190,7 +190,8 @@ export default {
         <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}<br><br>
       `
       let formData = new FormData();
-      formData.append("title", `News or Event creation request - ${this.form.title}`)
+      formData.append("type", "newsAndEvents")
+      formData.append("title", `N&E - ${this.form.title}`)
       formData.append("description", description)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)

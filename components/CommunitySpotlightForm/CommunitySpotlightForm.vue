@@ -161,7 +161,8 @@ export default {
       `
 
       let formData = new FormData()
-      formData.append("title", `Community Spotlight creation request - ${this.form.title}`)
+      formData.append("type", "communitySpotlight")
+      formData.append("title", `Community Spotlight - ${this.form.title}`)
       formData.append("description", description)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)

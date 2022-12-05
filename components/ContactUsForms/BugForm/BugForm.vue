@@ -299,6 +299,7 @@ export default {
           <br>${this.form.email}
         `
       let formData = new FormData();
+      formData.append("type", "bug")
       formData.append("title", this.form.title)
       formData.append("description", description)
       if (this.form.shouldFollowUp) {

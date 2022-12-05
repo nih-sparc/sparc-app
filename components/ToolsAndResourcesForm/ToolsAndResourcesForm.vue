@@ -568,7 +568,8 @@ export default {
         <br>
       `
       let formData = new FormData();
-      formData.append("title", `Tool or resource creation request - ${this.form.resourceName}`)
+      formData.append("type", "toolsAndResources")
+      formData.append("title", `T&R - ${this.form.resourceName}`)
       formData.append("description", description)
 
       this.$axios
