@@ -149,7 +149,7 @@ export default {
      */
     sendForm() {
       this.isSubmitting = true
-
+      const fileName = propOr('', 'name', this.file)
       const description = `
         <b>Contact Information</b><br><br>
         <b>Name:</b><br>${this.form.name}<br><br>
@@ -157,13 +157,15 @@ export default {
         <b>Community Spotlight Details:</b><br><br>
         <b>Title:</b><br>${this.form.title}<br><br>
         <b>Summary:</b><br>${this.form.summary}<br><br>
-        <b>Supporting Information URL:</b><br>${this.form.url == '' ? 'N/A' : this.form.url}<br><br>
+        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
+        <b>Supporting Information URL:</b><br>${this.form.url == '' ? 'N/A' : this.form.url}
       `
 
       let formData = new FormData()
       formData.append("type", "communitySpotlight")
-      formData.append("title", `Community Spotlight - ${this.form.title}`)
+      formData.append("title", `Spotlight Submission - ${this.form.title}`)
       formData.append("description", description)
+      formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)
       }  

@@ -283,28 +283,21 @@ export default {
      */
     sendForm() {
       this.isSubmitting = true
+      const fileName = propOr('', 'name', this.file)
       const description = `
-        What type of user are you?<br>${this.form.typeOfUser}
-          <br><br>Is this about a specific page or resource?
-          <br>${this.form.pageOrResource}${
-          this.form.pageUrl ? ' - ' + this.form.pageUrl : ''
-        }
-          <br><br>Description
-          <br>${this.form.description}
-          <br><br>How would you like this experience to improve?
-          <br>${this.form.howToImprove}
-          <br><br>Let me know when you resolve this issue
-          <br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
-          <br><br>Email
-          <br>${this.form.email}
-        `
+        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
+        <b>Is this about a specific page or resource?</b><br>${this.form.pageOrResource}${this.form.pageUrl ? ' - ' + this.form.pageUrl : ''}<br><br>
+        <b>Description</b><br>${this.form.description}<br><br>
+        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
+        <b>How would you like this experience to improve?</b><br>${this.form.howToImprove}<br><br>
+        <b>Let me know when you resolve this issue</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
+        <b>Email</b><br>${this.form.email}
+      `
       let formData = new FormData();
       formData.append("type", "bug")
       formData.append("title", this.form.title)
       formData.append("description", description)
-      if (this.form.shouldFollowUp) {
-        formData.append("userEmail", this.form.email)
-      }
+      formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != ''){
         formData.append("attachment", this.file, this.file.name)
       }
