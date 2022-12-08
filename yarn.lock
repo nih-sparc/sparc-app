@@ -11,20 +11,6 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmap-viewer@^2.2.5":
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.5.tgz#087207bb945cf2b628cb9fa48a94910af3f17bc7"
-  integrity sha512-aOwPUQ6NJspIuivEKQ/qstz+Lkqny3FJUKdWnXR1sm9OkOcNYNFvk8oqfyItp457ToU2wcbwB/mT+jDGgoUJeA==
-  dependencies:
-    "@babel/runtime" "^7.10.4"
-    "@turf/area" "^6.0.1"
-    "@turf/bbox" "^6.0.1"
-    "@turf/helpers" "^6.1.4"
-    bezier-js "^6.1.0"
-    maplibre-gl ">=1.15.3"
-    minisearch "^2.2.1"
-    polylabel "^1.1.0"
-
 "@abi-software/flatmap-viewer@^2.2.7":
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.7.tgz#980ca6e24a65d4a935eb38b21fc2c05836a9f0d7"
@@ -40,22 +26,7 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.3.8.tgz#7092280e8e2d801d1ca716e7d87ce30425a68a01"
-  integrity sha512-z8gTQsgBvUQa0A/ICc62H/2qJqsZFi7P9YrPbvzWo+i/DTVDsm7YnpO1QjR4//MWvJNvqmQjmC2vx0aMdW4OYw==
-  dependencies:
-    "@abi-software/flatmap-viewer" "^2.2.5"
-    "@abi-software/svg-sprite" "^0.1.14"
-    core-js "^3.3.2"
-    css-element-queries "^1.2.2"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    file-loader "^5.0.2"
-    lodash "^4.17.21"
-    vue "^2.6.10"
-
-"@abi-software/flatmapvuer@^0.3.9":
+"@abi-software/flatmapvuer@0.3.9", "@abi-software/flatmapvuer@^0.3.9":
   version "0.3.9"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.3.9.tgz#fa9227f61472a4811c2ac193c7232e785b991bab"
   integrity sha512-nuFOs5ztP8D2sl/h+Mt9icclV2vuCMPM6seIzgeVNlZnefFviFXeiJPO5Cn96cRJnEiyx/tZ8RG7nz/w4l9BXQ==
