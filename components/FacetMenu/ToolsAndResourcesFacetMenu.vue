@@ -8,27 +8,31 @@
       @deselect-all-facets="deselectAllFacets"
     />
     <dropdown-multiselect
-      :category="developedBySparcCategory"
-      :default-checked-ids="selectedDevelopedBySparcIds"
-      @selection-change="onDevelopedBySparcChanged"
-      ref="developedBySparcCategory"
+      :category="typeCategory"
+      :default-checked-ids="selectedTypeIds"
+      @selection-change="onTypesChanged"
+      ref="typeCategory"
     />
   </div>
 </template>
 
 <script>
 import FacetMenu from './FacetMenu.vue'
+import { pluck } from 'ramda'
 
-const visibleCategories = ['developedBySparc']
+const visibleCategories = ['type']
 
-const developedBySparcCategory = {
-  label: 'Developed By SPARC',
-  id: 'developedBySparc',
+const TYPE_CATEGORY = {
+  label: 'Type',
+  id: 'type',
   data: [
     {
       label: 'Developed By SPARC',
-      id: 'developedBySparc',
-      facetPropPath: 'developedBySparc'
+      id: 'developedBySparc'
+    },
+    {
+      label: 'Codeathon',
+      id: 'codeathon'
     }
   ]
 }
@@ -40,8 +44,8 @@ export default {
 
   data() {
     return {
-      developedBySparcCategory: developedBySparcCategory,
-      selectedDevelopedBySparcIds: [],
+      typeCategory: TYPE_CATEGORY,
+      selectedTypeIds: [],
       visibleCategories: visibleCategories,
     }
   },
@@ -49,12 +53,12 @@ export default {
   computed: {
     selectedFacets: function() {
       let facets = []
-      if (this.selectedDevelopedBySparcIds !== []) {
-        this.selectedDevelopedBySparcIds.forEach(selectedOption => {
+      if (this.selectedTypeIds !== []) {
+        this.selectedTypeIds.forEach(selectedOption => {
           facets.push({
-            label: `${developedBySparcCategory.label}`,
+            label: `${selectedOption.label}`,
             id: `${selectedOption.id}`,
-            facetPropPath: developedBySparcCategory.id
+            facetPropPath: this.typeCategory.id
           })
         })
       }
@@ -63,8 +67,8 @@ export default {
   },
 
   mounted() {
-    if (this.$route.query.developedBySparc) {
-      this.selectedDevelopedBySparcIds = ['developedBySparc']
+    if (this.$route.query.type) {
+      this.selectedTypeIds = this.$route.query.type.split(',')
     }
   },
 
@@ -72,11 +76,11 @@ export default {
     visibleFacetsForCategory: function(key) {
       return this.visibleFacets[key]
     },
-    onDevelopedBySparcChanged: function(newValue) {
-      this.selectedDevelopedBySparcIds = newValue.checkedNodes
+    onTypesChanged: function(newValue) {
+      this.selectedTypeIds = newValue.checkedNodes
       this.$router.replace(
         {
-          query: { ...this.$route.query, developedBySparc: this.selectedDevelopedBySparcIds.length === 0 ? undefined : true }
+          query: { ...this.$route.query, type: this.selectedTypeIds.length === 0 ? undefined : pluck('id', this.selectedTypeIds).toString() }
         },
         () => {
           this.$emit('tool-and-resources-selections-changed')
@@ -88,17 +92,18 @@ export default {
         {
           query: {
             ...this.$route.query,
-            developedBySparc: undefined
+            developedBySparc: undefined,
+            codeathon: undefined
           }
         },
         () => {
           this.$emit('tool-and-resources-selections-changed')
-          this.$refs.developedBySparcCategory.uncheckAll()
+          this.$refs.typeCategory.uncheckAll()
         }
       )
     },
     deselectFacet(id) {
-      this.$refs.developedBySparcCategory.uncheck(id)
+      this.$refs.typeCategory.uncheck(id)
     },
   }
 }

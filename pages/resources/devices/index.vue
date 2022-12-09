@@ -156,7 +156,7 @@ export default {
       handler: async function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          this.resources = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, 10, 0)
+          this.resources = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, 10, 0)
         })
       },
       immediate: true
@@ -174,8 +174,8 @@ export default {
     sortOrder: function() {
       return propOr('-fields.name', 'sortOrder', this.selectedSortOption)
     },
-    developedBySparc: function() {
-      return this.$route.query.developedBySparc || undefined
+    type: function() {
+      return this.$route.query.type || undefined
     },
   },
 
@@ -187,7 +187,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.resources
       const offset = (page - 1) * limit
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, limit, offset)
+      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, limit, offset)
       this.resources = response
     },
     /**
@@ -196,12 +196,12 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, newLimit, 0)
+      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
       this.resources = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, this.resources.limit, 0)
+      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
       this.resources = response
     }
   }

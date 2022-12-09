@@ -10,8 +10,12 @@ const replaceTerms = (terms?: String) => {
   }
   return result
 }
-export const fetchResources = async (resourceType: String, terms?: String, sortOrder?: String, developedBySparc?: Boolean, limit?: Number, skip?: Number) => {
+export const fetchResources = async (resourceType: String, terms?: String, sortOrder?: String, type?: Array<String>, limit?: Number, skip?: Number) => {
   const query = replaceTerms(terms)
+  // Since these are different fields in contentful, we must set them to undefined instead of false or else the query will always return false when it and's the values.
+  // Eventually, we should update the content type to be one field that can have multiple tags/values set on it
+  const developedBySparc = type?.includes('developedBySparc') ? true : undefined
+  const codeathon = type?.includes('codeathon') ? true : undefined
 
   try {
     return await client.getEntries({
@@ -22,6 +26,7 @@ export const fetchResources = async (resourceType: String, terms?: String, sortO
       skip,
       'fields.resourceType[in]': resourceType,
       'fields.developedBySparc' : developedBySparc,
+      'fields.codeathon' : codeathon
     }).then(async response => {
       return { ...response }
     })
