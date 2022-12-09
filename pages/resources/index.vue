@@ -6,7 +6,7 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(fields.summary)" />
-      <NuxtLink to="/resources/biological">
+      <NuxtLink to="/resources/databases">
         <el-button class="secondary mb-16">Browse all Tools &amp; Resources</el-button>
       </NuxtLink>
     </page-hero>
@@ -17,7 +17,7 @@
           :items="fields.featured"
         />
         <div class="link-container mt-16">
-          <NuxtLink class="browse-all-link" to="/resources/biological">
+          <NuxtLink class="browse-all-link" to="/resources/databases">
             Browse All Tools &amp; Resources
           </NuxtLink>
         </div>

@@ -38,19 +38,14 @@ export const fetchResources = async (resourceType: String, terms?: String, sortO
 
 export const searchTypes = [
   {
-    label: 'Biological',
-    path: 'biological',
-    contentfulLabel: 'Biologicals'
-  },
-  {
     label: 'Databases',
     path: 'databases',
     contentfulLabel: 'Data and Models'
   },
   {
-    label: 'Devices',
-    path: 'devices',
-    contentfulLabel: 'Devices'
+    label: 'Software',
+    path: 'software',
+    contentfulLabel: 'Software'
   },
   {
     label: 'Information Services',
@@ -58,10 +53,15 @@ export const searchTypes = [
     contentfulLabel: 'Information Services'
   },
   {
-    label: 'Software',
-    path: 'software',
-    contentfulLabel: 'Software'
-  }
+    label: 'Devices',
+    path: 'devices',
+    contentfulLabel: 'Devices'
+  },
+  {
+    label: 'Biological',
+    path: 'biological',
+    contentfulLabel: 'Biologicals'
+  },
 ]
 
 export const sortOptions = [
