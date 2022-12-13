@@ -41,6 +41,7 @@ import createClient from '@/plugins/contentful.js'
 import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
+import { mapGetters } from 'vuex'
 
 const client = createClient()
 export default {
@@ -83,6 +84,21 @@ export default {
         //emit a message on the failure.
         return { contentfulError: true }
       })
+  },
+  
+  watch: {
+    cognitoUserToken: function (val) {
+      if (val != '') {
+        const profileComplete = this.$cookies.get('profile-complete')
+        if (!profileComplete) {
+          this.$router.push("/welcome")
+        }
+      }
+    }
+  },
+
+  computed: {
+    ...mapGetters('user', ['cognitoUserToken']),
   },
 
   beforeMount() {
