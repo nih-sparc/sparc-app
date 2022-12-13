@@ -162,6 +162,7 @@ export default {
     '@/plugins/amplify',
     '@/plugins/documentation-hub-redirects',
     "@/plugins/vue-gtag.client.js",
+    { src: '@/plugins/persisted-state', mode: 'client' },
     { src: '@/plugins/postscribe', mode: 'client' },
     { src: '@/plugins/system-design-components', mode: 'client' },
     { src: '@/plugins/tsviewer', mode: 'client' }
