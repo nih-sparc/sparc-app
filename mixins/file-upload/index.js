@@ -9,7 +9,7 @@ export default {
       limit: 1,
       allowVideos: false,
       file: {},
-    };
+    }
   },
   computed: {
     hasAttachment: function() {
@@ -28,23 +28,23 @@ export default {
       if (!file) {
         return
       }
-      const isImage = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png'|| file.raw.type === 'image/gif');
-      const isVideo = (file.raw.type === 'video/mp4');
-      const isFileSizeTooLarge = this.isFileSizeTooLarge(file);
+      const isImage = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png'|| file.raw.type === 'image/gif')
+      const isVideo = (file.raw.type === 'video/mp4')
+      const isFileSizeTooLarge = this.isFileSizeTooLarge(file)
       if (!isImage && !this.allowVideos) {
         this.$message(failMessage('Upload file must be an image!'));
         this.$refs.fileUploader.clearFiles()
-        return false;
+        return false
       }
       if (!isImage && !isVideo && this.allowVideos) {
-        this.$message(failMessage('Upload file must be an image or video!'));
+        this.$message(failMessage('Upload file must be an image or video!'))
         this.$refs.fileUploader.clearFiles()
-        return false;
+        return false
       }
       if (isFileSizeTooLarge) {
-        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`));
+        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`))
         this.$refs.fileUploader.clearFiles()
-        return false;
+        return false
       }
       this.file = file.raw
     },
@@ -60,11 +60,11 @@ export default {
     },
     beforeUpload(file)
     {
-      const isFileSizeTooLarge = this.isFileSizeTooLarge(file);
+      const isFileSizeTooLarge = this.isFileSizeTooLarge(file)
       if (isFileSizeTooLarge) {
-        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`));
+        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`))
       }
-      return !isFileSizeTooLarge;
+      return !isFileSizeTooLarge
     }
   }
 }
