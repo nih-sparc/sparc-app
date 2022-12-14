@@ -191,8 +191,15 @@ export default {
         <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}
       `
       let formData = new FormData();
-      formData.append("type", "newsAndEvents")
-      formData.append("title", `N&E Submission - ${this.form.title}`)
+      // we assume it is a news item if there is no start date
+      if (this.form.startDate == '') {
+        formData.append("type", "news")
+        formData.append("title", `News Submission - ${this.form.title}`)
+      }
+      else {
+        formData.append("type", "event")
+        formData.append("title", `Event Submission - ${this.form.title}`)
+      }
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != '') {
