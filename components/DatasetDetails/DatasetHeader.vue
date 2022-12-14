@@ -32,14 +32,14 @@
           </div>
           <div class="bx--col-sm-4 bx--col-md-8 bx--col-lg-16 bx--col-xlg-16">
             <hr />
-            <div v-if="primaryPublications">
+            <div v-if="showPrimaryPublications">
               <div class="publications-container">
                 <span class="primary-publications-title-column">
                   <span class="label4">Primary Publication(s): </span>
                 </span>
                 <span>
                   <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
-                    <apa-citation class="mb-8" :doi="item.doi" :can-copy-citation="false" />
+                    <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" :can-copy-citation="false" />
                   </div>
                 </span>
               </div>
@@ -79,6 +79,7 @@
 <script>
 import { mapState } from 'vuex'
 import { propOr } from 'ramda'
+import DoiChecker from '@/mixins/doi-checker'
 import ApaCitation from '@/components/DatasetCitations/ApaCitation'
 import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
 import DatasetInformationBox from '@/components/DatasetDetails/DatasetInformationBox.vue'
@@ -92,6 +93,8 @@ export default {
     DatasetInformationBox,
     ApaCitation,
   },
+
+  mixins: [DoiChecker],
 
   props: {
     latestVersionRevision: {
