@@ -22,10 +22,10 @@
             params: { resourceId: data.sys.id }
           }"
         >
-          <h2>{{ data.fields.name }}</h2>
+          <h2 v-html="highlightMatches(data.fields.name, $route.query.search)"/>
         </router-link>
         <a v-else :href="data.fields.url" target="blank">
-          <h2>{{ data.fields.name }}<svg-icon name="icon-open" height="30" width="30" /></h2>
+          <h2><span v-html="highlightMatches(data.fields.name, $route.query.search)"/><svg-icon name="icon-open" height="30" width="30" /></h2>
         </a>
         <p v-if="data.fields.developedBySparc" class="resource-category">
           SPARC
@@ -46,7 +46,7 @@
         <!-- eslint-disable vue/no-v-html -->
         <p
           class="resources-search-results__items--content-description"
-          v-html="parseMarkdown(data.fields.description)"
+          v-html="highlightMatches(parseMarkdown(data.fields.description), $route.query.search)"
         />
       </div>
     </div>
@@ -58,6 +58,7 @@ import { pathOr } from 'ramda'
 import marked from '@/mixins/marked/index'
 
 import FormatDate from '@/mixins/format-date'
+import { highlightMatches } from '../../pages/data/utils'
 export default {
   name: 'ResourceSearchResults',
 
@@ -76,7 +77,8 @@ export default {
      */
     getBannerImage: function(data) {
       return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], data)
-    }
+    },
+    highlightMatches
   }
 }
 </script>

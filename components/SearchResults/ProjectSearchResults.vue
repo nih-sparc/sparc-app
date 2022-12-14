@@ -21,28 +21,21 @@
             path: 'projects/:scope.row.sys.id',
             params: { projectId: scope.row.sys.id }
           }"
-        >
-          {{ scope.row.fields.title }}
-        </nuxt-link>
-        <div class="mt-8 mb-8">
-          {{ scope.row.fields.shortDescription }}
-        </div>
+          v-html="highlightMatches(scope.row.fields.title, $route.query.search)"
+        />
+        <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)"/>
         <table class="property-table">
           <tr v-if="scope.row.fields.projectSection">
             <td class="property-name-column">
               Anatomical Focus
             </td>
-            <td>
-              {{ scope.row.fields.projectSection.fields.title }}
-            </td>
+            <td v-html="highlightMatches(scope.row.fields.projectSection.fields.title, $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">
               Principle Investigator
             </td>
-            <td>
-              {{ reverseName(scope.row.fields.principleInvestigator) }}
-            </td>
+            <td v-html="highlightMatches(reverseName(scope.row.fields.principleInvestigator), $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.institution">
             <td class="property-name-column">
@@ -72,6 +65,7 @@
 <script>
 import Truncate from '@/mixins/truncate'
 import { isInternalLink } from '@/mixins/marked/index'
+import { highlightMatches } from '@/pages/data/utils'
 
 export default {
   name: 'ProjectSearchResults',
@@ -136,7 +130,8 @@ export default {
       }
       return `${fullName[2]}, ${fullName[0]} ${fullName[1]}`
     },
-    isInternalLink
+    isInternalLink,
+    highlightMatches
   }
 }
 </script>

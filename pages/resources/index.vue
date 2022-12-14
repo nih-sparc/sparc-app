@@ -27,17 +27,18 @@
         <paper
           :text="parseMarkdown(fields.paperText)"
           :button-text="'Submit a recommendation'"
-          button-link="/resources/submit"
+          :button-link="submissionLink"
         />
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import createClient from '@/plugins/contentful.js'
+import ErrorMessages from '@/mixins/error-messages'
 import marked from '@/mixins/marked/index'
 import Paper from '~/components/Paper/Paper.vue'
 import ResourcesGallery from '~/components/ResourcesGallery/ResourcesGallery.vue'
@@ -56,12 +57,16 @@ export default {
     ResourcesGallery,
   },
 
-  asyncData() {
+  asyncData( { error } ) {
     // Get page content
     return client
-      .getEntry(process.env.ctf_tools_and_resources_page_id as string)
+      .getEntry(process.env.ctf_tools_and_resources_page_id)
       .then(({ fields }) => ({ fields }))
-      .catch(console.error)
+      .catch( e => {
+        console.error(e)
+        //Display the error page with an custom message
+        error({ statusCode: 400, message: ErrorMessages.methods.contentful(), display: true, error: e} )
+      })
   },
 
   data() {
@@ -77,6 +82,13 @@ export default {
       ],
     }
   },
+
+  computed: {
+    submissionLink() {
+      const route = 'resources-submit'
+      return { name: route }
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

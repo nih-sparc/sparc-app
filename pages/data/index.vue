@@ -101,7 +101,12 @@
                   </span>
                 </div>
                 <div v-loading="isLoadingSearch" class="table-wrap">
+                  <p v-if="searchFailed" class="search-error">
+                    Sorry, the search engine has encountered an unexpected
+                    error, please try again later.
+                  </p>
                   <component
+                    v-else
                     :is="searchResultsComponent"
                     :table-data="tableData"
                     :title-column-width="titleColumnWidth"
@@ -150,7 +155,7 @@ import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
 import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
-import { facetPropPathMapping, getAlgoliaFacets } from './utils'
+import { facetPropPathMapping, getAlgoliaFacets, HIGHLIGHT_HTML_TAG } from './utils'
 import createClient from '@/plugins/contentful.js'
 import createAlgoliaClient from '@/plugins/algolia.js'
 const client = createClient()
@@ -282,6 +287,7 @@ export default {
       searchTypes,
       searchData: clone(searchData),
       isLoadingSearch: false,
+      searchFailed: false,
       isSearchMapVisible: false,
       latestSearchTerm: '',
       breadcrumb: [
@@ -472,6 +478,7 @@ export default {
      */
     fetchFromAlgolia: function() {
       this.isLoadingSearch = true
+      this.searchFailed = false
       const query = this.$route.query.search
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
@@ -491,7 +498,12 @@ export default {
           })
           .then(response => {
             this.visibleFacets = response.facets
-          }).finally(() => {
+          })
+          .catch(() => {
+            this.isLoadingSearch = false
+            this.searchFailed = true
+          })
+          .finally(() => {
             var filters =  this.$refs.datasetFacetMenu?.getFilters()
             filters = filters === undefined ? 
               `${datasetsFilter}` : 
@@ -502,7 +514,16 @@ export default {
                 facets: ['*'],
                 hitsPerPage: this.searchData.limit,
                 page: this.curSearchPage - 1,
-                filters: filters
+                filters: filters,
+                attributesToHighlight: [
+                  'item.name',
+                  'item.description',
+                  'item.modalities',
+                  'anatomy.organ',
+                  'organisms.primary.species.name'
+                ],
+                highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
+                highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
               })
               .then(response => {
                 const searchData = {
@@ -524,6 +545,10 @@ export default {
                     }
                   }
                 }*/
+              })
+              .catch(() => {
+                this.isLoadingSearch = false
+                this.searchFailed = true
               })
           }) 
     },
@@ -742,6 +767,10 @@ export default {
   background: #fff;
   border: 1px solid rgb(228, 231, 237);
   padding: 16px;
+  .search-error {
+    margin: 0 0  auto;
+    text-align:center;
+  }
 }
 .search-heading {
   align-items: flex-end;

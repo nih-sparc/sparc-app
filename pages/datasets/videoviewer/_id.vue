@@ -21,10 +21,28 @@
       </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
-          <h1>{{ fileName }}</h1>
+          <h2>{{ fileName }}</h2>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
+          <strong class="file-detail__column_1">Type</strong>
+          <div class="file-detail__column_2">
+            {{ fileType }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">Dataset</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              Go to dataset
+            </nuxt-link>
+          </div>
         </div>
         <div class="file-detail">
           <strong class="file-detail__column_1">File location</strong>
@@ -43,24 +61,6 @@
             >
               {{ filePath }}
             </nuxt-link>
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Type</strong>
-          <div class="file-detail__column_2">
-            {{ fileType }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Dataset id</strong>
-          <div class="file-detail__column_2">
-            {{ datasetId }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column_1">Version</strong>
-          <div class="file-detail__column_2">
-            {{ versionNumber }}
           </div>
         </div>
         <div class="pt-16">
@@ -93,7 +93,7 @@ export default {
 
   mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ route, error, $axios }) {
     let signedUrl = await $axios
       .$get(
         `${process.env.portal_api}/download?key=${route.query.file_path}&contentType=${route.query.mimetype}`
@@ -107,7 +107,8 @@ export default {
       $axios,
       filePath,
       route.query.dataset_id,
-      route.query.dataset_version
+      route.query.dataset_version,
+      error
     )
     return {
       video_src: signedUrl,
@@ -170,5 +171,8 @@ export default {
 }
 .video {
   width: 100%;
+}
+.page-heading {
+  margin-bottom: 1.375rem;
 }
 </style>

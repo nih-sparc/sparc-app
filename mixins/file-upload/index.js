@@ -8,7 +8,7 @@ export default {
     return {
       limit: 1,
       allowVideos: false,
-      file: '',
+      file: {},
     };
   },
   computed: {
@@ -56,9 +56,7 @@ export default {
       return this.$confirm(`Remove ${ file.name } ?`);
     },
     onRemove() {
-      this.file = ''
-      this.fileName = ''
-      this.fileType = ''
+      this.file = {}
     },
     beforeUpload(file)
     {

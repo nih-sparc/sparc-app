@@ -67,6 +67,21 @@
       />
     </el-form-item>
 
+    <el-form-item prop="fileAttachment" label="File Attachment">
+      <div class="body4 mb-8"><i>Feel free to attach a screenshot to help us better understand the problem. We recommend images of 600px by 600px.</i></div>
+      <el-upload
+        ref="fileUploader"
+        action=""
+        :limit="limit"
+        :auto-upload="false"
+        :on-change="onUploadChange"
+        :on-remove="onRemove"
+        :before-remove="beforeRemove" >
+        <el-button slot="trigger" class="secondary">Select file</el-button>
+        <div slot="tip" class="el-upload__tip">jpg/png file with a size less than 5MB</div>
+      </el-upload>
+    </el-form-item>
+
     <el-form-item
       prop="howToImprove"
       label="How would you like this experience to improve? *"
@@ -118,11 +133,13 @@
 <script>
 import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
+import FileUploadMixin from '@/mixins/file-upload/index'
+import { propOr } from 'ramda'
 
 export default {
   name: 'BugForm',
 
-  mixins: [NewsletterMixin],
+  mixins: [NewsletterMixin, FileUploadMixin],
 
   data() {
     return {
@@ -229,7 +246,7 @@ export default {
 
     if (this.bugSourceUrl != undefined) {
       const fullUrl = process.env.ROOT_URL + this.bugSourceUrl
-      this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
+      this.form.pageUrl = 'www.' + fullUrl.replace(/^https?:\/\//, '')
     }
   },
 
@@ -266,27 +283,27 @@ export default {
      */
     sendForm() {
       this.isSubmitting = true
+      const fileName = propOr('', 'name', this.file)
+      const description = `
+        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
+        <b>Is this about a specific page or resource?</b><br>${this.form.pageOrResource}${this.form.pageUrl ? ' - ' + this.form.pageUrl : ''}<br><br>
+        <b>Description</b><br>${this.form.description}<br><br>
+        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
+        <b>How would you like this experience to improve?</b><br>${this.form.howToImprove}<br><br>
+        <b>Let me know when you resolve this issue</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
+        <b>Email</b><br>${this.form.email}
+      `
+      let formData = new FormData();
+      formData.append("type", "bug")
+      formData.append("title", this.form.title)
+      formData.append("description", description)
+      formData.append("userEmail", this.form.email)
+      if (propOr('', 'name', this.file) != ''){
+        formData.append("attachment", this.file, this.file.name)
+      }
 
       this.$axios
-        .post(`${process.env.portal_api}/tasks`, {
-          title: this.form.title,
-          description: `
-          What type of user are you?<br>${this.form.typeOfUser}
-            <br><br>Is this about a specific page or resource?
-            <br>${this.form.pageOrResource}${
-            this.form.pageUrl ? ' - ' + this.form.pageUrl : ''
-          }
-            <br><br>Description
-            <br>${this.form.description}
-            <br><br>How would you like this experience to improve?
-            <br>${this.form.howToImprove}
-            <br><br>Let me know when you resolve this issue
-            <br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
-            <br><br>Email
-            <br>${this.form.email}
-          `,
-          userEmail: this.form.shouldFollowUp ? this.form.email : null
-        })
+        .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)

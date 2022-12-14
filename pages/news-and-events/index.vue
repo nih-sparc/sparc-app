@@ -41,43 +41,49 @@
           </el-col>
           <el-col :sm="12">
             <div class="heading2 mb-16">Events</div>
-            <content-tab-card
-              class="tabs p-32"
-              :tabs="eventsTabs"
-              :active-tab-id="activeTabId"
-              @tab-changed="eventsTabChanged"
-            >
-              <template v-if="activeTabId === 'upcoming'">
-                <div class="upcoming-events">
-                  <event-card
-                    v-for="event in upcomingEvents.items"
-                    :key="event.sys.id"
-                    :event="event"
-                  />
-                </div>
+            <!--
+              Server side rendering does not work with the following
+              combination of components
+            -->
+            <client-only>
+              <content-tab-card
+                class="tabs p-32"
+                :tabs="eventsTabs"
+                :active-tab-id="activeTabId"
+                @tab-changed="eventsTabChanged"
+              >
+                <template v-if="activeTabId === 'upcoming'">
+                  <div class="upcoming-events">
+                    <event-card
+                      v-for="event in upcomingEvents.items"
+                      :key="event.sys.id"
+                      :event="event"
+                    />
+                  </div>
 
-              </template>
+                </template>
 
-              <template v-if="activeTabId === 'past'">
-                <div class="past-events">
-                  <event-card
-                    v-for="event in pastEvents.items"
-                    :key="event.sys.id"
-                    :event="event"
-                  />
+                <template v-if="activeTabId === 'past'">
+                  <div class="past-events">
+                    <event-card
+                      v-for="event in pastEvents.items"
+                      :key="event.sys.id"
+                      :event="event"
+                    />
+                  </div>
+                </template>
+                <div class="mt-16">
+                  <nuxt-link
+                    class="btn-load-more"
+                    :to="{
+                      name: 'news-and-events-events',
+                    }"
+                  >
+                    View All Events >
+                  </nuxt-link>
                 </div>
-              </template>
-              <div class="mt-16">
-                <nuxt-link
-                  class="btn-load-more"
-                  :to="{
-                    name: 'news-and-events-events',
-                  }"
-                >
-                  View All Events >
-                </nuxt-link>
-              </div>
-            </content-tab-card>
+              </content-tab-card>
+            </client-only>
           </el-col>
         </el-row>
 
@@ -86,7 +92,7 @@
           <community-spotlight-listings :stories="stories.items" :bottom-link="true" />
         </div>
 
-        <div class="heading2 mt-32 mb-16">Stay Connected</div>
+        <div id="stayConnected" class="heading2 mt-32 mb-16">Stay Connected</div>
         <div class="subpage py-16">
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
@@ -159,6 +165,7 @@ import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
 import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 
+import ErrorMessages from '@/mixins/error-messages'
 import MarkedMixin from '@/mixins/marked'
 
 import createClient from '@/plugins/contentful.js';
@@ -187,8 +194,16 @@ export default Vue.extend<Data, Methods, Computed, never>({
     CommunitySpotlightListings
   },
 
-  asyncData() {
-    return fetchData(client, '', 2)
+  asyncData({ error }) {
+    try {
+      return fetchData(client, '', 2)
+    }
+    catch(e) {
+      //Handle uncaught error
+      console.error(e)
+      const message = ErrorMessages.methods.contentful()
+      return error({ statusCode: 400, message: message, display: true, error: e})
+    }
   },
 
   watch: {

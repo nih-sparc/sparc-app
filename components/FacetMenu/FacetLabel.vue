@@ -1,6 +1,6 @@
 <template>
-  <div @click="onArrowClicked" :class="['facet-label', { disabled: disabled }]">
-    <div class="body1 title">
+  <div :class="['facet-label', { disabled: disabled }]">
+    <div @click.stop="onArrowClicked" class="body1 title">
       <span>
         {{ label }}
         <sparc-tooltip placement="left-center">

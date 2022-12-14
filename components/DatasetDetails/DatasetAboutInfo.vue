@@ -21,16 +21,37 @@
       </span>
     </div>
     <hr />
-    <div class="mb-16"><span class="label4">Award: </span><nuxt-link :to="associatedProjectLink">{{awardSparcNumber}}</nuxt-link></div>
-    <hr />
-    <div class="mb-16"><span class="label4">Associated project: </span>
-      <nuxt-link
-        :to="associatedProjectLink"
-      >
-        {{associatedProjectTitle}}
-      </nuxt-link>
+    <div class="mb-16">
+      <span class="label4">
+        Award(s): 
+      </span>
+      <span v-for="(project, index) in associatedProjects" :key="index">
+        <nuxt-link :to="getProjectLink(project)">
+        {{ getAwardNumber(project) }}
+        </nuxt-link>
+        <span v-if="index < associatedProjects.length - 1">, </span>
+      </span>
     </div>
-    <div class="mb-16"><span class="label4">Institution: </span>{{associatedProjectInstitution}}</div>
+    <hr />
+    <div class="mb-16">
+      <span class="label4">
+        Associated project(s): 
+      </span>
+      <span v-for="(project, index) in associatedProjects" :key="index">
+        <nuxt-link :to="getProjectLink(project)">
+        {{ getProjectTitle(project) }}
+        </nuxt-link>
+        <span v-if="index < associatedProjects.length - 1">, </span>
+      </span>
+    </div>
+    <div class="mb-16">
+      <span class="label4">
+        Institution(s): 
+      </span>
+      <span v-for="(project, index) in associatedProjects" :key="index">
+        {{ getProjectInstitution(project) }}<span v-if="index < associatedProjects.length - 1">, </span>
+      </span>
+    </div>
     <hr />
     <h2 class="heading2 mb-8">
       About this version
@@ -67,13 +88,54 @@ export default {
       type: String,
       default: ''
     },
-    associatedProject: {
-      type: Object,
-      default: () => {}
+    associatedProjects: {
+      type: Array,
+      default: () => []
     }
   },
 
   mixins: [DateUtils],
+
+  methods: {
+    /**
+     * Construct the project link
+     * @returns {String}
+     */
+     getProjectLink: function(associatedProject) {
+      const sys = propOr(null, 'sys', associatedProject)
+      const entryId = propOr(null, 'id', sys)
+      return entryId != null ? `/projects/${entryId}` : ''
+    },
+    /**
+     * Construct the sparc award number
+     * @returns {String}
+     */
+    getAwardNumber: function(associatedProject) {
+      const fields = propOr(null, 'fields', associatedProject)
+      const awardNumber = propOr(null, 'awardId', fields)
+      return awardNumber !== null ? `NIH ${awardNumber}` : 'N/A'
+    },
+    /**
+     * Construct the project title
+     * @returns {String}
+     */
+    getProjectTitle: function(associatedProject) {
+      const fields = propOr(null, 'fields', associatedProject)
+      const title = propOr(null, 'title', fields)
+      return title ?? 'N/A'
+    },
+    /**
+     * Compute the project institution
+     * @returns {String}
+     */
+    getProjectInstitution: function(associatedProject) {
+      const fields = propOr(null, 'fields', associatedProject)
+      const institution = propOr(null, 'institution', fields)
+      const institutionFields = propOr(null, 'fields', institution)
+      const institutionName = propOr(null, 'name', institutionFields)
+      return institutionName ?? 'N/A'
+    },
+  },
 
   computed: {
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
@@ -141,44 +203,6 @@ export default {
     versionRevisionText() {
       let revision = this.datasetInfo.revision ? this.datasetInfo.revision : '0'
       return `Version ${this.datasetInfo.version} Revision ${revision}`
-    },
-    /**
-     * Compute the project link
-     * @returns {String}
-     */
-    associatedProjectLink: function() {
-      const sys = propOr(null, 'sys', this.associatedProject)
-      const entryId = propOr(null, 'id', sys)
-      return entryId != null ? `/projects/${entryId}` : ''
-    },
-    /**
-     * Compute the sparc award number
-     * @returns {String}
-     */
-    awardSparcNumber: function() {
-      const fields = propOr(null, 'fields', this.associatedProject)
-      const awardNumber = propOr(null, 'awardId', fields)
-      return awardNumber !== null ? `NIH ${awardNumber}` : 'N/A'
-    },
-    /**
-     * Compute the project title
-     * @returns {String}
-     */
-    associatedProjectTitle: function() {
-      const fields = propOr(null, 'fields', this.associatedProject)
-      const title = propOr(null, 'title', fields)
-      return title ?? 'N/A'
-    },
-    /**
-     * Compute the project institution
-     * @returns {String}
-     */
-    associatedProjectInstitution: function() {
-      const fields = propOr(null, 'fields', this.associatedProject)
-      const institution = propOr(null, 'institution', fields)
-      const institutionFields = propOr(null, 'fields', institution)
-      const institutionName = propOr(null, 'name', institutionFields)
-      return institutionName ?? 'N/A'
     },
   },
 }

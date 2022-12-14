@@ -38,9 +38,9 @@ export default {
     ]
   },
   env: {
-    portal_api: process.env.PORTAL_API_HOST || 'http://localhost:5000 ',
+    portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
     flatmap_api:
-      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v2/',
+      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
@@ -85,6 +85,7 @@ export default {
     ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
     ctf_success_story_id: 'successStory',
     ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
+    ctf_sparc_login_modal_id: '4FSEoB6SW8xrEAsh4t0vGt',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
@@ -146,7 +147,7 @@ export default {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['verifyUserProfileComplete', 'documentationHubRedirects']
+    middleware: ['verifyUserProfileComplete', 'documentationHubRedirects', 'signOutRedirect']
   },
   /*
    ** Global CSS
@@ -161,6 +162,7 @@ export default {
     '@/plugins/amplify',
     '@/plugins/documentation-hub-redirects',
     "@/plugins/vue-gtag.client.js",
+    { src: '@/plugins/persisted-state', mode: 'client' },
     { src: '@/plugins/postscribe', mode: 'client' },
     { src: '@/plugins/system-design-components', mode: 'client' },
     { src: '@/plugins/tsviewer', mode: 'client' }

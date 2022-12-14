@@ -70,6 +70,7 @@
 <script>
 
 import FileUploadMixin from '@/mixins/file-upload/index'
+import { propOr } from 'ramda'
 
 export default {
   name: 'CommunitySpotlightForm',
@@ -148,24 +149,28 @@ export default {
      */
     sendForm() {
       this.isSubmitting = true
+      const fileName = propOr('', 'name', this.file)
+      const description = `
+        <b>Contact Information</b><br><br>
+        <b>Name:</b><br>${this.form.name}<br><br>
+        <b>E-mail:</b><br>${this.form.email}<br><br>
+        <b>Community Spotlight Details:</b><br><br>
+        <b>Title:</b><br>${this.form.title}<br><br>
+        <b>Summary:</b><br>${this.form.summary}<br><br>
+        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
+        <b>Supporting Information URL:</b><br>${this.form.url == '' ? 'N/A' : this.form.url}
+      `
 
-      let formData = new FormData();
-      // Required inputs
-      formData.append("name", this.form.name)
-      formData.append("email", this.form.email)
-      formData.append("title", this.form.title)
-      formData.append("summary", this.form.summary)
-      // Optional inputs
-      formData.append("url", this.form.url)
-      formData.append("form_type", 'communitySpotlight')
-      formData.append("has_attachment", this.hasAttachment)
-      if (this.hasAttachment){
-        formData.append("attachment_file", this.file, this.file.name)
-      }
-      
-      
+      let formData = new FormData()
+      formData.append("type", "communitySpotlight")
+      formData.append("title", `Spotlight Submission - ${this.form.title}`)
+      formData.append("description", description)
+      formData.append("userEmail", this.form.email)
+      if (propOr('', 'name', this.file) != '') {
+        formData.append("attachment", this.file, this.file.name)
+      }  
       this.$axios
-        .post(`${process.env.portal_api}/email_comms`, formData)
+        .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
           this.$emit('submit', this.form.name)
         })

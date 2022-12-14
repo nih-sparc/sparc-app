@@ -57,14 +57,22 @@
     <div class="heading1 mb-16">Event specific details</div>
 
     <el-form-item prop="location" label="Location">
-      <el-input v-model="form.location" placeholder="Enter the location of the event" />
+      <el-input v-model="form.location" placeholder="Enter the location of the event. If there is no physical location, please enter 'virtual'" />
     </el-form-item>
 
-    <el-form-item prop="date" label="Date">
+    <el-form-item prop="startDate" label="Start Date">
       <el-date-picker
-        v-model="form.date"
+        v-model="form.startDate"
         type="date"
-        placeholder="Enter the date of the event"
+        placeholder="Enter the start date"
+      />
+    </el-form-item>
+
+    <el-form-item prop="endDate" label="End Date">
+      <el-date-picker
+        v-model="form.endDate"
+        type="date"
+        placeholder="Enter the end date"
       />
     </el-form-item>
 
@@ -86,6 +94,7 @@
 <script>
 
 import FileUploadMixin from '@/mixins/file-upload/index'
+import { propOr } from 'ramda'
 
 export default {
   name: 'NewsAndEventsForm',
@@ -102,7 +111,8 @@ export default {
         summary: '',
         url: '',
         location: '',
-        date: '',
+        startDate: '',
+        endDate: ''
       },
       isSubmitting: false,
       formRules: {
@@ -165,25 +175,32 @@ export default {
      */
     sendForm() {
       this.isSubmitting = true
-
+      const fileName = propOr('', 'name', this.file)
+      const description = `
+        <b>Contact Information</b><br><br>
+        <b>Name:</b><br>${this.form.name}<br><br>
+        <b>E-mail:</b><br>${this.form.email}<br><br>
+        <b>News or Event Details:</b><br><br>
+        <b>Title:</b><br>${this.form.title}<br><br>
+        <b>Summary:</b><br>${this.form.summary}<br><br>
+        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
+        <b>Supporting Information URL:</b><br>${this.form.url == '' ? 'N/A' : this.form.url}<br><br>
+        <b>Event Specific Details:</b><br><br>
+        <b>Location:</b><br>${this.form.location == '' ? 'N/A' : this.form.location}<br><br>
+        <b>Start Date:</b><br>${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}<br><br>
+        <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}
+      `
       let formData = new FormData();
-      // Required inputs
-      formData.append("name", this.form.name)
-      formData.append("email", this.form.email)
-      formData.append("title", this.form.title)
-      formData.append("summary", this.form.summary)
-      // Optional inputs
-      formData.append("url", this.form.url)
-      formData.append("location", this.form.location)
-      formData.append("date", this.form.date)
-      formData.append("form_type", 'newsOrEvent')
-      formData.append("has_attachment", this.hasAttachment)
-      if (this.hasAttachment){
-        formData.append("attachment_file", this.file, this.file.name)
+      formData.append("type", "newsAndEvents")
+      formData.append("title", `N&E Submission - ${this.form.title}`)
+      formData.append("description", description)
+      formData.append("userEmail", this.form.email)
+      if (propOr('', 'name', this.file) != '') {
+        formData.append("attachment", this.file, this.file.name)
       }
 
       this.$axios
-        .post(`${process.env.portal_api}/email_comms`, formData)
+        .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
           this.$emit('submit', this.form.name)
         })
@@ -206,6 +223,7 @@ export default {
 }
 hr {
   border-top: none;
+  border-left: none;
   border-width: 2px;
   border-color: $lineColor1;
   margin: 2.5rem 0;

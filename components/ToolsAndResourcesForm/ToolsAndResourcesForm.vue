@@ -477,108 +477,43 @@ export default {
      sendForm() {
       this.isSubmitting = true
 
-      this.$axios.post(`${process.env.portal_api}/submit_resource`, {
-        email: this.form.email,
-        message: `
-          <b>Are you involved in SPARC-funded research?</b>
-          <br>
-          ${this.form.sparcFunded}
-          <br>
-          <br>
-          <b>What is your highest level of involvement in research projects?</b>
-          <br>
-          ${this.form.levelOfInvolvement}
-          <br>
-          <br>
-          <b>What is the name of the tool/resource?</b>
-          <br>
-          ${this.form.resourceName}
-          <br>
-          <br>
-          <b>What is the webpage link for this tool/resource?</b>
-          <br>
-          ${this.form.resourceLink}
-          <br>
-          <br>
-          <b>Which category, or categories, would you place this tool/resource?</b>
-          <br>
-          ${this.form.resourceCategories}
-          <br>
-          <br>
-          <b>If you answered 'Other', please describe the category for this tool/resource:</b>
-          <br>
-          ${this.isOtherSelected ? this.form.otherCategoryDescription : 'N/A'}
-          <br>
-          <br>
-          <b>Is it free and/or open-source?</b>
-          <br>
-          ${this.form.isFree}
-          <br>
-          <br>
-          <b>How broadly is it used in biomedical science?</b>
-          <br>
-          ${this.form.howBroadlyUsed}
-          <br>
-          <br>
-          <b>Does it have specific applications to the autonomic nervous system and the neural control of organs?</b>
-          <br>
-          ${this.form.hasSpecificApplications}
-          <br>
-          <br>
-          <b>Briefly describe your experience using this tool:</b>
-          <br>
-          ${this.form.experienceDescription}
-          <br>
-          <br>
-          <b>Are you the tool/resource creator?</b>
-          <br>
-          ${this.form.isCreator}
-          <br>
-          <br>
-          <b>If yes, what was your primary goal in creating this tool/resource?</b>
-          <br>
-          ${this.form.isCreator == 'Yes' ? this.form.primaryGoal : 'N/A'}
-          <br>
-          <br>
-          <b>To date, has this tool been used in an NIH SPARC-funded project?</b>
-          <br>
-          ${this.form.hasBeenUsed}
-          <br>
-          <br>
-          <b>If yes, how has it been used in NIH SPARC-funded research?</b>
-          <br>
-          ${this.form.hasBeenUsed == 'Yes' ? this.form.howUsed : 'N/A'}
-          <br>
-          <br>
-          <b>Are you willing to participate in other user research to support the development of the SPARC Portal?</b>
-          <br>
-          ${this.form.isWilling}
-          <br>
-          <br>
-          <b>Contact Information</b>
-          <br>
-          <br>
-          <b>Name:</b>
-          <br>
-          ${this.form.name}
-          <br>
-          <br>
-          <b>Email:</b>
-          <br>
-          ${this.form.email}
-          <br>
-          <br>
-        `
-      })
-      .then(() => {
-        this.$emit('submit', this.form.name)
-      })
-      .catch(() => {
-        this.hasError = true
-      })
-      .finally(() => {
-        this.isSubmitting = false
-      })
+      const description = `
+        <b>Are you involved in SPARC-funded research?</b><br>${this.form.sparcFunded}<br><br>
+        <b>What is your highest level of involvement in research projects?</b><br>${this.form.levelOfInvolvement}<br><br>
+        <b>What is the name of the tool/resource?</b><br>${this.form.resourceName}<br><br>
+        <b>What is the webpage link for this tool/resource?</b><br>${this.form.resourceLink}<br><br>
+        <b>Which category, or categories, would you place this tool/resource?</b><br>${this.form.resourceCategories}<br><br>
+        <b>If you answered 'Other', please describe the category for this tool/resource:</b><br>${this.isOtherSelected ? this.form.otherCategoryDescription : 'N/A'}<br><br>
+        <b>Is it free and/or open-source?</b><br>${this.form.isFree}<br><br>
+        <b>How broadly is it used in biomedical science?</b><br>${this.form.howBroadlyUsed}<br><br>
+        <b>Does it have specific applications to the autonomic nervous system and the neural control of organs?</b><br>${this.form.hasSpecificApplications}<br><br>
+        <b>Briefly describe your experience using this tool:</b><br>${this.form.experienceDescription}<br><br>
+        <b>Are you the tool/resource creator?</b><br>${this.form.isCreator}<br><br>
+        <b>If yes, what was your primary goal in creating this tool/resource?</b><br>${this.form.isCreator == 'Yes' ? this.form.primaryGoal : 'N/A'}<br><br>
+        <b>To date, has this tool been used in an NIH SPARC-funded project?</b><br>${this.form.hasBeenUsed}<br><br>
+        <b>If yes, how has it been used in NIH SPARC-funded research?</b><br>${this.form.hasBeenUsed == 'Yes' ? this.form.howUsed : 'N/A'}<br><br>
+        <b>Are you willing to participate in other user research to support the development of the SPARC Portal?</b><br>${this.form.isWilling}<br><br>
+        <b>Contact Information</b><br><br>
+        <b>Name:</b><br>${this.form.name}<br><br>
+        <b>Email:</b><br>${this.form.email}
+      `
+      let formData = new FormData();
+      formData.append("type", "toolsAndResources")
+      formData.append("title", `T&R Submission: ${this.form.resourceName}`)
+      formData.append("description", description)
+      formData.append("userEmail", this.form.email)
+
+      this.$axios
+        .post(`${process.env.portal_api}/tasks`, formData)
+        .then(() => {
+          this.$emit('submit', this.form.name)
+        })
+        .catch(() => {
+          this.hasError = true
+        })
+        .finally(() => {
+          this.isSubmitting = false
+        })
     }
   }
 }
@@ -592,6 +527,7 @@ export default {
 }
 hr {
   border-top: none;
+  border-left: none;
   border-width: 2px;
   border-color: $lineColor1;
   margin: 2rem 0;

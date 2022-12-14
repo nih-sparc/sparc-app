@@ -2,15 +2,42 @@
   <div>
     <breadcrumb :breadcrumb="breadcrumb" title="Profile" />
     <page-hero>
-      <h1 class="heading1">SPARC Profile</h1>
+      <h1>SPARC Profile</h1>
+      <p>
+        The SPARC Portal account allows you to fully utilize portal functionality. <a href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">Learn more</a> about which features require login and find out more details about why a Pennsieve account is created for you in the process.
+      </p>
     </page-hero>
-    <div class="container my-32">
-      <div class="heading3">First name: <span class="heading2">{{firstName}}</span></div>
-      <div class="heading3">Last name: <span class="heading2">{{lastName}}</span></div>
-      <div class="heading3">E-mail: <span class="heading2">{{profileEmail}}</span></div>
-      <div class="mt-16">
-        <el-button v-if='!isSubscribed' class='secondary' v-on:click='subscribeToNewsletter(profileEmail, firstName, lastName)'>Subscribe to newsletter</el-button>
-        <el-button v-else class='secondary' v-on:click='unsubscribeFromNewsletter(profileEmail)'>Un-subscribe from newsletter</el-button>
+    <div class="container my-24">
+      <div class="heading2 py-8">
+        My Information
+      </div>
+      <div class="body1">First name: <span class="heading3">{{firstName}}</span></div>
+      <div class="body1">Last name: <span class="heading3">{{lastName}}</span></div>
+      <div class="body1">E-mail: <span class="heading3">{{profileEmail}}</span></div>
+      <div class="heading2 py-8">
+        Communication Preferences
+        <div class="body1">
+          SPARC Newsletter: 
+          <template v-if="!isSubscribed">
+            <span class="heading3">You are not subscribed.</span>
+            <div class="body1">
+              Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our newsletter. View all past newsletters <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">here</a>.
+            </div>
+            <div class="mt-8">
+              <el-button class='secondary' v-on:click='subscribeToNewsletter(profileEmail, firstName, lastName)'>Subscribe to newsletter</el-button>
+            </div>
+          </template>
+          <template v-else>
+            <span class="heading3">You are currently subscribed.</span>
+            <div class="body1">
+              View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
+            </div>
+            <div class="mt-8">
+              <el-button class='secondary' v-on:click='unsubscribeFromNewsletter(profileEmail)'>Un-subscribe from newsletter</el-button>
+            </div>
+          </template>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -69,3 +96,12 @@ export default {
 }
 
 </script>
+
+<style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+
+a {
+  text-decoration: underline;
+}
+
+</style>
