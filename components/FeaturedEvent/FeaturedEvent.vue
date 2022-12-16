@@ -1,33 +1,32 @@
 <template>
   <sparc-card>
     <template slot="image">
-      <nuxt-link
-        v-if="event.fields.requiresADetailsPage"
-        :to="{
-          name: 'news-and-events-events-id',
-          params: { id: event.sys.id }
-        }"
-        class="sparc-card__image"
-        :style="`background-image: url(${imageSrc})`"
-      >
-        <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
-      </nuxt-link>
-      <template v-else>
-        <a
-          v-if="event.fields.url"
-          :href="event.fields.url"
-          target="_blank"
+      <div v-if="event.fields.requiresADetailsPage" class="sparc-card__image-container">
+        <img
+          v-on:click='navigateTo(`news-and-events/events/${event.sys.id}`)'
           class="sparc-card__image"
-          :style="`background-image: url(${imageSrc})`"
-        >
-          <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
-        </a>
+          :src="imageSrc" 
+          :alt="imageAlt" 
+        />
+      </div>
+      <template v-else>
+        <div v-if="event.fields.url" class="sparc-card__image-container">
+          <img
+            v-on:click='navigateTo(event.fields.url)'
+            class="sparc-card__image"
+            :src="imageSrc" 
+            :alt="imageAlt" 
+          />
+        </div>
         <div
           v-else
-          class="sparc-card__image"
-          :style="`background-image: url(${imageSrc})`"
+          class="sparc-card__image-container"
         >
-          <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
+        <img
+            class="sparc-card__image"
+            :src="imageSrc" 
+            :alt="imageAlt" 
+          />
         </div>
       </template>
     </template>
@@ -113,6 +112,12 @@ export default {
       default: () => {
         return {}
       }
+    }
+  },
+
+  methods: {
+    navigateTo(url) {
+      this.$router.push(url)
     }
   },
 
