@@ -48,6 +48,7 @@
           />
           <div
             class="my-8"
+            v-if="scope.row._highlightResult.item.description"
             v-html="scope.row._highlightResult.item.description.value"
           />
           <table class="property-table">
@@ -162,6 +163,9 @@ export default {
         }
         case 'Publication Date': {
           const pennsieve = _.get(item, property.propPath)
+          if (pennsieve.createdAt == undefined || pennsieve.updatedAt == undefined) {
+            return undefined
+          }
           const createdAt = pennsieve.createdAt.timestamp.split(",")[0]
           const updatedAt = pennsieve.updatedAt.timestamp.split(",")[0]
           return this.formatDate(createdAt) +
