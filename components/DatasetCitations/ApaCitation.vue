@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isDoiValid">
     <div v-if="canCopyCitation" class="citation-container py-16 pl-16 pr-24" v-loading="citationLoading">
       <button class="copy-button" @click="handleCitationCopy">
         <img src="../../static/images/copyIcon.png" />
@@ -43,7 +43,8 @@ export default {
       title: "",
       publisher: "",
       year: 0,
-      url: ""
+      url: "",
+      isDoiValid: true
     }
   },
 
@@ -72,15 +73,22 @@ export default {
         method: 'GET',
         headers: { Accept: 'application/json'}
       })
-        .then(response => response.json())
-        .then(json => {
+      .then(async response => {
+        if (response.status == '404') {
+          this.isDoiValid = false
+          this.$emit('doi-invalid', this.doi)
+        } else {
+          const json = await response.json()
           this.title = json.title
           this.authors = json.author
           this.publisher = json["container-title"]
           this.year = json.published["date-parts"][0][0]
           this.url = json.URL
-          this.citationLoading = false
-        })
+        }
+      })
+      .finally(() => {
+        this.citationLoading = false
+      })
     },
     /**
      * Handle copy citation to clipboard

@@ -12,6 +12,9 @@
         class="page-hero-img"
         :src="page.fields.heroImage.fields.file.url"
       />
+      <NuxtLink to="/news-and-events/news">
+        <el-button class="secondary mb-16">Browse all News &amp; Events</el-button>
+      </NuxtLink>
     </page-hero>
 
     <div class="pt-32 pb-16">
@@ -34,7 +37,7 @@
                     name: 'news-and-events-news'
                   }"
                 >
-                  View All News &gt;
+                  View All News
                 </nuxt-link>
               </div>
             </div>
@@ -79,7 +82,7 @@
                       name: 'news-and-events-events',
                     }"
                   >
-                    View All Events >
+                    View All Events
                   </nuxt-link>
                 </div>
               </content-tab-card>
@@ -352,16 +355,13 @@ export default Vue.extend<Data, Methods, Computed, never>({
 .btn-load-more {
   background: none;
   border: none;
-  color: $darkBlue;
+  color: $purple;
   cursor: pointer;
   display: block;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 500;
   padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 }
 
 .newsletter-archive {

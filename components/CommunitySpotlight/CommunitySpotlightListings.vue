@@ -16,7 +16,7 @@
         name: linkLocation
       }"
     >
-      {{ linkText }} &gt;
+      {{ linkText }}
     </nuxt-link>
   </div>
 </template>
@@ -91,15 +91,11 @@ export default {
 .btn-load-more {
   background: none;
   border: none;
-  color: $darkBlue;
+  color: $purple;
   cursor: pointer;
   display: block;
-  font-size: 1rem;
-  font-weight: 700;
   padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
+  font-weight: 500;
+  text-decoration: underline;
 }
 </style>

@@ -14,7 +14,7 @@
                 name: 'news-and-events-news'
               }"
             >
-              View All News &gt;
+              View All News
             </nuxt-link>
           </div>
         </div>
@@ -59,7 +59,7 @@
                   name: 'news-and-events-events',
                 }"
               >
-                View All Events >
+                View All Events
               </nuxt-link>
             </div>
           </content-tab-card>
@@ -180,16 +180,12 @@ export default {
 .btn-load-more {
   background: none;
   border: none;
-  color: $darkBlue;
+  color: $purple;
   cursor: pointer;
   display: block;
-  font-size: 1rem;
-  font-weight: 700;
   padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
+  font-weight: 500;
+  text-decoration: underline;
 }
 
 ::v-deep .el-button {

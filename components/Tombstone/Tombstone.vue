@@ -6,7 +6,8 @@
       <div class="heading3">
         The dataset with the identifier: <b>{{ doiUrl }}</b> has been removed and is no longer available on the SPARC portal.
         <br/>
-        Please refer to the <a href="https://docs.sparc.science/?redirect=%2Fv1.0%2Fdocs%2Fsparc-changes-to-published-datasets-policy" target="_blank">SPARC Changes to Published Datasets</a> Policy for its full bibliographic citation and its statement of unavailability. 
+        Please refer to the <a href="https://docs.sparc.science/docs/list-of-datasets-that-have-been-removed" target="_blank">List of SPARC Datasets Removed from the SPARC Portal</a>
+        for its full bibliographic citation and its statement of unavailability. For information on SPARC's policy on dataset removal, please refer to the Removal of Published Data section of the <a href="https://docs.sparc.science/docs/sparc-changes-to-published-datasets-policy" target="_blank">SPARC Changes to Published Datasets Policy</a>.
       </div>
     </div>
   </div>

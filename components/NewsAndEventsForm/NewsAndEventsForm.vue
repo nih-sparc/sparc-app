@@ -175,7 +175,7 @@ export default {
      */
     sendForm() {
       this.isSubmitting = true
-
+      const fileName = propOr('', 'name', this.file)
       const description = `
         <b>Contact Information</b><br><br>
         <b>Name:</b><br>${this.form.name}<br><br>
@@ -183,15 +183,25 @@ export default {
         <b>News or Event Details:</b><br><br>
         <b>Title:</b><br>${this.form.title}<br><br>
         <b>Summary:</b><br>${this.form.summary}<br><br>
+        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
         <b>Supporting Information URL:</b><br>${this.form.url == '' ? 'N/A' : this.form.url}<br><br>
         <b>Event Specific Details:</b><br><br>
         <b>Location:</b><br>${this.form.location == '' ? 'N/A' : this.form.location}<br><br>
         <b>Start Date:</b><br>${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}<br><br>
-        <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}<br><br>
+        <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}
       `
       let formData = new FormData();
-      formData.append("title", `News or Event creation request - ${this.form.title}`)
+      // we assume it is a news item if there is no start date
+      if (this.form.startDate == '') {
+        formData.append("type", "news")
+        formData.append("title", `News Submission - ${this.form.title}`)
+      }
+      else {
+        formData.append("type", "event")
+        formData.append("title", `Event Submission - ${this.form.title}`)
+      }
       formData.append("description", description)
+      formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)
       }
