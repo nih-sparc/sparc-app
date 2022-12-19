@@ -96,7 +96,7 @@
     vuex "^3.5.1"
     webpack-node-externals "^2.5.2"
 
-"@abi-software/plotvuer@^0.2.46":
+"@abi-software/plotvuer@^0.2.45", "@abi-software/plotvuer@^0.2.46":
   version "0.2.46"
   resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.2.46.tgz#396822823b34dbc7de4e058535224cb15b13f8cd"
   integrity sha512-Xqlb9lHwDw4YdiotlvBQmYSNd1LLK7ZwkcZZcqSa0ft+z8j4fomrUSIVPpmjWCbxxWT2GLhSWgMtDvcLhE3tvw==
@@ -184,22 +184,22 @@
     vue-router "^3.5.1"
     zincjs "^1.0.9"
 
-"@abi-software/simulationvuer@0.5.9":
-  version "0.5.9"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.9.tgz#73c8a85c8a3f5dadfa3aa40c6ef1a58203554b06"
-  integrity sha512-2xWBj0BVBbPP1C2q4DKgSLMhmyBwLLhExgQ66zsWq1QPqYIVQjCHhYQ8FM1OnoBgT3hUl8hVjboS0N/Jcq6OkA==
-  dependencies:
-    "@abi-software/plotvuer" "^0.2.45"
-    element-ui "^2.14.1"
-    jsonschema "^1.4.0"
-    vue "^2.6.11"
-
-"@abi-software/simulationvuer@^0.6.5":
+"@abi-software/simulationvuer@0.6.5":
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.6.5.tgz#333cb3e0229004353617643978010978a5c796a2"
   integrity sha512-290WgxPCK+uh81uTAr2vRd20yT3tY0j5aozRno01ZoKddDD/XRPdIHoooxdDJz99jR+P8G4nAZPkIiBzfZc1Yg==
   dependencies:
     "@abi-software/plotvuer" "^0.2.46"
+    element-ui "^2.14.1"
+    jsonschema "^1.4.0"
+    vue "^2.6.11"
+
+"@abi-software/simulationvuer@^0.5.9":
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.5.9.tgz#73c8a85c8a3f5dadfa3aa40c6ef1a58203554b06"
+  integrity sha512-2xWBj0BVBbPP1C2q4DKgSLMhmyBwLLhExgQ66zsWq1QPqYIVQjCHhYQ8FM1OnoBgT3hUl8hVjboS0N/Jcq6OkA==
+  dependencies:
+    "@abi-software/plotvuer" "^0.2.45"
     element-ui "^2.14.1"
     jsonschema "^1.4.0"
     vue "^2.6.11"
