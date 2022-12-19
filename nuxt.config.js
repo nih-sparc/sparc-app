@@ -117,7 +117,9 @@ export default {
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
     GOOGLE_ANALYTICS_GA4: process.env.GOOGLE_ANALYTICS_GA4,
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
-    SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false
+    SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
+    RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
+    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY
   },
 
   serverMiddleware: [
@@ -186,8 +188,24 @@ export default {
     '@nuxtjs/robots',
     'cookie-universal-nuxt',
     '@miyaoka/nuxt-twitter-widgets-module',
-    'vue-social-sharing/nuxt'
+    'vue-social-sharing/nuxt',
+    '@nuxtjs/proxy',
+    ['@nuxtjs/recaptcha', {
+      siteKey: process.env.RECAPTCHA_SITE_KEY,
+      version: "2"
+    }]
   ],
+  axios: {
+    proxy: true
+  },
+  proxy: {
+    "/captcha-api/": {
+      target: "https://www.google.com/recaptcha/api",
+      pathRewrite: {
+        "^/captcha-api": ""
+      }
+    }
+  },
   /*
    ** robots.txt
    */

@@ -80,6 +80,8 @@
 
     <div class="body4 mb-16"><i>Before your news or event is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
 
+    <recaptcha class="recaptcha mb-16"/>
+
     <el-form-item class="submit-button">
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
@@ -94,16 +96,16 @@
 <script>
 
 import FileUploadMixin from '@/mixins/file-upload/index'
+import RecaptchaMixin from '@/mixins/recaptcha/index'
 import { propOr } from 'ramda'
 
 export default {
   name: 'NewsAndEventsForm',
 
-  mixins: [FileUploadMixin],
+  mixins: [FileUploadMixin, RecaptchaMixin],
 
   data() {
     return {
-      hasError: false,
       form: {
         name: '',
         email: '',
@@ -156,24 +158,11 @@ export default {
   },
 
   methods: {
-    /**
-     * Submit the form and validate
-     */
-    onSubmit() {
-      this.hasError = false
-
-      this.$refs.submitForm.validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.sendForm()
-      })
-    },
 
     /**
      * Send form to endpoint
      */
-    sendForm() {
+    async sendForm() {
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
       const description = `
@@ -206,7 +195,7 @@ export default {
         formData.append("attachment", this.file, this.file.name)
       }
 
-      this.$axios
+      await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
           this.$emit('submit', this.form.name)
@@ -237,5 +226,9 @@ hr {
 }
 .error {
   color: $danger;
+}
+.recaptcha {
+  display: flex;
+  justify-content: right;
 }
 </style>
