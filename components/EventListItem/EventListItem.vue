@@ -14,9 +14,9 @@
           }"
           v-html="highlightMatches(item.fields.title, $route.query.search)"
         />
-        <a v-else class="link1" :href="item.fields.url" :target="isInternalLink('item.fields.url') ? '_self' : '_blank'">
+        <a v-else class="link1" :href="item.fields.url" :target="!opensInNewTab(item.fields.url) ? '_self' : '_blank'">
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
-          <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
+          <svg-icon v-if="!isInternalLink(item.fields.url)" name="icon-open" height="30" width="30" />
         </a>
         <div>
           <div class="body1 my-8" v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
@@ -57,7 +57,7 @@ import { isEmpty, pathOr } from 'ramda'
 import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
 import FormatDate from '@/mixins/format-date'
 
-import { isInternalLink } from '@/mixins/marked/index'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { highlightMatches } from '../../pages/data/utils'
 
 export default {
@@ -106,7 +106,8 @@ export default {
   },
   methods: {
     isInternalLink,
-    highlightMatches
+    highlightMatches,
+    opensInNewTab
   }
 }
 </script>

@@ -21,7 +21,12 @@ export const isAnchor = str => {
 export const isInternalLink = str => {
   return isAnchor(str)
     ? true
-    : str.includes(process.env.ROOT_URL) || str.startsWith('/')
+    : str.includes(process.env.ROOT_URL) || str.includes("docs.sparc.science") || str.startsWith('/')
+}
+
+// docs.sparc.science is considered an internal link, but should always open in new tab
+export const opensInNewTab = link => {
+  return !isInternalLink(link) || link.includes("docs.sparc.science")
 }
 
 renderer.link = function(href, title, text) {

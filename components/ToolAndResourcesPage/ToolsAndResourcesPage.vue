@@ -18,7 +18,7 @@
           <div class="label4 mb-4" >
             TUTORIALS & GUIDES
           </div>
-          <a class="resource-link" v-for="(tutorial, index) in tutorials" :key="index" :href="tutorial.fields.url" :target="isInternalLink(tutorial.fields.url) ? '_self' : '_blank'">
+          <a class="resource-link" v-for="(tutorial, index) in tutorials" :key="index" :href="tutorial.fields.url" :target="!opensInNewTab(tutorial.fields.url) ? '_self' : '_blank'">
             {{ tutorial.fields.title }}
             <svg-icon v-if="!isInternalLink(tutorial.fields.url)" name="icon-open" height="25" width="25" />
           </a>
@@ -27,7 +27,7 @@
           <div class="label4 mb-4" >
             VIDEOS & WEBINARS
           </div>
-          <a class="resource-link" v-for="(webinar, index) in webinars" :key="index" :href="webinar.fields.url" :target="isInternalLink(webinar.fields.url) ? '_self' : '_blank'">
+          <a class="resource-link" v-for="(webinar, index) in webinars" :key="index" :href="webinar.fields.url" :target="!opensInNewTab(webinar.fields.url) ? '_self' : '_blank'">
             {{ webinar.fields.title }}
             <svg-icon v-if="!isInternalLink(webinar.fields.url)" name="icon-open" height="25" width="25" />
           </a>
@@ -46,7 +46,7 @@ import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import PageHero from '@/components/PageHero/PageHero'
 import { pathOr } from 'ramda'
-import { isInternalLink } from '@/mixins/marked/index'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 
 export default {
   name: 'ToolsAndResourcesPage',
@@ -87,6 +87,7 @@ export default {
 
   methods: {
     isInternalLink,
+    opensInNewTab
   },
 
   computed: {

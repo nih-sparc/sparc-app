@@ -11,7 +11,7 @@
         <el-col class="office-hours-column" :xs="24" :sm="12">
           <div class="heading2">Open Office Hours</div>
           <div class="body1 mb-16 mt-8">Join one of our weekly office hours to ask questions and learn more from the SPARC Data Resource Center Team.</div>
-          <a href="https://docs.sparc.science/docs/sparc-drc-open-office-hours">
+          <a href="https://docs.sparc.science/docs/sparc-drc-open-office-hours" target="_blank">
             <el-button class="secondary">
             Find out more
             </el-button>

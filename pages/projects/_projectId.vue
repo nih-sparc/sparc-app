@@ -43,7 +43,7 @@
                   NIH AWARD
                 </div>
                 <div class="mb-16">
-                  <a :href="nihReporterUrl" target="_blank">
+                  <a :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">
                     {{ awardId }}
                     <svg-icon v-if="!isInternalLink(nihReporterUrl)" name="icon-open" height="25" width="25" />
                   </a>
@@ -92,7 +92,7 @@
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
-import { isInternalLink } from '@/mixins/marked/index'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { propOr, isEmpty } from 'ramda'
 
 import createClient from '@/plugins/contentful.js'
@@ -201,6 +201,7 @@ export default {
 
   methods: {
     isInternalLink,
+    opensInNewTab
   }
 }
 </script>

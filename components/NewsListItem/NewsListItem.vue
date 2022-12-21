@@ -19,10 +19,10 @@
         <a
           v-else
           :href="item.fields.url"
-          :target="isInternalLink('item.fields.url') ? '_self' : '_blank'"
+          :target="!opensInNewTab(item.fields.url) ? '_self' : '_blank'"
         >
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
-          <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
+          <svg-icon v-if="!isInternalLink(item.fields.url)" name="icon-open" height="30" width="30" />
         </a>
       </h3>
       <p v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
@@ -39,7 +39,7 @@ import FormatDate from '@/mixins/format-date'
 import EventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
-import { isInternalLink } from '@/mixins/marked/index'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { highlightMatches } from '~/pages/data/utils'
 
 export default {
@@ -75,6 +75,7 @@ export default {
 
   methods: {
     isInternalLink,
+    opensInNewTab,
     highlightMatches
   }
 }
