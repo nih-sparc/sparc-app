@@ -28,7 +28,7 @@ export default {
       { hid: 'og-title', property: 'og:title', content: 'SPARC Portal' },
       { hid: 'og-desc', property: 'og:description', content: 'Advancing bioelectronic medicine through open science!' },
       { hid: 'og-image', property: 'og:image',
-        content: 'https://drive.google.com/file/d/1htDtD97Ys1Z7ng4otGu6denNXgUbURpV/view'
+        content: 'https://drive.google.com/uc?id=1htDtD97Ys1Z7ng4otGu6denNXgUbURpV'
       },
       { hid: 'og-url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
       { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
