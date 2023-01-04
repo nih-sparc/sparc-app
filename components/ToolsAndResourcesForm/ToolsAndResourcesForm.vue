@@ -252,6 +252,8 @@
 
     <div class="body4 mb-16"><i>Your submission will be reviewed and the reviewer may contact you to clarify or seek additional information.</i></div>
 
+    <recaptcha class="recaptcha mb-16"/>
+
     <el-form-item class="submit-button">
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
@@ -265,13 +267,15 @@
 
 <script>
 import { sparcFunded, levelOfInvolvement, resourceCategories } from './questions.js'
+import RecaptchaMixin from '@/mixins/recaptcha/index'
 
 export default {
   name: 'ToolsAndResourcesForm',
 
+  mixins: [RecaptchaMixin],
+
   data() {
     return {
-      hasError: false,
       form: {
         sparcFunded: '',
         levelOfInvolvement: '',
@@ -437,20 +441,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Submit the form and validate
-     */
-    onSubmit() {
-      this.hasError = false
-
-      this.$refs.submitForm.validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.sendForm()
-      })
-    },
-
     validateHowUsed: function(rule, value, callback) {
       if (this.form.hasBeenUsed == 'Yes' && value === '') {
         callback(new Error(rule.message))
@@ -474,7 +464,7 @@ export default {
     /**
      * Send form to endpoint
      */
-     sendForm() {
+     async sendForm() {
       this.isSubmitting = true
 
       const description = `
@@ -503,7 +493,7 @@ export default {
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
 
-      this.$axios
+      await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
           this.$emit('submit', this.form.name)
@@ -534,5 +524,9 @@ hr {
 }
 .error {
   color: $danger;
+}
+.recaptcha {
+  display: flex;
+  justify-content: right;
 }
 </style>

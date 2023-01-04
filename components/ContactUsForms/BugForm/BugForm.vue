@@ -1,6 +1,6 @@
 <template>
   <el-form
-    ref="contactForm"
+    ref="submitForm"
     label-position="top"
     :model="form"
     :rules="formRules"
@@ -119,6 +119,8 @@
       </el-checkbox>
     </el-form-item>
 
+    <recaptcha class="mb-16"/>
+
     <el-form-item>
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
@@ -134,12 +136,13 @@
 import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
 import FileUploadMixin from '@/mixins/file-upload/index'
+import RecaptchaMixin from '@/mixins/recaptcha/index'
 import { propOr } from 'ramda'
 
 export default {
   name: 'BugForm',
 
-  mixins: [NewsletterMixin, FileUploadMixin],
+  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin],
 
   data() {
     return {
@@ -241,7 +244,7 @@ export default {
 
   mounted() {
     // Reset form fields when showing the form
-    this.$refs.contactForm.resetFields()
+    this.$refs.submitForm.resetFields()
     this.hasError = false
 
     if (this.bugSourceUrl != undefined) {
@@ -251,19 +254,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Submit the form and validate
-     */
-    onSubmit() {
-      this.hasError = false
-      this.$refs.contactForm.validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.sendForm()
-      })
-    },
-
     validateEmail: function(rule, value, callback) {
       if (this.form.shouldFollowUp && value === '') {
         callback(new Error(rule.message))
@@ -281,7 +271,7 @@ export default {
     /**
      * Send form to endpoint
      */
-    sendForm() {
+    async sendForm() {
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
       const description = `
@@ -302,7 +292,7 @@ export default {
         formData.append("attachment", this.file, this.file.name)
       }
 
-      this.$axios
+      await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.shouldSubscribe) {
