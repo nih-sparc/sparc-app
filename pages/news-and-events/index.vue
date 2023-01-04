@@ -115,24 +115,24 @@
               <div class="heading2 mt-24">Get Involved</div>
               <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your science story, news, or event.</div>
               <div class="get-involved-buttons-container">
-                <el-button class="get-involved-button secondary">
-                  <nuxt-link
-                    :to="{
-                      name: 'news-and-events-submit',
-                    }"
-                  >
+                <nuxt-link
+                  :to="{
+                    name: 'news-and-events-submit',
+                  }"
+                >
+                  <el-button class="get-involved-button secondary">
                     Share news or events
-                  </nuxt-link>
-                </el-button>
-                <el-button class="get-involved-button secondary mt-8">
-                  <nuxt-link
-                    :to="{
-                      name: 'news-and-events-community-spotlight-submit',
-                    }"
-                  >
+                  </el-button>
+                </nuxt-link>
+                <nuxt-link
+                  :to="{
+                    name: 'news-and-events-community-spotlight-submit',
+                  }"
+                >
+                  <el-button class="get-involved-button secondary mt-8">
                     Submit a community spotlight idea
-                  </nuxt-link>
-                </el-button>
+                  </el-button>
+                </nuxt-link>
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
