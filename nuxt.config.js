@@ -22,7 +22,16 @@ export default {
         hid: 'keywords', 
         name: 'keywords', 
         content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
-      }
+      },
+      // default social cards information for site sharing url's
+      { hid: 'og-type', property: 'og:type', content: 'website' },
+      { hid: 'og-title', property: 'og:title', content: 'SPARC Portal' },
+      { hid: 'og-desc', property: 'og:description', content: 'Advancing bioelectronic medicine through open science!' },
+      { hid: 'og-image', property: 'og:image',
+        content: 'https://drive.google.com/uc?id=1htDtD97Ys1Z7ng4otGu6denNXgUbURpV'
+      },
+      { hid: 'og-url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
+      { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
     ],
     link: [
       {

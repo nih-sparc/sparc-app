@@ -619,7 +619,13 @@ export default {
     datasetLicenseName: function() {
       return propOr('', 'license', this.datasetInfo)
     },
-
+    /**
+     * Returns dataset banner
+     * @returns {String}
+     */
+     getDatasetImage: function() {
+      return propOr('', 'banner', this.datasetInfo)
+    },
     /**
      * Returns the list of contributors who contributed to the dataset
      * @returns {String}
@@ -1105,7 +1111,7 @@ export default {
         },
         {
           property: 'og:url',
-          content: process.env.siteUrl
+          content: process.env.ROOT_URL
         }
       ],
       script: [
@@ -1123,7 +1129,7 @@ export default {
             description: this.datasetDescription,
             license: this.licenseLink,
             version: this.datasetInfo.version,
-            url: process.env.siteUrl,
+            url: process.env.ROOT_URL,
             citation: this.citationText,
             identifier: this.doiLink,
             isAccessibleForFree: true
@@ -1135,7 +1141,7 @@ export default {
           json: {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
-            url: process.env.siteUrl,
+            url: process.env.ROOT_URL,
             name: 'Pennsieve Discover'
           },
           type: 'application/ld+json'
