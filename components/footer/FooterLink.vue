@@ -1,18 +1,14 @@
 <template>
-  <nuxt-link
-    v-if="isInternalLink(link.fields.url || '')"
-    :to="link.fields.url"
-    data-jest="nuxt-link"
+  <a
+    :href="linkUrl"
+    :target="!opensInNewTab(linkUrl) ? '_self' : '_blank'"
   >
-    {{ link.fields.title }}
-  </nuxt-link>
-  <a v-else :href="link.fields.longUrl || link.fields.url" target="_blank">
-    {{ link.fields.title }}
+  {{ link.fields.title }}
   </a>
 </template>
 
 <script>
-import { isInternalLink } from '@/mixins/marked/index'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 
 export default {
   name: 'FooterLink',
@@ -30,7 +26,23 @@ export default {
   },
 
   methods: {
-    isInternalLink
+    isInternalLink,
+    opensInNewTab
+  },
+
+  computed: {
+    currentUrl() {
+      return this.$nuxt.$route.fullPath
+    },
+    linkUrl() {
+      let url = this.link.fields.longUrl || this.link.fields.url
+      const title = this.link.fields.title
+      // Add users current location when reporting an issue so that we can capture url for site feedback
+      if (title == 'Site Feedback') {
+        url = url + `&source_url=${this.currentUrl}`
+      }
+      return url
+    }
   }
 }
 </script>
