@@ -99,6 +99,9 @@
         </el-col>
       </el-row>
     </div>
+    <div class="pb-16 pt-16 container">
+      <submit-tool-section/>
+    </div>
   </div>
 </template>
 
@@ -110,6 +113,7 @@ import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
+import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
 
 export default {
   name: 'DevicesPage',
@@ -119,7 +123,8 @@ export default {
     SearchControlsContentful,
     ResourcesSearchResults,
     ToolsAndResourcesFacetMenu,
-    SortMenu
+    SortMenu,
+    SubmitToolSection
   },
 
   async asyncData({ route }) {
