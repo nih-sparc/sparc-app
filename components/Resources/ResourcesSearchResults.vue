@@ -35,7 +35,7 @@
             Support Contact
           </h3>
           <p>
-            <span v-if="data.fields.owner">{{ data.fields.owner }}</span>
+            <span v-if="data.fields.owner" v-html="highlightMatches(data.fields.owner, $route.query.search)"/>
             <span v-if="data.fields.owner && data.fields.contactEmail"> · </span>
             <a
               v-if="data.fields.contactEmail"
