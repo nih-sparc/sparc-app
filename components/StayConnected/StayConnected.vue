@@ -13,7 +13,7 @@
           <div class="body1 mb-16 mt-8">Join one of our weekly office hours to ask questions and learn more from the SPARC Data Resource Center Team.</div>
           <a href="https://docs.sparc.science/docs/sparc-drc-open-office-hours" target="_blank">
             <el-button class="secondary">
-              Find out more <svg-icon icon="icon-open" height="16" width="16" />
+              Find out more
             </el-button>
           </a>
         </el-col>
