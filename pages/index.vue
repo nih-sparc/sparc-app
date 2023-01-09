@@ -155,6 +155,9 @@ export default {
           property: 'og:image',
           content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/63ffa09e191e3f4b9b2084f29b5de019/sparc-logo-primary.png'
         },
+        { hid: 'og:image:secure_url', property: 'og:image:secure_url',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/63ffa09e191e3f4b9b2084f29b5de019/sparc-logo-primary.png'
+        },
         {
           name: 'og:site_name',
           content: 'SPARC Portal'
