@@ -28,10 +28,10 @@ export default {
       { hid: 'og:title', property: 'og:title', content: 'SPARC Portal' },
       { hid: 'og:desc', property: 'og:description', content: 'Advancing bioelectronic medicine through open science!' },
       { hid: 'og:image', property: 'og:image',
-        content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/63ffa09e191e3f4b9b2084f29b5de019/sparc-logo-primary.png'
+        content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
       },
       { hid: 'og:image:secure_url', property: 'og:image:secure_url',
-        content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/63ffa09e191e3f4b9b2084f29b5de019/sparc-logo-primary.png'
+        content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
       },
       { hid: 'og:url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
       { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
