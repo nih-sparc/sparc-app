@@ -91,8 +91,8 @@ export default {
       selectedEventTypeOptions: [],
       eventDateOption: 'show all',
       eventTypeOption: 'show all',
-      eventMonth: 'Mar',
-      eventYear: 2020,
+      eventMonth: new Date().toLocaleString('en-US', {month: 'short'}),
+      eventYear: new Date().getFullYear(),
       visibleCategories: visibleCategories,
     }
   },
