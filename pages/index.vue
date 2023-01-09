@@ -151,8 +151,9 @@ export default {
             'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
         },
         {
+          hid: 'og:image',
           property: 'og:image',
-          content: 'https://drive.google.com/uc?id=1htDtD97Ys1Z7ng4otGu6denNXgUbURpV'
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/63ffa09e191e3f4b9b2084f29b5de019/sparc-logo-primary.png'
         },
         {
           name: 'og:site_name',
