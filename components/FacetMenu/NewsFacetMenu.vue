@@ -65,8 +65,8 @@ export default {
       newsSubjects: SUBJECT_CATEGORY,
       selectedNewsSubjectIds: [],
       publicationDateOption: 'show all',
-      publicationMonth: 'Mar',
-      publicationYear: 2020,
+      publicationMonth: new Date().toLocaleString('en-US', {month: 'short'}),
+      publicationYear: new Date().getFullYear(),
       visibleCategories: visibleCategories,
     }
   },
