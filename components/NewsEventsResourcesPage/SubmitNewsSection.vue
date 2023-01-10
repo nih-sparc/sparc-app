@@ -1,8 +1,8 @@
 <template>
   <paper
     :text="parseMarkdown(searchPaperText)"
-    :button-text="searchPaperButton"
-    :button-link="'/resources/submit'"
+    :button-text="searchPaperNEButton"
+    :button-link="'/news-and-events/submit'"
   />
 </template>
 
@@ -14,7 +14,7 @@ import marked from '@/mixins/marked/index'
 const client = createClient()
 
 export default {
-  name: 'SubmitToolSection',
+  name: 'SubmitNewsSection',
 
   mixins: [marked],
 
@@ -25,13 +25,14 @@ export default {
   data() {
     return {
       searchPaperText: '',
-      searchPaperButton: ''
+      searchPaperNEButton: ''
     }
   },
 
   async fetch() {
-    const response = await client.getEntry(process.env.ctf_tools_and_resources_page_id)
-    this.searchPaperButton = response.fields.searchPaperButton
+    const response = await client.getEntry(process.env.ctf_news_and_events_page_id)
+    console.log(response.fields)
+    this.searchPaperNEButton = response.fields.searchPaperNeButton
     this.searchPaperText = response.fields.searchPaperText
   }
 }

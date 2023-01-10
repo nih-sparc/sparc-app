@@ -103,6 +103,9 @@
         </el-col>
       </el-row>
     </div>
+    <div class="pb-16 pt-16 container">
+      <submit-news-section/>
+    </div>
   </div>
 </template>
 
@@ -115,6 +118,7 @@ import NewsFacetMenu from '@/components/FacetMenu/NewsFacetMenu.vue'
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -163,7 +167,8 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     NewsFacetMenu,
     NewsListItem,
     SearchControlsContentful,
-    SortMenu
+    SortMenu,
+    SubmitNewsSection
   },
 
   async asyncData({ route }) {
