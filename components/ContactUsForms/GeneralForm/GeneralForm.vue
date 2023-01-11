@@ -1,6 +1,6 @@
 <template>
   <el-form
-    ref="contactForm"
+    ref="submitForm"
     label-position="top"
     :model="form"
     :rules="formRules"
@@ -69,6 +69,8 @@
       </el-checkbox>
     </el-form-item>
 
+    <recaptcha class="mb-16"/>
+
     <el-form-item>
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
@@ -83,11 +85,12 @@
 <script>
 import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
+import RecaptchaMixin from '@/mixins/recaptcha/index'
 
 export default {
   name: 'GeneralForm',
 
-  mixins: [NewsletterMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin],
 
   data() {
     return {
@@ -154,32 +157,18 @@ export default {
 
   mounted() {
     // Reset form fields when showing the form
-    this.$refs.contactForm.resetFields()
+    this.$refs.submitForm.resetFields()
     this.hasError = false
   },
 
   methods: {
     /**
-     * Submit the form and validate
-     */
-    onSubmit() {
-      this.hasError = false
-
-      this.$refs.contactForm.validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.sendForm()
-      })
-    },
-
-    /**
      * Send form to endpoint
      */
-    sendForm() {
+    async sendForm() {
       this.isSubmitting = true
 
-      this.$axios
+      await this.$axios
         .post(`${process.env.portal_api}/contact`, {
           name: `${this.form.firstName} ${this.form.lastName}`,
           email: this.form.email,
