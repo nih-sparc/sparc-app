@@ -27,9 +27,14 @@
         <a v-else :href="data.fields.url" target="blank">
           <h2><span v-html="highlightMatches(data.fields.name, $route.query.search)"/><svg-icon name="icon-open" height="30" width="30" /></h2>
         </a>
-        <p v-if="data.fields.developedBySparc" class="resource-category">
-          SPARC
-        </p>
+        <div class="mb-8">
+          <span v-if="data.fields.developedBySparc" class="resource-category">
+            SPARC
+          </span>
+          <span v-if="data.fields.codeathon" class="resource-category">
+            Codeathon
+          </span>
+        </div>
         <template v-if="data.fields.contactEmail">
           <h3 class="metadata-title">
             Support Contact
@@ -154,7 +159,8 @@ export default {
   color: #fff;
   font-size: 0.875rem;
   top: 10px;
-  padding: 0 0.65rem;
+  padding: .2rem 0.6rem;
+  margin-right: .25rem;
   right: 14px;
   width: fit-content;
   margin-bottom: 10px;

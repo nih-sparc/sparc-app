@@ -48,7 +48,7 @@ $tablet-large: 64em;
   display: flex;
   &--image-right {
     .sparc-card__image {
-      @media (min-width: $tablet-small) {
+      @media (min-width: $tablet-large) {
         order: 2;
       }
     }
@@ -57,15 +57,13 @@ $tablet-large: 64em;
     display: flex;
     visibility: visible;
     background-color: white;
-    width: 30%;
-    @media (max-width: $tablet-small) {
+    width: 25%;
+    @media (max-width: $tablet-large) {
       display: none;
     }
   }
   &__image {
     width: 100%;
-    max-height: 17.562rem;
-    margin: auto;
     object-fit: cover;
   }
   &__content-wrap {

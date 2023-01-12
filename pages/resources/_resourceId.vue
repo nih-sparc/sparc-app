@@ -21,6 +21,9 @@
           <span v-if="resource.fields.developedBySparc" class="mb-16 resource-category">
             SPARC
           </span>
+          <span v-if="resource.fields.codeathon" class="mb-16 resource-category">
+            Codeathon
+          </span>
           <div class="label4">
             URL
           </div>
@@ -118,10 +121,10 @@ export default {
   background: $purple;
   border-radius: 15px;
   color: #fff;
-  display: block;
+  margin-right: .25rem;
   font-size: 0.875rem;
   top: 10px;
-  padding: 0 0.65rem;
+  padding: 0.2rem 0.6rem;
   right: 14px;
   width: fit-content;
 }
