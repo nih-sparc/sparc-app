@@ -112,6 +112,9 @@
         </el-col>
       </el-row>
     </div>
+    <div class="pb-16 pt-16 container">
+      <submit-community-section/>
+    </div>
   </div>
 </template>
 
@@ -125,6 +128,7 @@ import CommunitySpotlightFacetMenu from '@/components/FacetMenu/CommunitySpotlig
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import SubmitCommunitySection from '~/components/NewsEventsResourcesPage/SubmitCommunitySection.vue'
 
 import { fetchCommunitySpotlightItems, CommunitySpotlightData, CommunitySpotlightComputed, CommunitySpotlightMethods } from '../model'
 
@@ -182,7 +186,8 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     CommunitySpotlightItem,
     CommunitySpotlightFacetMenu,
     SearchControlsContentful,
-    SortMenu
+    SortMenu,
+    SubmitCommunitySection
   },
 
   // In order to allow for sorting or fireside chats and success stories we needed
