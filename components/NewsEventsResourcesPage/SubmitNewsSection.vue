@@ -31,7 +31,6 @@ export default {
 
   async fetch() {
     const response = await client.getEntry(process.env.ctf_news_and_events_page_id)
-    console.log(response.fields)
     this.searchPaperNEButton = response.fields.searchPaperNeButton
     this.searchPaperText = response.fields.searchPaperText
   }
