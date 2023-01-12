@@ -29,7 +29,8 @@
               :to="{
                 name: 'contact-us',
                 query: {
-                  type: 'bug'
+                  type: 'bug',
+                  source_url: this.$nuxt.$route.fullPath
                 }
               }"
             >

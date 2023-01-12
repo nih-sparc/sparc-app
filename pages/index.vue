@@ -171,9 +171,16 @@ export default {
           content: '@sparc_science'
         },
         {
+          name: 'twitter:title',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:image',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+        },
+        {
           name: 'twitter:description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
         }
       ]
     }
