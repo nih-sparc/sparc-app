@@ -1,6 +1,6 @@
 <template>
   <div class="section-container container py-32">
-    <div class="heading2 mb-32">What can I do with SPARC?</div>
+    <div class="heading2 mb-32">What Can I Do with SPARC?</div>
     <div class="row">
       <div 
         v-for="(item, index) in features"
