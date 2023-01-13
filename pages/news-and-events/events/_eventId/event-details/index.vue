@@ -81,6 +81,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.heroTitle
+    }
+  },
+
   computed: {
     /**
      * Compute HTML Event Details for the page

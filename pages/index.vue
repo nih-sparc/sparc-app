@@ -136,8 +136,6 @@ export default {
 
   head() {
     return {
-      title: 'SPARC Portal',
-      titleTemplate: '%s - SPARC Portal',
       meta: [
         {
           name: 'description',

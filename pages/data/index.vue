@@ -274,6 +274,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1])
+    }
+  },
+
   data: () => {
     return {
       algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC),

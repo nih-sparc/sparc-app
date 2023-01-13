@@ -104,6 +104,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.resource.fields.name
+    }
+  },
+
   computed: {
     /**
      * Compute the URL for the resource's logo

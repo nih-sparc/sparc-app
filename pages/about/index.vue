@@ -131,6 +131,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.pageTitle
+    }
+  },
+
   methods: {
     /**
      * Compute the link to the help article

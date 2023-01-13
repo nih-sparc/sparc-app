@@ -148,6 +148,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.title
+    }
+  },
+
   computed: {
     /**
      * Get image Source

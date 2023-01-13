@@ -1029,7 +1029,7 @@ export default {
     const creators = contributors.concat(org)
 
     return {
-      title: `${this.datasetTitle} - SPARC Portal`,
+      title: this.datasetTitle,
       meta: [
         {
           name: 'DC.type',

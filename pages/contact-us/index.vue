@@ -120,6 +120,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.pageTitle
+    }
+  },
+
   watch: {
     /**
      * Set formType data based on query param

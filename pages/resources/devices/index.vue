@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="Devices" />
+    <breadcrumb :breadcrumb="breadcrumb" :title=title />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -136,6 +136,7 @@ export default {
 
   data() {
     return {
+      title: "Devices",
       searchTypes,
       selectedSortOption: sortOptions[0],
       sortOptions,
@@ -153,6 +154,12 @@ export default {
           }
         }
       ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.title
     }
   },
 

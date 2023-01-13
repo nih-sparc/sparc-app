@@ -83,6 +83,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.title
+    }
+  },
+
   methods: {
     /**
      * Copy file URL to clipboard

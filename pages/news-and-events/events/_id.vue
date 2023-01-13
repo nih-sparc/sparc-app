@@ -106,6 +106,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.page.fields.title
+    }
+  },
+
   computed: {
     /**
      * Get news and event image
