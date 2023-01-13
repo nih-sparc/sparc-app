@@ -40,7 +40,7 @@
               </template>
               <template v-if="awardId">
                 <div class="label4">
-                  NIH AWARD
+                  AWARD
                 </div>
                 <div class="mb-16">
                   <a :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">

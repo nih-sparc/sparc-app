@@ -135,7 +135,8 @@ export default {
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
     SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
-    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY
+    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+    SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false'
   },
 
   serverMiddleware: [
