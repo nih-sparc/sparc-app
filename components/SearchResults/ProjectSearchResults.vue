@@ -31,12 +31,6 @@
             </td>
             <td v-html="highlightMatches(scope.row.fields.projectSection.fields.title, $route.query.search)"/>
           </tr>
-          <tr v-if="scope.row.fields.fundingProgram">
-            <td class="property-name-column">
-              Funding Program
-            </td>
-            <td v-html="highlightMatches(scope.row.fields.fundingProgram, $route.query.search)"/>
-          </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">
               Principle Investigator
@@ -50,6 +44,12 @@
             <td>
               {{ scope.row.fields.institution.fields.name }}
             </td>
+          </tr>
+          <tr v-if="scope.row.fields.fundingProgram">
+            <td class="property-name-column">
+              Funding Program
+            </td>
+            <td v-html="highlightMatches(scope.row.fields.fundingProgram, $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">
