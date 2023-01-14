@@ -47,10 +47,10 @@
           </tr>
           <tr v-if="scope.row.fields.fundingProgram">
             <td class="property-name-column">
-              Funding Program(s)
+              Funding Program
             </td>
             <td 
-              v-html="highlightMatches(getFundingProgramsList(scope.row.fields.fundingProgram), $route.query.search)"
+              v-html="highlightMatches(scope.row.fields.fundingProgram.fields.name, $route.query.search)"
             />
           </tr>
           <tr v-if="scope.row.fields.awardId">
@@ -137,12 +137,6 @@ export default {
         return `${fullName[1]}, ${fullName[0]}`
       }
       return `${fullName[2]}, ${fullName[0]} ${fullName[1]}`
-    },
-
-    getFundingProgramsList(programs) {
-      return programs
-        ? programs.join(', ')
-        : undefined
     },
     isInternalLink,
     highlightMatches

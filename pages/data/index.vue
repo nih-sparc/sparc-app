@@ -589,12 +589,14 @@ export default {
       var anatomicalFocus = undefined
       var funding = undefined
       var linkedEntriesTargetType = undefined
+      var linkedFundingProgramTargetType = undefined
       if (this.$route.query.type === "projects") {
         contentType = 'sparcAward',
         sortOrder = this.selectedProjectsSortOption.sortOrder,
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
+        linkedFundingProgramTargetType = funding ? 'program' : undefined
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false;
@@ -610,7 +612,8 @@ export default {
             include: 2,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
             'fields.projectSection.fields.title[in]' : anatomicalFocus,
-            'fields.fundingProgram[in]' : funding
+            'fields.fundingProgram.sys.contentType.sys.id': linkedFundingProgramTargetType,
+            'fields.fundingProgram.fields.name[in]' : funding
           })
           .then(async response => {
             this.searchData = { ...response }
