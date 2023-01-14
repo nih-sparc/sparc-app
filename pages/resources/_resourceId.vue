@@ -46,6 +46,14 @@
               {{ resource.fields.contactEmail }}
             </div>
           </template>
+          <template v-if="resource.fields.fundingProgram">
+            <div class="label4">
+              Funding Program
+            </div>
+            <div class="truncated">
+              {{ resource.fields.fundingProgram.fields.name }}
+            </div>
+          </template>
           <div class="mt-4 label4">
             Share
           </div>
