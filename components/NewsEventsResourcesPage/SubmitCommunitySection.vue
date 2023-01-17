@@ -32,7 +32,7 @@ export default {
   async fetch() {
     const response = await client.getEntry(process.env.ctf_news_and_events_page_id)
     this.searchPaperCSButton = response.fields.searchPaperCsButton
-    this.searchPaperText = response.fields.searchPaperText
+    this.searchPaperText = response.fields.searchPaperCsText
   }
 }
 </script>
