@@ -39,7 +39,7 @@ import MarkedMixin from '@/mixins/marked'
 
 const client = createClient()
 export default {
-  name: 'SparcMetrics'
+  name: 'SparcMetrics',
 
   components: {
     PageHero,

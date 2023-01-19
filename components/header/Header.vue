@@ -216,6 +216,11 @@ const links = [
     title: 'about',
     displayTitle: 'About',
     href: '/about'
+  },
+  {
+    title: 'metrics',
+    displayTitle: 'SPARC Metrics',
+    href: '/metrics'
   }
 ]
 
@@ -262,6 +267,11 @@ export default {
           value: 'about-about-sparc',
           label: 'About'
         },
+        {
+          key: 'metrics',
+          value: 'metrics',
+          label: 'SPARC Metrics'
+        }
       ]
     }
   },

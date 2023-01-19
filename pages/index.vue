@@ -85,7 +85,7 @@ export default {
         return { contentfulError: true }
       })
   },
-  
+
   watch: {
     cognitoUserToken: function (val) {
       if (val != '') {
@@ -103,9 +103,9 @@ export default {
 
   beforeMount() {
     // When trying to do federated sign in using a middleware (like we do for sign out), Cognito's callback would only
-    // execute client-side (after the middleware had already redirected to the new page) causing it to overwrite the 
-    // previous redirect. This issue was supposed to be addressed by https://github.com/aws-amplify/amplify-js/pull/3588, 
-    // but attempting to handle dynamic routing after amplify federated sign in via a custom state hook as suggested 
+    // execute client-side (after the middleware had already redirected to the new page) causing it to overwrite the
+    // previous redirect. This issue was supposed to be addressed by https://github.com/aws-amplify/amplify-js/pull/3588,
+    // but attempting to handle dynamic routing after amplify federated sign in via a custom state hook as suggested
     // here: https://github.com/aws-amplify/amplify-js/issues/3125#issuecomment-814265328 did not work
     const authRedirectUrl = this.$cookies.get('sign-in-redirect-url')
     if (authRedirectUrl) {
