@@ -26,10 +26,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@0.3.11", "@abi-software/flatmapvuer@^0.3.11":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.3.11.tgz#b1bd36cb212a0fb5453bd0dffeda0f7ee344f0b7"
-  integrity sha512-qmdY6R/wQx7U/splgvuVQ3lJR6XaUmj2nHIqqwLMcwx9dvOkLnmGVv5ye+Nc76U5tmDB7kpDmDFi8G4DSfUo2g==
+"@abi-software/flatmapvuer@0.3.12", "@abi-software/flatmapvuer@^0.3.12":
+  version "0.3.12"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.3.12.tgz#46e7615aad52ac44cecf1a259bc9d4a37c63e70e"
+  integrity sha512-BNVouCZV2+0QgcflWu/0+aXQ9EkSpNMc/9lXgQchUvgxSHLBXWpr062wbhq9ELj2gvGWG4aC6CD+R4RbI2d+dg==
   dependencies:
     "@abi-software/flatmap-viewer" "^2.2.9"
     "@abi-software/svg-sprite" "^0.1.14"
@@ -67,15 +67,15 @@
     vue "^2.6.10"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.10.tgz#ef58d9735a35e2a0734830ae2eaea90966dddf2b"
-  integrity sha512-HpeUiDOp1DsND1wt0/JqTTjE631o2bJ7qRHY30W0pGveUTMUe1K/KcGLMLmDCNuhCHRo1nazf6lE4F6LKz/qww==
+"@abi-software/mapintegratedvuer@0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.11.tgz#b0be61271d4ac737618175539f561a82535a371b"
+  integrity sha512-TWz2cdeYSP/qVILLdxH9YNkDh5DUyzwwgifKHk7AEIwozZJ5BLMHYUkQ9Fh56+aO9XAXzlFdBseDlUhJRG7i1Q==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.3.11"
+    "@abi-software/flatmapvuer" "^0.3.12"
     "@abi-software/map-side-bar" "^1.3.33"
     "@abi-software/plotvuer" "^0.3.9"
-    "@abi-software/scaffoldvuer" "^0.1.56"
+    "@abi-software/scaffoldvuer" "^0.1.57"
     "@abi-software/simulationvuer" "^0.6.5"
     "@abi-software/svg-sprite" "^0.1.15"
     "@soda/get-current-script" "^1.0.2"
@@ -146,10 +146,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@0.1.55":
-  version "0.1.55"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.55.tgz#9799abb2b6640815c709b9322ca9c5d5ebc8e46f"
-  integrity sha512-Dr+LLR5KCM0h9eq0E6dXOoYGfLf4f8pBefpR5MD71VHJdBA6xsXdsh3g8qy71efgAuSehryW9x+shDdriZAlFw==
+"@abi-software/scaffoldvuer@0.1.57", "@abi-software/scaffoldvuer@^0.1.57":
+  version "0.1.57"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.57.tgz#420f11a4796f8e5bb19f28a6e7589e43886b079d"
+  integrity sha512-L/I5rAQsS3mNbd5aSJ1tHlmGs7qG9Ljr3M65HQMBp6H06+n6CgmO6lXRagt2HEmCzh6VyLX1AkH/uSfBreUS5A==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.15"
     axios "^0.21.2"
@@ -163,26 +163,7 @@
     vue-custom-element "^3.3.0"
     vue-drag-resize "^1.3.2"
     vue-router "^3.5.1"
-    zincjs "^1.0.9"
-
-"@abi-software/scaffoldvuer@^0.1.56":
-  version "0.1.56"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.56.tgz#69a34d03e790f7b6e3674623b5a809344f4a3c95"
-  integrity sha512-OGcYJ2mhq/lxy6bKU8JuU58yThSDVwpi2PR34KOBNCc8kTVWOyJ/XsvfKgfpy/1kTMmDF1L80i7SJE3ryEFd9g==
-  dependencies:
-    "@abi-software/svg-sprite" "^0.1.15"
-    axios "^0.21.2"
-    core-js "^3.22.5"
-    current-script-polyfill "^1.0.0"
-    element-ui "^2.13.0"
-    google-spreadsheet "^3.1.15"
-    lodash "^4.17.21"
-    query-string "^6.11.1"
-    vue "^2.6.10"
-    vue-custom-element "^3.3.0"
-    vue-drag-resize "^1.3.2"
-    vue-router "^3.5.1"
-    zincjs "^1.0.9"
+    zincjs "^1.0.11"
 
 "@abi-software/simulationvuer@0.6.5", "@abi-software/simulationvuer@^0.6.5":
   version "0.6.5"
@@ -15884,10 +15865,10 @@ zero-crossings@^1.0.0:
   dependencies:
     cwise-compiler "^1.0.0"
 
-zincjs@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.0.9.tgz#c9affa3f4909e2162ed3bb87472a29648bb58fee"
-  integrity sha512-N8Jexto6vmLVu4X8UX1Xes+BbPOxYmrutI4vNXsKspoGNY2Rq2Ffys5GnVV9ZBYWq/Jfm/cvznPlaBBWk3jXdw==
+zincjs@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.0.11.tgz#b28ef3547acc8794bfe8c73afa10ef6b2b9346ce"
+  integrity sha512-SknkseprKt2kxnsniohhkPQ56WT+9b7Ju1kxynhs83yNE2lcuakphedTRIBHGUUNcRAzw8TCgtfjN52uKFtKzQ==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
