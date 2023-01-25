@@ -9,7 +9,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: 'SPARC Portal' || '',
+    title: 'SPARC Portal',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -135,7 +135,8 @@ export default {
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
     SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
-    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY
+    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+    SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false'
   },
 
   serverMiddleware: [

@@ -16,8 +16,16 @@
       ref="anatomicalFocusCategory"
       collapse-by-default
       :category="anatomicalFocusCategory"
-      :default-checked-ids="defaultCheckedFacetIds"
-      @selection-change="onSelectionChange"
+      :default-checked-ids="defaultCheckedAnatomicalFocusIds"
+      @selection-change="onAnatomicalFacetSelectionChange"
+    />
+    <dropdown-multiselect
+      v-if="showFundingFacet"
+      ref="fundingCategory"
+      collapse-by-default
+      :category="fundingCategory"
+      :default-checked-ids="defaultCheckedFundingIds"
+      @selection-change="onFundingFacetSelectionChange"
     />
   </div>
 </template>
@@ -27,6 +35,7 @@ import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 
 const ANATOMICAL_FOCUS_CATEGORY_ID = 'anatomicalFocus'
+const FUNDING_CATEGORY_ID = 'funding'
 
 export default {
   name: 'ProjectsFacetMenu',
@@ -38,13 +47,19 @@ export default {
       type: Array,
       default: () => []
     },
+    fundingFacets: {
+      type: Array,
+      default: () => []
+    }
   },  
   
   data() {
     return {
+      showFundingFacet: process.env.SHOW_FUNDING_FACET == 'true',
       selectedAnatomicalFocusFacets: [],
-      selectedFacetArray: [],
-      defaultCheckedFacetIds: [],
+      selectedFundingFacets: [],
+      defaultCheckedAnatomicalFocusIds: [],
+      defaultCheckedFundingIds: []
     }
   },
 
@@ -56,11 +71,23 @@ export default {
         data: this.anatomicalFocusFacets
       }
     },
+    fundingCategory: function() {
+      return {
+        label: 'Funding Program',
+        id: FUNDING_CATEGORY_ID,
+        data: this.fundingFacets
+      }
+    },
     visibleCategories: function() {
-      return [ANATOMICAL_FOCUS_CATEGORY_ID]
+      return this.showFundingFacet ? 
+        [ANATOMICAL_FOCUS_CATEGORY_ID, FUNDING_CATEGORY_ID] :
+        [ANATOMICAL_FOCUS_CATEGORY_ID]
     },
     selectedAnatomicalFocusIds: function() {
       return pluck('id', this.selectedAnatomicalFocusFacets).toString()
+    },
+    selectedFundingIds: function() {
+      return pluck('id', this.selectedFundingFacets).toString()
     },
     selectedFacets: function() {
       let facets = []
@@ -73,25 +100,50 @@ export default {
           })
         })
       }
+      if (this.selectedFundingFacets !== []) {
+        this.selectedFundingFacets.forEach(selectedOption => {
+          facets.push({
+            label: `${selectedOption.label}`,
+            id: `${selectedOption.id}`,
+            facetPropPath: this.fundingCategory.id
+          })
+        })
+      }
       return facets
     },
   },
 
   mounted() {
-    if (this.$route.query.selectedProjectsFacetIds) {
-      this.defaultCheckedFacetIds = this.$route.query.selectedProjectsFacetIds.split(",")
+    if (this.$route.query.selectedProjectsAnatomicalFocusIds) {
+      this.defaultCheckedAnatomicalFocusIds = this.$route.query.selectedProjectsAnatomicalFocusIds.split(",")
+    }
+    if (this.$route.query.selectedProjectsFundingIds) {
+      this.defaultCheckedFundingIds = this.$route.query.selectedProjectsFundingIds.split(",")
     }
   },
 
   methods: {
-    onSelectionChange: function(data) {
+    onAnatomicalFacetSelectionChange: function(data) {
       this.selectedAnatomicalFocusFacets = data.checkedNodes
       const selectedFacetIds = this.selectedAnatomicalFocusFacets.length === 0 ? undefined : this.selectedAnatomicalFocusIds
 
       this.$router.replace({
         query: { 
           ...this.$route.query, 
-          selectedProjectsFacetIds: selectedFacetIds
+          selectedProjectsAnatomicalFocusIds: selectedFacetIds
+        }
+      }).then(() => {
+        this.$emit('projects-selections-changed')
+      })
+    },
+    onFundingFacetSelectionChange: function(data) {
+      this.selectedFundingFacets = data.checkedNodes
+      const selectedFacetIds = this.selectedFundingFacets.length === 0 ? undefined : this.selectedFundingIds
+
+      this.$router.replace({
+        query: { 
+          ...this.$route.query, 
+          selectedProjectsFundingIds: selectedFacetIds
         }
       }).then(() => {
         this.$emit('projects-selections-changed')
@@ -100,14 +152,32 @@ export default {
     getSelectedAnatomicalFocusTypes: function() {
       return this.selectedAnatomicalFocusFacets.length > 0 ? this.selectedAnatomicalFocusIds : undefined
     },
+    getSelectedFundingTypes: function() {
+      return this.selectedFundingFacets.length > 0 ? this.selectedFundingIds : undefined
+    },
     deselectAllFacets() {
-      this.$refs.anatomicalFocusCategory.uncheckAll()
+      this.$router.replace(
+        {
+          query: {
+            ...this.$route.query,
+            selectedProjectsAnatomicalFocusIds: undefined,
+            selectedFundingIds: undefined
+          }
+        },
+        () => {
+          this.$emit('projects-selections-changed')
+          this.$refs.anatomicalFocusCategory.uncheckAll()
+          this.$refs.fundingCategory.uncheckAll()
+        }
+      )
     },
     deselectFacet(id) {
       this.$refs.anatomicalFocusCategory.uncheck(id)
+      this.$refs.fundingCategory.uncheck(id)
     },
     expandAllCategories() {
       this.$refs.anatomicalFocusCategory.setCollapsed(false)
+      this.$refs.fundingCategory.setCollapsed(false)
     },
 	}
 }

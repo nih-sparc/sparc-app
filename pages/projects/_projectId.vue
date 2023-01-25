@@ -38,9 +38,17 @@
                   {{ institution }}
                 </div>
               </template>
+              <template v-if="fundingProgram">
+                <div class="label4">
+                  FUNDING PROGRAM
+                </div>
+                <div class="mb-16">
+                  {{ fundingProgram }}
+                </div>
+              </template>
               <template v-if="awardId">
                 <div class="label4">
-                  NIH AWARD
+                  AWARD
                 </div>
                 <div class="mb-16">
                   <a :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">
@@ -148,6 +156,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.title
+    }
+  },
+
   computed: {
     /**
      * Get image Source
@@ -163,6 +177,9 @@ export default {
     },
     description: function() {
       return this.fields.description
+    },
+    fundingProgram: function() {
+      return this.fields.fundingProgram?.fields.name
     },
     awardId: function() {
       return this.fields.awardId

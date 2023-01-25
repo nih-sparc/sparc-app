@@ -83,6 +83,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.title
+    }
+  },
+
   computed: {
     submissionLink() {
       const route = 'resources-submit'

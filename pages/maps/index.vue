@@ -86,6 +86,11 @@ export default {
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
   },
+  head() {
+    return {
+      title: this.title
+    }
+  },
   watch: {
     '$route.query': '$fetch'
   },

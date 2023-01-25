@@ -1,6 +1,6 @@
 <template>
-  <div class="container py-32">
-    <div class="heading2 mb-16 section-title">Stay up to date</div>
+  <div class="container pb-32">
+    <div class="heading2 mb-16 section-title">Stay Up to Date</div>
     <el-row :gutter="32">
       <el-col class="mb-16" :sm="12">
         <div class="heading2 subheading mb-16">Latest News</div>
