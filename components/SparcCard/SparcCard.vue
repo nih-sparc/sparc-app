@@ -90,7 +90,7 @@ $tablet-large: 64em;
       @media (min-width: $tablet-large) {
         font-size: 1.125em;
         line-height: 2rem;
-        padding: 3em;
+        padding: 2rem 2.5rem;
       }
 
       a {
