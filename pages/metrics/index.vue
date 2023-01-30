@@ -83,7 +83,7 @@ export default {
   },
 
   async asyncData({ redirect, env }) {
-    if (!env.SHOW_METRICS) {
+    if (env.SHOW_METRICS == 'false') {
       redirect('/')
     }
   },
