@@ -151,7 +151,6 @@ export default {
       processedQuery.dataset_version,
       error
     )
-
     const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
     var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
     const userToken = app.$cookies.get('user-token')

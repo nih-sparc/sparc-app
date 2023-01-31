@@ -21,6 +21,7 @@
             :options="options"
             :share-link="shareLink"
             @updateShareLinkRequested="updateUUID"
+            @hook:mounted="mapMounted"
           />
         </div>
       </client-only>
@@ -30,7 +31,69 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
+import flatmaps from '@/services/flatmaps'
 import PageHero from '@/components/PageHero/PageHero.vue'
+import scicrunch from '@/services/scicrunch'
+
+import { failMessage } from '@/utils/notification-messages'
+
+const getFlatmapEntry = async ( route ) => {
+  const uberonid = route.query.uberonid
+  let organ_name = undefined
+  try {
+    organ_name = await scicrunch.getOrganFromUberonId(uberonid)
+  } catch (e) {
+    // Error caught return empty data.
+  }
+
+  return {
+      type: "MultiFlatmap",
+      taxo: route.query.taxo,
+      biologicalSex: route.query.biologicalSex,
+      organ: organ_name
+  }
+}
+
+const getScaffoldEntry = async ( error, route, $axios ) => {
+  //Check if file path from scicrunch can be found on the server
+  const filePath = route.query.file_path
+  let path = `${route.query.dataset_id}/${route.query.dataset_version}/${filePath}`
+  const result = await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
+    if (exists && exists !== "false") {
+      return {
+        type: "Scaffold",
+        label: `Dataset ${route.query.dataset_id}`,
+        url: `${process.env.portal_api}/s3-resource/${path}`,
+        viewUrl: route.query.ViewURL
+      } 
+    } else {
+      return undefined
+    }
+  })
+  if (result) return result;
+
+  //Cannot be found using the file path from SciCrunch, use Pennsieve
+  //instead
+  const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+    $axios,
+    filePath,
+    route.query.dataset_id,
+    route.query.dataset_version,
+  )
+  path = `${route.query.dataset_id}/${route.query.dataset_version}/${file.path}`
+  return await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
+    if (exists && exists !== "false") {
+      return {
+        type: "Scaffold",
+        label: `Dataset ${route.query.dataset_id}`,
+        url: `${process.env.portal_api}/s3-resource/${path}`,
+        viewUrl: route.query.ViewURL
+      } 
+    }
+  })
+}
+
 export default {
   name: 'MapsPage',
   components: {
@@ -41,22 +104,52 @@ export default {
       : null
   },
   async fetch() {
-    if (this.uuid != this.$route.query.id) {
-      this.uuid = this.$route.query.id
-      if (this.uuid) {
-        let url = this.options.sparcApi + `map/getstate`
-        await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify({ uuid: this.uuid })
-        })
-          .then(response => response.json())
-          .then(data => {
-            this.state = data.state
+    if (this.$route.query.id) {
+      if (this.uuid != this.$route.query.id) {
+        this.uuid = this.$route.query.id
+        if (this.uuid) {
+          let url = this.options.sparcApi + `map/getstate`
+          await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json'
+            },
+            body: JSON.stringify({ uuid: this.uuid })
           })
+            .then(response => response.json())
+            .then(data => {
+              this.state = data.state
+            })
+        }
       }
+    }
+  },
+  async asyncData({ app, route, error, $axios }) {
+    //Id is processed using the fetch above
+    if (!route.query.id) {
+      //Get the DOI information if available
+      let doi = undefined;
+      if (route.query.dataset_id && route.query.dataset_version) {
+        const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
+        let datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
+        const userToken = app.$cookies.get('user-token')
+        if (userToken) {
+          datasetUrl += `?api_key=${userToken}`
+        }
+        const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
+          console.log(`Could not get the dataset's info: ${error}`)
+        })
+        doi = datasetInfo ? datasetInfo.doi : undefined;
+      }
+      //Get the entry information if we are not opening with the default settings or
+      //resuming from previous saved state
+      let currentEntry = undefined;
+      if (route.query.type === "scaffold") {
+        currentEntry = await getScaffoldEntry(error, route, $axios)
+      } else if (route.query.type === "flatmap") {
+        currentEntry = await getFlatmapEntry( route )
+      }
+      return { currentEntry, doi }
     }
   },
   data() {
@@ -71,6 +164,8 @@ export default {
           label: 'Home'
         }
       ],
+      currentEntry: undefined,
+      doi: undefined,
       uuid: undefined,
       state: undefined,
       options:{
@@ -92,7 +187,7 @@ export default {
     }
   },
   watch: {
-    '$route.query': '$fetch'
+    '$route.query.id': '$fetch'
   },
   fetchOnServer: false,
   created: function() {
@@ -113,18 +208,54 @@ export default {
         },
         body: JSON.stringify({ state: state })
       })
-        .then(response => response.json())
-        .then(data => {
-          this.uuid = data.uuid
-          this.$router.replace(
-            { query: { ...this.$route.query, id: data.uuid } },
-            () => {
-              this.shareLink = `${process.env.ROOT_URL}${this.$route.fullPath}`
-            }
-          )
-        })
+      .then(response => response.json())
+      .then(data => {
+        this.uuid = data.uuid
+        this.$router.replace(
+          { query: { ...this.$route.query, id: data.uuid } },
+          () => {
+            this.shareLink = `${process.env.ROOT_URL}${this.$route.fullPath}`
+          }
+        )
+      })
+    },
+    checkScaffold: function() {
+      if (this.$route.query.type === "scaffold" && !this.currentEntry) {
+        this.$message(failMessage(
+          `Sorry! The specified scaffold cannot be found. Please check later or consider submitting a bug report.`
+        ))
+      }
+    },
+    checkSpecies: function() {
+      //Display error message if species information is missing or cannot be found
+      if (this.currentEntry.type === "MultiFlatmap") {
+        if (this.$route.query.for_species) {
+          if (this.$route.query.forSpecies !== flatmaps.speciesMap[this.currentEntry.taxo]) {
+            this.$message(failMessage(
+              `Sorry! A flatmap for a ${this.forSpecies} does not yet exist. The ${this.organ} of a rat has been shown instead.`
+            ))
+          }
+        } else {
+          this.$message(failMessage(
+            `Sorry! Species information cannot be found. The ${this.organ} of a rat has been shown instead.`
+          ))
+        }
+      }
+    },
+    mapMounted: function() {
+      //Set the starting view using the currentEntry information
+      if (this.currentEntry) {
+        this.$refs.map.setCurrentEntry(this.currentEntry)
+        this.checkSpecies()
+        //Only use the doi information  if there is a set default view
+        if (this.doi)
+          this.$refs.map.openSearch([], this.doi)
+      } else {
+        //No entry but check if it is attempting to display a scaffold
+        this.checkScaffold()
+      }
     }
-  }
+  },
 }
 </script>
 
