@@ -228,8 +228,10 @@ export default {
     },
     checkSpecies: function() {
       //Display error message if species information is missing or cannot be found
+      //Old link may contain the for_species as undefined
       if (this.currentEntry.type === "MultiFlatmap") {
-        if (this.$route.query.for_species) {
+        if (this.$route.query.for_species &&
+        this.$route.query.for_species !== "undefined") {
           if (this.$route.query.forSpecies !== flatmaps.speciesMap[this.currentEntry.taxo]) {
             this.$message(failMessage(
               `Sorry! A flatmap for a ${this.forSpecies} does not yet exist. The ${this.organ} of a rat has been shown instead.`
@@ -237,7 +239,7 @@ export default {
           }
         } else {
           this.$message(failMessage(
-            `Sorry! Species information cannot be found. The ${this.organ} of a rat has been shown instead.`
+            `Sorry! Species information cannot be found. The ${this.currentEntry.organ} of a rat has been shown instead.`
           ))
         }
       }
