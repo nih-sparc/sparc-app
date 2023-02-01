@@ -55,11 +55,19 @@ const getFlatmapEntry = async ( route ) => {
   }
 }
 
-const getScaffoldEntry = async ( error, route, $axios ) => {
+const getScaffoldState = async( uuid, $axios ) => {
+  if (uuid) {
+    let url = `${process.env.portal_api}/scaffold/getstate`
+    return await $axios.post(url, { uuid: uuid })
+      .then(response => response.data)
+  }
+}
+
+const getScaffoldEntry = async ( route, $axios ) => {
   //Check if file path from scicrunch can be found on the server
   const filePath = route.query.file_path
   let path = `${route.query.dataset_id}/${route.query.dataset_version}/${filePath}`
-  const result = await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
+  let result = await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
     if (exists && exists !== "false") {
       return {
         type: "Scaffold",
@@ -71,27 +79,37 @@ const getScaffoldEntry = async ( error, route, $axios ) => {
       return undefined
     }
   })
-  if (result) return result;
 
   //Cannot be found using the file path from SciCrunch, use Pennsieve
   //instead
-  const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
-    $axios,
-    filePath,
-    route.query.dataset_id,
-    route.query.dataset_version,
-  )
-  path = `${route.query.dataset_id}/${route.query.dataset_version}/${file.path}`
-  return await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
-    if (exists && exists !== "false") {
-      return {
-        type: "Scaffold",
-        label: `Dataset ${route.query.dataset_id}`,
-        url: `${process.env.portal_api}/s3-resource/${path}`,
-        viewUrl: route.query.ViewURL
-      } 
+  if (!result) {
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+      $axios,
+      filePath,
+      route.query.dataset_id,
+      route.query.dataset_version,
+    )
+    path = `${route.query.dataset_id}/${route.query.dataset_version}/${file.path}`
+    result = await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
+      if (exists && exists !== "false") {
+        return {
+          type: "Scaffold",
+          label: `Dataset ${route.query.dataset_id}`,
+          url: `${process.env.portal_api}/s3-resource/${path}`,
+          viewUrl: route.query.ViewURL
+        } 
+      }
+    })
+  }
+  //Finally check if an old id was used for storing the viewport.
+  //If so, get it from the server
+  if (result) {
+    if (route.query.scaffoldid) {
+      const state = await getScaffoldState(route.query.scaffoldid, $axios)
+      result.state = state.state
     }
-  })
+    return result
+  }
 }
 
 export default {
@@ -124,7 +142,7 @@ export default {
       }
     }
   },
-  async asyncData({ app, route, error, $axios }) {
+  async asyncData({ app, route, $axios }) {
     //Id is processed using the fetch above
     if (!route.query.id) {
       //Get the DOI information if available
@@ -145,7 +163,7 @@ export default {
       //resuming from previous saved state
       let currentEntry = undefined;
       if (route.query.type === "scaffold") {
-        currentEntry = await getScaffoldEntry(error, route, $axios)
+        currentEntry = await getScaffoldEntry( route, $axios )
       } else if (route.query.type === "flatmap") {
         currentEntry = await getFlatmapEntry( route )
       }
@@ -212,7 +230,7 @@ export default {
       .then(data => {
         this.uuid = data.uuid
         this.$router.replace(
-          { query: { ...this.$route.query, id: data.uuid } },
+          { query: { id: data.uuid } },
           () => {
             this.shareLink = `${process.env.ROOT_URL}${this.$route.fullPath}`
           }
@@ -252,7 +270,7 @@ export default {
         //Only use the doi information  if there is a set default view
         if (this.doi)
           this.$refs.map.openSearch([], this.doi)
-      } else {
+      } else if (!this.$route.query.id) {
         //No entry but check if it is attempting to display a scaffold
         this.checkScaffold()
       }
