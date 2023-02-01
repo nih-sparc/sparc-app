@@ -134,40 +134,35 @@ export default {
             },
             body: JSON.stringify({ uuid: this.uuid })
           })
-            .then(response => response.json())
-            .then(data => {
-              this.state = data.state
-            })
+          .then(response => response.json())
+          .then(data => {
+            this.state = data.state
+          })
         }
       }
-    }
-  },
-  async asyncData({ app, route, $axios }) {
-    //Id is processed using the fetch above
-    if (!route.query.id) {
+    } else {
       //Get the DOI information if available
-      let doi = undefined;
-      if (route.query.dataset_id && route.query.dataset_version) {
-        const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
-        let datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
-        const userToken = app.$cookies.get('user-token')
+      if (this.$route.query.dataset_id && this.$route.query.dataset_version) {
+        const url = `${process.env.discover_api_host}/datasets/${this.$route.query.dataset_id}`
+        let datasetUrl = this.$route.query.dataset_version ? `${url}/versions/${this.$route.query.dataset_version}` : url
+        const userToken = this.$cookies.get('user-token')
         if (userToken) {
           datasetUrl += `?api_key=${userToken}`
         }
-        const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
+        const datasetInfo = await this.$axios.$get(datasetUrl).catch(error => {
           console.log(`Could not get the dataset's info: ${error}`)
         })
-        doi = datasetInfo ? datasetInfo.doi : undefined;
+        this.doi = datasetInfo ? datasetInfo.doi : undefined;
       }
       //Get the entry information if we are not opening with the default settings or
       //resuming from previous saved state
-      let currentEntry = undefined;
-      if (route.query.type === "scaffold") {
-        currentEntry = await getScaffoldEntry( route, $axios )
-      } else if (route.query.type === "flatmap") {
-        currentEntry = await getFlatmapEntry( route )
+      if (this.$route.query.type === "scaffold") {
+        this.currentEntry = await getScaffoldEntry( this.$route, this.$axios )
+        if (!this.currentEntry) this.failedToFetch = true
+      } else if (this.$route.query.type === "flatmap") {
+        this.currentEntry = await getFlatmapEntry( this.$route )
+        if (!this.currentEntry) this.failedToFetch = true
       }
-      return { currentEntry, doi }
     }
   },
   data() {
@@ -186,6 +181,7 @@ export default {
       doi: undefined,
       uuid: undefined,
       state: undefined,
+      failToFetch: false,
       options:{
         sparcApi: process.env.portal_api,
         algoliaIndex: process.env.ALGOLIA_INDEX,
@@ -205,7 +201,8 @@ export default {
     }
   },
   watch: {
-    '$route.query.id': '$fetch'
+    currentEntry: "currentEntryUpdated",
+    DOI: "doiUpdated"
   },
   fetchOnServer: false,
   created: function() {
@@ -238,7 +235,7 @@ export default {
       })
     },
     checkScaffold: function() {
-      if (this.$route.query.type === "scaffold" && !this.currentEntry) {
+      if (this.$route.query.type === "scaffold" && !this.currentEntry && this.failedToFetch) {
         this.$message(failMessage(
           `Sorry! The specified scaffold cannot be found. Please check later or consider submitting a bug report.`
         ))
@@ -262,18 +259,26 @@ export default {
         }
       }
     },
-    mapMounted: function() {
-      //Set the starting view using the currentEntry information
-      if (this.currentEntry) {
-        this.$refs.map.setCurrentEntry(this.currentEntry)
-        this.checkSpecies()
-        //Only use the doi information  if there is a set default view
-        if (this.doi)
-          this.$refs.map.openSearch([], this.doi)
-      } else if (!this.$route.query.id) {
-        //No entry but check if it is attempting to display a scaffold
-        this.checkScaffold()
+    doiUpdated: function() {
+      if (this.doi && this.$refs.map)
+        this.$refs.map.openSearch([], this.doi)
+    },
+    currentEntryUpdated: function() {
+      if (this.$refs.map) {
+        if (this.currentEntry) {
+          this.$refs.map.setCurrentEntry(this.currentEntry)
+          //Check species information
+          this.checkSpecies()
+          //Only use the doi information  if there is a set default view
+        } else if (!this.$route.query.id) {
+          //No entry but check if it is attempting to display a scaffold
+          this.checkScaffold()
+        }
       }
+    },
+    mapMounted: function() {
+      this.currentEntryUpdated()
+      this.doiUpdated()
     }
   },
 }
