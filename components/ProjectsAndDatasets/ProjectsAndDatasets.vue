@@ -21,9 +21,9 @@
         <template v-else>
           <div class="body2 mb-16">Here is a resource you might be interested in:</div>
           <projects-and-datasets-card 
-            :title="projectOrResource.fields.title" 
-            :description="projectOrResource.fields.shortDescription" 
-            :banner="projectOrResource.fields.banner" 
+            :title="projectOrResource.fields.name" 
+            :description="projectOrResource.fields.description" 
+            :banner="projectOrResource.fields.logo.fields.file.url" 
             :link='resourceLink'
             button-text="View Resource"
           />
@@ -38,7 +38,7 @@
           :title="dataset.title" 
           :description="dataset.description" 
           :banner="dataset.banner" 
-          :link="'datasets/' + dataset.id"
+          :link="datasetLink"
           button-text="View Dataset"
         />
         <nuxt-link class="view-all-link body2 mt-16" to="/data?type=dataset">
@@ -76,14 +76,29 @@ export default {
     isProject() {
       return pathOr('', ["sys","contentType","sys","id"], this.projectOrResource) == process.env.ctf_project_id
     },
+    datasetLink() {
+      return {
+        isInternal: true,
+        path: `datasets/${this.dataset.id}`
+      }
+    },
     projectLink() {
-      return "projects/" + pathOr("", ["sys","id"], this.projectOrResource)
+      return {
+        isInternal: true,
+        path: "projects/" + pathOr("", ["sys","id"], this.projectOrResource)
+      }
     },
     resourceLink() {
-      if (this.projectOrResource.requiresDetailsPage) {
-        return "resources/" + pathOr("", ["sys","id"], this.projectOrResource)
+      if (this.projectOrResource.fields.requiresDetailsPage) {
+        return {
+          isInternal: true,
+          path: "resources/" + pathOr("", ["sys","id"], this.projectOrResource)
+        }
       } else {
-        return pathOr("", ["fields","url"], this.projectOrResource)
+        return {
+          isInternal: false,
+          path: pathOr("", ["fields","url"], this.projectOrResource)
+        }
       }
     }
   }
