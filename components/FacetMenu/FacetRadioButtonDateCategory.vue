@@ -68,7 +68,8 @@ export default {
 
   computed: {
     monthNumber: function() {
-      return new Date().getMonth() + 1
+      // This Date format should be supported by all browsers. Used to convert month string to a number
+      return new Date(`2001, ${this.month}, 01`).getMonth() + 1
     }
   },
   watch: {

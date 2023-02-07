@@ -12,7 +12,6 @@ export default (fields = {}) => {
     newsAndEvents: fields.newsAndEvents || [],
     portalFeatures: fields.portalFeatures || [],
     featuredProject: fields.featuredProject || {},
-    featuredDatasetId: fields.featuredDatasetId || '',
     datasetSectionTitle: fields.datasetSectionTitle || 'Here is a dataset you might be interested in: ',
     title: fields.title || ''
   }
