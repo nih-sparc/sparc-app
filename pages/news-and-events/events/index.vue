@@ -144,7 +144,7 @@ const sortOptions = [
   {
     label: 'Upcoming',
     id: 'upcoming',
-    sortOrder: 'fields.upcomingSortOrder'
+    sortOrder: '-fields.upcomingSortOrder'
   },
   {
     label: 'Latest',
