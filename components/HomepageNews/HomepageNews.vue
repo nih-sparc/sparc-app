@@ -192,6 +192,7 @@ export default {
 $tablet-small: 48em;
 $tablet-large: 64em;
 .centered {
+  display: flex;
   margin: auto;
 }
 h2 a:not(:hover) {
