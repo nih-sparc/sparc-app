@@ -279,7 +279,7 @@ export default {
       return path.substring(0, endIndex)
     },
     currentUrl: function() {
-      return this.$nuxt.$route.fullPath;
+      return encodeURIComponent(this.$nuxt.$route.fullPath)
     }
   },
 
