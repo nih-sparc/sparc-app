@@ -25,7 +25,6 @@
     </div>
     <hr />
     <homepage-news :news="newsAndEvents" />
-    <latest-news-and-events />
     <stay-connected />
   </div>
 </template>
@@ -36,7 +35,6 @@ import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
-import LatestNewsAndEvents from '@/components/LatestNewsAndEvents/LatestNewsAndEvents.vue'
 import StayConnected from '@/components/StayConnected/StayConnected.vue'
 
 import createClient from '@/plugins/contentful.js'
@@ -56,7 +54,6 @@ export default {
     HomepageNews,
     PortalFeatures,
     ProjectsAndDatasets,
-    LatestNewsAndEvents,
     StayConnected
   },
 

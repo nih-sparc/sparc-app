@@ -32,7 +32,7 @@ export default {
 
   computed: {
     currentUrl() {
-      return this.$nuxt.$route.fullPath
+      return encodeURIComponent(this.$nuxt.$route.fullPath)
     },
     linkUrl() {
       let url = this.link.fields.longUrl || this.link.fields.url
