@@ -88,8 +88,8 @@ export default {
      * @param {String} markdown
      * @returns {HTML}
      */
-    parseMarkdown: function(markdown = '') {
-      return DOMPurify.sanitize(marked(markdown))
+    parseMarkdown: function(markdown = '', purifyOptions={}) {
+      return DOMPurify.sanitize(marked(markdown), purifyOptions)
     }
   }
 }
