@@ -7,7 +7,7 @@
         </nuxt-link>
         >
       </template>
-      {{ title }}
+      <span v-html="parseMarkdown(title, { ALLOWED_TAGS: ['sup'] })"/>
     </div>
   </div>
 </template>
@@ -16,9 +16,12 @@
 import Vue from 'vue'
 
 import { Methods, Props } from './model'
+import marked from '@/mixins/marked/index'
 
 export default Vue.extend<never, Methods, never, Props>({
   name: 'Breadcrumb',
+
+  mixins: [marked],
 
   props: {
     breadcrumb: {
@@ -29,7 +32,7 @@ export default Vue.extend<never, Methods, never, Props>({
       type: String,
       default: ''
     }
-  },
+  }
 })
 </script>
 
@@ -42,6 +45,11 @@ export default Vue.extend<never, Methods, never, Props>({
   a {
     text-decoration: none;
     color: $darkBlue;
+  }
+  & sup {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
   }
 }
 </style>

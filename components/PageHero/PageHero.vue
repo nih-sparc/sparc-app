@@ -1,19 +1,19 @@
 <template>
-<div class="page-hero">
-  <div class="bx--grid">
-    <div class="container">
-      <div class="bx--row">
-        <div class="bx--col-sm-4 bx--col-md-8 bx--col-lg-11 bx--col-xlg-11 py-16 text-container">
-          <slot />
-        </div>
-        <div class="bx--col-sm-0 bx--col-md-0 bx--col-lg-5 bx--col-xlg-5">
-          <div v-if="$slots['image']" class="graphic-container">
-            <slot name="image" />
+  <div class="page-hero">
+    <div class="bx--grid">
+      <div class="container">
+        <div class="bx--row">
+          <div class="bx--col-sm-4 bx--col-md-8 bx--col-lg-11 bx--col-xlg-11 py-16 text-container">
+            <slot />
+          </div>
+          <div class="bx--col-sm-0 bx--col-md-0 bx--col-lg-5 bx--col-xlg-5">
+            <div v-if="$slots['image']" class="graphic-container">
+              <slot name="image" />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 

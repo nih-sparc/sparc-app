@@ -1,9 +1,9 @@
 <template>
   <div class="page">
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
-    <page-hero>
-      <h1 v-html="parseMarkdown(heroTitle)"/>
-      <div class="body2" v-html="parseMarkdown(heroSummary)"/>
+    <page-hero class="news-header">
+      <h1 v-html="parseMarkdown(heroTitle, { ALLOWED_TAGS: ['sup'] })"/>
+      <div class="body2" v-html="parseMarkdown(heroSummary, { ALLOWED_TAGS: ['sup'] })"/>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
@@ -183,5 +183,15 @@ export default {
 .page {
   background-color: $background;
   padding-bottom: 2rem;
+}
+</style>
+
+<style lang="scss">
+.news-header {
+  & sup {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+  }
 }
 </style>
