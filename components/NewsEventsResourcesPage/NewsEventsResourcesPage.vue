@@ -2,10 +2,8 @@
   <div class="page">
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero>
-      <h1>{{ heroTitle }}</h1>
-      <div class="body2">
-        {{ heroSummary }}
-      </div>
+      <h1 v-html="parseMarkdown(heroTitle)"/>
+      <div class="body2" v-html="parseMarkdown(heroSummary)"/>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
