@@ -78,10 +78,12 @@ export default {
   methods: {
     openFile() {
       const fileSize = this.selectedFile.size
+      let uri = `${pathOr('', ['uri'], this.selectedFile).replace("s3://", "")}`
+      let s3BucketName = uri.substring(0, uri.indexOf("/"))
       const filePath = compose(
         last,
         defaultTo([]),
-        split('s3://pennsieve-prod-discover-publish-use1/'),
+        split(`s3://${s3BucketName}/`),
         pathOr('', ['uri'])
       )(this.selectedFile)
 
@@ -89,6 +91,7 @@ export default {
 
       const requestUrl = new URL(process.env.portal_api + '/download')
       requestUrl.searchParams.append('key', filePath)
+      requestUrl.searchParams.append('s3BucketName', s3BucketName)
       const fileType = this.selectedFile.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
       if (contentType) {
