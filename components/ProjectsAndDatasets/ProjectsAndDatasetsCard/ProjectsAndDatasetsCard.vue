@@ -17,14 +17,14 @@
           <div class="dataset-description body1 mt-8">
             {{ description }}
           </div>
-          <el-button class="secondary mt-16">
-            <nuxt-link
-              class="button-link"
-              :to="link.path"
-            >
+          <nuxt-link
+            class="button-link"
+            :to="link.path"
+          >
+            <el-button class="secondary mt-16">
               {{ buttonText }}
-            </nuxt-link>
-          </el-button>
+            </el-button>
+          </nuxt-link>
         </template>
         <template v-else>
           <a
@@ -36,15 +36,15 @@
           <div class="dataset-description body1 mt-8">
             {{ description }}
           </div>
-          <el-button class="secondary mt-16">
-            <a
-              class="button-link"
-              :href="link.path"
-            >
+          <a
+            class="button-link"
+            :href="link.path"
+          >
+            <el-button class="secondary mt-16">
               {{ buttonText }}
               <svg-icon name="icon-open" height="20" width="20" />
-            </a>
-          </el-button>
+            </el-button>
+          </a>
         </template>
       </el-col>
     </el-row>
