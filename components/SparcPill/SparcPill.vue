@@ -18,8 +18,8 @@ export default {
   color: #fff;
   font-size: 0.875rem;
   max-width: 100%;
-  overflow: hidden;
   padding: 0 0.65rem;
   text-overflow: ellipsis;
+  cursor: default;
 }
 </style>

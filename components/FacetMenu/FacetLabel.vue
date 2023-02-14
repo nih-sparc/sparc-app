@@ -1,13 +1,12 @@
 <template>
-  <div :class="{ disabled: disabled }">
-    <hr />
-    <h2 class="title">
+  <div :class="['facet-label', { disabled: disabled }]">
+    <div @click.stop="onArrowClicked" class="body1 title">
       <span>
         {{ label }}
-        <el-tooltip placement="top-start" transition="none">
-          <div slot="content" v-html="tooltip">{{tooltip}}</div>
-          <svg-icon v-show="showHelpIcon" class="purple-fill" icon="icon-help" width="26" height="26" />
-        </el-tooltip>
+        <sparc-tooltip placement="left-center">
+          <div slot="data" v-html="tooltip"/>
+          <svg-icon slot="item" v-show="showHelpIcon" class="purple-fill" icon="icon-help" width="26" height="26" />
+        </sparc-tooltip>
       </span>
       <svg-icon
         v-show="showCollapsibleArrow"
@@ -16,9 +15,8 @@
         :dir="collapsibleArrowDir"
         height="15"
         width="15"
-        @click="onArrowClicked"
       />
-    </h2>
+    </div>
     <div v-show="showContent" class="light-gray-background">
       <slot />
     </div>
@@ -38,7 +36,7 @@ export default {
     },
     collapseByDefault: {
       type: Boolean,
-      default: false
+      default: true
     },
     showCollapsibleArrow: {
       type: Boolean,
@@ -73,7 +71,7 @@ export default {
   },
   methods: {
     onArrowClicked() {
-      if (!this.disabled) {
+      if (this.showCollapsibleArrow && !this.disabled) {
         this.collapsed = !this.collapsed
       }
       return this.collapsed
@@ -83,16 +81,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
-
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .light-gray-background {
-  background-color: rgb(250, 251, 252);
+  background-color: #FAFBFC
 }
 
-h2 {
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
+.facet-label {
+  border-top: 1px solid $lineColor2;
 }
 
 .title {
@@ -103,24 +98,18 @@ h2 {
   font-weight: 500;
   align-items: center;
   text-transform: uppercase;
-  cursor: default;
+  cursor: pointer;
   svg {
     cursor: pointer
   }
 }
 
 .purple-fill {
-  fill: $median;
-}
-
-hr {
-  border: none;
-  border-bottom: 1px solid #dbdfe6;
-  margin: 0;
+  fill: $purple;
 }
 
 .disabled {
   opacity: 0.5;
-  background-color: #fafbfc;
+  background-color: $background;
 }
 </style>

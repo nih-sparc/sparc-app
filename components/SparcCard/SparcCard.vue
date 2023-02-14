@@ -45,23 +45,25 @@ export default {
 $tablet-small: 48em;
 $tablet-large: 64em;
 .sparc-card {
-  @media (min-width: $tablet-small) {
-    display: flex;
-  }
+  display: flex;
   &--image-right {
-    .sparc-card__image {
-      @media (min-width: $tablet-small) {
-        order: 2;
-      }
+    .sparc-card__image-container {
+      order: 2;
+    }
+  }
+  &__image-container {
+    display: flex;
+    visibility: visible;
+    background-color: white;
+    width: 25%;
+    @media (max-width: $tablet-large) {
+      display: none;
     }
   }
   &__image {
-    background-size: cover;
-    background-position: center;
-    height: 300px;
-    @media (min-width: $tablet-small) {
-      height: auto;
-    }
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   &__content-wrap {
     flex: 1;
@@ -80,15 +82,15 @@ $tablet-large: 64em;
       flex-direction: column;
       justify-content: space-between;
 
-      @media (min-width: $tablet-small + 1) and (max-width: $tablet-large) {
+      @media (min-width: $tablet-small) and (max-width: $tablet-large) {
         font-size: 1em;
         line-height: 2rem;
         padding: 2em;
       }
-      @media (min-width: $tablet-large + 1) {
+      @media (min-width: $tablet-large) {
         font-size: 1.125em;
         line-height: 2rem;
-        padding: 3em;
+        padding: 2rem 2.5rem;
       }
 
       a {

@@ -7,13 +7,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 @import "~element-ui/packages/theme-chalk/src/index";
 
 @import './components/_el-dialog';
-@import './components/_el-message';
-@import './components/_el-button';
 @import './components/_el-tag';
 @import './components/_el-table';
-@import './components/el-tooltip';
-@import './components/_pagination';
-// @import './_transitions';
+@import './components/_el-menu-popper';
 @import './base';
 @import './spacing';
 @import './layout';

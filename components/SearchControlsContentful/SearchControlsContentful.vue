@@ -1,26 +1,29 @@
 <template>
   <div class="search-form" @keyup.enter="submit">
     <div class="input-wrap">
-      <input
+      <el-input
         v-model="terms"
         :placeholder="placeholder"
-        suffix-icon="el-icon-search"
         @keyup.enter="submit"
       />
       <button v-if="terms" class="btn-clear-search" @click="clear">
         <svg-icon
-          name="icon-clear"
-          stroke="red"
-          color="#909399 #fff"
+          icon="icon-clear"
+          color="#909399"
           height="22"
           width="22"
         />
       </button>
     </div>
-    <button title="Search" @click="submit">
-      <span class="visuallyhidden">Search</span>
-      <svg-icon name="icon-magnifying-glass" height="20" width="20" />
-    </button>
+    <el-button :class="['px-8', 'py-0', searchButtonClass]" title="Search" @click="submit">
+      <svg-icon
+        icon="icon-magnifying-glass"
+        height="25"
+        width="25"
+        dir="left"
+      />
+      <span class="search-text pr-2" v-if="showSearchText">Search</span>
+    </el-button>
   </div>
 </template>
 
@@ -32,6 +35,14 @@ export default {
       default: ''
     },
     path: {
+      type: String,
+      default: ''
+    },
+    showSearchText: {
+      type: Boolean,
+      default: false
+    },
+    searchButtonClass: {
       type: String,
       default: ''
     }
@@ -55,7 +66,8 @@ export default {
       this.$router.push({ path: this.path, query: { ...this.$route.query, search: this.terms } })
     },
     clear() {
-      this.$router.push({ path: this.path, query: { ...this.$route.query, search: '' } })
+      this.$router.push({ path: this.path, query: { ...this.$route.query, search: undefined } })
+      this.terms = ''
     }
   }
 }
@@ -66,15 +78,13 @@ export default {
 .search-form {
   display: flex;
   min-width: 275px;
-  margin: 0 0 1rem;
+  margin: 0;
 }
 .input-wrap {
   display: flex;
   margin-right: 0.5rem;
   position: relative;
-  @media (min-width: 768px) {
-    width: 28.0625rem;
-  }
+  width: 100%;
 }
 input {
   background: #fff;
@@ -109,12 +119,7 @@ input {
     opacity: 0.75;
   }
 }
-button {
-  background: #f9f2fc;
-  border: 1px solid $median;
-  border-radius: 4px;
-  cursor: pointer;
-  height: 2.5rem;
-  width: 2.5rem;
+.search-text {
+  vertical-align: middle !important;
 }
 </style>

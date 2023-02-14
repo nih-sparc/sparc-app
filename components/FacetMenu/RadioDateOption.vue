@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-radio class="margin-bottom" :label="label" />
-    <div class="flex margin-y">
+    <el-radio class="mb-4" :label="label" />
+    <div class="flex ml-0 mr-24">
       <el-select
         v-model="month"
-        class="margin-right"
+        class="mr-8 month"
         placeholder="Month"
         :disabled="!enabled"
         @change="monthChanged"
@@ -18,7 +18,7 @@
       </el-select>
       <el-input-number
         v-model="year"
-        class="remove-number-arrows"
+        controls-position="right"
         placeholder="Year"
         :precision="0"
         :min="2000"
@@ -115,32 +115,23 @@ export default {
   border-color: #8300bf;
   background: #8300bf;
 }
-.remove-number-arrows > .el-input-number__increase,
-.remove-number-arrows > .el-input-number__decrease {
-  display: none;
-}
-.remove-number-arrows > .el-input > .el-input__inner {
-  padding: 0;
-}
 </style>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .flex {
   display: flex;
   justify-content: space-around;
+  max-width: fit-content;
 }
 
 .margin-y {
   margin: 0 1.5rem;
 }
 
-.margin-right {
-  margin-right: 0.5rem;
-}
-
-.margin-bottom {
-  margin-bottom: 0.25rem;
+.month {
+  max-width: 5rem;
+  min-width: 4.75rem;
 }
 </style>

@@ -9,7 +9,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: 'SPARC Portal' || '',
+    title: 'SPARC Portal',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -17,7 +17,28 @@ export default {
         hid: 'description',
         name: 'description',
         content: process.env.npm_package_description || ''
-      }
+      },
+      {
+        hid: 'keywords', 
+        name: 'keywords', 
+        content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
+      },
+      // default social cards information for site sharing url's
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      { hid: 'og:title', property: 'og:title', content: 'SPARC Portal' },
+      { hid: 'og:desc', property: 'og:description', content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)' },
+      { hid: 'og:image', property: 'og:image',
+        content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+      },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url',
+        content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+      },
+      { hid: 'og:url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
+      { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:site', content: '@sparc_science' },
+      { name: 'twitter:title', content: 'SPARC Portal' },
+      { name: 'twitter:image', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
+      { name: 'twitter:description', content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)' }
     ],
     link: [
       {
@@ -33,20 +54,19 @@ export default {
     ]
   },
   env: {
-    portal_api: process.env.PORTAL_API_HOST || 'http://localhost:8000',
+    portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
     flatmap_api:
-      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v2/',
+      process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
     crosscite_api_host:
       process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     discover_api_host:
-      process.env.PENNSIEVE_DISCOVER_API_HOST ||
-      'https://api.pennsieve.io/discover',
-    bf_api_host: process.env.BF_API_HOST || 'https://api.pennsieve.io',
+      process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
     zipit_api_host:
       process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
     osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
+    ctf_community_spotlight_item_id: 'communitySpotlight',
     ctf_news_and_events_id: 'newsAndEvents',
     ctf_resource_id: 'sparcPartners',
     ctf_resource_hero_id: '3ImGx7UyDXPwM3oTag06nt',
@@ -80,18 +100,43 @@ export default {
     ctf_terms_id: '6XCER8v1TVVCoZdaBWg66t',
     ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
     ctf_success_story_id: 'successStory',
+    ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
+    ctf_sparc_login_modal_id: '4FSEoB6SW8xrEAsh4t0vGt',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST,
+    DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',
     ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
-    ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev_published_time_desc',
-    BL_SERVER_URL: 'https://sparc.biolucida.net/api/v1/',
+    ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev',
+    ALGOLIA_INDEX_PUBLISHED_TIME_DESC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC || 'k-core_dev_published_time_desc',
+    ALGOLIA_INDEX_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC || 'k-core_dev_published_time_asc',
+    ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
+    ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
+    BL_API_URL: 'https://sparc.biolucida.net/api/v1/',
+    BL_SERVER_URL: 'https://sparc.biolucida.net',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
-    show_facet_menu: process.env.SHOW_FACET_MENU || 'false'
+    AWS_REGION: process.env.AWS_REGION || 'us-east-1',
+    AWS_USER_POOL_ID: process.env.AWS_USER_POOL_ID || 'us-east-1_FVLhJ7CQA',
+    AWS_USER_POOL_WEB_CLIENT_ID: process.env.AWS_USER_POOL_WEB_CLIENT_ID || '',
+    AWS_USER_AUTHENTICATION_FLOW_TYPE: process.env.AWS_USER_AUTHENTICATION_FLOW_TYPE || 'USER_PASSWORD_AUTH',
+    AWS_OAUTH_DOMAIN: process.env.AWS_OAUTH_DOMAIN || 'pennsieve-dev-users2.auth.us-east-1.amazoncognito.com',
+    AWS_OAUTH_SCOPE: process.env.AWS_OAUTH_SCOPE || ["openid"],
+    AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
+    AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
+    AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
+    SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || 'false',
+    LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
+    ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
+    GOOGLE_ANALYTICS_GA4: process.env.GOOGLE_ANALYTICS_GA4,
+    GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
+    SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
+    RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
+    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+    SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false'
   },
 
   serverMiddleware: [
@@ -120,7 +165,8 @@ export default {
         path: '/datasets/:datasetId/version/:version',
         component: '@/pages/datasets/_datasetId.vue'
       })
-    }
+    },
+    middleware: ['verifyUserProfileComplete', 'documentationHubRedirects', 'signOutRedirect']
   },
   /*
    ** Global CSS
@@ -129,9 +175,16 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/bootstrap', '@/plugins/contentful', {
-    src: '@/plugins/system-design-components', mode: 'client'
-  }],
+  plugins: [
+    '@/plugins/bootstrap',
+    '@/plugins/contentful',
+    '@/plugins/amplify',
+    '@/plugins/documentation-hub-redirects',
+    "@/plugins/vue-gtag.client.js",
+    { src: '@/plugins/postscribe', mode: 'client' },
+    { src: '@/plugins/system-design-components', mode: 'client' },
+    { src: '@/plugins/tsviewer', mode: 'client' }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -140,7 +193,7 @@ export default {
     [
       '@nuxtjs/google-analytics',
       {
-        id: 'UA-143804703-1'
+        id: process.env.GOOGLE_ANALYTICS_UA
       }
     ]
   ],
@@ -152,8 +205,24 @@ export default {
     '@nuxtjs/robots',
     'cookie-universal-nuxt',
     '@miyaoka/nuxt-twitter-widgets-module',
-    'vue-social-sharing/nuxt'
+    'vue-social-sharing/nuxt',
+    '@nuxtjs/proxy',
+    ['@nuxtjs/recaptcha', {
+      siteKey: process.env.RECAPTCHA_SITE_KEY,
+      version: "2"
+    }]
   ],
+  axios: {
+    proxy: true
+  },
+  proxy: {
+    "/captcha-api/": {
+      target: "https://www.google.com/recaptcha/api",
+      pathRewrite: {
+        "^/captcha-api": ""
+      }
+    }
+  },
   /*
    ** robots.txt
    */
@@ -171,7 +240,6 @@ export default {
    */
   build: {
     transpile: [/^element-ui/, 'system-design-components'],
-
     /*
      ** You can extend webpack config here
      */

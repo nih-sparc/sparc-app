@@ -43,7 +43,7 @@ const fetchEmbeddedThumbnail = async (id, version, path) => {
 const getSegmentationInfo = async (id, version, path) => {
   const config = {
     params: {
-      dataset_path: `${id}/${version}/files/${path}`
+      dataset_path: `${id}/${version}/${path}`
     }
   }
   return apiClient.get('/segmentation_info', config)

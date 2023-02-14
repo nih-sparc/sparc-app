@@ -1,6 +1,6 @@
 <template>
   <div class="story-result">
-    <div class="banner">
+    <div>
       <div class="banner-wrapper">
         <client-only
           v-if="story.fields.youtubeUrl"
@@ -33,29 +33,46 @@
       </div>
     </div>
     <div class="story-text">
-      <div class="story-title">
-        {{ story.fields.storyTitle }}
+      <div class="link1 mb-8">
+        <nuxt-link
+          v-if="story.fields.storyRoute"
+          :to="{
+            name: 'news-and-events-community-spotlight-success-stories-id',
+            params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
+          }"
+          v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"
+        />
+        <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl" target="_blank">
+          <span v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"/><svg-icon name="icon-open" height="30" width="30" />
+        </a>
       </div>
-      <br />
-      <div class="story-description">
+      <div class="body1">
         {{ story.fields.summary }}
       </div>
-      <br />
-      <nuxt-link
-        :to="{
-          name: 'news-and-events-community-spotlight-success-stories-id',
-          params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
-        }"
-      >
-        <el-button size="small" class="secondary-button">
-          Learn More
-        </el-button>
-      </nuxt-link>
+      <table v-if="story.spotlightType" class="property-table mt-8">
+        <tr>
+          <td class="property-name-column">
+            Spotlight Type
+          </td>
+          <td>
+            {{ story.spotlightType }}
+          </td>
+        </tr>
+        <tr>
+          <td class="property-name-column">
+            Anatomical Structure(s)
+          </td>
+          <td>
+            {{ anatomicalStructureText }}
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
 <script>
 import youtubeEmbeddedSource from '@/mixins/youtube-embedded-src'
+import { highlightMatches } from '../../pages/data/utils'
 
 export default {
   name: 'CommunitySpotlightItem',
@@ -63,27 +80,29 @@ export default {
     story: {
       type: Object,
       default: () => {}
-    }
+    },
   },
   computed: {
     embeddedVideoSrc: function() {
       return youtubeEmbeddedSource(this.story.fields.youtubeUrl)
+    },
+    anatomicalStructureText: function() {
+      return this.story.anatomicalStructures ? this.story.anatomicalStructures.join(', ') : 'n/a'
     }
+  },
+  methods: {
+    highlightMatches
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
 
 .banner-wrapper {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 */
   height: 0;
-  min-width: 25.68rem;
-  @media (max-width: 30em) {
-    min-width: 14rem !important;
-  }
+  width: 12rem;
 }
 
 .banner-wrapper .banner-asset {
@@ -91,20 +110,14 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-}
-
-.banner {
-  flex: 1;
-  @media (min-width: 48rem) {
-    margin-right: 2rem;
-  }
+  height: auto;
 }
 
 .story-result {
   display: flex;
   flex-wrap: wrap;
-  min-height: 238px;
+  gap: 2rem;
+  min-height: 10.875rem;
   width: 100%;
 }
 
@@ -116,32 +129,26 @@ export default {
   }
 }
 
-.story-title {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 32px;
+.el-table {
+  width: 100%;
 }
-
-.story-description {
-  color: rgb(36, 36, 91);
-  font-family: Asap;
-  font-size: 18px;
-  font-weight: normal;
-  line-height: 24px;
-}
-
-.secondary-button {
-  background: #f9f2fc;
-  color: rgb(131, 0, 191);
-  font-family: Asap;
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid $median;
-  color: $median;
-  &:hover {
-    color: #1a1489;
+.property-table {
+  td {
+    background-color: transparent !important;
+    padding: 0.25rem 0 0 0;
+    border: none;
+    cursor: default;
   }
+  border: none;
+  padding: 0;
+  padding-bottom: 1rem;
+}
+// The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
+table:not([class^='el-table__'])::before {
+  display: none;
+}
+.property-name-column {
+  width: 180px;
+  font-weight: bold;
 }
 </style>

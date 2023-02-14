@@ -1,88 +1,38 @@
 <template>
-  <facet-menu
-    :selected-facets="selectedFacetsArray"
-    :visible-facet-categories="visibleCategories"
-    @deselect-facet="deselectFacet"
-    @deselect-all-facets="deselectAllFacets"
-  >
-    <facet-category
-      ref="typesCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :facet="typesCategory"
-      @selection-change="onTypeChanged"
+  <div>
+    <facet-menu
+      class="hide-bottom-border"
+      :selected-facets="selectedFacets"
+      :visible-facet-categories="visibleCategories"
+      @deselect-facet="deselectFacet"
+      @deselect-all-facets="deselectAllFacets"
     />
-    <facet-category
-      ref="createdBySparcCategory"
-      :default-checked-keys="defaultCheckedKeys"
-      :facet="createdBySparcCategory"
-      :hide-show-all-option="true"
-      :show-collapsible-label-arrow="false"
-      @selection-change="onCreatedBySparcChanged"
+    <dropdown-multiselect
+      :category="typeCategory"
+      :default-checked-ids="selectedTypeIds"
+      @selection-change="onTypesChanged"
+      ref="typeCategory"
     />
-  </facet-menu>
+  </div>
 </template>
 
 <script>
-import { pluck, isEmpty } from 'ramda'
-import FacetCategory from '@/components/FacetMenu/FacetCategory.vue'
 import FacetMenu from './FacetMenu.vue'
+import { pluck } from 'ramda'
 
-const visibleCategories = ['type', 'developedBySparc']
+const visibleCategories = ['type']
 
-const typesCategory = {
+const TYPE_CATEGORY = {
   label: 'Type',
-  key: 'type',
-  children: [
+  id: 'type',
+  data: [
     {
-      label: 'Devices',
-      id: 'Devices',
-      children: [],
-      facetPropPath: 'type',
-      key: 'Devices'
+      label: 'Developed By SPARC',
+      id: 'developedBySparc'
     },
     {
-      label: 'Data and Models',
-      id: 'Databases',
-      children: [],
-      facetPropPath: 'type',
-      key: 'Databases'
-    },
-    {
-      label: 'Information Services',
-      id: 'Information Services',
-      children: [],
-      facetPropPath: 'type',
-      key: 'Information Services'
-    },
-    {
-      label: 'Software',
-      id: 'Software',
-      children: [],
-      facetPropPath: 'type',
-      key: 'Software'
-    },
-    {
-      label: 'Biologicals',
-      id: 'Biologicals',
-      children: [],
-      facetPropPath: 'type',
-      key: 'Biologicals'
-    }
-  ]
-}
-
-const createdBySparcCategory = {
-  label: 'created by sparc',
-  key: 'developedBySparc',
-  id: 'developedBySparc',
-  facetPropPath: 'developedBySparc',
-  children: [
-    {
-      label: 'Show only if "YES"',
-      id: 'developedBySparc',
-      children: [],
-      facetPropPath: 'developedBySparc',
-      key: 'developedBySparc'
+      label: 'Codeathon',
+      id: 'codeathon'
     }
   ]
 }
@@ -90,29 +40,35 @@ const createdBySparcCategory = {
 export default {
   name: 'ToolsAndResourcesFacetMenu',
 
-  components: { FacetCategory, FacetMenu },
-
-  props: {},
+  components: { FacetMenu },
 
   data() {
     return {
-      selectedFacets: {},
-      selectedFacetsArray: [],
-      typesCategory: typesCategory,
-      createdBySparcCategory: createdBySparcCategory,
-      defaultCheckedKeys: [],
-      visibleCategories: visibleCategories
+      typeCategory: TYPE_CATEGORY,
+      selectedTypeIds: [],
+      visibleCategories: visibleCategories,
+    }
+  },
+
+  computed: {
+    selectedFacets: function() {
+      let facets = []
+      if (this.selectedTypeIds !== []) {
+        this.selectedTypeIds.forEach(selectedOption => {
+          facets.push({
+            label: `${selectedOption.label}`,
+            id: `${selectedOption.id}`,
+            facetPropPath: this.typeCategory.id
+          })
+        })
+      }
+      return facets
     }
   },
 
   mounted() {
-    if (this.$route.query.resourceTypes) {
-      this.defaultCheckedKeys = this.$route.query.resourceTypes.split(',')
-    }
-    if (this.$route.query.developedBySparc) {
-      this.defaultCheckedKeys = this.defaultCheckedKeys.concat([
-        this.createdBySparcCategory.children[0].id
-      ])
+    if (this.$route.query.type) {
+      this.selectedTypeIds = this.$route.query.type.split(',')
     }
   },
 
@@ -120,36 +76,11 @@ export default {
     visibleFacetsForCategory: function(key) {
       return this.visibleFacets[key]
     },
-    onTypeChanged: function(data) {
-      this.setSelectedFacetsArray(data)
-
-      var selectedResourceTypes = pluck('id', data.facets).toString()
-      selectedResourceTypes =
-        selectedResourceTypes === '' ? undefined : selectedResourceTypes
-
+    onTypesChanged: function(newValue) {
+      this.selectedTypeIds = newValue.checkedNodes
       this.$router.replace(
         {
-          query: { ...this.$route.query, resourceTypes: selectedResourceTypes }
-        },
-        () => {
-          this.$emit('tool-and-resources-selections-changed')
-        }
-      )
-    },
-    onCreatedBySparcChanged: function(data) {
-      if (!isEmpty(data.facets)) {
-        this.setSelectedFacetsArray({
-          facets: [createdBySparcCategory],
-          key: 'developedBySparc'
-        })
-      } else {
-        this.setSelectedFacetsArray(data)
-      }
-
-      const developedBySparc = data.facets.length > 0 ? true : undefined
-      this.$router.replace(
-        {
-          query: { ...this.$route.query, developedBySparc: developedBySparc }
+          query: { ...this.$route.query, type: this.selectedTypeIds.length === 0 ? undefined : pluck('id', this.selectedTypeIds).toString() }
         },
         () => {
           this.$emit('tool-and-resources-selections-changed')
@@ -162,30 +93,24 @@ export default {
           query: {
             ...this.$route.query,
             developedBySparc: undefined,
-            resourceTypes: undefined
+            codeathon: undefined
           }
         },
         () => {
           this.$emit('tool-and-resources-selections-changed')
-          this.$refs.typesCategory.uncheckAll()
-          this.$refs.createdBySparcCategory.uncheckAll()
+          this.$refs.typeCategory.uncheckAll()
         }
       )
     },
     deselectFacet(id) {
-      this.$refs.typesCategory.uncheck(id)
-      this.$refs.createdBySparcCategory.uncheck(id)
+      this.$refs.typeCategory.uncheck(id)
     },
-    setSelectedFacetsArray(data) {
-      this.selectedFacets[data.key] = data.facets
-      this.selectedFacetsArray = []
-      for (const [key, value] of Object.entries(this.selectedFacets)) {
-        this.selectedFacetsArray = this.selectedFacetsArray.concat(value)
-      }
-    }
   }
 }
 </script>
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+.hide-bottom-border {
+  // hacky fix to address placing the design system drop down for the category outside the facet menu since it handles its own borders
+  border-bottom: none;
+}
 </style>

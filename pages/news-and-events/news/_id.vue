@@ -15,10 +15,10 @@
     <h3>Published Date</h3>
     <p>{{ publishedDate }}</p>
 
-    <h3>External Link</h3>
-    <p>
+    <h3 v-if="page.fields.url">External Link</h3>
+    <p v-if="page.fields.url">
       <a :href="page.fields.url" target="_blank">
-        {{ page.fields.title }}
+        {{ page.fields.url }}
       </a>
     </p>
   </news-events-resources-page>
@@ -73,6 +73,12 @@ export default {
           }
         }
       ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.page.fields.title
     }
   },
 

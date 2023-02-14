@@ -18,8 +18,7 @@
           <MapContent
             ref="map"
             :state="state"
-            :api="api"
-            :flatmap-a-p-i="flatmapAPI"
+            :options="options"
             :share-link="shareLink"
             @updateShareLinkRequested="updateUUID"
           />
@@ -45,7 +44,7 @@ export default {
     if (this.uuid != this.$route.query.id) {
       this.uuid = this.$route.query.id
       if (this.uuid) {
-        let url = this.api + `map/getstate`
+        let url = this.options.sparcApi + `map/getstate`
         await fetch(url, {
           method: 'POST',
           headers: {
@@ -74,9 +73,22 @@ export default {
       ],
       uuid: undefined,
       state: undefined,
-      api: process.env.portal_api,
-      flatmapAPI: process.env.flatmap_api,
+      options:{
+        sparcApi: process.env.portal_api,
+        algoliaIndex: process.env.ALGOLIA_INDEX,
+        algoliaKey: process.env.ALGOLIA_API_KEY,
+        algoliaId: process.env.ALGOLIA_APP_ID,
+        pennsieveApi: (process.env.discover_api_host).replace('/discover', ''),
+        flatmapAPI: process.env.flatmap_api,
+        nlLinkPrefix: process.env.NL_LINK_PREFIX,
+        rootUrl: process.env.ROOT_URL,
+      },
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
+    }
+  },
+  head() {
+    return {
+      title: this.title
     }
   },
   watch: {
@@ -84,15 +96,15 @@ export default {
   },
   fetchOnServer: false,
   created: function() {
-    this.api = process.env.portal_api
-    let lastChar = this.api.substr(-1)
+    this.options.sparcApi = process.env.portal_api
+    let lastChar = this.options.sparcApi.substr(-1)
     if (lastChar != '/') {
-      this.api = this.api + '/'
+      this.options.sparcApi = this.options.sparcApi + '/'
     }
   },
   methods: {
     updateUUID: function() {
-      let url = this.api + `map/getshareid`
+      let url = this.options.sparcApi + `map/getshareid`
       let state = this.$refs.map.getState()
       fetch(url, {
         method: 'POST',
@@ -119,12 +131,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/_variables.scss';
 .maps {
-  .page-hero__copy p {
-    @media (min-width: 48em) {
-      font-size: 0.9375rem;
-      line-height: 1.5rem;
-    }
-  }
+  background-color: #f5f7fa;
 
   .portalmapcontainer {
     margin-top: 1.5rem;
@@ -162,7 +169,27 @@ export default {
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
   @import '~@abi-software/mapintegratedvuer/dist/mapintegratedvuer';
 }
+
+.gallery-popper {
+  background: #f3ecf6 !important;
+  border: 1px solid #8300bf;
+  border-radius: 4px;
+  color: #303133 !important;
+  font-size: 12px;
+  line-height: 1rem;
+  height: 1rem;
+  padding: 10px;
+  &.el-popper[x-placement^='top'] {
+    .popper__arrow {
+      border-top-color: #8300bf !important;
+    }
+    .popper__arrow:after {
+      border-top-color: #f3ecf6 !important;
+    }
+  }
+}
 </style>
+
 <style
   src="@abi-software/mapintegratedvuer/assets/mapicon-species-style.css"
 ></style>

@@ -127,8 +127,8 @@ export default {
     }
     div {
       position: absolute;
-      right: 14px;
-      top: 10px;
+      right: 4px;
+      top: 4px;
     }
   }
   &__detail {
@@ -151,6 +151,8 @@ export default {
     font-weight: 500;
     margin-bottom: 1rem;
     line-height: 1.375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   a {
     color: $median;

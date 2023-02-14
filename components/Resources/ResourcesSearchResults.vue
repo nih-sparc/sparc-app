@@ -1,6 +1,12 @@
 <template>
   <div class="resources-search-results">
+    <div class="no-results" v-if="tableData.length === 0">
+      <el-table :show-header="false" empty-text="No Results">
+        <el-table-column />
+      </el-table>
+    </div>
     <div
+      v-else
       v-for="data in tableData"
       :key="data.sys.id"
       class="resources-search-results__items"
@@ -16,19 +22,26 @@
             params: { resourceId: data.sys.id }
           }"
         >
-          <h2>{{ data.fields.name }}</h2>
+          <h2 v-html="highlightMatches(data.fields.name, $route.query.search)"/>
         </router-link>
         <a v-else :href="data.fields.url" target="blank">
-          <h2>{{ data.fields.name }}</h2>
+          <h2><span v-html="highlightMatches(data.fields.name, $route.query.search)"/><svg-icon name="icon-open" height="30" width="30" /></h2>
         </a>
-        <p v-if="data.fields.developedBySparc" class="resource-category">
-          SPARC
-        </p>
+        <div class="mb-8">
+          <span v-if="data.fields.developedBySparc" class="resource-category">
+            SPARC
+          </span>
+          <span v-if="data.fields.codeathon" class="resource-category">
+            Codeathon
+          </span>
+        </div>
         <template v-if="data.fields.contactEmail">
           <h3 class="metadata-title">
             Support Contact
           </h3>
           <p>
+            <span v-if="data.fields.owner" v-html="highlightMatches(data.fields.owner, $route.query.search)"/>
+            <span v-if="data.fields.owner && data.fields.contactEmail"> · </span>
             <a
               v-if="data.fields.contactEmail"
               :href="`mailto:${data.fields.contactEmail}`"
@@ -37,10 +50,11 @@
             </a>
           </p>
         </template>
-
-        <p class="resources-search-results__items--content-description">
-          {{ data.fields.description }}
-        </p>
+        <!-- eslint-disable vue/no-v-html -->
+        <p
+          class="resources-search-results__items--content-description"
+          v-html="highlightMatches(parseMarkdown(data.fields.description), $route.query.search)"
+        />
       </div>
     </div>
   </div>
@@ -48,12 +62,14 @@
 
 <script>
 import { pathOr } from 'ramda'
+import marked from '@/mixins/marked/index'
 
 import FormatDate from '@/mixins/format-date'
+import { highlightMatches } from '../../pages/data/utils'
 export default {
   name: 'ResourceSearchResults',
 
-  mixins: [FormatDate],
+  mixins: [FormatDate, marked],
   props: {
     tableData: {
       type: Array,
@@ -68,7 +84,8 @@ export default {
      */
     getBannerImage: function(data) {
       return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], data)
-    }
+    },
+    highlightMatches
   }
 }
 </script>
@@ -99,12 +116,14 @@ export default {
     }
 
     &--image {
+      display: flex;
       margin-right: 1rem;
       @media (min-width: 48em) {
         flex-shrink: 0;
         width: 128px;
       }
       img {
+        margin: auto;
         width: 100%;
         height: auto;
       }
@@ -140,7 +159,8 @@ export default {
   color: #fff;
   font-size: 0.875rem;
   top: 10px;
-  padding: 0 0.65rem;
+  padding: .2rem 0.6rem;
+  margin-right: .25rem;
   right: 14px;
   width: fit-content;
   margin-bottom: 10px;

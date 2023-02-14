@@ -1,7 +1,6 @@
 <template>
   <div id="top" class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="helpItem.fields.title" />
-    <help-hero :title="helpHeroData.title" :summary="helpHeroData.summary" />
     <div class="page-wrap container">
       <div class="subpage">
         <div class="header">
@@ -25,7 +24,6 @@
 import { format, parseISO } from 'date-fns'
 import { pathOr } from 'ramda'
 
-import HelpHero from '@/components/HelpHero/HelpHero'
 import MarkedMixin from '@/mixins/marked'
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb'
 
@@ -53,7 +51,6 @@ export default {
   name: 'EventPage',
 
   components: {
-    HelpHero,
     Breadcrumb
   },
 
@@ -86,12 +83,6 @@ export default {
           },
           label: 'Home'
         },
-        {
-          to: {
-            name: 'help',
-          },
-          label: 'Help'
-        }
       ]
     }
   },

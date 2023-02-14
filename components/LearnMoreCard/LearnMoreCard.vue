@@ -1,18 +1,19 @@
 <template>
   <div class="learn-more-card">
     <h3>
-      <nuxt-link class="about-link" :to="aboutLink">
-        {{ aboutDetailsItem.fields ? aboutDetailsItem.fields.title : '' }}
-      </nuxt-link>
+      <nuxt-link class="about-link" :to="aboutLink"
+        v-html="aboutDetailsItem.fields ? highlightMatches(aboutDetailsItem.fields.title, $route.query.search) : ''"
+      />
     </h3>
     <p
-      v-html="aboutDetailsItem.fields ? aboutDetailsItem.fields.summary : ''"
+      v-html="aboutDetailsItem.fields ? highlightMatches(aboutDetailsItem.fields.summary, $route.query.search) : ''"
     />
   </div>
 </template>
 
 <script>
 import { pathOr } from 'ramda'
+import { highlightMatches } from '../../pages/data/utils'
 
 export default {
   name: 'LearnMoreCard',
@@ -31,6 +32,10 @@ export default {
       type: String,
       default: ''
     }
+  },
+
+  methods: {
+    highlightMatches
   },
 
   computed: {
@@ -67,7 +72,7 @@ export default {
 .learn-more-card {
   h3 {
     font-size: 24px;
-    font-weight: 500;
+    font-weight: 300;
     line-height: 1.2;
     margin-bottom: .5rem;
   }

@@ -18,7 +18,7 @@
         <share-links />
       </div>
       <div v-if="aboutDetailsItem.fields.learnMore" class="subpage">
-        <h1>Learn More</h1>
+        <h1 class="heading1 mb-16">Learn More</h1>
         <learn-more-card
           v-for="(item, index) in aboutDetailsItem.fields.learnMore"
           :key="`${item}-${index}`"
@@ -92,12 +92,18 @@ export default {
           label: 'Home'
         },
         {
-          label: 'About SPARC',
+          label: 'About',
           to: {
             name: 'about'
           }
         }
       ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.aboutDetailsItem.fields.title
     }
   },
 
@@ -127,20 +133,15 @@ export default {
   padding: 1em;
   border: 1px solid #dcdfe6;
   background: white;
-
   @media (min-width: 48em) {
     margin: 2.5em 0;
     padding: 1em 2em;
   }
-
   hr {
     opacity: 0.3;
   }
-
   h1 {
-    font-size: 1.75em;
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
+    font-weight: 300;
   }
 }
 

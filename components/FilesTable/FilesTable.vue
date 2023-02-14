@@ -19,14 +19,6 @@
           </span>
         </div>
       </div>
-
-      <bf-download-file
-        class="mb-8"
-        :selected="selected"
-        :dataset="datasetDetails"
-        :file-path="path"
-        @remove-selection="removeSelection"
-      />
     </div>
 
     <div class="files-table-table">
@@ -43,18 +35,21 @@
         :data="data"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" fixed width="55" />
-        <el-table-column fixed prop="name" label="Name" width="340" sortable>
+        <el-table-column type="selection" fixed width="45" />
+        <el-table-column fixed prop="name" label="Name" min-width="150" sortable :sort-method="(a, b) => sortWithCaseInsensitive(a.name, b.name)">
           <template slot-scope="scope">
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
                 <i class="file-icon el-icon-folder" />
-                <nuxt-link
-                  class="file-name"
-                  :to="{ query: { ...$route.query, path: scope.row.path } }"
-                >
-                  {{ scope.row.name }}
-                </nuxt-link>
+                <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                  <nuxt-link
+                    slot="item"
+                    class="file-name truncated"
+                    :to="{ query: { ...$route.query, path: scope.row.path } }"
+                  >
+                    {{ scope.row.name }}
+                  </nuxt-link>
+                </sparc-tooltip>
               </template>
 
               <template v-else>
@@ -63,37 +58,59 @@
                   class="file-icon el-icon-picture-outline"
                 />
                 <i v-else class="file-icon el-icon-document" />
-                <div v-if="isFileOpenable(scope)">
-                  <a href="#" @click.prevent="openFile(scope)">
-                    {{ scope.row.name }}
-                  </a>
+                <div v-if="isFileOpenable(scope)" class="truncated">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <a href="#" @click.prevent="openFile(scope)">
+                        {{ scope.row.name }}
+                      </a>
+                    </div>
+                  </sparc-tooltip>
                 </div>
-                <div v-else-if="isScaffoldMetaFile(scope)">
-                  <nuxt-link :to="getScaffoldLink(scope)">
-                    {{ scope.row.name }}
-                  </nuxt-link>
+                <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <nuxt-link slot="item" :to="getScaffoldLink(scope)">
+                        {{ scope.row.name }}
+                      </nuxt-link>
+                    </div>
+                  </sparc-tooltip>
                 </div>
-                <div v-else>
-                  <nuxt-link
-                    :to="{
-                      name: 'file-datasetId-datasetVersion',
-                      params: {
-                        datasetId: datasetDetails.id,
-                        datasetVersion: datasetDetails.version
-                      },
-                      query: {
-                        path: scope.row.path
-                      }
-                    }"
-                  >
-                    {{ scope.row.name }}
-                  </nuxt-link>
+                <div v-else-if="isScaffoldViewFile(scope)" class="truncated">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <nuxt-link slot="item" :to="getScaffoldViewLink(scope)">
+                        {{ scope.row.name }}
+                      </nuxt-link>
+                    </div>
+                  </sparc-tooltip>
+                </div>
+                <div v-else class="truncated">
+                  <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
+                    <div slot="item" class="truncated">
+                      <nuxt-link
+                        slot="item"
+                        :to="{
+                          name: 'file-datasetId-datasetVersion',
+                          params: {
+                            datasetId: datasetInfo.id,
+                            datasetVersion: datasetInfo.version
+                          },
+                          query: {
+                            path: s3Path(scope.row.path)
+                          }
+                        }"
+                      >
+                        {{ scope.row.name }}
+                      </nuxt-link>
+                    </div>
+                  </sparc-tooltip>
                 </div>
               </template>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="280">
+        <el-table-column prop="fileType" label="File type" width="280" sortable>
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -109,11 +126,12 @@
           label="Size"
           width="220"
           :formatter="formatStorage"
+          sortable
         />
-        <el-table-column label="Operation" width="200">
+        <el-table-column label="Action" width="200">
           <template slot-scope="scope">
             <template v-if="scope.row.type === 'File'">
-              <div class="circle" @click="executeDownload(scope.row)">
+              <div v-if="!isFileTooLarge(scope.row)" class="circle" @click="executeDownload(scope.row)">
                 <form
                   id="zipForm"
                   ref="zipForm"
@@ -122,96 +140,97 @@
                 >
                   <input v-model="zipData" type="hidden" name="data" />
                 </form>
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Download file"
                 >
-                  <div slot="content">
-                    Download file
-                  </div>
-                  <svg-icon
-                    name="icon-download"
-                    height="1.5rem"
-                    width="1.5rem"
-                  />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div v-else class="circle disabled">
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Files over 5GB in size must be downloaded via AWS"
+                >
+                  <svg-icon slot="item" name="icon-download" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="isFileOpenable(scope)"
                 class="circle"
                 @click="openFile(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="View file in web viewer"
                 >
-                  <div slot="content">
-                    View file in web viewer
-                  </div>
-                  <svg-icon name="icon-open" height="1.5rem" width="1.5rem" />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-open" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="isScaffoldMetaFile(scope)"
                 class="circle"
                 @click="openScaffold(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open as 3d scaffold"
                 >
-                  <div slot="content">
-                    Open as 3d scaffold
-                  </div>
-                  <svg-icon name="icon-view" height="1.5rem" width="1.5rem" />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
+                v-if="isScaffoldViewFile(scope)"
+                class="circle"
+                @click="openScaffoldView(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open as 3d scaffold"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="hasOsparcViewer(scope)"
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
                 >
-                  <div slot="content">
+                  <div slot="data">
                     Open in oSPARC. More info on oSPARC can be found
                     <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
                       <u>here</u>
                     </a>
                   </div>
-                  <svg-icon name="icon-view" height="1.5em" width="1.5em" />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
+                v-if="isTimeseriesFile(scope.row)"
+                class="circle"
+                @click="openTimeseriesView(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open timeseries viewer"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
               <div
                 v-if="isFileOpenable(scope)"
                 class="circle"
                 @click="copyS3Url(scope)"
               >
-                <el-tooltip
-                  enterable
-                  :open-delay="tooltipDelay"
-                  effect="light"
-                  placement="top"
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Copy link"
                 >
-                  <div slot="content">
-                    Copy link
-                  </div>
-                  <svg-icon
-                    name="icon-permalink-nobg"
-                    height="1.5rem"
-                    width="1.5rem"
-                  />
-                </el-tooltip>
+                  <svg-icon slot="item" name="icon-permalink-nobg" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
               </div>
             </template>
             <template v-else>
@@ -227,6 +246,46 @@
         @close="() => setDialogSelectedFile(null)"
       />
     </div>
+    <sparc-tooltip
+      v-if="selected.length == 0"
+      class="tooltip"
+      placement="left-center"
+      content="You must select a file to download"
+    >
+      <bf-download-file
+        slot="item"
+        class="mt-16"
+        disabled
+        :selected="selected"
+        :dataset="datasetInfo"
+        :file-path="path"
+        @remove-selection="removeSelection"
+      />
+    </sparc-tooltip>
+    <sparc-tooltip
+      v-else-if="selectedFilesSizeTooLarge"
+      class="tooltip"
+      placement="left-center"
+      content="Selected file size(s) exceed 5GB"
+    >
+      <bf-download-file
+        slot="item"
+        class="mt-16"
+        disabled
+        :selected="selected"
+        :dataset="datasetInfo"
+        :file-path="path"
+        @remove-selection="removeSelection"
+      />
+    </sparc-tooltip>
+    <bf-download-file
+      v-else
+      class="mt-16"
+      :selected="selected"
+      :dataset="datasetInfo"
+      :file-path="path"
+      @remove-selection="removeSelection"
+    />
   </div>
 </template>
 
@@ -246,11 +305,14 @@ import {
 
 import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
+import { mapGetters, mapState } from 'vuex'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import { extractExtension } from '@/pages/data/utils'
+
+import * as path from 'path'
 
 export const contentTypes = {
   pdf: 'application/pdf',
@@ -273,15 +335,15 @@ export default {
   mixins: [FormatStorage],
 
   props: {
-    datasetDetails: {
+    osparcViewers: {
       type: Object,
       default: function() {
         return {}
       }
     },
-    osparcViewers: {
+    datasetScicrunch: {
       type: Object,
-      default: function() {
+      default: () => {
         return {}
       }
     }
@@ -292,7 +354,6 @@ export default {
       previousPath: '',
       schemaRootPath: 'files',
       data: [],
-      tooltipDelay: 300,
       isLoading: false,
       hasError: false,
       limit: 500,
@@ -303,6 +364,15 @@ export default {
   },
 
   computed: {
+    /**
+     * Get dataset info from the store
+     * @returns {Object}
+     */
+    ...mapState('pages/datasets/datasetId', ['datasetInfo']),
+    ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
     /**
      * Compute the current path for the dataset's files.
      * @returns {String}
@@ -324,9 +394,10 @@ export default {
     getFilesurl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      const url = `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}/files/browse`
-
-      return `${url}?path=${this.path}&limit=${this.limit}`
+      const url = `${process.env.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
+      var filesUrl = `${url}?path=${this.path}&limit=${this.limit}`
+      if (this.userToken) { filesUrl += `&api_key=${this.userToken}`}
+      return filesUrl
     },
 
     /**
@@ -336,7 +407,7 @@ export default {
     getFilesIdUrl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      return `${process.env.bf_api_host}/discover/datasets/${id}/versions/${version}`
+      return `${process.env.discover_api_host}/datasets/${id}/versions/${version}`
     },
 
     /**
@@ -344,7 +415,7 @@ export default {
      * @returns {String}
      */
     datasetVersion: function() {
-      return propOr(1, 'version', this.datasetDetails)
+      return propOr(1, 'version', this.datasetInfo)
     },
     /**
      * Compute URL for zipit service
@@ -352,15 +423,24 @@ export default {
      */
     zipitUrl: function() {
       return process.env.zipit_api_host
+    },
+    selectedFilesSizeTooLarge: function() {
+      let totalSize = 0
+      this.selected.forEach(file => {
+        totalSize += file.size
+      })
+      return totalSize >= process.env.max_download_size
     }
   },
 
   watch: {
-    '$route.query.path': 'pathQueryChanged'
-  },
-
-  created: function() {
-    this.getFiles()
+    '$route.query.path': 'pathQueryChanged',
+    userToken: {
+      handler: function() {
+        this.getFiles()
+      },
+      immediate: true
+    }
   },
 
   methods: {
@@ -381,8 +461,18 @@ export default {
       )
     },
 
+    isFileTooLarge(file) {
+      const fileSize = propOr(0, 'size', file)
+      return fileSize > process.env.max_download_size
+    },
+
     handleSelectionChange(val) {
       this.selected = val
+    },
+
+    isTimeseriesFile(file) {
+      const type = propOr('', 'packageType', file)
+      return type === 'TimeSeries'
     },
 
     /**
@@ -560,12 +650,52 @@ export default {
     getScaffoldLink: function(scope) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      let s3Path = `${id}/${version}/${scope.row.path}`
       return {
         name: 'datasets-scaffoldviewer-id',
         params: {},
-        query: { scaffold: s3Path }
+        query: { dataset_id: id, dataset_version: version, file_path: scope.row.path }
       }
+    },
+
+    /**
+     * Create nuxt-link object for opening a scaffold.
+     * @param {Object} scope
+     */
+    getScaffoldViewLink: function(scope) {
+      const id = pathOr('', ['params', 'datasetId'], this.$route)
+      const version = this.datasetVersion
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['abi-scaffold-view-file']
+      ) {
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        
+
+        // Find the file with a matching name
+        let viewMetadata = this.datasetScicrunch['abi-scaffold-view-file'].filter(
+          viewFile => viewFile.dataset.path === shortened
+        )[0]
+
+        // Find the current directory path. Note that the trailing '/' is included
+        const currentDirectoryPath = scope.row.path.split(scope.row.name)[0]
+
+        // Create paths for fetching the files from 'sparc-api/s3-resource/'
+        const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.relative.path[0]}`
+        const s3Path = `${id}/${version}/${scaffoldPath}`
+
+        // View paths need to be relative
+        const viewPath = path.relative(
+          path.dirname(scaffoldPath),
+          scope.row.path
+        )
+        return {
+          name: 'datasets-scaffoldviewer-id',
+          params: {},
+          query: { scaffold: s3Path, viewURL: viewPath }
+        }
+      }
+      return {}
     },
 
     /**
@@ -577,16 +707,66 @@ export default {
     },
 
     /**
+     * Open scaffold view file
+     * @param {Object} scope
+     */
+    openScaffoldView: function(scope) {
+      const scaffoldViewLink = this.getScaffoldViewLink(scope)
+      if (scaffoldViewLink) {
+        this.$router.push(scaffoldViewLink)
+      }
+    },
+
+    openTimeseriesView: function(scope) {
+      const route = {
+        name: 'file-datasetId-datasetVersion',
+        params: {
+          datasetId: this.datasetInfo.id,
+          datasetVersion: this.datasetInfo.version
+        },
+        query: {
+          path: this.s3Path(scope.row.path)
+        }
+      }
+
+      this.$router.push(route)
+    },
+
+    /**
+     * Checks if file is a scaffold view port
+     * @param {Object} scope
+     */
+    isScaffoldViewFile: function(scope) {
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['abi-scaffold-view-file']
+      ) {
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-view-file'].length; i++) {
+          if (this.datasetScicrunch['abi-scaffold-view-file'][i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
+    },
+    /**
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
      */
     isScaffoldMetaFile: function(scope) {
-      let path = scope.row.path.toLowerCase()
-      return (
-        path.includes('scaffold') &&
-        path.includes('meta') &&
-        path.includes('json')
-      )
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['abi-scaffold-metadata-file']
+      ) {
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file'].length; i++) {
+          if (this.datasetScicrunch['abi-scaffold-metadata-file'][i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
     },
 
     /**
@@ -626,22 +806,38 @@ export default {
           }
         )
       })
-    }
+    },
+    sortWithCaseInsensitive(name1, name2) {
+      var a = name1.toUpperCase(); 
+      var b = name2.toUpperCase(); 
+      if (a > b) 
+         return 1 
+      if (a < b) 
+         return -1 
+      return 0; 
+    },
+    s3Path(path) {
+      // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
+      path = path.replaceAll(' ', '_')
+      return path.replaceAll(',', '_')
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .breadcrumb {
   background: none;
   height: auto;
-  margin-bottom: 8px;
+}
+.tooltip {
+  display: flex;
+  width: fit-content;
 }
 .files-table-header {
   align-items: center;
   display: flex;
-  margin-bottom: 8px;
 }
 .breadcrumb-list {
   align-items: center;
@@ -652,14 +848,13 @@ export default {
 .breadcrumb-link {
   word-break: break-word;
   text-decoration: underline;
-  color: $median;
+  color: $purple;
 }
 .breadcrumb-separator {
   margin: 0 4px;
 }
 .files-table-table {
   background: #fff;
-  padding: 16px;
 }
 .error-wrap {
   text-align: center;
@@ -667,34 +862,38 @@ export default {
 .file-name-wrap {
   display: flex;
 }
-
-.file-name {
-  color: $median;
+.truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
+.file-name {
+  color: $purple;
+}
 .file-icon {
   color: #000;
   font-size: 16px;
   flex-shrink: 0;
   margin: 3px 8px 0 0;
 }
-
 .circle {
-  display: inline-flex;
+  display: inline-block;
   height: 1.5em;
   width: 1.5em;
   line-height: 1.5em;
   margin-right: 4px;
-
   -moz-border-radius: 0.75em; /* or 50% */
   border-radius: 0.75em; /* or 50% */
-
-  background-color: #8300bf;
+  background-color: $purple;
   color: #fff;
-  text-align: center;
   cursor: pointer;
+  writing-mode: vertical-rl;
+  -webkit-writing-mode: vertical-rl;
+  vertical-align: top;
 }
-
+.disabled {
+  opacity: .6;
+}
 ::v-deep .el-table {
   th {
     .cell {
@@ -704,7 +903,8 @@ export default {
       line-height: 16px;
     }
     &.el-table-column--selection .cell {
-      padding: 0 14px;
+      padding: 0 16px;
+      text-overflow: unset;
     }
   }
 }

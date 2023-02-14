@@ -7,24 +7,12 @@
         class="container"
         @set-active-tab="activeTab = $event"
       >
-        <el-row :gutter="16">
-          <el-col :offset="22" :span="4" class="details">
-            <button
-              class="ml-8 btn-copy-permalink-solid hidden"
-              @click="copyLink"
-            >
-              <svg-icon name="icon-permalink" height="28" width="28" />
-              <span class="visuallyhidden">Copy permalink</span>
-            </button>
-          </el-col>
-        </el-row>
         <biolucida-viewer
           v-show="activeTab === 'viewer'"
           :data="biolucidaData"
-          :query-view="queryView"
         />
       </detail-tabs>
-      <div class="subpage">
+      <div class="subpage pt-0 pb-16">
         <div class="file-detail">
           <strong class="file-detail__column_1">Dataset</strong>
           <div class="file-detail__column_2">
@@ -44,6 +32,25 @@
           <strong class="file-detail__column_1">Filename</strong>
           <div class="file-detail__column_2">
             {{ image_info.name }}
+          </div>
+        </div>
+        <div v-if="filePath" class="file-detail">
+          <strong class="file-detail__column_1">File location</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }"
+            >
+              {{ filePath }}
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
@@ -74,6 +81,11 @@
             />
           </div>
         </div>
+        <div v-if="filePath" class="pt-16">
+          <bf-button @click="requestDownloadFile(file)">
+            Download file
+          </bf-button>
+        </div>
       </div>
     </div>
   </div>
@@ -87,8 +99,15 @@ import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import ImageScaling from '@/components/Images/ImageScaling.vue'
 import ImageChannels from '@/components/Images/ImageChannels.vue'
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
+import { pathOr } from 'ramda'
+
+import ErrorMessages from '@/mixins/error-messages'
+import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
+import FileDetails from '@/mixins/file-details'
 
 import { extractSection } from '@/utils/common'
 
@@ -97,33 +116,72 @@ export default {
 
   components: {
     BiolucidaViewer,
+    BfButton,
     DetailTabs,
     ImageScaling,
     ImageChannels
   },
 
-  mixins: [MarkedMixin],
+  mixins: [FileDetails, MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route }) {
-    const image_identifier = route.params.id
-    const identifier = route.query.item_id.substring(2)
+  async asyncData({ route, error, $axios }) {
+    try {
+      const image_identifier = route.params.id
+      const identifier = route.query.item_id.substring(2)
 
-    const [image_info, dataset_response, xmp_metadata] = await Promise.all([
-      biolucida.getImageInfo(image_identifier),
-      scicrunch.getDatasetInfoFromObjectIdentifier(identifier),
-      biolucida.getXMPInfo(image_identifier)
-    ])
+      const [
+        blv_link,
+        image_info,
+        dataset_response,
+        xmp_metadata
+      ] = await Promise.all([
+        biolucida.getBLVLink(image_identifier),
+        biolucida.getImageInfo(image_identifier),
+        scicrunch.getDatasetInfoFromObjectIdentifier(identifier),
+        biolucida.getXMPInfo(image_identifier)
+      ])
 
-    let dataset_info = dataset_response.data.result[0]
-    if (dataset_info === undefined) {
-      dataset_info = { readme: '', title: '' }
+      let dataset_info = dataset_response.data.result[0]
+      let file = {}
+      if (dataset_info === undefined) {
+        dataset_info = { readme: '', title: '' }
+      } else {
+        // Find the biolucida object with the same image name to determine the file path
+        const biolucidaObjects = pathOr(
+          [],
+          ['biolucida-2d'],
+          dataset_info
+        ).concat(pathOr([], ['biolucida-3d'], dataset_info))
+        const biolucidaObject = biolucidaObjects.find(biolucidaObject => {
+          return pathOr('', ['dataset', 'path'], biolucidaObject).includes(
+            image_info.name
+          )
+        })
+        const filePath = `files/${pathOr(
+          '',
+          ['dataset', 'path'],
+          biolucidaObject
+        )}`
+        file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+          $axios,
+          filePath,
+          route.query.dataset_id,
+          route.query.dataset_version,
+          error
+        )
+      }
+
+      return {
+        blv_link: blv_link['link'],
+        image_info,
+        xmp_metadata,
+        dataset_info,
+        file
+      }
     }
-
-    return {
-      image_info,
-      xmp_metadata,
-      readme: dataset_info.readme,
-      title: dataset_info.title
+    catch (e) {
+      const message = ErrorMessages.methods.biolucida()
+      return error({ statusCode: 400, message: message, display: true, error: e})
     }
   },
 
@@ -136,7 +194,6 @@ export default {
         }
       ],
       activeTab: 'viewer',
-      file: {},
       data_collection: '',
       queryView: false
     }
@@ -150,9 +207,19 @@ export default {
     biolucidaData: function() {
       return {
         biolucida_image_id: '',
+        blv_link: this.blv_link,
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
-        status: ''
+        status: '',
+        location: this.$route.query.location
       }
+    },
+
+    title: function() {
+      return this.dataset_info.title
+    },
+
+    readme: function() {
+      return this.dataset_info.readme
     },
 
     /**
@@ -177,56 +244,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.hidden {
-  visibility: hidden;
-}
-
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
-}
-
-h1 {
-  flex: 1;
-  font-size: 1.5em;
-  line-height: 2rem;
-}
-.page-heading {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.375rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.page-heading__button {
-  flex-shrink: 0;
-}
-
-.file-detail {
-  border-bottom: 1px solid #dbdfe6;
-  flex-direction: column;
-  font-size: 0.875em;
-  display: flex;
-  padding: 1rem 0.625rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.file-detail__column_1 {
-  flex: 0.2;
-}
-.file-detail__column_2 {
-  flex: 0.8;
-}
+@import '@/assets/_viewer.scss';
 </style>

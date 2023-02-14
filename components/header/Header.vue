@@ -2,14 +2,32 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <svg-icon icon="icon-contact" width="18" height="18" />
-        <nuxt-link to="/contact-us">
+        <svg-icon class="mr-4" icon="icon-contact" width="18" height="18" />
+        <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
           Contact Us
         </nuxt-link>
-        <svg-icon icon="icon-help" width="18" height="18" />
-        <nuxt-link :to="{ name: 'help' }">
+        <svg-icon class="mr-4" icon="icon-help" width="18" height="18" />
+        <a href="https://docs.sparc.science/" target="_blank">
           Help
-        </nuxt-link>
+        </a>
+        <template v-if="showLoginFeature">
+          <svg-icon
+            name="icon-sign-in"
+            class="login-logo"
+            height="1rem"
+            width="1rem"
+          />
+          <a class="sign-in-link" v-if="!pennsieveUser" @click="showLoginDialog = true">
+            Sign in
+          </a>
+          <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
+            <el-submenu index="user">
+              <template slot="title">{{pennsieveUsername}}</template>
+              <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
+              <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
+            </el-submenu>
+          </el-menu>
+        </template>
       </div>
       <div class="header__nav--main">
         <div class="nav-main-container">
@@ -25,10 +43,9 @@
             </nuxt-link>
           </div>
           <button
-            v-if="shouldShowSearch"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
-            @enter="executeSearch"
+            @enter="executeSearch(searchQuery)"
           >
             <svg-icon
               icon="icon-magnifying-glass"
@@ -40,9 +57,9 @@
           <div :class="[mobileSearchOpen ? 'search-overlay' : '']">
             <search-form
               v-if="mobileSearchOpen"
-              v-model="searchQuery"
-              class="search-mobile"
+              :defaultValue="searchQuery"
               placeholder="Search Datasets"
+              class="search-mobile"
               @search="executeMobileSearch"
               @clear="searchQuery = ''"
             />
@@ -74,15 +91,34 @@
               <ul class="mobile-navigation__links">
                 <li>
                   <svg-icon icon="icon-contact" width="18" height="18" />
-                  <nuxt-link to="/contact-us">
+                  <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
                     Contact Us
                   </nuxt-link>
                 </li>
                 <li>
                   <svg-icon icon="icon-help" width="18" height="18" />
-                  <nuxt-link :to="{ name: 'help' }">
+                  <a href="https://docs.sparc.science/" target="_blank">
                     Help
-                  </nuxt-link>
+                  </a>
+                </li>
+                <li v-if="showLoginFeature">
+                  <svg-icon
+                    name="icon-sign-in"
+                    class="login-menu-logo"
+                    height="1rem"
+                    width="1rem"
+                  />
+                  <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
+                    Sign in
+                  </a>
+                  <span v-else>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
+                      Profile
+                    </a>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
+                      Logout
+                    </a>
+                  </span>
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
@@ -108,13 +144,13 @@
               </div>
             </div>
           </div>
-          <div v-if="shouldShowSearch" class="nav-main-container__search">
+          <div class="nav-main-container__search">
             <el-input
               v-model="searchQuery"
               type="text"
               class="nav-main-container__search-input"
               placeholder="Search"
-              @keyup.native.enter="executeSearch"
+              @keyup.native.enter="executeSearch(searchQuery)"
             >
               <el-select slot="prepend" v-model="searchSelect">
                 <el-option
@@ -125,9 +161,9 @@
                 />
               </el-select>
             </el-input>
-            <button
-              class="nav-main-container__search-button"
-              @click="executeSearch"
+            <el-button
+              class="search-button px-8 py-0 ml-8"
+              @click="executeSearch(searchQuery)"
             >
               <svg-icon
                 color="white"
@@ -136,34 +172,35 @@
                 width="25"
                 dir="left"
               />
-            </button>
+            </el-button>
           </div>
         </div>
       </div>
     </div>
+    <login-modal
+      :show-dialog="showLoginDialog"
+      @dialog-closed="showLoginDialog = false"
+    />
   </div>
 </template>
 
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
 import SearchForm from '@/components/SearchForm/SearchForm.vue'
-import { mapActions } from 'vuex'
+import Request from '@/mixins/request'
+import LoginModal from '@/components/LoginModal/LoginModal.vue'
+import { mapState, mapGetters } from 'vuex'
 
 const links = [
   {
-    title: 'index',
-    displayTitle: 'Home',
-    href: '/'
-  },
-  {
     title: 'data',
     displayTitle: 'Find Data',
-    href: '/data?type=dataset'
+    href: '/data'
   },
   {
     title: 'resources',
     displayTitle: 'Tools & Resources',
-    href: `/resources?type=${process.env.ctf_resource_id}`
+    href: `/resources`
   },
   {
     title: 'maps',
@@ -186,7 +223,14 @@ export default {
   name: 'SparcHeader',
   components: {
     SparcLogo,
-    SearchForm
+    SearchForm,
+    LoginModal
+  },
+  mixins: [Request],
+  mounted: async function() {
+    if (this.showLoginFeature) {
+      await this.$store.dispatch('user/fetchUser')
+    }
   },
   data: () => {
     return {
@@ -195,38 +239,47 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
+      showLoginDialog: false,
+      showLoginFeature: (process.env.SHOW_LOGIN_FEATURE == 'true') ? true : false,
       searchSelectOptions: [
         {
           key: 'data',
           value: 'data',
-          label: 'Datasets'
+          label: 'Data'
         },
         {
-          key: 'resources',
-          value: 'resources',
-          label: 'Resources'
+          key: 'resources-biological',
+          value: 'resources-biological',
+          label: 'Tools & Resources'
         },
         {
-          key: 'news-and-events',
-          value: 'news-and-events',
-          label: 'News and Events'
+          key: 'news-and-events-news',
+          value: 'news-and-events-news',
+          label: 'News & Events'
         },
         {
-          key: 'help',
-          value: 'help',
-          label: 'Help'
-        }
+          key: 'about-about-sparc',
+          value: 'about-about-sparc',
+          label: 'About'
+        },
       ]
     }
   },
 
   computed: {
-    /**
-     * Compute if search should be visible
-     * @returns {Boolean}
-     */
-    shouldShowSearch: function() {
-      return this.$route.name !== 'data'
+    ...mapState('user', ['cognitoUser', 'pennsieveUser']),
+    ...mapGetters('user', ['profileComplete', 'pennsieveUsername']),
+    firstPath: function() {
+      const path = this.$nuxt.$route.path
+      // ignore the first backslash
+      const endIndex = path.indexOf('/', 1)
+      if (endIndex == -1) {
+        return path.substring(0)
+      }
+      return path.substring(0, endIndex)
+    },
+    currentUrl: function() {
+      return encodeURIComponent(this.$nuxt.$route.fullPath)
     }
   },
 
@@ -251,7 +304,7 @@ export default {
     menuOpen: {
       handler: function(val) {
         if (!val) {
-          this.$store.dispatch('updateDisabledScrolling', false)
+          this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
         }
       },
       immediate: true
@@ -259,15 +312,21 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      scrolling: 'updateDisabledScrolling'
-    }),
+    handleUserMenuSelect(menuId, menuIdPath) {
+      if (menuId === 'logout') {
+        this.$cookies.set('sign-out-redirect-url', this.$nuxt.$route.fullPath)
+        this.$store.dispatch('user/logout')
+      }
+      if (menuId === 'profile') {
+        this.$router.push('/user/profile')
+      }
+    },
     /**
      * Sets a link to active based on current page
      * @param {String} query
      */
     activeLink: function(query) {
-      if (this.$nuxt.$route.path === query) {
+      if (this.firstPath.includes(query)) {
         return true
       } else {
         return false
@@ -279,11 +338,11 @@ export default {
     openMobileNav: function() {
       if (!this.menuOpen) {
         this.mobileSearchOpen = false // just in case the search menu is open also
-        this.$store.dispatch('updateDisabledScrolling', true)
+        this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
         this.menuOpen = true
       } else {
         this.menuOpen = false
-        this.$store.dispatch('updateDisabledScrolling', false)
+        this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
       }
     },
 
@@ -293,7 +352,7 @@ export default {
     openMobileSearch: function() {
       this.mobileSearchOpen = true
       this.menuOpen = false
-      this.$store.dispatch('updateDisabledScrolling', true)
+      this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
     },
 
     /**
@@ -301,11 +360,11 @@ export default {
      */
     closeMobileSearch: function() {
       this.mobileSearchOpen = false
-      this.$store.dispatch('updateDisabledScrolling', false)
+      this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
     },
 
-    executeMobileSearch: function() {
-      this.executeSearch()
+    executeMobileSearch: function(term) {
+      this.executeSearch(term)
       this.closeMobileSearch()
     },
 
@@ -313,25 +372,31 @@ export default {
      * Executes a search query based on selected
      * option and query
      */
-    executeSearch: function() {
+    executeSearch: function(term) {
       const option = this.searchSelectOptions.find(
         o => o.value === this.searchSelect
       )
-      const searchKey = option.value === 'data' ? 'q' : 'search'
-      const type =
-        option.value === 'data'
-          ? 'dataset'
-          : option.value === 'resources'
-          ? 'sparcPartners'
-          : undefined
-
-      this.$router.push({
-        name: option.value,
+      // Set up an object for the nuxt router
+      let type = option.value
+      let routeParams = {
+        name: type,
         query: {
-          type,
-          [searchKey]: this.searchQuery
+          search: term
         }
-      })
+      }
+
+      // Searching on 'data' takes user directly to the dataset, as opposed to the /data page
+      if (option.value === 'data'){
+        type = 'dataset'
+        routeParams = {
+          name: 'data',
+          query: {
+            type,
+            search: term
+          }
+        }
+      }
+      this.$router.push(routeParams)
 
       this.searchQuery = ''
       this.searchSelect = 'data'
@@ -353,11 +418,11 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (max-width: 1120px) {
     align-items: center;
   }
 }
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (max-width: 1120px) {
   .overlay {
     position: absolute;
     top: 56px;
@@ -369,7 +434,7 @@ export default {
   }
 }
 
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (max-width: 1120px) {
   .search-overlay {
     position: absolute;
     top: 56px;
@@ -383,7 +448,7 @@ export default {
 
 .divider {
   display: none;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     border: 0;
     clear: both;
     display: block;
@@ -407,9 +472,8 @@ export default {
   margin-top: 8px;
   margin-bottom: 8px;
   .svg-icon {
-    color: $cochlear;
-    padding-right: 0.4rem;
-    padding-top: 0.2rem;
+    align-self: center;
+    color: white;
   }
   img {
     margin-right: 5px;
@@ -419,10 +483,10 @@ export default {
     font-weight: 400;
     line-height: 24px;
     color: $cochlear;
-    padding-right: 18px;
+    margin-right: 18px;
     text-decoration: none;
   }
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (max-width: 1120px) {
     & {
       display: none;
     }
@@ -436,7 +500,7 @@ export default {
   padding-left: 33px;
   display: flex;
   flex-direction: row;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (max-width: 1120px) {
     height: 41px;
     padding-left: 0;
     padding-top: 13px;
@@ -450,7 +514,7 @@ export default {
     &--social {
       display: none;
     }
-    @media (min-width: 320px) and (max-width: 1023px) {
+    @media (max-width: 1120px) {
       display: flex;
       flex-direction: column;
       a {
@@ -501,7 +565,7 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (max-width: 1120px) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -515,7 +579,7 @@ export default {
   width: 127px;
   white-space: nowrap;
   margin-right: 48px;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (max-width: 1120px) {
     height: 2rem;
     width: 100%;
     margin-right: 0;
@@ -525,39 +589,29 @@ export default {
 
 .nav-main-container__search {
   display: flex;
+  height: 40px;
   flex-direction: row;
   justify-content: flex-end;
   width: 54%;
   margin-right: 1rem;
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (max-width: 1120px) {
     width: 0;
   }
 }
 
 .nav-main-container__search-input {
   width: 30vw;
-  height: 34px;
   border-radius: 4px;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     display: none;
   }
   .el-select {
     width: 150px;
   }
-  ::v-deep .el-input__inner {
-    color: $medium-gray;
-  }
 }
 
-.nav-main-container__search-button {
-  background-color: $median;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  margin-left: 9px;
-  border: none;
-  cursor: pointer;
-  @media screen and (max-width: 1023px) {
+.search-button {
+  @media screen and (max-width: 1120px) {
     display: none;
   }
 }
@@ -598,7 +652,7 @@ export default {
     color: $app-primary-color;
   }
 
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1120px) {
     & {
       display: block;
     }
@@ -619,7 +673,7 @@ export default {
     li {
       display: inline;
       padding-right: 5rem;
-      @media screen and (min-width: 1023px) {
+      @media screen and (min-width: 1120px) {
         padding-right: 0.5rem;
       }
 
@@ -639,7 +693,7 @@ export default {
     }
   }
 
-  @media (min-width: 320px) and (max-width: 1023px) {
+  @media (max-width: 1120px) {
     & {
       background: $seafoam;
       bottom: 0;
@@ -675,7 +729,7 @@ export default {
   display: none;
 }
 
-@media (min-width: 320px) and (max-width: 1023px) {
+@media (max-width: 1120px) {
   .search-mobile {
     background-color: $cochlear;
     padding: 1em;
@@ -704,5 +758,43 @@ export default {
   bottom: 5px;
   margin-left: 5px;
   user-select: none;
+}
+
+.sign-in-link:hover {
+  cursor: pointer;
+}
+::v-deep .el-submenu__title:hover {
+  background-color: inherit !important;
+}
+::v-deep .el-submenu__title {
+  line-height: inherit !important;
+  height: fit-content !important;
+  color: white !important;
+  border: none !important;
+  padding: 0;
+  i {
+    color: white;
+  }
+}
+
+.user-menu {
+  border: none !important;
+}
+.user-submenu {
+  color: #303133 !important;
+  background-color: white !important;
+  font-size: 14px !important;
+  line-height: 32px !important;
+  font-weight: medium !important;
+  height: fit-content !important;
+}
+.user-submenu:hover {
+  color: #8300bf !important;
+}
+.login-logo {
+  margin-top: .2rem;
+}
+.login-menu-logo {
+  margin-left: .2rem;
 }
 </style>

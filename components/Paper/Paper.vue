@@ -40,7 +40,7 @@ export default {
       default: ''
     },
     buttonLink: {
-      type: Object,
+      type: [Object, String],
       default: null
     },
     buttonLinkExternal: {

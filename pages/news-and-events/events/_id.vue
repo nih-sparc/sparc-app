@@ -5,6 +5,7 @@
     :breadcrumb="breadcrumb"
     :hero-title="page.fields.title"
     :hero-summary="page.fields.summary"
+    :has-event-details-page="hasEventDetailsPage"
     type="event"
   >
     <a :href="page.fields.url" target="_blank">
@@ -21,8 +22,8 @@
     <h3>Location</h3>
     <p>{{ page.fields.location }}</p>
 
-    <h3>External Link</h3>
-    <p>
+    <h3 v-if="page.fields.url">External Link</h3>
+    <p v-if="page.fields.url">
       <a :href="page.fields.url" target="_blank">{{ page.fields.url }}</a>
     </p>
   </news-events-resources-page>
@@ -38,6 +39,21 @@ import FormatDate from '@/mixins/format-date'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
+const getEventPage = async id => {
+  try {
+    const isSlug = id.split('-').length > 1
+
+    const item = isSlug
+      ? await client.getEntries({
+          content_type: process.env.ctf_event_id,
+          'fields.slug': id
+        })
+      : await client.getEntry(id)
+    return isSlug ? item.items[0] : item
+  } catch (error) {
+    return {}
+  }
+}
 
 export default {
   name: 'EventPage',
@@ -48,9 +64,13 @@ export default {
 
   mixins: [FormatDate],
 
-  async asyncData({ route }) {
+  async asyncData({ route, redirect }) {
     try {
-      const page = await client.getEntry(route.params.id)
+      const page = await getEventPage(route.params.id)
+      const slug = pathOr(null, ['fields', 'slug'], page)
+      if (slug !== null && route.params.id !== slug) {
+        redirect(`/news-and-events/events/${slug}`)
+      }
       return { page }
     } catch (error) {
       return {
@@ -86,6 +106,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.page.fields.title
+    }
+  },
+
   computed: {
     /**
      * Get news and event image
@@ -103,6 +129,10 @@ export default {
       return pathOr('', ['fields', 'image', 'fields', 'title'], this.page)
     },
 
+    eventDetails: function() {
+      return pathOr(null, ['fields', 'eventDetails'], this.page)
+    },
+
     /**
      * Get event date range, if there is no end date, default to start date
      * @returns {String}
@@ -113,7 +143,11 @@ export default {
       return startDate === endDate || !endDate
         ? startDate
         : `${startDate} - ${endDate}`
-    }
+    },
+
+    hasEventDetailsPage: function() {
+      return this.eventDetails !== null
+    },
   }
 }
 </script>

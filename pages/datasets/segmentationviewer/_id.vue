@@ -12,7 +12,7 @@
           :data="segmentationData"
         />
       </detail-tabs>
-      <div class="subpage">
+      <div class="subpage pt-0 pb-16">
         <div class="file-detail">
           <strong class="file-detail__column_1">Dataset</strong>
           <div class="file-detail__column_2">
@@ -32,6 +32,25 @@
           <strong class="file-detail__column_1">Filename</strong>
           <div class="file-detail__column_2">
             {{ segmentation_info.name }}
+          </div>
+        </div>
+        <div class="file-detail">
+          <strong class="file-detail__column_1">File location</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }"
+            >
+              {{ filePath }}
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
@@ -70,6 +89,11 @@
             {{ segmentation_info.atlas.organ }}
           </div>
         </div>
+        <div class="pt-16">
+          <bf-button @click="requestDownloadFile(file)">
+            Download file
+          </bf-button>
+        </div>
       </div>
     </div>
   </div>
@@ -82,8 +106,13 @@ import general from '@/services/general'
 
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
+import ErrorMessages from '@/mixins/error-messages'
+import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
+import FileDetails from '@/mixins/file-details'
 
 import { extractSection } from '@/utils/common'
 import { baseName } from '@/utils/common'
@@ -93,12 +122,13 @@ export default {
 
   components: {
     SegmentationViewer,
-    DetailTabs
+    DetailTabs,
+    BfButton
   },
 
-  mixins: [MarkedMixin],
+  mixins: [FileDetails, MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route }) {
+  async asyncData({ route, error, $axios }) {
     const identifier = route.query.dataset_id
 
     try {
@@ -127,20 +157,25 @@ export default {
         dataset_info = { readme: '', title: '' }
       }
 
+      const filePath = route.query.file_path
+      const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+        $axios,
+        filePath,
+        route.query.dataset_id,
+        route.query.dataset_version,
+        error
+      )
+
       return {
         segmentation_info,
         human_readable_species,
         readme: dataset_info.readme,
-        title: dataset_info.title
+        title: dataset_info.title,
+        file
       }
     } catch (e) {
-      // Error caught return empty data.
-    }
-    return {
-      segmentation_info: { subject: '', atlas: '' },
-      human_readable_species: '',
-      readme: '',
-      title: ''
+      const message = ErrorMessages.methods.biolucida()
+      return error({ statusCode: 400, message: message, display: true, error: e})
     }
   },
 
@@ -205,55 +240,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
-}
-
-h1 {
-  flex: 1;
-  font-size: 1.5em;
-  line-height: 2rem;
-}
-.page-heading {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.375rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.page-heading__button {
-  flex-shrink: 0;
-}
-
-.file-detail {
-  border-bottom: 1px solid #dbdfe6;
-  flex-direction: column;
-  font-size: 0.875em;
-  display: flex;
-  padding: 1rem 0.625rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.file-detail__column {
-  flex: 1;
-}
-.file-detail__column_1 {
-  flex: 0.2;
-}
-.file-detail__column_2 {
-  flex: 0.8;
-}
+@import '@/assets/_viewer.scss';
 </style>

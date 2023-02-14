@@ -1,25 +1,25 @@
 <template>
   <el-form
-    ref="contactForm"
+    ref="submitForm"
     label-position="top"
     :model="form"
     :rules="formRules"
     :hide-required-asterisk="true"
   >
     <el-form-item
-      prop="sparcInvestigator"
-      label="Are you a SPARC investigator?*"
+      prop="typeOfUser"
+      label="What type of user are you? *"
     >
       <el-select
-        v-model="form.sparcInvestigator"
-        aria-placeholder="Select one"
+        v-model="form.typeOfUser"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="sparcInvestigatorOption in questionOptions.sparcInvestigator"
-          :key="sparcInvestigatorOption"
-          :label="sparcInvestigatorOption"
-          :value="sparcInvestigatorOption"
+          v-for="typeOfUserOption in questionOptions.typeOfUser"
+          :key="typeOfUserOption"
+          :label="typeOfUserOption"
+          :value="typeOfUserOption"
         />
       </el-select>
     </el-form-item>
@@ -30,7 +30,7 @@
     >
       <el-select
         v-model="form.pageOrResource"
-        aria-placeholder="Select one"
+        placeholder="Select one"
         :popper-append-to-body="false"
       >
         <el-option
@@ -42,7 +42,7 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item prop="message" label="Your question or comment:*">
+    <el-form-item prop="message" label="Your question or comment *">
       <el-input
         v-model="form.message"
         type="textarea"
@@ -59,15 +59,17 @@
       <el-input v-model="form.lastName" placeholder="Last name here" />
     </el-form-item>
 
-    <el-form-item prop="email" label="Email" class="mb-0">
+    <el-form-item prop="email" label="Email *" class="mb-0">
       <el-input v-model="form.email" placeholder="Email here" type="email" />
     </el-form-item>
 
-    <el-form-item prop="shouldSubscribe">
+    <el-form-item prop="shouldSubscribe" class="mt-16">
       <el-checkbox v-model="form.shouldSubscribe">
-        Subscribe to the SPARC Newsletter
+        <span class="body1">Subscribe to the SPARC Newsletter</span>
       </el-checkbox>
     </el-form-item>
+
+    <recaptcha class="mb-16"/>
 
     <el-form-item>
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
@@ -81,18 +83,19 @@
 </template>
 
 <script>
-import { sparcInvestigator, pageOrResource } from '../questions'
+import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
+import RecaptchaMixin from '@/mixins/recaptcha/index'
 
 export default {
   name: 'GeneralForm',
 
-  mixins: [NewsletterMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin],
 
   data() {
     return {
       form: {
-        sparcInvestigator: '',
+        typeOfUser: '',
         pageOrResource: '',
         message: '',
         firstName: '',
@@ -101,12 +104,12 @@ export default {
         shouldSubscribe: false
       },
       questionOptions: {
-        sparcInvestigator,
+        typeOfUser,
         pageOrResource
       },
       isSubmitting: false,
       formRules: {
-        sparcInvestigator: [
+        typeOfUser: [
           {
             required: true,
             message: 'Please select one',
@@ -154,37 +157,23 @@ export default {
 
   mounted() {
     // Reset form fields when showing the form
-    this.$refs.contactForm.resetFields()
+    this.$refs.submitForm.resetFields()
     this.hasError = false
   },
 
   methods: {
     /**
-     * Submit the form and validate
-     */
-    onSubmit() {
-      this.hasError = false
-
-      this.$refs.contactForm.validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.sendForm()
-      })
-    },
-
-    /**
      * Send form to endpoint
      */
-    sendForm() {
+    async sendForm() {
       this.isSubmitting = true
 
-      this.$axios
+      await this.$axios
         .post(`${process.env.portal_api}/contact`, {
           name: `${this.form.firstName} ${this.form.lastName}`,
           email: this.form.email,
           message: `
-            Are you a SPARC investigator?<br>${this.form.sparcInvestigator}
+            What type of user are you?<br>${this.form.typeOfUser}
             <br><br>Is this about a specific page or resource?
             <br>${this.form.pageOrResource}
             <br><br>Message
@@ -193,7 +182,7 @@ export default {
         })
         .then(() => {
           if (this.form.shouldSubscribe) {
-            this.subscribeToNewsletter()
+            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
           } else {
             this.$emit('submit', this.form.firstName)
           }

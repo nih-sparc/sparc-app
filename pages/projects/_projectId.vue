@@ -1,59 +1,107 @@
 <template>
-  <div class="project-details">
-    <details-header
-      :subtitle="projectSection"
-      :title="fields.title"
-      :description="fields.description"
-      :full-description="true"
-      :breadcrumb="breadcrumb"
-    >
-      <img
-        slot="banner image"
-        :src="getImageSrc"
-        :alt="getImageAlt"
-        height="368"
-        width="368"
-      />
-      <div slot="meta content" class="details-header__container--content-meta">
-        <div class="content-meta__item">
-          <h3>NIH Award</h3>
-          <p>{{ fields.awardId }}</p>
-        </div>
-        <div class="content-meta__item">
-          <h3>Principal Investigator</h3>
-          <p>{{ fields.principleInvestigator }}</p>
-        </div>
-        <div class="content-meta__item">
-          <h3>Institution</h3>
-          <p>{{ fields.institution.fields.name }}</p>
+  <div class="page pb-32">
+    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <div class="page-wrap container">
+      <div class="subpage mb-32">
+        <div class="row">
+          <el-col class="first-column mr-24">
+            <div class="image-container p-16 mx-32 mb-32">
+              <img
+                class="image"
+                :src="getImageSrc"
+                :alt="getImageAlt"
+              />
+            </div>
+            <hr />
+            <div class="body1">
+              <template v-if="projectSection">
+                <div class="label4">
+                  ANATOMICAL FOCUS
+                </div>
+                <div class="mb-16">
+                  {{ projectSection }}
+                </div>
+              </template>
+              <template v-if="investigator">
+                <div class="label4">
+                  PRINCIPAL INVESTIGATOR
+                </div>
+                <div class="mb-16">
+                  {{ investigator }}
+                </div>
+              </template>
+              <template v-if="institution">
+                <div class="label4">
+                  INSTITUTION
+                </div>
+                <div class="mb-16">
+                  {{ institution }}
+                </div>
+              </template>
+              <template v-if="fundingProgram">
+                <div class="label4">
+                  FUNDING PROGRAM
+                </div>
+                <div class="mb-16">
+                  {{ fundingProgram }}
+                </div>
+              </template>
+              <template v-if="awardId">
+                <div class="label4">
+                  AWARD
+                </div>
+                <div class="mb-16">
+                  <a :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">
+                    {{ awardId }}
+                    <svg-icon v-if="!isInternalLink(nihReporterUrl)" name="icon-open" height="25" width="25" />
+                  </a>
+                </div>
+              </template>
+              <div class="label4">
+                SHARE
+              </div>
+              <share-links class="share-links" />
+            </div>
+            <template v-if="showAssociatedDatasets">
+              <hr class="mt-16" />
+              <div class="label4">
+                ASSOCIATED DATASETS
+              </div>
+              <br />
+              <div class="associated-datasets-container">
+                <div
+                  v-for="(dataset, index) in associatedDatasets"
+                  :key="index"
+                  class="body4 "
+                >
+                  <dataset-card :id="dataset.id" />
+                </div>
+              </div>
+            </template>
+          </el-col>
+          <el-col>
+            <div class="heading2 mb-32">
+              {{ title }}
+            </div>
+            <div class="body1">
+              {{ description }}
+            </div>
+          </el-col>
         </div>
       </div>
-      <div slot="meta content" class="details-header__container--content-links">
-        <button>
-          <a :href="fields.nihReporterUrl" target="_blank">
-            View on NIH Website
-          </a>
-        </button>
-      </div>
-    </details-header>
-    <detail-tabs
-      :tabs="tabs"
-      :active-tab="activeTab"
-      class="container"
-      @set-active-tab="setActiveTab"
-    >
-      <dataset-search-results
-        v-show="activeTab === 'datasets'"
-        :table-data="datasets.datasets"
-      />
-    </detail-tabs>
+      <nuxt-link class="back-link" to="/data?type=projects">
+        View All Projects >
+      </nuxt-link>
+    </div>
   </div>
 </template>
 
 <script>
-import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
-import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
+import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
+import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
+import { propOr, isEmpty } from 'ramda'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -62,16 +110,16 @@ const client = createClient()
 export default {
   name: 'ProjectDetails',
   components: {
-    DatasetSearchResults,
-    DetailsHeader,
-    DetailTabs
+    Breadcrumb,
+    DatasetCard,
+    ShareLinks
   },
 
   async asyncData({ route, $axios }) {
     try {
       const project = await client.getEntry(route.params.projectId)
 
-      const datasets = await $axios
+      const associatedDatasets = await $axios
         .$get(`${process.env.portal_api}/project/${project.fields.awardId}`)
         .catch(() => {
           return {}
@@ -79,7 +127,7 @@ export default {
 
       return {
         fields: project.fields,
-        datasets
+        associatedDatasets: propOr([], 'datasets', associatedDatasets)
       }
     } catch (e) {
       console.error(e)
@@ -88,19 +136,6 @@ export default {
 
   data() {
     return {
-      datasets: {
-        datasets: [],
-        limit: 0,
-        offset: 0,
-        totalCount: 0
-      },
-      tabs: [
-        {
-          label: 'Datasets',
-          type: 'datasets'
-        }
-      ],
-      activeTab: 'datasets',
       breadcrumb: [
         {
           to: {
@@ -112,13 +147,18 @@ export default {
           to: {
             name: 'data',
             query: {
-              type: 'sparcInfo',
-              sparcInfoType: 'sparcAward'
+              type: 'projects'
             }
           },
-          label: 'Find Data'
+          label: 'Projects'
         }
       ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.title
     }
   },
 
@@ -132,7 +172,27 @@ export default {
         ? this.fields.institution.fields.logo.fields.file.url
         : ''
     },
-
+    title: function() {
+      return this.fields.title
+    },
+    description: function() {
+      return this.fields.description
+    },
+    fundingProgram: function() {
+      return this.fields.fundingProgram?.fields.name
+    },
+    awardId: function() {
+      return this.fields.awardId
+    },
+    institution: function() {
+      return this.fields.institution.fields.name
+    },
+    investigator: function() {
+      return this.fields.principleInvestigator
+    },
+    nihReporterUrl: function() {
+      return this.fields.nihReporterUrl || '#'
+    },
     /**
      * Get image source
      * @returns {String}
@@ -150,49 +210,64 @@ export default {
       return this.fields.projectSection
         ? this.fields.projectSection.fields.title
         : ''
+    },
+    showAssociatedDatasets: function() {
+      return !isEmpty(this.associatedDatasets)
     }
   },
 
   methods: {
-    /**
-     * Sets active tab
-     * @param {String} activeLabel
-     */
-    setActiveTab: function(activeLabel) {
-      this.activeTab = activeLabel
-    }
+    isInternalLink,
+    opensInNewTab
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
-.project-details {
-  &__page-route {
-    background: $purple-gray;
-    height: 2.5rem;
-    margin-top: 0;
-    p {
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 16px;
-      padding-left: 2rem;
-      padding-top: 0.75rem;
-      margin-top: 0;
-      color: $midnight;
-    }
-
-    a {
-      text-decoration: none;
-      color: $midnight;
-    }
-  }
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page {
+  background-color: $background;
 }
-@media screen and (max-width: 768px) {
-  .project-details {
-    &__page-route {
-      height: 3.5rem;
-    }
+.row {
+  display: flex;
+}
+.back-link {
+  color: $darkBlue;
+  font-weight: 700;
+}
+.first-column {
+  max-width: 25rem;
+}
+.image-container {
+  display: flex;
+  aspect-ratio: 1;
+  border: 1px solid $lineColor2;
+}
+.image {
+  height: auto;
+  width: 100%;
+  margin: auto;
+}
+hr {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.associated-datasets-container {
+  max-height: 20rem;
+  overflow: auto;
+  overflow-x: hidden;
+  text-overflow: hidden;
+}
+@media screen and (max-width: 760px) {
+  .row {
+    flex-direction: column;
+  }
+  .share-links {
+    margin-bottom: 1rem;
+  }
+  .associated-datasets-container {
+    margin-bottom: 1rem;
   }
 }
 </style>

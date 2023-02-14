@@ -1,23 +1,40 @@
 <template>
-  <div class="subpage">
+  <div class="no-results" v-if="stories.length === 0">
+    <el-table :show-header="false" empty-text="No Results">
+      <el-table-column />
+    </el-table>
+  </div>
+  <div v-else class="subpage mb-16">
     <div v-for="(item, index) in stories" :key="index">
-      <community-spotlight-item :story="item" />
-      <div v-if="index !== stories.length - 1 || inNews" class="seperator-path" />
+      <community-spotlight-item :story="getLinkedItem(item)" />
+      <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-16" />
     </div>
     <nuxt-link
-      v-if="inNews"
-      class="community-link mt-16"
+      v-if="bottomLink"
+      class="btn-load-more mt-16"
       :to="{
-        name: 'news-and-events-community-spotlight'
+        name: linkLocation
       }"
     >
-      View All Community Spotlights &gt;
+      {{ linkText }}
     </nuxt-link>
   </div>
 </template>
 
 <script>
+import { pathOr } from 'ramda'
 import CommunitySpotlightItem from './CommunitySpotlightItem.vue'
+
+const SPOTLIGHT_TYPE_MAPPING = [
+  {
+    label: 'Fireside Chat',
+    id: 'firesideChat',
+  },
+  {
+    label: 'Success Story',
+    id: 'successStory',
+  }
+]
 
 export default {
   name: 'CommunitySpotlightListings',
@@ -29,42 +46,56 @@ export default {
       type: Array,
       default: () => []
     },
-    inNews: {
+    bottomLink: {
       type: Boolean,
       default: false
+    },
+    linkLocation: {
+      type: String,
+      default: 'news-and-events-community-spotlight'
+    },
+    linkText: {
+      type: String,
+      default: 'View All Community Spotlights'
+    }
+  },
+  methods: {
+    // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
+    getLinkedItem(communitySpotlightItem) {
+      const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
+      const anatomicalStructure = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
+      const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
+      const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
+        return item.id == spotlightTypeId
+      })?.label
+      return {
+        ...linkedItem,
+        spotlightType,
+        anatomicalStructure
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .seperator-path {
   width: 100%;
-  height: 2px;
+  height: 0.125rem;
   background: rgb(216, 216, 216);
   border-radius: 0px;
-  margin-bottom: 32px;
-  margin-top: 32px;
 }
 
-.subpage {
-  margin-bottom: 20px;
-}
-
-.community-link {
+.btn-load-more {
   background: none;
   border: none;
-  color: $navy;
+  color: $purple;
   cursor: pointer;
   display: block;
-  font-size: 1rem;
-  font-weight: 700;
   padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
+  font-weight: 500;
+  text-decoration: underline;
 }
 </style>

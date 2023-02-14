@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="page">
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero>
       <h1>{{ heroTitle }}</h1>
-      <p>
+      <div class="body2">
         {{ heroSummary }}
-      </p>
+      </div>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
@@ -14,44 +14,14 @@
         <el-row :gutter="32">
           <el-col :xs="24" :sm="firstCol" class="details">
             <slot />
-
             <h3>Share</h3>
-            <div class="share-links">
-              <share-network
-                network="facebook"
-                :url="pageUrl"
-                :title="heroTitle"
-                :description="heroSummary"
-              >
-                <svg-icon name="icon-share-facebook" height="28" width="28" />
-                <span class="visuallyhidden">Share on Facebook</span>
-              </share-network>
-              <share-network
-                network="twitter"
-                class="ml-8"
-                :url="pageUrl"
-                :title="heroTitle"
-              >
-                <svg-icon name="icon-share-twitter" height="28" width="28" />
-                <span class="visuallyhidden">Share on Twitter</span>
-              </share-network>
-              <share-network
-                network="linkedin"
-                class="ml-8"
-                :url="pageUrl"
-                :title="heroTitle"
-              >
-                <svg-icon name="icon-share-linked" height="28" width="28" />
-                <span class="visuallyhidden">Share on Linkedin</span>
-              </share-network>
-              <button class="ml-8 btn-copy-permalink" @click="copyLink">
-                <svg-icon name="icon-permalink" height="28" width="28" />
-                <span class="visuallyhidden">Copy permalink</span>
-              </button>
-            </div>
+            <share-links />
           </el-col>
           <el-col :xs="24" :sm="secondCol">
             <div class="content" v-html="parseMarkdown(htmlContent)" />
+            <nuxt-link class="back-link" v-if="hasEventDetailsPage" :to="{ path: eventDetailsRoute }">
+              View Additional Event Details >
+            </nuxt-link>
           </el-col>
         </el-row>
       </div>
@@ -64,11 +34,11 @@
 </template>
 
 <script>
-import { successMessage, failMessage } from '@/utils/notification-messages'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import PageHero from '@/components/PageHero/PageHero'
+import ShareLinks from '@/components/ShareLinks/ShareLinks'
 
 import FirstCol from '@/mixins/first-col/index'
 
@@ -77,7 +47,8 @@ export default {
 
   components: {
     Breadcrumb,
-    PageHero
+    PageHero,
+    ShareLinks
   },
 
   mixins: [FormatDate, MarkedMixin, FirstCol],
@@ -110,6 +81,10 @@ export default {
       default: () => {
         return []
       }
+    },
+    hasEventDetailsPage: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -159,39 +134,23 @@ export default {
       const nameLookup = {
         event: 'Events',
         news: 'News',
-        resource: 'Resources'
+        resource: 'Tools & Resources'
       }
       const name = nameLookup[this.type]
 
       return `View All ${name} >`
+    },
+    eventDetailsRoute: function() {
+      return `${this.$route.path}/event-details`
     }
   },
-
-  methods: {
-    copyLink: function() {
-      this.$copyText(`${process.env.ROOT_URL}${this.$route.fullPath}`).then(
-        () => {
-          this.$message(successMessage('Share link copied to clipboard.'))
-        },
-        () => {
-          this.$message(failMessage('Failed to copy share link.'))
-        }
-      )
-    }
-  }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .content {
-  & ::v-deep {
-    color: $vestibular;
-  }
-  & ::v-deep p {
-    margin-bottom: 1em;
-  }
   & ::v-deep img,
   & ::v-deep video {
     height: auto;
@@ -219,21 +178,12 @@ export default {
     max-width: 100%;
   }
 }
-.share-links {
-  display: flex;
-}
-.btn-copy-permalink {
-  border: none;
-  background: none;
-  color: $median;
-  cursor: pointer;
-  padding: 0;
-  &:active {
-    outline: none;
-  }
-}
 .back-link {
-  color: $navy;
+  color: $darkBlue;
   font-weight: 700;
+}
+.page {
+  background-color: $background;
+  padding-bottom: 2rem;
 }
 </style>

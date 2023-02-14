@@ -1,21 +1,21 @@
 <template>
-  <div>
+    <div class="page-data pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="type" />
     <page-hero>
       <h1>{{ title }}</h1>
       <p>{{ summary }}</p>
     </page-hero>
     <div class="container">
-      <div class="subpage">
+      <div class="subpage px-32 py-16">
         <div v-html="parseMarkdown(description)" />
         <hr />
-        <p class="share-text">
+        <div class="body1">
           SHARE
-        </p>
+        </div>
         <share-links />
       </div>
-      <div v-if="learnMore" class="subpage">
-        <h1>Learn More</h1>
+      <div v-if="learnMore" class="subpage px-32 mb-0">
+        <div class="heading1 mb-16">Learn More</div>
         <learn-more-card
           v-for="(item, index) in learnMore"
           :key="`${item}-${index}`"
@@ -52,15 +52,16 @@ export default {
 
   mixins: [MarkedMixin],
 
-  asyncData() {
-    return Promise.all([
-      // Get page content
-      client.getEntry(process.env.ctf_what_we_offer_page_id)
-    ])
-      .then(([page]) => {
-        return { ...page.fields }
-      })
-      .catch(console.error)
+  async asyncData() {
+    const page = await client.getEntry(process.env.ctf_what_we_offer_page_id)
+    return {
+      title : page.fields.title,
+      type: page.fields.type,
+      summary: page.fields.summary,
+      description: page.fields.description,
+      learnMore: page.fields.learnMore,
+      slug: page.fields.slug,
+    }
   },
 
   data: () => {
@@ -73,12 +74,18 @@ export default {
           label: 'Home'
         },
         {
-          label: 'About SPARC',
+          label: 'About',
           to: {
             name: 'about'
           }
         }
       ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.title
     }
   },
 
@@ -96,37 +103,31 @@ export default {
           this.$message(failMessage(`Cannot copy to clipboard.`))
         }
       )
-    }
+    },
+    /**
+     * Construct current url 
+     * @returns {String}
+     */
+    pageUrl: function() {
+      return `${process.env.ROOT_URL}${this.$route.fullPath}`
+    },
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/_variables.scss';
-.subpage {
-  margin: 1em 0;
-  padding: 1em;
-  border: 1px solid #dcdfe6;
-  background: white;
-
-  @media (min-width: 48em) {
-    margin: 2.5em 0;
-    padding: 1em 2em;
-  }
-
-  hr {
-    opacity: 0.3;
-  }
-
-  h1 {
-    font-size: 1.75em;
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
-  }
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
+}
+.heading1 {
+  font-weight: 300;
 }
 
-.share-text {
-  font-weight: 500;
-  margin-bottom: 0;
+hr {
+  opacity: 0.3;
+}
+h1 {
+  font-weight: 300;
 }
 </style>

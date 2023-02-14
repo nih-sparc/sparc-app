@@ -2,12 +2,14 @@
   <el-table :data="tableData" :show-header="false" empty-text="No Results">
     <el-table-column width="160">
       <template slot-scope="scope">
-        <img
-          v-if="scope.row.fields.institution"
-          class="img-project"
-          :src="getImageSrc(scope)"
-          :alt="getImageAlt(scope)"
-        />
+        <div class="image-container">
+          <img
+            v-if="scope.row.fields.institution"
+            class="img-project"
+            :src="getImageSrc(scope)"
+            :alt="getImageAlt(scope)"
+          />
+        </div>
       </template>
     </el-table-column>
 
@@ -19,45 +21,47 @@
             path: 'projects/:scope.row.sys.id',
             params: { projectId: scope.row.sys.id }
           }"
-        >
-          {{ scope.row.fields.title }}
-        </nuxt-link>
-        <div class="mt-8 mb-8">
-          {{ scope.row.fields.shortDescription }}
-        </div>
+          v-html="highlightMatches(scope.row.fields.title, $route.query.search)"
+        />
+        <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)"/>
         <table class="property-table">
-          <tr v-if="scope.row.fields.institution">
+          <tr v-if="scope.row.fields.projectSection">
             <td class="property-name-column">
-              Lead Institution
+              Anatomical Focus
             </td>
-            <td>
-              {{ scope.row.fields.institution.fields.name }}
-            </td>
+            <td v-html="highlightMatches(scope.row.fields.projectSection.fields.title, $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">
               Principle Investigator
             </td>
-            <td>
-              {{ reverseName(scope.row.fields.principleInvestigator) }}
+            <td v-html="highlightMatches(reverseName(scope.row.fields.principleInvestigator), $route.query.search)"/>
+          </tr>
+          <tr v-if="scope.row.fields.institution">
+            <td class="property-name-column">
+              Institution
             </td>
+            <td>
+              {{ scope.row.fields.institution.fields.name }}
+            </td>
+          </tr>
+          <tr v-if="scope.row.fields.fundingProgram">
+            <td class="property-name-column">
+              Funding Program
+            </td>
+            <td 
+              v-html="highlightMatches(scope.row.fields.fundingProgram.fields.name, $route.query.search)"
+            />
           </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">
-              NIH Award
+              Award
             </td>
             <td>
               <a :href="getNihReporterUrl(scope)" target="_blank">
                 {{ scope.row.fields.awardId }}
+                <svg-icon v-if="!isInternalLink(getNihReporterUrl(scope))" name="icon-open" height="20" width="20" />
               </a>
-            </td>
-          </tr>
-          <tr v-if="scope.row.fields.projectSection">
-            <td class="property-name-column">
-              Anatomical Focus
-            </td>
-            <td>
-              {{ scope.row.fields.projectSection.fields.title }}
             </td>
           </tr>
         </table>
@@ -68,6 +72,8 @@
 
 <script>
 import Truncate from '@/mixins/truncate'
+import { isInternalLink } from '@/mixins/marked/index'
+import { highlightMatches } from '@/pages/data/utils'
 
 export default {
   name: 'ProjectSearchResults',
@@ -131,18 +137,23 @@ export default {
         return `${fullName[1]}, ${fullName[0]}`
       }
       return `${fullName[2]}, ${fullName[0]} ${fullName[1]}`
-    }
+    },
+    isInternalLink,
+    highlightMatches
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+
 .el-table {
   width: 100%;
 }
 .img-project {
   height: auto;
   width: 100%;
+  margin: auto;
 }
 .el-table--enable-row-hover .el-table__body tr {
   background-color: transparent;
@@ -164,5 +175,12 @@ table:not([class^='el-table__'])::before {
 .property-name-column {
   width: 160px;
   font-weight: bold;
+}
+.image-container {
+  display: flex;
+  aspect-ratio: 1;
+  border: 1px solid $lineColor2;
+  background-color: white !important;
+  padding: .25rem;
 }
 </style>

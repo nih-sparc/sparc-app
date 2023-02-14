@@ -1,322 +1,385 @@
 <template>
-  <div class="events-page">
-    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
-    <page-hero>
-      <h1>Events</h1>
-      <p>
-        Check out the latest events associated with the SPARC Portal
-      </p>
-    </page-hero>
-    <div class="page-wrap">
-      <div class="container">
-        <div v-if="Object.keys(featuredEvent).length" class="mb-40">
-          <h2>Featured Event</h2>
-          <featured-event :event="featuredEvent" />
-        </div>
-
-        <h2>Events</h2>
-        <tab-nav
-          :tabs="eventsTabs"
-          :active-tab="activeTab"
-          @set-active-tab="setActiveTab"
-        />
-        <div class="events-wrap">
-          <template v-if="activeTab === 'upcoming'">
-            <div class="upcoming-events">
-              <event-card
-                v-for="event in displayedUpcomingEvents"
-                :key="event.sys.id"
-                :event="event"
-              />
-            </div>
-
-            <div class="show-all-upcoming-events">
-              <a
-                v-if="
-                  !isShowingAllUpcomingEvents &&
-                    upcomingEvents.length != displayedUpcomingEvents.length
-                "
-                class="show-all-upcoming-events__btn"
-                href="#"
-                @click.prevent="isShowingAllUpcomingEvents = true"
-              >
-                Show All ({{ upcomingEvents.length }}) Upcoming Events
-                <svg-icon name="icon-sort-desc" height="10" width="10" />
-              </a>
-            </div>
-          </template>
-
-          <template v-if="activeTab === 'past'">
-            <div class="past-events">
-              <event-card
-                v-for="event in displayedPastEvents"
-                :key="event.sys.id"
-                :event="event"
-              />
-            </div>
-
-            <div class="show-all-upcoming-events">
-              <a
-                v-if="
-                  !isShowingAllPastEvents &&
-                    pastEvents.length != displayedPastEvents.length
-                "
-                class="show-all-upcoming-events__btn"
-                href="#"
-                @click.prevent="isShowingAllPastEvents = true"
-              >
-                Show All ({{ pastEvents.length }}) Past Events
-                <svg-icon name="icon-sort-desc" height="10" width="10" />
-              </a>
-            </div>
-          </template>
-        </div>
+  <div class="page-data">
+    <breadcrumb :breadcrumb="breadcrumb" title="Events" />
+    <div class="container">
+      <div class="search-tabs__container">
+        <h3>
+          Browse categories
+        </h3>
+        <ul class="search-tabs">
+          <li v-for="type in searchTypes" :key="type.label">
+            <nuxt-link
+              class="search-tabs__button"
+              :class="{ active: type.path === 'events' }"
+              :to="{
+                path: type.path,
+                query: {
+                  ...$route.query,
+                }
+              }"
+            >
+              {{ type.label }}
+            </nuxt-link>
+          </li>
+        </ul>
       </div>
+      <div class="search-bar__container">
+        <h5>
+          Search within category
+        </h5>
+        <search-controls-contentful
+          class="search-bar"
+          placeholder="Enter search criteria"
+          path="/news-and-events/events"
+          showSearchText
+        />
+      </div>
+    </div>
+    <div class="pb-16 container">
+      <el-row :gutter="32" type="flex">
+        <el-col :span="24">
+          <el-row :gutter="32">
+            <client-only>
+              <el-col
+                class="facet-menu"
+                :sm="24"
+                :md="6"
+                :lg="6"
+              >
+                <events-facet-menu
+                  ref="eventsFacetMenu"
+                  class="events-facet-menu"
+                  @events-selections-changed="onPaginationPageChange(1)"
+                />
+              </el-col>
+              <el-col
+                :sm='24'
+                :md='18'
+                :lg='18'
+              >
+                <div class="search-heading mt-32 mb-16">
+                  <div class="label1" v-show="events.items.length">
+                    {{ events.total }} Results | Showing
+                    <pagination-menu
+                      :page-size="events.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </div>
+                  <span class="label1">
+                    Sort
+                    <sort-menu
+                      :options="sortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </span>
+                </div>
+                <div ref="eventsWrap" class="subpage">
+                  <event-list-item
+                    v-for="item in events.items"
+                    :key="item.sys.id"
+                    :item="item"
+                  />
+                </div>
+                <div class="search-heading">
+                  <div class="label1" v-if="events.items.length">
+                    {{ events.total }} Results | Showing
+                    <pagination-menu
+                      :page-size="events.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </div>
+                  <pagination
+                    v-if="events.limit < events.total"
+                    :selected="curSearchPage"
+                    :page-size="events.limit"
+                    :total-count="events.total"
+                    @select-page="onPaginationPageChange"
+                  />
+                </div>
+              </el-col>
+            </client-only>
+          </el-row>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="pb-16 pt-16 container">
+      <submit-news-section/>
     </div>
   </div>
 </template>
 
-<script>
-import { pathOr } from 'ramda'
-
+<script lang="ts">
+// @ts-nocheck
+import Vue from 'vue'
+import { propOr } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import EventCard from '@/components/EventCard/EventCard'
-import PageHero from '@/components/PageHero/PageHero.vue'
-import TabNav from '@/components/TabNav/TabNav.vue'
-import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue'
-
+import EventsFacetMenu from '@/components/FacetMenu/EventsFacetMenu.vue'
+import EventListItem from '@/components/EventListItem/EventListItem.vue'
+import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
+import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import createClient from '@/plugins/contentful.js'
+import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
+
+import { fetchEvents, EventsData, EventsComputed, EventsMethods } from '../model'
 
 const client = createClient()
-const MAX_PAST_EVENTS = 8
 
-/**
- * Get featured event from the News and Events page
- * @returns {Object}
- */
-const getFeaturedEvent = async () => {
-  try {
-    const newsAndEventsPage = await client.getEntry(
-      process.env.ctf_news_and_events_page_id
-    )
-
-    return pathOr({}, ['fields', 'featuredEvent'], newsAndEventsPage)
-  } catch (error) {
-    return {}
+const searchTypes = [
+  {
+    label: 'News',
+    path: 'news'
+  },
+  {
+    label: 'Events',
+    path: 'events'
+  },
+  {
+    label: 'Community Spotlight',
+    path: 'community-spotlight'
   }
-}
+]
 
-/**
- * Get upcoming events
- * @param {Object} featuredEvent
- * @returns {Array}
- */
-const getUpcomingEvents = async featuredEvent => {
-  try {
-    const todaysDate = new Date()
-    return await client.getEntries({
-      content_type: process.env.ctf_event_id,
-      order: 'fields.startDate',
-      'fields.startDate[gte]': todaysDate.toISOString(),
-      'sys.id[nin]': pathOr(null, ['sys', 'id'], featuredEvent)
-    })
-  } catch (error) {
-    return []
-  }
-}
+const sortOptions = [
+  {
+    label: 'Upcoming',
+    id: 'upcoming',
+    sortOrder: '-fields.upcomingSortOrder'
+  },
+  {
+    label: 'Latest',
+    id: 'latest',
+    sortOrder: '-fields.startDate'
+  },
+  {
+    label: 'A-Z',
+    id: 'alphabatical',
+    sortOrder: 'fields.title'
+  },
+  {
+    label: 'Z-A',
+    id: 'reverseAlphabatical',
+    sortOrder: '-fields.title'
+  },
+]
 
-/**
- * Get upcoming events
- * @returns {Array}
- */
-const getPastEvents = async () => {
-  try {
-    const todaysDate = new Date()
-    return await client.getEntries({
-      content_type: process.env.ctf_event_id,
-      order: '-fields.startDate',
-      'fields.startDate[lt]': todaysDate.toISOString()
-    })
-  } catch (error) {
-    return []
-  }
-}
-
-const getEvents = async () => {
-  try {
-    const featuredEvent = await getFeaturedEvent()
-
-    const upcomingEvents = await getUpcomingEvents(featuredEvent)
-
-    const pastEvents = await getPastEvents()
-
-    return {
-      upcomingEvents: upcomingEvents.items,
-      pastEvents: pastEvents.items,
-      featuredEvent
-    }
-  } catch {
-    return {
-      upcomingEvents: [],
-      pastEvents: [],
-      featuredEvent: []
-    }
-  }
-}
-
-export default {
+export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   name: 'EventsPage',
 
   components: {
     Breadcrumb,
-    EventCard,
-    PageHero,
-    TabNav,
-    FeaturedEvent
+    EventsFacetMenu,
+    EventListItem,
+    SearchControlsContentful,
+    SortMenu,
+    SubmitNewsSection
   },
 
-  async asyncData() {
-    const events = await getEvents()
+  async asyncData({ route }) {
+    const events = await fetchEvents(client, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
 
     return {
-      ...events
+      events
     }
   },
 
-  data: function() {
+  data() {
     return {
-      title: 'Events',
+      searchTypes,
+      selectedSortOption: sortOptions[0],
+      sortOptions,
       breadcrumb: [
         {
+          label: 'Home',
           to: {
             name: 'index'
-          },
-          label: 'Home'
+          }
         },
         {
+          label: 'News & Events',
           to: {
             name: 'news-and-events'
-          },
-          label: 'News & Events'
+          }
         }
-      ],
-      activeTab: 'upcoming',
-      eventsTabs: [
-        {
-          label: 'Upcoming',
-          type: 'upcoming'
-        },
-        {
-          label: 'Past',
-          type: 'past'
-        }
-      ],
-      upcomingEvents: [],
-      pastEvents: [],
-      isShowingAllUpcomingEvents: false,
-      isShowingAllPastEvents: false
+      ]
     }
   },
 
-  computed: {
-    /**
-     * Compute upcoming events
-     * Used to display four events in the upcoming tab
-     * @returns {Array}
-     */
-    displayedUpcomingEvents: function() {
-      return this.isShowingAllUpcomingEvents
-        ? this.upcomingEvents
-        : this.upcomingEvents.slice(0, 4)
-    },
-
-    /**
-     * Compute past events to display based on
-     * current chunk value
-     * @returns {Array}
-     */
-    displayedPastEvents: function() {
-      return this.isShowingAllPastEvents
-        ? this.pastEvents
-        : this.pastEvents.slice(0, 4)
+  head() {
+    return {
+      title: this.searchTypes[1].label
     }
   },
 
   watch: {
-    '$route.query.tab': {
-      handler(val) {
-        if (val) {
-          this.activeTab = val
-        }
+    '$route.query': {
+      handler: async function() {
+        // we use next tick to wait for the facet menu to be mounted
+        this.$nextTick(async () => {
+          this.events = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, 10, 0)
+        })
       },
       immediate: true
+    },
+  },
+
+  computed: {
+    /**
+     * Compute the current page based off the limit and the offset
+     * @returns {Number}
+     */
+    curSearchPage: function() {
+      return this.events.skip / this.events.limit + 1
+    },
+    startLessThanDate: function() {
+      return this.$refs.eventsFacetMenu?.getStartLessThanDate()
+    },
+    startGreaterThanOrEqualToDate: function() {
+      return this.$refs.eventsFacetMenu?.getStartGreaterThanOrEqualToDate()
+    },
+    eventTypes: function() {
+      return this.$route.query.selectedEventTypeOptions || undefined
+    },
+    sortOrder: function() {
+      return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
     }
   },
 
   methods: {
     /**
-     * Set active tab by changing the router query param
-     * @param {String} tab
+     * Get more events for the new page
+     * @param {Number} page
      */
-    setActiveTab(tab) {
-      this.$router.push({
-        query: { tab }
-      })
+    async onPaginationPageChange(page) {
+      const { limit } = this.events
+      const offset = (page - 1) * limit
+      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, limit, offset)
+      this.events = response
+    },
+    /**
+     * Update limit based on pagination menu selection and get more events
+     * @param {Number} limit
+     */
+    async onPaginationLimitChange(limit) {
+      const newLimit = limit === 'View All' ? this.events.total : limit
+      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, newLimit, 0)
+      this.events = response
+    },
+    async onSortOptionChange(option) {
+      this.selectedSortOption = option
+      const response = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, this.events.limit, 0)
+      this.events = response
     }
   }
-}
+})
 </script>
+
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
-
-h2 {
-  font-size: 1.5rem;
-  line-height: 2.25rem;
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
 }
-
-h3 {
-  color: $navy;
-  font-size: 1.375rem;
-  line-height: 2rem;
+.event-list-item {
+  border-top: 1px solid $lineColor2;
+  padding: 1rem 0;
+  &:first-child {
+    border: none;
+    padding-top: 0;
+  }
+  &:last-child {
+    padding-bottom: 0;
+  }
 }
-.event-card {
-  margin-bottom: 2em;
+.subpage {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
 }
-
-.upcoming-events,
-.past-events {
+.page-wrap {
+  margin-bottom: 2.5rem;
+}
+.search-tabs__container {
+  margin-top: 2rem;
+  padding-top: 0.5rem;
+  background-color: white;
+  border: 0.1rem solid $lineColor2;
+  h3 {
+    padding-left: 0.75rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+}
+.search-bar__container {
+  margin-top: 1em;
+  padding: 0.75rem;
+  border: 0.1rem solid $lineColor2;
+  background: white;
+  h5 {
+    line-height: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+}
+.search-tabs {
   display: flex;
-  flex-wrap: wrap;
-  margin: 0 -1em;
-}
-.upcoming-event {
-  margin: 0 1em 2em;
-  @media (min-width: 48em) {
-    width: calc(50% - 4.125em); // Account for the margins and the border
+  list-style: none;
+  overflow: auto;
+  margin: 0 0 0 0;
+  padding: 0 0;
+  outline: 0.1rem solid $purple;
+  @media (max-width: 40rem) {
+    display: block;
   }
-  @media (min-width: 64em) {
-    width: calc(25% - 4.125em); // Account for the margins and the border
+  li {
+    width: 100%;
+    text-align: center;
+    color: $purple;
+  }
+  li:last-child > a {
+    border-right: none;
   }
 }
-.show-all-upcoming-events {
-  text-align: center;
-  &__btn {
-    align-items: center;
-    color: $navy;
-    display: inline-flex;
+.search-tabs__button {
+  background: #f9f2fc;
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  outline: none;
+  padding: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  line-height: 3.5rem;
+  @media (min-width: 40rem) {
+    font-size: 0.65rem;
+    border-right: 0.1rem solid $purple;
+  }
+  @media (min-width: 50rem) {
+    font-size: .75rem;
+  }
+  @media (min-width: 64rem) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-transform: none;
+  }
+  &:hover,
+  &:focus,
+  &.active {
+    color: white;
+    background-color: $purple;
     font-weight: 500;
-    text-decoration: none;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
-  }
-  .svg-icon {
-    margin-left: 0.5rem;
   }
 }
-
-.events-wrap {
-  margin-bottom: 2.625em;
+.search-heading {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  @media screen and (max-width: 28em) {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
+}
+.events-facet-menu {
+  margin-top: 2rem;
 }
 </style>

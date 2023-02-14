@@ -21,28 +21,52 @@
       </detail-tabs>
       <div class="subpage">
         <div class="page-heading">
-          <h1>{{ fileName }}</h1>
+          <h2>{{ fileName }}</h2>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">File Details</strong>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
-            Video
+          <strong class="file-detail__column_1">Type</strong>
+          <div class="file-detail__column_2">
+            {{ fileType }}
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Dataset id</strong>
-          <div class="file-detail__column">
-            {{ datasetId }}
+          <strong class="file-detail__column_1">Dataset</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: 'datasets-datasetId',
+                params: {
+                  datasetId
+                }
+              }"
+            >
+              Go to dataset
+            </nuxt-link>
           </div>
         </div>
         <div class="file-detail">
-          <strong class="file-detail__column">Version</strong>
-          <div class="file-detail__column">
-            {{ versionNumber }}
+          <strong class="file-detail__column_1">File location</strong>
+          <div class="file-detail__column_2">
+            <nuxt-link
+              :to="{
+                name: `datasets-datasetId`,
+                params: {
+                  datasetId: datasetId
+                },
+                query: {
+                  datasetDetailsTab: 'files',
+                  path: fileFolderLocation
+                }
+              }"
+            >
+              {{ filePath }}
+            </nuxt-link>
           </div>
+        </div>
+        <div class="pt-16">
+          <bf-button @click="requestDownloadFile(file)">
+            Download file
+          </bf-button>
         </div>
       </div>
     </div>
@@ -53,14 +77,23 @@
 import Plyr from 'plyr'
 
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
+
+import RequestDownloadFile from '@/mixins/request-download-file'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
+import FileDetails from '@/mixins/file-details'
 
 export default {
   name: 'VideoViewerPage',
 
   components: {
-    DetailTabs
+    DetailTabs,
+    BfButton
   },
-  async asyncData({ route, $axios }) {
+
+  mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
+
+  async asyncData({ route, error, $axios }) {
     let signedUrl = await $axios
       .$get(
         `${process.env.portal_api}/download?key=${route.query.file_path}&contentType=${route.query.mimetype}`
@@ -68,9 +101,19 @@ export default {
       .then(response => {
         return response
       })
+    let filePath = route.query.file_path
+    filePath = filePath.substring(filePath.indexOf('files'))
+    const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
+      $axios,
+      filePath,
+      route.query.dataset_id,
+      route.query.dataset_version,
+      error
+    )
     return {
       video_src: signedUrl,
-      mimetype: route.query.mimetype
+      mimetype: route.query.mimetype,
+      file
     }
   },
 
@@ -90,11 +133,11 @@ export default {
   },
   computed: {
     /**
-     * Get the file name from the query parameter.
+     * Get the file type from the file prop.
      * @returns String
      */
-    fileName: function() {
-      return this.$route.query.id
+    fileType: function() {
+      return this.file.fileType
     },
 
     /**
@@ -120,57 +163,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.about {
-  text-align: center;
-  min-height: 50vh;
-  margin-top: 9rem;
-}
-
-h1 {
-  flex: 1;
-  font-size: 1.5em;
-  line-height: 2rem;
-}
-.page-heading {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.375rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.page-heading__button {
-  flex-shrink: 0;
-}
-
-.file-detail {
-  border-bottom: 1px solid #dbdfe6;
-  flex-direction: column;
-  font-size: 0.875em;
-  display: flex;
-  padding: 1rem 0.625rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.file-detail__column {
-  flex: 1;
-}
+@import '@/assets/_viewer.scss';
 </style>
 <style lang="scss">
 .video-container {
-  padding-top: 8px;
+  padding-top: 0.5rem;
 }
 .video {
   width: 100%;
+}
+.page-heading {
+  margin-bottom: 1.375rem;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="contact-us-page">
+  <div class="contact-us-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
@@ -8,14 +8,13 @@
       <div v-html="parseMarkdown(heroCopy)" />
     </page-hero>
     <div class="page-wrap container">
-      <div class="subpage">
+      <div class="subpage mb-0">
         <template v-if="!isBugSubmitted && !isGeneralSubmitted">
-          <h2>Let us know why you’re contacting us:</h2>
+          <h2>Let us know why you are contacting us:</h2>
           <el-select
             v-model="formType"
             class="input-reason"
             placeholder="Select a reason"
-            aria-placeholder="Select a reason"
             :popper-append-to-body="false"
           >
             <el-option
@@ -41,16 +40,16 @@
           </template>
           <p>
             Thank you for your inquiry. A member of the SPARC team will contact
-            you within two business days.
+            you as soon as possible.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
         </div>
 
         <div v-if="isBugSubmitted" class="msg-success">
           <p>
-            Thank you for letting us know about this error or technical issue.
-            If you requested a response, a member of the SPARC team will contact
-            you within two business days.
+            Thank you for letting us know about this error or issue. If you
+            requested a response, a member of the SPARC team will contact you
+            as soon as possible.
           </p>
           <a href="#" @click="resetForms">Submit another inquiry</a>
         </div>
@@ -107,17 +106,23 @@ export default {
       formType: '',
       formTypeOptions: [
         {
-          label: 'I couldn’t find the information in Help',
+          label: 'I could not find the information in Help',
           value: 'general'
         },
         {
-          label: 'I want to report an error or a technical issue',
+          label: 'I want to report an error or an issue',
           value: 'bug'
         }
       ],
       isBugSubmitted: false,
       isGeneralSubmitted: false,
       firstName: ''
+    }
+  },
+
+  head() {
+    return {
+      title: this.pageTitle
     }
   },
 
@@ -138,7 +143,7 @@ export default {
      * @param {String} val
      */
     formType(val) {
-      this.$router.push({ query: { type: val } })
+      this.$router.push({ query: { ...this.$route.query, type: val } })
     }
   },
 
@@ -167,6 +172,9 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/_variables.scss';
+.contact-us-page {
+  background-color: #f5f7fa;
+}
 .page {
   display: flex;
   margin-top: 7rem;
@@ -188,9 +196,6 @@ h2 {
 <style lang="scss">
 @import '@/assets/_variables.scss';
 .contact-us-page {
-  .el-form-item:not(.mb-0) {
-    margin-bottom: 3.25rem;
-  }
   .el-form-item__label {
     color: #000;
     font-size: 1.625rem;
@@ -205,7 +210,6 @@ h2 {
   .el-input,
   .el-textarea,
   .el-select-dropdown__item {
-    font-size: 1rem;
     ::placeholder {
       color: $medium-gray;
     }

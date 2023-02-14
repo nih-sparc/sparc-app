@@ -7,13 +7,13 @@
       </p>
     </div>
     <client-only placeholder="Loading gallery ...">
-      <div class="gallery-container">
+      <div :class="['gallery-container', { 'one-item': galleryItems.length === 1 }]">
         <gallery
           :items="galleryItems"
           :max-width="maxWidth"
           :show-indicator-bar="true"
           :show-card-details="true"
-          :highlight-active="true"
+          :highlight-active="shouldHighlight"
         />
       </div>
     </client-only>
@@ -23,7 +23,9 @@
 <script>
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
+import flatmaps from '@/services/flatmaps'
 
+import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
 
 import { baseName, extractSection } from '@/utils/common'
@@ -35,7 +37,7 @@ export default {
       ? () => import('@abi-software/gallery').then(gallery => gallery)
       : null
   },
-  mixins: [MarkedMixin],
+  mixins: [FormatString, MarkedMixin],
   props: {
     datasetScicrunch: {
       type: Object,
@@ -73,6 +75,12 @@ export default {
         return []
       }
     },
+    timeseriesData: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
     markdown: {
       type: String,
       default: ''
@@ -94,11 +102,18 @@ export default {
       defaultScaffoldImg: require('~/assets/scaffold-light.png'),
       defaultPlotImg: require('~/assets/data-icon.png'),
       defaultVideoImg: require('~/assets/video-default.png'),
-      defaultFlatmapImg: require('~/assets/flatmap-thumbnail.png'),
+      flatmapImg: {
+        rat: require('~/assets/flatmap-thumbnails/rat.png'),
+        mouse: require('~/assets/flatmap-thumbnails/mouse.png'),
+        human: require('~/assets/flatmap-thumbnails/human.png'),
+        pig: require('~/assets/flatmap-thumbnails/pig.png'),
+        cat: require('~/assets/flatmap-thumbnails/cat.png')
+      },
       ro: null,
       maxWidth: 3,
       scicrunchItems: [],
-      biolucidaItems: []
+      biolucidaItems: [],
+      timeseriesItems: []
     }
   },
   computed: {
@@ -126,16 +141,27 @@ export default {
       return this.datasetThumbnailData
     },
     galleryItems() {
-      return this.biolucidaItems.concat(this.scicrunchItems)
+      return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
     },
     hasDescription() {
       return this.description !== ''
+    },
+    // Highlighting the items looks weird if there is only one item and there is no description above it
+    shouldHighlight() {
+      return this.hasDescription || this.galleryItems.length > 1
     }
   },
   watch: {
     markdown: function(text) {
       const html = this.parseMarkdown(text)
       this.description = extractSection(/data collect[^:]+:/i, html)
+    },
+    timeseriesData: {
+      deep: true,
+      immediate: true,
+      handler: function(data) {
+        this.timeseriesItems = data
+      }
     },
     datasetScicrunch: {
       deep: true,
@@ -171,11 +197,8 @@ export default {
                   mimetype: thumbnail.mimetype.name,
                   file_path: thumbnail.dataset.path
                 })
-                let linkUrl =
-                  baseRoute +
-                  'datasets/scaffoldviewer' +
-                  '?scaffold=' +
-                  `${datasetId}/${datasetVersion}/files/${file_path}`
+                let filePath = encodeURIComponent(`files/${file_path}`)
+                const linkUrl = `${baseRoute}datasets/scaffoldviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
                 index += 1
                 return {
                   id,
@@ -211,18 +234,26 @@ export default {
         if ('flatmaps' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData.flatmaps, f => {
-              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
+              let title = f.uberonid ? f.uberonid : null
+              if (f.organ) title = this.capitalize(f.organ)
+
+              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}&for_species=${f.species}&organ=${f.organ}`
               const item = {
                 id: f.uberonid,
-                title: f.uberonid,
+                title: title,
                 type: 'Flatmap',
                 thumbnail: null,
                 link: linkUrl
               }
-              this.scaleThumbnailImage(item, {
-                mimetype: 'image/png',
-                data: this.defaultFlatmapImg
-              })
+
+              this.scaleThumbnailImage(
+                item,
+                {
+                  mimetype: 'image/png',
+                  data: this.flatmapImg[flatmaps.speciesMap[f.taxo]]
+                },
+                true
+              )
               return item
             })
           )
@@ -232,8 +263,11 @@ export default {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
               const id = segmentation.id
-              const file_path = segmentation.dataset.path
-              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${file_path}`
+              let file_path = segmentation.dataset.path
+              // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
+              file_path = file_path.replaceAll(' ', '_')
+              file_path = file_path.replaceAll(',', '_')
+              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=files/${file_path}`
 
               this.getSegmentationThumbnail(items, {
                 id,
@@ -371,6 +405,11 @@ export default {
         index < scaffold_info['abi-scaffold-thumbnail'].length
       ) {
         return scaffold_info['abi-scaffold-thumbnail'][index]
+      } else if (
+        'abi-thumbnail' in scaffold_info &&
+        index < scaffold_info['abi-thumbnail'].length
+      ) {
+        return scaffold_info['abi-thumbnail'][index]
       }
 
       return {
@@ -474,7 +513,7 @@ export default {
           }
         )
     },
-    scaleThumbnailImage(item, image_info) {
+    scaleThumbnailImage(item, image_info, local_file = false) {
       if (typeof window !== 'undefined') {
         let img = document.createElement('img')
         const canvas = document.createElement('canvas')
@@ -504,10 +543,7 @@ export default {
           this_.$set(item, 'thumbnail', dataurl)
         }
 
-        if (
-          image_info.data.includes('flatmap-thumbnail') ||
-          image_info.data.startsWith('data:')
-        ) {
+        if (local_file) {
           img.src = image_info.data
         } else {
           img.src = `data:${image_info.mimetype};base64,${image_info.data}`
@@ -564,8 +600,7 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          return Promise.reject('Maximum iterations reached.')
+          // return Promise.reject('Maximum iterations reached.')
         }
       )
     },
@@ -590,8 +625,7 @@ export default {
             let item = items.find(x => x.id === info.id)
             this.$set(item, 'thumbnail', this.defaultImg)
           }
-
-          return Promise.reject('Maximum iterations reached.')
+          // return Promise.reject('Maximum iterations reached.')
         }
       )
     },
@@ -676,5 +710,15 @@ a.next {
   width: 2em;
   border-radius: 3px;
   background-color: #555;
+}
+
+::v-deep .one-item .card-line {
+  flex-grow: unset !important;
+}
+</style>
+
+<style lang="scss">
+.gallery-container {
+  @import '~@abi-software/gallery/dist/gallery';
 }
 </style>

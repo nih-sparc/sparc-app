@@ -1,223 +1,120 @@
 <template>
-  <div class="dataset-details">
-    <details-header
-      :subtitle="subtitles.toString()"
-      :title="datasetTitle"
-      :description="datasetDescription"
-      :breadcrumb="breadcrumb"
-    >
-      <div slot="banner image" class="img-dataset">
-        <dataset-banner-image :src="getDatasetImage" />
-        <sparc-pill v-if="datasetInfo.embargo">
-          Embargoed
-        </sparc-pill>
-      </div>
-      <div slot="meta content" class="details-header__container--content-links">
-        <div class="dataset-meta">
-          <div class="dataset-updated-date">
-            Last updated on {{ lastUpdatedDate }}
-            <template v-if="datasetType !== 'simulation'">
-              (
-              <a
-                href="#"
-                class="version-link"
-                @click.prevent="isVersionModalVisible = true"
-              >
-                {{ versionRevisionText }}
-              </a>
-              )
-            </template>
-          </div>
-        </div>
-        <div class="dataset-owners">
-          <div
-            v-for="(contributor, idx) in datasetContributors"
-            :key="contributor.id"
-            class="contributor-item-wrap"
-          >
-            <contributor-item :contributor="contributor" />
-            <template v-if="idx < datasetContributors.length - 1">
-              ,
-            </template>
-          </div>
-        </div>
-        <p v-if="datasetInfo.embargo" class="embargo-release-date">
-          Release date: {{ formatDate(datasetInfo.embargoReleaseDate) }}
-        </p>
-
-        <template v-if="datasetInfo.embargo === false">
-          <div class="header-stats-section">
-            <div class="header-stats-block">
-              <svg-icon class="mr-8" name="icon-files" height="20" width="20" />
-              <div>
-                <template v-if="datasetFiles > 0">
-                  <strong>
-                    {{ datasetFiles }}
-                  </strong>
-                  Files
-                </template>
-
-                <template v-else>
-                  No Files
-                </template>
-              </div>
-            </div>
-            <div v-if="datasetType !== 'simulation'" class="header-stats-block">
-              <svg-icon
-                class="mr-8"
-                name="icon-storage"
-                height="20"
-                width="20"
-              />
-              <div>
-                <strong>{{ datasetStorage.number }}</strong>
-                {{ datasetStorage.unit }}
-              </div>
-            </div>
-            <div class="header-stats-block">
-              <svg-icon
-                class="mr-8"
-                name="icon-license"
-                height="20"
-                width="20"
-              />
-              <div>
-                <template v-if="datasetLicense">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="datasetLicenseName"
-                    placement="top"
-                    :visible-arrow="false"
-                  >
-                    <a :href="licenseLink" target="_blank">
-                      {{ datasetLicense }}
-                    </a>
-                  </el-tooltip>
-                </template>
-
-                <template v-else>
-                  No License Selected
-                </template>
-              </div>
-            </div>
-          </div>
-          <div v-if="datasetType === 'simulation' && datasetInfo.study">
-            <a
-              :href="`https://osparc.io/study/${getSimulationId}`"
-              target="_blank"
-              class="dataset-button-link"
-            >
-              <el-button class="dataset-button">
-                Run Simulation
-              </el-button>
-            </a>
-          </div>
-          <div v-else>
-            <el-button
-              class="dataset-button"
-              @click="isDownloadModalVisible = true"
-            >
-              Get Dataset
-            </el-button>
-            <el-button class="citation-button" @click="scrollToCitations">
-              Cite Dataset
-            </el-button>
-            <nuxt-link
-              :to="{
-                name: 'help-helpId',
-                params: {
-                  helpId: ctfDatasetFormatInfoPageId
-                }
-              }"
-              class="dataset-link"
-            >
-              SPARC Dataset Structure
-            </nuxt-link>
-          </div>
-        </template>
-      </div>
-    </details-header>
-    <div v-if="datasetInfo.embargo === false" class="container">
-      <citation-details
-        :doi-value="datasetInfo.doi"
-        :published-date="originallyPublishedDate"
-      />
-    </div>
-    <div v-if="datasetInfo.embargo === false" class="container">
-      <detail-tabs
-        :tabs="tabs"
-        :active-tab="activeTab"
-        default-tab="description"
-      >
-        <dataset-description-info
-          v-show="activeTab === 'description'"
-          :markdown="markdown"
-          :dataset-records="datasetRecords"
-          :loading-markdown="loadingMarkdown"
-        />
-        <dataset-about-info
-          v-show="activeTab === 'about'"
-          :updated-date="lastUpdatedDate"
-          :doi="datasetDOI"
-          :dataset-tags="datasetTags"
-          :dataset-owner-name="datasetOwnerName"
-          :dataset-owner-email="datasetOwnerEmail"
-          :external-publications="externalPublications"
-        />
-        <dataset-files-info
-          v-show="activeTab === 'files'"
+  <div class="dataset-details pb-16">
+    <client-only>
+      <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
+      <div v-if="showTombstone">
+        <tombstone
           :dataset-details="datasetInfo"
-          :osparc-viewers="osparcViewers"
         />
-        <images-gallery
-          v-show="activeTab === 'images'"
-          :markdown="markdown.markdownTop"
-          :dataset-biolucida="biolucidaImageData"
-          :dataset-scicrunch="scicrunchData"
-        />
-      </detail-tabs>
-    </div>
-    <download-dataset
-      :visible.sync="isDownloadModalVisible"
-      :dataset-details="datasetInfo"
-      :download-size="getDownloadSize"
-      @close-download-dialog="isDownloadModalVisible = false"
-    />
-    <version-history
-      :visible.sync="isVersionModalVisible"
-      :dataset-id="datasetInfo.id"
-      :latest-version="datasetInfo.latestVersion"
-      :versions="versions"
-      @close-version-dialog="closeVersionModal"
-    />
-
-    <dataset-version-message
-      v-if="!isLatestVersion"
-      :current-version="datasetInfo.version"
-      :dataset-details="datasetInfo"
-    />
+      </div>
+      <div v-else>
+        <div class="bx--grid">
+          <div class="bx--row">
+            <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
+              <dataset-action-box />
+              <similar-datasets-info-box
+                :associated-projects="associatedProjects"
+                :dataset-type-name="datasetTypeName"
+              />
+            </div>
+            <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
+              <dataset-header
+                class="dataset-header"
+                :latestVersionRevision="latestVersionRevision"
+                :latestVersionDate="latestVersionDate"
+                :numCitations="numCitations"
+                :numDownloads="numDownloads"
+              />
+              <div class="tabs-container mt-16 mb-0 mx-0 p-16">
+                <content-tab-card
+                  id="datasetDetailsTabsContainer"
+                  :tabs="tabs"
+                  :active-tab-id="activeTabId"
+                  @tab-changed="tabChanged"
+                  linkComponent="nuxt-link"
+                  routeName="datasetDetailsTab"
+                >
+                  <dataset-description-info
+                    v-show="activeTabId === 'abstract'"
+                    :markdown="markdown"
+                    :dataset-records="datasetRecords"
+                    :loading-markdown="loadingMarkdown"
+                    :dataset-tags="datasetTags"
+                  />
+                  <dataset-about-info
+                    v-show="activeTabId === 'about'"
+                    :latestVersionRevision="latestVersionRevision"
+                    :latestVersionDate="latestVersionDate"
+                    :associated-projects="associatedProjects"
+                  />
+                  <citation-details
+                    v-show="activeTabId === 'cite'"
+                    :doi-value="datasetInfo.doi"
+                  />
+                  <dataset-files-info
+                    v-if="hasFiles"
+                    v-show="activeTabId === 'files'"
+                    :osparc-viewers="osparcViewers"
+                    :dataset-scicrunch="scicrunchData"
+                  />
+                  <images-gallery
+                    v-if="hasGalleryImages"
+                    v-show="activeTabId === 'images'"
+                    :markdown="markdown.markdownTop"
+                    :dataset-biolucida="biolucidaImageData"
+                    :dataset-scicrunch="scicrunchData"
+                    :timeseries-data="timeseriesData"
+                  />
+                  <dataset-references
+                    v-if="hasCitations"
+                    v-show="activeTabId === 'references'"
+                    :primary-publications="primaryPublications"
+                    :associated-publications="associatedPublications"
+                  />
+                  <version-history
+                    v-if="canViewVersions"
+                    v-show="activeTabId === 'versions'"
+                    :versions="versions"
+                    :changelog-files="changelogFiles"
+                  />
+                </content-tab-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <dataset-version-message
+        v-if="!isLatestVersion"
+        :current-version="datasetInfo.version"
+        :dataset-details="datasetInfo"
+      />
+    </client-only>
   </div>
 </template>
 
 <script>
 import marked from 'marked'
-import { clone, propOr, pathOr, head, compose, split } from 'ramda'
+import { mapState } from 'vuex'
+import { clone, propOr, isEmpty, pathOr, head, compose } from 'ramda'
+import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
+import createAlgoliaClient from '@/plugins/algolia.js'
 
-import DetailsHeader from '@/components/DetailsHeader/DetailsHeader.vue'
-import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
-import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
-import DownloadDataset from '@/components/DownloadDataset/DownloadDataset.vue'
+import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
+import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
+import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
+import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
+import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
-import SparcPill from '@/components/SparcPill/SparcPill.vue'
+import Tombstone from '@/components/Tombstone/Tombstone.vue'
 
+import ErrorMessages from '@/mixins/error-messages'
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
@@ -230,9 +127,13 @@ import createClient from '@/plugins/contentful.js'
 
 import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
-import CitationDetails from '~/components/CitationDetails/CitationDetails.vue'
+import flatmaps from '~/services/flatmaps'
+
+import { failMessage } from '@/utils/notification-messages'
 
 const client = createClient()
+const algoliaClient = createAlgoliaClient()
+const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 marked.setOptions({
   sanitize: true
@@ -240,18 +141,26 @@ marked.setOptions({
 
 const tabs = [
   {
-    label: 'Description',
-    type: 'description'
+    label: 'Abstract',
+    id: 'abstract'
   },
   {
     label: 'About',
-    type: 'about'
+    id: 'about'
   },
   {
-    label: 'Files',
-    type: 'files'
-  }
+    label: 'Cite',
+    id: 'cite'
+  },
 ]
+
+const getDatasetFacetsData = async (route) => {
+  const objectId = route.params.datasetId
+  const filter = `objectID:${objectId}`
+  return await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
+    return data
+  })
+}
 
 /**
  * Get organ entries from contentful
@@ -269,40 +178,77 @@ const getOrganEntries = async () => {
 }
 
 /**
+ * Get associated project from contentful
+ * @returns {Array}
+ */
+const getAssociatedProjects = async (sparcAwardNumbers) => {
+  try {
+    const projects = await client.getEntries({
+      content_type: process.env.ctf_project_id,
+    })
+    const associatedProjects = projects.items?.filter((project) => {
+      return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project) ) 
+    })
+    return associatedProjects || []
+  } catch (error) {
+    return []
+  }
+}
+
+/**
  * Get Dataset details
  * @param {Number} datasetId
  * @param {Number} version
- * @param {String} datasetType
+ * @param {String} datasetTypeName
  * @param {Function} $axios
  * @returns {Object}
  */
-const getDatasetDetails = async (datasetId, version, datasetType, $axios) => {
+const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName, $axios) => {
   const url = `${process.env.discover_api_host}/datasets/${datasetId}`
-  const datasetUrl = version ? `${url}/versions/${version}` : url
+  var datasetUrl = version ? `${url}/versions/${version}` : url
+  if (userToken) {
+    datasetUrl += `?api_key=${userToken}`
+  }
 
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
-  try {
-    const datasetDetails =
-      datasetType === 'simulation'
-        ? await $axios.$get(simulationUrl)
-        : await $axios.$get(datasetUrl)
+  const datasetDetails =
+    (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
+      ? await $axios.$get(datasetUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
+      : await $axios.$get(simulationUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
 
-    const datasetOwnerId = datasetDetails.ownerId || ''
-    const datasetOwnerEmail = await $axios
-      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-      .then(resp => {
-        return resp.email
-      })
-      .catch(() => {
-        return ''
-      })
+  const datasetOwnerId = propOr('', 'ownerId', datasetDetails)
+  const datasetOwnerEmail = await $axios
+    .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
+    .then(resp => {
+      return resp.email
+    })
+    .catch(() => {
+      return ''
+    })
+
+  if (datasetDetails)
     datasetDetails.ownerEmail = datasetOwnerEmail
 
-    return datasetDetails
-  } catch (error) {
-    return {}
-  }
+  return datasetDetails
 }
 
 /**
@@ -322,6 +268,21 @@ const getDatasetVersions = async (datasetId, $axios) => {
   }
 }
 
+const getDownloadsSummary = async ($axios) => {
+  try {
+    const startDate = new Date('2000','1');
+    const currentDate = new Date()
+    const url = `${process.env.discover_api_host}/metrics/dataset/downloads/summary`
+    return $axios.$get(url, {
+        params: { startDate: startDate, endDate: currentDate }
+      }).then(response => {
+      return response
+    })
+  } catch (error) {
+    return 0
+  }
+}
+
 const getBiolucidaData = async datasetId => {
   try {
     return biolucida.searchDataset(datasetId)
@@ -333,9 +294,8 @@ const getBiolucidaData = async datasetId => {
 /**
  * Get data for objects that have a data specific viewer.
  * @param {Number} datasetId
- * @param {String} datasetType
  */
-const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
+const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
   let biolucidaImageData = {}
   let scicrunchData = {}
   try {
@@ -354,23 +314,59 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion) => {
         id: Number(datasetId),
         version: datasetVersion
       }
-
-      // Check for flatmap neuron data
+      // Check for flatmap data
       if (scicrunchData.organs) {
-        let flatmapData = [{}]
-        for (let i in scicrunchData.organs) {
-          if (flatmapData.length <= i) {
-            flatmapData.push({})
-          }
-          flatmapData[i].taxo = Uberons.species['rat']
-          flatmapData[i].uberonid = scicrunchData.organs[i].curie
-          flatmapData[i].id = datasetId
-          flatmapData[i].version = datasetVersion
+        let flatmapData = []
+        let species = undefined
+        // Get species data from algolia if it exists
+        if (datasetFacetsData){
+          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
+          if (speciesArray && speciesArray.length > 0)
+            species = speciesArray[0].children[0].label.toLowerCase()
         }
-        scicrunchData['flatmaps'] = flatmapData
+
+        // check if there is a flatmap for the given species, use a rat if there is not
+        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
+
+        // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
+        // if a flatmap of (species) has (anatomy)
+        let foundAnatomy = []
+        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
+          // Send a requst to flatmap knowledgebase
+          const anatomy = scicrunchData.organs.map(organ => organ.curie)
+          const data = await flatmaps.anatomyQuery(taxo, anatomy)
+
+          // Check request was successful
+          const anatomyResponse = data.data ? data.data.values : undefined
+          if (anatomyResponse && anatomyResponse.length > 0) {
+            foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
+          }
+        }
+
+        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        scicrunchData.organs.forEach(organ => {
+          if (foundAnatomy.includes(organ.curie)){
+            let organData = {
+              taxo,
+              uberonid: organ.curie,
+              organ: organ.name,
+              id: datasetId,
+              version: datasetVersion,
+              species: species
+            }
+            flatmapData.push(organData)
+          }
+        })
+        //Only create a flatmaps field if flatmapData is not empty
+        if (flatmapData.length > 0)
+          scicrunchData['flatmaps'] = flatmapData
       }
     }
   } catch (e) {
+    console.error(
+      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
+      e
+    )
     return {
       biolucidaImageData: {},
       scicrunchData: {}
@@ -386,44 +382,67 @@ export default {
   name: 'DatasetDetails',
 
   components: {
-    DetailsHeader,
-    DetailTabs,
+    Breadcrumb,
+    DatasetHeader,
+    DatasetActionBox,
     CitationDetails,
-    ContributorItem,
-    DatasetBannerImage,
-    DownloadDataset,
+    DatasetReferences,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
     ImagesGallery,
     VersionHistory,
     DatasetVersionMessage,
-    SparcPill
+    SimilarDatasetsInfoBox,
+    Tombstone
   },
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ route, $axios, store, app, error }) {
     let tabsData = clone(tabs)
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
 
-    const [organEntries, datasetDetails, versions] = await Promise.all([
+    const datasetFacetsData = await getDatasetFacetsData(route)
+    const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
+    const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
+    const userToken = app.$cookies.get('user-token')
+
+    const errorMessages = []
+
+    const [organEntries, datasetDetails, versions, downloadsSummary] = await Promise.all([
       getOrganEntries(),
       getDatasetDetails(
         datasetId,
         route.params.version,
-        route.query.type,
+        userToken,
+        datasetTypeName,
         $axios
       ),
-      getDatasetVersions(datasetId, $axios)
+      getDatasetVersions(datasetId, $axios),
+      getDownloadsSummary($axios),
     ])
+    
+    if (!datasetDetails) {
+      //critical error messages
+      error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true})
+    }
 
     const { biolucidaImageData, scicrunchData } = await getThumbnailData(
       datasetDetails.doi,
       datasetId,
-      datasetDetails.version
+      datasetDetails.version,
+      datasetFacetsData
     )
+ 
+    if ( Object.keys(biolucidaImageData).length === 0 &&
+      Object.keys(scicrunchData).length === 0 ) {
+      //Non critical error
+      errorMessages.push(ErrorMessages.methods.scicrunch())
+    }
+
+    datasetDetails.sciCrunch = scicrunchData;
 
     // Get oSPARC file viewers
     const osparcViewers = await $axios
@@ -432,24 +451,68 @@ export default {
       .catch(() => {
         return {}
       })
+    
+    // Get all timeseries files (those with an '.edf' extension)
+    const timeseriesData = process.env.SHOW_TIMESERIES_VIEWER
+      ? await $axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${datasetId}`)
+        .then(({ files }) => {
+          let data = []
+          files.forEach(file => {
+            const filePath = file.uri.substring(file.uri.indexOf('files'))
+            const linkUrl =
+                process.env.ROOT_URL +
+                `/datasets/timeseriesviewer?&dataset_id=${file.datasetId}&dataset_version=${file.datasetVersion}&file_path=${filePath}`
 
-    if (
-      ('dataset_images' in biolucidaImageData &&
-        biolucidaImageData.dataset_images.length > 0) ||
-      Object.getOwnPropertyNames(scicrunchData).length > 0
-    ) {
-      tabsData.push({ label: 'Gallery', type: 'images' })
-    }
+            data.push({
+              title: file.name,
+              type: 'Timeseries',
+              thumbnail: undefined,
+              link: linkUrl
+            })
+          })
+          return data
+        })
+        .catch(() => {
+          return []
+        }) 
+      : []
+
+    const changelogFileRequests = []
+    versions.forEach(({ version }) => {
+      var changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
+      if (userToken) { changelogEndpoint += `&api_key=${userToken}` }
+      changelogFileRequests.push(
+        $axios.$get(changelogEndpoint).then(response => {
+          return [{
+            ...response,
+            version: version
+          }]
+        }).catch(() => {
+          console.log("There is no changelog file associated with this dataset")
+          return [{}]
+        })
+      )
+    })
+
+    const [changelogFiles] = await Promise.all(changelogFileRequests)
+
+    store.dispatch('pages/datasets/datasetId/setDatasetInfo', datasetDetails)
+    store.dispatch('pages/datasets/datasetId/setDatasetFacetsData', datasetFacetsData)
+    store.dispatch('pages/datasets/datasetId/setDatasetTypeName', datasetTypeName)
 
     return {
       biolucidaImageData,
-      datasetInfo: datasetDetails,
-      datasetType: route.query.type,
       entries: organEntries,
       osparcViewers,
       scicrunchData,
       tabs: tabsData,
-      versions
+      versions,
+      datasetTypeName,
+      downloadsSummary,
+      showTombstone: datasetDetails.isUnpublished,
+      changelogFiles,
+      timeseriesData,
+      errorMessages
     }
   },
 
@@ -459,11 +522,11 @@ export default {
       isLoadingDataset: false,
       errorLoading: false,
       loadingMarkdown: false,
+      associatedProjects: [],
       markdown: {},
-      activeTab: this.$route.query.tab ? this.$route.query.tab : 'description',
+      activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
       datasetRecords: [],
-      discover_host: process.env.discover_api_host,
-      isDownloadModalVisible: false,
+      sparcAwardNumbers: [],
       tabs: [],
       breadcrumb: [
         {
@@ -484,85 +547,54 @@ export default {
       ],
       subtitles: [],
       ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
-      isVersionModalVisible: false
+      errorMessages: [],
     }
   },
 
   computed: {
+    ...mapState('pages/datasets/datasetId', ['datasetInfo']),
     defaultTab() {
-      return this.tabs[0].type
+      return this.tabs[0].id
     },
     /**
      * Compute if the dataset is the latest version
      * @returns {Boolean}
      */
+    embargoAccess() {
+      return propOr(null, 'embargoAccess', this.datasetInfo)
+    },
     isLatestVersion() {
-      if (this.versions.length) {
+      if (this.versions !== undefined && this.versions.length) {
         const latestVersion = compose(propOr(1, 'version'), head)(this.versions)
         return this.datasetInfo.version === latestVersion
       }
 
       return true
     },
-
     /**
-     * Returns simulation id for run simulation button
+     * computes the text of the latest version and revision
      * @returns {String}
      */
-    getSimulationId: function() {
-      return this.datasetInfo.study.uuid || ''
-    },
-
-    /**
-     * Gets dataset version
-     * @returns {Number}
-     */
-    getDatasetVersion: function() {
-      return propOr(1, 'version', this.datasetInfo)
-    },
-
-    /**
-     * Gets dataset version
-     * @returns {Number}
-     */
-    getDatasetId: function() {
-      return propOr(0, 'id', this.datasetInfo)
-    },
-
-    /**
-     * Gets dataset size for download
-     * @returns {Number}
-     */
-    getDownloadSize: function() {
-      return propOr(0, 'size', this.datasetInfo)
+    latestVersionRevision() {
+      if (this.versions === undefined) {
+        return ''
+      }
+      let revision = compose(propOr(0, 'revision'), head)(this.versions)
+      let version = compose(propOr(1, 'version'), head)(this.versions)
+      return `${version}.${revision}`
     },
     /**
-     * Returns the dataset storage count
-     * @returns {Object}
-     */
-    datasetStorage: function() {
-      const storage = compose(
-        split(' '),
-        this.formatMetric,
-        propOr(0, 'size')
-      )(this.datasetInfo)
-
-      return storage.reduce((number, unit) => {
-        return {
-          number,
-          unit
-        }
-      })
-    },
-
-    /**
-     * Returns the files associated with the dataset
+     * computes the date of the latest version
      * @returns {String}
      */
-    datasetFiles: function() {
-      return propOr('', 'fileCount', this.datasetInfo)
+    latestVersionDate() {
+      if (this.versions === undefined) {
+        return ''
+      }
+      let version = compose(head)(this.versions)
+      const date = version.revisedAt || version.versionPublishedAt
+      return this.formatDate(date)
     },
-
     /**
      * Gets license link
      * @returns {String}
@@ -587,15 +619,13 @@ export default {
     datasetLicenseName: function() {
       return propOr('', 'license', this.datasetInfo)
     },
-
     /**
      * Returns dataset banner
      * @returns {String}
      */
-    getDatasetImage: function() {
+     getDatasetImage: function() {
       return propOr('', 'banner', this.datasetInfo)
     },
-
     /**
      * Returns the list of contributors who contributed to the dataset
      * @returns {String}
@@ -603,31 +633,12 @@ export default {
     datasetContributors: function() {
       return propOr([], 'contributors', this.datasetInfo)
     },
-
-    /**
-     * Returns dataset owner full name
-     * @returns {String}
-     */
-    datasetOwnerName: function() {
-      const ownerFirstName = this.datasetInfo.ownerFirstName || ''
-      const ownerLastName = this.datasetInfo.ownerLastName || ''
-      return `${ownerFirstName} ${ownerLastName}`
-    },
-
     /**
      * Returns dataset owner email
      * @returns {String}
      */
     datasetOwnerEmail: function() {
       return this.datasetInfo.ownerEmail || ''
-    },
-
-    /**
-     * Gets the first contributor from the list
-     * @returns {String}
-     */
-    firstContributor: function() {
-      return head(this.datasetContributors)
     },
     /**
      * Returns the dataset title
@@ -636,22 +647,19 @@ export default {
     datasetTitle: function() {
       return propOr('', 'name', this.datasetInfo)
     },
-
+    /**
+     * Url to get records for model
+     * @returns {String}
+     */
+    getRecordsUrl: function() {
+      return `${process.env.discover_api_host}/search/records?datasetId=${this.datasetId}`
+    },
     /**
      * Returns the records in the protocol model for this dataset
      * @returns {String}
      */
-    getSearchRecordsUrl: function() {
-      return `${this.discover_host}/search/records?datasetId=${this.datasetId}&model=protocol`
-    },
-
-    /**
-     * Get the dataset DOI and return the url
-     * @returns {String}
-     */
-    datasetDOI: function() {
-      const doi = propOr('', 'doi', this.datasetInfo)
-      return `https://doi.org/${doi}`
+    getProtocolRecordsUrl: function() {
+      return `${this.getRecordsUrl}&model=protocol`
     },
     /**
      * Get formatted originally published date
@@ -659,16 +667,6 @@ export default {
      */
     originallyPublishedDate: function() {
       const date = propOr('', 'firstPublishedAt', this.datasetInfo)
-      return this.formatDate(date)
-    },
-
-    /**
-     * Get formatted last updated date
-     * @return {String}
-     */
-    lastUpdatedDate: function() {
-      const date =
-        this.datasetInfo.revisedAt || this.datasetInfo.versionPublishedAt
       return this.formatDate(date)
     },
     /**
@@ -686,22 +684,13 @@ export default {
       return propOr([], 'externalPublications', this.datasetInfo)
     },
     /**
-     * Returns the current location href from the window object
-     * @returns {String}
-     */
-    thisUrl: function() {
-      // return ""
-      return this.$route.fullPath
-    },
-    /**
      * Return DOI link
      * @returns {String}
      */
-    DOIlink: function() {
+    doiLink: function() {
       const doi = propOr('', 'doi', this.datasetInfo)
       return doi ? `https://doi.org/${doi}` : ''
     },
-
     /**
      * Compute description
      * @returns {String}
@@ -709,7 +698,6 @@ export default {
     datasetDescription: function() {
       return propOr('', 'description', this.datasetInfo)
     },
-
     /**
      * Compute name
      * @returns {String}
@@ -717,7 +705,6 @@ export default {
     datasetName: function() {
       return propOr('', 'name', this.datasetInfo)
     },
-
     /**
      * Compute organization name
      * @returns {String}
@@ -725,15 +712,13 @@ export default {
     organizationName: function() {
       return propOr('', 'organizationName', this.datasetInfo)
     },
-
     /**
      * Compute endpoint URL to get dataset
      * @returns {String}
      */
     getDatasetUrl: function() {
-      return `${this.discover_host}/datasets/${this.datasetId}`
+      return `${process.env.discover_api_host}/datasets/${this.datasetId}`
     },
-
     /**
      * Get datasetid
      * @returns {String}
@@ -741,7 +726,6 @@ export default {
     datasetId: function() {
       return pathOr('', ['params', 'datasetId'], this.$route)
     },
-
     /**
      * Compute the organ type
      * This assumes that the subtitles are the organ types
@@ -751,7 +735,6 @@ export default {
     organType: function() {
       return this.subtitles[0] || ''
     },
-
     /**
      * Compute the scaffold type based on organ type
      * @returns {String}
@@ -759,26 +742,69 @@ export default {
     scaffold: function() {
       return Scaffolds[this.organType.toLowerCase()]
     },
-
-    /**
-     * computes the right text based on the version and revision
-     * @returns {String}
-     */
-    versionRevisionText() {
-      const versionText = `Version ${this.datasetInfo.version}`
-      const revisionText = this.datasetInfo.revision
-        ? `, Revision ${this.datasetInfo.revision}`
-        : ''
-      return versionText + revisionText
+    externalPublications: function() {
+      return propOr([], 'externalPublications', this.datasetInfo)
+    },
+    primaryPublications: function() {
+      const valObj = this.externalPublications.filter(function(elem) {
+        return elem.relationshipType == 'IsDescribedBy'
+      })
+      return valObj.length > 0 ? valObj : null
+    },
+    associatedPublications: function() {
+      const valObj = this.externalPublications.filter(function(elem) {
+        return elem.relationshipType == 'IsReferencedBy' || elem.relationshipType == 'IsSupplementedBy'
+      })
+      return valObj.length > 0 ? valObj : null
+    },
+    hasCitations: function() {
+      return (this.primaryPublications || this.associatedPublications) !== null
+    },
+    numCitations: function() {
+      let numPrimary = this.primaryPublications ? this.primaryPublications.length : 0;
+      let numAssociated = this.associatedPublications ? this.associatedPublications.length : 0;
+      return numPrimary + numAssociated;
+    },
+    numDownloads: function() {
+      let numDownloads = 0;
+      this.downloadsSummary.filter(download => download.datasetId == this.datasetId).forEach(item => {
+        numDownloads += item.downloads;
+      })
+      return numDownloads
+    },
+    hasFiles: function() {
+      return this.fileCount >= 1
+    },
+    hasGalleryImages: function() {
+      //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data
+      return !this.embargoed &&
+        (('dataset_images' in this.biolucidaImageData &&
+          this.biolucidaImageData.dataset_images.length > 0) ||
+        ('abi-scaffold-metadata-file' in this.scicrunchData) ||
+        ('video' in this.scicrunchData) ||
+        ('flatmaps' in this.scicrunchData) ||
+        ('mbf-segmentation' in this.scicrunchData) ||
+        ('abi-plot' in this.scicrunchData) ||
+        ('common-images' in this.scicrunchData) ||
+        !isEmpty(this.timeseriesData))
+    },
+    fileCount: function() {
+      return propOr('0', 'fileCount', this.datasetInfo)
+    },
+    embargoed: function() {
+      return propOr(false, 'embargo', this.datasetInfo)
+    },
+    canViewVersions: function() {
+      return !this.embargoed
     }
   },
 
   watch: {
     '$route.query': 'queryChanged',
     /**
-     * Watcher for getSearchRecordsUrl
+     * Watcher for getProtocolRecordsUrl
      */
-    getSearchRecordsUrl: {
+    getProtocolRecordsUrl: {
       handler: function(val) {
         if (val) {
           this.getProtocolRecords()
@@ -786,14 +812,76 @@ export default {
       },
       immediate: true
     },
-
+    getRecordsUrl: {
+      handler: function(val) {
+        if (val) {
+          this.getDatasetRecords()
+        }
+      },
+      immediate: true
+    },
     datasetInfo: {
       handler: function() {
         this.getMarkdown()
       },
       immediate: true
     },
-
+    errorMessages: {
+      handler: function() {
+        //Non critical error messages
+        console.log(this.errorMessages)
+        this.errorMessages.forEach(message => {
+          this.$message(failMessage(message))
+        })
+        //Clean up the error messages
+        this.errorMessages.length = 0
+      },
+      immediate: true
+    },
+    hasFiles: {
+      handler: function(newValue) {
+        if (newValue) {
+          const hasFilesTab = this.tabs.find(tab => tab.id === 'files') !== undefined
+          if (!hasFilesTab) {
+            this.tabs.splice(3, 0, { label: 'Files', id: 'files' })
+          }
+        }
+      },
+      immediate: true
+    },
+    hasGalleryImages: {
+      handler: function(newValue) {
+        if (newValue) {
+          const hasGalleryTab = this.tabs.find(tab => tab.id === 'images') !== undefined
+          if (!hasGalleryTab) {
+            this.tabs.splice(4, 0, { label: 'Gallery', id: 'images' })
+          }
+        }
+      },
+      immediate: true
+    },
+    hasCitations: {
+      handler: function(newValue) {
+        if (newValue) {
+          const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
+          if (!hasCitationsTab) {
+            this.tabs.splice(5, 0, { label: 'References', id: 'references' })
+          }
+        }
+      },
+      immediate: true
+    },
+    canViewVersions: {
+      handler: function(newValue) {
+        if (newValue) {
+          const hasVersionsTab = this.tabs.find(tab => tab.id === 'versions') !== undefined
+          if (!hasVersionsTab) {
+            this.tabs.splice(6, 0, { label: 'Versions', id: 'versions' })
+          }
+        }
+      },
+      immediate: true
+    },
     datasetTags: {
       handler: function(val) {
         if (val) {
@@ -809,12 +897,8 @@ export default {
     }
   },
   methods: {
-    /**
-     * Sets active tab
-     * @param {String} activeLabel
-     */
-    setActiveTab: function(activeLabel) {
-      this.activeTab = activeLabel
+    tabChanged(newTab) {
+      this.activeTabId = newTab.id
     },
     /**
      * Returns protocol records in a dataset's model if they exist.
@@ -841,7 +925,7 @@ export default {
         })
       } else {
         this.$axios
-          .$get(this.getSearchRecordsUrl)
+          .$get(this.getProtocolRecordsUrl)
           .then(response => {
             const records = propOr([], 'records', response)
             if (records.length !== 0) {
@@ -860,24 +944,39 @@ export default {
           })
       }
     },
-
+    /**
+     * Retrievs the metadata records for a dataset to get the sparc award number
+     */
+    getDatasetRecords: async function() {
+      try {
+        algoliaIndex
+          .getObject(this.datasetId, {
+            attributesToRetrieve: 'supportingAwards',
+          })
+          .then(( { supportingAwards } ) => {
+            supportingAwards = supportingAwards.filter(award => propOr(null, 'identifier', award) != null)
+            supportingAwards.forEach(award => {
+              this.sparcAwardNumbers.push(`${award.identifier}`)
+            })
+          }).finally(async () => {
+            if (this.sparcAwardNumbers.length > 0)
+            {
+              let projects = await getAssociatedProjects(this.sparcAwardNumbers)
+              this.associatedProjects = projects.length > 0 ? projects : null
+            }
+          })
+      } catch (e) {
+        console.error(e)
+      }
+    },
     /**
      * Set the active tab to match the current query values.
      */
     queryChanged: function() {
-      this.activeTab = this.$route.query.tab
-        ? this.$route.query.tab
+      this.activeTabId = this.$route.query.datasetDetailsTab
+        ? this.$route.query.datasetDetailsTab
         : this.defaultTab
     },
-
-    /**
-     * Confirms that url of dataset was copied successfully
-     * and sets boolean to true
-     */
-    onCopySuccess: function() {
-      this.showCopySuccess = true
-    },
-
     /**
      * Get markdown logic from details response
      */
@@ -903,30 +1002,6 @@ export default {
           })
       }
     },
-
-    /**
-     * Get the citations area in the
-     * About tab by id
-     * @returns {Object}
-     */
-    getCitationsArea: function() {
-      return document.getElementById('citationsArea')
-    },
-
-    /**
-     * Scroll to the citations area
-     * in the About tab
-     */
-    scrollToCitations: function() {
-      this.getCitationsArea().scrollIntoView()
-    },
-
-    /**
-     * Closes the version history modal
-     */
-    closeVersionModal: function() {
-      this.isVersionModalVisible = false
-    }
   },
 
   head() {
@@ -954,7 +1029,7 @@ export default {
     const creators = contributors.concat(org)
 
     return {
-      title: `${this.datasetTitle} - SPARC Portal`,
+      title: this.datasetTitle,
       meta: [
         {
           name: 'DC.type',
@@ -1018,7 +1093,7 @@ export default {
         },
         {
           name: 'DC.identifier',
-          content: this.DOIlink,
+          content: this.doiLink,
           scheme: 'DCTERMS.URI'
         },
         {
@@ -1036,7 +1111,7 @@ export default {
         },
         {
           property: 'og:url',
-          content: process.env.siteUrl
+          content: process.env.ROOT_URL
         }
       ],
       script: [
@@ -1045,7 +1120,7 @@ export default {
           json: {
             '@context': 'http://schema.org',
             '@type': 'Dataset',
-            '@id': this.DOIlink,
+            '@id': this.doiLink,
             sameAs: this.getDatasetUrl,
             name: this.datasetName,
             creator: creators,
@@ -1054,9 +1129,9 @@ export default {
             description: this.datasetDescription,
             license: this.licenseLink,
             version: this.datasetInfo.version,
-            url: process.env.siteUrl,
+            url: process.env.ROOT_URL,
             citation: this.citationText,
-            identifier: this.DOIlink,
+            identifier: this.doiLink,
             isAccessibleForFree: true
           },
           type: 'application/ld+json'
@@ -1066,7 +1141,7 @@ export default {
           json: {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
-            url: process.env.siteUrl,
+            url: process.env.ROOT_URL,
             name: 'Pennsieve Discover'
           },
           type: 'application/ld+json'
@@ -1078,155 +1153,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_spacing.scss';
-@import '@/assets/_variables.scss';
-.details-header {
-  &__container {
-    &--content-links {
-      .contributors-button {
-        height: 14px;
-        width: 18px;
-        border: 1px solid $median;
-        border-radius: 2px;
-        background-color: $light-purple;
-        cursor: pointer;
-        margin: 0 6px;
-        padding: 0;
-
-        &:focus {
-          background-color: #b6b7ba;
-        }
-
-        .button-text {
-          position: relative;
-          bottom: 5px;
-        }
-      }
-      .dataset-button {
-        background-color: $median;
-        width: auto;
-        height: 40px;
-        font-size: 14px;
-        color: #ffffff;
-        font-weight: 500;
-        text-transform: uppercase;
-        a {
-          color: #fff;
-        }
-      }
-      .dataset-button-link {
-        margin: 0;
-      }
-      .citation-button {
-        margin-left: 0.5rem;
-        padding-top: 0.688rem;
-        width: 8rem;
-        background: #f9f2fc;
-        border: 1px solid $median;
-        color: $median;
-        text-transform: uppercase;
-        &:hover {
-          color: #1a1489;
-        }
-        @media (max-width: 24em) {
-          margin-top: 10px;
-          margin-left: 0;
-        }
-      }
-      .dataset-link {
-        text-decoration: none;
-      }
-    }
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.left-column {
+  @media (max-width: 47rem) {
+    order: 1;
+    margin-top: 0;
   }
 }
-
-.details-header__container--content-links .version-link {
-  display: inline-block;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1rem;
-  margin: 0 !important;
+.tabs-container {
+  border: solid 1px $lineColor1;
+  background: white;
 }
-.dataset-updated-date {
-  line-height: 24px;
-  color: black;
-  font-size: 14px;
-  line-height: 24px;
-
-  a {
-    color: #404554;
-    text-decoration: underline;
-    &:hover,
-    &:active,
-    &:visited {
-      color: #404554;
-    }
-    &:focus {
-      color: black;
-    }
-  }
+::v-deep .details-tabs__container--data {
+  padding-top: 0;
 }
-
-.dataset-owners {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  color: #404554;
-  font-size: 14px;
-  line-height: 24px;
-  .contributor-item-wrap {
-    display: inline-flex;
-    margin-right: 4px;
-  }
-}
-
-.header-stats-section {
-  display: flex;
-  margin: 20px 0 0;
-}
-
-.header-stats-block {
-  align-items: center;
-  display: flex;
-  font-size: 14px;
-  font-weight: 500;
-  margin-right: 12px;
-  margin-bottom: 1rem;
-  .svg-icon {
-    margin-right: 3px;
-  }
-  a {
-    margin-left: 0;
-    font-size: 14px;
-    &:focus {
-      color: #1c46bd;
-    }
-  }
-}
-
 .dataset-details {
+  background-color: $background;
   width: 100%;
   overflow-x: hidden;
-}
-.scaffold {
-  height: 500px;
-}
-
-.img-dataset {
-  display: block;
-  position: relative;
-  .sparc-pill {
-    font-size: 0.75rem;
-    position: absolute;
-    right: 0.25rem;
-    top: 0.5rem;
-  }
-  img {
-    display: block;
-  }
-}
-.embargo-release-date {
-  font-size: 0.875rem;
-  margin: 1.5rem 0 0;
 }
 </style>

@@ -164,7 +164,7 @@ export const facetPropPathMapping = {
   'attributes.subject.ageCategory.value' : 'Age Categories',
 }
 
-export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMapping : Object) {
+export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMapping : Object, filters : string) {
   const map = new Map(Object.entries(propPathMapping));
   const facetPropPaths = Array.from(map.keys() );
   var facetData: { label: string; id: number; children: object[]; key: string; }[] = []
@@ -172,7 +172,8 @@ export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMap
   return algoliaIndex
     .search('', {
       sortFacetValuesBy: 'alpha',
-      facets: facetPropPaths
+      facets: facetPropPaths,
+      filters: filters || ''
     })
     .then(response => {
       facetPropPaths.map((facetPropPath: string) => {
@@ -200,5 +201,32 @@ export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMap
         }
       })
       return facetData
+    }).catch(() => {
+      return {}
     })
+}
+
+export const searchQueryReplacements: { [orig: string]: string } = {
+  'o2s2parc': 'o\u00b2s\u00b2parc',
+  'osparc': 'o\u00b2s\u00b2parc'
+}
+
+export const HIGHLIGHT_HTML_TAG = 'b'
+/**
+ * Function that takes a text and search input and wraps matching substrings with the given HTML tag.
+ * @param {String} text Input text to be processed
+ * @param {String} search Search terms
+ * @returns {String} Output text with matching terms wrapped by given HTML tag. Original text if search is empty.
+ */
+export const highlightMatches = (text: string, search: string): string => {
+  if (text && search) {
+    const terms = search.split(' ')
+    let result = text
+    terms.forEach(t => {
+      const trimmed = t.replace(/^"|"$/, '') // Trims out double quotes that could be used in searching
+      result = result.replace(new RegExp(trimmed, 'ig'), `<${HIGHLIGHT_HTML_TAG}>$&</${HIGHLIGHT_HTML_TAG}>`)
+    })
+    return result
+  }
+  return text
 }
