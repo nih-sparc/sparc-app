@@ -595,17 +595,19 @@ export default {
     },
 
     getViewFileUrl(scope) {
+      let uri = `${pathOr('', ['row', 'uri'], scope).replace("s3://", "")}`
+      let s3BucketName = uri.substring(0, uri.indexOf("/"))
       const filePath = compose(
         last,
         defaultTo([]),
-        split('s3://pennsieve-prod-discover-publish-use1/'),
+        split(`s3://${s3BucketName}/`),
         pathOr('', ['row', 'uri'])
       )(scope)
 
       const fileType = scope.row.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
 
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}&contentType=${contentType}`
+      const requestUrl = `${process.env.portal_api}/download?s3BucketName=${s3BucketName}&key=${filePath}&contentType=${contentType}`
 
       return this.$axios.$get(requestUrl).then(response => {
         const url = response
@@ -628,8 +630,11 @@ export default {
     },
 
     executeDownload(downloadInfo) {
-      const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
-      const matches = downloadInfo.uri.match(datasetVersionRegexp)
+      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+      let params = downloadInfo.uri.replace("s3://", "")
+      let firstIndex = params.indexOf("/") + 1
+      params = params.substr(firstIndex)
+      const matches = params.match(datasetVersionRegexp)
 
       const payload = {
         paths: [matches.groups.filePath],
