@@ -224,7 +224,7 @@ export default {
       if (this.currentEntry.type === "MultiFlatmap") {
         if (this.$route.query.for_species &&
         this.$route.query.for_species !== "undefined") {
-          if (this.$route.query.forSpecies !== flatmaps.speciesMap[this.currentEntry.taxo]) {
+          if (this.$route.query.for_species !== flatmaps.speciesMap[this.currentEntry.taxo]) {
             this.$message(failMessage(
               `Sorry! A flatmap for a ${this.forSpecies} does not yet exist. The ${this.organ} of a rat has been shown instead.`
             ))
