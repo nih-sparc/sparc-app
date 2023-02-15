@@ -656,9 +656,9 @@ export default {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       return {
-        name: 'datasets-scaffoldviewer-id',
+        name: 'maps',
         params: {},
-        query: { dataset_id: id, dataset_version: version, file_path: scope.row.path }
+        query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scope.row.path }
       }
     },
 
@@ -687,7 +687,6 @@ export default {
 
         // Create paths for fetching the files from 'sparc-api/s3-resource/'
         const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.relative.path[0]}`
-        const s3Path = `${id}/${version}/${scaffoldPath}`
 
         // View paths need to be relative
         const viewPath = path.relative(
@@ -695,9 +694,9 @@ export default {
           scope.row.path
         )
         return {
-          name: 'datasets-scaffoldviewer-id',
+          name: 'maps',
           params: {},
-          query: { scaffold: s3Path, viewURL: viewPath }
+          query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scaffoldPath, viewURL: viewPath }
         }
       }
       return {}

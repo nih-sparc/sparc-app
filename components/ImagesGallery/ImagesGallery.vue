@@ -198,7 +198,7 @@ export default {
                   file_path: thumbnail.dataset.path
                 })
                 let filePath = encodeURIComponent(`files/${file_path}`)
-                const linkUrl = `${baseRoute}datasets/scaffoldviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
+                const linkUrl = `${baseRoute}maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
                 index += 1
                 return {
                   id,
@@ -237,7 +237,8 @@ export default {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) title = this.capitalize(f.organ)
 
-              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}&for_species=${f.species}&organ=${f.organ}`
+              let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
+              if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
               const item = {
                 id: f.uberonid,
                 title: title,
