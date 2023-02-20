@@ -1,8 +1,8 @@
 <template>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" title="Profile" />
+    <breadcrumb :breadcrumb="breadcrumb" :title=title />
     <page-hero>
-      <h1>SPARC Profile</h1>
+      <h1>{{ title }}</h1>
       <p>
         The SPARC Portal account allows you to fully utilize portal functionality. <a href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">Learn more</a> about which features require login and find out more details about why a Pennsieve account is created for you in the process.
       </p>
@@ -61,6 +61,7 @@ export default {
 
   data: () => {
     return {
+      title: "SPARC Profile",
       breadcrumb: [
         {
           to: {
@@ -69,6 +70,12 @@ export default {
           label: 'Home'
         }
       ],
+    }
+  },
+
+  head() {
+    return {
+      title: this.title
     }
   },
 

@@ -21,10 +21,10 @@
     <portal-features :features="portalFeatures" />
     <hr />
     <div class="secondary-background">
-      <projects-and-datasets :project="featuredProject" :dataset="featuredDataset" />
+      <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
     </div>
     <hr />
-    <latest-news-and-events />
+    <homepage-news :news="newsAndEvents" />
     <stay-connected />
   </div>
 </template>
@@ -32,9 +32,9 @@
 <script>
 import PageHero from '@/components/PageHero/PageHero.vue'
 import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
+import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
-import LatestNewsAndEvents from '@/components/LatestNewsAndEvents/LatestNewsAndEvents.vue'
 import StayConnected from '@/components/StayConnected/StayConnected.vue'
 
 import createClient from '@/plugins/contentful.js'
@@ -42,6 +42,7 @@ import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 import { mapGetters } from 'vuex'
+import { pathOr } from 'ramda'
 
 const client = createClient()
 export default {
@@ -50,9 +51,9 @@ export default {
   components: {
     PageHero,
     FeaturedData,
+    HomepageNews,
     PortalFeatures,
     ProjectsAndDatasets,
-    LatestNewsAndEvents,
     StayConnected
   },
 
@@ -64,15 +65,13 @@ export default {
       client.getEntry(process.env.ctf_home_page_id)
     ]).then(async ([homepage]) => {
         let fields = getHomepageFields(homepage.fields)
-        const featuredDatasetId = homepage.fields.featuredDatasetId
-        if (featuredDatasetId != '') {
-          const url = `${process.env.discover_api_host}/datasets/${featuredDatasetId}`
-          await $axios.$get(url).then(({ name, description, banner }) => {
-            fields = { ...fields, 'featuredDataset': { 'title': name, 'description': description, 'banner': banner, 'id': featuredDatasetId } }
-          })
-        }
-        if (fields.featuredProject.fields.institution != undefined) {
-          const institutionId = fields.featuredProject.fields.institution.sys.id
+        const datasetSectionTitle = homepage.fields.datasetSectionTitle
+        const url = `${process.env.portal_api}/get_featured_dataset`
+        await $axios.$get(url).then(({ datasets }) => {
+          fields = { ...fields, 'featuredDataset': { 'title': datasets[0].name, 'description': datasets[0].description, 'banner': datasets[0].banner, 'id': datasets[0].id }, 'datasetSectionTitle': datasetSectionTitle }
+        })
+        if (pathOr(undefined, ["featuredProject","fields","institution"], fields) != undefined) {
+          const institutionId = pathOr("", ["featuredProject","fields","institution","sys","id"], fields)
           await client.getEntry(institutionId).then(( response ) => {
             fields.featuredProject.fields = { ...fields.featuredProject.fields, 'banner': response.fields.logo.fields.file.url }
           })
@@ -117,9 +116,10 @@ export default {
   data: () => {
     return {
       featuredData: [],
+      newsAndEvents: [],
       portalFeatures: [],
       featuredProject: {},
-      featuredDatasetId: '',
+      datasetSectionTitle: '',
       featuredDataset: {},
       heroCopy: '',
       heroHeading: '',
@@ -129,8 +129,6 @@ export default {
 
   head() {
     return {
-      title: 'SPARC Portal',
-      titleTemplate: '%s - SPARC Portal',
       meta: [
         {
           name: 'description',

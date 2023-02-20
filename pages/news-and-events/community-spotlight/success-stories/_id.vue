@@ -178,6 +178,11 @@ export default {
       ]
     }
   },
+  head() {
+    return {
+      title: this.title
+    }
+  },
   computed: {
     pageUrl: function() {
       return `${process.env.ROOT_URL}${this.$route.fullPath}`

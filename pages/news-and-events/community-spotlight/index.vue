@@ -243,6 +243,11 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
       ]
     }
   },
+  head() {
+    return {
+      title: this.searchTypes[2].label
+    }
+  },
   watch: {
     '$route.query': {
       handler: async function() {

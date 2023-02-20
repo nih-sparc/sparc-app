@@ -98,6 +98,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.aboutDetailsItem.fields.title
+    }
+  },
+
   methods: {
     /**
      * Copy file URL to clipboard

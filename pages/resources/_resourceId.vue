@@ -18,7 +18,7 @@
               {{ resource.fields.name }}
             </div>
           </sparc-tooltip>
-          <span v-if="resource.fields.developedBySparc" class="mb-16 resource-category">
+          <span v-if="resource.fields.developedBySparc" class="mb-4 resource-category">
             SPARC
           </span>
           <span v-if="resource.fields.codeathon" class="mb-16 resource-category">
@@ -30,7 +30,31 @@
           <a class="resource-url truncated" :href="resource.fields.url" target="_blank">
             {{ resource.fields.url }}
           </a>
-          <div class="mt-16 label4">
+          <template v-if="resource.fields.owner">
+            <div class="label4">
+              Owner
+            </div>
+            <div class="truncated">
+              {{ resource.fields.owner }}
+            </div>
+          </template>
+          <template v-if="resource.fields.contactEmail">
+            <div class="label4">
+              Contact Email
+            </div>
+            <div class="truncated">
+              {{ resource.fields.contactEmail }}
+            </div>
+          </template>
+          <template v-if="resource.fields.fundingProgram">
+            <div class="label4">
+              Funding Program
+            </div>
+            <div class="truncated">
+              {{ resource.fields.fundingProgram.fields.name }}
+            </div>
+          </template>
+          <div class="mt-4 label4">
             Share
           </div>
           <share-links class="mb-16"/>
@@ -85,6 +109,12 @@ export default {
           }
         }
       ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.resource.fields.name
     }
   },
 

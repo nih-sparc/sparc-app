@@ -142,6 +142,11 @@ const searchTypes = [
 
 const sortOptions = [
   {
+    label: 'Upcoming',
+    id: 'upcoming',
+    sortOrder: '-fields.upcomingSortOrder'
+  },
+  {
     label: 'Latest',
     id: 'latest',
     sortOrder: '-fields.startDate'
@@ -197,6 +202,12 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
           }
         }
       ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.searchTypes[1].label
     }
   },
 
