@@ -78,10 +78,32 @@ export default {
   },
   data() {
     return {
+      currentMonth: new Date().getMonth() + 1,
+      currentYear: new Date().getFullYear(),
+      dataSources: [
+        {
+          name: 'pennsieve',
+          url: `https://metrics.sparc.science/pennsieve?year=${this.currentYear}&month=${this.currentMonth}`,
+          data: null
+        },
+        {
+          name: 'ga4',
+          url: `https://metrics.sparc.science/ga4?year=${this.currentYear}&month=${this.currentMonth}`,
+          data: null
+        },
+        {
+          name: 'sparc',
+          url: `https://metrics.sparc.science/sparc?year=${this.currentYear}&month=${this.currentMonth}`,
+          data: null
+        }
+      ],
+      //This will hold the data that will be used to generate the bars
+      dict_for_viz: {},
       dataChartData: {
         labels: [ 'All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed' ],
         datasets: [ 
           { 
+            label: 'Last Month',
             backgroundColor: [
               '#8300bf',
               '#8300bf',
@@ -220,9 +242,50 @@ export default {
       }
     }
   },
+  mounted() {
+  this.fetchMetricsData()
+},
   computed: {
     scientificContribution() {
       return propOr({}, 'scientificContribution', this.metricsData)
+    }
+  },
+  methods: {
+    //NOTE: should put this reused behavior in set of external auxillary functions
+    //Will get the data for each endpoint for the current month. This data will then be stored as 'data' within each dataSource
+    //all 3 data sources data is fetched in parallel and then converted to JSON
+    fetchMetricsData() {
+      Promise.all(this.dataSources.map(dataSource => fetch(dataSource.url)))
+        .then(responses => Promise.all(responses.map(response => response.json())))
+        .then(data => {
+          this.dataSources.forEach((dataSource, index) => {
+            dataSource.data = data[index]
+          })
+          this.unpackMetricsDataSci()
+        })
+        .catch(error => console.log(error))
+    },
+    //Function takes all of the data from each dataSource and places it in the dict_for_viz
+    unpackMetricsDataSci() {
+      //dict_for viz has name of data source as key and its reuturn object as the value
+      this.dict_for_viz = this.dataSources.reduce((accumulator, dataSource) => {
+        accumulator[dataSource.name] = dataSource.data
+        return accumulator
+      }, {})
+      .then(this.populateDataArraySci())
+    },
+    //Take the data out of the dict, and place the data into the proper sequence for the visualization
+    populateDataArraySci() {
+      //data chart data = [ 'All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed' ]
+      //samples (across all data)
+      //subjects (across all data)
+      //number of anatomical structures
+      //anatomical structures = NEED BREAKDOWN!!
+      //size across all data
+      //GENERAL PROCCESS:
+      //json_dict_for_viz = JSON.parse(dict_for_viz)
+      //assign entry in list that viz uses to specific dictionary item in return
+      //chart_data[0] = dict_for_viz.sparc.metrics.M["attribute"]
     }
   }
 }

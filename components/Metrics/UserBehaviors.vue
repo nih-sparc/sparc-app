@@ -61,6 +61,26 @@ export default {
   },
   data() {
     return {
+      currentMonth: new Date().getMonth() + 1,
+      currentYear: new Date().getFullYear(),
+      dataSources: [
+        {
+          name: 'pennsieve',
+          url: `https://metrics.sparc.science/pennsieve?year=${this.currentYear}&month=${this.currentMonth}`,
+          data: null
+        },
+        {
+          name: 'ga4',
+          url: `https://metrics.sparc.science/ga4?year=${this.currentYear}&month=${this.currentMonth}`,
+          data: null
+        },
+        {
+          name: 'sparc',
+          url: `https://metrics.sparc.science/sparc?year=${this.currentYear}&month=${this.currentMonth}`,
+          data: null
+        }
+      ],
+      dict_for_viz: {},
       pageChartData: {
         labels: [ 'Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events', 'About' ],
         datasets: [ 
@@ -211,9 +231,46 @@ export default {
       }
     }
   },
+mounted() {
+  this.fetchMetricsData()
+},
   computed: {
     userBehaviors() {
       return propOr({}, 'userBehaviors', this.metricsData)
+    }
+  },
+  methods: {
+    //NOTE: should put this reused behavior in set of external auxillary functions
+    //Will get the data for each endpoint for the current month. This data will then be stored as 'data' within each dataSource
+    //all 3 data sources data is fetched in parallel and then converted to JSON
+    fetchMetricsData() {
+      Promise.all(this.dataSources.map(dataSource => fetch(dataSource.url)))
+        .then(responses => Promise.all(responses.map(response => response.json())))
+        .then(data => {
+          this.dataSources.forEach((dataSource, index) => {
+            dataSource.data = data[index]
+          })
+          this.unpackMetricsDataUser()
+        })
+        .catch(error => console.log(error))
+    },
+    //Function takes all of the data from each dataSource and places it in the dict_for_viz
+    unpackMetricsDataUser() {
+      //dict_for viz has name of data source as key and its reuturn object as the value
+      this.dict_for_viz = this.dataSources.reduce((accumulator, dataSource) => {
+        accumulator[dataSource.name] = dataSource.data
+        return accumulator
+      }, {})
+      //should make this a promise & verify this works
+      .then(this.populateDataArrayUser())
+    },
+    //Take the data out of the dict, and place the data into the proper sequence for the visualization
+    populateDataArrayUser() {
+      //page chart data = data: [homepage, find, tools, maps, new and ev, about]
+      //users chart data =  data: [returning users, new users]
+      //total downloads (and last month)
+      //dataset contributors (and last month)
+
     }
   }
 }

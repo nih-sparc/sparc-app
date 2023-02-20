@@ -147,7 +147,7 @@ export default {
   },
 
   /**
-   * Check the metricsType param in the route and set it if it 
+   * Check the metricsType param in the route and set it if it
    */
   mounted: function() {
     if (!this.$route.query.metricsType) {
