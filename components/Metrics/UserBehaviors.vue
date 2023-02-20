@@ -22,10 +22,10 @@
           Total Downloads:
         </div>
         <div class="col-data">
-          1375
+          {{ this.total_downloads_last_mo }}
         </div>
         <div>
-          (212 last month)
+          ({{ this.total_downloads_last_3_mo }} last month)
         </div>
       </div>
       <div class="col">
@@ -33,10 +33,10 @@
           Dataset Contributors:
         </div>
         <div class="col-data">
-          123
+          123 (HARDCODED)
         </div>
         <div>
-          (12 new in the last month)
+          (12 (HARDCODED) new in the last month)
         </div>
       </div>
     </div>
@@ -81,8 +81,11 @@ export default {
         }
       ],
       dict_for_viz: {},
+      total_downloads_last_mo: 0,
+      total_downloads_last_3_mo: 0,
       pageChartData: {
         labels: [ 'Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events', 'About' ],
+        //labels: ['All Pages']
         datasets: [ 
           { 
             label: 'Last Month',
@@ -95,7 +98,9 @@ export default {
               '#8300bf',
             ],
             borderColor: '#8300bf',
-            data: [237, 162, 99, 147, 133, 300] 
+            data: [237, 162, 99, 147, 133, 300]
+            //Should initially be empty
+            //data: [] 
           } 
         ]
       },
@@ -167,7 +172,8 @@ export default {
               '#8300bf',
             ],
             borderColor: '#8300bf',
-            data: [460, 324] 
+            //Should initially be empty
+            //data: [] 
           } 
         ]
       },
@@ -266,15 +272,12 @@ mounted() {
     },
     //Take the data out of the dict, and place the data into the proper sequence for the visualization
     populateDataArrayUser() {
-      //page chart data = data: [homepage, find, tools, maps, new and ev, about] ... will omit the rest
-      //users chart data =  data: [returning users, new users]
-      //total downloads (and last month)
+      this.pageChartData.datasets.data = data_viz_dict.ga4.metrics["All screen page views in the last month"]
+      this.usersChartData.datasets.data.insert(0, data_viz_dict.ga4.metrics["Returning users in the last month"])
+      this.usersChartDatadatasets.data.insert(1, data_viz_dict.ga4.metrics["New users in the last month"])
+      this.total_downloads_last_3_mo = data_viz_dict.pennsieve["Number of SPARC portal downloads (3 month aggregation)"]
+      this.total_downloads_last_mo = data_viz_dict.pennsieve["Number of monthly SPARC portal downloads "]
       //dataset contributors (and last month)
-      //page_chart_data = data_viz_dict.ga4.metrics["All screen page views in the last month"]
-      //users_chart_data.insert(0, data_viz_dict.ga4.metrics["Returning users in the last month"])
-      //users_chart_data.insert(1, data_viz_dict.ga4.metrics["New users in the last month"])
-      //total_downloads_last_3 = data_viz_dict.pennsieve["Number of SPARC portal downloads (3 month aggregation)"]
-      //total_downloads_last_month = data_viz_dict.pennsieve["Number of monthly SPARC portal downloads "]
       //contributors. Use users??
     }
   }

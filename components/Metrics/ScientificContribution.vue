@@ -14,7 +14,7 @@
           Samples:
         </div>
         <div class="col-data">
-          79,340
+          {{ samples }}
         </div>
         <div>
           Across all Data
@@ -25,7 +25,7 @@
           Subjects:
         </div>
         <div class="col-data">
-          11,474
+          {{ subjects }}
         </div>
         <div>
           Across all Data
@@ -50,7 +50,7 @@
           File Storage:
         </div>
         <div class="col-data">
-          642Gb
+          {{ total_size }} bytes
         </div>
         <div>
           Across all Data
@@ -99,6 +99,9 @@ export default {
       ],
       //This will hold the data that will be used to generate the bars
       dict_for_viz: {},
+      samples: 0,
+      subjects: 0,
+      total_size: 0,
       dataChartData: {
         labels: [ 'All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed' ],
         datasets: [ 
@@ -112,7 +115,9 @@ export default {
               '#8300bf',
             ],
             borderColor: '#8300bf',
-            data: [214, 157, 35, 22, 3] 
+            data: [214, 157, 35, 22, 3]
+            //should be empty initially
+            //data: [] 
           } 
         ]
       },
@@ -183,6 +188,7 @@ export default {
             ],
             borderColor: '#8300bf',
             data: [37, 34, 27, 25, 12] 
+            //data: []
           } 
         ]
       },
@@ -279,18 +285,19 @@ export default {
       //For minimal instance. Will have 3 month bins as well.
       //json_dict_for_viz = JSON.parse(dict_for_viz)
       //assign entry in list that viz uses to specific dictionary item in return
-      //chart_data[0] = dict_for_viz.sparc.metrics["All SPARC Categories over 1 month"]
-      //chart_data[1] = dict_for_viz.sparc.metrics["SPARC datasets over 1 month"]
-      //chart_data[2] = dict_for_viz.sparc.metrics["SPARC maps over 1 month"]
-      //chart_data[3] = dict_for_viz.sparc.metrics["SPARC computational models over 1 month"]
-      //samples = dict_for_viz.sparc.metrics.M["Current number of samples (cumulative)"]
-      //samples = dict_for_viz.sparc.metrics.M["Current nymber of subjects (cumulative)"]
-      //anatomical_structs.insert(0, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["vagus nerve"])
-      //anatomical_structs.insert(1,dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["colon"])
-      //anatomical_structs.insert(2, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["heart"])
-      //anatomical_structs.insert(3, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["stomach"])
-      //anatomical_structs.insert(4, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["urinary bladder"])
-      //size_across_all_data = dict_for_viz.pennsieve.metrics["Total Number of Bytes"]
+      this.dataChartData.datasets.data.insert(0, dict_for_viz.sparc.metrics["All SPARC Categories over 1 month"])
+      this.dataChartData.datasets.data.insert(1, dict_for_viz.sparc.metrics["SPARC datasets over 1 month"])
+      this.dataChartData.datasets.data.insert(2, dict_for_viz.sparc.metrics["SPARC maps over 1 month"])
+      this.dataChartData.datasets.data.insert(3, dict_for_viz.sparc.metrics["SPARC computational models over 1 month"])
+      this.samples = dict_for_viz.sparc.metrics.M["Current number of samples (cumulative)"]
+      this.subjects = dict_for_viz.sparc.metrics.M["Current nymber of subjects (cumulative)"]
+      this.anatomicalStructuresChartData.datasets.data.insert(0, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["vagus nerve"])
+      this.anatomicalStructuresChartData.datasets.data.insert(1,dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["colon"])
+      this.anatomicalStructuresChartData.datasets.data.insert(2, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["heart"])
+      this.anatomicalStructuresChartData.datasets.data.insert(3, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["stomach"])
+      this.anatomicalStructuresChartData.datasets.data.insert(4, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["urinary bladder"])
+      this.total_size = dict_for_viz.pennsieve.metrics["Total Number of Bytes"]
+
     }
   }
 }
