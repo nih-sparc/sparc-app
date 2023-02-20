@@ -266,11 +266,16 @@ mounted() {
     },
     //Take the data out of the dict, and place the data into the proper sequence for the visualization
     populateDataArrayUser() {
-      //page chart data = data: [homepage, find, tools, maps, new and ev, about]
+      //page chart data = data: [homepage, find, tools, maps, new and ev, about] ... will omit the rest
       //users chart data =  data: [returning users, new users]
       //total downloads (and last month)
       //dataset contributors (and last month)
-
+      //page_chart_data = data_viz_dict.ga4.metrics["All screen page views in the last month"]
+      //users_chart_data.insert(0, data_viz_dict.ga4.metrics["Returning users in the last month"])
+      //users_chart_data.insert(1, data_viz_dict.ga4.metrics["New users in the last month"])
+      //total_downloads_last_3 = data_viz_dict.pennsieve["Number of SPARC portal downloads (3 month aggregation)"]
+      //total_downloads_last_month = data_viz_dict.pennsieve["Number of monthly SPARC portal downloads "]
+      //contributors. Use users??
     }
   }
 }

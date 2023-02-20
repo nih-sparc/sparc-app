@@ -276,16 +276,21 @@ export default {
     },
     //Take the data out of the dict, and place the data into the proper sequence for the visualization
     populateDataArraySci() {
-      //data chart data = [ 'All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed' ]
-      //samples (across all data)
-      //subjects (across all data)
-      //number of anatomical structures
-      //anatomical structures = NEED BREAKDOWN!!
-      //size across all data
-      //GENERAL PROCCESS:
+      //For minimal instance. Will have 3 month bins as well.
       //json_dict_for_viz = JSON.parse(dict_for_viz)
       //assign entry in list that viz uses to specific dictionary item in return
-      //chart_data[0] = dict_for_viz.sparc.metrics.M["attribute"]
+      //chart_data[0] = dict_for_viz.sparc.metrics["All SPARC Categories over 1 month"]
+      //chart_data[1] = dict_for_viz.sparc.metrics["SPARC datasets over 1 month"]
+      //chart_data[2] = dict_for_viz.sparc.metrics["SPARC maps over 1 month"]
+      //chart_data[3] = dict_for_viz.sparc.metrics["SPARC computational models over 1 month"]
+      //samples = dict_for_viz.sparc.metrics.M["Current number of samples (cumulative)"]
+      //samples = dict_for_viz.sparc.metrics.M["Current nymber of subjects (cumulative)"]
+      //anatomical_structs.insert(0, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["vagus nerve"])
+      //anatomical_structs.insert(1,dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["colon"])
+      //anatomical_structs.insert(2, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["heart"])
+      //anatomical_structs.insert(3, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["stomach"])
+      //anatomical_structs.insert(4, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["urinary bladder"])
+      //size_across_all_data = dict_for_viz.pennsieve.metrics["Total Number of Bytes"]
     }
   }
 }
