@@ -142,6 +142,11 @@ const searchTypes = [
 
 const sortOptions = [
   {
+    label: 'Upcoming',
+    id: 'upcoming',
+    sortOrder: '-fields.upcomingSortOrder'
+  },
+  {
     label: 'Latest',
     id: 'latest',
     sortOrder: '-fields.startDate'

@@ -233,8 +233,11 @@ export default {
 
   methods: {
     executeDownload(file) {
-      const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
-      const matches = file.uri.match(datasetVersionRegexp)
+      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+      let params = file.uri.replace("s3://", "")
+      let firstIndex = params.indexOf("/") + 1
+      params = params.substr(firstIndex)
+      const matches = params.match(datasetVersionRegexp)
 
       const payload = {
         paths: [matches.groups.filePath],
@@ -279,7 +282,7 @@ export default {
     /**
      * Opens a file in a new tab
      * This is currently for MS Word, MS Excel, and Powerpoint files only
-     * @param {Object} scope
+     * @param {Object} file
      */
     openFile: function(file) {
       this.getViewFileUrl(file).then(response => {
@@ -287,17 +290,20 @@ export default {
       })
     },
     getViewFileUrl(file) {
+      let uri = `${propOr('', 'uri', file).replace("s3://", "")}`
+      let s3BucketName = uri.substring(0, uri.indexOf("/"))
+
       const filePath = compose(
         last,
         defaultTo([]),
-        split('s3://pennsieve-prod-discover-publish-use1/'),
+        split(`s3://${s3BucketName}/`),
         propOr('', 'uri')
       )(file)
 
       const fileType = file.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
 
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}&contentType=${contentType}`
+      const requestUrl = `${process.env.portal_api}/download?s3BucketName=${s3BucketName}&key=${filePath}&contentType=${contentType}`
 
       return this.$axios.$get(requestUrl).then(response => {
         const url = response

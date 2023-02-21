@@ -25,7 +25,6 @@
     </div>
     <hr />
     <homepage-news :news="newsAndEvents" />
-    <latest-news-and-events />
     <stay-connected />
   </div>
 </template>
@@ -36,7 +35,6 @@ import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
-import LatestNewsAndEvents from '@/components/LatestNewsAndEvents/LatestNewsAndEvents.vue'
 import StayConnected from '@/components/StayConnected/StayConnected.vue'
 
 import createClient from '@/plugins/contentful.js'
@@ -56,7 +54,6 @@ export default {
     HomepageNews,
     PortalFeatures,
     ProjectsAndDatasets,
-    LatestNewsAndEvents,
     StayConnected
   },
 
@@ -69,13 +66,10 @@ export default {
     ]).then(async ([homepage]) => {
         let fields = getHomepageFields(homepage.fields)
         const datasetSectionTitle = homepage.fields.datasetSectionTitle
-        const featuredDatasetId = homepage.fields.featuredDatasetId
-        if (featuredDatasetId != '') {
-          const url = `${process.env.discover_api_host}/datasets/${featuredDatasetId}`
-          await $axios.$get(url).then(({ name, description, banner }) => {
-            fields = { ...fields, 'featuredDataset': { 'title': name, 'description': description, 'banner': banner, 'id': featuredDatasetId }, 'datasetSectionTitle': datasetSectionTitle }
-          })
-        }
+        const url = `${process.env.portal_api}/get_featured_dataset`
+        await $axios.$get(url).then(({ datasets }) => {
+          fields = { ...fields, 'featuredDataset': { 'title': datasets[0].name, 'description': datasets[0].description, 'banner': datasets[0].banner, 'id': datasets[0].id }, 'datasetSectionTitle': datasetSectionTitle }
+        })
         if (pathOr(undefined, ["featuredProject","fields","institution"], fields) != undefined) {
           const institutionId = pathOr("", ["featuredProject","fields","institution","sys","id"], fields)
           await client.getEntry(institutionId).then(( response ) => {
@@ -125,7 +119,6 @@ export default {
       newsAndEvents: [],
       portalFeatures: [],
       featuredProject: {},
-      featuredDatasetId: '',
       datasetSectionTitle: '',
       featuredDataset: {},
       heroCopy: '',

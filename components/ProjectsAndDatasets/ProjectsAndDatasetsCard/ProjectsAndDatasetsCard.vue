@@ -7,23 +7,45 @@
         </div>
       </el-col>
       <el-col :span="18">
-        <nuxt-link
-          class="dataset-name tab1"
-          :to="link"
-        >
-          {{ title }}
-        </nuxt-link>
-        <div class="dataset-description body1 mt-8">
-          {{ description }}
-        </div>
-        <el-button class="secondary mt-16">
+        <template v-if="link.isInternal">
+          <nuxt-link
+            class="dataset-name tab1"
+            :to="link.path"
+          >
+            {{ title }}
+          </nuxt-link>
+          <div class="dataset-description body1 mt-8">
+            {{ description }}
+          </div>
           <nuxt-link
             class="button-link"
-            :to="link"
+            :to="link.path"
           >
-            {{ buttonText }}
+            <el-button class="secondary mt-16">
+              {{ buttonText }}
+            </el-button>
           </nuxt-link>
-        </el-button>
+        </template>
+        <template v-else>
+          <a
+            class="dataset-name tab1"
+            :href="link.path"
+          >
+            {{ title }}
+          </a>
+          <div class="dataset-description body1 mt-8">
+            {{ description }}
+          </div>
+          <a
+            class="button-link"
+            :href="link.path"
+          >
+            <el-button class="secondary mt-16">
+              {{ buttonText }}
+              <svg-icon name="icon-open" height="20" width="20" />
+            </el-button>
+          </a>
+        </template>
       </el-col>
     </el-row>
   </div>
@@ -50,8 +72,11 @@ export default {
       default: ''
     },
     link: {
-      type: String,
-      default: ''
+      type: Object,
+      default: {
+        isInternal: true,
+        path:'/'
+      }
     }
   },
 }
