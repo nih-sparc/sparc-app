@@ -14,7 +14,8 @@
           Samples:
         </div>
         <div class="col-data">
-          {{ samples }}
+          8065
+          <!-- {{ samples }} -->
         </div>
         <div>
           Across all Data
@@ -25,7 +26,8 @@
           Subjects:
         </div>
         <div class="col-data">
-          {{ subjects }}
+          2804
+          <!-- {{ subjects }} -->
         </div>
         <div>
           Across all Data
@@ -37,7 +39,8 @@
       Anatomical Structures
     </div>
     <span class="col-data pl-32">
-      24
+      43
+      <!-- Get actual numbers-->
     </span><span>Different Anatomical Structures</span>
     <BarChart
       :chartData="anatomicalStructuresChartData"
@@ -50,7 +53,8 @@
           File Storage:
         </div>
         <div class="col-data">
-          {{ total_size }} bytes
+          24592623576943 bytes 
+          <!-- {{ total_size }} bytes -->
         </div>
         <div>
           Across all Data
@@ -103,7 +107,7 @@ export default {
       subjects: 0,
       total_size: 0,
       dataChartData: {
-        labels: [ 'All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed' ],
+        labels: [ 'All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed (pending)' ],
         datasets: [ 
           { 
             label: 'Last Month',
@@ -115,7 +119,7 @@ export default {
               '#8300bf',
             ],
             borderColor: '#8300bf',
-            data: [214, 157, 35, 22, 3]
+            data: [235, 173, 36, 26, 0]
             //should be empty initially
             //data: [] 
           } 
@@ -187,7 +191,7 @@ export default {
               '#8300bf'
             ],
             borderColor: '#8300bf',
-            data: [37, 34, 27, 25, 12] 
+            data: [51, 48, 40, 36, 16] 
             //data: []
           } 
         ]

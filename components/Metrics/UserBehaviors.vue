@@ -22,10 +22,12 @@
           Total Downloads:
         </div>
         <div class="col-data">
-          {{ this.total_downloads_last_mo }}
+          12
+          <!-- {{ this.total_downloads_last_mo }} -->
         </div>
         <div>
-          ({{ this.total_downloads_last_3_mo }} last month)
+          (51 last 3 months)
+           <!-- {{ this.total_downloads_last_3_mo }} -->
         </div>
       </div>
       <div class="col">
@@ -33,10 +35,10 @@
           Dataset Contributors:
         </div>
         <div class="col-data">
-          123 (HARDCODED)
+          Pending
         </div>
         <div>
-          (12 (HARDCODED) new in the last month)
+          ((pending) new in the last month)
         </div>
       </div>
     </div>
@@ -84,8 +86,9 @@ export default {
       total_downloads_last_mo: 0,
       total_downloads_last_3_mo: 0,
       pageChartData: {
-        labels: [ 'Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events', 'About' ],
+        labels: [ 'All','Homepage (pending)', 'Find Data (pending)', 'Tools & Resources (pending)', 'Maps (pending)', 'News & Events (pending)'],
         //labels: ['All Pages']
+        //labels: [ 'Homepage', 'Find Data', 'Tools & Resources', 'Maps (pending)', 'News & Events (pending)', 'About (pending)' ],
         datasets: [ 
           { 
             label: 'Last Month',
@@ -98,7 +101,7 @@ export default {
               '#8300bf',
             ],
             borderColor: '#8300bf',
-            data: [237, 162, 99, 147, 133, 300]
+            data: [11965, 0, , 0, 0, 0]
             //Should initially be empty
             //data: [] 
           } 
@@ -173,6 +176,7 @@ export default {
             ],
             borderColor: '#8300bf',
             //Should initially be empty
+            data: [221,842]
             //data: [] 
           } 
         ]
