@@ -1,34 +1,35 @@
 <template>
   <sparc-card>
     <template slot="image">
-      <div v-if="event.fields.requiresADetailsPage" class="sparc-card__image-container">
-        <img
-          v-on:click='navigateTo(`news-and-events/events/${event.sys.id}`)'
-          class="sparc-card__image"
-          :src="imageSrc" 
-          :alt="imageAlt" 
-        />
-      </div>
-      <template v-else>
-        <div v-if="event.fields.url" class="sparc-card__image-container">
+      <div class="sparc-card__image-container">
+        <a v-if="event.fields.requiresADetailsPage" :href="href(event)">
           <img
-            v-on:click='navigateTo(event.fields.url)'
             class="sparc-card__image"
-            :src="imageSrc" 
+            :src="imageSrc"
             :alt="imageAlt" 
           />
-        </div>
-        <div
-          v-else
-          class="sparc-card__image-container"
-        >
-        <img
-            class="sparc-card__image"
-            :src="imageSrc" 
-            :alt="imageAlt" 
-          />
-        </div>
-      </template>
+        </a>
+        <template v-else>
+          <div v-if="event.fields.url">
+            <a :href="event.fields.url" :target="isInternalLink(event.fields.url) ? '_self' : '_blank'">
+              <img
+                class="sparc-card__image"
+                :src="imageSrc"
+                :alt="imageAlt" 
+              />
+            </a>
+          </div>
+          <div
+            v-else
+          >
+          <img
+              class="sparc-card__image"
+              :src="imageSrc"
+              :alt="imageAlt" 
+            />
+          </div>
+        </template>
+      </div>
     </template>
 
     <div>
@@ -96,6 +97,7 @@ import SparcCard from '@/components/SparcCard/SparcCard.vue'
 
 import FormatDate from '@/mixins/format-date'
 import MarkedMixin from '@/mixins/marked'
+import { isInternalLink} from '@/mixins/marked'
 
 export default {
   name: 'FeaturedEvent',
@@ -116,9 +118,11 @@ export default {
   },
 
   methods: {
-    navigateTo(url) {
-      this.$router.push(url)
-    }
+    isInternalLink,
+    href: function(event) {
+      const eventId = pathOr("", ["sys","id"], event)
+      return `news-and-events/events/${eventId}`
+    },
   },
 
   computed: {

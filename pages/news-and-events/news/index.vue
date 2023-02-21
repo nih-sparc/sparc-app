@@ -201,6 +201,12 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     }
   },
 
+  head() {
+    return {
+      title: this.searchTypes[0].label
+    }
+  },
+
   watch: {
     '$route.query': {
       handler: function() {

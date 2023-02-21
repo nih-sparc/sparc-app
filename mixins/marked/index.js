@@ -1,5 +1,6 @@
 import marked from 'marked'
 import youtubeEmbeddedSrc from '../youtube-embedded-src'
+import DOMPurify from 'isomorphic-dompurify'
 
 /**
  * Modify the link renderer to add `target="blank"`
@@ -62,10 +63,7 @@ renderer.image = function(href, title, text) {
   }
 }
 
-marked.setOptions({
-  sanitize: true,
-  renderer
-})
+marked.setOptions({ renderer })
 
 let renderYoutube = function(href, title) {
   // for further reading on fluid sizing of videos: https://css-tricks.com/fluid-width-video/
@@ -90,8 +88,8 @@ export default {
      * @param {String} markdown
      * @returns {HTML}
      */
-    parseMarkdown: function(markdown = '') {
-      return marked(markdown)
+    parseMarkdown: function(markdown = '', purifyOptions={}) {
+      return DOMPurify.sanitize(marked(markdown), purifyOptions)
     }
   }
 }

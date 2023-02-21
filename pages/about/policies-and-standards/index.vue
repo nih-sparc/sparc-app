@@ -180,6 +180,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.searchTypes[1].label
+    }
+  },
+
   watch: {
     '$route.query': {
       handler: async function() {

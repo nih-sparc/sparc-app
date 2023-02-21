@@ -12,7 +12,12 @@ export default {
   components: {
     SetupNewUser
   },
-  middleware: 'authenticated'
+  middleware: 'authenticated',
+  head() {
+    return {
+      title: "Welcome"
+    }
+  },
 }
 </script>
 

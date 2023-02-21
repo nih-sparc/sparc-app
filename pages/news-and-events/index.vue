@@ -253,6 +253,12 @@ export default Vue.extend<Data, Methods, Computed, never>({
     }
   },
 
+  head() {
+    return {
+      title: this.title
+    }
+  },
+
   computed: {
     /**
      * Compute featured event

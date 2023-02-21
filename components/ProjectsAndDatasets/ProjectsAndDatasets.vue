@@ -1,27 +1,44 @@
 <template>
   <div class="section-container container py-32">
-    <div class="heading2 mb-32">Projects and Datasets</div>
+    <div v-if="isProject" class="heading2 mb-32">Projects &amp; Datasets</div>
+    <div v-else class="heading2 mb-32">Resources &amp; Datasets</div>
     <div class="row">
       <div class="col p-16">
-        <div class="body2 mb-16">Here is a project you might be interested in:</div>
-        <projects-and-datasets-card 
-          :title="project.fields.title" 
-          :description="project.fields.shortDescription" 
-          :banner="project.fields.banner" 
-          :link="'projects/' + project.sys.id"
-          button-text="View Project"
-        />
-        <nuxt-link class="view-all-link body2 mt-16" to="/data?type=projects">
-          View All Projects
-        </nuxt-link>
+        <template v-if="isProject">
+          <div class="body2 mb-16">Here is a project you might be interested in:</div>
+          <projects-and-datasets-card 
+            :title="projectOrResource.fields.title" 
+            :description="projectOrResource.fields.shortDescription" 
+            :banner="projectOrResource.fields.banner" 
+            :link='projectLink'
+            button-text="View Project"
+          />
+          <nuxt-link class="view-all-link body2 mt-16" to="/data?type=projects">
+            View All Projects
+          </nuxt-link>
+        </template>
+        <!--If not a project then we assume it is a tool/resource since it must be one or the other-->
+        <template v-else>
+          <div class="body2 mb-16">Here is a resource you might be interested in:</div>
+          <projects-and-datasets-card 
+            :title="projectOrResource.fields.name" 
+            :description="projectOrResource.fields.description" 
+            :banner="projectOrResource.fields.logo.fields.file.url" 
+            :link='resourceLink'
+            button-text="View Resource"
+          />
+          <nuxt-link class="view-all-link body2 mt-16" to="/resources/databases">
+            View All Tools & Resources
+          </nuxt-link>
+        </template>
       </div>
       <div class="col p-16">
-        <div class="body2 mb-16">Here is a dataset you might be interested in:</div>
+        <div class="body2 mb-16">{{ datasetSectionTitle }}</div>
         <projects-and-datasets-card 
           :title="dataset.title" 
           :description="dataset.description" 
           :banner="dataset.banner" 
-          :link="'datasets/' + dataset.id"
+          :link="datasetLink"
           button-text="View Dataset"
         />
         <nuxt-link class="view-all-link body2 mt-16" to="/data?type=dataset">
@@ -34,6 +51,7 @@
 
 <script>
 import ProjectsAndDatasetsCard from '@/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue'
+import { pathOr } from 'ramda'
 
 export default {
   name: 'ProjectsAndDatasets',
@@ -41,7 +59,7 @@ export default {
     ProjectsAndDatasetsCard
   },
   props: {
-    project: {
+    projectOrResource: {
       type: Object,
       default: () => {}
     },
@@ -49,7 +67,41 @@ export default {
       type: Object,
       default: () => {}
     },
+    datasetSectionTitle: {
+      type: String,
+      default: 'Here is a dataset you might be interested in: '
+    }
   },
+  computed: {
+    isProject() {
+      return pathOr('', ["sys","contentType","sys","id"], this.projectOrResource) == process.env.ctf_project_id
+    },
+    datasetLink() {
+      return {
+        isInternal: true,
+        path: `datasets/${this.dataset.id}`
+      }
+    },
+    projectLink() {
+      return {
+        isInternal: true,
+        path: "projects/" + pathOr("", ["sys","id"], this.projectOrResource)
+      }
+    },
+    resourceLink() {
+      if (this.projectOrResource.fields.requiresDetailsPage) {
+        return {
+          isInternal: true,
+          path: "resources/" + pathOr("", ["sys","id"], this.projectOrResource)
+        }
+      } else {
+        return {
+          isInternal: false,
+          path: pathOr("", ["fields","url"], this.projectOrResource)
+        }
+      }
+    }
+  }
 }
 </script>
 

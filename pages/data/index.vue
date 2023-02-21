@@ -64,7 +64,8 @@
                 :lg="6"
               >
                 <projects-facet-menu
-                  :anatomicalFocusFacets="projectsFacets"
+                  :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
+                  :fundingFacets="projectsFundingFacets"
                   @projects-selections-changed="onPaginationPageChange(1)"
                   @hook:mounted="facetMenuMounted"
                   ref="projectsFacetMenu"
@@ -253,7 +254,8 @@ export default {
   mixins: [],
 
   async asyncData() {
-    let projectsFacets = []
+    let projectsAnatomicalFocusFacets = []
+    let projectsFundingFacets = []
     await client.getEntries({
         content_type: 'awardSection',
       })
@@ -267,10 +269,32 @@ export default {
             id: label,
           })
         })
-        projectsFacets = facetData
+        projectsAnatomicalFocusFacets = facetData
+      })
+      await client.getEntries({
+        content_type: 'program',
+      })
+      .then(async response => {
+        let facetData = []
+        const items = propOr([], 'items', response)
+        items.forEach(item => {
+          const label = pathOr('', ['fields','name'], item)
+          facetData.push({
+            label: label,
+            id: label,
+          })
+        })
+        projectsFundingFacets = facetData
       })
     return {
-      projectsFacets
+      projectsAnatomicalFocusFacets,
+      projectsFundingFacets
+    }
+  },
+
+  head() {
+    return {
+      title: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1])
     }
   },
 
@@ -561,14 +585,18 @@ export default {
       this.isLoadingSearch = true
 
       var contentType = this.$route.query.type  
-      var sortOrder = undefined;
-      var anatomicalFocus = undefined;
+      var sortOrder = undefined
+      var anatomicalFocus = undefined
+      var funding = undefined
       var linkedEntriesTargetType = undefined
+      var linkedFundingProgramTargetType = undefined
       if (this.$route.query.type === "projects") {
         contentType = 'sparcAward',
         sortOrder = this.selectedProjectsSortOption.sortOrder,
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
+        funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
+        linkedFundingProgramTargetType = funding ? 'program' : undefined
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false;
@@ -583,7 +611,9 @@ export default {
             order: sortOrder,
             include: 2,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
-            'fields.projectSection.fields.title[in]' : anatomicalFocus
+            'fields.projectSection.fields.title[in]' : anatomicalFocus,
+            'fields.fundingProgram.sys.contentType.sys.id': linkedFundingProgramTargetType,
+            'fields.fundingProgram.fields.name[in]' : funding
           })
           .then(async response => {
             this.searchData = { ...response }

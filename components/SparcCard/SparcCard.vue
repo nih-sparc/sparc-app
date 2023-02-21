@@ -47,10 +47,8 @@ $tablet-large: 64em;
 .sparc-card {
   display: flex;
   &--image-right {
-    .sparc-card__image {
-      @media (min-width: $tablet-large) {
-        order: 2;
-      }
+    .sparc-card__image-container {
+      order: 2;
     }
   }
   &__image-container {
@@ -64,6 +62,7 @@ $tablet-large: 64em;
   }
   &__image {
     width: 100%;
+    height: 100%;
     object-fit: cover;
   }
   &__content-wrap {
