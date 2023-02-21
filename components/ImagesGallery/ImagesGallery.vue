@@ -166,7 +166,7 @@ export default {
     datasetScicrunch: {
       deep: true,
       immediate: true,
-      handler: function(scicrunchData) {
+      handler: async function(scicrunchData) {
         let items = []
         const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
@@ -213,6 +213,13 @@ export default {
         }
 
         if ('video' in scicrunchData) {
+          const getThumbnailsUrl = `${process.env.portal_api}/get_video_thumbnails`
+          const resp = this.$axios.$post(getThumbnailsUrl, {
+            paths: scicrunchData.video.map(video => video.dataset.path),
+            id: scicrunchData.discover_dataset.id,
+            version: scicrunchData.discover_dataset.version
+          })
+          const thumbnails = await resp
           items.push(
             ...Array.from(scicrunchData.video, videoFile => {
               const filePath = this.getS3FilePath(
@@ -224,7 +231,7 @@ export default {
               return {
                 title: videoFile.name,
                 type: 'Video',
-                thumbnail: this.defaultVideoImg,
+                thumbnail: thumbnails[videoFile.dataset.path] || this.defaultVideoImg,
                 link: linkUrl
               }
             })

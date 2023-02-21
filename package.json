@@ -17,7 +17,7 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/gallery": "0.3.1",
+    "@abi-software/gallery": "https://github.com/ignapas/mapcore-gallery.git#image-size",
     "@abi-software/mapintegratedvuer": "0.3.12-beta-3",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/simulationvuer": "0.6.5",

@@ -41,7 +41,7 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/gallery@0.3.1", "@abi-software/gallery@^0.3.1":
+"@abi-software/gallery@^0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.1.tgz#cb8317e4271e95254c6e3242be824fd3ec4b9ad4"
   integrity sha512-ED5ppMiXfHbobM073SnDiUhomviLH+dSQ6jgk6b9ULBkdTmF6r0cE6WbPHYJHdNgZVJDbYokBieO/URrff8QhQ==
@@ -50,6 +50,15 @@
     axios "^0.26.1"
     babel-plugin-component "^1.1.1"
     base64-inline-loader "^2.0.1"
+    core-js "^3.8.3"
+    element-ui "^2.15.0"
+    vue "^2.6.11"
+
+"@abi-software/gallery@https://github.com/ignapas/mapcore-gallery.git#image-size":
+  version "0.2.1"
+  resolved "https://github.com/ignapas/mapcore-gallery.git#78fc65d8642794b32c5ac6884f5af030c0c06fe4"
+  dependencies:
+    "@babel/code-frame" "^7.12.11"
     core-js "^3.8.3"
     element-ui "^2.15.0"
     vue "^2.6.11"
