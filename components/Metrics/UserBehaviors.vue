@@ -65,6 +65,8 @@ export default {
     return {
       currentMonth: new Date().getMonth() + 1,
       currentYear: new Date().getFullYear(),
+      //current date in M/DD/YYYY format
+      currentDate: new Date().toLocaleDateString(),
       dataSources: [
         {
           name: 'pennsieve',
@@ -250,6 +252,11 @@ mounted() {
     }
   },
   methods: {
+     //Gets date exactly 1 month ago in DD/MM/YYYY format. Takes date in 'YYYY-MM-DDT00:00:00.000Z' format (ie. Date object)
+     subtractMonths(date, months=1) {
+      date.setMonth(date.getMonth() - months);
+      return date.toLocaleDateString()
+    },
     //NOTE: should put this reused behavior in set of external auxillary functions
     //Will get the data for each endpoint for the current month. This data will then be stored as 'data' within each dataSource
     //all 3 data sources data is fetched in parallel and then converted to JSON
