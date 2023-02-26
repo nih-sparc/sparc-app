@@ -86,6 +86,9 @@
           Learn More
         </el-button>
       </a>
+      <nuxt-link to="news-and-events" class="view-all-link">
+        View All News &amp; Events
+      </nuxt-link>
     </sparc-card>
   </div>
 </template>
@@ -243,5 +246,9 @@ div.sparc-card {
       margin-left: 1.25rem;
     }
   }
+}
+.view-all-link {
+  margin-top: auto;
+  text-decoration: underline !important;
 }
 </style>

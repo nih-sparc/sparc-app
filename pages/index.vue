@@ -25,7 +25,10 @@
     </div>
     <hr />
     <homepage-news :news="newsAndEvents" />
-    <stay-connected />
+    <hr />
+    <div class="secondary-background">
+      <stay-connected />
+    </div>
   </div>
 </template>
 
@@ -189,10 +192,10 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .page-data {
-  background-color: $background;
+  background-color: #f8faff;
 }
 .secondary-background {
-  background-color: #f8faff;
+  background-color: $background;
 }
 ::v-deep h2 {
   font-size: 1.5em;
