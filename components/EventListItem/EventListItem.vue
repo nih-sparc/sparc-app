@@ -1,5 +1,6 @@
 <template>
-  <div class="event-list-item">
+  <div :class="['event-list-item', { 'past-events-divider': showPastEventsDivider }]" >
+    <hr v-if="showPastEventsDivider" class="divider-text" data-content="PAST EVENTS" />
     <div class="event-content">
       <div class="image">
         <event-banner-image :src="bannerUrl" />
@@ -70,6 +71,10 @@ export default {
     item: {
       type: Object,
       default: () => {}
+    },
+    showPastEventsDivider: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -113,7 +118,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .el-table {
   width: 100%;
 }
@@ -139,6 +144,37 @@ table:not([class^='el-table__'])::before {
   border-radius: 3px 3px 0 0;
   background-color: white;
   margin-bottom: 5px;
+}
+.divider-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: $grey;
+  text-align: center;
+  height: 1.5em;
+  opacity: .5;
+  &:before {
+    content: '';
+    // use the linear-gradient for the fading effect
+    // use a solid background color for a solid bar
+    background: linear-gradient(to right, transparent, $grey, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: $grey;
+    padding: 0 .5em;
+    line-height: 1.5em;
+    font-weight: 500;
+    background-color: white;
+  }
 }
 .event-content {
   display: flex;
