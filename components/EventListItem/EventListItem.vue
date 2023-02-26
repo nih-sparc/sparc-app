@@ -156,8 +156,6 @@ table:not([class^='el-table__'])::before {
   opacity: .5;
   &:before {
     content: '';
-    // use the linear-gradient for the fading effect
-    // use a solid background color for a solid bar
     background: linear-gradient(to right, transparent, $grey, transparent);
     position: absolute;
     left: 0;
