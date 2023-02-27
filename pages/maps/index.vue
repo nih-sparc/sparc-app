@@ -167,7 +167,7 @@ export default {
   },
   watch: {
     currentEntry: "currentEntryUpdated",
-    DOI: "doiUpdated"
+    doi: "doiUpdated"
   },
   fetchOnServer: false,
   created: function() {
