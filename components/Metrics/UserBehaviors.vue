@@ -504,11 +504,11 @@ mounted() {
     },
     //Take the data out of the dict, and place the data into the proper sequence for the visualization
     populateDataArrayUser() {
-      this.pageChartData.datasets.data = data_viz_dict.ga4.metrics["All screen page views in the last month"]
-      this.usersChartData.datasets.data.insert(0, data_viz_dict.ga4.metrics["Returning users in the last month"])
-      this.usersChartDatadatasets.data.insert(1, data_viz_dict.ga4.metrics["New users in the last month"])
-      this.total_downloads_last_3_mo = data_viz_dict.pennsieve["Number of SPARC portal downloads (3 month aggregation)"]
-      this.total_downloads_last_mo = data_viz_dict.pennsieve["Number of monthly SPARC portal downloads "]
+      this.pageChartData.datasets.data = data_viz_dict.ga4.all_screen_page_views_last_mo
+      this.usersChartData.datasets.data.insert(0, data_viz_dict.ga4.returning_users_in_last_month)
+      this.usersChartDatadatasets.data.insert(1, data_viz_dict.ga4.new_users_in_last_month)
+      this.total_downloads_last_3_mo = data_viz_dict.pennsieve.number_of_sparc_downloads_last_3_mo
+      this.total_downloads_last_mo = data_viz_dict.pennsieve.number_of_sparc_downloads_last_mo
       //dataset contributors (and last month)
       //contributors. Use users??
     }

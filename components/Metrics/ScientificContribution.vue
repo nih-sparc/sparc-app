@@ -517,18 +517,18 @@ export default {
       //For minimal instance. Will have 3 month bins as well.
       //json_dict_for_viz = JSON.parse(dict_for_viz)
       //assign entry in list that viz uses to specific dictionary item in return
-      this.dataChartData.datasets.data.insert(0, dict_for_viz.sparc.metrics["All SPARC Categories over 1 month"])
-      this.dataChartData.datasets.data.insert(1, dict_for_viz.sparc.metrics["SPARC datasets over 1 month"])
-      this.dataChartData.datasets.data.insert(2, dict_for_viz.sparc.metrics["SPARC maps over 1 month"])
-      this.dataChartData.datasets.data.insert(3, dict_for_viz.sparc.metrics["SPARC computational models over 1 month"])
-      this.samples = dict_for_viz.sparc.metrics.M["Current number of samples (cumulative)"]
-      this.subjects = dict_for_viz.sparc.metrics.M["Current nymber of subjects (cumulative)"]
-      this.anatomicalStructuresChartData.datasets.data.insert(0, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["vagus nerve"])
-      this.anatomicalStructuresChartData.datasets.data.insert(1,dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["colon"])
-      this.anatomicalStructuresChartData.datasets.data.insert(2, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["heart"])
-      this.anatomicalStructuresChartData.datasets.data.insert(3, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["stomach"])
-      this.anatomicalStructuresChartData.datasets.data.insert(4, dict_for_viz.sparc.metrics["Anatomical structures breakdown"]["urinary bladder"])
-      this.total_size = dict_for_viz.pennsieve.metrics["Total Number of Bytes"]
+      this.dataChartData.datasets.data.insert(0, dict_for_viz.sparc.all_sparc_categories_last_mo)
+      this.dataChartData.datasets.data.insert(1, dict_for_viz.sparc.new_sparc_datasets_last_1_mo)
+      this.dataChartData.datasets.data.insert(2, dict_for_viz.sparc.new_sparc_maps_last_1_mo)
+      this.dataChartData.datasets.data.insert(3, dict_for_viz.sparc.new_sparc_computational_models_last_1_mo)
+      this.samples = dict_for_viz.sparc.number_of_samples_cumulative
+      this.subjects = dict_for_viz.sparc.number_of_subjects_cumulative
+      this.anatomicalStructuresChartData.datasets.data.insert(0, dict_for_viz.sparc.anatomical_structures_breakdown["vagus nerve"])
+      this.anatomicalStructuresChartData.datasets.data.insert(1,dict_for_viz.sparc.anatomical_structures_breakdown["colon"])
+      this.anatomicalStructuresChartData.datasets.data.insert(2, dict_for_viz.sparc.anatomical_structures_breakdown["heart"])
+      this.anatomicalStructuresChartData.datasets.data.insert(3, dict_for_viz.sparc.anatomical_structures_breakdown["stomach"])
+      this.anatomicalStructuresChartData.datasets.data.insert(4, dict_for_viz.sparc.anatomical_structures_breakdown["urinary bladder"])
+      this.total_size = dict_for_viz.pennsieve.total_number_gigabytes
 
     }
   }
