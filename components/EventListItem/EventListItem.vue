@@ -15,10 +15,13 @@
           }"
           v-html="highlightMatches(item.fields.title, $route.query.search)"
         />
-        <a v-else class="link1" :href="item.fields.url" :target="!opensInNewTab(item.fields.url) ? '_self' : '_blank'">
+        <a v-else-if="item.fields.url" class="link1" :href="item.fields.url" :target="!opensInNewTab(item.fields.url) ? '_self' : '_blank'">
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
           <svg-icon v-if="!isInternalLink(item.fields.url)" name="icon-open" height="30" width="30" />
         </a>
+        <div v-else>
+          <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
+        </div>
         <div>
           <div class="body1 my-8" v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
           <table class="property-table">
@@ -153,7 +156,6 @@ table:not([class^='el-table__'])::before {
   color: $grey;
   text-align: center;
   height: 1.5em;
-  opacity: .5;
   &:before {
     content: '';
     background: linear-gradient(to right, transparent, $grey, transparent);
