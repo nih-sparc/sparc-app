@@ -36,7 +36,7 @@ import flatmaps from '@/services/flatmaps'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import scicrunch from '@/services/scicrunch'
 
-import { failMessage } from '@/utils/notification-messages'
+import { successMessage, failMessage } from '@/utils/notification-messages'
 
 const getFlatmapEntry = async ( route ) => {
   const uberonid = route.query.uberonid
@@ -51,6 +51,7 @@ const getFlatmapEntry = async ( route ) => {
       type: "MultiFlatmap",
       taxo: route.query.taxo,
       biologicalSex: route.query.biologicalSex,
+      uuid: route.query.fid,
       organ: organ_name
   }
 }
@@ -166,7 +167,7 @@ export default {
   },
   watch: {
     currentEntry: "currentEntryUpdated",
-    DOI: "doiUpdated"
+    doi: "doiUpdated"
   },
   fetchOnServer: false,
   created: function() {
@@ -185,8 +186,12 @@ export default {
           if (this.uuid) {
             await this.$axios.$post(`${process.env.portal_api}/map/getstate`, { uuid: this.uuid })
             .then((response) => {
-              if (response.state)
+              if (response.state) {
                 this.state = response.state
+                this.$message(successMessage(
+                  `Saved state retrieved succesfuly, please wait while the state is being resumed.`
+              ))
+              }
             })
             .catch(() => {
               this.$message(failMessage(
@@ -229,6 +234,10 @@ export default {
               `Sorry! A flatmap for a ${this.forSpecies} does not yet exist. The ${this.organ} of a rat has been shown instead.`
             ))
           }
+        } else if (this.$route.query.fid) {
+          this.$message(successMessage(
+            `A flatmap's unique id is provided, a legacy map may be displayed instead.`
+          ))
         } else {
           this.$message(failMessage(
             `Sorry! Species information cannot be found. The ${this.currentEntry.organ} of a rat has been shown instead.`

@@ -47,8 +47,8 @@
               </a>
             </div>
             <div class="footer__info--re3data">
-              <object type="image/svg+xml" data="https://www.re3data.org/public/badges/s/light/100013719.svg">
-                <img src="https://www.re3data.org/public/badges/s/light/100013719.png" style="max-width:100%">
+              <object type="image/svg+xml" data="/images/100013719.svg">
+                <img src="/images/100013719.svg" alt="re3data badge"/>
               </object>
             </div>
           </div>

@@ -79,6 +79,7 @@
                     v-for="item in events.items"
                     :key="item.sys.id"
                     :item="item"
+                    :show-past-events-divider="showPastEventsDivider && item.sys.id == firstPastEventId"
                   />
                 </div>
                 <div class="search-heading">
@@ -112,7 +113,7 @@
 <script lang="ts">
 // @ts-nocheck
 import Vue from 'vue'
-import { propOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import EventsFacetMenu from '@/components/FacetMenu/EventsFacetMenu.vue'
 import EventListItem from '@/components/EventListItem/EventListItem.vue'
@@ -242,6 +243,28 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     },
     sortOrder: function() {
       return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
+    },
+    firstPastEventId: function() {
+      const events = propOr([], 'items', this.events)
+      for (let i = 0; i < events.length; i++) {
+        const event = events[i]
+        const upcomingSortOrder = pathOr("", ['fields','upcomingSortOrder'], event)
+        if (upcomingSortOrder < 0) {
+          return pathOr("", ['sys','id'], event)
+        }
+      }
+      return -1
+    },
+    showPastEventsDivider: function() {
+      if (this.selectedSortOption.id != "upcoming") {
+        return false
+      }
+      const events = propOr([], 'items', this.events)
+      if (events.length == 0) {
+        return false
+      }
+      const firstEventId = pathOr(-1, ['sys', 'id'], events[0])
+      return this.firstPastEventId != firstEventId
     }
   },
 
@@ -289,6 +312,10 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   &:last-child {
     padding-bottom: 0;
   }
+}
+::v-deep .past-events-divider {
+  border-top: none;
+  padding-top: 0;
 }
 .subpage {
   margin-bottom: 1rem;
