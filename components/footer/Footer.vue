@@ -47,8 +47,8 @@
               </a>
             </div>
             <div class="footer__info--re3data">
-              <object type="image/svg+xml" data="/_nuxt/assets/100013719.svg">
-                <img src="@/assets/100013719.svg" alt="re3data badge"/>
+              <object type="image/svg+xml" data="/images/100013719.svg">
+                <img src="/images/100013719.svg" alt="re3data badge"/>
               </object>
             </div>
           </div>
