@@ -19,26 +19,12 @@
     <div class="row">
       <div class="col">
         <div class="col-header heading2 mb-0">
-          Total Downloads:
-        </div>
-        <div class="col-data">
-          12
-          <!-- {{ this.total_downloads_last_mo }} -->
-        </div>
-        <div>
-          (51 last 3 months)
-           <!-- {{ this.total_downloads_last_3_mo }} -->
+          Total Downloads: <span class="col-data">12<!-- {{ this.total_downloads_last_mo }} --></span> <span class="body1">(51 last 3 months)<!-- {{ this.total_downloads_last_3_mo }} --></span>
         </div>
       </div>
       <div class="col">
         <div class="col-header heading2 mb-0">
-          Dataset Contributors:
-        </div>
-        <div class="col-data">
-          Pending
-        </div>
-        <div>
-          ((pending) new in the last month)
+          Dataset Contributors: <span class="col-data">Pending</span> <span class="body1">((pending) new in the last month)</span>
         </div>
       </div>
     </div>
@@ -88,25 +74,40 @@ export default {
       total_downloads_last_mo: 0,
       total_downloads_last_3_mo: 0,
       pageChartData: {
-        labels: [ 'All','Homepage (pending)', 'Find Data (pending)', 'Tools & Resources (pending)', 'Maps (pending)', 'News & Events (pending)'],
+        labels: [ 'All','Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events'],
         //labels: ['All Pages']
         //labels: [ 'Homepage', 'Find Data', 'Tools & Resources', 'Maps (pending)', 'News & Events (pending)', 'About (pending)' ],
         datasets: [ 
           { 
             label: 'Last Month',
             backgroundColor: [
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
             ],
-            borderColor: '#8300bf',
-            data: [11965, 0, , 0, 0, 0]
+            borderColor: 'rgba(131, 0, 191, .5)',
+            data: [11965, 6000, 7000, 3500, 2000, 8000]
             //Should initially be empty
             //data: [] 
-          } 
+          },
+          { 
+            label: 'Last 3 Months',
+            backgroundColor: [
+              'rgba(188, 0, 252, .25)',
+              'rgba(188, 0, 252, .25)',
+              'rgba(188, 0, 252, .25)',
+              'rgba(188, 0, 252, .25)',
+              'rgba(188, 0, 252, .25)',
+              'rgba(188, 0, 252, .25)',
+            ],
+            borderColor: 'rgba(188, 0, 252, .25)',
+            data: [10000, 5000, 7000, 3000, 1000, 8500]
+            //Should initially be empty
+            //data: [] 
+          }
         ]
       },
       pageChartOptions: {
@@ -126,22 +127,26 @@ export default {
         scales: {
           yAxes: [{
             gridLines: {
-              drawTicks: false,
+              drawTicks: true,
               drawOnChartArea: false,
               lineWidth: 2
             },
             ticks: {
-              display: false,
+              display: true,
+              padding: 3,
+              callback: (value, index, values) => {
+                // we only want to show the greatest value tick
+                if (values[0] == value) {
+                  return value
+                }
+              }
             },
             scaleLabel: {
-              display: true,
-              labelString: 'Page Views',
-              fontFamily: 'sans-serif',
-              fontSize: 16,
-              fontStyle: 'bold'
+              display: false,
             }
           }],
           xAxes: [{
+            barPercentage: 1.0,
             gridLines: {
               drawTicks: false,
               drawOnChartArea: false,
@@ -173,14 +178,25 @@ export default {
           { 
             label: 'Last Month',
             backgroundColor: [
-              '#8300bf',
-              '#8300bf',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
             ],
-            borderColor: '#8300bf',
+            borderColor: 'rgba(131, 0, 191, .5)',
+            data: [221, 842]
             //Should initially be empty
-            data: [221,842]
             //data: [] 
-          } 
+          },
+          { 
+            label: 'Last 3 Months',
+            backgroundColor: [
+              'rgba(188, 0, 252, .25)',
+              'rgba(188, 0, 252, .25)',
+            ],
+            borderColor: 'rgba(188, 0, 252, .25)',
+            data: [170, 762]
+            //Should initially be empty
+            //data: [] 
+          }
         ]
       },
       usersChartOptions: {
@@ -200,22 +216,26 @@ export default {
         scales: {
           yAxes: [{
             gridLines: {
-              drawTicks: false,
+              drawTicks: true,
               drawOnChartArea: false,
               lineWidth: 2
             },
             ticks: {
-              display: false,
+              display: true,
+              padding: 3,
+              callback: (value, index, values) => {
+                // we only want to show the greatest value tick
+                if (values[0] == value) {
+                  return value
+                }
+              }
             },
             scaleLabel: {
-              display: true,
-              labelString: 'Users',
-              fontFamily: 'sans-serif',
-              fontSize: 16,
-              fontStyle: 'bold'
+              display: false
             }
           }],
           xAxes: [{
+            barPercentage: 1.0,
             gridLines: {
               drawTicks: false,
               drawOnChartArea: false,

@@ -42,6 +42,7 @@
       43
       <!-- Get actual numbers-->
     </span><span>Different Anatomical Structures</span>
+    <div class="heading3 chart-title">Top 5 Anatomical Structures</div>
     <BarChart
       :chartData="anatomicalStructuresChartData"
       :chartOptions="anatomicalStructuresChartOptions"
@@ -53,8 +54,8 @@
           File Storage:
         </div>
         <div class="col-data">
-          24592623576943 bytes 
-          <!-- {{ total_size }} bytes -->
+          24592623576943 GB
+          <!-- {{ total_size }} GB -->
         </div>
         <div>
           Across all Data
@@ -114,17 +115,17 @@ export default {
           { 
             label: 'Last Month',
             backgroundColor: [
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
             ],
-            borderColor: '#8300bf',
+            borderColor: 'rgba(131, 0, 191, .5)',
             data: [235, 173, 36, 26, 0]
             //should be empty initially
             //data: [] 
-          } 
+          },
         ]
       },
       dataChartOptions: {
@@ -140,19 +141,22 @@ export default {
         scales: {
           yAxes: [{
             gridLines: {
-              drawTicks: false,
+              drawTicks: true,
               drawOnChartArea: false,
               lineWidth: 2
             },
             ticks: {
-              display: false,
+              display: true,
+              padding: 3,
+              callback: (value, index, values) => {
+                // we only want to show the greatest value tick
+                if (values[0] == value) {
+                  return value
+                }
+              }
             },
             scaleLabel: {
-              display: true,
-              labelString: 'Total number',
-              fontFamily: 'sans-serif',
-              fontSize: 16,
-              fontStyle: 'bold'
+              display: false,
             }
           }],
           xAxes: [{
@@ -186,13 +190,13 @@ export default {
         datasets: [ 
           { 
             backgroundColor: [
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
-              '#8300bf',
-              '#8300bf'
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)',
+              'rgba(131, 0, 191, .5)'
             ],
-            borderColor: '#8300bf',
+            borderColor: 'rgba(131, 0, 191, .5)',
             data: [51, 48, 40, 36, 16] 
             //data: []
           } 
@@ -203,7 +207,7 @@ export default {
         maintainAspectRatio: false,
         drawOnChartArea: false,
         title: {
-          display: true,
+          display: false,
         },
         legend: {
           display: false
@@ -211,19 +215,22 @@ export default {
         scales: {
           yAxes: [{
             gridLines: {
-              drawTicks: false,
+              drawTicks: true,
               drawOnChartArea: false,
               lineWidth: 2
             },
             ticks: {
-              display: false,
+              display: true,
+              padding: 3,
+              callback: (value, index, values) => {
+                // we only want to show the greatest value tick
+                if (values[0] == value) {
+                  return value
+                }
+              }
             },
             scaleLabel: {
-              display: true,
-              labelString: 'Top 5',
-              fontFamily: 'sans-serif',
-              fontSize: 16,
-              fontStyle: 'bold'
+              display: false,
             }
           }],
           xAxes: [{
@@ -570,5 +577,9 @@ hr {
   line-height: 2.75rem;
   color: $purple;
   font-weight: bold;
+}
+
+.chart-title {
+  text-align: center;
 }
 </style>
