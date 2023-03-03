@@ -75,6 +75,77 @@ const metricsTypes = [
   }
 ]
 
+const fetchMetrics = async () => {
+  /* const ga4MetricsData = await axios.get(`https://metrics.sparc.science/ga4?year=${this.currentYear}&month=${this.currentMonth}`)['body'][0]
+  const pennsieveMetricsData = await axios.get(`https://metrics.sparc.science/pennsieve?year=${this.currentYear}&month=${this.currentMonth}`)['body'][0]
+  const sparcMetricsData = await axios.get(`https://metrics.sparc.science/sparc?year=${this.currentYear}&month=${this.currentMonth}`)['body'][0] */
+
+  const ga4MetricsData = {
+    'all_news_events_page_views_last_quarter': {'N': '222'}, 'all_find_data_page_views_last_quarter': {'N': '222'}, 'all_tools_resources_page_views_last_quarter': {'N': '222'}, 'all_screen_page_views_last_mo': {'N': '12391'}, 'source': {'S': 'ga4'}, 'all_home_page_views_last_mo': {'N': '222'}, 'all_find_data_page_views_last_mo': {'N': '222'}, 'returning_users_in_last_month': {'N': '239'}, 'all_maps_page_views_last_quarter': {'N': '222'}, 'new_users_in_last_quarter': {'N': '1186'}, 'all_tools_resources_page_views_last_mo': {'N': '222'}, 'month': {'N': '1'}, 'year': {'N': '2023'}, 'returning_users_in_last_quarter': {'N': '283'}, 'new_users_in_last_month': {'N': '858'}, 'year_month_source': {'S': '2023_01_ga4'}, 'all_home_page_views_last_quarter': {'N': '222'}, 'all_screen_page_views_last_quarter': {'N': '11392'}, 'all_news_events_page_views_last_mo': {'N': '222'}, 'all_maps_page_views_last_mo': {'N': '222'}
+  }
+  const pennsieveMetricsData = {
+    'number_of_new_sparc_teams_last_mo': {'N': '120'}, 'number_of_aws_downloads_last_3_mo': {'N': '0'}, 'source': {'S': 'pennsieve'}, 'number_of_new_sparc_users_last_3_mo': {'N': '11'}, 'number_of_aws_downloads_last_mo': {'N': '0'}, 'number_of_sparc_downloads_last_mo': {'N': '58'}, 'number_of_sparc_users_overall': {'N': '515'}, 'total_number_gigabytes': {'N': '22904'}, 'number_of_sparc_downloads_last_3_mo': {'N': '118'}, 'month': {'N': '1'}, 'year': {'N': '2023'}, 'number_of_sparc_teams_overall': {'N': '62'}, 'number_of_new_sparc_users_last_mo': {'N': '2'}, 'year_month_source': {'S': '2023_01_pennsieve'}, 'number_of_new_sparc_teams_last_3_mo': {'N': '300'}
+  }
+  const sparcMetricsData = {
+    'number_of_samples_cumulative': {'N': '8065'}, 'new_sparc_computational_models_last_3_mo': {'N': '5'}, 'number_of_samples_last_mo': {'N': '0'}, 'number_of_subjects_last_3_mo': {'N': '0'}, 'all_sparc_categories_cumulative': {'N': '235'}, 'new_sparc_datasets_last_3_mo': {'N': '0'}, 'new_sparc_datasets_last_1_mo': {'N': '0'}, 'sparc_computational_models_cumulative': {'N': '26'}, 'number_of_samples_last_3_mo': {'N': '0'}, 'current_number_of_anatomical_structures': {'N': '43'}, 'all_sparc_categories_last_3_mo': {'N': '21'}, 'year_month_source': {'S': '2023_01_sparc'}, 'number_of_subjects_cumulative': {'N': '2804'}, 'all_sparc_categories_last_mo': {'N': '2'}, 'sparc_maps_cumulative': {'N': '36'}, 'number_of_subjects_last_month': {'N': '0'}, 'source': {'S': 'sparc'}, 'new_sparc_computational_models_last_1_mo': {'N': '2'}, 'month': {'N': '1'}, 'anatomical_structures_breakdown': {'M': {'colon': {'N': '48'}, 'vagus nerve': {'N': '51'}, 'stomach': {'N': '36'}, 'heart': {'N': '40'}, 'urinary bladder': {'N': '16'}}}, 'year': {'N': '2023'}, 'sparc_datasets_cumulative': {'N': '173'}, 'new_sparc_maps_last_3_mo': {'N': '16'}, 'new_sparc_maps_last_1_mo': {'N': '0'}
+  }
+  
+  const top5AnatomicalStructuresObject = sparcMetricsData['anatomical_structures_breakdown']['M']
+  let top5AnatomicalStructuresArray = []
+  // convert the response object into an object array of the form { 'name': <structure name>, 'value': <number of structures>}
+  Object.keys(top5AnatomicalStructuresObject).forEach(key => top5AnatomicalStructuresArray.push({
+    name: key,
+    value: parseInt(top5AnatomicalStructuresObject[key]['N'])
+  }))
+  return {
+    userBehaviors: {
+      pageViewsLabels: ['All','Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events'],
+      pageViewsData: {
+        lastMonth: [parseInt(ga4MetricsData['all_screen_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_home_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_find_data_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_tools_resources_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_maps_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_news_events_page_views_last_mo']['N'])],
+        last3Months: [parseInt(ga4MetricsData['all_screen_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_home_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_find_data_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_tools_resources_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_maps_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_news_events_page_views_last_quarter']['N'])]
+      },
+      usersData: {
+        lastMonth: [parseInt(ga4MetricsData['returning_users_in_last_month']['N']), parseInt(ga4MetricsData['new_users_in_last_month']['N'])],
+        last3Months: [parseInt(ga4MetricsData['returning_users_in_last_quarter']['N']), parseInt(ga4MetricsData['new_users_in_last_quarter']['N'])]
+      },
+      totalDownloadsData: {
+        lastMonth: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_mo']['N']),
+        last3Months: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_3_mo']['N'])
+      },
+      datasetContributorsData: {
+        total: parseInt(pennsieveMetricsData['number_of_sparc_users_overall']['N']),
+        newLastMonth: parseInt(pennsieveMetricsData['number_of_new_sparc_users_last_mo']['N'])
+      },
+    },
+    scientificContribution: {
+      dataChartLabels: ['All', 'Datasets', 'Anatomical Models', 'Computational Models'],
+      dataChartData: {
+        total: [parseInt(sparcMetricsData['all_sparc_categories_cumulative']['N']), parseInt(sparcMetricsData['sparc_datasets_cumulative']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['sparc_computational_models_cumulative']['N'])],
+        lastMonth: [parseInt(sparcMetricsData['all_sparc_categories_last_mo']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_1_mo']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_1_mo']['N'])],
+        last3Months: [parseInt(sparcMetricsData['all_sparc_categories_last_3_mo']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_3_mo']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_3_mo']['N'])]
+      },
+      samples: {
+        total: parseInt(sparcMetricsData['number_of_samples_cumulative']['N']),
+        newLastMonth: parseInt(sparcMetricsData['number_of_samples_last_mo']['N']),
+        newLast3Months: parseInt(sparcMetricsData['number_of_samples_last_3_mo']['N']),
+      },
+      subjects: {
+        total: parseInt(sparcMetricsData['number_of_subjects_cumulative']['N']),
+        newLastMonth: parseInt(sparcMetricsData['number_of_subjects_last_month']['N']),
+        newLast3Months: parseInt(sparcMetricsData['number_of_subjects_last_3_mo']['N']),
+      },
+      anatomicalStructures: {
+        total: parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N'])
+      },
+      anatomicalStructuresChartLabels: top5AnatomicalStructuresArray.map(structure => structure.name),
+      anatomicalStructuresChartData: top5AnatomicalStructuresArray.map(structure => structure.value),
+      fileStorage: {
+        totalGB: parseInt(pennsieveMetricsData['total_number_gigabytes']['N'])
+      }
+    }
+  }
+}
+
 export default {
   name: 'MetricsPage',
 
@@ -86,12 +157,15 @@ export default {
     if (env.SHOW_METRICS == 'false') {
       redirect('/')
     }
+    const metricsData = await fetchMetrics()
+    return {
+      metricsData
+    }
   },
 
   data: () => {
     return {
       metricsTypes,
-      metricsData: {},
       isLoadingMetrics: false,
       searchFailed: false,
       breadcrumb: [
@@ -105,7 +179,7 @@ export default {
           to: {
             name: 'metrics',
             query: {
-              metricsType: 'userBehavior'
+              metricsType: 'userBehaviors'
             }
           },
           label: 'Metrics'
@@ -134,18 +208,6 @@ export default {
       return defaultTo('', metricsComponents[this.$route.query.metricsType])
     },
   },
-
-  watch: {
-    '$route.query.metricsType': function(val) {
-      if (!this.$route.query.metricsType) {
-        const firstTabType = compose(propOr('', 'type'), head)(metricsTypes)
-        this.$router.replace({ query: { metricsType: firstTabType } })
-      } else {
-        this.fetchMetrics()
-      }
-    }
-  },
-
   /**
    * Check the metricsType param in the route and set it if it
    */
@@ -153,76 +215,8 @@ export default {
     if (!this.$route.query.metricsType) {
       const firstTabType = compose(propOr('', 'type'), head)(metricsTypes)
       this.$router.replace({ query: { metricsType: firstTabType } })
-    } else {
-      this.fetchMetrics()
     }
   },
-
-  methods: {
-    /**
-     * Figure out which source to fetch results from based on the
-     * type of search
-     */
-    fetchMetrics: function() {
-      this.metricsData = {
-        userBehaviors: {
-          pageViews: [
-            {
-              title: 'Homepage',
-              views: 237
-            },
-            {
-              title: 'Find Data',
-              views: 162
-            },
-            {
-              title: 'Tools & Resources',
-              views: 99
-            },
-            {
-              title: 'Maps',
-              views: 147
-            },
-            {
-              title: 'News & Events',
-              views: 133
-            },
-            {
-              title: 'About',
-              views: 101
-            }
-          ],
-          userTypes: {
-            returningUser: 460,
-            newUser: 324
-          },
-          totalDownloads: 1375,
-          datasetContributors: 123
-        },
-        scientificContribution: {
-          fileStorage: 642
-        }
-      }
-      /*const source = propOr('google', 'dataSource', this.searchType)
-
-      const metricsSources = {
-        google: this.fetchFromGoogleAnalytics,
-      }
-
-      if (typeof metricsSources[source] === 'function') {
-        this.$nextTick(() => metricsSources[source]())
-      }*/
-    },
-
-    /**
-     * Get Search results
-     * This is using fetch from the Algolia API
-     */
-    fetchFromGoogleAnalytics: function() {
-      this.isLoadingMetrics = true
-      this.searchFailed = false
-    },
-  }
 }
 </script>
 

@@ -19,12 +19,12 @@
     <div class="row">
       <div class="col">
         <div class="col-header heading2 mb-0">
-          Total Downloads: <span class="col-data">12<!-- {{ this.total_downloads_last_mo }} --></span> <span class="body1">(51 last 3 months)<!-- {{ this.total_downloads_last_3_mo }} --></span>
+          Total Downloads: <span class="col-data">{{ totalDownloadsLastMonth }}</span> <span class="body1">({{ totalDownloadsLastQuarter }} last 3 months)</span>
         </div>
       </div>
       <div class="col">
         <div class="col-header heading2 mb-0">
-          Dataset Contributors: <span class="col-data">Pending</span> <span class="body1">((pending) new in the last month)</span>
+          Dataset Contributors: <span class="col-data">{{ totalContributers }}</span> <span class="body1">({{ newContributers }} new in the last month)</span>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
 
 <script>
 
-import { propOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 import BarChart from '@/components/Charts/BarChart.vue'
 
 export default {
@@ -47,69 +47,73 @@ export default {
       default: () => {}
     },
   },
+  watch: {
+    userBehaviors: {
+      handler: function(behaviors) {
+        if (!behaviors) {
+          return
+        }
+        this.pageChartData = {
+          labels: behaviors.pageViewsLabels,
+          datasets: [ 
+            { 
+              label: 'Last Month',
+              backgroundColor: [
+                'rgba(131, 0, 191, .5)',
+                'rgba(131, 0, 191, .5)',
+                'rgba(131, 0, 191, .5)',
+                'rgba(131, 0, 191, .5)',
+                'rgba(131, 0, 191, .5)',
+                'rgba(131, 0, 191, .5)',
+              ],
+              borderColor: 'rgba(131, 0, 191, .5)',
+              data: behaviors.pageViewsData.lastMonth
+            },
+            { 
+              label: 'Last 3 Months',
+              backgroundColor: [
+                'rgba(188, 0, 252, .25)',
+                'rgba(188, 0, 252, .25)',
+                'rgba(188, 0, 252, .25)',
+                'rgba(188, 0, 252, .25)',
+                'rgba(188, 0, 252, .25)',
+                'rgba(188, 0, 252, .25)',
+              ],
+              borderColor: 'rgba(188, 0, 252, .25)',
+              data: behaviors.pageViewsData.last3Months
+            }
+          ]
+        }
+        this.usersChartData = {
+          labels: [ 'Returning', 'New' ],
+          datasets: [ 
+            { 
+              label: 'Last Month',
+              backgroundColor: [
+                'rgba(131, 0, 191, .5)',
+                'rgba(131, 0, 191, .5)',
+              ],
+              borderColor: 'rgba(131, 0, 191, .5)',
+              data: behaviors.usersData.lastMonth
+            },
+            { 
+              label: 'Last 3 Months',
+              backgroundColor: [
+                'rgba(188, 0, 252, .25)',
+                'rgba(188, 0, 252, .25)',
+              ],
+              borderColor: 'rgba(188, 0, 252, .25)',
+              data: behaviors.usersData.last3Months
+            }
+          ]
+        }
+      },
+      immediate: true
+    }
+  },
   data() {
     return {
-      currentMonth: new Date().getMonth() + 1,
-      currentYear: new Date().getFullYear(),
-      //current date in M/DD/YYYY format
-      currentDate: new Date().toLocaleDateString(),
-      dataSources: [
-        {
-          name: 'pennsieve',
-          url: `https://metrics.sparc.science/pennsieve?year=${this.currentYear}&month=${this.currentMonth}`,
-          data: null
-        },
-        {
-          name: 'ga4',
-          url: `https://metrics.sparc.science/ga4?year=${this.currentYear}&month=${this.currentMonth}`,
-          data: null
-        },
-        {
-          name: 'sparc',
-          url: `https://metrics.sparc.science/sparc?year=${this.currentYear}&month=${this.currentMonth}`,
-          data: null
-        }
-      ],
-      dict_for_viz: {},
-      total_downloads_last_mo: 0,
-      total_downloads_last_3_mo: 0,
-      pageChartData: {
-        labels: [ 'All','Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events'],
-        //labels: ['All Pages']
-        //labels: [ 'Homepage', 'Find Data', 'Tools & Resources', 'Maps (pending)', 'News & Events (pending)', 'About (pending)' ],
-        datasets: [ 
-          { 
-            label: 'Last Month',
-            backgroundColor: [
-              'rgba(131, 0, 191, .5)',
-              'rgba(131, 0, 191, .5)',
-              'rgba(131, 0, 191, .5)',
-              'rgba(131, 0, 191, .5)',
-              'rgba(131, 0, 191, .5)',
-              'rgba(131, 0, 191, .5)',
-            ],
-            borderColor: 'rgba(131, 0, 191, .5)',
-            data: [11965, 6000, 7000, 3500, 2000, 8000]
-            //Should initially be empty
-            //data: [] 
-          },
-          { 
-            label: 'Last 3 Months',
-            backgroundColor: [
-              'rgba(188, 0, 252, .25)',
-              'rgba(188, 0, 252, .25)',
-              'rgba(188, 0, 252, .25)',
-              'rgba(188, 0, 252, .25)',
-              'rgba(188, 0, 252, .25)',
-              'rgba(188, 0, 252, .25)',
-            ],
-            borderColor: 'rgba(188, 0, 252, .25)',
-            data: [10000, 5000, 7000, 3000, 1000, 8500]
-            //Should initially be empty
-            //data: [] 
-          }
-        ]
-      },
+      pageChartData: {},
       pageChartOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -172,33 +176,7 @@ export default {
           }
         }    
       },
-      usersChartData: {
-        labels: [ 'Returning', 'New' ],
-        datasets: [ 
-          { 
-            label: 'Last Month',
-            backgroundColor: [
-              'rgba(131, 0, 191, .5)',
-              'rgba(131, 0, 191, .5)',
-            ],
-            borderColor: 'rgba(131, 0, 191, .5)',
-            data: [221, 842]
-            //Should initially be empty
-            //data: [] 
-          },
-          { 
-            label: 'Last 3 Months',
-            backgroundColor: [
-              'rgba(188, 0, 252, .25)',
-              'rgba(188, 0, 252, .25)',
-            ],
-            borderColor: 'rgba(188, 0, 252, .25)',
-            data: [170, 762]
-            //Should initially be empty
-            //data: [] 
-          }
-        ]
-      },
+      usersChartData: {},
       usersChartOptions: {
         responsive: false,
         maintainAspectRatio: false,
@@ -263,276 +241,23 @@ export default {
       }
     }
   },
-mounted() {
-  this.fetchMetricsData()
-},
   computed: {
     userBehaviors() {
       return propOr({}, 'userBehaviors', this.metricsData)
+    },
+    totalDownloadsLastMonth() {
+      return pathOr('', ['totalDownloadsData', 'lastMonth'], this.userBehaviors)
+    },
+    totalDownloadsLastQuarter() {
+      return pathOr('', ['totalDownloadsData', 'last3Months'], this.userBehaviors)
+    },
+    totalContributers() {
+      return pathOr('', ['datasetContributorsData', 'total'], this.userBehaviors)
+    },
+    newContributers() {
+      return pathOr('', ['datasetContributorsData', 'newLastMonth'], this.userBehaviors)
     }
   },
-  methods: {
-     //Gets date exactly 1 month ago in DD/MM/YYYY format. Takes date in 'YYYY-MM-DDT00:00:00.000Z' format (ie. Date object)
-     subtractMonths(date, months=1) {
-      date.setMonth(date.getMonth() - months);
-      return date.toLocaleDateString()
-    },
-    //NOTE: should put this reused behavior in set of external auxillary functions
-    //Will get the data for each endpoint for the current month. This data will then be stored as 'data' within each dataSource
-    //all 3 data sources data is fetched in parallel and then converted to JSON
-    //THE FORMAT FOR OBJECTS FOR ALL DATA SOURCES ARE LISTED BELOW
-    /*
-    {
-  "year_month_source": {
-    "S": "2023_01_sparc"
-  },
-  "source": {
-    "S": "sparc"
-  },
-  "all_sparc_categories_cumulative": {
-    "N": "235"
-  },
-  "all_sparc_categories_last_3_mo": {
-    "N": "21"
-  },
-  "all_sparc_categories_last_mo": {
-    "N": "2"
-  },
-  "anatomical_structures_breakdown": {
-    "M": {
-      "colon": {
-        "N": "48"
-      },
-      "heart": {
-        "N": "40"
-      },
-      "stomach": {
-        "N": "36"
-      },
-      "urinary bladder": {
-        "N": "16"
-      },
-      "vagus nerve": {
-        "N": "51"
-      }
-    }
-  },
-  "current_number_of_anatomical_structures": {
-    "N": "43"
-  },
-  "month": {
-    "N": "1"
-  },
-  "new_sparc_computational_models_last_1_mo": {
-    "N": "2"
-  },
-  "new_sparc_datasets_last_1_mo": {
-    "N": "0"
-  },
-  "new_sparc_datasets_last_3_mo": {
-    "N": "0"
-  },
-  "new_sparc_maps_last_1_mo": {
-    "N": "0"
-  },
-  "new_sparc_maps_last_3_mo": {
-    "N": "16"
-  },
-  "new_spar_computational_models_last_3_mo": {
-    "N": "5"
-  },
-  "number_of_samples_cumulative": {
-    "N": "8065"
-  },
-  "number_of_samples_last_3_mo": {
-    "N": "0"
-  },
-  "number_of_samples_last_mo": {
-    "N": "0"
-  },
-  "number_of_subjects_cumulative": {
-    "N": "2804"
-  },
-  "number_of_subjects_last_3_mo": {
-    "N": "0"
-  },
-  "number_of_subjects_last_month": {
-    "N": "0"
-  },
-  "sparc_computational_models_cumulative": {
-    "N": "26"
-  },
-  "sparc_datasets_cumulative": {
-    "N": "173"
-  },
-  "sparc_maps_cumulative": {
-    "N": "36"
-  },
-  "year": {
-    "N": "2023"
-  }
-}
-
-#################################################################################################################
-
-{
-  "year_month_source": {
-    "S": "2023_01_pennsieve"
-  },
-  "source": {
-    "S": "pennsieve"
-  },
-  "month": {
-    "N": "1"
-  },
-  "number_of_aws_downloads_last_3_mo": {
-    "N": "0"
-  },
-  "number_of_aws_downloads_last_mo": {
-    "N": "0"
-  },
-  "number_of_new_sparc_teams_last_3_mo": {
-    "N": "300"
-  },
-  "number_of_new_sparc_teams_last_mo": {
-    "N": "120"
-  },
-  "number_of_new_sparc_users_last_3_mo": {
-    "N": "11"
-  },
-  "number_of_new_sparc_users_last_mo": {
-    "N": "2"
-  },
-  "number_of_sparc_downloads_last_3_mo": {
-    "N": "118"
-  },
-  "number_of_sparc_downloads_last_mo": {
-    "N": "58"
-  },
-  "number_of_sparc_teams_overall": {
-    "N": "62"
-  },
-  "number_of_sparc_users_overall)": {
-    "N": "515"
-  },
-  "total_number_gigabytes": {
-    "N": "22904"
-  },
-  "year": {
-    "N": "2023"
-  }
-}
-
-#################################################################################################################
-
-{
-  "year_month_source": {
-    "S": "2023_01_ga4"
-  },
-  "source": {
-    "S": "ga4"
-  },
-  "all_about_page_views_last_mo": {
-    "N": "365"
-  },
-  "all_about_page_views_last_quarter": {
-    "N": "232"
-  },
-  "all_find_data_page_views_last_mo": {
-    "N": "7689"
-  },
-  "all_find_data_page_views_last_quarter": {
-    "N": "7689"
-  },
-  "all_help_page_views_last_mo": {
-    "N": "6"
-  },
-  "all_help_page_views_last_quarter": {
-    "N": "4"
-  },
-  "all_home_page_views_last_mo": {
-    "N": "13934"
-  },
-  "all_home_page_views_last_quarter": {
-    "N": "13934"
-  },
-  "all_maps_page_views_last_mo": {
-    "N": "506"
-  },
-  "all_maps_page_views_last_quarter": {
-    "N": "506"
-  },
-  "all_news_events_page_views_last_mo": {
-    "N": "968"
-  },
-  "all_news_events_page_views_last_quarter": {
-    "N": "1034"
-  },
-  "all_screen_page_views_last_mo": {
-    "N": "12391"
-  },
-  "all_screen_page_views_last_quarter": {
-    "N": "11392"
-  },
-  "all_tools_resources_page_views_last_mo": {
-    "N": "222"
-  },
-  "all_tools_resources_page_views_last_quarter": {
-    "N": "222"
-  },
-  "month": {
-    "N": "1"
-  },
-  "new_users_in_last_month": {
-    "N": "858"
-  },
-  "new_users_in_last_quarter": {
-    "N": "1186"
-  },
-  "returning_users_in_last_month": {
-    "N": "239"
-  },
-  "returning_users_in_last_quarter": {
-    "N": "283"
-  },
-  "year": {
-    "N": "2023"
-  }
-}
-
-    */
-    fetchMetricsData() {
-      Promise.all(this.dataSources.map(dataSource => fetch(dataSource.url)))
-        .then(responses => Promise.all(responses.map(response => response.json())))
-        .then(data => {
-          this.dataSources.forEach((dataSource, index) => {
-            dataSource.data = data[index]
-          })
-          this.unpackMetricsDataUser()
-        })
-        .catch(error => console.log(error))
-    },
-    //Function takes all of the data from each dataSource and places it in the dict_for_viz
-    unpackMetricsDataUser() {
-      //dict_for viz has name of data source as key and its reuturn object as the value
-      this.dict_for_viz = this.dataSources.reduce((accumulator, dataSource) => {
-        accumulator[dataSource.name] = dataSource.data
-        return accumulator
-      }, {})
-      //should make this a promise & verify this works
-      .then(this.populateDataArrayUser())
-    },
-    //Take the data out of the dict, and place the data into the proper sequence for the visualization
-    populateDataArrayUser() {
-      this.pageChartData.datasets.data = data_viz_dict.ga4.all_screen_page_views_last_mo
-      this.usersChartData.datasets.data.insert(0, data_viz_dict.ga4.returning_users_in_last_month)
-      this.usersChartDatadatasets.data.insert(1, data_viz_dict.ga4.new_users_in_last_month)
-      this.total_downloads_last_3_mo = data_viz_dict.pennsieve.number_of_sparc_downloads_last_3_mo
-      this.total_downloads_last_mo = data_viz_dict.pennsieve.number_of_sparc_downloads_last_mo
-      //dataset contributors (and last month)
-      //contributors. Use users??
-    }
-  }
 }
 
 </script>
