@@ -74,6 +74,7 @@ export default {
                 'rgba(131, 0, 191, .5)',
                 'rgba(131, 0, 191, .5)',
                 'rgba(131, 0, 191, .5)',
+                'rgba(131, 0, 191, .5)',
               ],
               borderColor: 'rgba(131, 0, 191, .5)',
               data: contribution.dataChartData.total
