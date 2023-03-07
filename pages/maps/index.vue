@@ -41,8 +41,19 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 const getFlatmapEntry = async ( route ) => {
   const uberonid = route.query.uberonid
   let organ_name = undefined
+  //Specify the gender of human
+  let biologicalSex = route.query.biologicalSex
+  if (route.query.taxo && route.query.taxo === "NCBITaxon:9606") {
+    if (!biologicalSex) {
+      biologicalSex = "PATO:0000384"
+    }
+  }
   try {
     organ_name = await scicrunch.getOrganFromUberonId(uberonid)
+    //We do not want to display the body proper
+    if (organ_name && organ_name.toLowerCase() === "body proper") {
+      organ_name = undefined
+    }
   } catch (e) {
     // Error caught return empty data.
   }
@@ -50,7 +61,7 @@ const getFlatmapEntry = async ( route ) => {
   return {
       type: "MultiFlatmap",
       taxo: route.query.taxo,
-      biologicalSex: route.query.biologicalSex,
+      biologicalSex: biologicalSex,
       uuid: route.query.fid,
       organ: organ_name
   }
