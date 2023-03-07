@@ -44,14 +44,16 @@ const getFlatmapEntry = async ( route ) => {
   //Specify the gender of human
   let biologicalSex = route.query.biologicalSex
   if (route.query.taxo && route.query.taxo === "NCBITaxon:9606") {
-    if (!biologicalSex)
+    if (!biologicalSex) {
       biologicalSex = "PATO:0000384"
+    }
   }
   try {
     organ_name = await scicrunch.getOrganFromUberonId(uberonid)
     //We do not want to display the body proper
-    if (organ_name && organ_name.toLowerCase() === "body proper")
+    if (organ_name && organ_name.toLowerCase() === "body proper") {
       organ_name = undefined
+    }
   } catch (e) {
     // Error caught return empty data.
   }
