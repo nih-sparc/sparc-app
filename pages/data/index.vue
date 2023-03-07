@@ -114,7 +114,7 @@
                   />
 
                   <!-- Alternative search suggestions -->
-                  <div v-if="searchData.total === 0">
+                  <div v-if="searchData.total === 0 && searchHasAltResults">
                     No results were found for Datasets. The following results
                     were discovered for the other categories: <br />
                     <br />
@@ -347,6 +347,7 @@ export default {
         simulation: 0,
         projects: 0
       },
+      searchHasAltResults: false,
       visibleFacets: {},
       searchTypes,
       searchData: clone(searchData),
@@ -598,8 +599,8 @@ export default {
                 this.isLoadingSearch = false
 
                 // Check the other search types if we got 0 results
-                if (searchData.total === 0){
-                  this.alternativeSearchUpdate() 
+                if (searchData.total === 0) {
+                  this.alternativeSearchUpdate()
                 }
                 // update facet result numbers
                 /*for (const [key, value] of Object.entries(this.visibleFacets)) {
@@ -626,6 +627,11 @@ export default {
     //    when a search returns 0 results
     alternativeSearchUpdate: function() {
       const searchTypeInURL = pathOr('dataset', ['query', 'type'], this.$route) // Get current data type
+
+      this.searchHasAltResults = false
+      for (let key in this.resultCounts) { // reset reults list
+        this.resultCounts[key] = 0
+      }
       let altSearchTypes = this.dataTypes.filter(e => e !== searchTypeInURL) // Remove from list of data types
 
       altSearchTypes.forEach(type => {  // Search on each data type remaining
@@ -656,6 +662,7 @@ export default {
             filters: filters
           })
           .then(response => {
+            response.nbHits > 0 ? (this.searchHasAltResults = true) : null
             this.resultCounts[searchType] = response.nbHits
           })
       } else {
@@ -674,6 +681,7 @@ export default {
             'fields.fundingProgram.fields.name[in]': funding
           })
           .then(async response => {
+            response.total > 0 ? (this.searchHasAltResults = true) : null
             this.resultCounts[searchType] = response.total
           })
       }
