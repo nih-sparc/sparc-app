@@ -115,7 +115,7 @@
 
                   <!-- Alternative search suggestions -->
                   <div v-if="searchData.total === 0 && searchHasAltResults">
-                    No results were found for Datasets. The following results
+                    No results were found for {{searchType.label}}. The following results
                     were discovered for the other categories: <br />
                     <br />
                     <template v-for="dataType in dataTypes">
@@ -132,7 +132,6 @@
                           {{ resultCounts[dataType] }} result{{
                             resultCounts[dataType] > 1 ? 's' : ''
                           }}
-                          <!-- Add an 's' for 'results' -->
                         </nuxt-link>
                         - {{ humanReadableDataTypesLookup[dataType] }}
                       </dd>
