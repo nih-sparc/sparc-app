@@ -91,56 +91,68 @@ const fetchMetrics = async () => {
   "source": {
     "S": "ga4"
   },
+  "all_about_page_views_last_mo": {
+    "N": "229"
+  },
+  "all_about_page_views_last_quarter": {
+    "N": "456"
+  },
   "all_find_data_page_views_last_mo": {
-    "N": "6562"
+    "N": "7173"
   },
   "all_find_data_page_views_last_quarter": {
-    "N": "13248"
+    "N": "12693"
+  },
+  "all_help_page_views_last_mo": {
+    "N": "3"
+  },
+  "all_help_page_views_last_quarter": {
+    "N": "9"
   },
   "all_home_page_views_last_mo": {
-    "N": "10879"
+    "N": "12004"
   },
   "all_home_page_views_last_quarter": {
-    "N": "23261"
+    "N": "22367"
   },
   "all_maps_page_views_last_mo": {
-    "N": "442"
+    "N": "467"
   },
   "all_maps_page_views_last_quarter": {
-    "N": "940"
+    "N": "890"
   },
   "all_news_events_page_views_last_mo": {
     "N": "633"
   },
   "all_news_events_page_views_last_quarter": {
-    "N": "1514"
+    "N": "1460"
   },
   "all_screen_page_views_last_mo": {
-    "N": "9542"
+    "N": "10405"
   },
   "all_screen_page_views_last_quarter": {
-    "N": "20224"
+    "N": "19369"
   },
   "all_tools_resources_page_views_last_mo": {
-    "N": "458"
+    "N": "520"
   },
   "all_tools_resources_page_views_last_quarter": {
-    "N": "1140"
+    "N": "1121"
   },
   "month": {
     "N": "2"
   },
   "new_users_in_last_month": {
-    "N": "729"
+    "N": "774"
   },
   "new_users_in_last_quarter": {
-    "N": "1504"
+    "N": "1398"
   },
   "returning_users_in_last_month": {
-    "N": "227"
+    "N": "230"
   },
   "returning_users_in_last_quarter": {
-    "N": "283"
+    "N": "333"
   },
   "year": {
     "N": "356"
@@ -163,22 +175,22 @@ const fetchMetrics = async () => {
     "N": "0"
   },
   "number_of_new_sparc_teams_last_3_mo": {
-    "N": "300"
+    "N": "0"
   },
   "number_of_new_sparc_teams_last_mo": {
-    "N": "120"
+    "N": "0"
   },
   "number_of_new_sparc_users_last_3_mo": {
-    "N": "6"
+    "N": "12"
   },
   "number_of_new_sparc_users_last_mo": {
     "N": "3"
   },
   "number_of_sparc_downloads_last_3_mo": {
-    "N": "142"
+    "N": "295"
   },
   "number_of_sparc_downloads_last_mo": {
-    "N": "88"
+    "N": "90"
   },
   "number_of_sparc_teams_overall": {
     "N": "62"
@@ -204,7 +216,7 @@ const fetchMetrics = async () => {
     "N": "235"
   },
   "all_sparc_categories_last_3_mo": {
-    "N": "16"
+    "N": "21"
   },
   "all_sparc_categories_last_mo": {
     "N": "2"
@@ -241,7 +253,7 @@ const fetchMetrics = async () => {
     "N": "2"
   },
   "new_sparc_computational_models_last_3_mo": {
-    "N": "4"
+    "N": "5"
   },
   "new_sparc_datasets_last_1_mo": {
     "N": "0"
@@ -253,7 +265,7 @@ const fetchMetrics = async () => {
     "N": "0"
   },
   "new_sparc_maps_last_3_mo": {
-    "N": "12"
+    "N": "16"
   },
   "number_of_samples_cumulative": {
     "N": "8065"
@@ -322,10 +334,10 @@ const fetchMetrics = async () => {
   }))
   return {
     userBehaviors: {
-      pageViewsLabels: ['All','Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events'],
+      pageViewsLabels: ['Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events'],
       pageViewsData: {
-        lastMonth: [parseInt(ga4MetricsData['all_screen_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_home_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_find_data_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_tools_resources_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_maps_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_news_events_page_views_last_mo']['N'])],
-        last3Months: [parseInt(ga4MetricsData['all_screen_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_home_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_find_data_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_tools_resources_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_maps_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_news_events_page_views_last_quarter']['N'])]
+        lastMonth: [parseInt(ga4MetricsData['all_home_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_find_data_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_tools_resources_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_maps_page_views_last_mo']['N']), parseInt(ga4MetricsData['all_news_events_page_views_last_mo']['N'])],
+        last3Months: [parseInt(ga4MetricsData['all_home_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_find_data_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_tools_resources_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_maps_page_views_last_quarter']['N']), parseInt(ga4MetricsData['all_news_events_page_views_last_quarter']['N'])]
       },
       usersData: {
         lastMonth: [parseInt(ga4MetricsData['returning_users_in_last_month']['N']), parseInt(ga4MetricsData['new_users_in_last_month']['N'])],
