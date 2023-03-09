@@ -30,6 +30,7 @@
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import biolucida from '~/services/biolucida'
 
 export default {
   name: 'BiolucidaViewer',
@@ -47,7 +48,8 @@ export default {
           blv_link: '',
           share_link: '',
           status: '',
-          location: ''
+          location: '',
+          web_neurolucida_link: ''
         }
       }
     }
@@ -60,7 +62,30 @@ export default {
   },
   methods: {
     launchViewer() {
-      window.open(this.data.blv_link, '_blank')
+      biolucida
+        .fetchNeurolucida360Url({
+          applicationRequest: 'NL360',
+          userID: 'SPARCPortal',
+          sessionContext: this.data.web_neurolucida_link
+        })
+        .then(response => {
+          if (response.data.url) {
+            window.open(response.data.url, '_blank')
+          } else {
+            this.$message(
+              failMessage(
+                'Unable to open image with Neurlucida 360 Cloud at this time.'
+              )
+            )
+          }
+        })
+        .catch(() => {
+          this.$message(
+            failMessage(
+              'Unable to open image with Neurlucida 360 Cloud at this time.'
+            )
+          )
+        })
     },
     queryView() {
       this.$refs.biolucida.contentWindow.postMessage(
