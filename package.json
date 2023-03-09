@@ -17,7 +17,7 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@abi-software/gallery": "0.3.1",
+    "@abi-software/gallery": "^0.3.1",
     "@abi-software/mapintegratedvuer": "0.3.13-fixes-1",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/simulationvuer": "0.6.5",
