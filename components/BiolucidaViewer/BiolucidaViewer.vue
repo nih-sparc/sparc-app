@@ -3,25 +3,25 @@
     <template v-if="data.status !== 'error'">
       <el-row class="mb-2 justify-space-between" type="flex">
         <div>
-          <bf-button
-            class="ml-8 btn-copy-permalink-solid"
-            @click="launchViewer"
-          >
+          <bf-button class="ml-8" @click="launchViewer">
             <sparc-tooltip
               placement="bottom-center"
               content="Open in Biolucida desktop application"
-            />
-            View in 3D
+            >
+              <div slot="item">
+                View in 3D
+              </div>
+            </sparc-tooltip>
           </bf-button>
-          <bf-button
-            class="ml-8 btn-copy-permalink-solid"
-            @click="launchNL360C"
-          >
+          <bf-button class="ml-8" @click="launchNL360C">
             <sparc-tooltip
-              placement="bottom-center"
-              content="Open in Neurlicda 360 Cloud"
-            />
-            View in NL360C
+              placement="top-center"
+              content="Open in Neurolicda 360 Cloud"
+            >
+              <div slot="item">
+                View in NL360C
+              </div>
+            </sparc-tooltip>
           </bf-button>
         </div>
         <client-only>
