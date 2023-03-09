@@ -2,9 +2,28 @@
   <div class="biolucida-viewer">
     <template v-if="data.status !== 'error'">
       <el-row class="mb-2 justify-space-between" type="flex">
-        <bf-button class="ml-8 btn-copy-permalink-solid" @click="launchViewer">
-          View in 3D
-        </bf-button>
+        <div>
+          <bf-button
+            class="ml-8 btn-copy-permalink-solid"
+            @click="launchViewer"
+          >
+            <sparc-tooltip
+              placement="bottom-center"
+              content="Open in Biolucida desktop application"
+            />
+            View in 3D
+          </bf-button>
+          <bf-button
+            class="ml-8 btn-copy-permalink-solid"
+            @click="launchNL360C"
+          >
+            <sparc-tooltip
+              placement="bottom-center"
+              content="Open in Neurlicda 360 Cloud"
+            />
+            View in NL360C
+          </bf-button>
+        </div>
         <client-only>
           <button class="btn-copy-permalink" @click="queryView">
             <sparc-tooltip placement="bottom-center" content="Copy Link">
@@ -62,6 +81,9 @@ export default {
   },
   methods: {
     launchViewer() {
+      window.open(this.data.blv_link, '_blank')
+    },
+    launchNL360C() {
       biolucida
         .fetchNeurolucida360Url({
           applicationRequest: 'NL360',
