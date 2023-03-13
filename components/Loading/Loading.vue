@@ -1,6 +1,6 @@
 <template>
   <div class="loading-container" v-if="loading">
-    <img class="logo" alt="SPARC logo" :src="logo" />
+    <img class="logo" :src="logo" />
   </div>
 </template>
 <script>
