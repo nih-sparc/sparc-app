@@ -16,10 +16,10 @@
           <bf-button class="ml-8" @click="launchNL360C">
             <sparc-tooltip
               placement="top-center"
-              content="Open in Neurolicda 360 Cloud"
+              content="Open in Neurolucida 360 Cloud"
             >
               <div slot="item">
-                View in NL360C
+                View in Neurolucida 360
               </div>
             </sparc-tooltip>
           </bf-button>
