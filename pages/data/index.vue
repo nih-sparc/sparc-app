@@ -114,9 +114,12 @@
                   />
 
                   <!-- Alternative search suggestions -->
-                  <div v-if="searchData.total === 0 && searchHasAltResults">
-                    No results were found for {{searchType.label}}. The following results
-                    were discovered for the other categories: <br />
+                  <div v-if="searchHasAltResults">
+                    <template v-if="searchData.total === 0">
+                      No results were found for {{ searchType.label }}.
+                    </template>
+                    The following results were discovered for the other categories:
+                    <br />
                     <br />
                     <template v-for="dataType in dataTypes">
                       <dd v-if="resultCounts[dataType] > 0" :key="dataType">
@@ -136,7 +139,6 @@
                         - {{ humanReadableDataTypesLookup[dataType] }}
                       </dd>
                     </template>
-
                   </div>
                 </div>
                 <div class="search-heading">
@@ -597,10 +599,9 @@ export default {
                 this.searchData = mergeLeft(searchData, this.searchData)
                 this.isLoadingSearch = false
 
-                // Check the other search types if we got 0 results
-                if (searchData.total === 0) {
-                  this.alternativeSearchUpdate()
-                }
+                // Update alternative search results
+                this.alternativeSearchUpdate()
+
                 // update facet result numbers
                 /*for (const [key, value] of Object.entries(this.visibleFacets)) {
                   if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
@@ -726,6 +727,8 @@ export default {
           })
           .then(async response => {
             this.searchData = { ...response }
+            // Update alternative search results
+            this.alternativeSearchUpdate()
           })
           .catch(() => {
             this.searchData = clone(searchData)
