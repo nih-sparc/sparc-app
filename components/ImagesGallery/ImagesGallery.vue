@@ -28,7 +28,7 @@ import flatmaps from '@/services/flatmaps'
 import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
 
-import { baseName, extractSection } from '@/utils/common'
+import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 
 export default {
   name: 'ImagesGallery',
@@ -171,11 +171,14 @@ export default {
         const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
         let datasetVersion = -1
+        let s3Bucket = extractS3BucketName(scicrunchData['s3uri'])
+
         if ('discover_dataset' in scicrunchData) {
           datasetId = scicrunchData.discover_dataset.id
           datasetVersion = scicrunchData.discover_dataset.version
         }
 
+ 
         if ('abi-scaffold-metadata-file' in scicrunchData) {
           let index = 0
           items.push(
@@ -195,7 +198,8 @@ export default {
                   datasetId,
                   datasetVersion,
                   mimetype: thumbnail.mimetype.name,
-                  file_path: thumbnail.dataset.path
+                  file_path: thumbnail.dataset.path,
+                  s3Bucket: s3Bucket
                 })
                 let filePath = encodeURIComponent(`files/${file_path}`)
                 const linkUrl = `${baseRoute}maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
@@ -424,7 +428,7 @@ export default {
     },
     getScaffoldThumbnail(items, info) {
       discover
-        .fetch(info.datasetId, info.datasetVersion, info.file_path, true)
+        .fetch(info.datasetId, info.datasetVersion, info.file_path, true, info.s3Bucket)
         .then(
           response => {
             let item = items.find(x => x.id === info.id)
@@ -557,7 +561,8 @@ export default {
           image_info.datasetId,
           image_info.datasetVersion,
           image_info.imageFilePath,
-          true
+          true,
+          image_info.s3Bucket
         )
         .then(
           response => {
