@@ -31,10 +31,12 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import flatmaps from '@/services/flatmaps'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import scicrunch from '@/services/scicrunch'
+
+import DatasetInfo from '@/mixins/dataset-info'
+import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
@@ -133,6 +135,7 @@ export default {
       ? () => import('@abi-software/mapintegratedvuer').then(m => m.MapContent)
       : null
   },
+  mixins: [DatasetInfo],
   async fetch() {
     //First check if map should be restore from a provided id
     if (this.$route.query.id) {
@@ -259,16 +262,14 @@ export default {
     openViewWithQuery: async function() {
       //Open the map with specific view defined by the query.
       //First get the DOI information if available
+      
       if (this.$route.query.dataset_id && this.$route.query.dataset_version) {
-        const url = `${process.env.discover_api_host}/datasets/${this.$route.query.dataset_id}`
-        let datasetUrl = this.$route.query.dataset_version ? `${url}/versions/${this.$route.query.dataset_version}` : url
-        const userToken = this.$cookies.get('user-token')
-        if (userToken) {
-          datasetUrl += `?api_key=${userToken}`
-        }
-        const datasetInfo = await this.$axios.$get(datasetUrl).catch(error => {
-          console.log(`Could not get the dataset's info: ${error}`)
-        })
+        const datasetInfo = await this.getDatasetInfo(
+          this.$axios,
+          this.$route.query.dataset_id,
+          this.$route.query.dataset_version,
+          this.$cookies.get('user-token')
+        )
         this.doi = datasetInfo ? datasetInfo.doi : undefined;
       }
       //Get the entry information if we are not opening with the default settings or

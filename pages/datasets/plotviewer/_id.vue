@@ -77,6 +77,7 @@ import scicrunch from '@/services/scicrunch'
 import discover from '@/services/discover'
 
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import DatasetInfo from '@/mixins/dataset-info'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
@@ -92,7 +93,7 @@ export default {
       : null
   },
 
-  mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [DatasetInfo, FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, error, $axios, app }) {
     const identifier = route.query.identifier
@@ -149,15 +150,12 @@ export default {
       })
     }
 
-    const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
-    var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
-    const userToken = app.$cookies.get('user-token')
-    if (userToken) {
-      datasetUrl += `?api_key=${userToken}`
-    }
-    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
-      console.log(`Could not get the dataset's info: ${error}`)
-    })
+    const datasetInfo = await DatasetInfo.method.getDatasetInfo(
+      $axios,
+      route.query.dataset_id,
+      route.query.dataset_version,
+      app.$cookies.get('user-token')
+    )
 
     return {
       source_url,
