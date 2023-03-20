@@ -159,7 +159,7 @@ export default {
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' : ''
 
-    const datasetInfo = await DatasetInfo.method.getDatasetInfo(
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
       $axios,
       route.params.datasetId,
       route.query.datasetVersion,

@@ -101,7 +101,7 @@ export default {
   mixins: [DatasetInfo, FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ app, route, error, $axios }) {
-    const datasetInfo = await DatasetInfo.method.getDatasetInfo(
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
       $axios,
       route.query.dataset_id,
       route.query.dataset_version,

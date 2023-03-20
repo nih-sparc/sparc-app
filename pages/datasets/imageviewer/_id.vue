@@ -85,7 +85,7 @@ import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FileDetails from '@/mixins/file-details'
 
-import { baseName } from '@/utils/common'
+import { baseName, extractS3BucketName } from '@/utils/common'
 
 export default {
   name: 'ImageViewerPage',
@@ -99,18 +99,21 @@ export default {
 
   async asyncData({ route, error, $axios, app }) {
 
-    const datasetInfo = await DatasetInfo.method.getDatasetInfo(
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
       $axios,
       route.query.dataset_id,
       route.query.dataset_version,
       app.$cookies.get('user-token')
     )
 
+    const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
+
     const response = await discover.fetch(
       route.query.dataset_id,
       route.query.dataset_version,
       route.query.file_path,
-      true
+      true, 
+      s3Bucket
     )
 
     const imageInfo = {

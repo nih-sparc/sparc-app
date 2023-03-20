@@ -31,13 +31,15 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import flatmaps from '@/services/flatmaps'
 import PageHero from '@/components/PageHero/PageHero.vue'
+
+import flatmaps from '@/services/flatmaps'
 import scicrunch from '@/services/scicrunch'
 
 import DatasetInfo from '@/mixins/dataset-info'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 
+import { extractS3BucketName } from '@/utils/common'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
 const getFlatmapEntry = async ( route ) => {
@@ -77,10 +79,13 @@ const getScaffoldState = async( uuid, $axios ) => {
   }
 }
 
-const getScaffoldEntry = async ( route, $axios ) => {
+const getScaffoldEntry = async ( route, $axios, s3Bucket ) => {
   //Check if file path from scicrunch can be found on the server
   const filePath = route.query.file_path
   let path = `${route.query.dataset_id}/${route.query.dataset_version}/${filePath}`
+  if (s3Bucket) {
+    path = path + `?s3BucketName=${s3Bucket}`
+  }
   let result = await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
     if (exists && exists !== "false") {
       return {
@@ -104,7 +109,10 @@ const getScaffoldEntry = async ( route, $axios ) => {
       route.query.dataset_version,
     )
     path = `${route.query.dataset_id}/${route.query.dataset_version}/${file.path}`
-    result = await $axios.$get(`${process.env.portal_api}/exists/${path}`).then(({ exists }) => {
+    if (s3Bucket) {
+      path = path + `?s3BucketName=${s3Bucket}`
+    }
+    result = await $axios.$get(`${process.env.portal_api}/exists/${path}`, config).then(({ exists }) => {
       if (exists && exists !== "false") {
         return {
           type: "Scaffold",
@@ -261,7 +269,8 @@ export default {
     },
     openViewWithQuery: async function() {
       //Open the map with specific view defined by the query.
-      //First get the DOI information if available
+      //First get the DOI and bucket information if available
+      let s3Bucket = undefined;
       
       if (this.$route.query.dataset_id && this.$route.query.dataset_version) {
         const datasetInfo = await this.getDatasetInfo(
@@ -271,11 +280,12 @@ export default {
           this.$cookies.get('user-token')
         )
         this.doi = datasetInfo ? datasetInfo.doi : undefined;
+        s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
       }
       //Get the entry information if we are not opening with the default settings or
       //resuming from previous saved state
       if (this.$route.query.type === "scaffold") {
-        this.currentEntry = await getScaffoldEntry( this.$route, this.$axios )
+        this.currentEntry = await getScaffoldEntry( this.$route, this.$axios, s3Bucket )
         if (!this.currentEntry) {
           this.$message(failMessage(
             `Sorry! The specified scaffold cannot be found. Please check later or consider submitting a bug report.`
