@@ -76,6 +76,10 @@
                   <resources-search-results
                     :table-data="resources.items"
                   />
+                  <alternative-search-results
+                    :search-term="searchTerm"
+                    :search-type="searchType"
+                  />
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="resources.items.length">
@@ -112,6 +116,7 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
+import AlternativeSearchResults from '@/components/AlternativeSearchResults/AlternativeSearchResults.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
 
@@ -124,7 +129,8 @@ export default {
     ResourcesSearchResults,
     ToolsAndResourcesFacetMenu,
     SortMenu,
-    SubmitToolSection
+    SubmitToolSection,
+    AlternativeSearchResults
   },
 
   async asyncData({ route }) {
