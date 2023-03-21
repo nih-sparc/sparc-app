@@ -62,6 +62,10 @@ export const searchTypes = [
     path: 'biological',
     contentfulLabel: 'Biologicals'
   },
+  {
+    label: 'oSPARC Services',
+    path: 'osparc-services'
+  }
 ]
 
 export const sortOptions = [
