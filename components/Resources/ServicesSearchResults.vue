@@ -22,7 +22,7 @@
         />
       </div>
       <div  class="resources-search-results__items--button">
-        <sparc-tooltip content="Instantiate this service in o²S²PARC. Login credentials are required.">
+        <sparc-tooltip placement="top-center" content="Instantiate this service in o²S²PARC. Login credentials are required.">
           <div slot="item">
             <a :href="service['view_url']" target="_blank">
               <el-button type="text">Open in o<sup>2</sup>S<sup>2</sup>PARC</el-button>
