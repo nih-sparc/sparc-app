@@ -15,11 +15,20 @@
         <img v-show="service.thumbnail" :src="service.thumbnail" />
       </div>
       <div class="resources-search-results__items--content">
-        <h2><span v-html="highlightMatches(service.title, $route.query.search)"/></h2>
+        <h2><span v-html="highlightMatches(service.name, $route.query.search)"/></h2>
         <p
           class="resources-search-results__items--content-description"
           v-html="highlightMatches(parseMarkdown(service.description), $route.query.search)"
         />
+      </div>
+      <div  class="resources-search-results__items--button">
+        <sparc-tooltip content="Instantiate this service in o²S²PARC. Login credentials are required.">
+          <div slot="item">
+            <a :href="service['view_url']" target="_blank">
+              <el-button type="text">Open in o<sup>2</sup>S<sup>2</sup>PARC</el-button>
+            </a>
+          </div>
+        </sparc-tooltip>
       </div>
     </div>
   </div>
@@ -53,6 +62,7 @@ export default {
   &__items {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
     border-bottom: solid 1px $light-grey;
     padding: 1.25em 0;
     @media screen and (max-width: 768px) {
@@ -67,6 +77,7 @@ export default {
     }
 
     &--content {
+      flex: 1;
       a {
         text-decoration: none;
       }
@@ -98,6 +109,18 @@ export default {
       line-height: 22px;
       font-weight: normal;
       color: $dark-sky;
+      margin-right: 1rem;
+    }
+    &--button {
+      align-self: center;
+      sup, sub {
+        vertical-align: baseline;
+        position: relative;
+        top: -0.4em;
+      }
+      sub {
+        top: 0.4em;
+      }
     }
   }
 }
