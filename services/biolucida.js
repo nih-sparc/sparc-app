@@ -6,6 +6,12 @@ const apiClient = axios.create({
   timeout: 25007
 })
 
+const mbfSparcApiClient = axios.create({
+  baseURL: process.env.MBF_SPARC_API,
+  withCredentials: false,
+  timeout: 9988
+})
+
 const searchDataset = async id => {
   const response = await apiClient.get('image_search/' + id)
   return response.data
@@ -46,7 +52,19 @@ const getBLVLink = async id => {
   return response.data
 }
 
+const decodeViewParameter = encodedView => {
+  const urlDecodedView = decodeURIComponent(encodedView)
+  const decodedView = Buffer.from(urlDecodedView, 'base64').toString('binary')
+  return decodedView.split('-')
+}
+
+const fetchNeurolucida360Url = payload => {
+  return mbfSparcApiClient.post('', payload)
+}
+
 export default {
+  decodeViewParameter,
+  fetchNeurolucida360Url,
   getBLVLink,
   getThumbnail,
   getNeurolucidaThumbnail,
