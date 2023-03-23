@@ -177,7 +177,6 @@ export default {
           datasetId = scicrunchData.discover_dataset.id
           datasetVersion = scicrunchData.discover_dataset.version
         }
-
  
         if ('abi-scaffold-metadata-file' in scicrunchData) {
           let index = 0
@@ -315,14 +314,6 @@ export default {
             ...Array.from(scicrunchData['common-images'], generic_image => {
               const filePath = generic_image.dataset.path
               const id = generic_image.identifier
-              // this.getImageFromS3(items, {
-              //   id,
-              //   fetchAttempts: 0,
-              //   datasetId,
-              //   datasetVersion,
-              //   imageFilePath: filePath,
-              //   mimetype: generic_image.mimetype.name
-              // })
               const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&mimetype=${generic_image.mimetype.name}`
               return {
                 id,
@@ -554,38 +545,6 @@ export default {
           img.src = `data:${image_info.mimetype};base64,${image_info.data}`
         }
       }
-    },
-    getImageFromS3(items, image_info) {
-      discover
-        .fetch(
-          image_info.datasetId,
-          image_info.datasetVersion,
-          image_info.imageFilePath,
-          true,
-          image_info.s3Bucket
-        )
-        .then(
-          response => {
-            let item = items.find(x => x.id === image_info.id)
-            this.scaleThumbnailImage(item, {
-              mimetype: image_info.mimetype,
-              data: response.data
-            })
-          },
-          reason => {
-            if (
-              reason.message.includes('timeout') &&
-              reason.message.includes('exceeded') &&
-              image_info.fetchAttempts < 3
-            ) {
-              image_info.fetchAttempts += 1
-              this.getImageFromS3(items, image_info)
-            } else {
-              let item = items.find(x => x.id === image_info.id)
-              this.$set(item, 'thumbnail', this.defaultImg)
-            }
-          }
-        )
     },
     getThumbnailFromBiolucida(items, info) {
       biolucida.getThumbnail(info.id).then(
