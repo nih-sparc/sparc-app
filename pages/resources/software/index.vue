@@ -73,8 +73,10 @@
                   </span>
                 </div>
                 <div class="subpage">
-                  <resources-search-results
-                    :table-data="resources.items"
+                  <resources-search-results :table-data="resources.items" />
+                  <alternative-search-results
+                    ref="alternativeSearchResults"
+                    :search-had-results="resources.items.length > 0"
                   />
                 </div>
                 <div class="search-heading">
@@ -114,6 +116,7 @@ import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResult
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
+import AlternativeSearchResults from '@/components/AlternativeSearchResults/AlternativeSearchResults.vue'
 
 export default {
   name: 'SoftwarePage',
@@ -124,7 +127,8 @@ export default {
     ResourcesSearchResults,
     ToolsAndResourcesFacetMenu,
     SortMenu,
-    SubmitToolSection
+    SubmitToolSection,
+    AlternativeSearchResults
   },
 
   async asyncData({ route }) {
@@ -169,6 +173,7 @@ export default {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
           this.resources = await fetchResources('Software', this.$route.query.search, this.sortOrder, this.type, 10, 0)
+          this.$refs.alternativeSearchResults.retrieveAltTotals()
         })
       },
       immediate: true

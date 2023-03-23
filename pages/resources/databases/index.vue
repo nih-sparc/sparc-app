@@ -73,12 +73,10 @@
                   </span>
                 </div>
                 <div class="subpage">
-                  <resources-search-results
-                    :table-data="resources.items"
-                  />
+                  <resources-search-results :table-data="resources.items" />
                   <alternative-search-results
-                    :search-term="searchTerm"
-                    :search-type="searchType"
+                    ref="alternativeSearchResults"
+                    :search-had-results="resources.items.length > 0"
                   />
                 </div>
                 <div class="search-heading">
@@ -175,6 +173,7 @@ export default {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
           this.resources = await fetchResources('Data and Models', this.$route.query.search, this.sortOrder, this.type, 10, 0)
+          this.$refs.alternativeSearchResults.retrieveAltTotals()
         })
       },
       immediate: true
