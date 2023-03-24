@@ -40,21 +40,9 @@
         <el-col :span="24">
           <el-row :gutter="32">
             <client-only>
-              <el-col
-                class="facet-menu"
-                :sm="24"
-                :md="6"
-                :lg="6"
-              >
-                <tools-and-resources-facet-menu
-                  @tool-and-resources-selections-changed="onPaginationPageChange(1)"
-                />
-              </el-col>
-              <el-col
-                :sm='24'
-                :md='18'
-                :lg='18'
-              >
+              <el-col>
+                <p><em>By clicking on the button next to each search result, you can instantiate the service in the
+                  <a href="/resources/4LkLiH5s4FV0LVJd3htsvH">o<sup>2</sup>S<sup>2</sup>PARC cloud platform</a>.</em></p>
                 <div class="search-heading mb-16">
                   <div class="label1" v-show="resources.length">
                     {{ resources.length }} Results | Showing
