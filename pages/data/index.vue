@@ -116,7 +116,7 @@
                   <!-- Alternative search suggestions -->
                   <div v-if="searchHasAltResults">
                     <template v-if="searchData.total === 0">
-                      No results were found for {{ searchType.label }}.
+                      No results were found for <strong>{{ searchType.label }}</strong>.
                     </template>
                     The following results were discovered for the other categories:
                     <br />
