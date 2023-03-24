@@ -63,7 +63,7 @@ export const searchTypes = [
     contentfulLabel: 'Biologicals'
   },
   {
-    label: 'oSPARC Services',
+    label: 'o²S²PARC Services',
     path: 'osparc-services'
   }
 ]

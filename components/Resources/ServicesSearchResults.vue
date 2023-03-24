@@ -15,7 +15,7 @@
         <img v-show="service.thumbnail" :src="service.thumbnail" />
       </div>
       <div class="resources-search-results__items--content">
-        <h2><span v-html="highlightMatches(service.name, $route.query.search)"/></h2>
+        <h2><span v-html="highlightMatches(service.title, $route.query.search)"/></h2>
         <p
           class="resources-search-results__items--content-description"
           v-html="highlightMatches(parseMarkdown(service.description), $route.query.search)"
