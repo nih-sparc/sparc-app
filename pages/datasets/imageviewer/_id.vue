@@ -80,11 +80,12 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import discover from '@/services/discover'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
+import DatasetInfo from '@/mixins/dataset-info'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FileDetails from '@/mixins/file-details'
 
-import { baseName } from '@/utils/common'
+import { baseName, extractS3BucketName } from '@/utils/common'
 
 export default {
   name: 'ImageViewerPage',
@@ -94,14 +95,25 @@ export default {
     BfButton
   },
 
-  mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [DatasetInfo, FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, error, $axios, app }) {
+
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
+      $axios,
+      route.query.dataset_id,
+      route.query.dataset_version,
+      app.$cookies.get('user-token')
+    )
+
+    const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
+
     const response = await discover.fetch(
       route.query.dataset_id,
       route.query.dataset_version,
       route.query.file_path,
-      true
+      true, 
+      s3Bucket
     )
 
     const imageInfo = {
@@ -120,16 +132,6 @@ export default {
       route.query.dataset_version,
       error
     )
-
-    const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
-    var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
-    const userToken = app.$cookies.get('user-token')
-    if (userToken) {
-      datasetUrl += `?api_key=${userToken}`
-    }
-    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
-      console.log(`Could not get the dataset's info: ${error}`)
-    })
 
     return {
       imageInfo,
