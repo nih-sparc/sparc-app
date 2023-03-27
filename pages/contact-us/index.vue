@@ -1,15 +1,38 @@
-<template>
+a<template>
   <div class="contact-us-page pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" :title="pageTitle" />
-    <page-hero v-if="heroCopy">
-      <h1>{{ pageTitle }}</h1>
-      <!-- eslint-disable vue/no-v-html -->
-      <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(heroCopy)" />
-    </page-hero>
+    <breadcrumb :breadcrumb="breadcrumb" :title="breadcrumbTitle" />
+    <div class="container">
+      <div class="tabs__container">
+        <h3>
+          Select Form
+        </h3>
+        <ul class="tabs">
+          <li v-for="type in formTypes" :key="type.label">
+            <nuxt-link
+              class="tabs__button"
+              :class="{ active: type.type === $route.query.type || (type.subtypes != undefined && type.subtypes.includes($route.query.type)) || ($route.query.type === undefined && type.type === 'feedback') }"
+              :to="{
+                name: 'contact-us',
+                query: {
+                  ...$route.query,
+                  type: type.type,
+                }
+              }"
+            >
+              {{ type.label }}
+            </nuxt-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="page-wrap container">
+      <div class="subpage">
+        <div v-if="formTypeObject" class="body1" v-html="formTypeObject.description"></div>
+      </div>
+    </div>
     <div class="page-wrap container">
       <div class="subpage mb-0">
-        <template v-if="!isBugSubmitted && !isGeneralSubmitted">
+        <template v-if="isFeedbackForm">
           <h2>Let us know why you are contacting us:</h2>
           <el-select
             v-model="formType"
@@ -18,21 +41,19 @@
             :popper-append-to-body="false"
           >
             <el-option
-              v-for="option in formTypeOptions"
+              v-for="option in feedbackFormTypeOptions"
               :key="option.key"
               :label="option.label"
               :value="option.value"
             />
           </el-select>
-
-          <hr v-if="formType" class="mt-32 mb-32" />
-
-          <general-form
-            v-if="formType === 'general'"
-            @submit="onGeneralFormSubmit($event)"
-          />
-          <bug-form v-if="formType === 'bug'" @submit="isBugSubmitted = true" />
+          <hr v-if="isFeedbackForm && formType != undefined && formType != 'feedback'" class="mt-32 mb-32" />
         </template>
+        <div class="container">
+          <component
+            :is="formComponent"
+          />
+        </div>
 
         <div v-if="isGeneralSubmitted" class="msg-success">
           <template v-if="firstName">
@@ -63,11 +84,53 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import GeneralForm from '@/components/ContactUsForms/GeneralForm/GeneralForm.vue'
 import BugForm from '@/components/ContactUsForms/BugForm/BugForm.vue'
-
+import ToolsAndResourcesForm from '@/components/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
+import NewsAndEventsForm from '@/components/NewsAndEventsForm/NewsAndEventsForm.vue'
+import CommunitySpotlightForm from '@/components/CommunitySpotlightForm/CommunitySpotlightForm.vue'
+import { defaultTo } from 'ramda'
 import MarkedMixin from '@/mixins/marked'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
+const formTypes = [
+  {
+    label: 'Share Feedback',
+    type: 'feedback',
+    description: "Use the form below to submit your inquiry. For other topics such as Help documentation or Tutorials, visit our <b><a href='https://docs.sparc.science' target='_blank'>Help Center</a></b>",
+    subtypes: ['bug', 'portal-feedback', 'sparc-service', 'general']
+  },
+  {
+    label: 'Share Research',
+    type: 'research',
+    description: "The SPARC Portal is open to everyone for sharing their research data. Tell us about your research.",
+    subtypes: []
+  },
+  {
+    label: 'Share News/Event',
+    type: 'news-event',
+    description: "Submit your news or event with SPARC. We will then be in contact about how we share this to the SPARC community",
+    subtypes: []
+  },
+  {
+    label: 'Share Your Story',
+    type: 'story',
+    description: "Submit your story on how you have used the SPARC Program to advance neuromodulation of the ANS. We will then be in contact about how we share this to the SPARC community.",
+    subtypes: []
+  },
+  {
+    label: 'Submit Tool',
+    type: 'tool',
+    description: "Submit your tool or resource with SPARC. We will then be in contact about how we share this to the SPARC community",
+    subtypes: []
+  }
+]
+const formComponents = {
+  bug: BugForm,
+  general: GeneralForm,
+  tool: ToolsAndResourcesForm,
+  'news-event': NewsAndEventsForm,
+  story: CommunitySpotlightForm,
+}
 
 export default {
   name: 'ContactUsPage',
@@ -76,7 +139,10 @@ export default {
     Breadcrumb,
     PageHero,
     GeneralForm,
-    BugForm
+    BugForm,
+    ToolsAndResourcesForm,
+    NewsAndEventsForm,
+    CommunitySpotlightForm
   },
 
   mixins: [MarkedMixin],
@@ -101,18 +167,36 @@ export default {
             name: 'index'
           },
           label: 'Home'
-        }
+        },
+        {
+          to: {
+            name: 'contact-us',
+            query: {
+              type: 'feedback'
+            }
+          },
+          label: 'Contact Us'
+        },
       ],
       formType: '',
-      formTypeOptions: [
-        {
-          label: 'I could not find the information in Help',
-          value: 'general'
-        },
+      formTypes,
+      feedbackFormTypeOptions: [
         {
           label: 'I want to report an error or an issue',
           value: 'bug'
-        }
+        },
+        {
+          label: 'I have feedback about the SPARC Portal',
+          value: 'portal-feedback'
+        },
+        {
+          label: 'I am interested in a SPARC Service',
+          value: 'sparc-service'
+        },
+        {
+          label: 'I have another question or inquiry',
+          value: 'general'
+        },
       ],
       isBugSubmitted: false,
       isGeneralSubmitted: false,
@@ -120,9 +204,34 @@ export default {
     }
   },
 
+  computed: {
+    breadcrumbTitle() {
+      if (this.formTypeObject != undefined)
+        return this.formTypeObject.label
+      return this.formTypes[0].label
+    },
+    isFeedbackForm() {
+      const feedbackFormType = this.formTypes.find(formType => formType.type === 'feedback')
+      return this.$route.query.type === undefined || this.formType === feedbackFormType.type || feedbackFormType.subtypes.includes(this.formType)
+    },
+     formComponent: function() {
+      return defaultTo('', formComponents[this.$route.query.type])
+    },
+    formTypeObject() {
+      if (this.formType == undefined)
+        return this.formTypes[0]
+      return this.formTypes.find(formType => {
+        if (formType.type === this.formType)
+          return true
+        if (formType.subtypes.includes(this.formType))
+          return true
+      })
+    }
+  },
+
   head() {
     return {
-      title: this.pageTitle
+      title: this.breadcrumbTitle
     }
   },
 
@@ -133,7 +242,7 @@ export default {
      */
     $route: {
       handler(to) {
-        this.formType = to.query.type
+        this.formType = to.query.type === 'feedback' ? undefined : to.query.type
       },
       immediate: true
     },
@@ -194,12 +303,73 @@ h2 {
 </style>
 
 <style lang="scss">
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.tabs__container {
+  margin-top: 2rem;
+  padding-top: 0.5rem;
+  background-color: white;
+  border: 0.1rem solid $lineColor2;
+  h3 {
+    padding-left: 0.75rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+}
+.tabs {
+  display: flex;
+  list-style: none;
+  overflow: auto;
+  margin: 0 0 0 0;
+  padding: 0 0;
+  outline: 0.1rem solid $purple;
+  @media (max-width: 40rem) {
+    display: block;
+  }
+  li {
+    width: 100%;
+    text-align: center;
+    color: $purple;
+  }
+  li:last-child > a {
+    border-right: none;
+  }
+}
+.tabs__button {
+  background: #f9f2fc;
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  outline: none;
+  padding: 0;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  line-height: 3.5rem;
+  @media (min-width: 40rem) {
+    font-size: 0.65rem;
+    border-right: 0.1rem solid $purple;
+  }
+  @media (min-width: 50rem) {
+    font-size: .75rem;
+  }
+  @media (min-width: 64rem) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-transform: none;
+  }
+  &:hover,
+  &:focus,
+  &.active {
+    color: white;
+    background-color: $purple;
+    font-weight: 500;
+  }
+}
 .contact-us-page {
   .el-form-item__label {
-    color: #000;
-    font-size: 1.625rem;
-    line-height: 1.2;
+    color: $grey;
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+    font-weight: 500;
     margin-bottom: 1rem;
     padding-bottom: 0;
   }
@@ -211,12 +381,12 @@ h2 {
   .el-textarea,
   .el-select-dropdown__item {
     ::placeholder {
-      color: $medium-gray;
+      color: $lightGrey;
     }
   }
   .el-input__inner,
   .el-textarea__inner {
-    border-color: $medium-gray;
+    border-color: $lightGrey;
     border-radius: 4px;
     padding: 0.5rem 1rem;
   }
@@ -227,7 +397,7 @@ h2 {
     max-width: 36rem;
     width: 100%;
     ::placeholder {
-      color: $dark-sky;
+      color: $grey;
     }
   }
 }

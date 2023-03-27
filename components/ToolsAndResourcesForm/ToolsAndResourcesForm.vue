@@ -6,58 +6,22 @@
     :rules="formRules"
     :hide-required-asterisk="true"
   >
-    <el-form-item
-      prop="sparcFunded"
-      label="Are you involved in SPARC-funded research? *"
-    >
-      <el-select
-        v-model="form.sparcFunded"
-        placeholder="Select one"
-        :popper-append-to-body="false"
-      >
-        <el-option
-          v-for="sparcFundedOption in questionOptions.sparcFunded"
-          :key="sparcFundedOption"
-          :label="sparcFundedOption"
-          :value="sparcFundedOption"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-form-item
-      class="mt-32"
-      prop="levelOfInvolvement"
-      label="What is your highest level of involvement in research projects? *"
-    >
-      <el-select
-        v-model="form.levelOfInvolvement"
-        placeholder="Select one"
-        :popper-append-to-body="false"
-      >
-        <el-option
-          v-for="levelOfInvolvementOption in questionOptions.levelOfInvolvement"
-          :key="levelOfInvolvementOption"
-          :label="levelOfInvolvementOption"
-          :value="levelOfInvolvementOption"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-form-item class="mt-32" prop="resourceName" label="What is the name of the tool/resource? *">
+    <el-form-item prop="resourceName" label="What is the name of the tool/resource? *">
       <el-input v-model="form.resourceName" placeholder="Enter tool/resource name" />
     </el-form-item>
 
-    <el-form-item class="mt-32" prop="resourceLink" label="What is the webpage link for this tool/resource? *">
-      <el-input placeholder="Enter URL" v-model="form.resourceLink">
+    <el-form-item class="mt-32" prop="resourceLinks" label="What is the webpage link for this tool/resource? *">
+      <url-list :default-links="form.resourceLinks" @links-updated="form.resourceLinks = $event" @add-link="addResourceLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
-      </el-input>
+      </url-list>
     </el-form-item>
 
     <el-form-item
-      class="mt-32"
+      class="resource-categories vertical-content mt-32"
       prop="resourceCategories"
-      label="Which category, or categories, would you place this tool/resource? Select all that apply. *"
-    >  
+      label="Which category, or categories, would you place this tool/resource? *"
+    >
+      <div class="body4 mb-4"><i>Select all that apply.</i></div>
       <client-only>
         <sparc-checkbox
           v-for="item in questionOptions.resourceCategories"
@@ -74,7 +38,7 @@
     </el-form-item>
 
     <el-form-item
-      class="mt-32"
+      class="mt-32 vertical-content"
       prop="isFree"
       label="Is it free and/or open-source? *"
     >
@@ -93,43 +57,9 @@
     </el-form-item>
 
     <el-form-item
-      class="mt-32"
-      prop="howBroadlyUsed"
-      label="How broadly is it used in biomedical science? (Uncommon 1 2 3 4 5 Common) *"
-    >
-      <client-only>
-        <sparc-radio
-          v-model="form.howBroadlyUsed"
-          label="1"
-          display="1"
-        />
-        <sparc-radio
-          v-model="form.howBroadlyUsed"
-          label="2"
-          display="2"
-        />
-        <sparc-radio
-          v-model="form.howBroadlyUsed"
-          label="3"
-          display="3"
-        />
-        <sparc-radio
-          v-model="form.howBroadlyUsed"
-          label="4"
-          display="4"
-        />
-        <sparc-radio
-          v-model="form.howBroadlyUsed"
-          label="5"
-          display="5"
-        />
-      </client-only>
-    </el-form-item>
-
-    <el-form-item
-      class="mt-32"
+      class="mt-32 vertical-content"
       prop="hasSpecificApplications"
-      label="Does it have specific applications to the autonomic nervous system and the neural control of organs? *"
+      label="Does it have specific applications to the peripheral nervous system or the neural control of organs? *"
     >
       <client-only>
         <sparc-radio
@@ -145,17 +75,8 @@
       </client-only>
     </el-form-item>
 
-    <el-form-item class="mt-32" prop="experienceDescription" label="Briefly describe your experience using this tool. *">
-      <el-input
-        v-model="form.experienceDescription"
-        type="textarea"
-        :rows="3"
-        placeholder="Tell us some details about your use of this tool/resource"
-      />
-    </el-form-item>
-
     <el-form-item
-      class="mt-32"
+      class="mt-32 vertical-content"
       prop="isCreator"
       label="Are you the tool/resource creator? *"
     >
@@ -173,86 +94,74 @@
       </client-only>
     </el-form-item>
 
-    <el-form-item class="mt-32" prop="primaryGoal" label="If yes, what was your primary goal in creating this tool/resource?">
-      <el-input
-        v-model="form.primaryGoal"
-        type="textarea"
-        :rows="3"
-        :disabled="form.isCreator != 'Yes'"
-        placeholder="Tell us your goal in creating this tool/resource"
-      />
+    <el-form-item class="mt-32" prop="linksToUsages" label="Please provide any links to datasets or publications using this tool/resource">
+      <url-list :default-links="form.linksToUsages" @links-updated="form.linksToUsages = $event" @add-link="addUsageLink" placeholder="Enter URL">
+        <template slot="prepend">Http://</template>
+      </url-list>
     </el-form-item>
 
     <el-form-item
-      class="mt-32"
-      prop="hasBeenUsed"
-      label="To date, has this tool been used in an NIH SPARC-funded project? *"
+      class="mt-32 vertical-content"
+      prop="tutorialsAvailable"
+      label="Do you have any tutorials/user guides available?"
     >
       <client-only>
         <sparc-radio
-          v-model="form.hasBeenUsed"
+          v-model="form.tutorialsAvailable"
           label="Yes"
           display="Yes"
         />
         <sparc-radio
-          v-model="form.hasBeenUsed"
-          label="No"
-          display="No"
-        />
-        <sparc-radio
-          v-model="form.hasBeenUsed"
-          label="Not sure"
-          display="Not sure"
-        />
-      </client-only>
-    </el-form-item>
-
-    <el-form-item class="mt-32" prop="howUsed" label="If yes, how has it been used in NIH SPARC-funded research?">
-      <el-input
-        v-model="form.howUsed"
-        type="textarea"
-        :rows="3"
-        :disabled="form.hasBeenUsed != 'Yes'"
-        placeholder="Tell us how it has been used"
-      />
-    </el-form-item>
-
-    <el-form-item
-      class="mt-32"
-      prop="isWilling"
-      label="Are you willing to participate in other user research to support the development of the SPARC Portal? *"
-    >
-      <client-only>
-        <sparc-radio
-          v-model="form.isWilling"
-          label="Yes"
-          display="Yes"
-        />
-        <sparc-radio
-          v-model="form.isWilling"
+          v-model="form.tutorialsAvailable"
           label="No"
           display="No"
         />
       </client-only>
+      <url-list class="mt-8" :disabled="!isTutorialAvailable" :default-links="form.linksToTutorials" @links-updated="form.linksToTutorials = $event" @add-link="addTutorialLink" placeholder="Enter URL">
+        <template slot="prepend">Http://</template>
+      </url-list>
     </el-form-item>
 
     <hr/>
 
-    <div class="heading1">
-      Contact Information
-    </div>
-
-    <el-form-item class="mt-16" prop="name" label="Name *">
-      <el-input v-model="form.name" placeholder="Enter your name" />
+    <el-form-item
+      class="mt-32"
+      prop="typeOfUser"
+      label="What type of user are you? *"
+    >
+      <el-select
+        v-model="form.typeOfUser"
+        placeholder="Select one"
+        :popper-append-to-body="false"
+      >
+        <el-option
+          v-for="typeOfUserOption in questionOptions.typeOfUser"
+          :key="typeOfUserOption"
+          :label="typeOfUserOption"
+          :value="typeOfUserOption"
+        />
+      </el-select>
     </el-form-item>
-
+    <el-form-item class="mt-16" prop="firstName" label="First Name *">
+      <el-input v-model="form.firstName" placeholder="Enter your first name" />
+    </el-form-item>
+    <el-form-item class="mt-16" prop="lastName" label="Last Name *">
+      <el-input v-model="form.lastName" placeholder="Enter your last name" />
+    </el-form-item>
     <el-form-item class="mt-32" prop="email" label="Email *">
       <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
     </el-form-item>
 
-    <div class="body4 mb-16"><i>Your submission will be reviewed and the reviewer may contact you to clarify or seek additional information.</i></div>
+    <hr/>
 
-    <recaptcha class="recaptcha mb-16"/>
+    <div class="heading2">
+      Please check the box to proceed
+    </div>
+    <recaptcha class="recaptcha my-16 pl-16"/>
+
+    <hr/>
+
+    <div class="body4 mb-16"><i>Before your tool or resource is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
 
     <el-form-item class="submit-button">
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
@@ -266,56 +175,44 @@
 </template>
 
 <script>
-import { sparcFunded, levelOfInvolvement, resourceCategories } from './questions.js'
+import { typeOfUser, resourceCategories } from './questions.js'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
+import UrlList from '@/components/Url/UrlList.vue'
+import { isEmpty } from 'ramda'
 
 export default {
   name: 'ToolsAndResourcesForm',
+
+  components: {
+    UrlList
+  },
 
   mixins: [RecaptchaMixin],
 
   data() {
     return {
       form: {
-        sparcFunded: '',
-        levelOfInvolvement: '',
+        typeOfUser: '',
         resourceName: '',
-        resourceLink: '',
+        resourceLinks: [''],
         resourceCategories: [],
         otherCategoryDescription: '',
         isFree: '',
-        howBroadlyUsed: '',
         hasSpecificApplications: '',
-        experienceDescription: '',
         isCreator: '',
-        primaryGoal: '',
-        hasBeenUsed: '',
-        howUsed: '',
-        isWilling: '',
-        name: '',
+        linksToUsages: [''],
+        tutorialsAvailable: '',
+        linksToTutorials: [''],
+        firstName: '',
+        lastName: '',
         email: '',
       },
       isSubmitting: false,
       questionOptions: {
-        sparcFunded,
-        levelOfInvolvement,
+        typeOfUser,
         resourceCategories
       },
       formRules: {
-        sparcFunded: [
-          {
-            required: true,
-            message: 'Please select one',
-            trigger: 'change'
-          }
-        ],
-        levelOfInvolvement: [
-          {
-            required: true,
-            message: 'Please select one',
-            trigger: 'change'
-          }
-        ],
         resourceName: [
           {
             required: true,
@@ -323,11 +220,11 @@ export default {
             trigger: 'blur',
           }
         ],
-        resourceLink: [
+        resourceLinks: [
           {
-            required: true,
-            message: 'Please enter the link url',
+            message: 'Please enter at least one link url',
             trigger: 'blur',
+            validator: this.validateResourceLinks
           }
         ],
         resourceCategories: [
@@ -351,25 +248,11 @@ export default {
             trigger: 'blur',
           }
         ],
-        howBroadlyUsed: [
-          {
-            required: true,
-            message: 'Please select one',
-            trigger: 'blur',
-          }
-        ],
         hasSpecificApplications: [
           {
             required: true,
             message: 'Please select one',
             trigger: 'blur',
-          }
-        ],
-        experienceDescription: [
-          {
-            required: true,
-            message: 'Please enter a description',
-            trigger: 'change'
           }
         ],
         isCreator: [
@@ -379,38 +262,17 @@ export default {
             trigger: 'blur',
           }
         ],
-        primaryGoal: [
-          {
-            message: 'Please enter your goal',
-            trigger: 'change',
-            validator: this.validatePrimaryGoal
-          }
-        ],
-        hasBeenUsed: [
+        firstName: [
           {
             required: true,
-            message: 'Please select one',
+            message: 'Please enter your first name',
             trigger: 'blur',
           }
         ],
-        howUsed: [
-          {
-            message: 'Please enter how it was used',
-            trigger: 'change',
-            validator: this.validateHowUsed
-          }
-        ],
-        isWilling: [
+        lastName: [
           {
             required: true,
-            message: 'Please select one',
-            trigger: 'blur',
-          }
-        ],
-        name: [
-          {
-            required: true,
-            message: 'Please enter your name',
+            message: 'Please enter your last name',
             trigger: 'blur',
           }
         ],
@@ -431,7 +293,36 @@ export default {
       return this.form?.resourceCategories.some(resource => {
         return resource == 'Other'
       })
-    }
+    },
+    isTutorialAvailable: function() {
+      return this.form?.tutorialsAvailable === 'Yes'
+    },
+    resourceLinksText: function() {
+      let message = ''
+      this.form.resourceLinks.forEach(link => {
+        if (!isEmpty(link))
+          message += `${link}<br>`
+      })
+      return message
+    },
+    linksToUsagesText: function() {
+      let message = ''
+      this.form.linksToUsages.forEach(link => {
+        if (!isEmpty(link))
+          message += `${link}<br>`
+      })
+      return isEmpty(message) ? 'N/A<br>' : message
+    },
+    linksToTutorialsText: function() {
+      let message = ''
+      if (this.isTutorialAvailable) {
+        this.form.linksToTutorials.forEach(link => {
+          if (!isEmpty(link))
+            message += `${link}<br>`
+        })
+      }
+      return isEmpty(message) ? 'N/A<br>' : message
+    },
   },
 
   mounted() {
@@ -441,25 +332,29 @@ export default {
   },
 
   methods: {
-    validateHowUsed: function(rule, value, callback) {
-      if (this.form.hasBeenUsed == 'Yes' && value === '') {
-        callback(new Error(rule.message))
-      }
-      callback()
-    },
-
     validateCategoryDescription: function(rule, value, callback) {
       if (this.isOtherSelected && value === '') {
         callback(new Error(rule.message))
       }
       callback()
     },
-
-    validatePrimaryGoal: function(rule, value, callback) {
-      if (this.form.isCreator == 'Yes' && value === '') {
+    validateResourceLinks: function(rule, value, callback) {
+      const hasResourceLink = value.some(link => {
+        return !isEmpty(link)
+      })
+      if (!hasResourceLink) {
         callback(new Error(rule.message))
       }
       callback()
+    },
+    addResourceLink() {
+      this.form.resourceLinks.push('')
+    },
+    addUsageLink() {
+      this.form.linksToUsages.push('')
+    },
+    addTutorialLink() {
+      this.form.linksToTutorials.push('')
     },
     /**
      * Send form to endpoint
@@ -468,23 +363,19 @@ export default {
       this.isSubmitting = true
 
       const description = `
-        <b>Are you involved in SPARC-funded research?</b><br>${this.form.sparcFunded}<br><br>
-        <b>What is your highest level of involvement in research projects?</b><br>${this.form.levelOfInvolvement}<br><br>
         <b>What is the name of the tool/resource?</b><br>${this.form.resourceName}<br><br>
-        <b>What is the webpage link for this tool/resource?</b><br>${this.form.resourceLink}<br><br>
+        <b>What is the webpage link for this tool/resource?</b><br>${this.resourceLinksText}<br>
         <b>Which category, or categories, would you place this tool/resource?</b><br>${this.form.resourceCategories}<br><br>
         <b>If you answered 'Other', please describe the category for this tool/resource:</b><br>${this.isOtherSelected ? this.form.otherCategoryDescription : 'N/A'}<br><br>
         <b>Is it free and/or open-source?</b><br>${this.form.isFree}<br><br>
-        <b>How broadly is it used in biomedical science?</b><br>${this.form.howBroadlyUsed}<br><br>
         <b>Does it have specific applications to the autonomic nervous system and the neural control of organs?</b><br>${this.form.hasSpecificApplications}<br><br>
-        <b>Briefly describe your experience using this tool:</b><br>${this.form.experienceDescription}<br><br>
         <b>Are you the tool/resource creator?</b><br>${this.form.isCreator}<br><br>
-        <b>If yes, what was your primary goal in creating this tool/resource?</b><br>${this.form.isCreator == 'Yes' ? this.form.primaryGoal : 'N/A'}<br><br>
-        <b>To date, has this tool been used in an NIH SPARC-funded project?</b><br>${this.form.hasBeenUsed}<br><br>
-        <b>If yes, how has it been used in NIH SPARC-funded research?</b><br>${this.form.hasBeenUsed == 'Yes' ? this.form.howUsed : 'N/A'}<br><br>
-        <b>Are you willing to participate in other user research to support the development of the SPARC Portal?</b><br>${this.form.isWilling}<br><br>
-        <b>Contact Information</b><br><br>
-        <b>Name:</b><br>${this.form.name}<br><br>
+        <b>Please provide any links to datasets or publications using this tool/resource</b><br>${this.linksToUsagesText}<br>
+        <b>Do you have any tutorials/user guides available?</b><br>${this.form.tutorialsAvailable}<br><br>
+        <b>Links to tutorials/user guides:</b><br>${this.linksToTutorialsText}<br>
+        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
+        <b>First Name:</b><br>${this.form.firstName}<br><br>
+        <b>Last Name:</b><br>${this.form.lastName}<br><br>
         <b>Email:</b><br>${this.form.email}
       `
       let formData = new FormData();
@@ -496,7 +387,7 @@ export default {
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          this.$emit('submit', this.form.name)
+          this.$emit('submit', this.form.firstName)
         })
         .catch(() => {
           this.hasError = true
@@ -512,7 +403,7 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .submit-button {
-  text-align: right;
+  text-align: left;
   margin-bottom: 0 !important;
 }
 hr {
@@ -527,6 +418,28 @@ hr {
 }
 .recaptcha {
   display: flex;
-  justify-content: right;
+  justify-content: left;
+}
+::v-deep .vertical-content {
+  .el-form-item__content {
+    display: flex;
+    flex-direction: column;
+    .el-radio {
+      line-height: 25px;
+      padding-left: 2rem;
+    }
+  }
+}
+::v-deep .resource-categories {
+  .el-form-item__content {
+    .el-checkbox {
+      padding-left: 2rem;
+      margin: 0;
+      line-height: 25px;
+    }
+  }
+  .el-form-item__label {
+    margin-bottom: .3rem;
+  }
 }
 </style>
