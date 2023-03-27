@@ -368,7 +368,7 @@ export default {
               type: 'dataset'
             }
           },
-          label: 'Find Data'
+          label: 'Data & Models'
         },
       ],
       titleColumnWidth: 300,

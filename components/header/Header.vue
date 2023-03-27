@@ -194,7 +194,7 @@ import { mapState, mapGetters } from 'vuex'
 const links = [
   {
     title: 'data',
-    displayTitle: 'Find Data',
+    displayTitle: 'Data & Models',
     href: '/data'
   },
   {

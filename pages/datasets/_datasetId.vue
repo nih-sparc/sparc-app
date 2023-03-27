@@ -542,7 +542,7 @@ export default {
               type: this.$route.query.type
             }
           },
-          label: 'Find Data'
+          label: 'Data & Models'
         }
       ],
       subtitles: [],
