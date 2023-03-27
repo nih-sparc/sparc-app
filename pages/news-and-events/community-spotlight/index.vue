@@ -211,7 +211,7 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
         })
       })
       return {
-        label: 'Anatomical Structure',
+        label: 'Focus',
         id: 'spotlightAnatomicalStructure',
         data: data
       }
