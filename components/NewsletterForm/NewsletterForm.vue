@@ -3,7 +3,7 @@
   <div id="mc_embed_signup">
     <form
       id="mc-embedded-subscribe-form"
-      action="https://mailchi.mp/199fe3626d97/signup"
+      action="https://eepurl.com/hgBxgv"
       method="post"
       name="mc-embedded-subscribe-form"
       class="validate"
