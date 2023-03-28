@@ -90,6 +90,7 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
 import BfStorageMetrics from '@/mixins/bf-storage-metrics'
+import DatasetInfo from '@/mixins/dataset-info'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
@@ -123,6 +124,7 @@ export default {
 
   mixins: [
     BfStorageMetrics,
+    DatasetInfo,
     FormatDate,
     FetchPennsieveFile,
     FileDetails
@@ -157,15 +159,12 @@ export default {
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' : ''
 
-    const url = `${process.env.discover_api_host}/datasets/${route.params.datasetId}`
-    var datasetUrl = route.query.datasetVersion ? `${url}/versions/${route.query.datasetVersion}` : url
-    const userToken = app.$cookies.get('user-token')
-    if (userToken) {
-      datasetUrl += `?api_key=${userToken}`
-    }
-    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
-      console.log(`Could not get the dataset's info: ${error}`)
-    })
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
+      $axios,
+      route.params.datasetId,
+      route.query.datasetVersion,
+      app.$cookies.get('user-token')
+    )
 
     return {
       biolucidaData,

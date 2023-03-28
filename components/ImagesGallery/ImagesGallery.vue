@@ -28,7 +28,7 @@ import flatmaps from '@/services/flatmaps'
 import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
 
-import { baseName, extractSection } from '@/utils/common'
+import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 
 export default {
   name: 'ImagesGallery',
@@ -171,11 +171,13 @@ export default {
         const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
         let datasetVersion = -1
+        let s3Bucket = extractS3BucketName(scicrunchData['s3uri'])
+
         if ('discover_dataset' in scicrunchData) {
           datasetId = scicrunchData.discover_dataset.id
           datasetVersion = scicrunchData.discover_dataset.version
         }
-
+ 
         if ('abi-scaffold-metadata-file' in scicrunchData) {
           let index = 0
           items.push(
@@ -195,7 +197,8 @@ export default {
                   datasetId,
                   datasetVersion,
                   mimetype: thumbnail.mimetype.name,
-                  file_path: thumbnail.dataset.path
+                  file_path: thumbnail.dataset.path,
+                  s3Bucket: s3Bucket
                 })
                 let filePath = encodeURIComponent(`files/${file_path}`)
                 const linkUrl = `${baseRoute}maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
@@ -311,14 +314,6 @@ export default {
             ...Array.from(scicrunchData['common-images'], generic_image => {
               const filePath = generic_image.dataset.path
               const id = generic_image.identifier
-              // this.getImageFromS3(items, {
-              //   id,
-              //   fetchAttempts: 0,
-              //   datasetId,
-              //   datasetVersion,
-              //   imageFilePath: filePath,
-              //   mimetype: generic_image.mimetype.name
-              // })
               const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&mimetype=${generic_image.mimetype.name}`
               return {
                 id,
@@ -424,7 +419,7 @@ export default {
     },
     getScaffoldThumbnail(items, info) {
       discover
-        .fetch(info.datasetId, info.datasetVersion, info.file_path, true)
+        .fetch(info.datasetId, info.datasetVersion, info.file_path, true, info.s3Bucket)
         .then(
           response => {
             let item = items.find(x => x.id === info.id)
@@ -550,37 +545,6 @@ export default {
           img.src = `data:${image_info.mimetype};base64,${image_info.data}`
         }
       }
-    },
-    getImageFromS3(items, image_info) {
-      discover
-        .fetch(
-          image_info.datasetId,
-          image_info.datasetVersion,
-          image_info.imageFilePath,
-          true
-        )
-        .then(
-          response => {
-            let item = items.find(x => x.id === image_info.id)
-            this.scaleThumbnailImage(item, {
-              mimetype: image_info.mimetype,
-              data: response.data
-            })
-          },
-          reason => {
-            if (
-              reason.message.includes('timeout') &&
-              reason.message.includes('exceeded') &&
-              image_info.fetchAttempts < 3
-            ) {
-              image_info.fetchAttempts += 1
-              this.getImageFromS3(items, image_info)
-            } else {
-              let item = items.find(x => x.id === image_info.id)
-              this.$set(item, 'thumbnail', this.defaultImg)
-            }
-          }
-        )
     },
     getThumbnailFromBiolucida(items, info) {
       biolucida.getThumbnail(info.id).then(
