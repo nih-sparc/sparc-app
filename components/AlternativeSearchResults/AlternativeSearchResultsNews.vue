@@ -29,7 +29,15 @@
 </template>
 
 <script>
-import { fetchNews, fetchEvents, fetchCommunitySpotlightItems} from '@/pages/news-and-events/model.ts'
+import {
+  fetchNews,
+  fetchEvents,
+  fetchCommunitySpotlightItems
+} from '@/pages/news-and-events/model.ts'
+
+import createClient from '@/plugins/contentful.js'
+
+const client = createClient()
 
 function getLastUrlSegment(path) {
   return path
@@ -49,32 +57,25 @@ export default {
   data: function() {
     return {
       searchHasAltResults: false,
-      dataTypes: [
-        'biological',
-        'databases',
-        'devices',
-        'information-services',
-        'software'
-      ],
+      dataTypes: ['news', 'events', 'community-spotlight'],
       humanReadableDataTypesLookup: {
-        biological: 'Biologicals',
-        databases: 'Data and Models',
-        devices: 'Devices',
-        'information-services': 'Information Services',
-        software: 'Software'
+        news: 'News',
+        events: 'Events',
+        'community-spotlight': 'Community Spotlight'
       },
       functionLookup: {
         news: fetchNews,
         events: fetchEvents,
-        communitySpotlight: fetchCommunitySpotlightItems
+        'community-spotlight': fetchCommunitySpotlightItems
       },
       resultCounts: {
-        biological: 0,
-        databases: 0,
-        devices: 0,
-        'information-services': 0,
-        software: 0
-      }
+        news: 0,
+        events: 0,
+        'community-spotlight': 0
+      },
+      fetchNews: fetchNews,
+      fetchEvents: fetchEvents,
+      fetchCommunitySpotlightItems: fetchCommunitySpotlightItems
     }
   },
   computed: {
@@ -99,8 +100,8 @@ export default {
       })
     },
     retrieveAltTotal: function(category) {
-      this[this.functionLookup[category]](
-        this.humanReadableDataTypesLookup[category], // needed as human readable is used for contentful
+      this[this.functionLookup[category]]( // dynamically call the function
+        client,
         this.$route.query.search,
         undefined,
         undefined,
@@ -108,6 +109,7 @@ export default {
         0
       )
         .then(resp => {
+          console.log('Alternative Search results call:', resp)
           this.resultCounts[category] = resp.total
           resp.total > 0 ? (this.searchHasAltResults = true) : null
         })
