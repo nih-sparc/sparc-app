@@ -25,7 +25,11 @@
         <sparc-tooltip placement="top-center" content="Instantiate this service in o²S²PARC. Login credentials are required.">
           <div slot="item">
             <a :href="service['view_url']" target="_blank">
-              <el-button type="text">Open in o<sup>2</sup>S<sup>2</sup>PARC</el-button>
+              <el-button>
+                <div class="open-osparc-btn-content">
+                  Open in o<sup>2</sup>S<sup>2</sup>PARC <svg-icon icon="icon-open" height="18" width="18" />
+                </div>
+              </el-button>
             </a>
           </div>
         </sparc-tooltip>
@@ -120,6 +124,13 @@ export default {
       }
       sub {
         top: 0.4em;
+      }
+      svg {
+        margin-left: .3em;
+      }
+      .open-osparc-btn-content {
+        display: flex;
+        align-items: center;
       }
     }
   }
