@@ -60,3 +60,13 @@ export const extractSection = (section_regex, html_in) => {
   })
   return html_section
 }
+
+export const extractS3BucketName = uri => {
+  if (uri) {
+    const substring = uri.split("//")[1]
+    if (substring) {
+      return substring.split("/")[0]
+    }
+  }
+  return undefined
+}

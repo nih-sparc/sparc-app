@@ -84,6 +84,7 @@ import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import { propOr } from 'ramda'
 
+import DatasetInfo from '@/mixins/dataset-info'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
@@ -97,18 +98,16 @@ export default {
     Breadcrumb
   },
 
-  mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [DatasetInfo, FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ app, route, error, $axios }) {
-    const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
-    var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
-    const userToken = app.$cookies.get('user-token')
-    if (userToken) {
-      datasetUrl += `?api_key=${userToken}`
-    }
-    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
-      console.log(`Could not get the dataset's info: ${error}`)
-    })
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
+      $axios,
+      route.query.dataset_id,
+      route.query.dataset_version,
+      app.$cookies.get('user-token')
+    )
+
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
       route.query.file_path,
