@@ -446,7 +446,7 @@ export default {
 
     // Get oSPARC file viewers
     const osparcViewers = await $axios
-      .$get(`${process.env.portal_api}/get_osparc_data`)
+      .$get(`${process.env.portal_api}/sim/file`)
       .then(osparcData => osparcData['file_viewers'])
       .catch(() => {
         return {}
