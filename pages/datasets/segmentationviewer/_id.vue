@@ -113,9 +113,9 @@ import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import MarkedMixin from '@/mixins/marked'
 import FileDetails from '@/mixins/file-details'
+import DatasetInfo from '@/mixins/dataset-info'
 
-import { extractSection } from '@/utils/common'
-import { baseName } from '@/utils/common'
+import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 
 export default {
   name: 'SegmentationViewerPage',
@@ -132,11 +132,21 @@ export default {
     const identifier = route.query.dataset_id
 
     try {
+      const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
+        $axios,
+        route.query.dataset_id,
+        route.query.dataset_version,
+        app.$cookies.get('user-token')
+      )
+
+      const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
+
       const [segmentation_info_response, dataset_response] = await Promise.all([
         discover.getSegmentationInfo(
           route.query.dataset_id,
           route.query.dataset_version,
-          route.query.file_path
+          route.query.file_path,
+          s3Bucket
         ),
         scicrunch.getDatasetInfoFromPennsieveIdentifier(identifier)
       ])
