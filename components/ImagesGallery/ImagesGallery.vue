@@ -266,7 +266,7 @@ export default {
         if ('mbf-segmentation' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
-              const id = segmentation.id
+              const id = segmentation.identifier
               let file_path = segmentation.dataset.path
               // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
               file_path = file_path.replaceAll(' ', '_')
