@@ -117,7 +117,10 @@
               <div class="get-involved-buttons-container">
                 <nuxt-link
                   :to="{
-                    name: 'news-and-events-submit',
+                    name: 'contact-us',
+                    query: {
+                      type: 'news-event'
+                    }
                   }"
                 >
                   <el-button class="get-involved-button secondary">
@@ -125,8 +128,11 @@
                   </el-button>
                 </nuxt-link>
                 <nuxt-link
-                  :to="{
-                    name: 'news-and-events-community-spotlight-submit',
+                :to="{
+                    name: 'contact-us',
+                    query: {
+                      type: 'story'
+                    }
                   }"
                 >
                   <el-button class="get-involved-button secondary mt-8">

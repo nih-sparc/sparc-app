@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { typeOfUser } from '@/components/ToolsAndResourcesForm/questions.js'
+import { typeOfUser } from '@/components/ContactUsForms/ToolsAndResourcesForm/questions.js'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'

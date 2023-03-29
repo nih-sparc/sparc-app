@@ -98,7 +98,7 @@
 
 <script>
 import { typeOfUser } from '../questions'
-import { serviceCategories } from '@/components/ToolsAndResourcesForm/questions'
+import { serviceCategories } from '@/components/ContactUsForms/ToolsAndResourcesForm/questions'
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 

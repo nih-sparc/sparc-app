@@ -85,9 +85,9 @@ import BugForm from '@/components/ContactUsForms/BugForm/BugForm.vue'
 import FeedbackForm from '@/components/ContactUsForms/FeedbackForm/FeedbackForm.vue'
 import InterestForm from '@/components/ContactUsForms/InterestForm/InterestForm.vue'
 import ResearchForm from '@/components/ContactUsForms/ResearchForm/ResearchForm.vue'
-import ToolsAndResourcesForm from '@/components/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
-import NewsAndEventsForm from '@/components/NewsAndEventsForm/NewsAndEventsForm.vue'
-import CommunitySpotlightForm from '@/components/CommunitySpotlightForm/CommunitySpotlightForm.vue'
+import ToolsAndResourcesForm from '@/components/ContactUsForms/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
+import NewsAndEventsForm from '@/components/ContactUsForms/NewsAndEventsForm/NewsAndEventsForm.vue'
+import CommunitySpotlightForm from '@/components/ContactUsForms/CommunitySpotlightForm/CommunitySpotlightForm.vue'
 import { defaultTo } from 'ramda'
 import MarkedMixin from '@/mixins/marked'
 import createClient from '@/plugins/contentful.js'
@@ -309,7 +309,7 @@ h2 {
 }
 </style>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .tabs__container {
   margin-top: 2rem;
@@ -379,7 +379,7 @@ hr {
   }
 }
 .contact-us-page {
-  .el-form-item__label {
+  ::v-deep .el-form-item__label {
     color: $grey;
     font-size: 1.5rem;
     line-height: 2.25rem;
@@ -387,23 +387,28 @@ hr {
     margin-bottom: 1rem;
     padding-bottom: 0;
   }
-  .el-select {
+  ::v-deep .el-select {
     max-width: 20rem;
     width: 100%;
   }
-  .el-input,
+  ::v-deep .el-input,
   .el-textarea,
-  .el-select-dropdown__item {
+  ::v-deep .el-select-dropdown__item {
     ::placeholder {
       color: $lightGrey;
     }
   }
-  .el-textarea__inner {
+  ::v-deep .el-textarea__inner {
     border-color: $lightGrey;
     border-radius: 4px;
     padding-top: .75rem;
     padding-bottom: .75rem;
     font-family: inherit;
+  }
+  ::v-deep .el-textarea {
+    ::placeholder {
+      color: $lightGrey;
+    }
   }
   .input-reason {
     max-width: 36rem;
