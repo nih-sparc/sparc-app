@@ -6,21 +6,11 @@
     :rules="formRules"
     :hide-required-asterisk="true"
   >
-    <el-form-item prop="name" label="Your name">
-      <el-input v-model="form.name" placeholder="Enter your name" />
-    </el-form-item>
-
-    <el-form-item prop="email" label="Email address">
-      <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
-    </el-form-item>
-
-    <hr/>
-
-    <el-form-item prop="title" label="Title">
+    <el-form-item prop="title" label="Title *">
       <el-input v-model="form.title" placeholder="Enter a title for your news or event" />
     </el-form-item>
 
-    <el-form-item prop="summary" label="Summary">
+    <el-form-item prop="summary" label="Summary *">
       <el-input
         v-model="form.summary"
         type="textarea"
@@ -31,8 +21,8 @@
 
     <hr/>
 
-    <el-form-item prop="fileAttachment" label="Image Upload">
-      <div class="body4 mb-8"><i>To help other users understand your news or event, an image can really help. We recommend images of 600px by 600px.</i></div>
+    <el-form-item class="file-upload" prop="fileAttachment" label="Image Upload">
+      <div class="body4 mb-8"><i>To help others understand your news or event, an image can really help. We recommend images of 600px by 600px.</i></div>
       <el-upload
         ref="fileUploader"
         action=""
@@ -42,14 +32,14 @@
         :on-remove="onRemove"
         :before-remove="beforeRemove" >
         <el-button slot="trigger" class="secondary">Select file</el-button>
-        <div slot="tip" class="el-upload__tip">jpg/png file with a size less than 5MB</div>
+        <span slot="tip" class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
       </el-upload>
     </el-form-item>
 
-    <el-form-item prop="url" label="Supporting Information">
-      <el-input placeholder="Enter URL" v-model="form.url">
+    <el-form-item prop="supportingLinks" label="Supporting Information">
+      <url-list :default-links="form.supportingLinks" @links-updated="form.supportingLinks = $event" @add-link="addSupportingLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
-      </el-input>
+      </url-list>
     </el-form-item>
 
     <hr/>
@@ -57,7 +47,14 @@
     <div class="heading1 mb-16">Event specific details</div>
 
     <el-form-item prop="location" label="Location">
-      <el-input v-model="form.location" placeholder="Enter the location of the event. If there is no physical location, please enter 'virtual'" />
+      <el-input class="location-input mr-16" :disabled="isVirtual" v-model="form.location" placeholder="Enter the location of the event" />
+      <span><client-only>
+        <sparc-checkbox
+          v-model="form.locationCategories"
+          label="Virtual"
+          display="Virtual"
+        />
+      </client-only></span>
     </el-form-item>
 
     <el-form-item prop="startDate" label="Start Date">
@@ -78,9 +75,53 @@
 
     <hr/>
 
-    <div class="body4 mb-16"><i>Before your news or event is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
+    <el-form-item
+      class="mt-32"
+      prop="typeOfUser"
+      label="What type of user are you? *"
+    >
+      <el-select
+        v-model="form.typeOfUser"
+        placeholder="Select one"
+        :popper-append-to-body="false"
+      >
+        <el-option
+          v-for="typeOfUserOption in questionOptions.typeOfUser"
+          :key="typeOfUserOption"
+          :label="typeOfUserOption"
+          :value="typeOfUserOption"
+        />
+      </el-select>
+    </el-form-item>
 
-    <recaptcha class="recaptcha mb-16"/>
+    <el-form-item class="mt-16" prop="firstName" label="First Name *">
+      <el-input v-model="form.firstName" placeholder="Enter your first name" />
+    </el-form-item>
+
+    <el-form-item class="mt-16" prop="lastName" label="Last Name *">
+      <el-input v-model="form.lastName" placeholder="Enter your last name" />
+    </el-form-item>
+
+    <el-form-item prop="email" label="Email address">
+      <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
+    </el-form-item>
+
+    <el-form-item prop="shouldSubscribe">
+      <el-checkbox v-model="form.shouldSubscribe">
+        <span class="body1">Subscribe to the SPARC Newsletter</span>
+      </el-checkbox>
+    </el-form-item>
+
+    <hr/>
+
+    <div class="heading2">
+      Please check the box to proceed
+    </div>
+    <recaptcha class="recaptcha my-16 pl-16"/>
+
+    <hr/>
+
+    <div class="body4 mb-16"><i>Before your news or event is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
 
     <el-form-item class="submit-button">
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
@@ -94,29 +135,43 @@
 </template>
 
 <script>
-
+import { typeOfUser } from '@/components/ToolsAndResourcesForm/questions.js'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import { propOr } from 'ramda'
+import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
+import UrlList from '@/components/Url/UrlList.vue'
+import { propOr, isEmpty } from 'ramda'
 
 export default {
   name: 'NewsAndEventsForm',
 
-  mixins: [FileUploadMixin, RecaptchaMixin],
+  mixins: [FileUploadMixin, RecaptchaMixin, NewsletterMixin],
+
+  components: {
+    UrlList
+  },
 
   data() {
     return {
       form: {
-        name: '',
+        typeOfUser: '',
+        firstName: '',
+        lastName: '',
         email: '',
         title: '',
         summary: '',
         url: '',
         location: '',
+        locationCategories: [],
         startDate: '',
-        endDate: ''
+        endDate: '',
+        supportingLinks: [''],
+        shouldSubscribe: false,
       },
       isSubmitting: false,
+      questionOptions: {
+        typeOfUser,
+      },
       formRules: {
         email: [
           {
@@ -126,10 +181,17 @@ export default {
             trigger: 'blur'
           }
         ],
-        name: [
+        firstName: [
           {
             required: true,
-            message: 'Please enter your name',
+            message: 'Please enter your first name',
+            trigger: 'blur',
+          }
+        ],
+        lastName: [
+          {
+            required: true,
+            message: 'Please enter your last name',
             trigger: 'blur',
           }
         ],
@@ -157,8 +219,29 @@ export default {
     this.hasError = false
   },
 
-  methods: {
+  computed: {
+    isVirtual: function() {
+      return this.form?.locationCategories.some(category => {
+        return category == 'Virtual'
+      })
+    },
+    supportingLinksText: function() {
+      let message = ''
+      this.form.supportingLinks.forEach(link => {
+        if (!isEmpty(link))
+          message += `${link}<br>`
+      })
+      return isEmpty(message) ? 'N/A<br>' : message
+    },
+    locationText: function() {
+      return this.isVirtual ? 'Virtual' : this.form.location == '' ? 'N/A' : this.form.location
+    }
+  },
 
+  methods: {
+    addSupportingLink() {
+      this.form.supportingLinks.push('')
+    },
     /**
      * Send form to endpoint
      */
@@ -167,15 +250,16 @@ export default {
       const fileName = propOr('', 'name', this.file)
       const description = `
         <b>Contact Information</b><br><br>
-        <b>Name:</b><br>${this.form.name}<br><br>
+        <b>First Name:</b><br>${this.form.firstName}<br><br>
+        <b>Last Name:</b><br>${this.form.lastName}<br><br>
         <b>E-mail:</b><br>${this.form.email}<br><br>
         <b>News or Event Details:</b><br><br>
         <b>Title:</b><br>${this.form.title}<br><br>
         <b>Summary:</b><br>${this.form.summary}<br><br>
         ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>Supporting Information URL:</b><br>${this.form.url == '' ? 'N/A' : this.form.url}<br><br>
+        <b>Supporting Information links:</b><br>${this.supportingLinksText}<br>
         <b>Event Specific Details:</b><br><br>
-        <b>Location:</b><br>${this.form.location == '' ? 'N/A' : this.form.location}<br><br>
+        <b>Location:</b><br>${this.locationText}<br><br>
         <b>Start Date:</b><br>${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}<br><br>
         <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}
       `
@@ -198,7 +282,11 @@ export default {
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          this.$emit('submit', this.form.name)
+          if (this.form.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          } else {
+            this.$emit('submit', this.form.firstName)
+          }
         })
         .catch(() => {
           this.hasError = true
@@ -214,7 +302,7 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .submit-button {
-  text-align: right;
+  text-align: left;
   margin-bottom: 0 !important;
 }
 hr {
@@ -222,13 +310,23 @@ hr {
   border-left: none;
   border-width: 2px;
   border-color: $lineColor1;
-  margin: 2.5rem 0;
+  margin: 2rem 0;
 }
 .error {
   color: $danger;
 }
 .recaptcha {
   display: flex;
-  justify-content: right;
+  justify-content: left;
+}
+.location-input {
+  display: inline-block;
+  min-width: 75%;
+  width: unset;
+}
+::v-deep .file-upload {
+  .el-form-item__label {
+    margin-bottom: .3rem;
+  }
 }
 </style>

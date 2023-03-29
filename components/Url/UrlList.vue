@@ -45,18 +45,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
-.url-input {
-  display: inline-block;
-  min-width: 75%;
-}
-.add-link-button {
-  display: inline-block;
-  text-decoration: none;
-}
-.add-link-button:hover {
-  cursor: pointer;
-}
-</style>

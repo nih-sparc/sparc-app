@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="url-input">
+    <div class="url-input mr-16">
       <el-input :disabled="disabled" :placeholder="placeholder" :value="link" @input="link = $event">
           <template slot="prepend">
             <slot name="prepend" />

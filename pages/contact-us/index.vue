@@ -33,7 +33,7 @@ a<template>
     <div class="page-wrap container">
       <div class="subpage mb-0">
         <template v-if="isFeedbackForm">
-          <h2>Let us know why you are contacting us:</h2>
+          <div class="heading2 mb-8">Let us know why you are contacting us:</div>
           <el-select
             v-model="formType"
             class="input-reason"
@@ -49,11 +49,9 @@ a<template>
           </el-select>
           <hr v-if="isFeedbackForm && formType != undefined && formType != 'feedback'" class="mt-32 mb-32" />
         </template>
-        <div class="container">
-          <component
-            :is="formComponent"
-          />
-        </div>
+        <component
+          :is="formComponent"
+        />
 
         <div v-if="isGeneralSubmitted" class="msg-success">
           <template v-if="firstName">
@@ -84,6 +82,9 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import GeneralForm from '@/components/ContactUsForms/GeneralForm/GeneralForm.vue'
 import BugForm from '@/components/ContactUsForms/BugForm/BugForm.vue'
+import FeedbackForm from '@/components/ContactUsForms/FeedbackForm/FeedbackForm.vue'
+import InterestForm from '@/components/ContactUsForms/InterestForm/InterestForm.vue'
+import ResearchForm from '@/components/ContactUsForms/ResearchForm/ResearchForm.vue'
 import ToolsAndResourcesForm from '@/components/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
 import NewsAndEventsForm from '@/components/NewsAndEventsForm/NewsAndEventsForm.vue'
 import CommunitySpotlightForm from '@/components/CommunitySpotlightForm/CommunitySpotlightForm.vue'
@@ -126,7 +127,10 @@ const formTypes = [
 ]
 const formComponents = {
   bug: BugForm,
+  'portal-feedback': FeedbackForm,
+  'sparc-service': InterestForm,
   general: GeneralForm,
+  research: ResearchForm,
   tool: ToolsAndResourcesForm,
   'news-event': NewsAndEventsForm,
   story: CommunitySpotlightForm,
@@ -140,6 +144,9 @@ export default {
     PageHero,
     GeneralForm,
     BugForm,
+    FeedbackForm,
+    InterestForm,
+    ResearchForm,
     ToolsAndResourcesForm,
     NewsAndEventsForm,
     CommunitySpotlightForm
@@ -334,6 +341,13 @@ h2 {
     border-right: none;
   }
 }
+hr {
+  border-top: none;
+  border-left: none;
+  border-width: 2px;
+  border-color: $lineColor1;
+  margin: 2rem 0;
+}
 .tabs__button {
   background: #f9f2fc;
   display: block;
@@ -384,13 +398,11 @@ h2 {
       color: $lightGrey;
     }
   }
-  .el-input__inner,
   .el-textarea__inner {
     border-color: $lightGrey;
     border-radius: 4px;
-    padding: 0.5rem 1rem;
-  }
-  .el-textarea__inner {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
     font-family: inherit;
   }
   .input-reason {

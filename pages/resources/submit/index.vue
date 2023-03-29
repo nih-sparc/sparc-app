@@ -115,14 +115,13 @@ h2 {
     color: $lightGrey;
   }
 }
-::v-deep .el-input__inner, ::v-deep .el-textarea__inner {
+::v-deep .el-textarea__inner {
   border-color: $lightGrey;
   border-radius: 4px;
   padding-right: 1rem;
-}
-::v-deep .el-textarea__inner {
   font-family: inherit;
   padding-top: .75rem;
+  padding-bottom: .75rem;
 }
 ::v-deep .input-reason {
   max-width: 36rem;

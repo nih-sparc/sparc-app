@@ -6,44 +6,23 @@
     :rules="formRules"
     :hide-required-asterisk="true"
   >
-    <el-form-item prop="pageUrl" label="Please provide the specific page URL">
-      <el-input v-model="form.pageUrl" placeholder="URL">
-        <template slot="prepend">Http://</template>
-      </el-input>
-    </el-form-item>
-
     <el-form-item
       prop="shortDescription"
-      label="Provide a short description of what you were doing *"
+      label="Provide a short description of your research *"
     >
       <el-input
         v-model="form.shortDescription"
-        placeholder="(Example: When I click <this button>, <this happens>.)"
+        placeholder="(Example: I am studying the effects of <approach> on <anatomical structure>)"
       />
     </el-form-item>
 
-    <el-form-item prop="detailedDescription" label="Provide a detailed description *">
+    <el-form-item prop="detailedDescription" label="Provide a detailed description of your research *">
       <el-input
         v-model="form.detailedDescription"
         type="textarea"
         :rows="3"
-        placeholder="Please provide specific steps so our team can reproduce your experience in order to resolve the issue."
+        placeholder="Please provide specifics about your research. Our curation team will then contact you."
       />
-    </el-form-item>
-    
-    <el-form-item class="file-upload" prop="fileAttachment" label="File Upload">
-      <div class="body4 mb-8"><i>To help others understand your issue an image can really help.</i></div>
-      <el-upload
-        ref="fileUploader"
-        action=""
-        :limit="limit"
-        :auto-upload="false"
-        :on-change="onUploadChange"
-        :on-remove="onRemove"
-        :before-remove="beforeRemove" >
-        <el-button slot="trigger" class="secondary">Select file</el-button>
-        <span slot="tip" class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
-      </el-upload>
     </el-form-item>
 
     <hr/>
@@ -111,34 +90,29 @@
 </template>
 
 <script>
-import { typeOfUser, pageOrResource } from '../questions'
+import { typeOfUser } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
-import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import { propOr } from 'ramda'
 
 export default {
-  name: 'BugForm',
+  name: 'FeedbackForm',
 
-  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin],
 
   data() {
     return {
       form: {
         typeOfUser: '',
-        shortDescription: '',
         detailedDescription: '',
-        howToImprove: '',
+        shortDescription: '',
         shouldFollowUp: false,
         firstName: '',
         lastName: '',
         email: '',
         shouldSubscribe: false,
-        pageUrl: ''
       },
       questionOptions: {
-        typeOfUser,
-        pageOrResource
+        typeOfUser
       },
       isSubmitting: false,
       formRules: {
@@ -194,54 +168,29 @@ export default {
     }
   },
 
-  computed: {
-    bugSourceUrl() {
-      return this.$route.query.source_url
-    }
-  },
-
   mounted() {
     // Reset form fields when showing the form
     this.$refs.submitForm.resetFields()
     this.hasError = false
-
-    if (this.bugSourceUrl != undefined) {
-      const fullUrl = process.env.ROOT_URL + this.bugSourceUrl
-      this.form.pageUrl = 'www.' + fullUrl.replace(/^https?:\/\//, '')
-    }
   },
 
   methods: {
-    validateUrl: function(rule, value, callback) {
-      if (!value.includes('.') || value.lastIndexOf('.') == value.length - 1 || value.indexOf('.') == 0) {
-        callback(new Error(rule.message))
-      }
-      callback()
-    },
-
     /**
      * Send form to endpoint
      */
     async sendForm() {
       this.isSubmitting = true
-      const fileName = propOr('', 'name', this.file)
       const description = `
+        <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
         <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>Problematic page URL: </b><br>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}<br><br>
-        <b>Detailed Description</b><br>${this.form.detailedDescription}<br><br>
-        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>How would you like this experience to improve?</b><br>${this.form.howToImprove}<br><br>
-        <b>Let me know when you resolve this issue</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
-        <b>Email</b><br>${this.form.email}
+        <b>Let me know when you resolve this issue:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
+        <b>Email:</b><br>${this.form.email}
       `
       let formData = new FormData();
-      formData.append("type", "bug")
-      formData.append("shortDescription", this.form.shortDescription)
+      formData.append("type", "research")
+      formData.append("title", this.form.shortDescription)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
-      if (propOr('', 'name', this.file) != ''){
-        formData.append("attachment", this.file, this.file.name)
-      }
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
@@ -266,10 +215,6 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
-.submit-button {
-  text-align: left;
-  margin-bottom: 0 !important;
-}
 hr {
   border-top: none;
   border-left: none;
@@ -283,10 +228,5 @@ hr {
 .recaptcha {
   display: flex;
   justify-content: left;
-}
-::v-deep .file-upload {
-  .el-form-item__label {
-    margin-bottom: .3rem;
-  }
 }
 </style>

@@ -151,6 +151,11 @@
     <el-form-item class="mt-32" prop="email" label="Email *">
       <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
     </el-form-item>
+    <el-form-item prop="shouldSubscribe">
+      <el-checkbox v-model="form.shouldSubscribe">
+        <span class="body1">Subscribe to the SPARC Newsletter</span>
+      </el-checkbox>
+    </el-form-item>
 
     <hr/>
 
@@ -177,6 +182,7 @@
 <script>
 import { typeOfUser, resourceCategories } from './questions.js'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
+import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UrlList from '@/components/Url/UrlList.vue'
 import { isEmpty } from 'ramda'
 
@@ -187,7 +193,7 @@ export default {
     UrlList
   },
 
-  mixins: [RecaptchaMixin],
+  mixins: [RecaptchaMixin, NewsletterMixin],
 
   data() {
     return {
@@ -206,6 +212,7 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
+        shouldSubscribe: false,
       },
       isSubmitting: false,
       questionOptions: {
@@ -359,7 +366,7 @@ export default {
     /**
      * Send form to endpoint
      */
-     async sendForm() {
+    async sendForm() {
       this.isSubmitting = true
 
       const description = `
@@ -387,7 +394,11 @@ export default {
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          this.$emit('submit', this.form.firstName)
+          if (this.form.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          } else {
+            this.$emit('submit', this.form.firstName)
+          }
         })
         .catch(() => {
           this.hasError = true

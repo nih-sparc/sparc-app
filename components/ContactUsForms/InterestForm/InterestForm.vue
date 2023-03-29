@@ -6,44 +6,30 @@
     :rules="formRules"
     :hide-required-asterisk="true"
   >
-    <el-form-item prop="pageUrl" label="Please provide the specific page URL">
-      <el-input v-model="form.pageUrl" placeholder="URL">
-        <template slot="prepend">Http://</template>
-      </el-input>
-    </el-form-item>
-
     <el-form-item
-      prop="shortDescription"
-      label="Provide a short description of what you were doing *"
+      class="service-categories vertical-content mt-32"
+      prop="serviceCategories"
+      label="What service(s) are you interested in? *"
     >
-      <el-input
-        v-model="form.shortDescription"
-        placeholder="(Example: When I click <this button>, <this happens>.)"
-      />
+      <div class="body4 mb-4"><i>Select all that apply.</i></div>
+      <client-only>
+        <sparc-checkbox
+          v-for="item in questionOptions.serviceCategories"
+          v-bind:key="item.label"
+          v-model="form.serviceCategories"
+          :label="item.label"
+          :display="item.display"
+        />
+      </client-only> 
     </el-form-item>
 
-    <el-form-item prop="detailedDescription" label="Provide a detailed description *">
+    <el-form-item prop="additionalInfo" label="Additional Information">
       <el-input
-        v-model="form.detailedDescription"
+        v-model="form.additionalInfo"
         type="textarea"
         :rows="3"
-        placeholder="Please provide specific steps so our team can reproduce your experience in order to resolve the issue."
+        placeholder="Please provide any additional information regarding your service request"
       />
-    </el-form-item>
-    
-    <el-form-item class="file-upload" prop="fileAttachment" label="File Upload">
-      <div class="body4 mb-8"><i>To help others understand your issue an image can really help.</i></div>
-      <el-upload
-        ref="fileUploader"
-        action=""
-        :limit="limit"
-        :auto-upload="false"
-        :on-change="onUploadChange"
-        :on-remove="onRemove"
-        :before-remove="beforeRemove" >
-        <el-button slot="trigger" class="secondary">Select file</el-button>
-        <span slot="tip" class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
-      </el-upload>
     </el-form-item>
 
     <hr/>
@@ -111,37 +97,41 @@
 </template>
 
 <script>
-import { typeOfUser, pageOrResource } from '../questions'
+import { typeOfUser } from '../questions'
+import { serviceCategories } from '@/components/ToolsAndResourcesForm/questions'
 import NewsletterMixin from '../NewsletterMixin'
-import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import { propOr } from 'ramda'
 
 export default {
-  name: 'BugForm',
+  name: 'InterestForm',
 
-  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin],
 
   data() {
     return {
       form: {
+        serviceCategories:[],
+        additionalInfo:'',
         typeOfUser: '',
-        shortDescription: '',
-        detailedDescription: '',
-        howToImprove: '',
         shouldFollowUp: false,
         firstName: '',
         lastName: '',
         email: '',
         shouldSubscribe: false,
-        pageUrl: ''
       },
       questionOptions: {
         typeOfUser,
-        pageOrResource
+        serviceCategories
       },
       isSubmitting: false,
       formRules: {
+        serviceCategories: [
+          {
+            required: true,
+            message: 'Please select at least one',
+            trigger: 'change'
+          }
+        ],
         typeOfUser: [
           {
             required: true,
@@ -174,29 +164,7 @@ export default {
             trigger: 'blur',
           }
         ],
-
-        shortDescription: [
-          {
-            required: true,
-            message: 'Please enter a description',
-            trigger: 'change'
-          }
-        ],
-
-        detailedDescription: [
-          {
-            required: true,
-            message: 'Please enter a description',
-            trigger: 'change'
-          }
-        ],
       }
-    }
-  },
-
-  computed: {
-    bugSourceUrl() {
-      return this.$route.query.source_url
     }
   },
 
@@ -204,44 +172,27 @@ export default {
     // Reset form fields when showing the form
     this.$refs.submitForm.resetFields()
     this.hasError = false
-
-    if (this.bugSourceUrl != undefined) {
-      const fullUrl = process.env.ROOT_URL + this.bugSourceUrl
-      this.form.pageUrl = 'www.' + fullUrl.replace(/^https?:\/\//, '')
-    }
   },
 
   methods: {
-    validateUrl: function(rule, value, callback) {
-      if (!value.includes('.') || value.lastIndexOf('.') == value.length - 1 || value.indexOf('.') == 0) {
-        callback(new Error(rule.message))
-      }
-      callback()
-    },
-
     /**
      * Send form to endpoint
      */
     async sendForm() {
       this.isSubmitting = true
-      const fileName = propOr('', 'name', this.file)
       const description = `
+        <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
+        <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
         <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>Problematic page URL: </b><br>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}<br><br>
-        <b>Detailed Description</b><br>${this.form.detailedDescription}<br><br>
-        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
         <b>How would you like this experience to improve?</b><br>${this.form.howToImprove}<br><br>
-        <b>Let me know when you resolve this issue</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
-        <b>Email</b><br>${this.form.email}
+        <b>Let me know when you resolve this issue:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
+        <b>Email:</b><br>${this.form.email}
       `
       let formData = new FormData();
-      formData.append("type", "bug")
-      formData.append("shortDescription", this.form.shortDescription)
+      formData.append("type", "interest")
+      formData.append("title", this.form.shortDescription)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
-      if (propOr('', 'name', this.file) != ''){
-        formData.append("attachment", this.file, this.file.name)
-      }
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
@@ -266,10 +217,6 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
-.submit-button {
-  text-align: left;
-  margin-bottom: 0 !important;
-}
 hr {
   border-top: none;
   border-left: none;
@@ -284,7 +231,24 @@ hr {
   display: flex;
   justify-content: left;
 }
-::v-deep .file-upload {
+::v-deep .vertical-content {
+  .el-form-item__content {
+    display: flex;
+    flex-direction: column;
+    .el-radio {
+      line-height: 25px;
+      padding-left: 2rem;
+    }
+  }
+}
+::v-deep .service-categories {
+  .el-form-item__content {
+    .el-checkbox {
+      padding-left: 2rem;
+      margin: 0;
+      line-height: 25px;
+    }
+  }
   .el-form-item__label {
     margin-bottom: .3rem;
   }

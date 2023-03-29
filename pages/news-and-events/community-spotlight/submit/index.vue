@@ -129,6 +129,7 @@ h2 {
 ::v-deep .el-textarea__inner {
   font-family: inherit;
   padding-top: .75rem;
+  padding-bottom: .75rem;
 }
 ::v-deep .input-reason {
   max-width: 36rem;
