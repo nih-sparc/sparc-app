@@ -16,7 +16,7 @@
             <div class="body1">
               <template v-if="projectSection">
                 <div class="label4">
-                  ANATOMICAL FOCUS
+                  FOCUS
                 </div>
                 <div class="mb-16">
                   {{ projectSection }}

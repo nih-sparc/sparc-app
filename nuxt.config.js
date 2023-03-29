@@ -146,9 +146,9 @@ export default {
   ],
 
   /*
-   ** Customize the progress-bar color
+   ** Customize the loading component
    */
-  loading: { color: '#fff' },
+  loading: '@/components/Loading/Loading.vue',
 
   /*
    ** Customize router classes globally

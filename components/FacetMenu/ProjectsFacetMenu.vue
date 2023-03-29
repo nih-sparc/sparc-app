@@ -66,7 +66,7 @@ export default {
   computed: {
     anatomicalFocusCategory: function() {
       return {
-        label: 'Anatomical Focus',
+        label: 'Focus',
         id: ANATOMICAL_FOCUS_CATEGORY_ID,
         data: this.anatomicalFocusFacets
       }
