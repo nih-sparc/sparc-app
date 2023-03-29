@@ -126,9 +126,9 @@ export default {
     BfButton
   },
 
-  mixins: [FileDetails, MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [DatasetInfo, FileDetails, MarkedMixin, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, error, $axios }) {
+  async asyncData({ app, route, error, $axios }) {
     const identifier = route.query.dataset_id
 
     try {
