@@ -24,11 +24,11 @@
       <div class="body4 mb-4"><i>Select all that apply.</i></div>
       <client-only>
         <sparc-checkbox
-          v-for="item in questionOptions.resourceCategories"
-          v-bind:key="item.label"
+          v-for="resourceCategory in resourceCategoryOptions"
+          v-bind:key="resourceCategory"
           v-model="form.resourceCategories"
-          :label="item.label"
-          :display="item.display"
+          :label="resourceCategory"
+          :display="resourceCategory"
         />
       </client-only> 
     </el-form-item>
@@ -135,10 +135,10 @@
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="typeOfUserOption in questionOptions.typeOfUser"
-          :key="typeOfUserOption"
-          :label="typeOfUserOption"
-          :value="typeOfUserOption"
+          v-for="userType in userTypes"
+          :key="userType"
+          :label="userType"
+          :value="userType"
         />
       </el-select>
     </el-form-item>
@@ -180,11 +180,11 @@
 </template>
 
 <script>
-import { typeOfUser, resourceCategories } from './questions.js'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UrlList from '@/components/Url/UrlList.vue'
 import { isEmpty } from 'ramda'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ToolsAndResourcesForm',
@@ -215,10 +215,6 @@ export default {
         shouldSubscribe: false,
       },
       isSubmitting: false,
-      questionOptions: {
-        typeOfUser,
-        resourceCategories
-      },
       formRules: {
         resourceName: [
           {
@@ -296,6 +292,10 @@ export default {
   },
 
   computed: {
+    ...mapState('pages/contact-us', {
+      userTypes: state => state.formOptions.userTypes,
+      resourceCategoryOptions: state => state.formOptions.resourceCategories
+    }),
     isOtherSelected: function() {
       return this.form?.resourceCategories.some(resource => {
         return resource == 'Other'

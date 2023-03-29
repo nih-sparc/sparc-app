@@ -37,10 +37,10 @@
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="typeOfUserOption in questionOptions.typeOfUser"
-          :key="typeOfUserOption"
-          :label="typeOfUserOption"
-          :value="typeOfUserOption"
+          v-for="userType in userTypes"
+          :key="userType"
+          :label="userType"
+          :value="userType"
         />
       </el-select>
     </el-form-item>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { typeOfUser } from '../questions'
+import { mapState } from 'vuex'
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 
@@ -110,9 +110,6 @@ export default {
         lastName: '',
         email: '',
         shouldSubscribe: false,
-      },
-      questionOptions: {
-        typeOfUser
       },
       isSubmitting: false,
       formRules: {
@@ -166,6 +163,12 @@ export default {
         ],
       }
     }
+  },
+
+  computed: {
+    ...mapState('pages/contact-us', {
+      userTypes: state => state.formOptions.userTypes
+    }),
   },
 
   mounted() {

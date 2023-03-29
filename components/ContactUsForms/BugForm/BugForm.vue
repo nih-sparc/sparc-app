@@ -58,10 +58,10 @@
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="typeOfUserOption in questionOptions.typeOfUser"
-          :key="typeOfUserOption"
-          :label="typeOfUserOption"
-          :value="typeOfUserOption"
+          v-for="userType in userTypes"
+          :key="userType"
+          :label="userType"
+          :value="userType"
         />
       </el-select>
     </el-form-item>
@@ -111,11 +111,11 @@
 </template>
 
 <script>
-import { typeOfUser, pageOrResource } from '../questions'
 import NewsletterMixin from '../NewsletterMixin'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import { propOr } from 'ramda'
+import { mapState } from 'vuex'
 
 export default {
   name: 'BugForm',
@@ -128,17 +128,12 @@ export default {
         typeOfUser: '',
         shortDescription: '',
         detailedDescription: '',
-        howToImprove: '',
         shouldFollowUp: false,
         firstName: '',
         lastName: '',
         email: '',
         shouldSubscribe: false,
         pageUrl: ''
-      },
-      questionOptions: {
-        typeOfUser,
-        pageOrResource
       },
       isSubmitting: false,
       formRules: {
@@ -195,9 +190,12 @@ export default {
   },
 
   computed: {
+    ...mapState('pages/contact-us', {
+      userTypes: state => state.formOptions.userTypes
+    }),
     bugSourceUrl() {
       return this.$route.query.source_url
-    }
+    },
   },
 
   mounted() {
@@ -230,7 +228,6 @@ export default {
         <b>Problematic page URL: </b><br>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}<br><br>
         <b>Detailed Description</b><br>${this.form.detailedDescription}<br><br>
         ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>How would you like this experience to improve?</b><br>${this.form.howToImprove}<br><br>
         <b>Let me know when you resolve this issue</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
         <b>Email</b><br>${this.form.email}
       `

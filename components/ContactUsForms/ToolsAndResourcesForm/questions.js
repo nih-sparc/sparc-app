@@ -9,25 +9,6 @@ export const typeOfUser = [
   'Other',
 ]
 
-export const serviceCategories = [
-  {
-    label: "Data Management",
-    display: "Data Management and sharing"
-  },
-  {
-    label: "Curation",
-    display: "Curation services"
-  },
-  {
-    label: "Simulation",
-    display: "Simulation Platform"
-  },
-  {
-    label: "Knowledge Engineering",
-    display: "Knowledge engineering and mapping services"
-  },
-]
-
 export const resourceCategories = [
   {
     label: "Software",

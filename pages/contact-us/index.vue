@@ -88,40 +88,35 @@ import ResearchForm from '@/components/ContactUsForms/ResearchForm/ResearchForm.
 import ToolsAndResourcesForm from '@/components/ContactUsForms/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
 import NewsAndEventsForm from '@/components/ContactUsForms/NewsAndEventsForm/NewsAndEventsForm.vue'
 import CommunitySpotlightForm from '@/components/ContactUsForms/CommunitySpotlightForm/CommunitySpotlightForm.vue'
-import { defaultTo } from 'ramda'
+import { defaultTo, pathOr, propOr } from 'ramda'
 import MarkedMixin from '@/mixins/marked'
 import createClient from '@/plugins/contentful.js'
 
 const client = createClient()
-const formTypes = [
+let formTypes = [
   {
-    label: 'Share Feedback',
     type: 'feedback',
-    description: "Use the form below to submit your inquiry. For other topics such as Help documentation or Tutorials, visit our <b><a href='https://docs.sparc.science' target='_blank'>Help Center</a></b>",
+    id: '1PEIbcIV21upAq55ocnakO',
     subtypes: ['bug', 'portal-feedback', 'sparc-service', 'general']
   },
   {
-    label: 'Share Research',
     type: 'research',
-    description: "The SPARC Portal is open to everyone for sharing their research data. Tell us about your research.",
+    id: '3gBm9CkPV1QiqevHHtQxqP',
     subtypes: []
   },
   {
-    label: 'Share News/Event',
     type: 'news-event',
-    description: "Submit your news or event with SPARC. We will then be in contact about how we share this to the SPARC community",
+    id: '6yyjWHw7jfpH4qOqDXwfmi',
     subtypes: []
   },
   {
-    label: 'Share Your Story',
     type: 'story',
-    description: "Submit your story on how you have used the SPARC Program to advance neuromodulation of the ANS. We will then be in contact about how we share this to the SPARC community.",
+    id: '5ZoMC1OGTj1ibNXJ5Na4Ja',
     subtypes: []
   },
   {
-    label: 'Submit Tool',
     type: 'tool',
-    description: "Submit your tool or resource with SPARC. We will then be in contact about how we share this to the SPARC community",
+    id: '2FGDIx61NO5VBV3GBiXH2C',
     subtypes: []
   }
 ]
@@ -156,13 +151,24 @@ export default {
 
   asyncData() {
     return Promise.all([
-      // Get page content
-      client.getEntry(process.env.ctf_contact_us_page_id)
-    ])
-      .then(([page]) => {
-        return { ...page.fields }
+      client.getEntries({
+        content_type: process.env.ctf_contact_us_form_type_id,
       })
-      .catch(console.error)
+    ])
+    .then(([page]) => {
+      const entries = propOr({}, 'items', page)
+      formTypes.forEach(formType => {
+        const formTypeId = formType.id
+        const entry = entries.find(item => {
+          const entryId = pathOr('', ['sys','id'], item)
+          return entryId == formTypeId
+        })
+        formType.label = pathOr('', ['fields', 'title'], entry)
+        formType.description = pathOr('', ['fields', 'description'], entry)
+      })
+      return { formTypes }
+    })
+    .catch(console.error)
   },
 
   data: () => {
@@ -178,15 +184,11 @@ export default {
         {
           to: {
             name: 'contact-us',
-            query: {
-              type: 'feedback'
-            }
           },
           label: 'Contact Us'
         },
       ],
       formType: '',
-      formTypes,
       feedbackFormTypeOptions: [
         {
           label: 'I want to report an error or an issue',
@@ -219,7 +221,7 @@ export default {
     },
     isFeedbackForm() {
       const feedbackFormType = this.formTypes.find(formType => formType.type === 'feedback')
-      return this.$route.query.type === undefined || this.formType === feedbackFormType.type || feedbackFormType.subtypes.includes(this.formType)
+      return this.$route.query.type === undefined || this.$route.query.type === 'feedback' || this.formType === feedbackFormType.type || feedbackFormType.subtypes.includes(this.formType)
     },
      formComponent: function() {
       return defaultTo('', formComponents[this.$route.query.type])

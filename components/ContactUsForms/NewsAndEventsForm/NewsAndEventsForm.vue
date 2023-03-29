@@ -86,10 +86,10 @@
         :popper-append-to-body="false"
       >
         <el-option
-          v-for="typeOfUserOption in questionOptions.typeOfUser"
-          :key="typeOfUserOption"
-          :label="typeOfUserOption"
-          :value="typeOfUserOption"
+          v-for="userType in userTypes"
+          :key="userType"
+          :label="userType"
+          :value="userType"
         />
       </el-select>
     </el-form-item>
@@ -135,12 +135,12 @@
 </template>
 
 <script>
-import { typeOfUser } from '@/components/ContactUsForms/ToolsAndResourcesForm/questions.js'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UrlList from '@/components/Url/UrlList.vue'
 import { propOr, isEmpty } from 'ramda'
+import { mapState } from 'vuex'
 
 export default {
   name: 'NewsAndEventsForm',
@@ -169,9 +169,6 @@ export default {
         shouldSubscribe: false,
       },
       isSubmitting: false,
-      questionOptions: {
-        typeOfUser,
-      },
       formRules: {
         email: [
           {
@@ -220,6 +217,9 @@ export default {
   },
 
   computed: {
+    ...mapState('pages/contact-us', {
+      userTypes: state => state.formOptions.userTypes
+    }),
     isVirtual: function() {
       return this.form?.locationCategories.some(category => {
         return category == 'Virtual'
