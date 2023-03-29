@@ -70,18 +70,30 @@
     </el-form-item>
 
     <el-form-item prop="firstName" label="First Name *">
-      <el-input v-model="form.firstName" placeholder="First name here" />
+      <el-input v-model="form.firstName" placeholder="Enter your first name" />
     </el-form-item>
 
     <el-form-item prop="lastName" label="Last Name *">
-      <el-input v-model="form.lastName" placeholder="Last name here" />
+      <el-input v-model="form.lastName" placeholder="Enter your last name" />
     </el-form-item>
 
     <el-form-item prop="email" label="Email *" class="mb-0">
-      <el-input v-model="form.email" placeholder="Email here" type="email" />
+      <el-input v-model="form.email" placeholder="Enter your email adress" type="email" />
     </el-form-item>
 
-    <el-form-item prop="shouldSubscribe" class="mt-16">
+    <el-form-item prop="shouldFollowUp" class="mt-16 mb-0">
+      <el-checkbox v-model="form.shouldFollowUp">
+        <span class="body1">Let me know when you resolve this issue</span>
+      </el-checkbox>
+    </el-form-item>
+
+    <el-form-item prop="sendCopy" class="mb-0">
+      <el-checkbox v-model="form.sendCopy">
+        <span class="body1">Please send me a copy of this message</span>
+      </el-checkbox>
+    </el-form-item>
+
+    <el-form-item prop="shouldSubscribe">
       <el-checkbox v-model="form.shouldSubscribe">
         <span class="body1">Subscribe to the SPARC Newsletter</span>
       </el-checkbox>
@@ -128,7 +140,9 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: false
+        shouldSubscribe: true,
+        shouldFollowUp: true,
+        sendCopy: true
       },
       isSubmitting: false,
       formRules: {
@@ -221,26 +235,26 @@ export default {
      */
     async sendForm() {
       this.isSubmitting = true
+      const description = `
+        <b>Is this about a specific page or resource?</b><br>${this.form.pageOrResource}<br><br>
+        <b>Your question or comment?</b><br>${this.form.message}<br><br>
+        <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
+        <b>Email:</b><br>${this.form.email}<br><br>
+        <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
+      `
+      let formData = new FormData();
+      formData.append("type", "general")
+      formData.append("title", this.form.description)
+      formData.append("description", description)
+      formData.append("userEmail", this.form.email)
 
       await this.$axios
-        .post(`${process.env.portal_api}/contact`, {
-          name: `${this.form.firstName} ${this.form.lastName}`,
-          email: this.form.email,
-          message: `
-            What type of user are you?<br>${this.form.typeOfUser}
-            <br><br>Is this about a specific page or resource?
-            <br>${this.form.pageOrResource}
-            <br><br>Description
-            <br>${this.form.description}
-            <br><br>Message
-            <br>${this.form.message}
-          `
-        })
+        .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
           } else {
-            this.$emit('submit', this.form.firstName)
+            this.$emit('submit')
           }
         })
         .catch(() => {

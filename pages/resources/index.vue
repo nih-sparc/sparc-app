@@ -28,6 +28,7 @@
           :text="parseMarkdown(fields.paperText)"
           :button-text="'Submit a recommendation'"
           :button-link="{ name: 'contact-us', query: { type: 'tool'} }"
+          new-tab
         />
       </div>
     </div>

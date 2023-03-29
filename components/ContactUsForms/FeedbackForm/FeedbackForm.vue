@@ -77,7 +77,13 @@
 
     <el-form-item prop="shouldFollowUp" class="mt-16 mb-0">
       <el-checkbox v-model="form.shouldFollowUp">
-        <span class="body1">Let me know when you resolve this issue</span>
+        <span class="body1">I'd like updates about this submission</span>
+      </el-checkbox>
+    </el-form-item>
+
+    <el-form-item prop="sendCopy" class="mb-0">
+      <el-checkbox v-model="form.sendCopy">
+        <span class="body1">Please send me a copy of this message</span>
       </el-checkbox>
     </el-form-item>
 
@@ -124,11 +130,12 @@ export default {
         typeOfUser: '',
         detailedDescription: '',
         shortDescription: '',
-        shouldFollowUp: false,
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: false,
+        sendCopy: true,
+        shouldFollowUp: true,
+        shouldSubscribe: true
       },
       isSubmitting: false,
       formRules: {
@@ -207,8 +214,9 @@ export default {
         <b>What area of the SPARC Portal is this related to?</b><br>${this.form.pageOrResource}<br><br>
         <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
         <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>Let me know when you resolve this issue:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
-        <b>Email:</b><br>${this.form.email}
+        <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
+        <b>Email:</b><br>${this.form.email}<br><br>
+        <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
       `
       let formData = new FormData();
       formData.append("type", "feedback")

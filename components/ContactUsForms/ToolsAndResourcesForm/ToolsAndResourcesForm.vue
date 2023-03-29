@@ -151,6 +151,11 @@
     <el-form-item class="mt-32" prop="email" label="Email *">
       <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
     </el-form-item>
+    <el-form-item prop="sendCopy" class="mt-16 mb-0">
+      <el-checkbox v-model="form.sendCopy">
+        <span class="body1">Please send me a copy of this message</span>
+      </el-checkbox>
+    </el-form-item>
     <el-form-item prop="shouldSubscribe">
       <el-checkbox v-model="form.shouldSubscribe">
         <span class="body1">Subscribe to the SPARC Newsletter</span>
@@ -212,7 +217,8 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: false,
+        shouldSubscribe: true,
+        sendCopy: true
       },
       isSubmitting: false,
       formRules: {

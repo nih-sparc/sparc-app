@@ -386,7 +386,7 @@ hr {
     font-size: 1.5rem;
     line-height: 2.25rem;
     font-weight: 500;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
     padding-bottom: 0;
   }
   ::v-deep .el-select {

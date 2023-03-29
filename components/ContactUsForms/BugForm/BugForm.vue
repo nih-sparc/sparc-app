@@ -80,7 +80,13 @@
 
     <el-form-item prop="shouldFollowUp" class="mt-16 mb-0">
       <el-checkbox v-model="form.shouldFollowUp">
-        <span class="body1">Let me know when you resolve this issue</span>
+        <span class="body1">I'd like updates about this submission</span>
+      </el-checkbox>
+    </el-form-item>
+
+    <el-form-item prop="sendCopy" class="mb-0">
+      <el-checkbox v-model="form.sendCopy">
+        <span class="body1">Please send me a copy of this message</span>
       </el-checkbox>
     </el-form-item>
 
@@ -125,15 +131,16 @@ export default {
   data() {
     return {
       form: {
+        pageUrl: '',
         typeOfUser: '',
         shortDescription: '',
         detailedDescription: '',
-        shouldFollowUp: false,
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: false,
-        pageUrl: ''
+        shouldFollowUp: true,
+        sendCopy: true,
+        shouldSubscribe: true,
       },
       isSubmitting: false,
       formRules: {
@@ -224,16 +231,17 @@ export default {
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
       const description = `
-        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>Problematic page URL: </b><br>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}<br><br>
+        <b>Problematic page URL:</b><br>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}<br><br>
         <b>Detailed Description</b><br>${this.form.detailedDescription}<br><br>
         ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>Let me know when you resolve this issue</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
-        <b>Email</b><br>${this.form.email}
+        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
+        <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
+        <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
+        <b>Email:</b><br>${this.form.email}
       `
       let formData = new FormData();
       formData.append("type", "bug")
-      formData.append("shortDescription", this.form.shortDescription)
+      formData.append("title", this.form.shortDescription)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != ''){

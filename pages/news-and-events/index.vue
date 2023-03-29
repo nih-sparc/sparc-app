@@ -122,18 +122,20 @@
                       type: 'news-event'
                     }
                   }"
+                  target="_blank"
                 >
                   <el-button class="get-involved-button secondary">
                     Share news or events
                   </el-button>
                 </nuxt-link>
                 <nuxt-link
-                :to="{
+                  :to="{
                     name: 'contact-us',
                     query: {
                       type: 'story'
                     }
                   }"
+                  target="_blank"
                 >
                   <el-button class="get-involved-button secondary mt-8">
                     Submit a community spotlight idea

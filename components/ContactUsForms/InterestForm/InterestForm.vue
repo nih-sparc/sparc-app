@@ -70,6 +70,12 @@
       </el-checkbox>
     </el-form-item>
 
+    <el-form-item prop="sendCopy" class="mb-0">
+      <el-checkbox v-model="form.sendCopy">
+        <span class="body1">Please send me a copy of this message</span>
+      </el-checkbox>
+    </el-form-item>
+
     <el-form-item prop="shouldSubscribe">
       <el-checkbox v-model="form.shouldSubscribe">
         <span class="body1">Subscribe to the SPARC Newsletter</span>
@@ -112,11 +118,12 @@ export default {
         serviceCategories:[],
         additionalInfo:'',
         typeOfUser: '',
-        shouldFollowUp: false,
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: false,
+        shouldFollowUp: true,
+        shouldSubscribe: true,
+        sendCopy: true
       },
       isSubmitting: false,
       formRules: {
@@ -186,9 +193,9 @@ export default {
         <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
         <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
         <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>How would you like this experience to improve?</b><br>${this.form.howToImprove}<br><br>
-        <b>Let me know when you resolve this issue:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}<br><br>
-        <b>Email:</b><br>${this.form.email}
+        <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
+        <b>Email:</b><br>${this.form.email}<br><br>
+        <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
       `
       let formData = new FormData();
       formData.append("type", "interest")
