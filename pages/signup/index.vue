@@ -12,7 +12,7 @@ export default {
     // the page has been mounted and is viewable. Therefore we display the redirecting text before redirecting. This issue has been filed many times with Vue:
     // https://github.com/nuxt/nuxt.js/issues/770, https://github.com/vuejs/vue-router/issues/1280, https://github.com/nuxt/nuxt.js/issues/1082
     if (process.client) {
-        window.location.href = "https://mailchi.mp/199fe3626d97/signup";
+        window.location.href = "https://eepurl.com/hgBxgv";
     }
   },
 }

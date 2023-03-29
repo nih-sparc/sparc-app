@@ -63,7 +63,7 @@ export default {
     // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
     getLinkedItem(communitySpotlightItem) {
       const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
-      const anatomicalStructure = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
+      const anatomicalStructures = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
       const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
       const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
         return item.id == spotlightTypeId
@@ -71,7 +71,7 @@ export default {
       return {
         ...linkedItem,
         spotlightType,
-        anatomicalStructure
+        anatomicalStructures
       }
     }
   }

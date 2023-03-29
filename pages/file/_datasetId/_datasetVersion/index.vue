@@ -130,7 +130,7 @@ export default {
     FileDetails
   ],
 
-  async asyncData({ redirect, route, error, $axios, app }) {
+  async asyncData({ app, redirect, route, error, $axios }) {
     const filePath = route.query.path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
