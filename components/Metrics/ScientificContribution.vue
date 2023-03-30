@@ -39,9 +39,9 @@
           File Storage: <span class="col-data">{{ totalFileStorage }} GB </span><span class="body1">Across all Data</span>
         </div>
       </div>
-      <div class="col">
+      <div v-if="totalProtocols" class="col">
         <div class="col-header heading2 mb-0">
-          Number of Protocols: <span class="col-data">{{ "NULL" }}</span> <span class="body1"> overall</span>
+          Number of Protocols: <span class="col-data">{{ totalProtocols }}</span> <span class="body1"> overall</span>
         </div>
       </div>
     </div>
@@ -241,6 +241,9 @@ export default {
     },
     totalFileStorage() {
       return pathOr('', ['fileStorage', 'totalGB'], this.scientificContribution)
+    },
+    totalProtocols() {
+      return pathOr(undefined, ['protocols', 'total'], this.scientificContribution)
     }
   },
 }

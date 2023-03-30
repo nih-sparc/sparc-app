@@ -75,255 +75,13 @@ const metricsTypes = [
   }
 ]
 
-const fetchMetrics = async () => {
-  /*
-  const ga4MetricsData = await axios.get(`https://dev-metrics.sparc.science/ga4?year=${this.currentYear}&month=${this.currentMonth}`)//['body'][0]
-  const pennsieveMetricsData = await axios.get(`https://dev-metrics.sparc.science/pennsieve?year=${this.currentYear}&month=${this.currentMonth}`)//['body'][0]
-  const sparcMetricsData = await axios.get(`https://dev-metrics.sparc.science/sparc?year=${this.currentYear}&month=${this.currentMonth}`)//['body'][0]
-  console.log("ga4MetricsData is ",ga4MetricsData)
-  console.log("pennsieveMetricsData is ",pennsieveMetricsData)
-  console.log("sparcMetricsData is ",sparcMetricsData)
-  */
-  const ga4MetricsData = {
-  "year_month_source": {
-    "S": "2023_02_ga4"
-  },
-  "source": {
-    "S": "ga4"
-  },
-  "all_about_page_views_last_mo": {
-    "N": "229"
-  },
-  "all_about_page_views_last_quarter": {
-    "N": "456"
-  },
-  "all_find_data_page_views_last_mo": {
-    "N": "7173"
-  },
-  "all_find_data_page_views_last_quarter": {
-    "N": "12693"
-  },
-  "all_help_page_views_last_mo": {
-    "N": "3"
-  },
-  "all_help_page_views_last_quarter": {
-    "N": "9"
-  },
-  "all_home_page_views_last_mo": {
-    "N": "12004"
-  },
-  "all_home_page_views_last_quarter": {
-    "N": "22367"
-  },
-  "all_maps_page_views_last_mo": {
-    "N": "467"
-  },
-  "all_maps_page_views_last_quarter": {
-    "N": "890"
-  },
-  "all_news_events_page_views_last_mo": {
-    "N": "633"
-  },
-  "all_news_events_page_views_last_quarter": {
-    "N": "1460"
-  },
-  "all_screen_page_views_last_mo": {
-    "N": "10405"
-  },
-  "all_screen_page_views_last_quarter": {
-    "N": "19369"
-  },
-  "all_tools_resources_page_views_last_mo": {
-    "N": "520"
-  },
-  "all_tools_resources_page_views_last_quarter": {
-    "N": "1121"
-  },
-  "month": {
-    "N": "2"
-  },
-  "new_users_in_last_month": {
-    "N": "774"
-  },
-  "new_users_in_last_quarter": {
-    "N": "1398"
-  },
-  "returning_users_in_last_month": {
-    "N": "230"
-  },
-  "returning_users_in_last_quarter": {
-    "N": "333"
-  },
-  "year": {
-    "N": "356"
-  }
-}
-  const pennsieveMetricsData = {
-  "year_month_source": {
-    "S": "2023_02_pennsieve"
-  },
-  "source": {
-    "S": "pennsieve"
-  },
-  "month": {
-    "N": "2"
-  },
-  "number_of_aws_downloads_last_3_mo": {
-    "N": "0"
-  },
-  "number_of_aws_downloads_last_mo": {
-    "N": "0"
-  },
-  "number_of_new_sparc_teams_last_3_mo": {
-    "N": "0"
-  },
-  "number_of_new_sparc_teams_last_mo": {
-    "N": "0"
-  },
-  "number_of_new_sparc_users_last_3_mo": {
-    "N": "12"
-  },
-  "number_of_new_sparc_users_last_mo": {
-    "N": "3"
-  },
-  "number_of_sparc_downloads_last_3_mo": {
-    "N": "295"
-  },
-  "number_of_sparc_downloads_last_mo": {
-    "N": "90"
-  },
-  "number_of_sparc_teams_overall": {
-    "N": "62"
-  },
-  "number_of_sparc_users_overall": {
-    "N": "516"
-  },
-  "total_number_gigabytes": {
-    "N": "22951"
-  },
-  "year": {
-    "N": "2023"
-  }
-}
-  const sparcMetricsData = {
-  "year_month_source": {
-    "S": "2023_02_sparc"
-  },
-  "source": {
-    "S": "sparc"
-  },
-  "all_sparc_categories_cumulative": {
-    "N": "235"
-  },
-  "all_sparc_categories_last_3_mo": {
-    "N": "21"
-  },
-  "all_sparc_categories_last_mo": {
-    "N": "2"
-  },
-  "anatomical_structures_breakdown": {
-    "M": {
-      "colon": {
-        "N": "48"
-      },
-      "heart": {
-        "N": "40"
-      },
-      "stomach": {
-        "N": "36"
-      },
-      "urinary bladder": {
-        "N": "16"
-      },
-      "vagus nerve": {
-        "N": "51"
-      }
-    }
-  },
-  "current_number_of_anatomical_structures": {
-    "N": "43"
-  },
-  "embargoed_overall": {
-    "N": "4"
-  },
-  "month": {
-    "N": "2"
-  },
-  "new_sparc_computational_models_last_1_mo": {
-    "N": "2"
-  },
-  "new_sparc_computational_models_last_3_mo": {
-    "N": "5"
-  },
-  "new_sparc_datasets_last_1_mo": {
-    "N": "0"
-  },
-  "new_sparc_datasets_last_3_mo": {
-    "N": "0"
-  },
-  "new_sparc_maps_last_1_mo": {
-    "N": "0"
-  },
-  "new_sparc_maps_last_3_mo": {
-    "N": "16"
-  },
-  "number_of_samples_cumulative": {
-    "N": "8065"
-  },
-  "number_of_samples_last_3_mo": {
-    "N": "0"
-  },
-  "number_of_samples_last_mo": {
-    "N": "0"
-  },
-  "number_of_subjects_cumulative": {
-    "N": "2804"
-  },
-  "number_of_subjects_last_3_mo": {
-    "N": "0"
-  },
-  "number_of_subjects_last_month": {
-    "N": "0"
-  },
-  "sparc_computational_models_cumulative": {
-    "N": "26"
-  },
-  "sparc_datasets_cumulative": {
-    "N": "173"
-  },
-  "sparc_maps_cumulative": {
-    "N": "36"
-  },
-  "year": {
-    "N": "2023"
-  }
-}
-  
-
-  //USE FETCH INSTEAD OF AXIOS
-    const today = new Date();
-    //const currentMonth = (today.getMonth() +1).toString();
-    const currentMonth = "2"
-    const currentYear = today.getFullYear().toString();
-    console.log(today)
-    console.log(currentMonth)
-    console.log(currentYear)
-
-    
-    const TESTga4MetricsData = await fetch(`https://dev-metrics.sparc.science/ga4?year=${currentYear}&month=${currentMonth}`)
-    const TESTga4MetricsData2 = await TESTga4MetricsData.json();
-    const TESTpennsieveMetricsData = await fetch(`https://dev-metrics.sparc.science/pennsieve?year=${currentYear}&month=${currentMonth}`)//['body'][0]
-    const TESTpennsieveMetricsData2 =  await TESTpennsieveMetricsData.json();
-    const TESTsparcMetricsData = await fetch(`https://dev-metrics.sparc.science/sparc?year=${currentYear}&month=${currentMonth}`)//['body'][0]
-    const TESTsparcMetricsData2 = await TESTsparcMetricsData.json();
-    console.log("ga4MetricsData is ",TESTga4MetricsData2)
-    console.log("pennsieveMetricsData is ",TESTpennsieveMetricsData2)
-    console.log("sparcMetricsData is ",TESTsparcMetricsData2)
-    
-
-
-
-
+const fetchMetrics = async (axios, month, year) => {
+  let ga4MetricsData = await axios.get(`https://dev-metrics.sparc.science/ga4?year=${year}&month=${month}`)
+  ga4MetricsData = ga4MetricsData.data[0]
+  let pennsieveMetricsData = await axios.get(`https://dev-metrics.sparc.science/pennsieve?year=${year}&month=${month}`)
+  pennsieveMetricsData = pennsieveMetricsData.data[0]
+  let sparcMetricsData = await axios.get(`https://dev-metrics.sparc.science/sparc?year=${year}&month=${month}`)
+  sparcMetricsData = sparcMetricsData.data[0]
 
   const top5AnatomicalStructuresObject = sparcMetricsData['anatomical_structures_breakdown']['M']
   let top5AnatomicalStructuresArray = []
@@ -345,11 +103,11 @@ const fetchMetrics = async () => {
       },
       totalDownloadsData: {
         lastMonth: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_mo']['N']),
-        last3Months: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_3_mo']['N'])
+        last3Months: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_quarter']['N'])
       },
       datasetContributorsData: {
         total: parseInt(pennsieveMetricsData['number_of_sparc_users_overall']['N']),
-        newLastMonth: parseInt(pennsieveMetricsData['number_of_new_sparc_users_last_mo']['N'])
+        newLastMonth: parseInt(pennsieveMetricsData['number_of_new_sparc_users_last_quarter']['N'])
       },
     },
     scientificContribution: {
@@ -357,17 +115,17 @@ const fetchMetrics = async () => {
       dataChartData: {
         total: [parseInt(sparcMetricsData['all_sparc_categories_cumulative']['N']), parseInt(sparcMetricsData['sparc_datasets_cumulative']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['sparc_computational_models_cumulative']['N']), parseInt(sparcMetricsData['embargoed_overall']['N'])],
         lastMonth: [parseInt(sparcMetricsData['all_sparc_categories_last_mo']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_1_mo']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_1_mo']['N'])],
-        last3Months: [parseInt(sparcMetricsData['all_sparc_categories_last_3_mo']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_3_mo']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_3_mo']['N'])]
+        last3Months: [parseInt(sparcMetricsData['all_sparc_categories_last_quarter']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_quarter']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_quarter']['N'])]
       },
       samples: {
         total: parseInt(sparcMetricsData['number_of_samples_cumulative']['N']),
         newLastMonth: parseInt(sparcMetricsData['number_of_samples_last_mo']['N']),
-        newLast3Months: parseInt(sparcMetricsData['number_of_samples_last_3_mo']['N']),
+        newLast3Months: parseInt(sparcMetricsData['number_of_samples_last_quarter']['N']),
       },
       subjects: {
         total: parseInt(sparcMetricsData['number_of_subjects_cumulative']['N']),
         newLastMonth: parseInt(sparcMetricsData['number_of_subjects_last_month']['N']),
-        newLast3Months: parseInt(sparcMetricsData['number_of_subjects_last_3_mo']['N']),
+        newLast3Months: parseInt(sparcMetricsData['number_of_subjects_last_quarter']['N']),
       },
       anatomicalStructures: {
         total: parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N'])
@@ -388,11 +146,13 @@ export default {
     Breadcrumb
   },
 
-  async asyncData({ redirect, env }) {
+  async asyncData({ redirect, env, $axios }) {
     if (env.SHOW_METRICS == 'false') {
       redirect('/')
     }
-    const metricsData = await fetchMetrics()
+    const month = new Date().getMonth()
+    const year = new Date().getFullYear()
+    const metricsData = await fetchMetrics($axios, month, year)
     return {
       metricsData
     }
@@ -403,8 +163,6 @@ export default {
       metricsTypes,
       isLoadingMetrics: false,
       searchFailed: false,
-      //currentMonth: '',
-      //currentYear: '',
       breadcrumb: [
         {
           to: {
@@ -449,22 +207,11 @@ export default {
    * Check the metricsType param in the route and set it if it
    */
   mounted: function() {
-    //const {currentMonth, currentYear} = getCurrentMonthAndYear();
     if (!this.$route.query.metricsType) {
       const firstTabType = compose(propOr('', 'type'), head)(metricsTypes)
       this.$router.replace({ query: { metricsType: firstTabType } })
     }
   },
-
-  methods: {
-    getCurrentMonthAndYear: function() {
-      const today = new Date();
-      const month = (today.getMonth() +1).toString();
-      const year = today.getFullYear().toString();
-      return { currentMonth: month, currentYear: year };
-    }
-  }
-
 }
 </script>
 
