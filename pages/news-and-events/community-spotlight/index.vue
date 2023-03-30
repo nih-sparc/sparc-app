@@ -89,6 +89,10 @@
                       <hr />
                     </div>
                   </template>
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="communitySpotlightItems.items.length > 0"
+                  />
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="communitySpotlightItems.items.length">
@@ -129,6 +133,7 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SubmitCommunitySection from '~/components/NewsEventsResourcesPage/SubmitCommunitySection.vue'
+import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
 
 import { fetchCommunitySpotlightItems, CommunitySpotlightData, CommunitySpotlightComputed, CommunitySpotlightMethods } from '../model'
 
@@ -187,7 +192,8 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     CommunitySpotlightFacetMenu,
     SearchControlsContentful,
     SortMenu,
-    SubmitCommunitySection
+    SubmitCommunitySection,
+    AlternativeSearchResultsNews
   },
 
   // In order to allow for sorting or fireside chats and success stories we needed
@@ -254,6 +260,7 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
           this.communitySpotlightItems = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructuresEntryIds, this.sortOrder, 10, 0)
+          this.$refs.altSearchResults?.retrieveAltTotals()
         })
       },
       immediate: true

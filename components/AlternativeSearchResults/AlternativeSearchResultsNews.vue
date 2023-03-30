@@ -12,7 +12,7 @@
       <dd v-if="resultCounts[dataType] > 0" :key="dataType">
         <nuxt-link
           :to="{
-            name: `resources-${dataType}`,
+            name: `news-and-events-${dataType}`,
             query: {
               ...$route.query
             }
@@ -100,13 +100,12 @@ export default {
       })
     },
     retrieveAltTotal: function(category) {
-      this[this.functionLookup[category]]( // dynamically call the function
+      this.functionLookup[category]( // dynamically call the function
         client,
         this.$route.query.search,
         undefined,
         undefined,
-        10,
-        0
+        undefined
       )
         .then(resp => {
           console.log('Alternative Search results call:', resp)
