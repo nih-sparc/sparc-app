@@ -116,6 +116,7 @@ export default {
     BL_API_URL: 'https://sparc.biolucida.net/api/v1/',
     BL_SERVER_URL: 'https://sparc.biolucida.net',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
+    MBF_SPARC_API: process.env.MBF_SPARC_API || 'https://mbfsparcapi.com',
     NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
     ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
@@ -147,9 +148,9 @@ export default {
   ],
 
   /*
-   ** Customize the progress-bar color
+   ** Customize the loading component
    */
-  loading: { color: '#fff' },
+  loading: '@/components/Loading/Loading.vue',
 
   /*
    ** Customize router classes globally

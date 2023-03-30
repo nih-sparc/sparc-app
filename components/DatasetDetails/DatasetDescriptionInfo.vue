@@ -226,7 +226,7 @@ export default {
 
   methods: {
     getFacetText(facetLabel) {
-       let text = ''
+      let text = ''
       const facet = this.datasetFacetsData.find(item => item.label === facetLabel)
       if (facet === undefined || !facet.children)
       {

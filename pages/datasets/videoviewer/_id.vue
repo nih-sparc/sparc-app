@@ -79,9 +79,12 @@ import Plyr from 'plyr'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 
+import DatasetInfo from '@/mixins/dataset-info'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
+
+import { extractS3BucketName } from '@/utils/common'
 
 export default {
   name: 'VideoViewerPage',
@@ -91,12 +94,34 @@ export default {
     BfButton
   },
 
-  mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [DatasetInfo, FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
-  async asyncData({ route, error, $axios }) {
+  async asyncData({ app, route, error, $axios }) {
+
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
+      $axios,
+      route.query.dataset_id,
+      route.query.dataset_version,
+      app.$cookies.get('user-token')
+    )
+
+    const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
+
+    const config = {
+      params: {
+        key: route.query.file_path,
+        contentType: route.query.mimetype,
+      }
+    }
+
+    if (s3Bucket) {
+      config.params.s3BucketName = s3Bucket
+    }
+
     let signedUrl = await $axios
       .$get(
-        `${process.env.portal_api}/download?key=${route.query.file_path}&contentType=${route.query.mimetype}`
+        `${process.env.portal_api}/download`,
+        config
       )
       .then(response => {
         return response

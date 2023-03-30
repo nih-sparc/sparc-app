@@ -60,7 +60,7 @@
         </tr>
         <tr>
           <td class="property-name-column">
-            Anatomical Structure(s)
+            Focus
           </td>
           <td>
             {{ anatomicalStructureText }}

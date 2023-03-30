@@ -27,7 +27,7 @@
         <table class="property-table">
           <tr v-if="scope.row.fields.projectSection">
             <td class="property-name-column">
-              Anatomical Focus
+              Focus
             </td>
             <td v-html="highlightMatches(scope.row.fields.projectSection.fields.title, $route.query.search)"/>
           </tr>

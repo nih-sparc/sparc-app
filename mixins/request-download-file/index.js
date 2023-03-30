@@ -8,9 +8,10 @@ export default {
      */
     requestDownloadFile: function(downloadInfo) {
       const fileName = propOr('', 'name', downloadInfo)
-      const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+      //S3 Bucket is now dynamic but we do not have to catch it here as the 
+      //zipit api seems to handle it internally.
+      const datasetVersionRegexp = /s3:\/\/.*\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
       const matches = downloadInfo.uri.match(datasetVersionRegexp)
-
       const payload = {
         data: {
           paths: [matches.groups.filePath],
@@ -27,9 +28,10 @@ export default {
      */
     requestFileContent(downloadInfo) {
       return new Promise(resolve => {
-        const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+        const datasetVersionRegexp = /s3:\/\/.*\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+        //S3 Bucket is now dynamic but we do not have to catch it here as the 
+        //zipit api seems to handle it internally.
         const matches = downloadInfo.uri.match(datasetVersionRegexp)
-
         const payload = {
           data: {
             paths: [matches.groups.filePath],

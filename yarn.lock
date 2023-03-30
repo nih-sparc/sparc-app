@@ -41,10 +41,10 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/gallery@0.3.1", "@abi-software/gallery@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.1.tgz#cb8317e4271e95254c6e3242be824fd3ec4b9ad4"
-  integrity sha512-ED5ppMiXfHbobM073SnDiUhomviLH+dSQ6jgk6b9ULBkdTmF6r0cE6WbPHYJHdNgZVJDbYokBieO/URrff8QhQ==
+"@abi-software/gallery@0.3.2", "@abi-software/gallery@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.2.tgz#538ac360ab89692528d72a02cb5532e67b6f99d6"
+  integrity sha512-YvLlBQVQY7mKyytfsYKX838ulpzlHo8THYEiDwBOT4xSdBVzl+t1cNvFC4Fip+QcXw96LLDJLKCiZXtU+7JDTw==
   dependencies:
     "@babel/code-frame" "^7.12.11"
     axios "^0.26.1"
@@ -54,12 +54,12 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.3.34":
-  version "1.3.34"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.34.tgz#774e5208bf76e43bfa8840ab4effd85954d59369"
-  integrity sha512-sOdMUZKUUS5joyQFTpLDJj0JB8Vrz0XMrBVgkkePJSB2j+tXLckxVXE4n7hnkhsAmbGIVf7SInXmOMyQ4Na6cQ==
+"@abi-software/map-side-bar@^1.3.36":
+  version "1.3.36"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.36.tgz#84188ac26e7e957283f0231d3eecdf330a5c59f9"
+  integrity sha512-pEBwFAEX2LFtPT3qXwoAqofOr9ib/L7Lvvi+n/cHXwI4NG461lm/mon6f5bczKtYKxopqnbLq1oQDfVW0a3Lkg==
   dependencies:
-    "@abi-software/gallery" "^0.3.1"
+    "@abi-software/gallery" "^0.3.2"
     "@abi-software/svg-sprite" "^0.1.14"
     algoliasearch "^4.10.5"
     element-ui "^2.13.0"
@@ -67,15 +67,15 @@
     vue "^2.6.10"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@0.3.13-fixes-1":
-  version "0.3.13-fixes-1"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.13-fixes-1.tgz#84200997d944fe21a0c125a4c58010283727d7f3"
-  integrity sha512-wNKt7pnK9AdeexBmOpFQ2ESAlncEMQV+YTtkAQiCrU0j1/igwLRAdLYAwO3ImFXnZUxR6bNUPK2i6kZfnaXl5w==
+"@abi-software/mapintegratedvuer@0.3.14":
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.14.tgz#e051cff04d0d55e20a1594830b9feead1a6e293d"
+  integrity sha512-54O7AsoG5mUv8PcMatWPyBfMX6fRAgrqhDQr8TxxMA38+hvScqnZbuMIFG9Fd616WwquY5Y6ejJ/zhSSuoHy9w==
   dependencies:
     "@abi-software/flatmapvuer" "^0.3.15"
-    "@abi-software/map-side-bar" "^1.3.34"
+    "@abi-software/map-side-bar" "^1.3.36"
     "@abi-software/plotvuer" "^0.3.9"
-    "@abi-software/scaffoldvuer" "^0.1.57"
+    "@abi-software/scaffoldvuer" "^0.1.58"
     "@abi-software/simulationvuer" "^0.6.5"
     "@abi-software/svg-sprite" "^0.1.15"
     "@soda/get-current-script" "^1.0.2"
@@ -146,10 +146,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@^0.1.57":
-  version "0.1.57"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.57.tgz#420f11a4796f8e5bb19f28a6e7589e43886b079d"
-  integrity sha512-L/I5rAQsS3mNbd5aSJ1tHlmGs7qG9Ljr3M65HQMBp6H06+n6CgmO6lXRagt2HEmCzh6VyLX1AkH/uSfBreUS5A==
+"@abi-software/scaffoldvuer@^0.1.58":
+  version "0.1.58"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.58.tgz#98766a40bc21a4a0ca502eb49cdb429abe0876e2"
+  integrity sha512-r/zkckQi1Xzu4NtlqnNoE7gczm1jJucEQSb4eQVwbqvxvUO27k7dUBNLC9aTLy3rBjDQcN8PxbDLDVZLTUVfgQ==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.15"
     axios "^0.21.2"
@@ -163,7 +163,7 @@
     vue-custom-element "^3.3.0"
     vue-drag-resize "^1.3.2"
     vue-router "^3.5.1"
-    zincjs "^1.0.11"
+    zincjs "^1.0.15"
 
 "@abi-software/simulationvuer@0.6.5", "@abi-software/simulationvuer@^0.6.5":
   version "0.6.5"
@@ -4748,9 +4748,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001191, caniuse-lite@^1.0.30001251:
-  version "1.0.30001320"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001320.tgz"
-  integrity sha512-MWPzG54AGdo3nWx7zHZTefseM5Y1ccM7hlQKHRqJkPozUaw3hNbBTMmLn16GG2FUzjR13Cr3NPfhIieX5PzXDA==
+  version "1.0.30001462"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001462.tgz"
+  integrity sha512-PDd20WuOBPiasZ7KbFnmQRyuLE7cFXW2PVd7dmALzbkUXEP46upAuCDm9eY9vho8fgNMGmbAX92QBZHzcnWIqw==
 
 canvas-fit@^1.5.0:
   version "1.5.0"
@@ -16188,10 +16188,10 @@ zero-crossings@^1.0.0:
   dependencies:
     cwise-compiler "^1.0.0"
 
-zincjs@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.0.11.tgz#b28ef3547acc8794bfe8c73afa10ef6b2b9346ce"
-  integrity sha512-SknkseprKt2kxnsniohhkPQ56WT+9b7Ju1kxynhs83yNE2lcuakphedTRIBHGUUNcRAzw8TCgtfjN52uKFtKzQ==
+zincjs@^1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.0.15.tgz#0865f8e05b0d8dc7586167fe496accbd8898535a"
+  integrity sha512-Csnbvrgin7Ebo9kfFr071KzKDFcoDX03MoBz41h1hq6lG8MHJXjTHLP/EhF5kwbNhThH21rgz718D8rBvwTALA==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
