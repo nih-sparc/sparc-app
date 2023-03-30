@@ -81,6 +81,10 @@
                     :item="item"
                     :show-past-events-divider="showPastEventsDivider && item.sys.id == firstPastEventId"
                   />
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="events.items.length > 0"
+                  />
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="events.items.length">
@@ -121,6 +125,7 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import createClient from '@/plugins/contentful.js'
 import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
+import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
 
 import { fetchEvents, EventsData, EventsComputed, EventsMethods } from '../model'
 
@@ -168,6 +173,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   name: 'EventsPage',
 
   components: {
+    AlternativeSearchResultsNews,
     Breadcrumb,
     EventsFacetMenu,
     EventListItem,
@@ -218,6 +224,7 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
           this.events = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, 10, 0)
+          this.$refs.altSearchResults?.retrieveAltTotals()
         })
       },
       immediate: true
