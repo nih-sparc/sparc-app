@@ -12,7 +12,7 @@
               class="search-tabs__button"
               :class="{ active: type.type === $route.query.metricsType }"
               :to="{
-                name: 'metrics',
+                name: 'about-sparc-portal-metrics',
                 query: {
                   ...$route.query,
                   metricsType: type.type,
@@ -171,15 +171,27 @@ export default {
           label: 'Home'
         },
         {
+          label: 'About',
           to: {
-            name: 'metrics',
+            name: 'about'
+          }
+        },
+        {
+          label: 'Portal',
+          to: {
+            name: 'about-sparc-portal'
+          }
+        },
+        {
+          to: {
+            name: 'about-sparc-portal-metrics',
             query: {
               metricsType: 'userBehaviors'
             }
           },
           label: 'Metrics'
         },
-      ],
+      ]
     }
   },
 
@@ -216,16 +228,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .page-data {
-  background-color: #f5f7fa;
+  background-color: $background;
 }
 .search-tabs__container {
   margin-top: 2rem;
   padding-top: 0.5rem;
   background-color: white;
-  border: 0.1rem solid $purple-gray;
+  border: 0.1rem solid $lineColor2;
   h3 {
     padding-left: 0.75rem;
     font-weight: 600;
@@ -238,21 +250,21 @@ export default {
   overflow: auto;
   margin: 0 0 0 0;
   padding: 0 0;
-  outline: 0.1rem solid $median;
+  outline: 0.1rem solid $purple;
   @media (max-width: 40rem) {
     display: block;
   }
   li {
     width: 100%;
     text-align: center;
-    color: $median;
+    color: $purple;
   }
   li:last-child > a {
     border-right: none;
   }
 }
 .search-tabs__button {
-  background: $light-purple;
+  background: #f9f2fc;
   display: block;
   font-size: 0.75rem;
   font-weight: 500;
@@ -263,7 +275,7 @@ export default {
   line-height: 3.5rem;
   @media (min-width: 40rem) {
     font-size: 0.65rem;
-    border-right: 0.1rem solid $median;
+    border-right: 0.1rem solid $purple;
   }
   @media (min-width: 50rem) {
     font-size: .75rem;
@@ -277,14 +289,14 @@ export default {
   &:focus,
   &.active {
     color: white;
-    background-color: $median;
+    background-color: $purple;
     font-weight: 500;
   }
 }
 .table-wrap {
-  background: #fff;
-  border: 1px solid rgb(228, 231, 237);
-  padding: 16px;
+  background: white;
+  border: 1px solid $lineColor2;
+  padding: 1rem;
   .search-error {
     margin: 0 0  auto;
     text-align:center;

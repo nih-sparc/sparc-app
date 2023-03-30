@@ -86,18 +86,6 @@
                     {{ link.displayTitle }}
                   </nuxt-link>
                 </li>
-                <li
-                  v-if="showMetrics"
-                  style="z-index: 100;"
-                >
-                  <nuxt-link
-                    to="/metrics"
-                    :class="{ active: activeLink('/metrics') }"
-                    exact-active-class="active"
-                  >
-                    Metrics
-                  </nuxt-link>
-                </li>
                 <hr class="divider" />
               </ul>
               <ul class="mobile-navigation__links">
@@ -294,12 +282,6 @@ export default {
 
       return this.$nuxt.$route.fullPath;
     },
-    showMetrics() {
-      return process.env.SHOW_METRICS == 'true' ? true : false
-
-      return encodeURIComponent(this.$nuxt.$route.fullPath)
-
-    }
   },
 
   watch: {
