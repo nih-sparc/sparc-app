@@ -1,6 +1,6 @@
 <template>
   <!-- Alternative search suggestions NNOTE that this is currently just copy and pasted from /data/index.vue -->
-  <div v-if="searchHasAltResults">
+  <div v-if="searchHasAltResults && this.$route.query.search">
     <br />
     <template v-if="!searchHadResults">
       No results were found for <strong><i>{{ this.$route.query.search }}</i></strong>.

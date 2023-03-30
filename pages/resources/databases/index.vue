@@ -114,7 +114,7 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
-import AlternativeSearchResults from '@/components/AlternativeSearchResults/AlternativeSearchResults.vue'
+import AlternativeSearchResults from '~/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
 
