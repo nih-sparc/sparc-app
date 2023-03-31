@@ -21,66 +21,15 @@
 
     <hr/>
 
-    <el-form-item class="file-upload" prop="fileAttachment" label="File Upload">
-      <div class="body4 mb-8"><i>To help other users understand your story, an image or video can really help. We recommend images of 600px by 600px and videos at 16:9.</i></div>
-      <el-upload
-        ref="fileUploader"
-        action=""
-        :limit="limit"
-        :auto-upload="false"
-        :on-remove="onRemove"
-        :on-change="onUploadChange"
-        :before-remove="beforeRemove" >
-        <el-button slot="trigger" class="secondary">Select file</el-button>
-        <span slot="tip" class="el-upload__tip ml-16">jpeg/png/mp4 file with a size less than 5MB</span>
-      </el-upload>
-    </el-form-item>
-
-    <el-form-item prop="supportingLinks" label="Supporting Information">
-      <url-list :default-links="form.supportingLinks" @links-updated="form.supportingLinks = $event" @add-link="addSupportingLink" placeholder="Enter URL">
-        <template slot="prepend">Http://</template>
-      </url-list>
-    </el-form-item>
-
-    <hr/>
-
-    <el-form-item
-      class="mt-32"
-      prop="typeOfUser"
-      label="What type of user are you? *"
-    >
-      <el-select
-        v-model="form.typeOfUser"
-        placeholder="Select one"
-        :popper-append-to-body="false"
-      >
-        <el-option
-          v-for="userType in userTypes"
-          :key="userType"
-          :label="userType"
-          :value="userType"
-        />
-      </el-select>
-    </el-form-item>
-    <el-form-item class="mt-16" prop="firstName" label="First Name *">
-      <el-input v-model="form.firstName" placeholder="Enter your first name" />
-    </el-form-item>
-    <el-form-item class="mt-16" prop="lastName" label="Last Name *">
-      <el-input v-model="form.lastName" placeholder="Enter your last name" />
-    </el-form-item>
-    <el-form-item prop="email" label="Email *">
-      <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
-    </el-form-item>
-    <el-form-item prop="sendCopy" class="mt-16 mb-0">
-      <el-checkbox v-model="form.sendCopy">
-        <span class="body1">Please send me a copy of this message</span>
-      </el-checkbox>
-    </el-form-item>
-    <el-form-item prop="shouldSubscribe">
-      <el-checkbox v-model="form.shouldSubscribe">
-        <span class="body1">Subscribe to the SPARC Newsletter</span>
-      </el-checkbox>
-    </el-form-item>
+    <user-contact-form-item
+      @type-of-user-updated="form.typeOfUser = $event"
+      @first-name-updated="form.firstName = $event"
+      @last-name-updated="form.lastName = $event"
+      @email-updated="form.email = $event"
+      @follow-up-updated="form.shouldFollowUp = $event"
+      @sned-copy-updated="form.sendCopy = $event"
+      @subscribe-updated="form.shouldSubscribe = $event"
+    />
 
     <hr/>
 
@@ -108,6 +57,7 @@
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
+import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { propOr, isEmpty } from 'ramda'
 import { mapState } from 'vuex'
@@ -118,7 +68,8 @@ export default {
   mixins: [FileUploadMixin, RecaptchaMixin, NewsletterMixin],
 
   components: {
-    UrlList
+    UrlList,
+    UserContactFormItem
   },
 
   data() {

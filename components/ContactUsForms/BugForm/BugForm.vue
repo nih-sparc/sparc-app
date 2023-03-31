@@ -48,53 +48,16 @@
 
     <hr/>
 
-    <el-form-item
-      prop="typeOfUser"
-      label="What type of user are you? *"
-    >
-      <el-select
-        v-model="form.typeOfUser"
-        placeholder="Select one"
-        :popper-append-to-body="false"
-      >
-        <el-option
-          v-for="userType in userTypes"
-          :key="userType"
-          :label="userType"
-          :value="userType"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-form-item prop="firstName" label="First Name *" class="mt-16">
-      <el-input v-model="form.firstName" placeholder="Enter your first name" />
-    </el-form-item>
-
-    <el-form-item prop="lastName" label="Last Name *">
-      <el-input v-model="form.lastName" placeholder="Enter your last name" />
-    </el-form-item>
-
-    <el-form-item prop="email" label="Email *" class="mb-0">
-      <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
-    </el-form-item>
-
-    <el-form-item prop="shouldFollowUp" class="mt-16 mb-0">
-      <el-checkbox v-model="form.shouldFollowUp">
-        <span class="body1">I'd like updates about this submission</span>
-      </el-checkbox>
-    </el-form-item>
-
-    <el-form-item prop="sendCopy" class="mb-0">
-      <el-checkbox v-model="form.sendCopy">
-        <span class="body1">Please send me a copy of this message</span>
-      </el-checkbox>
-    </el-form-item>
-
-    <el-form-item prop="shouldSubscribe">
-      <el-checkbox v-model="form.shouldSubscribe">
-        <span class="body1">Subscribe to the SPARC Newsletter</span>
-      </el-checkbox>
-    </el-form-item>
+    <user-contact-form-item
+      showFollowUpOption
+      @type-of-user-updated="form.typeOfUser = $event"
+      @first-name-updated="form.firstName = $event"
+      @last-name-updated="form.lastName = $event"
+      @email-updated="form.email = $event"
+      @follow-up-updated="form.shouldFollowUp = $event"
+      @sned-copy-updated="form.sendCopy = $event"
+      @subscribe-updated="form.shouldSubscribe = $event"
+    />
 
     <hr/>
 
@@ -120,6 +83,7 @@
 import NewsletterMixin from '../NewsletterMixin'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
+import UserContactFormItem from '../UserContactFormItem.vue'
 import { propOr } from 'ramda'
 import { mapState } from 'vuex'
 
@@ -127,6 +91,10 @@ export default {
   name: 'BugForm',
 
   mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin],
+
+  components: {
+    UserContactFormItem
+  },
 
   data() {
     return {
@@ -212,7 +180,7 @@ export default {
 
     if (this.bugSourceUrl != undefined) {
       const fullUrl = process.env.ROOT_URL + this.bugSourceUrl
-      this.form.pageUrl = 'www.' + fullUrl.replace(/^https?:\/\//, '')
+      this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
     }
   },
 
