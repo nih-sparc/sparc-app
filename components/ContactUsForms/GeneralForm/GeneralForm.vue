@@ -244,7 +244,8 @@ export default {
       `
       let formData = new FormData();
       formData.append("type", "general")
-      formData.append("title", this.form.description)
+      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("title", `SPARC Question or Inquiry Submission: ${this.form.description}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
 
@@ -254,7 +255,7 @@ export default {
           if (this.form.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
           } else {
-            this.$emit('submit')
+            this.$emit('submit', this.form.firstName)
           }
         })
         .catch(() => {

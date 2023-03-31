@@ -274,12 +274,13 @@ export default {
       // we assume it is a news item if there is no start date
       if (this.form.startDate == '') {
         formData.append("type", "news")
-        formData.append("title", `News Submission - ${this.form.title}`)
+        formData.append("title", `News Submission: ${this.form.title}`)
       }
       else {
         formData.append("type", "event")
-        formData.append("title", `Event Submission - ${this.form.title}`)
+        formData.append("title", `Event Submission: ${this.form.title}`)
       }
+      formData.append("sendCopy", this.form.sendCopy)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != '') {

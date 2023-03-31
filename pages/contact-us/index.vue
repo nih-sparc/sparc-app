@@ -50,27 +50,19 @@ a<template>
           <hr v-if="isFeedbackForm && formType != undefined && formType != 'feedback'" class="mt-32 mb-32" />
         </template>
         <component
+          v-if="!isSubmitted"
           :is="formComponent"
+          @submit="formSubmitted"
         />
 
-        <div v-if="isGeneralSubmitted" class="msg-success">
+        <div v-if="isSubmitted" class="msg-success">
           <template v-if="firstName">
             <p>{{ firstName }},</p>
           </template>
           <p>
-            Thank you for your inquiry. A member of the SPARC team will contact
-            you as soon as possible.
+            Thank you for your submission!
           </p>
-          <a href="#" @click="resetForms">Submit another inquiry</a>
-        </div>
-
-        <div v-if="isBugSubmitted" class="msg-success">
-          <p>
-            Thank you for letting us know about this error or issue. If you
-            requested a response, a member of the SPARC team will contact you
-            as soon as possible.
-          </p>
-          <a href="#" @click="resetForms">Submit another inquiry</a>
+          <a href="#" @click="resetForms">Create another submission</a>
         </div>
       </div>
     </div>
@@ -207,8 +199,7 @@ export default {
           value: 'general'
         },
       ],
-      isBugSubmitted: false,
-      isGeneralSubmitted: false,
+      isSubmitted: false,
       firstName: ''
     }
   },
@@ -223,7 +214,7 @@ export default {
       const feedbackFormType = this.formTypes.find(formType => formType.type === 'feedback')
       return this.$route.query.type === undefined || this.$route.query.type === 'feedback' || this.formType === feedbackFormType.type || feedbackFormType.subtypes.includes(this.formType)
     },
-     formComponent: function() {
+    formComponent: function() {
       return defaultTo('', formComponents[this.$route.query.type])
     },
     formTypeObject() {
@@ -270,19 +261,13 @@ export default {
      * Reset all form data
      */
     resetForms: function() {
-      this.isBugSubmitted = false
-      this.isGeneralSubmitted = false
-      this.formType = ''
+      this.isSubmitted = false
       this.firstName = ''
     },
-
-    /**
-     * On general form meetings
-     * @param {String} firstName
-     */
-    onGeneralFormSubmit: function(firstName) {
+    formSubmitted(firstName) {
+      console.log("FORM SUBMITTED!")
       this.firstName = firstName
-      this.isGeneralSubmitted = true
+      this.isSubmitted = true
     }
   }
 }

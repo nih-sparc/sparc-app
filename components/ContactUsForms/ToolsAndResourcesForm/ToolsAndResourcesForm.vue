@@ -393,6 +393,7 @@ export default {
       `
       let formData = new FormData();
       formData.append("type", "toolsAndResources")
+      formData.append("sendCopy", this.form.sendCopy)
       formData.append("title", `T&R Submission: ${this.form.resourceName}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)

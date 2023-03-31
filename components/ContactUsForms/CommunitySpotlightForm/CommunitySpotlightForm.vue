@@ -213,7 +213,7 @@ export default {
         <b>First Name:</b><br>${this.form.firstName}<br><br>
         <b>Last Name:</b><br>${this.form.lastName}<br><br>
         <b>E-mail:</b><br>${this.form.email}<br><br>
-        <b>Community Spotlight Details:</b><br><br>
+        <b>Story Details:</b><br><br>
         <b>Title:</b><br>${this.form.title}<br><br>
         <b>Summary:</b><br>${this.form.summary}<br><br>
         ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
@@ -222,7 +222,8 @@ export default {
 
       let formData = new FormData()
       formData.append("type", "communitySpotlight")
-      formData.append("title", `Spotlight Submission - ${this.form.title}`)
+      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("title", `SPARC Story Submission: ${this.form.title}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != '') {
