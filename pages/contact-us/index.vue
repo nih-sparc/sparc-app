@@ -265,7 +265,6 @@ export default {
       this.firstName = ''
     },
     formSubmitted(firstName) {
-      console.log("FORM SUBMITTED!")
       this.firstName = firstName
       this.isSubmitted = true
     }
