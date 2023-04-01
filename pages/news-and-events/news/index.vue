@@ -364,7 +364,6 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;

@@ -396,7 +396,6 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;
