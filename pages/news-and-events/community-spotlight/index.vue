@@ -426,7 +426,6 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;
