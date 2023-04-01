@@ -19,8 +19,8 @@ export default {
         content: process.env.npm_package_description || ''
       },
       {
-        hid: 'keywords', 
-        name: 'keywords', 
+        hid: 'keywords',
+        name: 'keywords',
         content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
       },
       // default social cards information for site sharing url's
@@ -138,6 +138,7 @@ export default {
     SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+    SHOW_METRICS: process.env.SHOW_METRICS || 'false',
     SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false'
   },
 

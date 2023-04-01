@@ -280,7 +280,7 @@ export default {
     },
     currentUrl: function() {
       return encodeURIComponent(this.$nuxt.$route.fullPath)
-    }
+    },
   },
 
   watch: {
