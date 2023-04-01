@@ -31,7 +31,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import CommunitySpotlightForm from '@/components/CommunitySpotlightForm/CommunitySpotlightForm.vue'
+import CommunitySpotlightForm from '@/components/ContactUsForms/CommunitySpotlightForm/CommunitySpotlightForm.vue'
 
 export default {
   name: 'SubmitCommunitySpotlightPage',
@@ -129,6 +129,7 @@ h2 {
 ::v-deep .el-textarea__inner {
   font-family: inherit;
   padding-top: .75rem;
+  padding-bottom: .75rem;
 }
 ::v-deep .input-reason {
   max-width: 36rem;
