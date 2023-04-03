@@ -19,8 +19,8 @@ export default {
         content: process.env.npm_package_description || ''
       },
       {
-        hid: 'keywords', 
-        name: 'keywords', 
+        hid: 'keywords',
+        name: 'keywords',
         content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
       },
       // default social cards information for site sharing url's
@@ -82,7 +82,7 @@ export default {
     ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
     ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
     ctf_about_policies_page_id: '71a9NzpuHvaTpgTf9ir1xg',
-    ctf_contact_us_page_id: '7t2GZ5F74AdNRqBau4mp8S',
+    ctf_contact_us_form_type_id: 'contactUsForm',
     ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
@@ -101,6 +101,7 @@ export default {
     ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
     ctf_success_story_id: 'successStory',
     ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
+    ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
     ctf_sparc_login_modal_id: '4FSEoB6SW8xrEAsh4t0vGt',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
@@ -137,6 +138,7 @@ export default {
     SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+    SHOW_METRICS: process.env.SHOW_METRICS || 'false',
     SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false'
   },
 

@@ -7,51 +7,35 @@
     :hide-required-asterisk="true"
   >
     <el-form-item
-      prop="pageOrResource"
-      label="Is this about a specific page or resource? *"
+      class="service-categories vertical-content mt-32"
+      prop="serviceCategories"
+      label="What service(s) are you interested in? *"
     >
-      <el-select
-        v-model="form.pageOrResource"
-        placeholder="Select one"
-        :popper-append-to-body="false"
-      >
-        <el-option
-          v-for="area in areasOfSparc"
-          :key="area"
-          :label="area"
-          :value="area"
+      <div class="body4 mb-4"><i>Select all that apply.</i></div>
+      <client-only>
+        <sparc-checkbox
+          v-for="service in services"
+          v-bind:key="service"
+          v-model="form.serviceCategories"
+          :label="service"
+          :display="service"
         />
-      </el-select>
+      </client-only> 
     </el-form-item>
 
-    <el-form-item prop="pageUrl" label="Please provide the specific page URL">
-      <el-input v-model="form.pageUrl" placeholder="URL">
-        <template slot="prepend">Http://</template>
-      </el-input>
-    </el-form-item>
-
-    <el-form-item
-      prop="description"
-      label="Provide a short description of your inquiry *"
-    >
+    <el-form-item prop="additionalInfo" label="Additional Information">
       <el-input
-        v-model="form.description"
-        placeholder="(Example: I have a question about <area of inquiry>)"
-      />
-    </el-form-item>
-
-    <el-form-item prop="message" label="Your question or comment *">
-      <el-input
-        v-model="form.message"
+        v-model="form.additionalInfo"
         type="textarea"
         :rows="3"
-        placeholder="Enter your question or comment"
+        placeholder="Please provide any additional information regarding your service request"
       />
     </el-form-item>
 
-    <hr />
+    <hr/>
 
     <user-contact-form-item
+      showFollowUpOption
       @type-of-user-updated="form.typeOfUser = $event"
       @first-name-updated="form.firstName = $event"
       @last-name-updated="form.lastName = $event"
@@ -61,7 +45,7 @@
       @subscribe-updated="form.shouldSubscribe = $event"
     />
 
-    <hr />
+    <hr/>
 
     <div class="heading2">
       Please check the box to proceed
@@ -85,10 +69,11 @@
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
+import { isEmpty } from 'ramda'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'GeneralForm',
+  name: 'InterestForm',
 
   mixins: [NewsletterMixin, RecaptchaMixin],
 
@@ -99,31 +84,22 @@ export default {
   data() {
     return {
       form: {
-        description: '',
-        pageUrl: '',
+        serviceCategories:[],
+        additionalInfo:'',
         typeOfUser: '',
-        pageOrResource: '',
-        message: '',
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: true,
         shouldFollowUp: true,
+        shouldSubscribe: true,
         sendCopy: true
       },
       isSubmitting: false,
       formRules: {
-        description: [
+        serviceCategories: [
           {
             required: true,
-            message: 'Please enter a description',
-            trigger: 'change'
-          }
-        ],
-        pageOrResource: [
-          {
-            required: true,
-            message: 'Please select an option',
+            message: 'Please select at least one',
             trigger: 'change'
           }
         ],
@@ -140,7 +116,7 @@ export default {
             required: true,
             message: 'Please enter your email',
             type: 'email',
-            trigger: 'blur'
+            trigger: 'blur',
           }
         ],
 
@@ -151,19 +127,12 @@ export default {
             trigger: 'blur',
           }
         ],
+
         lastName: [
           {
             required: true,
             message: 'Please enter your last name',
             trigger: 'blur',
-          }
-        ],
-
-        message: [
-          {
-            required: true,
-            message: 'Please enter a message',
-            trigger: 'change'
           }
         ],
       }
@@ -173,7 +142,7 @@ export default {
   computed: {
     ...mapState('pages/contact-us', {
       userTypes: state => state.formOptions.userTypes,
-      areasOfSparc: state => state.formOptions.areasOfSparc
+      services: state => state.formOptions.services
     }),
   },
 
@@ -184,35 +153,23 @@ export default {
   },
 
   methods: {
-    validateEmail: function(rule, value, callback) {
-      if (this.form.shouldFollowUp && value === '') {
-        callback(new Error(rule.message))
-      }
-      callback()
-    },
-
-    validateUrl: function(rule, value, callback) {
-      if (!value.includes('.') || value.lastIndexOf('.') == value.length - 1 || value.indexOf('.') == 0) {
-        callback(new Error(rule.message))
-      }
-      callback()
-    },
     /**
      * Send form to endpoint
      */
     async sendForm() {
       this.isSubmitting = true
       const description = `
-        <b>Is this about a specific page or resource?</b><br>${this.form.pageOrResource}<br><br>
-        <b>Your question or comment?</b><br>${this.form.message}<br><br>
+        <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
+        <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
+        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
         <b>Email:</b><br>${this.form.email}<br><br>
         <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
       `
       let formData = new FormData();
-      formData.append("type", "general")
+      formData.append("type", "interest")
       formData.append("sendCopy", this.form.sendCopy)
-      formData.append("title", `SPARC Question or Inquiry Submission: ${this.form.description}`)
+      formData.append("title", `SPARC Service Request`)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
 
@@ -239,10 +196,6 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
-.submit-button {
-  text-align: left;
-  margin-bottom: 0 !important;
-}
 hr {
   border-top: none;
   border-left: none;
@@ -257,7 +210,24 @@ hr {
   display: flex;
   justify-content: left;
 }
-::v-deep .file-upload {
+::v-deep .vertical-content {
+  .el-form-item__content {
+    display: flex;
+    flex-direction: column;
+    .el-radio {
+      line-height: 25px;
+      padding-left: 2rem;
+    }
+  }
+}
+::v-deep .service-categories {
+  .el-form-item__content {
+    .el-checkbox {
+      padding-left: 2rem;
+      margin: 0;
+      line-height: 25px;
+    }
+  }
   .el-form-item__label {
     margin-bottom: .3rem;
   }

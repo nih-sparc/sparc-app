@@ -6,57 +6,41 @@
     :rules="formRules"
     :hide-required-asterisk="true"
   >
-    <el-form-item prop="name" label="Your name">
-      <el-input v-model="form.name" placeholder="Enter your name" />
+    <el-form-item prop="title" label="Title *">
+      <el-input v-model="form.title" placeholder="Enter a title for your story" />
     </el-form-item>
 
-    <el-form-item prop="email" label="Email address">
-      <el-input v-model="form.email" placeholder="Enter your email address" type="email" />
-    </el-form-item>
-
-    <hr/>
-
-    <el-form-item prop="title" label="Title">
-      <el-input v-model="form.title" placeholder="Enter a title for your success story / fireside chat" />
-    </el-form-item>
-
-    <el-form-item prop="summary" label="Summary">
+    <el-form-item prop="summary" label="Summary *">
       <el-input
         v-model="form.summary"
         type="textarea"
         :rows="3"
-        placeholder="Tell us some details about your success story / fireside chat"
+        placeholder="Tell us some details about your story"
       />
     </el-form-item>
 
     <hr/>
 
-    <el-form-item prop="fileAttachment" label="File Upload">
-      <div class="body4 mb-8"><i>To help other users understand your research, an image or video can really help. We recommend images of 1200px by 675px and videos at 16:9.</i></div>
-      <el-upload
-        ref="fileUploader"
-        action=""
-        :limit="limit"
-        :auto-upload="false"
-        :on-remove="onRemove"
-        :on-change="onUploadChange"
-        :before-remove="beforeRemove" >
-        <el-button slot="trigger" class="secondary">Select file</el-button>
-        <div slot="tip" class="el-upload__tip">jpeg/png/mp4 file with a size less than 5MB</div>
-      </el-upload>
-    </el-form-item>
+    <user-contact-form-item
+      @type-of-user-updated="form.typeOfUser = $event"
+      @first-name-updated="form.firstName = $event"
+      @last-name-updated="form.lastName = $event"
+      @email-updated="form.email = $event"
+      @follow-up-updated="form.shouldFollowUp = $event"
+      @sned-copy-updated="form.sendCopy = $event"
+      @subscribe-updated="form.shouldSubscribe = $event"
+    />
 
-    <el-form-item prop="url" label="Supporting Information">
-      <el-input placeholder="Enter URL" v-model="form.url">
-        <template slot="prepend">Http://</template>
-      </el-input>
-    </el-form-item>
+    <hr/>
+
+    <div class="heading2">
+      Please check the box to proceed
+    </div>
+    <recaptcha class="recaptcha my-16 pl-16"/>
 
     <hr/>
 
     <div class="body4 mb-16"><i>Before your story is published on the SPARC Portal, it will be reviewed. The reviewer may contact you to clarify or seek additional information.</i></div>
-
-    <recaptcha class="recaptcha mb-16"/>
 
     <el-form-item class="submit-button">
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
@@ -70,26 +54,38 @@
 </template>
 
 <script>
-
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import { propOr } from 'ramda'
+import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
+import UserContactFormItem from '../UserContactFormItem.vue'
+import UrlList from '@/components/Url/UrlList.vue'
+import { propOr, isEmpty } from 'ramda'
+import { mapState } from 'vuex'
 
 export default {
   name: 'CommunitySpotlightForm',
 
-  mixins: [FileUploadMixin, RecaptchaMixin],
+  mixins: [FileUploadMixin, RecaptchaMixin, NewsletterMixin],
+
+  components: {
+    UrlList,
+    UserContactFormItem
+  },
 
   data() {
     return {
       allowVideos: true,
       hasError: false,
       form: {
-        name: '',
+        typeOfUser: '',
+        firstName: '',
+        lastName: '',
         email: '',
         title: '',
         summary: '',
-        url: '',
+        supportingLinks: [''],
+        sendCopy: true,
+        shouldSubscribe: true
       },
       isSubmitting: false,
       formRules: {
@@ -101,10 +97,17 @@ export default {
             trigger: 'blur'
           }
         ],
-        name: [
+        firstName: [
           {
             required: true,
-            message: 'Please enter your name',
+            message: 'Please enter your first name',
+            trigger: 'blur',
+          }
+        ],
+        lastName: [
+          {
+            required: true,
+            message: 'Please enter your last name',
             trigger: 'blur',
           }
         ],
@@ -132,7 +135,24 @@ export default {
     this.hasError = false
   },
 
+  computed: {
+    ...mapState('pages/contact-us', {
+      userTypes: state => state.formOptions.userTypes
+    }),
+    supportingLinksText: function() {
+      let message = ''
+      this.form.supportingLinks.forEach(link => {
+        if (!isEmpty(link))
+          message += `${link}<br>`
+      })
+      return isEmpty(message) ? 'N/A<br>' : message
+    },
+  },
+
   methods: {
+    addSupportingLink() {
+      this.form.supportingLinks.push('')
+    },
     /**
      * Send form to endpoint
      */
@@ -141,18 +161,20 @@ export default {
       const fileName = propOr('', 'name', this.file)
       const description = `
         <b>Contact Information</b><br><br>
-        <b>Name:</b><br>${this.form.name}<br><br>
+        <b>First Name:</b><br>${this.form.firstName}<br><br>
+        <b>Last Name:</b><br>${this.form.lastName}<br><br>
         <b>E-mail:</b><br>${this.form.email}<br><br>
-        <b>Community Spotlight Details:</b><br><br>
+        <b>Story Details:</b><br><br>
         <b>Title:</b><br>${this.form.title}<br><br>
         <b>Summary:</b><br>${this.form.summary}<br><br>
         ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>Supporting Information URL:</b><br>${this.form.url == '' ? 'N/A' : this.form.url}
+        <b>Supporting Information links:</b><br>${this.supportingLinksText}<br>
       `
 
       let formData = new FormData()
       formData.append("type", "communitySpotlight")
-      formData.append("title", `Spotlight Submission - ${this.form.title}`)
+      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("title", `SPARC Story Submission: ${this.form.title}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
       if (propOr('', 'name', this.file) != '') {
@@ -161,7 +183,11 @@ export default {
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          this.$emit('submit', this.form.name)
+          if (this.form.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          } else {
+            this.$emit('submit', this.form.firstName)
+          }
         })
         .catch(() => {
           this.hasError = true
@@ -177,20 +203,26 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .submit-button {
-  text-align: right;
+  text-align: left;
   margin-bottom: 0 !important;
 }
 hr {
   border-top: none;
+  border-left: none;
   border-width: 2px;
   border-color: $lineColor1;
-  margin: 2.5rem 0;
+  margin: 2rem 0;
 }
 .error {
   color: $danger;
 }
 .recaptcha {
   display: flex;
-  justify-content: right;
+  justify-content: left;
+}
+::v-deep .file-upload {
+  .el-form-item__label {
+    margin-bottom: .3rem;
+  }
 }
 </style>

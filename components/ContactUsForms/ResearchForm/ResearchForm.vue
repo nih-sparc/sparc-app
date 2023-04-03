@@ -7,49 +7,25 @@
     :hide-required-asterisk="true"
   >
     <el-form-item
-      prop="pageOrResource"
-      label="Is this about a specific page or resource? *"
-    >
-      <el-select
-        v-model="form.pageOrResource"
-        placeholder="Select one"
-        :popper-append-to-body="false"
-      >
-        <el-option
-          v-for="area in areasOfSparc"
-          :key="area"
-          :label="area"
-          :value="area"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-form-item prop="pageUrl" label="Please provide the specific page URL">
-      <el-input v-model="form.pageUrl" placeholder="URL">
-        <template slot="prepend">Http://</template>
-      </el-input>
-    </el-form-item>
-
-    <el-form-item
-      prop="description"
-      label="Provide a short description of your inquiry *"
+      prop="shortDescription"
+      label="Provide a short description of your research *"
     >
       <el-input
-        v-model="form.description"
-        placeholder="(Example: I have a question about <area of inquiry>)"
+        v-model="form.shortDescription"
+        placeholder="(Example: I am studying the effects of <approach> on <anatomical structure>)"
       />
     </el-form-item>
 
-    <el-form-item prop="message" label="Your question or comment *">
+    <el-form-item prop="detailedDescription" label="Provide a detailed description of your research *">
       <el-input
-        v-model="form.message"
+        v-model="form.detailedDescription"
         type="textarea"
         :rows="3"
-        placeholder="Enter your question or comment"
+        placeholder="Please provide specifics about your research. Our curation team will then contact you."
       />
     </el-form-item>
 
-    <hr />
+    <hr/>
 
     <user-contact-form-item
       @type-of-user-updated="form.typeOfUser = $event"
@@ -61,7 +37,7 @@
       @subscribe-updated="form.shouldSubscribe = $event"
     />
 
-    <hr />
+    <hr/>
 
     <div class="heading2">
       Please check the box to proceed
@@ -82,13 +58,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
-import { mapState } from 'vuex'
 
 export default {
-  name: 'GeneralForm',
+  name: 'FeedbackForm',
 
   mixins: [NewsletterMixin, RecaptchaMixin],
 
@@ -99,34 +75,17 @@ export default {
   data() {
     return {
       form: {
-        description: '',
-        pageUrl: '',
         typeOfUser: '',
-        pageOrResource: '',
-        message: '',
+        detailedDescription: '',
+        shortDescription: '',
         firstName: '',
         lastName: '',
         email: '',
         shouldSubscribe: true,
-        shouldFollowUp: true,
         sendCopy: true
       },
       isSubmitting: false,
       formRules: {
-        description: [
-          {
-            required: true,
-            message: 'Please enter a description',
-            trigger: 'change'
-          }
-        ],
-        pageOrResource: [
-          {
-            required: true,
-            message: 'Please select an option',
-            trigger: 'change'
-          }
-        ],
         typeOfUser: [
           {
             required: true,
@@ -140,7 +99,7 @@ export default {
             required: true,
             message: 'Please enter your email',
             type: 'email',
-            trigger: 'blur'
+            trigger: 'blur',
           }
         ],
 
@@ -151,6 +110,7 @@ export default {
             trigger: 'blur',
           }
         ],
+
         lastName: [
           {
             required: true,
@@ -159,10 +119,18 @@ export default {
           }
         ],
 
-        message: [
+        shortDescription: [
           {
             required: true,
-            message: 'Please enter a message',
+            message: 'Please enter a description',
+            trigger: 'change'
+          }
+        ],
+
+        detailedDescription: [
+          {
+            required: true,
+            message: 'Please enter a description',
             trigger: 'change'
           }
         ],
@@ -172,8 +140,7 @@ export default {
 
   computed: {
     ...mapState('pages/contact-us', {
-      userTypes: state => state.formOptions.userTypes,
-      areasOfSparc: state => state.formOptions.areasOfSparc
+      userTypes: state => state.formOptions.userTypes
     }),
   },
 
@@ -184,35 +151,21 @@ export default {
   },
 
   methods: {
-    validateEmail: function(rule, value, callback) {
-      if (this.form.shouldFollowUp && value === '') {
-        callback(new Error(rule.message))
-      }
-      callback()
-    },
-
-    validateUrl: function(rule, value, callback) {
-      if (!value.includes('.') || value.lastIndexOf('.') == value.length - 1 || value.indexOf('.') == 0) {
-        callback(new Error(rule.message))
-      }
-      callback()
-    },
     /**
      * Send form to endpoint
      */
     async sendForm() {
       this.isSubmitting = true
       const description = `
-        <b>Is this about a specific page or resource?</b><br>${this.form.pageOrResource}<br><br>
-        <b>Your question or comment?</b><br>${this.form.message}<br><br>
+        <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
+        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
-        <b>Email:</b><br>${this.form.email}<br><br>
-        <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
+        <b>Email:</b><br>${this.form.email}
       `
       let formData = new FormData();
-      formData.append("type", "general")
+      formData.append("type", "research")
       formData.append("sendCopy", this.form.sendCopy)
-      formData.append("title", `SPARC Question or Inquiry Submission: ${this.form.description}`)
+      formData.append("title", `SPARC Research Submission: ${this.form.shortDescription}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.email)
 
@@ -239,10 +192,6 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
-.submit-button {
-  text-align: left;
-  margin-bottom: 0 !important;
-}
 hr {
   border-top: none;
   border-left: none;
@@ -256,10 +205,5 @@ hr {
 .recaptcha {
   display: flex;
   justify-content: left;
-}
-::v-deep .file-upload {
-  .el-form-item__label {
-    margin-bottom: .3rem;
-  }
 }
 </style>
