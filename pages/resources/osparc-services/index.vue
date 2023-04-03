@@ -53,14 +53,14 @@
                     />
                     -->
                   </div>
-                  <span v-if="resources.length" class="label1">
+                  <!-- <span v-if="resources.length" class="label1">
                     Sort
                     <sort-menu
                       :options="sortOptions"
                       :selected-option="selectedSortOption"
                       @update-selected-option="onSortOptionChange"
                     />
-                  </span>
+                  </span> -->
                 </div>
                 <div class="subpage">
                   <services-search-results
