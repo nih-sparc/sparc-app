@@ -11,10 +11,10 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmap-viewer@2.2.9":
-  version "2.2.9"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.9.tgz#b3f50f4e23944d19b4babf8a56030b12c5f2470b"
-  integrity sha512-UN7R84Xn2TeK9Fo/IEFSEKuauRroO5KMYKDUu4wfZQw0qzSC79OdJmHBOeIH4pkS+J4FRZfq+prS7cxiCNCyRw==
+"@abi-software/flatmap-viewer@^2.2.13":
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.13.tgz#7b5f5565c5baa3252950ffbeb28f16578f5f2b15"
+  integrity sha512-5t6jlHPHFQyvx53tHY8OM8j8Abs0oii4jXCSCNPOZAh7mRvrN1sWafXt4kVlgFeUV4IcDBan6Ihh7mx+ejHyNw==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@turf/area" "^6.0.1"
@@ -22,16 +22,16 @@
     "@turf/helpers" "^6.1.4"
     "@turf/projection" "^6.5.0"
     bezier-js "^6.1.0"
-    maplibre-gl ">=1.15.3"
+    maplibre-gl ">=2.4.0"
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@^0.3.15":
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.3.15.tgz#2aca7dffc18fcfdb8e9bdcce042d87d743c8a5aa"
-  integrity sha512-//xneTykx+5p+Xm/RBEI9r/0ftRRvGhZLpbLCMnIZ/i23jwM62fbNzeNQJ1gHyaoY8SHORd+g7iWERuRJmsjPg==
+"@abi-software/flatmapvuer@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.4.0.tgz#2bba6085559f3d43be9bbd39ba8e7a21e849a0c7"
+  integrity sha512-nr+H0Vl4gMwZhScENYWrwRVJA2CNJbMSxKKQwBFmvNuNr5wQWPiQynM2qBKaMLpF6En8a6eMRGeVjeS+ULq0Rw==
   dependencies:
-    "@abi-software/flatmap-viewer" "2.2.9"
+    "@abi-software/flatmap-viewer" "^2.2.13"
     "@abi-software/svg-sprite" "^0.1.14"
     core-js "^3.3.2"
     css-element-queries "^1.2.2"
@@ -67,12 +67,12 @@
     vue "^2.6.10"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@0.3.14":
-  version "0.3.14"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.14.tgz#e051cff04d0d55e20a1594830b9feead1a6e293d"
-  integrity sha512-54O7AsoG5mUv8PcMatWPyBfMX6fRAgrqhDQr8TxxMA38+hvScqnZbuMIFG9Fd616WwquY5Y6ejJ/zhSSuoHy9w==
+"@abi-software/mapintegratedvuer@0.3.15":
+  version "0.3.15"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.15.tgz#2332a234c06662b18906e8928fe2068658b7bc1d"
+  integrity sha512-MkLghnTsoQ/uCFot5HHeFD0GpdrAzfM8lR8XoRShh1BBVCjLyjQqlZ9lucfYZdt+5D7TIdCKpPUh2VtMkp82gQ==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.3.15"
+    "@abi-software/flatmapvuer" "^0.4.0"
     "@abi-software/map-side-bar" "^1.3.36"
     "@abi-software/plotvuer" "^0.3.9"
     "@abi-software/scaffoldvuer" "^0.1.58"
@@ -2225,13 +2225,13 @@
     concat-stream "~2.0.0"
     minimist "^1.2.5"
 
-"@mapbox/geojson-rewind@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@mapbox/geojson-rewind/-/geojson-rewind-0.5.1.tgz#adbe16dc683eb40e90934c51a5e28c7bbf44f4e1"
-  integrity sha512-eL7fMmfTBKjrb+VFHXCGv9Ot0zc3C0U+CwXo1IrP+EPwDczLoXv34Tgq3y+2mPSFNVUXgU42ILWJTC7145KPTA==
+"@mapbox/geojson-rewind@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@mapbox/geojson-rewind/-/geojson-rewind-0.5.2.tgz#591a5d71a9cd1da1a0bf3420b3bea31b0fc7946a"
+  integrity sha512-tJaT+RbYGJYStt7wI3cq4Nl4SXxG8W7JDG5DMJu97V25RnbNg3QtQtf+KD+VLjNpWKYsRvXDNmNrBgEETr1ifA==
   dependencies:
     get-stream "^6.0.1"
-    minimist "^1.2.5"
+    minimist "^1.2.6"
 
 "@mapbox/geojson-types@^1.0.2":
   version "1.0.2"
@@ -2263,10 +2263,10 @@
   resolved "https://registry.yarnpkg.com/@mapbox/tiny-sdf/-/tiny-sdf-1.2.5.tgz#424c620a96442b20402552be70a7f62a8407cc59"
   integrity sha512-cD8A/zJlm6fdJOk6DqPUV8mcpyJkRz2x2R+/fYcWDYG3oWbG7/L7Yl/WqQ1VZCjnL9OTIMAn6c+BC5Eru4sQEw==
 
-"@mapbox/tiny-sdf@^2.0.4":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@mapbox/tiny-sdf/-/tiny-sdf-2.0.5.tgz#cdba698d3d65087643130f9af43a2b622ce0b372"
-  integrity sha512-OhXt2lS//WpLdkqrzo/KwB7SRD8AiNTFFzuo9n14IBupzIMa67yGItcK7I2W9D8Ghpa4T04Sw9FWsKCJG50Bxw==
+"@mapbox/tiny-sdf@^2.0.5":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@mapbox/tiny-sdf/-/tiny-sdf-2.0.6.tgz#9a1d33e5018093e88f6a4df2343e886056287282"
+  integrity sha512-qMqa27TLw+ZQz5Jk+RcwZGH7BQf5G/TrutJhspsca/3SHwmgKQ1iq+d3Jxz5oysPVYTGP6aXxCo5Lk9Er6YBAA==
 
 "@mapbox/unitbezier@^0.0.0":
   version "0.0.0"
@@ -3041,7 +3041,7 @@
   dependencies:
     "@types/webpack" "*"
 
-"@types/geojson@*", "@types/geojson@^7946.0.8":
+"@types/geojson@*", "@types/geojson@^7946.0.10":
   version "7946.0.10"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.10.tgz#6dfbf5ea17142f7f9a043809f1cd4c448cb68249"
   integrity sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==
@@ -6382,10 +6382,10 @@ earcut@^2.1.5, earcut@^2.2.2:
   resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.2.2.tgz#41b0bc35f63e0fe80da7cddff28511e7e2e80d11"
   integrity sha512-eZoZPPJcUHnfRZ0PjLvx2qBordSiO8ofC3vt+qACLM95u+4DovnbYNpQtJh0DNsWj8RnxrQytD4WA8gj5cRIaQ==
 
-earcut@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.2.3.tgz#d44ced2ff5a18859568e327dd9c7d46b16f55cf4"
-  integrity sha512-iRDI1QeCQIhMCZk48DRDMVgQSSBDmbzzNhnxIo+pwx3swkfjMh6vh0nWLq1NdvGHLKH6wIrAM3vQWeTj6qeoug==
+earcut@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.2.4.tgz#6d02fd4d68160c114825d06890a92ecaae60343a"
+  integrity sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -8052,6 +8052,15 @@ glob@^7.1.2, glob@^7.1.3:
     minimatch "^3.0.4"
     once "^1.3.0"
     path-is-absolute "^1.0.0"
+
+global-prefix@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/global-prefix/-/global-prefix-3.0.0.tgz#fc85f73064df69f50421f47f883fe5b913ba9b97"
+  integrity sha512-awConJSVCHVGND6x3tmMaKcQvwXLhjdkmomy2W+Goaui8YPgYgXJZewhg3fWC+DlfqqQuWg8AwqjGTD2nAPVWg==
+  dependencies:
+    ini "^1.3.5"
+    kind-of "^6.0.2"
+    which "^1.3.1"
 
 globals@^11.1.0:
   version "11.12.0"
@@ -10316,32 +10325,33 @@ mapbox-gl@1.10.1:
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.1"
 
-maplibre-gl@>=1.15.3:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-2.1.9.tgz#042f3ef4224fa890ecf7a410145243f1fc943dcd"
-  integrity sha512-pnWJmILeZpgA5QSI7K7xFK3yrkyYTd9srw3fCi2Ca52Phm78hsznPwUErEQcZLfxXKn/1h9t8IPdj0TH0NBNbg==
+maplibre-gl@>=2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-2.4.0.tgz#2b53dbf526626bf4ee92ad4f33f13ef09e5af182"
+  integrity sha512-csNFylzntPmHWidczfgCZpvbTSmhaWvLRj9e1ezUDBEPizGgshgm3ea1T5TCNEEBq0roauu7BPuRZjA3wO4KqA==
   dependencies:
-    "@mapbox/geojson-rewind" "^0.5.1"
+    "@mapbox/geojson-rewind" "^0.5.2"
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
     "@mapbox/mapbox-gl-supported" "^2.0.1"
     "@mapbox/point-geometry" "^0.1.0"
-    "@mapbox/tiny-sdf" "^2.0.4"
+    "@mapbox/tiny-sdf" "^2.0.5"
     "@mapbox/unitbezier" "^0.0.1"
     "@mapbox/vector-tile" "^1.3.1"
     "@mapbox/whoots-js" "^3.1.0"
-    "@types/geojson" "^7946.0.8"
+    "@types/geojson" "^7946.0.10"
     "@types/mapbox__point-geometry" "^0.1.2"
     "@types/mapbox__vector-tile" "^1.3.0"
     "@types/pbf" "^3.0.2"
     csscolorparser "~1.0.3"
-    earcut "^2.2.3"
+    earcut "^2.2.4"
     geojson-vt "^3.2.1"
     gl-matrix "^3.4.3"
+    global-prefix "^3.0.0"
     murmurhash-js "^1.0.0"
     pbf "^3.2.1"
     potpack "^1.0.2"
     quickselect "^2.0.0"
-    supercluster "^7.1.4"
+    supercluster "^7.1.5"
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.3"
 
@@ -10599,6 +10609,11 @@ minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+
+minimist@^1.2.6:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
+  integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
 
 minipass-collect@^1.0.2:
   version "1.0.2"
@@ -14389,10 +14404,10 @@ supercluster@^7.0.0:
   dependencies:
     kdbush "^3.0.0"
 
-supercluster@^7.1.4:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/supercluster/-/supercluster-7.1.4.tgz#6762aabfd985d3390b49f13b815567d5116a828a"
-  integrity sha512-GhKkRM1jMR6WUwGPw05fs66pOFWhf59lXq+Q3J3SxPvhNcmgOtLRV6aVQPMRsmXdpaeFJGivt+t7QXUPL3ff4g==
+supercluster@^7.1.5:
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/supercluster/-/supercluster-7.1.5.tgz#65a6ce4a037a972767740614c19051b64b8be5a3"
+  integrity sha512-EulshI3pGUM66o6ZdH3ReiFcvHpM3vAigyK+vcxdjpJyEbIIrtbmBdY23mGgnI24uXiGFvrGq9Gkum/8U7vJWg==
   dependencies:
     kdbush "^3.0.0"
 
@@ -15900,7 +15915,7 @@ which-module@^2.0.0:
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"
   integrity sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho=
 
-which@^1.2.9, which@^1.3.0:
+which@^1.2.9, which@^1.3.0, which@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/which/-/which-1.3.1.tgz#a45043d54f5805316da8d62f9f50918d3da70b0a"
   integrity sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==
