@@ -2,7 +2,8 @@
   <paper
     :text="parseMarkdown(searchPaperText)"
     :button-text="searchPaperCSButton"
-    :button-link="'/news-and-events/community-spotlight/submit'"
+    :button-link="{ name: 'contact-us', query: { type: 'story'} }"
+    new-tab
   />
 </template>
 

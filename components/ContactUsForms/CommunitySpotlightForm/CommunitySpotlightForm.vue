@@ -21,6 +21,29 @@
 
     <hr/>
 
+    <el-form-item class="file-upload" prop="fileAttachment" label="Image Upload">
+      <div class="body4 mb-8"><i>To help others understand your story, an image can really help. We recommend images of 600px by 600px.</i></div>
+      <el-upload
+        ref="fileUploader"
+        action=""
+        :limit="limit"
+        :auto-upload="false"
+        :on-change="onUploadChange"
+        :on-remove="onRemove"
+        :before-remove="beforeRemove" >
+        <el-button slot="trigger" class="secondary">Select file</el-button>
+        <span slot="tip" class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
+      </el-upload>
+    </el-form-item>
+
+    <el-form-item prop="supportingLinks" label="Supporting Information">
+      <url-list :default-links="form.supportingLinks" @links-updated="form.supportingLinks = $event" @add-link="addSupportingLink" placeholder="Enter URL">
+        <template slot="prepend">Http://</template>
+      </url-list>
+    </el-form-item>
+
+    <hr/>
+
     <user-contact-form-item
       @type-of-user-updated="form.typeOfUser = $event"
       @first-name-updated="form.firstName = $event"
