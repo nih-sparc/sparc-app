@@ -83,18 +83,21 @@ export default {
     firstName: {
       handler: async function(name) {
         this.userFirstName = name
+        this.$emit('first-name-updated', name)
       },
       immediate: true
     },
     lastName: {
       handler: async function(name) {
         this.userLastName = name
+        this.$emit('last-name-updated', name)
       },
       immediate: true
     },
     profileEmail: {
       handler: async function(email) {
         this.userEmail = email
+        this.$emit('email-updated', email)
       },
       immediate: true
     },
