@@ -116,7 +116,10 @@ export default {
     SubmitToolSection
   },
 
-  async asyncData({ route, $axios }) {
+  async asyncData({ route, redirect, env, $axios }) {
+    if (env.SHOW_OSPARC_TAB == 'false') {
+      redirect('/')
+    }
     const url = new URL(`${process.env.portal_api}/sim/service`)
     if (route.query.search) {
       url.searchParams.append('search', route.query.search)

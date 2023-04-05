@@ -139,7 +139,8 @@ export default {
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
     SHOW_METRICS: process.env.SHOW_METRICS || 'false',
-    SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false'
+    SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false',
+    SHOW_OSPARC_TAB: process.env.SHOW_OSPARC_TAB || 'false',
   },
 
   serverMiddleware: [
