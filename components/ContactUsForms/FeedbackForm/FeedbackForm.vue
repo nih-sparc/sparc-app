@@ -103,7 +103,7 @@ export default {
         email: '',
         sendCopy: true,
         shouldFollowUp: true,
-        shouldSubscribe: true
+        shouldSubscribe: false
       },
       isSubmitting: false,
       formRules: {

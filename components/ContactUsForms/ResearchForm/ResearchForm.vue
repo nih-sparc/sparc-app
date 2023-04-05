@@ -81,7 +81,7 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: true,
+        shouldSubscribe: false,
         sendCopy: true
       },
       isSubmitting: false,

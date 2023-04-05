@@ -91,7 +91,7 @@ export default {
         lastName: '',
         email: '',
         shouldFollowUp: true,
-        shouldSubscribe: true,
+        shouldSubscribe: false,
         sendCopy: true
       },
       isSubmitting: false,

@@ -108,7 +108,7 @@ export default {
         summary: '',
         supportingLinks: [''],
         sendCopy: true,
-        shouldSubscribe: true
+        shouldSubscribe: false
       },
       isSubmitting: false,
       formRules: {

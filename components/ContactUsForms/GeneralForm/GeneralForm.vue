@@ -108,7 +108,7 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
-        shouldSubscribe: true,
+        shouldSubscribe: false,
         shouldFollowUp: true,
         sendCopy: true
       },

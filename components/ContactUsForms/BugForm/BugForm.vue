@@ -108,7 +108,7 @@ export default {
         email: '',
         shouldFollowUp: true,
         sendCopy: true,
-        shouldSubscribe: true,
+        shouldSubscribe: false,
       },
       isSubmitting: false,
       formRules: {
