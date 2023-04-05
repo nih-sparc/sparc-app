@@ -105,7 +105,7 @@ import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
 
 export default {
-  name: 'SoftwarePage',
+  name: 'OsparcServicesPage',
 
   components: {
     Breadcrumb,
