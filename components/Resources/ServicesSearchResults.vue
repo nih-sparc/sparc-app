@@ -61,20 +61,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .resources-search-results {
   &__items {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    border-bottom: solid 1px $light-grey;
+    border-bottom: solid 1px $lineColor2;
     padding: 1.25em 0;
     @media screen and (max-width: 768px) {
       display: block;
     }
     h2 {
       font-size: 1em;
-      color: $median;
+      color: $purple;
       margin-bottom: 0.375rem;
       line-height: 22px;
       font-weight: 500;
@@ -105,14 +105,14 @@ export default {
       font-style: italic;
       line-height: 18px;
       font-weight: normal;
-      color: $dark-sky;
+      color: $grey;
     }
     &--content-description {
       font-size: 1em;
       font-weight: normal;
       line-height: 22px;
       font-weight: normal;
-      color: $dark-sky;
+      color: $grey;
       margin-right: 1rem;
     }
     &--button {
@@ -136,7 +136,7 @@ export default {
   }
 }
 .metadata-title {
-  color: $dark-sky;
+  color: $grey;
   font-size: 1em;
   font-weight: 500;
   line-height: 1.2;
@@ -145,7 +145,7 @@ export default {
 }
 
 .resource-category {
-  background: $median;
+  background: $purple;
   border-radius: 15px;
   color: #fff;
   font-size: 0.875rem;
