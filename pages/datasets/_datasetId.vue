@@ -445,12 +445,20 @@ export default {
     datasetDetails.sciCrunch = scicrunchData;
 
     // Get oSPARC file viewers
-    const osparcViewers = await $axios
-      .$get(`${process.env.portal_api}/get_osparc_data`)
-      .then(osparcData => osparcData['file_viewers'])
-      .catch(() => {
-        return {}
-      })
+    const osparcViewers = process.env.SHOW_OSPARC_TAB == 'true' ? 
+      await $axios
+        .$get(`${process.env.portal_api}/sim/file`)
+        .then(osparcData => osparcData['file_viewers'])
+        .catch(() => {
+          return {}
+        }) :
+      await $axios
+        .$get(`${process.env.portal_api}/get_osparc_data`)
+        .then(osparcData => osparcData['file_viewers'])
+        .catch(() => {
+          return {}
+        }) 
+
     
     // Get all timeseries files (those with an '.edf' extension)
     const timeseriesData = process.env.SHOW_TIMESERIES_VIEWER
@@ -542,7 +550,7 @@ export default {
               type: this.$route.query.type
             }
           },
-          label: 'Find Data'
+          label: 'Data & Models'
         }
       ],
       subtitles: [],

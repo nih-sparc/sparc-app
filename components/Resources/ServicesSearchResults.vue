@@ -1,90 +1,60 @@
 <template>
   <div class="resources-search-results">
-    <div class="no-results" v-if="tableData.length === 0">
+    <div class="no-results" v-if="services.length === 0">
       <el-table :show-header="false" empty-text="No Results">
         <el-table-column />
       </el-table>
     </div>
     <div
       v-else
-      v-for="data in tableData"
-      :key="data.sys.id"
+      v-for="service in services"
+      :key="service.id"
       class="resources-search-results__items"
     >
       <div class="resources-search-results__items--image">
-        <img v-show="data.fields.logo" :src="getBannerImage(data)" />
+        <img v-show="service.thumbnail" :src="service.thumbnail" />
       </div>
       <div class="resources-search-results__items--content">
-        <router-link
-          v-if="data.fields.requiresDetailsPage"
-          :to="{
-            name: 'resources-resourceId',
-            params: { resourceId: data.sys.id }
-          }"
-        >
-          <h2 v-html="highlightMatches(data.fields.name, $route.query.search)"/>
-        </router-link>
-        <a v-else :href="data.fields.url" target="blank">
-          <h2><span v-html="highlightMatches(data.fields.name, $route.query.search)"/><svg-icon name="icon-open" height="30" width="30" /></h2>
-        </a>
-        <div class="mb-8">
-          <span v-if="data.fields.developedBySparc" class="resource-category">
-            SPARC
-          </span>
-          <span v-if="data.fields.codeathon" class="resource-category">
-            Codeathon
-          </span>
-        </div>
-        <template v-if="data.fields.contactEmail">
-          <h3 class="metadata-title">
-            Support Contact
-          </h3>
-          <p>
-            <span v-if="data.fields.owner" v-html="highlightMatches(data.fields.owner, $route.query.search)"/>
-            <span v-if="data.fields.owner && data.fields.contactEmail"> · </span>
-            <a
-              v-if="data.fields.contactEmail"
-              :href="`mailto:${data.fields.contactEmail}`"
-            >
-              {{ data.fields.contactEmail }}
-            </a>
-          </p>
-        </template>
-        <!-- eslint-disable vue/no-v-html -->
+        <h2><span v-html="highlightMatches(service.title, $route.query.search)"/></h2>
         <p
           class="resources-search-results__items--content-description"
-          v-html="highlightMatches(parseMarkdown(data.fields.description), $route.query.search)"
+          v-html="highlightMatches(parseMarkdown(service.description), $route.query.search)"
         />
+      </div>
+      <div  class="resources-search-results__items--button">
+        <sparc-tooltip placement="top-center" content="Instantiate this service in o²S²PARC. Login credentials are required.">
+          <div slot="item">
+            <a :href="service['view_url']" target="_blank">
+              <el-button>
+                <div class="open-osparc-btn-content">
+                  Open in o<sup>2</sup>S<sup>2</sup>PARC <svg-icon icon="icon-open" height="18" width="18" />
+                </div>
+              </el-button>
+            </a>
+          </div>
+        </sparc-tooltip>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { pathOr } from 'ramda'
 import marked from '@/mixins/marked/index'
-
-import FormatDate from '@/mixins/format-date'
 import { highlightMatches } from '../../pages/data/utils'
-export default {
-  name: 'ResourceSearchResults',
 
-  mixins: [FormatDate, marked],
+export default {
+  name: 'ServicesSearchResults',
+
+  mixins: [marked],
+
   props: {
-    tableData: {
+    services: {
       type: Array,
       default: () => []
     }
   },
 
   methods: {
-    /**
-     * Gets the banner image for the resource
-     * @returns {String}
-     */
-    getBannerImage: function(data) {
-      return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], data)
-    },
     highlightMatches
   }
 }
@@ -96,6 +66,7 @@ export default {
   &__items {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
     border-bottom: solid 1px $lineColor2;
     padding: 1.25em 0;
     @media screen and (max-width: 768px) {
@@ -110,6 +81,7 @@ export default {
     }
 
     &--content {
+      flex: 1;
       a {
         text-decoration: none;
       }
@@ -141,6 +113,25 @@ export default {
       line-height: 22px;
       font-weight: normal;
       color: $grey;
+      margin-right: 1rem;
+    }
+    &--button {
+      align-self: center;
+      sup, sub {
+        vertical-align: baseline;
+        position: relative;
+        top: -0.4em;
+      }
+      sub {
+        top: 0.4em;
+      }
+      svg {
+        margin-left: .3em;
+      }
+      .open-osparc-btn-content {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }
