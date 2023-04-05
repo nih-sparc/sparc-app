@@ -52,6 +52,7 @@
     <hr />
 
     <user-contact-form-item
+      showFollowUpOption
       @type-of-user-updated="form.typeOfUser = $event"
       @first-name-updated="form.firstName = $event"
       @last-name-updated="form.lastName = $event"
@@ -185,7 +186,7 @@ export default {
 
   methods: {
     validateEmail: function(rule, value, callback) {
-      if (this.form.shouldFollowUp && value === '') {
+      if (value === '') {
         callback(new Error(rule.message))
       }
       callback()
