@@ -141,7 +141,7 @@ export default {
         startDate: '',
         endDate: '',
         supportingLinks: [''],
-        shouldSubscribe: true,
+        shouldSubscribe: false,
         sendCopy: true
       },
       isSubmitting: false,

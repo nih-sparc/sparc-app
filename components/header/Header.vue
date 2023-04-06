@@ -552,8 +552,7 @@ export default {
   display: flex;
   outline: none;
   padding-bottom: 1rem;
-  &:hover:not(:active),
-  &:focus:not(:active) {
+  &:hover:not(:active) {
     color: $app-primary-color;
   }
   @media (min-width: 64em) {
@@ -647,8 +646,7 @@ export default {
   transform: translate(12px, -8px);
   -webkit-appearance: none;
 
-  &:hover:not(:active),
-  &:focus:not(:active) {
+  &:hover:not(:active) {
     color: $app-primary-color;
   }
 
@@ -684,8 +682,7 @@ export default {
         font-weight: 500;
 
         &.active,
-        &:hover,
-        &:focus {
+        &:hover {
           border-bottom: 2px solid $median;
           color: $median;
         }

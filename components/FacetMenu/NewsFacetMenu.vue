@@ -46,7 +46,7 @@ const SUBJECT_CATEGORY = {
       id: 'News Article',
     },
     {
-      label: 'Funding oppotunity',
+      label: 'Funding opportunity',
       id: 'Funding Opportunity',
     }
   ]

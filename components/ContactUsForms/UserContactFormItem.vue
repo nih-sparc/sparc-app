@@ -70,7 +70,7 @@ export default {
       userEmail: this.profileEmail,
       shouldFollowUp: true,
       sendCopy: true,
-      shouldSubscribe: true,
+      shouldSubscribe: false,
     }
   },
   computed: {
