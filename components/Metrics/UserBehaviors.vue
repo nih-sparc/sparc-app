@@ -19,7 +19,7 @@
     <div class="row">
       <div class="col">
         <div class="col-header heading2 mb-0">
-          Total Downloads: <span class="col-data">{{ totalDownloadsLastMonth }}</span> <span class="body1">({{ totalDownloadsLastQuarter }} last 3 months)</span>
+          Total Downloads: <span class="col-data">{{ totalDownloadsLastMonth }}</span> <span class="body1">({{ totalDownloadsLastQuarter }} last quarter)</span>
         </div>
       </div>
       <div class="col">
@@ -70,7 +70,7 @@ export default {
               data: behaviors.pageViewsData.lastMonth
             },
             { 
-              label: 'Last 3 Months',
+              label: 'Last Quarter',
               backgroundColor: [
                 'rgba(188, 0, 252, .25)',
                 'rgba(188, 0, 252, .25)',
@@ -97,7 +97,7 @@ export default {
               data: behaviors.usersData.lastMonth
             },
             { 
-              label: 'Last 3 Months',
+              label: 'Last Quarter',
               backgroundColor: [
                 'rgba(188, 0, 252, .25)',
                 'rgba(188, 0, 252, .25)',
