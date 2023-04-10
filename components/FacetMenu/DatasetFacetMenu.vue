@@ -16,7 +16,7 @@
     <dropdown-multiselect
       v-for="item in this.facets"
       v-show="visibleCategories.includes(item.key)"
-      collapse-by-default
+      :collapse-by-default="!containsSelectedId(item)"
       :key="item.id"
       :category="constructCategory(item)"
       :visible-data="visibleFacets"
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { pluck, pathOr } from 'ramda'
+import { pluck, pathOr, propOr } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 import { facetPropPathMapping } from '~/pages/data/utils'
 
@@ -226,6 +226,10 @@ export default {
       })
       this.$refs.embargoedFacetCategory.setCollapsed(false)
     },
+    containsSelectedId(item) {
+      const children = propOr([], 'children', item)
+      return children.some(child => this.defaultCheckedFacetIds.some(checkedId => parseInt(checkedId) == (propOr('', 'id', child))))
+    }
 	}
 }
 </script>

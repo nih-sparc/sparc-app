@@ -255,6 +255,7 @@ export default {
 <style lang="scss" scoped>
 .dataset-description-info {
   overflow-wrap: anywhere;
+  word-wrap: normal;
   ::v-deep hr{
     margin-top: 1rem;
     border-top: none;

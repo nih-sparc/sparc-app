@@ -218,5 +218,6 @@ hr {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: inherit;
 }
 </style>
