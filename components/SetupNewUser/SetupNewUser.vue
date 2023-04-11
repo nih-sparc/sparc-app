@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div
       v-if="this.askingForEmail"
       class="login-wrap"
@@ -201,7 +200,6 @@
         Home
       </bf-button>
     </div>
-
   </div>
 </template>
 
@@ -211,7 +209,6 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import {pathOr} from "ramda";
 import Request from '@/mixins/request'
 import { Auth } from '@aws-amplify/auth'
-import EventBus from "@/static/js/event-bus";
 export default {
   name: 'SetupNewUser',
   components: {
