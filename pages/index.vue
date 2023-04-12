@@ -91,7 +91,7 @@ export default {
   watch: {
     cognitoUserToken: function (val) {
       if (val != '') {
-        const profileComplete = this.$cookies.get('profile-complete')
+        const profileComplete = this.$cookies.get('profile-complete') || this.profileComplete
         if (!profileComplete) {
           this.$router.push("/welcome")
         }
@@ -100,7 +100,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('user', ['cognitoUserToken']),
+    ...mapGetters('user', ['cognitoUserToken', 'profileComplete']),
   },
 
   beforeMount() {
