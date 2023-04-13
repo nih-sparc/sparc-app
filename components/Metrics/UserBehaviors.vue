@@ -19,7 +19,7 @@
     <div class="row">
       <div class="col">
         <div class="col-header heading2 mb-0">
-          Total Downloads: <span class="col-data">{{ totalDownloadsLastMonth }}</span> <span class="body1">({{ totalDownloadsLastQuarter }} last quarter)</span>
+          Downloads last month: <span class="col-data">{{ totalDownloadsLastMonth }}</span> <span class="body1">({{ totalDownloadsLastQuarter }} last quarter)</span>
         </div>
       </div>
       <div class="col">
