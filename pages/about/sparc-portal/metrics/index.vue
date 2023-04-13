@@ -113,9 +113,9 @@ const fetchMetrics = async (axios, month, year) => {
     scientificContribution: {
       dataChartLabels: ['All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed (across all)'],
       dataChartData: {
-        total: [parseInt(sparcMetricsData['all_sparc_categories_cumulative']['N']), parseInt(sparcMetricsData['sparc_datasets_cumulative']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['sparc_computational_models_cumulative']['N']), parseInt(sparcMetricsData['embargoed_overall']['N'])],
-        lastMonth: [parseInt(sparcMetricsData['all_sparc_categories_last_mo']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_1_mo']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_1_mo']['N'])],
-        last3Months: [parseInt(sparcMetricsData['all_sparc_categories_last_quarter']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_quarter']['N']), parseInt(sparcMetricsData['current_number_of_anatomical_structures']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_quarter']['N'])]
+        total: [parseInt(sparcMetricsData['all_sparc_categories_cumulative']['N']), parseInt(sparcMetricsData['sparc_datasets_cumulative']['N']), parseInt(sparcMetricsData['sparc_maps_cumulative']['N']), parseInt(sparcMetricsData['sparc_computational_models_cumulative']['N']), parseInt(sparcMetricsData['embargoed_overall']['N'])],
+        lastMonth: [parseInt(sparcMetricsData['all_sparc_categories_last_mo']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_1_mo']['N']), parseInt(sparcMetricsData['sparc_maps_cumulative']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_1_mo']['N'])],
+        last3Months: [parseInt(sparcMetricsData['all_sparc_categories_last_quarter']['N']), parseInt(sparcMetricsData['new_sparc_datasets_last_quarter']['N']), parseInt(sparcMetricsData['sparc_maps_cumulative']['N']), parseInt(sparcMetricsData['new_sparc_computational_models_last_quarter']['N'])]
       },
       samples: {
         total: parseInt(sparcMetricsData['number_of_samples_cumulative']['N']),
@@ -186,7 +186,7 @@ export default {
           to: {
             name: 'about-sparc-portal-metrics',
             query: {
-              metricsType: 'userBehaviors'
+              metricsType: 'scientificContribution'
             }
           },
           label: 'Metrics'
