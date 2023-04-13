@@ -54,16 +54,10 @@
                   <dataset-files-info
                     v-if="hasFiles"
                     v-show="activeTabId === 'files'"
-                    :osparc-viewers="osparcViewers"
-                    :dataset-scicrunch="scicrunchData"
                   />
                   <images-gallery
-                    v-if="hasGalleryImages"
-                    v-show="activeTabId === 'images'"
                     :markdown="markdown.markdownTop"
-                    :dataset-biolucida="biolucidaImageData"
-                    :dataset-scicrunch="scicrunchData"
-                    :timeseries-data="timeseriesData"
+                    v-show="activeTabId === 'images'"
                   />
                   <dataset-references
                     v-if="hasCitations"
@@ -95,7 +89,7 @@
 <script>
 import marked from 'marked'
 import { mapState } from 'vuex'
-import { clone, propOr, isEmpty, pathOr, head, compose } from 'ramda'
+import { clone, propOr, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
 import createAlgoliaClient from '@/plugins/algolia.js'
 
@@ -121,13 +115,8 @@ import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import Scaffolds from '@/static/js/scaffolds.js'
-import Uberons from '@/static/js/uberon-map.js'
 
 import createClient from '@/plugins/contentful.js'
-
-import biolucida from '@/services/biolucida'
-import scicrunch from '@/services/scicrunch'
-import flatmaps from '~/services/flatmaps'
 
 import { failMessage } from '@/utils/notification-messages'
 
@@ -151,6 +140,10 @@ const tabs = [
   {
     label: 'Cite',
     id: 'cite'
+  },
+  {
+    label: 'Gallery',
+    id: 'images'
   },
 ]
 
@@ -283,100 +276,6 @@ const getDownloadsSummary = async ($axios) => {
   }
 }
 
-const getBiolucidaData = async datasetId => {
-  try {
-    return biolucida.searchDataset(datasetId)
-  } catch (e) {
-    return {}
-  }
-}
-
-/**
- * Get data for objects that have a data specific viewer.
- * @param {Number} datasetId
- */
-const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
-  let biolucidaImageData = {}
-  let scicrunchData = {}
-  try {
-    const [biolucida_response, scicrunch_response] = await Promise.all([
-      getBiolucidaData(datasetId),
-      scicrunch.getDatasetInfoFromDOI(datasetDoi)
-    ])
-
-    if (biolucida_response.status === 'success') {
-      biolucidaImageData = biolucida_response
-      biolucidaImageData['discover_dataset_version'] = datasetVersion
-    }
-    if (scicrunch_response.data.result.length > 0) {
-      scicrunchData = scicrunch_response.data.result[0]
-      scicrunchData.discover_dataset = {
-        id: Number(datasetId),
-        version: datasetVersion
-      }
-      // Check for flatmap data
-      if (scicrunchData.organs) {
-        let flatmapData = []
-        let species = undefined
-        // Get species data from algolia if it exists
-        if (datasetFacetsData){
-          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
-          if (speciesArray && speciesArray.length > 0)
-            species = speciesArray[0].children[0].label.toLowerCase()
-        }
-
-        // check if there is a flatmap for the given species, use a rat if there is not
-        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
-
-        // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
-        // if a flatmap of (species) has (anatomy)
-        let foundAnatomy = []
-        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
-          // Send a requst to flatmap knowledgebase
-          const anatomy = scicrunchData.organs.map(organ => organ.curie)
-          const data = await flatmaps.anatomyQuery(taxo, anatomy)
-
-          // Check request was successful
-          const anatomyResponse = data.data ? data.data.values : undefined
-          if (anatomyResponse && anatomyResponse.length > 0) {
-            foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
-          }
-        }
-
-        // Add flatmaps that match the anatomy and taxonomy to the gallery
-        scicrunchData.organs.forEach(organ => {
-          if (foundAnatomy.includes(organ.curie)){
-            let organData = {
-              taxo,
-              uberonid: organ.curie,
-              organ: organ.name,
-              id: datasetId,
-              version: datasetVersion,
-              species: species
-            }
-            flatmapData.push(organData)
-          }
-        })
-        //Only create a flatmaps field if flatmapData is not empty
-        if (flatmapData.length > 0)
-          scicrunchData['flatmaps'] = flatmapData
-      }
-    }
-  } catch (e) {
-    console.error(
-      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
-      e
-    )
-    return {
-      biolucidaImageData: {},
-      scicrunchData: {}
-    }
-  }
-  return {
-    biolucidaImageData,
-    scicrunchData
-  }
-}
 
 export default {
   name: 'DatasetDetails',
@@ -429,62 +328,6 @@ export default {
       error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true})
     }
 
-    const { biolucidaImageData, scicrunchData } = await getThumbnailData(
-      datasetDetails.doi,
-      datasetId,
-      datasetDetails.version,
-      datasetFacetsData
-    )
- 
-    if ( Object.keys(biolucidaImageData).length === 0 &&
-      Object.keys(scicrunchData).length === 0 ) {
-      //Non critical error
-      errorMessages.push(ErrorMessages.methods.scicrunch())
-    }
-
-    datasetDetails.sciCrunch = scicrunchData;
-
-    // Get oSPARC file viewers
-    const osparcViewers = process.env.SHOW_OSPARC_TAB == 'true' ? 
-      await $axios
-        .$get(`${process.env.portal_api}/sim/file`)
-        .then(osparcData => osparcData['file_viewers'])
-        .catch(() => {
-          return {}
-        }) :
-      await $axios
-        .$get(`${process.env.portal_api}/get_osparc_data`)
-        .then(osparcData => osparcData['file_viewers'])
-        .catch(() => {
-          return {}
-        }) 
-
-    
-    // Get all timeseries files (those with an '.edf' extension)
-    const timeseriesData = process.env.SHOW_TIMESERIES_VIEWER
-      ? await $axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${datasetId}`)
-        .then(({ files }) => {
-          let data = []
-          files.forEach(file => {
-            const filePath = file.uri.substring(file.uri.indexOf('files'))
-            const linkUrl =
-                process.env.ROOT_URL +
-                `/datasets/timeseriesviewer?&dataset_id=${file.datasetId}&dataset_version=${file.datasetVersion}&file_path=${filePath}`
-
-            data.push({
-              title: file.name,
-              type: 'Timeseries',
-              thumbnail: undefined,
-              link: linkUrl
-            })
-          })
-          return data
-        })
-        .catch(() => {
-          return []
-        }) 
-      : []
-
     const changelogFileRequests = []
     versions.forEach(({ version }) => {
       var changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
@@ -509,17 +352,13 @@ export default {
     store.dispatch('pages/datasets/datasetId/setDatasetTypeName', datasetTypeName)
 
     return {
-      biolucidaImageData,
       entries: organEntries,
-      osparcViewers,
-      scicrunchData,
       tabs: tabsData,
       versions,
       datasetTypeName,
       downloadsSummary,
       showTombstone: datasetDetails.isUnpublished,
       changelogFiles,
-      timeseriesData,
       errorMessages
     }
   },
@@ -560,7 +399,9 @@ export default {
   },
 
   computed: {
-    ...mapState('pages/datasets/datasetId', ['datasetInfo']),
+    ...mapState('pages/datasets/datasetId', 
+      ['datasetInfo', 'datasetFacetsData']
+    ),
     defaultTab() {
       return this.tabs[0].id
     },
@@ -783,19 +624,6 @@ export default {
     hasFiles: function() {
       return this.fileCount >= 1
     },
-    hasGalleryImages: function() {
-      //Check if the data compatible with image gallery exists in biolucida image data and scicrunch data
-      return !this.embargoed &&
-        (('dataset_images' in this.biolucidaImageData &&
-          this.biolucidaImageData.dataset_images.length > 0) ||
-        ('abi-scaffold-metadata-file' in this.scicrunchData) ||
-        ('video' in this.scicrunchData) ||
-        ('flatmaps' in this.scicrunchData) ||
-        ('mbf-segmentation' in this.scicrunchData) ||
-        ('abi-plot' in this.scicrunchData) ||
-        ('common-images' in this.scicrunchData) ||
-        !isEmpty(this.timeseriesData))
-    },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
     },
@@ -837,7 +665,6 @@ export default {
     errorMessages: {
       handler: function() {
         //Non critical error messages
-        console.log(this.errorMessages)
         this.errorMessages.forEach(message => {
           this.$message(failMessage(message))
         })
@@ -852,17 +679,6 @@ export default {
           const hasFilesTab = this.tabs.find(tab => tab.id === 'files') !== undefined
           if (!hasFilesTab) {
             this.tabs.splice(3, 0, { label: 'Files', id: 'files' })
-          }
-        }
-      },
-      immediate: true
-    },
-    hasGalleryImages: {
-      handler: function(newValue) {
-        if (newValue) {
-          const hasGalleryTab = this.tabs.find(tab => tab.id === 'images') !== undefined
-          if (!hasGalleryTab) {
-            this.tabs.splice(4, 0, { label: 'Gallery', id: 'images' })
           }
         }
       },

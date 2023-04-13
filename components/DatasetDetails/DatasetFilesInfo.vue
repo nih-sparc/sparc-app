@@ -180,15 +180,21 @@ export default {
 
   mixins: [DateUtils, FormatMetric],
 
-  props: {
-    osparcViewers: {
-      type: Object,
-      default: () => {}
-    },
-    datasetScicrunch: {
-      type: Object,
-      default: () => {}
-    }
+  async fetch() {
+    // Get oSPARC file viewers
+    this.osparcViewers = process.env.SHOW_OSPARC_TAB == 'true' ? 
+      await this.$axios
+        .$get(`${process.env.portal_api}/sim/file`)
+        .then(osparcData => osparcData['file_viewers'])
+        .catch(() => {
+          return {}
+        }) :
+      await this.$axios
+        .$get(`${process.env.portal_api}/get_osparc_data`)
+        .then(osparcData => osparcData['file_viewers'])
+        .catch(() => {
+          return {}
+        })
   },
 
   computed: {
@@ -198,6 +204,9 @@ export default {
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
     ...mapGetters('user', ['cognitoUserToken']),
+    datasetScicrunch() {
+      return propOr({}, 'sciCrunch', this.datasetInfo)
+    },
     userToken() {
       return this.cognitoUserToken || this.$cookies.get('user-token')
     },
@@ -266,6 +275,7 @@ export default {
       awsMessage: 'us-east-1',
       showAgreementPopup: false,
       showLoginDialog: false,
+      osparcViewers: {}
     }
   },
 
