@@ -69,7 +69,6 @@
                     v-if="canViewVersions"
                     v-show="activeTabId === 'versions'"
                     :versions="versions"
-                    :changelog-files="changelogFiles"
                   />
                 </content-tab-card>
               </div>
@@ -228,19 +227,6 @@ const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName,
           }
         })
 
-  const datasetOwnerId = propOr('', 'ownerId', datasetDetails)
-  const datasetOwnerEmail = await $axios
-    .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-    .then(resp => {
-      return resp.email
-    })
-    .catch(() => {
-      return ''
-    })
-
-  if (datasetDetails)
-    datasetDetails.ownerEmail = datasetOwnerEmail
-
   return datasetDetails
 }
 
@@ -306,7 +292,7 @@ export default {
     const datasetFacetsData = await getDatasetFacetsData(route)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
-    const userToken = app.$cookies.get('user-token')
+    const userToken = app.$cookies.get('user-token') || store.getters.cognitoUserToken
 
     const errorMessages = []
 
@@ -328,25 +314,6 @@ export default {
       error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true})
     }
 
-    const changelogFileRequests = []
-    versions.forEach(({ version }) => {
-      var changelogEndpoint = `${process.env.discover_api_host}/datasets/${datasetId}/versions/${version}/files?path=changelog.md`
-      if (userToken) { changelogEndpoint += `&api_key=${userToken}` }
-      changelogFileRequests.push(
-        $axios.$get(changelogEndpoint).then(response => {
-          return [{
-            ...response,
-            version: version
-          }]
-        }).catch(() => {
-          console.log("There is no changelog file associated with this dataset")
-          return [{}]
-        })
-      )
-    })
-
-    const [changelogFiles] = await Promise.all(changelogFileRequests)
-
     store.dispatch('pages/datasets/datasetId/setDatasetInfo', datasetDetails)
     store.dispatch('pages/datasets/datasetId/setDatasetFacetsData', datasetFacetsData)
     store.dispatch('pages/datasets/datasetId/setDatasetTypeName', datasetTypeName)
@@ -358,7 +325,6 @@ export default {
       datasetTypeName,
       downloadsSummary,
       showTombstone: datasetDetails.isUnpublished,
-      changelogFiles,
       errorMessages
     }
   },
@@ -396,6 +362,21 @@ export default {
       ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
       errorMessages: [],
     }
+  },
+
+  async fetch() {
+    const datasetOwnerId = propOr('', 'ownerId', this.datasetInfo)
+    const datasetOwnerEmail = await this.$axios
+      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
+      .then(resp => {
+        return resp.email
+      })
+      .catch(() => {
+        return ''
+      })
+
+    if (this.datasetInfo)
+      this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', { ...this.datasetInfo, 'ownerEmail': datasetOwnerEmail })
   },
 
   computed: {
