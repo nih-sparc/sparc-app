@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { propOr } from 'ramda'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
@@ -150,17 +150,33 @@ export default {
       type: Array,
       default: () => []
     },
-    changelogFiles: {
-      type: Array,
-      default: () => []
-    }
   },
   data: function() {
     return {
       markdown: '',
       dialogVisible: false,
-      changeLogFileInfo: {}
+      changeLogFileInfo: {},
+      changelogFiles: []
     }
+  },
+  async fetch() {
+    const changelogFileRequests = []
+    this.versions.forEach(({ version }) => {
+      var changelogEndpoint = `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${version}/files?path=changelog.md`
+      if (this.userToken) { changelogEndpoint += `&api_key=${this.userToken}` }
+      changelogFileRequests.push(
+        this.$axios.$get(changelogEndpoint).then(response => {
+          return {
+            ...response,
+            version: version
+          }
+        }).catch(() => {
+          return {}
+        })
+      )
+    })
+
+    this.changelogFiles = await Promise.all(changelogFileRequests)
   },
   computed: {
     /**
@@ -168,6 +184,10 @@ export default {
      * @returns {Object}
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
+    ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
     /**
      * Gets dataset id
      * @returns {Number}
