@@ -50,6 +50,7 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
+import AuthenticatedMixin from '@/mixins/authenticated/index'
 
 export default {
   name: 'profile',
@@ -86,9 +87,7 @@ export default {
     }
   },
 
-  middleware: 'authenticated',
-
-  mixins: [NewsletterMixin],
+  mixins: [AuthenticatedMixin, NewsletterMixin],
 
   watch: {
     profileEmail: {
