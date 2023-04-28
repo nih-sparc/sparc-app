@@ -11,10 +11,10 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmap-viewer@^2.2.13":
-  version "2.2.13"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.13.tgz#7b5f5565c5baa3252950ffbeb28f16578f5f2b15"
-  integrity sha512-5t6jlHPHFQyvx53tHY8OM8j8Abs0oii4jXCSCNPOZAh7mRvrN1sWafXt4kVlgFeUV4IcDBan6Ihh7mx+ejHyNw==
+"@abi-software/flatmap-viewer@^2.2.14-b.1":
+  version "2.2.14-b.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.14-b.1.tgz#a8fd14509181445598572b6005ed778caf610154"
+  integrity sha512-OZ1VAf8K7DU/EO4UYlzQHAOA0NLnGXHtSl3KZTesAbWW7JiwDf+iVpKFx0yXOrKGwkeHkgLFf8V3QdwLWiY/1Q==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@turf/area" "^6.0.1"
@@ -26,12 +26,12 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.4.0.tgz#2bba6085559f3d43be9bbd39ba8e7a21e849a0c7"
-  integrity sha512-nr+H0Vl4gMwZhScENYWrwRVJA2CNJbMSxKKQwBFmvNuNr5wQWPiQynM2qBKaMLpF6En8a6eMRGeVjeS+ULq0Rw==
+"@abi-software/flatmapvuer@^0.4.1-beta.1":
+  version "0.4.1-beta.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.4.1-beta.1.tgz#3dfbbfbf62dad8697aa3648e0392cd0c89eb90d0"
+  integrity sha512-mYIo66LPtEeFu8Pjh4lT0wxwAMEg4tKgv7+pk1b8FXMPSzhoTBQzZAZfq951kaLkizw7KY0803gJdVc/TqC8Sw==
   dependencies:
-    "@abi-software/flatmap-viewer" "^2.2.13"
+    "@abi-software/flatmap-viewer" "^2.2.14-b.1"
     "@abi-software/svg-sprite" "^0.1.14"
     core-js "^3.3.2"
     css-element-queries "^1.2.2"
@@ -41,7 +41,7 @@
     lodash "^4.17.21"
     vue "^2.6.10"
 
-"@abi-software/gallery@0.3.2", "@abi-software/gallery@^0.3.2":
+"@abi-software/gallery@0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.2.tgz#538ac360ab89692528d72a02cb5532e67b6f99d6"
   integrity sha512-YvLlBQVQY7mKyytfsYKX838ulpzlHo8THYEiDwBOT4xSdBVzl+t1cNvFC4Fip+QcXw96LLDJLKCiZXtU+7JDTw==
@@ -54,30 +54,43 @@
     element-ui "^2.15.0"
     vue "^2.6.11"
 
-"@abi-software/map-side-bar@^1.3.36":
-  version "1.3.36"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.36.tgz#84188ac26e7e957283f0231d3eecdf330a5c59f9"
-  integrity sha512-pEBwFAEX2LFtPT3qXwoAqofOr9ib/L7Lvvi+n/cHXwI4NG461lm/mon6f5bczKtYKxopqnbLq1oQDfVW0a3Lkg==
+"@abi-software/gallery@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-0.3.3.tgz#f4631fb20d4091d375acfa9193ed004d887fe736"
+  integrity sha512-Xw3m6U88ZPMvcw1JGPMWl6aVswtTAc5Ffb8Z8eZdy+r+RCtz2ldLniPl47n/eM7TsKZjIZCJ/2C/BnzllFE2cA==
   dependencies:
-    "@abi-software/gallery" "^0.3.2"
-    "@abi-software/svg-sprite" "^0.1.14"
+    "@babel/code-frame" "^7.12.11"
+    axios "^0.26.1"
+    babel-plugin-component "^1.1.1"
+    base64-inline-loader "^2.0.1"
+    core-js "^3.8.3"
+    element-ui "^2.15.0"
+    vue "^2.6.11"
+
+"@abi-software/map-side-bar@^1.3.38":
+  version "1.3.38"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-1.3.38.tgz#dda9c8265af61d569622804808b84c66830e07fb"
+  integrity sha512-+wHIHH8xOV0SWi9VkMDW6ADYc38JC0bXSeHldHzRG8JY7rOvSex2xbWkLmAmOGuyPhwjWDRJOTxXdaoP8h3qJA==
+  dependencies:
+    "@abi-software/gallery" "^0.3.3"
+    "@abi-software/svg-sprite" "^0.2.0"
     algoliasearch "^4.10.5"
     element-ui "^2.13.0"
     marked "^4.1.1"
     vue "^2.6.10"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@0.3.15":
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.3.15.tgz#2332a234c06662b18906e8928fe2068658b7bc1d"
-  integrity sha512-MkLghnTsoQ/uCFot5HHeFD0GpdrAzfM8lR8XoRShh1BBVCjLyjQqlZ9lucfYZdt+5D7TIdCKpPUh2VtMkp82gQ==
+"@abi-software/mapintegratedvuer@0.4.0-beta.0":
+  version "0.4.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.4.0-beta.0.tgz#10f10a6dae49e8c6f7ad2bd5e3609038a991cf34"
+  integrity sha512-xVvqKEPF+qQO079qOkB9DcGsSWa4wzj7IMr5raVWzPucE2fiDlAW10fhNO1c6yGugotlOk09F0cEQPyGIIGSRg==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.4.0"
-    "@abi-software/map-side-bar" "^1.3.36"
+    "@abi-software/flatmapvuer" "^0.4.1-beta.1"
+    "@abi-software/map-side-bar" "^1.3.38"
     "@abi-software/plotvuer" "^0.3.9"
-    "@abi-software/scaffoldvuer" "^0.1.58"
+    "@abi-software/scaffoldvuer" "^0.1.59"
     "@abi-software/simulationvuer" "^0.6.5"
-    "@abi-software/svg-sprite" "^0.1.15"
+    "@abi-software/svg-sprite" "^0.2.0"
     "@soda/get-current-script" "^1.0.2"
     core-js "^3.3.2"
     d3-time-format "^3.0.0"
@@ -146,10 +159,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@^0.1.58":
-  version "0.1.58"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.58.tgz#98766a40bc21a4a0ca502eb49cdb429abe0876e2"
-  integrity sha512-r/zkckQi1Xzu4NtlqnNoE7gczm1jJucEQSb4eQVwbqvxvUO27k7dUBNLC9aTLy3rBjDQcN8PxbDLDVZLTUVfgQ==
+"@abi-software/scaffoldvuer@^0.1.59":
+  version "0.1.59"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.59.tgz#d53b3108f2905a260fc960011c00ad77bb34b3fe"
+  integrity sha512-APygYxOyljevL/vT+txP1uQeh6QSbjfgdeusdAHKbgFipif3aCgNSV9rAhRSPnpwJBZfsxv3VrLg02+Y5dwj2A==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.15"
     axios "^0.21.2"
@@ -197,6 +210,15 @@
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.1.15.tgz#9e1343e2316652f476afaaf5e1e06ac6095d2c0f"
   integrity sha512-xkEdNL8l2WsH8VR21aMJo49xXYmbPp049JHnw4+FSPhQgrikX8YLBfpl7nSHHePDCToD7cax3fK2ZV7dSxKHfg==
+  dependencies:
+    core-js "^3.6.5"
+    svg-inline-loader "^0.8.2"
+    vue "^2.6.11"
+
+"@abi-software/svg-sprite@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.2.0.tgz#c7437405709bf67a0c766c97317a0672037bc750"
+  integrity sha512-vK/D4Wd9ntg/b7B5o2FPK2CtFrqNuuNHBOCWbZlvtrVvk90WH9JgJWx1+UPPzzTmrKRCvwE24osF/nQef206vg==
   dependencies:
     core-js "^3.6.5"
     svg-inline-loader "^0.8.2"
