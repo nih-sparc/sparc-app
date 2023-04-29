@@ -248,8 +248,8 @@ export default {
           label: 'Data'
         },
         {
-          key: 'resources-biological',
-          value: 'resources-biological',
+          key: 'resources-databases',
+          value: 'resources-databases',
           label: 'Tools & Resources'
         },
         {
