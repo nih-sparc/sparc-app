@@ -69,7 +69,6 @@
     <div class="mb-16"><span class="label4">Dataset DOI: </span>
       <a
           :href="doiLink"
-          target="_blank"
       >
         {{ doiLink }}
       </a>
