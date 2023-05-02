@@ -11,27 +11,30 @@
     orbit-camera-controller "^4.0.0"
     turntable-camera-controller "^3.0.0"
 
-"@abi-software/flatmap-viewer@^2.2.14-b.1":
-  version "2.2.14-b.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.2.14-b.1.tgz#a8fd14509181445598572b6005ed778caf610154"
-  integrity sha512-OZ1VAf8K7DU/EO4UYlzQHAOA0NLnGXHtSl3KZTesAbWW7JiwDf+iVpKFx0yXOrKGwkeHkgLFf8V3QdwLWiY/1Q==
+"@abi-software/flatmap-viewer@^2.3.2-b.4":
+  version "2.3.2-b.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.3.2-b.4.tgz#f6ee067224a0b34bdc248033232caf6dbc655c68"
+  integrity sha512-2CNV160FBZZ0ERcaBwEJJERG1L4ZsWHnJuSkfeZDYbmX3HgeYBC9NaNwaYCVte2hyxUtlyzBAegRyTUUSZc5sA==
   dependencies:
     "@babel/runtime" "^7.10.4"
+    "@fortawesome/fontawesome-free" "^6.4.0"
     "@turf/area" "^6.0.1"
     "@turf/bbox" "^6.0.1"
     "@turf/helpers" "^6.1.4"
     "@turf/projection" "^6.5.0"
     bezier-js "^6.1.0"
+    html-es6cape "^2.0.2"
+    jspanel4 "^4.16.1"
     maplibre-gl ">=2.4.0"
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@^0.4.1-beta.1":
-  version "0.4.1-beta.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.4.1-beta.1.tgz#3dfbbfbf62dad8697aa3648e0392cd0c89eb90d0"
-  integrity sha512-mYIo66LPtEeFu8Pjh4lT0wxwAMEg4tKgv7+pk1b8FXMPSzhoTBQzZAZfq951kaLkizw7KY0803gJdVc/TqC8Sw==
+"@abi-software/flatmapvuer@^0.4.1-beta.3":
+  version "0.4.1-beta.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.4.1-beta.3.tgz#2ec08f517b679c16a8d19d27562946fc58babd7a"
+  integrity sha512-piplYAHj+2oTi+xCCtSBL5aa21qZzAZ6wy05bqfvvrNLrYG+vYlQKJZ6xaZxbJv2PP7G18KShi+Rv8UnxHEKEg==
   dependencies:
-    "@abi-software/flatmap-viewer" "^2.2.14-b.1"
+    "@abi-software/flatmap-viewer" "^2.3.2-b.4"
     "@abi-software/svg-sprite" "^0.1.14"
     core-js "^3.3.2"
     css-element-queries "^1.2.2"
@@ -80,15 +83,15 @@
     vue "^2.6.10"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@0.4.0-beta.0":
-  version "0.4.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.4.0-beta.0.tgz#10f10a6dae49e8c6f7ad2bd5e3609038a991cf34"
-  integrity sha512-xVvqKEPF+qQO079qOkB9DcGsSWa4wzj7IMr5raVWzPucE2fiDlAW10fhNO1c6yGugotlOk09F0cEQPyGIIGSRg==
+"@abi-software/mapintegratedvuer@0.4.0-beta.2":
+  version "0.4.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.4.0-beta.2.tgz#c5dd3ca430058b97cfeebf00ae4deef1f5e7c03d"
+  integrity sha512-Q5PT4nlaCOMlUhFFHUdTgN2RpiP4qfQ+PO5c4rTCFJ1WxyesCdJXcuIhTWhOUpXaFzHO4S/VWwZ8NP1ccJcb3Q==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.4.1-beta.1"
+    "@abi-software/flatmapvuer" "^0.4.1-beta.3"
     "@abi-software/map-side-bar" "^1.3.38"
     "@abi-software/plotvuer" "^0.3.9"
-    "@abi-software/scaffoldvuer" "^0.1.59"
+    "@abi-software/scaffoldvuer" "^0.1.60"
     "@abi-software/simulationvuer" "^0.6.5"
     "@abi-software/svg-sprite" "^0.2.0"
     "@soda/get-current-script" "^1.0.2"
@@ -159,10 +162,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@^0.1.59":
-  version "0.1.59"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.59.tgz#d53b3108f2905a260fc960011c00ad77bb34b3fe"
-  integrity sha512-APygYxOyljevL/vT+txP1uQeh6QSbjfgdeusdAHKbgFipif3aCgNSV9rAhRSPnpwJBZfsxv3VrLg02+Y5dwj2A==
+"@abi-software/scaffoldvuer@^0.1.60":
+  version "0.1.60"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.1.60.tgz#887e984178527eca14cb1e8e21bb9c5be0688869"
+  integrity sha512-wjkIyQcOMs9IQj6/KkQ8PVAVTquqnwFMUZiurQa4MisITexHfuKmBoBUSDHR1l2Jo9p5NT7G/gcyfps5g1Kh6A==
   dependencies:
     "@abi-software/svg-sprite" "^0.1.15"
     axios "^0.21.2"
@@ -2090,6 +2093,11 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
+
+"@fortawesome/fontawesome-free@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-6.4.0.tgz#1ee0c174e472c84b23cb46c995154dc383e3b4fe"
+  integrity sha512-0NyytTlPJwB/BF5LtRV8rrABDbe3TdTXqNB3PdZ+UUUZAEIrdOJdmABqKjt4AXwIoJNaRVVZEXxpNrqvE1GAYQ==
 
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
@@ -8560,6 +8568,11 @@ html-entities@^1.2.0:
   resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-1.4.0.tgz#cfbd1b01d2afaf9adca1b10ae7dffab98c71d2dc"
   integrity sha512-8nxjcBcd8wovbeKx7h3wTji4e6+rhaVuPNpMqwWgnHh+N9ToqsCs6XztWRBPQ+UtzsoMAdKZtUENoVzU/EMtZA==
 
+html-es6cape@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/html-es6cape/-/html-es6cape-2.0.2.tgz#2dca93193e1517dc72595ca954df92975a7214c2"
+  integrity sha512-utzhH8rq2VABdW1LsPdv5tmxeMNOtP83If0jKCa79xPBgLWfcMvdf9K+EZoxJ5P7KioCxTs6WBnSDWLQHJ2lWA==
+
 html-escaper@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/html-escaper/-/html-escaper-2.0.2.tgz#dfd60027da36a36dfcbe236262c00a5822681453"
@@ -9981,6 +9994,11 @@ jsonschema@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/jsonschema/-/jsonschema-1.4.0.tgz#1afa34c4bc22190d8e42271ec17ac8b3404f87b2"
   integrity sha512-/YgW6pRMr6M7C+4o8kS+B/2myEpHCrxO4PEWnqJNBFMjn7EWXqlQ4tGwL6xTHeRplwuZmcAncdvfOad1nT2yMw==
+
+jspanel4@^4.16.1:
+  version "4.16.1"
+  resolved "https://registry.yarnpkg.com/jspanel4/-/jspanel4-4.16.1.tgz#9f9c19abdd5908afa54ba3488366e72a0450d430"
+  integrity sha512-j6Vb565tSK9pOXBN0NgORjhOKKAzsO/1VbGyz1jv7anb9gtdSwUIX6IKXTtyRd/gU9kQv3TFhYRfto5yLvGLbA==
 
 jsprim@^1.2.2:
   version "1.4.1"

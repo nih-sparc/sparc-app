@@ -212,7 +212,7 @@ export default {
       entries: [
         {
           fields: {
-            buttonLink: '/maps?type=ac',
+            buttonLink: 'maps?type=ac',
             buttonText: 'View AC Map',
             description:
               'The Anatomical Connectivity (AC) flatmaps show physical connectivity derived from SCKAN in an anatomical schematic context.',
@@ -228,10 +228,10 @@ export default {
         },
         {
           fields: {
-            buttonLink: '/maps?type=fc',
+            buttonLink: 'maps?type=fc',
             buttonText: 'View FC Map',
             description:
-              'The Functional Connectivity (FC) flatmap provides a visualisation of semantic connectivity for a mammalian body.',
+              'The Functional Connectivity (FC) flatmap provides a visualisation of semantic connectivity and a future interface to ANS models.',
             title: 'Functional Connectivity',
             icon: {
               fields: {
@@ -244,7 +244,7 @@ export default {
         },
         {
           fields: {
-            buttonLink: '/maps?type=wholebody',
+            buttonLink: 'maps?type=wholebody',
             buttonText: 'View 3D Body',
             description:
               'The 3D whole-body shows physical connectivity derived from SCKAN in an anatomically realistic context.',
