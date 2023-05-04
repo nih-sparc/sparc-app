@@ -68,7 +68,7 @@ const visibleDatasetsFacetCategories = [
   'availability'
 ];
 
-const visibleModelsAndSimulationsFacetCategories = ['anatomy.organ.name', 'anatomy.organ.subcategory.name', 'availability'];
+const visibleModelsAndSimulationsFacetCategories = ['anatomy.organ.name', 'anatomy.organ.subcategory.name', 'availability', 'organisms.primary.species.name'];
 
 const embargoFacetCategoryTooltip = "SPARC datasets are subject to a 1 year embargo during which time<br/>the datasets are visible only to members of the SPARC consortium.<br/>During embargo, the public will be able to view basic metadata about<br/>these datasets as well as their release date."
 
