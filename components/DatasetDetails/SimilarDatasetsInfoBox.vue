@@ -71,7 +71,7 @@ import FormatString from '@/mixins/format-string'
 
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
-const EXPERIMENTAL_APPROACH_LABEL = facetPropPathMapping['item.modalities.keyword']
+const EXPERIMENTAL_APPROACH_LABEL = facetPropPathMapping.find(item => item.id == 'item.modalities').label
 
 const getPageTypeName = typeFacet => {
   let typeName = 'dataset'
