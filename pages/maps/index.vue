@@ -24,6 +24,7 @@
           <MapContent
             ref="map"
             :state="state"
+            :starting-map="startingMap"
             :options="options"
             :share-link="shareLink"
             @updateShareLinkRequested="updateUUID"
@@ -76,22 +77,6 @@ const getFlatmapEntry = async (route) => {
     biologicalSex: biologicalSex,
     uuid: route.query.fid,
     organ: organ_name,
-  }
-}
-
-const getDefaultFCMapEntry = (route) => {
-  return {
-    type: "Flatmap",
-    resource: "FunctionalConnectivity",
-    label: "Functional"
-  }
-}
-
-const getDefaultWholeBodyEntry = (route) => {
-  return {
-    type: "Scaffold",
-    label: "Human",
-    url: "https://mapcore-bucket1.s3.us-west-2.amazonaws.com/WholeBody/27-4-23-human/human_body_metadata.json",
   }
 }
 
@@ -197,6 +182,7 @@ export default {
       currentEntry: undefined,
       doi: undefined,
       uuid: undefined,
+      startingMap: "AC",
       state: undefined,
       options: {
         sparcApi: process.env.portal_api,
@@ -403,11 +389,11 @@ export default {
         //Check species information
         this.checkSpecies()
       } else if (this.$route.query.type === 'fc') {
-        this.currentEntry = getDefaultFCMapEntry()
+        this.startingMap = "FC"
       } else if (this.$route.query.type === 'ac') {
-        this.currentEntry = undefined
+        this.startingMap = "AC"
       } else if (this.$route.query.type === 'wholebody') {
-        this.currentEntry = getDefaultWholeBodyEntry()
+        this.startingMap = "WholeBody"
       }
     },
     doiUpdated: function () {
