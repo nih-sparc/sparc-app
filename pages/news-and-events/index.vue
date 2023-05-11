@@ -5,7 +5,7 @@
       <h1>{{ page.fields.page_title }}</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(page.fields.heroCopy)" />
+      <div v-html="parseMarkdown(page.fields.heroCopy, { ALLOWED_TAGS: ['sup'] })" />
       <img
         v-if="page.fields.heroImage"
         slot="image"
