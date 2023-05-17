@@ -14,7 +14,7 @@ import VueClipboard from 'vue-clipboard2'
 // // import SocialSharing from 'vue-social-sharing'
 
 import striptags from 'striptags'
-Vue.prototype.$sanitize = (html, allowedTags = ['br']) =>
+Vue.prototype.$sanitize = (html, allowedTags = ['br', 'sup']) =>
   striptags(html, allowedTags)
 
 // // configure language

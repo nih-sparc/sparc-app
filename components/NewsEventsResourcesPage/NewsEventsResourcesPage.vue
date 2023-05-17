@@ -2,8 +2,8 @@
   <div class="page">
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero class="news-header">
-      <h1 v-html="parseMarkdown(heroTitle, { ALLOWED_TAGS: ['sup'] })"/>
-      <div class="body2" v-html="parseMarkdown(heroSummary, { ALLOWED_TAGS: ['sup'] })"/>
+      <h1 v-html="parseMarkdown(heroTitle)"/>
+      <div class="body2" v-html="parseMarkdown(heroSummary)"/>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">
@@ -16,7 +16,7 @@
             <share-links />
           </el-col>
           <el-col :xs="24" :sm="secondCol">
-            <div class="content" v-html="parseMarkdown(htmlContent, { ALLOWED_TAGS: ['sup'] })" />
+            <div class="content" v-html="parseMarkdown(htmlContent)" />
             <nuxt-link class="back-link" v-if="hasEventDetailsPage" :to="{ path: eventDetailsRoute }">
               View Additional Event Details >
             </nuxt-link>

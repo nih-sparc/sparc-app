@@ -5,7 +5,7 @@
       <h1>{{ fields.title }}</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(fields.summary, { ALLOWED_TAGS: ['sup']})" />
+      <div v-html="parseMarkdown(fields.summary)" />
       <NuxtLink to="/resources/databases">
         <el-button class="secondary mb-16">Browse all Tools &amp; Resources</el-button>
       </NuxtLink>

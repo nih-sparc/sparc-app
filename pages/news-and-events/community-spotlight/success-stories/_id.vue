@@ -14,7 +14,7 @@
           <el-col :sm="13">
             <div
               class="content"
-              v-html="parseMarkdown(entry.story, { ALLOWED_TAGS: ['sup'] })"
+              v-html="parseMarkdown(entry.story)"
             />
           </el-col>
           <el-col :sm="11">
