@@ -12,7 +12,7 @@
         <!-- eslint-disable vue/no-v-html -->
         <!-- marked will sanitize the HTML injected -->
         <slot />
-        <div class="content" v-html="parseMarkdown(htmlContent, { ALLOWED_TAGS: ['sup']})" />
+        <div class="content" v-html="parseMarkdown(htmlContent)" />
         <hr v-if="hasTutorial || hasWebinar" class="my-24"/>
         <div class="mb-16" v-if="hasTutorial">
           <div class="label4 mb-4" >

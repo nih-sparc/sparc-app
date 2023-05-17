@@ -67,7 +67,7 @@
       </div>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(event.fields.summary, { ALLOWED_TAGS: ['sup'] })" />
+      <div v-html="parseMarkdown(event.fields.summary)" />
     </div>
     <nuxt-link
       v-if="event.fields.requiresADetailsPage"

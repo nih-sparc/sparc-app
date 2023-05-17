@@ -7,7 +7,7 @@
         </nuxt-link>
         >
       </template>
-      <span v-html="parseMarkdown(title, { ALLOWED_TAGS: ['sup'] })"/>
+      <span v-html="parseMarkdown(title)"/>
     </div>
   </div>
 </template>

@@ -17,7 +17,7 @@
         </div>
         <!-- eslint-disable vue/no-v-html -->
         <!-- marked will sanitize the HTML injected -->
-        <div class="content" v-html="parseMarkdown(htmlDetails, { ALLOWED_TAGS: ['sup'] })" />
+        <div class="content" v-html="parseMarkdown(htmlDetails)" />
       </div>
     </div>
   </div>
