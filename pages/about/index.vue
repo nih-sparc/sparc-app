@@ -1,6 +1,6 @@
 <template>
   <div class="about-page pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" title="About" />
+    <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
       <!-- eslint-disable vue/no-v-html -->
@@ -35,15 +35,30 @@
         <paper
           class="row-item"
           :text="parseMarkdown(teamLeadership)"
-          :button-text="' Team & Leadership '"
+          :button-text="' Who We Are '"
           :button-link="aboutLink(teamAndLeadershipPageId)"
         />
         <paper
           class="row-item"
           :text="parseMarkdown(getInvolved)"
-          :button-text="' Get Involved '"
+          :button-text="' Help Us Grow '"
           :button-link="aboutLink(getInvolvedPageId)"
         />
+      </div>
+
+      <div class="gallery-container p-16 mt-32">
+        <div class="heading2 mb-16">Portal Metrics</div>
+        <gallery
+          galleryItemType="metrics"
+          :items="metricsItems"
+        />
+        <nuxt-link
+          to="about/sparc-portal/metrics"
+        >
+          <el-button class="secondary mt-16">
+            View All Metrics
+          </el-button>
+        </nuxt-link>
       </div>
 
       <div class="row mt-32 about-page-border">
@@ -74,6 +89,7 @@
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Paper from '@/components/Paper/Paper.vue'
+import Gallery from '~/components/Gallery/Gallery.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -88,7 +104,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    Paper
+    Paper,
+    Gallery
   },
 
   mixins: [ContentfulErrorHandle, MarkedMixin],
@@ -121,6 +138,7 @@ export default {
           label: 'Home'
         }
       ],
+      metricsItems: [],
       projectId: process.env.ctf_project_id,
       heroImage: {},
       futurePlans: '',
@@ -135,6 +153,35 @@ export default {
     return {
       title: this.pageTitle
     }
+  },
+
+  async fetch() {
+    const month = new Date().getMonth()
+    const year = new Date().getFullYear()
+    await this.$axios
+      .$get(`https://dev-metrics.sparc.science/pennsieve?year=${year}&month=${month}`)
+      .then((response) => {
+        const metrics = response[0]
+        const downloadsLastQuarter = parseInt(metrics['number_of_sparc_downloads_last_quarter']['N'])
+        const downloadsLastMonth = parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+        const totalContributors = parseInt(metrics['number_of_sparc_users_overall']['N'])
+        const newContributors = parseInt(metrics['number_of_new_sparc_users_last_quarter']['N'])
+        this.metricsItems = [
+          {
+            title: 'Downloads last month',
+            data: `${downloadsLastMonth}`,
+            subData: `(${downloadsLastQuarter} last quarter)`
+          },
+          {
+            title: 'Dataset Contributors',
+            data: `${totalContributors}`,
+            subData: `(${newContributors} new in the last month)`
+          }
+        ]
+      })
+      .catch(() => {
+        console.log("ERROR RETRIEVING METRICS")
+      })
   },
 
   methods: {
@@ -224,5 +271,9 @@ export default {
 
 .about-page-border {
   border: 1px solid $lineColor2;
+}
+.gallery-container {
+  background-color: white;
+  border: 1px solid $lineColor1;
 }
 </style>
