@@ -44,30 +44,33 @@
                 <p><em>By clicking on the button next to each search result, you can instantiate the service in the
                   <a href="/resources/4LkLiH5s4FV0LVJd3htsvH">o<sup>2</sup>S<sup>2</sup>PARC cloud platform</a>.</em></p>
                 <div class="search-heading mb-16">
-                  <div class="label1" v-show="resources.length">
-                    {{ resources.length }} Results | Showing
-                    <!--
+                  <div class="label1" v-show="resources.items.length">
+                    {{ resources.total }} Results | Showing
                     <pagination-menu
                       :page-size="resources.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
-                    -->
                   </div>
-                  <!-- <span v-if="resources.length" class="label1">
+                  <!--
+                  <span v-if="resources.items.length" class="label1">
                     Sort
                     <sort-menu
                       :options="sortOptions"
                       :selected-option="selectedSortOption"
                       @update-selected-option="onSortOptionChange"
                     />
-                  </span> -->
+                  </span>
+                  -->
                 </div>
                 <div class="subpage">
                   <services-search-results
-                    :services="resources"
+                    :services="resources.items"
+                  />
+                  <alternative-search-results
+                    ref="alternativeSearchResults"
+                    :search-had-results="resources.items.length > 0"
                   />
                 </div>
-                <!--
                 <div class="search-heading">
                   <div class="label1" v-if="resources.items.length">
                     {{ resources.total }} Results | Showing
@@ -84,7 +87,6 @@
                     @select-page="onPaginationPageChange"
                   />
                 </div>
-                -->
               </el-col>
             </client-only>
           </el-row>
@@ -103,6 +105,7 @@ import ServicesSearchResults from '@/components/Resources/ServicesSearchResults.
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
+import AlternativeSearchResults from '~/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
 
 export default {
   name: 'OsparcServicesPage',
@@ -113,7 +116,8 @@ export default {
     ServicesSearchResults,
     ToolsAndResourcesFacetMenu,
     SortMenu,
-    SubmitToolSection
+    SubmitToolSection,
+    AlternativeSearchResults
   },
 
   async asyncData({ route, redirect, env, $axios }) {
@@ -164,11 +168,8 @@ export default {
       handler: async function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          const url = new URL(`${process.env.portal_api}/sim/service`)
-          if (this.$route.query.search) {
-            url.searchParams.append('search', this.$route.query.search)
-          }
-          this.resources = await this.$axios.$get(url.toString())
+          this.resources = await this.getResources()
+          this.$refs.alternativeSearchResults.retrieveAltTotals()
         })
       },
       immediate: true
@@ -199,7 +200,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.resources
       const offset = (page - 1) * limit
-      const response = await fetchResources('Software', this.$route.query.search, this.sortOrder, this.type, limit, offset)
+      const response = await this.getResources(limit, offset)
       this.resources = response
     },
     /**
@@ -208,13 +209,26 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources('Software', this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
+      const response = await this.getResources(newLimit)
       this.resources = response
     },
-    async onSortOptionChange(option) {
-      this.selectedSortOption = option
-      const response = await fetchResources('Software', this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
-      this.resources = response
+    // async onSortOptionChange(option) {
+    //   this.selectedSortOption = option
+    //   const response = await fetchResources('Software', this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
+    //   this.resources = response
+    // },
+    async getResources(limit, skip) {
+      const url = new URL(`${process.env.portal_api}/sim/service`)
+      if (this.$route.query.search) {
+        url.searchParams.set('search', this.$route.query.search)
+      }
+      if (this.resources && limit) {
+        url.searchParams.set('limit', limit)
+      }
+      if (this.resources && skip) {
+        url.searchParams.set('skip', skip)
+      }
+      return await this.$axios.$get(url.toString())
     }
   }
 }
