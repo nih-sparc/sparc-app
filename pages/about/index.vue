@@ -46,7 +46,7 @@
         />
       </div>
 
-      <div class="gallery-container p-16 mt-32">
+      <div class="gallery-items-container p-32 mt-32">
         <div class="heading2 mb-16">Portal Metrics</div>
         <gallery
           galleryItemType="metrics"
@@ -59,6 +59,15 @@
             View All Metrics
           </el-button>
         </nuxt-link>
+      </div>
+
+      <div class="gallery-items-container p-32 mt-32">
+        <div class="heading2 mb-16">Highlights</div>
+        <gallery
+          galleryItemType="highlights"
+          :cardWidth="68"
+          :items="highlightsItems"
+        />
       </div>
 
       <div class="row mt-32 about-page-border">
@@ -139,6 +148,7 @@ export default {
         }
       ],
       metricsItems: [],
+      highlightsItems: [],
       projectId: process.env.ctf_project_id,
       heroImage: {},
       futurePlans: '',
@@ -181,6 +191,18 @@ export default {
       })
       .catch(() => {
         console.log("ERROR RETRIEVING METRICS")
+      })
+    await client.getEntries({
+        content_type: process.env.ctf_news_id,
+        order: '-fields.publishedDate',
+        limit: '999',
+        'fields.subject': 'Highlight'
+      })
+      .then(({ items })=> {
+        this.highlightsItems = items
+      })
+      .catch(() => {
+        console.log("ERROR RETRIEVING HIGHLIGHTS")
       })
   },
 
@@ -272,7 +294,7 @@ export default {
 .about-page-border {
   border: 1px solid $lineColor2;
 }
-.gallery-container {
+.gallery-items-container {
   background-color: white;
   border: 1px solid $lineColor1;
 }

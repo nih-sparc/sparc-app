@@ -34,6 +34,14 @@
               :data="item.data"
               :subData="item.subData"
             />
+            <component
+              v-else-if="galleryItemType === 'highlights'"
+              :is="galleryItemComponent"
+              :width="cardWidth"
+              :key="index"
+              :showShadow="isActive(index)"
+              :item="item"
+            />
           </template>
         </span>
       </div>
@@ -43,7 +51,7 @@
       </a>
       <div v-else style="width: 2rem" />
     </div>
-    <index-indicator class="mt-32" :count="itemCount" :current="currentIndex" @clicked="indicatorClicked" />
+    <index-indicator v-if="items.length > 1" class="mt-32" :count="itemCount" :current="currentIndex" @clicked="indicatorClicked" />
   </div>
 </template>
 
@@ -51,12 +59,13 @@
 import IndexIndicator from '~/components/Gallery/IndexIndicator.vue'
 import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
 import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
+import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
 import { defaultTo } from 'ramda'
 
 const galleryItemComponents = {
   resources: ResourceCard,  
   metrics: MetricsCard,
-  //achievements: ProjectSearchResults,
+  highlights: HighlightCard,
 }
 
 function convertRemToPixels(rem) {
@@ -68,7 +77,7 @@ function convertRemToPixels(rem) {
 
 export default {
   name: 'Gallery',
-  components: { IndexIndicator, ResourceCard, MetricsCard },
+  components: { IndexIndicator, ResourceCard, MetricsCard, HighlightCard },
   props: {
     items: {
       type: Array,
