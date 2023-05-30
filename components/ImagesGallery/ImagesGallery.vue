@@ -335,19 +335,22 @@ export default {
                 const file_path = scaffold.dataset.path
                 const id = scaffold.identifier
                 const thumbnail = this.getThumbnailForScaffold(
-                  index,
-                  scicrunchData
+                  scaffold,
+                  scicrunchData["abi-scaffold-view-file"],
+                  scicrunchData["abi-thumbnail"],
+                  index
                 )
-
-                this.getScaffoldThumbnail(items, {
-                  id,
-                  fetchAttempts: 0,
-                  datasetId,
-                  datasetVersion,
-                  mimetype: thumbnail.mimetype.name,
-                  file_path: thumbnail.dataset.path,
-                  s3Bucket: s3Bucket
-                })
+                this.getThumbnailWithInfo(items, {
+                    id,
+                    fetchAttempts: 0,
+                    datasetId,
+                    datasetVersion,
+                    mimetype: thumbnail.mimetype.name,
+                    file_path: thumbnail.dataset.path,
+                    s3Bucket: s3Bucket
+                  },
+                  this.defaultScaffoldImg
+                )
                 let filePath = encodeURIComponent(`files/${file_path}`)
                 const linkUrl = `${baseRoute}maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
                 index += 1
@@ -445,6 +448,21 @@ export default {
             ...Array.from(scicrunchData['abi-plot'], plot => {
               const id = plot.identifier
               const file_path = plot.dataset.path
+              const thumbnail = this.getThumbnailForScaffold(
+                plot,
+                scicrunchData["abi-thumbnail"]
+              )
+              this.getThumbnailWithInfo(items, {
+                  id,
+                  fetchAttempts: 0,
+                  datasetId,
+                  datasetVersion,
+                  mimetype: thumbnail.mimetype.name,
+                  file_path: thumbnail.dataset.path,
+                  s3Bucket: s3Bucket
+                },
+                this.defaultPlotImg
+              )
               const linkUrl = `${baseRoute}datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&identifier=${id}`
               return {
                 id,
@@ -543,17 +561,48 @@ export default {
       const encoded_file_path = encodeURIComponent(file_path)
       return `${dataset_id}/${dataset_version}/files/${encoded_file_path}`
     },
-    getThumbnailForScaffold(index, scaffold_info) {
-      if (
-        'abi-scaffold-thumbnail' in scaffold_info &&
-        index < scaffold_info['abi-scaffold-thumbnail'].length
-      ) {
-        return scaffold_info['abi-scaffold-thumbnail'][index]
-      } else if (
-        'abi-thumbnail' in scaffold_info &&
-        index < scaffold_info['abi-thumbnail'].length
-      ) {
-        return scaffold_info['abi-thumbnail'][index]
+    /**
+     * Find data path in the array that matches the provide path
+     */
+    findEntryWithPathInArray(array, path) {
+      if (path && array) {
+        for (let i = 0; i < array.length; i++) {
+          if (path === array[i].dataset.path) return array[i]
+        }
+      }
+      return undefined
+    },
+    getThumbnailForPlot(plot, thumbnails) {
+      if (thumbnails && plot) {
+        return this.findEntryWithPathInArray(thumbnails, plot.datacite.isSourceOf.path[0])
+      }
+      return {
+        dataset: {
+          path: ''
+        },
+        mimetype: {
+          name: ''
+        }
+      }
+    },
+    /**
+     * Use the scaffoldViews to help with finding the correct thumbnails.
+     * Use the index if the workflow stated above fails.
+     */
+    getThumbnailForScaffold(scaffold, scaffoldViews, thumbnails, index) {
+      if (thumbnails && thumbnails.length > 0) {
+        let thumbnail = undefined
+        if (scaffold && scaffoldViews) {
+          const view = this.findEntryWithPathInArray(scaffoldViews, scaffold.datacite.isSourceOf.path[0])
+          if (view) {
+            thumbnail = this.findEntryWithPathInArray(thumbnails, view.datacite.isSourceOf.path[0])
+          }
+        }
+        if (thumbnail) {
+          return thumbnail
+        } else if (index < thumbnails.length) {
+          return thumbnails[index]
+        }
       }
 
       return {
@@ -565,7 +614,7 @@ export default {
         }
       }
     },
-    getScaffoldThumbnail(items, info) {
+    getThumbnailWithInfo(items, info, defaultImg) {
       discover
         .fetch(info.datasetId, info.datasetVersion, info.file_path, true, info.s3Bucket)
         .then(
@@ -583,10 +632,10 @@ export default {
               info.fetchAttempts < 3
             ) {
               info.fetchAttempts += 1
-              return this.getScaffoldThumbnail(items, info)
+              return this.getThumbnailWithInfo(items, info)
             } else {
               let item = items.find(x => x.id === info.id)
-              this.$set(item, 'thumbnail', this.defaultScaffoldImg)
+              this.$set(item, 'thumbnail', defaultImg)
             }
 
             return Promise.reject('Maximum iterations reached.')
