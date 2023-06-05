@@ -53,8 +53,8 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 
 const getFlatmapEntry = async (route) => {
   const uberonid = route.query.uberonid
-  let organ_name = undefined
   //Specify the gender of human
+  let organ_name = uberonid
   let biologicalSex = route.query.biologicalSex
   if (route.query.taxo && route.query.taxo === 'NCBITaxon:9606') {
     if (!biologicalSex) {
@@ -66,6 +66,9 @@ const getFlatmapEntry = async (route) => {
     //We do not want to display the body proper
     if (organ_name && organ_name.toLowerCase() === 'body proper') {
       organ_name = undefined
+    } else {
+      //Use the uberon id in the flatmap
+      organ_name = uberonid
     }
   } catch (e) {
     // Error caught return empty data.
