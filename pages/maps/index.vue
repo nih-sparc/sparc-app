@@ -28,7 +28,7 @@
             :options="options"
             :share-link="shareLink"
             @updateShareLinkRequested="updateUUID"
-            @hook:mounted="mapMounted"
+            @isReady="mapMounted" 
           />
         </div>
       </client-only>
@@ -66,9 +66,6 @@ const getFlatmapEntry = async (route) => {
     //We do not want to display the body proper
     if (organ_name && organ_name.toLowerCase() === 'body proper') {
       organ_name = undefined
-    } else {
-      //Use the uberon id in the flatmap
-      organ_name = uberonid
     }
   } catch (e) {
     // Error caught return empty data.
