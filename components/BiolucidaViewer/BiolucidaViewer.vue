@@ -2,9 +2,28 @@
   <div class="biolucida-viewer">
     <template v-if="data.status !== 'error'">
       <el-row class="mb-2 justify-space-between" type="flex">
-        <bf-button class="ml-8 btn-copy-permalink-solid" @click="launchViewer">
-          View in 3D
-        </bf-button>
+        <div>
+          <bf-button class="ml-8" @click="launchViewer">
+            <sparc-tooltip
+              placement="bottom-center"
+              content="Open in Biolucida desktop application"
+            >
+              <div slot="item">
+                View in 3D
+              </div>
+            </sparc-tooltip>
+          </bf-button>
+          <bf-button class="ml-8" @click="launchNL360C">
+            <sparc-tooltip
+              placement="top-center"
+              content="Open in Neurolucida 360 Cloud"
+            >
+              <div slot="item">
+                View in Neurolucida 360
+              </div>
+            </sparc-tooltip>
+          </bf-button>
+        </div>
         <client-only>
           <button class="btn-copy-permalink" @click="queryView">
             <sparc-tooltip placement="bottom-center" content="Copy Link">
@@ -30,6 +49,7 @@
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import biolucida from '~/services/biolucida'
 
 export default {
   name: 'BiolucidaViewer',
@@ -47,7 +67,8 @@ export default {
           blv_link: '',
           share_link: '',
           status: '',
-          location: ''
+          location: '',
+          web_neurolucida_link: ''
         }
       }
     }
@@ -61,6 +82,32 @@ export default {
   methods: {
     launchViewer() {
       window.open(this.data.blv_link, '_blank')
+    },
+    launchNL360C() {
+      biolucida
+        .fetchNeurolucida360Url({
+          applicationRequest: 'NL360',
+          userID: 'SPARCPortal',
+          sessionContext: this.data.web_neurolucida_link
+        })
+        .then(response => {
+          if (response.data.url) {
+            window.open(response.data.url, '_blank')
+          } else {
+            this.$message(
+              failMessage(
+                'Unable to open image with Neurlucida 360 Cloud at this time.'
+              )
+            )
+          }
+        })
+        .catch(() => {
+          this.$message(
+            failMessage(
+              'Unable to open image with Neurlucida 360 Cloud at this time.'
+            )
+          )
+        })
     },
     queryView() {
       this.$refs.biolucida.contentWindow.postMessage(

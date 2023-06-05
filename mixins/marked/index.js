@@ -32,9 +32,8 @@ export const opensInNewTab = link => {
 
 renderer.link = function(href, title, text) {
   const html = linkRenderer.call(renderer, href, title, text)
-  const isInternal = isInternalLink(href)
 
-  return isInternal
+  return !opensInNewTab(href) 
     ? html
     : html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
 }
@@ -89,6 +88,7 @@ export default {
      * @returns {HTML}
      */
     parseMarkdown: function(markdown = '', purifyOptions={}) {
+      purifyOptions = {...purifyOptions, ADD_ATTR: ['target']}
       return DOMPurify.sanitize(marked(markdown), purifyOptions)
     }
   }

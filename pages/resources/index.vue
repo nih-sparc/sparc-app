@@ -27,7 +27,8 @@
         <paper
           :text="parseMarkdown(fields.paperText)"
           :button-text="'Submit a recommendation'"
-          :button-link="submissionLink"
+          :button-link="{ name: 'contact-us', query: { type: 'tool'} }"
+          new-tab
         />
       </div>
     </div>
@@ -86,13 +87,6 @@ export default {
   head() {
     return {
       title: this.title
-    }
-  },
-
-  computed: {
-    submissionLink() {
-      const route = 'resources-submit'
-      return { name: route }
     }
   }
 }

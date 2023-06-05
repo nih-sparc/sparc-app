@@ -226,7 +226,7 @@ export default {
 
   methods: {
     getFacetText(facetLabel) {
-       let text = ''
+      let text = ''
       const facet = this.datasetFacetsData.find(item => item.label === facetLabel)
       if (facet === undefined || !facet.children)
       {
@@ -255,6 +255,7 @@ export default {
 <style lang="scss" scoped>
 .dataset-description-info {
   overflow-wrap: anywhere;
+  word-wrap: normal;
   ::v-deep hr{
     margin-top: 1rem;
     border-top: none;

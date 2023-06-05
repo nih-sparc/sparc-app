@@ -31,7 +31,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import NewsAndEventsForm from '@/components/NewsAndEventsForm/NewsAndEventsForm.vue'
+import NewsAndEventsForm from '@/components/ContactUsForms/NewsAndEventsForm/NewsAndEventsForm.vue'
 
 export default {
   name: 'SubmitNewsAndEventsPage',

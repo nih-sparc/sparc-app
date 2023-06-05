@@ -130,12 +130,14 @@ export default {
       const identifier = route.query.item_id.substring(2)
 
       const [
-        blv_link,
+        blv_info,
+        view_info,
         image_info,
         dataset_response,
         xmp_metadata
       ] = await Promise.all([
         biolucida.getBLVLink(image_identifier),
+        biolucida.decodeViewParameter(route.query.view),
         biolucida.getImageInfo(image_identifier),
         scicrunch.getDatasetInfoFromObjectIdentifier(identifier),
         biolucida.getXMPInfo(image_identifier)
@@ -171,17 +173,26 @@ export default {
         )
       }
 
+      const BASE_URL = `blv:${process.env.BL_SERVER_URL}`
+      const queryParameters = `image_id=${image_identifier}&type=${view_info[1]}${view_info[2]}&filename=${image_info.name}`
+      const webNeurolucidaLink = BASE_URL + '/image_view?' + queryParameters
+
       return {
-        blv_link: blv_link['link'],
+        blv_link: blv_info['link'],
+        web_neurolucida_link: webNeurolucidaLink,
         image_info,
         xmp_metadata,
         dataset_info,
         file
       }
-    }
-    catch (e) {
+    } catch (e) {
       const message = ErrorMessages.methods.biolucida()
-      return error({ statusCode: 400, message: message, display: true, error: e})
+      return error({
+        statusCode: 400,
+        message: message,
+        display: true,
+        error: e
+      })
     }
   },
 
@@ -206,8 +217,9 @@ export default {
      */
     biolucidaData: function() {
       return {
-        biolucida_image_id: '',
+        biolucida_image_id: this.$route.params.id,
         blv_link: this.blv_link,
+        web_neurolucida_link: this.web_neurolucida_link,
         share_link: process.env.BL_SHARE_LINK_PREFIX + this.$route.query.view,
         status: '',
         location: this.$route.query.location

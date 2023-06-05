@@ -1,10 +1,4 @@
-export const sparcFunded = [
-  'Yes - Receive SPARC funding for bioelectronic medicine research', 
-  'No - Receive other funding for bioelectronic medicine research', 
-  'No - Not involved in bioelectronic medicine research'
-]
-
-export const levelOfInvolvement = [
+export const typeOfUser = [
   'Principal Investigator',
   'Co-Investigator or other Faculty Member',
   'Research Scientist',

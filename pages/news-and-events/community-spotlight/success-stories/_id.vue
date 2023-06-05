@@ -12,7 +12,10 @@
       <div class="subpage">
         <el-row :gutter="38">
           <el-col :sm="13">
-            <div class="content" v-html="parseMarkdown(entry.story)" />
+            <div
+              class="content"
+              v-html="parseMarkdown(entry.story)"
+            />
           </el-col>
           <el-col :sm="11">
             <div class="banner-wrapper">

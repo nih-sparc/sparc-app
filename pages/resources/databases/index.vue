@@ -73,8 +73,10 @@
                   </span>
                 </div>
                 <div class="subpage">
-                  <resources-search-results
-                    :table-data="resources.items"
+                  <resources-search-results :table-data="resources.items" />
+                  <alternative-search-results
+                    ref="alternativeSearchResults"
+                    :search-had-results="resources.items.length > 0"
                   />
                 </div>
                 <div class="search-heading">
@@ -112,6 +114,7 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
+import AlternativeSearchResults from '~/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
 
@@ -124,7 +127,8 @@ export default {
     ResourcesSearchResults,
     ToolsAndResourcesFacetMenu,
     SortMenu,
-    SubmitToolSection
+    SubmitToolSection,
+    AlternativeSearchResults
   },
 
   async asyncData({ route }) {
@@ -169,6 +173,7 @@ export default {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
           this.resources = await fetchResources('Data and Models', this.$route.query.search, this.sortOrder, this.type, 10, 0)
+          this.$refs.alternativeSearchResults.retrieveAltTotals()
         })
       },
       immediate: true
@@ -308,7 +313,6 @@ export default {
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;

@@ -6,6 +6,7 @@
         v-if="buttonText !== null && buttonLinkExternal === null"
         class="margin-top-auto"
         :to="buttonLink"
+        :target="newTab ? '_blank' : '_self'"
       >
         <el-button class="secondary">
           {{ buttonText }}
@@ -54,6 +55,10 @@ export default {
     imgSrc: {
       type: String,
       default: null
+    },
+    newTab: {
+      type: Boolean,
+      default: false
     }
   }
 }

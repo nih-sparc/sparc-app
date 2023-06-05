@@ -1,7 +1,7 @@
 <template>
   <a
     :href="linkUrl"
-    :target="!opensInNewTab(linkUrl) ? '_self' : '_blank'"
+    :target="!opensInNewTab(linkUrl) && !isFeedbackLink ? '_self' : '_blank'"
   >
   {{ link.fields.title }}
   </a>
@@ -34,11 +34,13 @@ export default {
     currentUrl() {
       return encodeURIComponent(this.$nuxt.$route.fullPath)
     },
+    isFeedbackLink() {
+      const title = this.link.fields.title
+      return title == 'Site Feedback'
+    },
     linkUrl() {
       let url = this.link.fields.longUrl || this.link.fields.url
-      const title = this.link.fields.title
-      // Add users current location when reporting an issue so that we can capture url for site feedback
-      if (title == 'Site Feedback') {
+      if (this.isFeedbackLink) {
         url = url + `&source_url=${this.currentUrl}`
       }
       return url

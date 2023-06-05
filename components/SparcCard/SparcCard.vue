@@ -66,6 +66,7 @@ $tablet-large: 64em;
     object-fit: cover;
   }
   &__content-wrap {
+    display: flex;
     flex: 1;
     background: #24245b;
   }
@@ -80,7 +81,6 @@ $tablet-large: 64em;
 
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
 
       @media (min-width: $tablet-small) and (max-width: $tablet-large) {
         font-size: 1em;

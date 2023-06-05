@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import AuthenticatedMixin from '@/mixins/authenticated/index'
 import SetupNewUser from '@/components/SetupNewUser/SetupNewUser.vue'
 
 export default {
@@ -12,7 +13,7 @@ export default {
   components: {
     SetupNewUser
   },
-  middleware: 'authenticated',
+  mixins: [AuthenticatedMixin],
   head() {
     return {
       title: "Welcome"

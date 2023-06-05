@@ -1,12 +1,18 @@
 <template>
   <div class="feature-container pt-0 px-16 pb-16">
     <img
+      v-if="iconIsTopElement"
       class="icon"
       :src=iconUrl
     />
     <div class="heading2">
       {{ title }}
     </div>
+    <img
+      v-if="!iconIsTopElement"
+      class="icon"
+      :src=iconUrl
+    />
     <div class="body1 my-16">
       {{ description }}
     </div>
@@ -28,6 +34,10 @@ export default {
     feature: {
       type: Object,
       default: () => {}
+    },
+    iconIsTopElement: {
+      type: Boolean,
+      default: true
     }
   },
 

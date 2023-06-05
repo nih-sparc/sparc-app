@@ -71,7 +71,17 @@ import FormatString from '@/mixins/format-string'
 
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
-const EXPERIMENTAL_APPROACH_LABEL = facetPropPathMapping['item.modalities.keyword']
+const EXPERIMENTAL_APPROACH_LABEL = facetPropPathMapping.find(item => item.id == 'item.modalities').label
+
+const getPageTypeName = typeFacet => {
+  let typeName = 'dataset'
+  if (typeFacet === 'scaffold') {
+    typeName = 'model'
+  } else if (typeFacet === 'computational model') {
+    typeName = 'simulation'
+  }
+  return typeName
+}
 
 export default {
   name: 'SimilarDatasetsInfoBox',
@@ -138,15 +148,13 @@ export default {
       return correspondingFacet.id
     },
     getSelectedFacetLink(facetId) {
-      return this.datasetTypeName === 'dataset' ?
-        `/data?type=dataset&selectedFacetIds=${facetId}` :
-        `/data?type=simulation&selectedFacetIds=${facetId}`
+      const pageName = getPageTypeName(this.datasetTypeName)
+      return `/data?type=${pageName}&selectedFacetIds=${facetId}`
     },
     getSelectedContributorLink(contributor) {
       const name = this.getContributorFullName(contributor)
-      return this.datasetTypeName === 'dataset' ?
-        `/data?type=dataset&q=${name}` :
-        `/data?type=simulation&q=${name}`
+      const pageName = getPageTypeName(this.datasetTypeName)
+      return `/data?type=${pageName}&search=${name}`
     },
     showFacet(facet) {
       if (facet.label === EXPERIMENTAL_APPROACH_LABEL && !this.showExperimentalApproachFacet) {
@@ -210,5 +218,6 @@ hr {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: inherit;
 }
 </style>

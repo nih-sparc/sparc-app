@@ -2,8 +2,8 @@
   <div class="page">
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero class="news-header">
-      <h1 v-html="parseMarkdown(heroTitle, { ALLOWED_TAGS: ['sup'] })"/>
-      <div class="body2" v-html="parseMarkdown(heroSummary, { ALLOWED_TAGS: ['sup'] })"/>
+      <h1 v-html="parseMarkdown(heroTitle)"/>
+      <div class="body2" v-html="parseMarkdown(heroSummary)"/>
     </page-hero>
     <div class="page-wrap container">
       <div class="subpage">

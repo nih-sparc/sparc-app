@@ -16,12 +16,15 @@
       Sign in</a> to the SPARC Portal to request
       access to or view the status of an access request to embargoed data.
       <div>
-        <el-button
-          class="mt-8"
-          disabled
-        >
-          Request Access
-        </el-button>
+        <sparc-tooltip content="Sign in to request access" placement="top-center">
+          <el-button
+            class="mt-8"
+            disabled
+            slot="item"
+          >
+            Request Access
+          </el-button>
+        </sparc-tooltip>
       </div>
     </div>
     <div v-else-if="embargoed && requestPending">
@@ -31,12 +34,15 @@
       release date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
       and will become available to the public on that day.
       <div>
-        <el-button
-          class="mt-8"
-          disabled
-        >
-          Request Access
-        </el-button>
+        <sparc-tooltip content="Access request is pending" placement="top-center">
+          <el-button
+            class="mt-8"
+            disabled
+            slot="item"
+          >
+            Request Access
+          </el-button>
+        </sparc-tooltip>
       </div>
     </div>
     <div v-else-if="embargoed && !accessGranted">
@@ -174,15 +180,21 @@ export default {
 
   mixins: [DateUtils, FormatMetric],
 
-  props: {
-    osparcViewers: {
-      type: Object,
-      default: () => {}
-    },
-    datasetScicrunch: {
-      type: Object,
-      default: () => {}
-    }
+  async fetch() {
+    // Get oSPARC file viewers
+    this.osparcViewers = process.env.SHOW_OSPARC_TAB == 'true' ? 
+      await this.$axios
+        .$get(`${process.env.portal_api}/sim/file`)
+        .then(osparcData => osparcData['file_viewers'])
+        .catch(() => {
+          return {}
+        }) :
+      await this.$axios
+        .$get(`${process.env.portal_api}/get_osparc_data`)
+        .then(osparcData => osparcData['file_viewers'])
+        .catch(() => {
+          return {}
+        })
   },
 
   computed: {
@@ -192,6 +204,9 @@ export default {
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
     ...mapGetters('user', ['cognitoUserToken']),
+    datasetScicrunch() {
+      return propOr({}, 'sciCrunch', this.datasetInfo)
+    },
     userToken() {
       return this.cognitoUserToken || this.$cookies.get('user-token')
     },
@@ -260,6 +275,7 @@ export default {
       awsMessage: 'us-east-1',
       showAgreementPopup: false,
       showLoginDialog: false,
+      osparcViewers: {}
     }
   },
 

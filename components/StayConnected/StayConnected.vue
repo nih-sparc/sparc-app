@@ -1,6 +1,6 @@
 <template>
-  <div class="container pb-32">
-    <div class="heading2 subheader mb-16">Stay Connected</div>
+  <div class="container py-32">
+    <h2 class="heading2 subheader mb-32">Stay Connected</h2>
     <div class="subpage py-16">
       <el-row :gutter="32">
         <el-col :xs="24" :sm="12" class="newsletter-wrap">
@@ -50,7 +50,7 @@ export default {
   margin: 0 !important;
 }
 .subheader {
-  font-weight: 100;
+  text-align: center;
 }
 .office-hours-column {
   border-left: 2px solid $lineColor2;

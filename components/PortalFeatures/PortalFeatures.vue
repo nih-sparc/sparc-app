@@ -1,6 +1,6 @@
 <template>
   <div class="section-container container py-32">
-    <div class="heading2 mb-32">What Can I Do with SPARC?</div>
+    <div class="heading2 mb-32">{{ title }}</div>
     <div class="row">
       <div 
         v-for="(item, index) in features"
@@ -10,6 +10,7 @@
       >
         <portal-feature
           :feature="item"
+          :icon-is-top-element="iconIsTopElement"
         />
       </div>
     </div>
@@ -28,6 +29,14 @@ export default {
     features: {
       type: Array,
       default: () => []
+    },
+    title: {
+      type: String,
+      default: "What Can I Do with SPARC?"
+    },
+    iconIsTopElement: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {

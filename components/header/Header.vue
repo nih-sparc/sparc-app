@@ -194,7 +194,7 @@ import { mapState, mapGetters } from 'vuex'
 const links = [
   {
     title: 'data',
-    displayTitle: 'Find Data',
+    displayTitle: 'Data & Models',
     href: '/data'
   },
   {
@@ -248,8 +248,8 @@ export default {
           label: 'Data'
         },
         {
-          key: 'resources-biological',
-          value: 'resources-biological',
+          key: 'resources-databases',
+          value: 'resources-databases',
           label: 'Tools & Resources'
         },
         {
@@ -280,7 +280,7 @@ export default {
     },
     currentUrl: function() {
       return encodeURIComponent(this.$nuxt.$route.fullPath)
-    }
+    },
   },
 
   watch: {
@@ -552,8 +552,7 @@ export default {
   display: flex;
   outline: none;
   padding-bottom: 1rem;
-  &:hover:not(:active),
-  &:focus:not(:active) {
+  &:hover:not(:active) {
     color: $app-primary-color;
   }
   @media (min-width: 64em) {
@@ -647,8 +646,7 @@ export default {
   transform: translate(12px, -8px);
   -webkit-appearance: none;
 
-  &:hover:not(:active),
-  &:focus:not(:active) {
+  &:hover:not(:active) {
     color: $app-primary-color;
   }
 
@@ -684,8 +682,7 @@ export default {
         font-weight: 500;
 
         &.active,
-        &:hover,
-        &:focus {
+        &:hover {
           border-bottom: 2px solid $median;
           color: $median;
         }

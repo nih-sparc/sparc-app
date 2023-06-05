@@ -117,8 +117,12 @@
               <div class="get-involved-buttons-container">
                 <nuxt-link
                   :to="{
-                    name: 'news-and-events-submit',
+                    name: 'contact-us',
+                    query: {
+                      type: 'news-event'
+                    }
                   }"
+                  target="_blank"
                 >
                   <el-button class="get-involved-button secondary">
                     Share news or events
@@ -126,8 +130,12 @@
                 </nuxt-link>
                 <nuxt-link
                   :to="{
-                    name: 'news-and-events-community-spotlight-submit',
+                    name: 'contact-us',
+                    query: {
+                      type: 'story'
+                    }
                   }"
+                  target="_blank"
                 >
                   <el-button class="get-involved-button secondary mt-8">
                     Submit a community spotlight idea

@@ -16,7 +16,7 @@
     <dropdown-multiselect
       v-for="item in this.facets"
       v-show="visibleCategories.includes(item.key)"
-      collapse-by-default
+      :collapse-by-default="!containsSelectedId(item)"
       :key="item.id"
       :category="constructCategory(item)"
       :visible-data="visibleFacets"
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { pluck, pathOr } from 'ramda'
+import { pluck, pathOr, propOr } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 import { facetPropPathMapping } from '~/pages/data/utils'
 
@@ -60,6 +60,7 @@ const embargoedFacetCategory = {
 
 const visibleDatasetsFacetCategories = [
   'anatomy.organ.name',
+  'anatomy.organ.subcategory.name',
   'organisms.primary.species.name',
   'item.modalities.keyword',
   'attributes.subject.sex.value',
@@ -67,7 +68,7 @@ const visibleDatasetsFacetCategories = [
   'availability'
 ];
 
-const visibleModelsAndSimulationsFacetCategories = ['anatomy.organ.name', 'availability'];
+const visibleModelsAndSimulationsFacetCategories = ['anatomy.organ.name', 'anatomy.organ.subcategory.name', 'availability', 'organisms.primary.species.name'];
 
 const embargoFacetCategoryTooltip = "SPARC datasets are subject to a 1 year embargo during which time<br/>the datasets are visible only to members of the SPARC consortium.<br/>During embargo, the public will be able to view basic metadata about<br/>these datasets as well as their release date."
 
@@ -141,9 +142,10 @@ export default {
       if (item === null || item === undefined) {
         return
       }
+      const categoryFacet = facetPropPathMapping.find(category => category.label === item.label)
       const category = {
         label: item.label,
-        id: Object.keys(facetPropPathMapping).find(key => facetPropPathMapping[key] === item.label),
+        facet: categoryFacet,
         data: item.children
       }
       return category
@@ -179,8 +181,9 @@ export default {
       }
       let filters = this.embargoedFilter
       filters = `(${filters}) AND `
-      const facetPropPaths = Object.keys(facetPropPathMapping)
+      const facetPropPaths = facetPropPathMapping.map(item => item.facetPropPath)
       facetPropPaths.map(facetPropPath => {
+        const subpropPath = facetPropPathMapping.find(facet => facet.facetPropPath == facetPropPath)?.facetSubpropPath || ''
         if (!this.visibleCategories.includes(facetPropPath)) {
           return
         }
@@ -193,6 +196,15 @@ export default {
             return
           }
           filter += `"${facetPropPath}":"${facet.label}" OR `
+        })
+        const subfacetsToOr = this.selectedFacetArray.filter(
+          facet => facet.facetPropPath == subpropPath
+        )
+        subfacetsToOr.map(facet => {
+          if (pathOr(undefined, [facet.facetPropPath, facet.label], this.visibleFacets) === undefined) {
+            return
+          }
+          filter += `"${subpropPath}":"${facet.label}" OR `
         })
         if (filter == '') {
           return
@@ -210,7 +222,7 @@ export default {
     },
     deselectAllFacets() {
       this.$refs.facetCategories.map(facetCategory => {
-        if (this.visibleCategories.includes(facetCategory.category.id))
+        if (this.visibleCategories.includes(pathOr('', ['category','facet','facetPropPath'], facetCategory)))
           facetCategory.uncheckAll()
       })
       this.$refs.embargoedFacetCategory.uncheckAll()
@@ -221,11 +233,15 @@ export default {
     },
     expandAllCategories() {
       this.$refs.facetCategories.map(facetCategory => {
-        if (this.visibleCategories.includes(facetCategory.category.id))
+        if (this.visibleCategories.includes(pathOr('', ['category','facet','facetPropPath'], facetCategory)))
           facetCategory.setCollapsed(false)
       })
       this.$refs.embargoedFacetCategory.setCollapsed(false)
     },
+    containsSelectedId(item) {
+      const children = propOr([], 'children', item)
+      return children.some(child => this.defaultCheckedFacetIds.some(checkedId => parseInt(checkedId) == (propOr('', 'id', child))))
+    }
 	}
 }
 </script>

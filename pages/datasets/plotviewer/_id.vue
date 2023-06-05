@@ -72,14 +72,18 @@
 </template>
 
 <script>
+import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+
 import scicrunch from '@/services/scicrunch'
 import discover from '@/services/discover'
 
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import DatasetInfo from '@/mixins/dataset-info'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
+
+import { extractS3BucketName } from '@/utils/common'
 
 export default {
   name: 'PlotViewerPage',
@@ -92,9 +96,19 @@ export default {
       : null
   },
 
-  mixins: [FileDetails, RequestDownloadFile, FetchPennsieveFile],
+  mixins: [DatasetInfo, FileDetails, RequestDownloadFile, FetchPennsieveFile],
 
   async asyncData({ route, error, $axios, app }) {
+
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
+      $axios,
+      route.query.dataset_id,
+      route.query.dataset_version,
+      app.$cookies.get('user-token')
+    )
+
+    const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
+
     const identifier = route.query.identifier
 
     const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(
@@ -108,11 +122,8 @@ export default {
     const plot_info = matchedData[0]
     const plot_annotation = plot_info.datacite
     const file_path = `${route.query.dataset_id}/${route.query.dataset_version}/files/${plot_info.dataset.path}`
-    const source_url_response = await discover.downloadLink(file_path)
+    const source_url_response = await discover.downloadLink(file_path, s3Bucket)
     let source_url = source_url_response.data
-    if (process.env.portal_api === 'http://localhost:8000') {
-      source_url = `${process.env.portal_api}/s3-resource/${file_path}`
-    }
 
     const filePath = `files/${plot_info.dataset.path}`
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
@@ -138,26 +149,14 @@ export default {
       const supplemental_file_path = `${route.query.dataset_id}/${route.query.dataset_version}/files/${tmp_path}`
 
       const supplemental_url_response = await discover.downloadLink(
-        supplemental_file_path
+        supplemental_file_path,
+        s3Bucket
       )
       let supplemental_url = supplemental_url_response.data
-      if (process.env.portal_api === 'http://localhost:8000') {
-        supplemental_url = `${process.env.portal_api}/s3-resource/${supplemental_file_path}`
-      }
       supplemental_data.push({
         url: supplemental_url
       })
     }
-
-    const url = `${process.env.discover_api_host}/datasets/${route.query.dataset_id}`
-    var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
-    const userToken = app.$cookies.get('user-token')
-    if (userToken) {
-      datasetUrl += `?api_key=${userToken}`
-    }
-    const datasetInfo = await $axios.$get(datasetUrl).catch(error => {
-      console.log(`Could not get the dataset's info: ${error}`)
-    })
 
     return {
       source_url,

@@ -80,6 +80,10 @@
                     :key="item.sys.id"
                     :item="item"
                   />
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="news.items.length > 0"
+                  />
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="news.items.length">
@@ -119,6 +123,7 @@ import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
+import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -168,7 +173,8 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     NewsListItem,
     SearchControlsContentful,
     SortMenu,
-    SubmitNewsSection
+    SubmitNewsSection,
+    AlternativeSearchResultsNews
   },
 
   async asyncData({ route }) {
@@ -213,6 +219,7 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
           this.news = await fetchNews(client, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, 10, 0)
+          this.$refs.altSearchResults?.retrieveAltTotals()
         })
       },
       immediate: true
@@ -357,7 +364,6 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;

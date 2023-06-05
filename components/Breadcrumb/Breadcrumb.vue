@@ -7,7 +7,7 @@
         </nuxt-link>
         >
       </template>
-      <span v-html="parseMarkdown(title, { ALLOWED_TAGS: ['sup'] })"/>
+      <span class="title" v-html="parseMarkdown(title)"/>
     </div>
   </div>
 </template>
@@ -36,7 +36,7 @@ export default Vue.extend<never, Methods, never, Props>({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .breadcrumb {
@@ -50,6 +50,12 @@ export default Vue.extend<never, Methods, never, Props>({
     vertical-align: baseline;
     position: relative;
     top: -0.4em;
+  }
+}
+::v-deep .title {
+  display: inline-block;
+  p {
+    margin: 0;
   }
 }
 </style>
