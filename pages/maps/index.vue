@@ -28,7 +28,7 @@
             :options="options"
             :share-link="shareLink"
             @updateShareLinkRequested="updateUUID"
-            @hook:mounted="mapMounted"
+            @isReady="mapMounted" 
           />
         </div>
       </client-only>
@@ -53,8 +53,8 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 
 const getFlatmapEntry = async (route) => {
   const uberonid = route.query.uberonid
-  let organ_name = undefined
   //Specify the gender of human
+  let organ_name = uberonid
   let biologicalSex = route.query.biologicalSex
   if (route.query.taxo && route.query.taxo === 'NCBITaxon:9606') {
     if (!biologicalSex) {
@@ -62,9 +62,9 @@ const getFlatmapEntry = async (route) => {
     }
   }
   try {
-    organ_name = await scicrunch.getOrganFromUberonId(uberonid)
+    let name = await scicrunch.getOrganFromUberonId(uberonid)
     //We do not want to display the body proper
-    if (organ_name && organ_name.toLowerCase() === 'body proper') {
+    if (name && name.toLowerCase() === 'body proper') {
       organ_name = undefined
     }
   } catch (e) {
