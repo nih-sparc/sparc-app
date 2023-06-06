@@ -8,21 +8,11 @@
       <div v-html="parseMarkdown(heroCopy)" />
     </page-hero>
     <div class="page-wrap container">
-      <div class="row">
-        <div class="col">
-          <div
-            class="about-page-text mt-32"
-            v-html="parseMarkdown(overview)"
-          />
-        </div>
-      </div>
-
       <paper
         class="row mt-32"
         :text="parseMarkdown(sparcPortal)"
-        :button-text="' About the SPARC Portal '"
-        :button-link="aboutLink(aboutPortalPageId)"
-        :img-src="sparcPortalImage ? sparcPortalImage.fields.file.url : null"
+        :button-text="' View The Roadmap '"
+        button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap"
       />
 
       <div class="row mt-32">
@@ -70,25 +60,11 @@
         />
       </div>
 
-      <div class="row mt-32 about-page-border">
-        <img
-          v-if="sparcPortalImage"
-          slot="image"
-          class="portal-image"
-          :src="communitySpotlightImage.fields.file.url"
+      <div class="gallery-items-container p-32 mt-32">
+        <div
+          class="about-page-text"
+          v-html="parseMarkdown(overview)"
         />
-        <div class="subpage-col midnightblue-background">
-          <div
-            class="about-page-text white-text"
-            v-html="parseMarkdown(communitySpotlight)"
-          />
-          <NuxtLink
-            class="margin-top-auto"
-            to="/news-and-events/community-spotlight"
-          >
-            <el-button class="secondary"> View Spotlight </el-button>
-          </NuxtLink>
-        </div>
       </div>
     </div>
   </div>
@@ -227,31 +203,6 @@ export default {
 .about-page {
   background-color: $background;
 }
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.subpage-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background-color: white;
-  padding: 2rem;
-
-  @media screen and (max-width: 767px) {
-    margin-top: 0;
-  }
-  .about-page-text {
-    @media screen and (max-width: 767px) {
-      margin-left: 0;
-    }
-  }
-}
 
 .row-item {
   width: 30%;
@@ -297,5 +248,11 @@ export default {
 .gallery-items-container {
   background-color: white;
   border: 1px solid $lineColor1;
+}
+
+::v-deep h2 {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+  font-weight: 500;
 }
 </style>

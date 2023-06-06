@@ -195,8 +195,8 @@ export default {
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .arrow-button {
-  width: 1.5rem;
-  height: 1.5rem;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
   border-radius: 50%;
   background: $purple;
   line-height: 1.1rem;
