@@ -62,9 +62,9 @@ const getFlatmapEntry = async (route) => {
     }
   }
   try {
-    organ_name = await scicrunch.getOrganFromUberonId(uberonid)
+    let name = await scicrunch.getOrganFromUberonId(uberonid)
     //We do not want to display the body proper
-    if (organ_name && organ_name.toLowerCase() === 'body proper') {
+    if (name && name.toLowerCase() === 'body proper') {
       organ_name = undefined
     }
   } catch (e) {
