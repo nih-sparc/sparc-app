@@ -364,22 +364,37 @@ export default {
         }
 
         if ('video' in scicrunchData) {
-          items.push(
-            ...Array.from(scicrunchData.video, videoFile => {
-              const filePath = this.getS3FilePath(
-                datasetId,
-                datasetVersion,
-                videoFile.dataset.path
-              )
-              const linkUrl = `${baseRoute}datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}&mimetype=${videoFile.mimetype.name}`
-              return {
-                title: videoFile.name,
-                type: 'Video',
-                thumbnail: this.defaultVideoImg,
-                link: linkUrl
-              }
+          const thumbnailPaths = {}
+          if (scicrunchData['abi-thumbnail']) {
+            scicrunchData['abi-thumbnail'].forEach(thumbnail => {
+              const videoPath = thumbnail.datacite.isDerivedFrom.path[0]
+              thumbnailPaths[videoPath] = thumbnail.dataset.path
             })
-          )
+          }
+          scicrunchData.video.forEach(async videoFile => {
+            let thumbnail = this.defaultVideoImg
+            if (thumbnailPaths[videoFile.dataset.path]) {
+              const url = new URL(`${process.env.portal_api}/s3-resource/${datasetId}/${datasetVersion}/files/${thumbnailPaths[videoFile.dataset.path]}`)
+              url.searchParams.append('encodeBase64', true)
+              const img = await fetch(url).then(resp => resp.ok ? resp.text() : null)
+              console.log(url.toString(), img)
+              if (img) {
+                thumbnail = 'data:image/png;base64,' + img
+              }
+            }
+            const filePath = this.getS3FilePath(
+              datasetId,
+              datasetVersion,
+              videoFile.dataset.path
+            )
+            const linkUrl = `${baseRoute}datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}&mimetype=${videoFile.mimetype.name}`
+            items.push({
+              title: videoFile.name,
+              type: 'Video',
+              thumbnail,
+              link: linkUrl
+            })
+          })
         }
 
         if ('flatmaps' in scicrunchData) {
