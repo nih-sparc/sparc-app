@@ -16,12 +16,15 @@
       </div>
       <div v-if="learnMore" class="subpage px-32 mb-0">
         <div class="heading1 mb-16">Learn More</div>
-        <learn-more-card
-          v-for="(item, index) in learnMore"
-          :key="`${item}-${index}`"
-          :about-details-item="item"
-          :parent-path="slug"
-        />
+        <template v-for="(item, index) in learnMore">
+          <div :key="`${item}-${index}`">
+            <learn-more-card
+              :about-details-item="item"
+              :parent-path="slug"
+            />
+            <hr v-if="learnMore.length > 1 && index != learnMore.length - 1" />
+          </div>
+        </template>
       </div>
     </div>
   </div>
