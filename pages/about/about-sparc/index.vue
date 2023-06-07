@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
+    <breadcrumb :breadcrumb="breadcrumb" title="Search" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
