@@ -18,7 +18,7 @@
         :href="buttonLinkExternal"
         target="_blank"
       >
-        <el-button class="about-button">
+        <el-button class="secondary">
           {{ buttonText }}
         </el-button>
       </a>

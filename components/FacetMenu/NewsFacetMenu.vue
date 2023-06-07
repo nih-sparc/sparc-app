@@ -42,13 +42,17 @@ const SUBJECT_CATEGORY = {
   id: 'subject',
   data: [
     {
-      label: 'News article',
+      label: 'General News',
       id: 'News Article',
     },
     {
-      label: 'Funding opportunity',
+      label: 'Funding Opportunity',
       id: 'Funding Opportunity',
-    }
+    },
+    {
+      label: 'Highlight',
+      id: 'Highlight',
+    },
   ]
 }
 

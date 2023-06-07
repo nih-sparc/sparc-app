@@ -13,7 +13,8 @@
     <div class="page-wrap container">
       <div v-if="fields.featured !== undefined">
         <div class="heading2 my-32">Featured Tools &amp; Resources</div>
-        <resources-gallery
+        <gallery
+          galleryItemType="resources"
           :items="fields.featured"
         />
         <div class="link-container mt-16">
@@ -42,7 +43,7 @@ import createClient from '@/plugins/contentful.js'
 import ErrorMessages from '@/mixins/error-messages'
 import marked from '@/mixins/marked/index'
 import Paper from '~/components/Paper/Paper.vue'
-import ResourcesGallery from '~/components/ResourcesGallery/ResourcesGallery.vue'
+import Gallery from '~/components/Gallery/Gallery.vue'
 
 const client = createClient()
 
@@ -55,7 +56,7 @@ export default {
     Breadcrumb,
     PageHero,
     Paper,
-    ResourcesGallery,
+    Gallery,
   },
 
   asyncData( { error } ) {
