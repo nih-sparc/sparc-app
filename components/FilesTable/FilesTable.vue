@@ -192,7 +192,6 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="hasOsparcViewer(scope)"
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
@@ -201,7 +200,7 @@
                 >
                   <div slot="data">
                     Open in oSPARC. More info on oSPARC can be found
-                    <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
+                    <a href="/resources/4LkLiH5s4FV0LVJd3htsvH" target="_blank">
                       <u>here</u>
                     </a>
                   </div>
@@ -529,14 +528,6 @@ export default {
         scope.row.fileType === 'MSExcel' ||
         scope.row.fileType === 'PowerPoint'
       )
-    },
-    /**
-     * Checks if file has a viewer in oSPARC
-     * @param {Object} scope
-     */
-    hasOsparcViewer(scope) {
-      const fileType = extractExtension(scope.row.path)
-      return Object.keys(this.osparcViewers).includes(fileType)
     },
     /**
      * Get contents of directory

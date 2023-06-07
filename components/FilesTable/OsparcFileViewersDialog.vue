@@ -14,6 +14,10 @@
         placeholder="Select a service..."
       >
         <el-option
+          :value="filePickerDummy"
+          :label="filePickerDummy.title"
+        />
+        <el-option
           v-for="viewer in viewersForFile"
           :key="viewer.title"
           :value="viewer"
@@ -39,6 +43,9 @@ import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import { extractExtension } from '~/pages/data/utils'
 import { contentTypes } from '@/components/FilesTable/FilesTable.vue'
 
+const osparcViewUrl = new URL(process.env.osparc_host)
+osparcViewUrl.pathname = '/view'
+
 export default {
   name: 'OsparcFileViewersDialog',
   components: { BfButton, BfDialogHeader, DialogBody },
@@ -61,7 +68,11 @@ export default {
   data() {
     return {
       selectedViewer: '',
-      isFetching: false
+      isFetching: false,
+      filePickerDummy: {
+        title: "Open stand-alone",
+        "view_url": osparcViewUrl.toString()
+      }
     }
   },
   computed: {
@@ -107,6 +118,8 @@ export default {
           redirectionUrl.searchParams.append('file_size', fileSize)
           redirectionUrl.searchParams.append('file_type', this.fileExtension)
 
+          console.log(redirectionUrl.toString())
+
           window.open(redirectionUrl, '_blank')
 
           this.selectedViewer = ''
@@ -121,7 +134,7 @@ export default {
       done()
     },
     openedHandler() {
-      this.selectedViewer = this.viewersForFile[0]
+      this.selectedViewer = this.filePickerDummy
     },
     closeHandler() {
       this.$emit('close')
