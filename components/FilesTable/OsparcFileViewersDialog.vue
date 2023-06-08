@@ -8,29 +8,32 @@
   >
     <bf-dialog-header slot="title" title="Select a service" />
     <dialog-body>
-      <el-select
-        v-model="selectedViewer"
-        value-key="title"
-        placeholder="Select a service..."
-      >
-        <el-option
-          :value="filePickerDummy"
-          :label="filePickerDummy.title"
-        />
-        <el-option
-          v-for="viewer in viewersForFile"
-          :key="viewer.title"
-          :value="viewer"
-          :label="viewer.title"
-        />
-      </el-select>
-      <bf-button
-        :disabled="selectedViewer === ''"
-        :processing="isFetching"
-        @click="openFile"
-      >
-        Open in oSPARC
-      </bf-button>
+      <div class="content-body">
+        <el-select
+          v-model="selectedViewer"
+          value-key="title"
+          placeholder="Select a service..."
+        >
+          <el-option
+            :value="filePickerDummy"
+            :label="filePickerDummy.title"
+          />
+          <el-option
+            v-for="viewer in viewersForFile"
+            :key="viewer.title"
+            :value="viewer"
+            :label="viewer.title"
+          />
+        </el-select>
+        <bf-button
+          :disabled="selectedViewer === ''"
+          :processing="isFetching"
+          @click="openFile"
+          class="open-btn"
+        >
+          Open in oSPARC
+        </bf-button>
+      </div>
     </dialog-body>
   </el-dialog>
 </template>
@@ -118,6 +121,8 @@ export default {
           redirectionUrl.searchParams.append('file_size', fileSize)
           redirectionUrl.searchParams.append('file_type', this.fileExtension)
 
+          console.log(redirectionUrl.toString())
+
           window.open(redirectionUrl, '_blank')
 
           this.selectedViewer = ''
@@ -140,3 +145,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.content-body {
+  display: flex;
+  & > button {
+    margin-left: .5em;
+  }
+}
+</style>
