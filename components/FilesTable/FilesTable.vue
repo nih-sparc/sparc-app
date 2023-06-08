@@ -204,7 +204,7 @@
                       <u>here</u>
                     </a>
                   </div>
-                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                  <svg-icon slot="item" name="icon-osparc" height="1.5rem" width="1.5rem" />
                 </sparc-tooltip>
               </div>
               <div
