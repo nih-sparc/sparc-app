@@ -121,8 +121,6 @@ export default {
           redirectionUrl.searchParams.append('file_size', fileSize)
           redirectionUrl.searchParams.append('file_type', this.fileExtension)
 
-          console.log(redirectionUrl.toString())
-
           window.open(redirectionUrl, '_blank')
 
           this.selectedViewer = ''
