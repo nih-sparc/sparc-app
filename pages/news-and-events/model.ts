@@ -100,7 +100,7 @@ export const fetchNews = async (client: ContentfulClientApi, terms?: string, pub
     })
   } catch (e) {
     console.error(e)
-    return {} as unknown as CommunitySpotlightItemsCollection
+    return {} as unknown as NewsCollection
   }
 }
 

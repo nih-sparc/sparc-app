@@ -19,11 +19,15 @@
       </div>
       <div v-if="aboutDetailsItem.fields.learnMore" class="subpage">
         <h1 class="heading1 mb-16">Learn More</h1>
-        <learn-more-card
-          v-for="(item, index) in aboutDetailsItem.fields.learnMore"
-          :key="`${item}-${index}`"
-          :about-details-item="item"
-        />
+        <template v-for="(item, index) in aboutDetailsItem.fields.learnMore">
+          <div :key="`${item}-${index}`">
+            <learn-more-card
+              :about-details-item="item"
+              :parent-path="slug"
+            />
+            <hr v-if="aboutDetailsItem.fields.learnMore.length > 1 && index != aboutDetailsItem.fields.learnMore.length - 1" />
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -92,7 +96,7 @@ export default {
           label: 'Home'
         },
         {
-          label: 'About',
+          label: 'About SPARC',
           to: {
             name: 'about'
           }

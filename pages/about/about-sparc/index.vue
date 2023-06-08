@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
+    <breadcrumb :breadcrumb="breadcrumb" title="Search" />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -125,15 +125,14 @@ const sortOptions = [
   },
 ]
 
-const fetchSearchData = async function(query, limit, skip, sortOrder, types) {
+const fetchSearchData = async function(query, limit, skip, sortOrder, contentType) {
   return client
       .getEntries({
-        content_type: 'aboutPageSecondLevel',
+        content_type: contentType,
         query: query,
         limit: limit,
         skip: skip,
-        order: sortOrder,
-        'fields.type[in]' : types
+        order: sortOrder
       })
       .then(async response => {
         return response
@@ -151,8 +150,7 @@ export default {
   },
 
   async asyncData({ route, env }) {
-    const detailsTypes = env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
-    let searchData = await fetchSearchData(route.query.search, 10, 0, 'fields.title', detailsTypes)
+    let searchData = await fetchSearchData(route.query.search, 10, 0, 'fields.title', env.ctf_learn_more_item_id)
     return {
       searchData
     }
@@ -171,7 +169,7 @@ export default {
           }
         },
         {
-          label: 'About',
+          label: 'About SPARC',
           to: {
             name: 'about'
           }
@@ -189,16 +187,13 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        this.searchData = await fetchSearchData(this.$route.query.search, 10, 0, this.sortOrder, this.detailsTypes)
+        this.searchData = await fetchSearchData(this.$route.query.search, 10, 0, this.sortOrder, process.env.ctf_learn_more_item_id)
       },
       immediate: true
     },
   },
 
   computed: {
-    detailsTypes: function() {
-      return process.env.ctf_about_details_page_types.filter(type => type !== 'Policies').toString()
-    },
     curSearchPage: function() {
       return this.tableData.skip / this.tableData.limit + 1
     },
@@ -214,15 +209,15 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.searchData
       const offset = (page - 1) * limit
-      this.searchData = await fetchSearchData(this.$route.query.search, limit, offset, this.sortOrder, this.detailsTypes)
+      this.searchData = await fetchSearchData(this.$route.query.search, limit, offset, this.sortOrder, process.env.ctf_learn_more_item_id)
     },
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.this.searchData.total : limit
-      this.searchData = await fetchSearchData(this.$route.query.search, newLimit, 0, this.sortOrder, this.detailsTypes)
+      this.searchData = await fetchSearchData(this.$route.query.search, newLimit, 0, this.sortOrder, process.env.ctf_learn_more_item_id)
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      this.searchData = await fetchSearchData(this.$route.query.search, this.searchData.limit, 0, this.sortOrder, this.detailsTypes)
+      this.searchData = await fetchSearchData(this.$route.query.search, this.searchData.limit, 0, this.sortOrder, process.env.ctf_learn_more_item_id)
     }
   }
 }

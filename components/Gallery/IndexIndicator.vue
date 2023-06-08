@@ -5,7 +5,9 @@
       :key="'indicator_' + number"
       :class="['indicator', { active: current === index }]"
       @click="$emit('clicked', index)"
-    />
+    >
+      {{ number }}
+    </div>
   </div>
 </template>
 
@@ -33,14 +35,20 @@ export default {
   justify-content: center;
 }
 .indicator {
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
-  background-color: $lineColor2;
+  background-color: #f9f2fc;
   margin-left: 0.25rem;
   margin-right: 0.25rem;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  color: $purple;
+  border: 1px solid $purple;
 }
 .indicator.active {
   background-color: $purple;
+  color: white;
 }
 </style>

@@ -5,7 +5,6 @@
         <learn-more-card
           class="small-title"
           :about-details-item="scope.row"
-          :parent-path="calculateParentPath(scope.row)"
         />
       </template>
     </el-table-column>
