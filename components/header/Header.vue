@@ -42,145 +42,89 @@
               <sparc-logo />
             </nuxt-link>
           </div>
-          <button
-            class="nav-main-container__mobile-search"
-            @click="openMobileSearch"
-            @enter="executeSearch(searchQuery)"
-          >
-            <svg-icon
-              icon="icon-magnifying-glass"
-              height="25"
-              width="25"
-              dir="left"
-            />
-          </button>
           <div :class="[mobileSearchOpen ? 'search-overlay' : '']">
-            <search-form
-              v-if="mobileSearchOpen"
-              :defaultValue="searchQuery"
-              placeholder="Search Datasets"
-              class="search-mobile"
-              @search="executeMobileSearch"
-              @clear="searchQuery = ''"
-            />
-            <div
-              v-if="mobileSearchOpen"
-              class="click-outside-mobile-search-catch"
-              @click="mobileSearchOpen = false"
-            />
-          </div>
-
-          <div :class="[menuOpen ? 'overlay' : '']">
-            <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
-              <ul>
-                <li
-                  v-for="link in links"
-                  :key="link.href"
-                  style="z-index: 100;"
-                >
-                  <nuxt-link
-                    :to="link.href"
-                    :class="{ active: activeLink(link.href) }"
-                    exact-active-class="active"
+            <div :class="[menuOpen ? 'overlay' : '']">
+              <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
+                <ul>
+                  <li
+                    v-for="link in links"
+                    :key="link.href"
+                    style="z-index: 100;"
                   >
-                    {{ link.displayTitle }}
-                  </nuxt-link>
-                </li>
-                <hr class="divider" />
-              </ul>
-              <ul class="mobile-navigation__links">
-                <li>
-                  <svg-icon icon="icon-contact" width="18" height="18" />
-                  <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
-                    Contact Us
-                  </nuxt-link>
-                </li>
-                <li>
-                  <svg-icon icon="icon-help" width="18" height="18" />
-                  <a href="https://docs.sparc.science/" target="_blank">
-                    Help
-                  </a>
-                </li>
-                <li v-if="showLoginFeature">
-                  <svg-icon
-                    name="icon-sign-in"
-                    class="login-menu-logo"
-                    height="1rem"
-                    width="1rem"
-                  />
-                  <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
-                    Sign in
-                  </a>
-                  <span v-else>
-                    <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
-                      Profile
+                    <nuxt-link
+                      :to="link.href"
+                      :class="{ active: activeLink(link.href) }"
+                      exact-active-class="active"
+                    >
+                      {{ link.displayTitle }}
+                    </nuxt-link>
+                  </li>
+                  <hr class="divider" />
+                </ul>
+                <ul class="mobile-navigation__links">
+                  <li>
+                    <svg-icon icon="icon-contact" width="18" height="18" />
+                    <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
+                      Contact Us
+                    </nuxt-link>
+                  </li>
+                  <li>
+                    <svg-icon icon="icon-help" width="18" height="18" />
+                    <a href="https://docs.sparc.science/" target="_blank">
+                      Help
                     </a>
-                    <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
-                      Logout
+                  </li>
+                  <li v-if="showLoginFeature">
+                    <svg-icon
+                      name="icon-sign-in"
+                      class="login-menu-logo"
+                      height="1rem"
+                      width="1rem"
+                    />
+                    <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
+                      Sign in
                     </a>
-                  </span>
-                </li>
-              </ul>
-              <div class="mobile-navigation__links--social">
-                <a href="https://twitter.com/sparc_science" target="_blank">
-                  <svg-icon
-                    icon="icon-twitter"
-                    width="30"
-                    height="26"
-                    color="#606266"
-                  />
-                </a>
-                <a
-                  href="https://www.youtube.com/results?search_query=sparc+nih"
-                  target="_blank"
-                >
-                  <svg-icon
-                    icon="icon-youtube"
-                    width="30"
-                    height="26"
-                    color="#606266"
-                  />
-                </a>
+                    <span v-else>
+                      <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
+                        Profile
+                      </a>
+                      <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
+                        Logout
+                      </a>
+                    </span>
+                  </li>
+                </ul>
+                <div class="mobile-navigation__links--social">
+                  <a href="https://twitter.com/sparc_science" target="_blank">
+                    <svg-icon
+                      icon="icon-twitter"
+                      width="30"
+                      height="26"
+                      color="#606266"
+                    />
+                  </a>
+                  <a
+                    href="https://www.youtube.com/results?search_query=sparc+nih"
+                    target="_blank"
+                  >
+                    <svg-icon
+                      icon="icon-youtube"
+                      width="30"
+                      height="26"
+                      color="#606266"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-          <div class="nav-main-container__search">
-            <el-input
-              v-model="searchQuery"
-              type="text"
-              class="nav-main-container__search-input"
-              placeholder="Search"
-              @keyup.native.enter="executeSearch(searchQuery)"
-            >
-              <el-select slot="prepend" v-model="searchSelect">
-                <el-option
-                  v-for="option in searchSelectOptions"
-                  :key="option.key"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </el-select>
-            </el-input>
-            <el-button
-              class="search-button px-8 py-0 ml-8"
-              @click="executeSearch(searchQuery)"
-            >
-              <svg-icon
-                color="white"
-                icon="icon-magnifying-glass"
-                height="25"
-                width="25"
-                dir="left"
-              />
-            </el-button>
-          </div>
         </div>
       </div>
+      <login-modal
+        :show-dialog="showLoginDialog"
+        @dialog-closed="showLoginDialog = false"
+      />
     </div>
-    <login-modal
-      :show-dialog="showLoginDialog"
-      @dialog-closed="showLoginDialog = false"
-    />
   </div>
 </template>
 
