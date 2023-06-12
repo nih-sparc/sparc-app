@@ -75,6 +75,11 @@ export default {
   mixins: [MarkedMixin],
 
   async asyncData({ params, redirect }) {
+    if (params.aboutDetailsId == 'metrics') {
+      redirect({
+        name: `about-metrics`
+      })
+    }
     const aboutDetailsItem = await getAboutDetailsItem(params.aboutDetailsId)
 
     // Redirect to the friendly URL page, if this page has a slug

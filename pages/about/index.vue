@@ -43,7 +43,7 @@
           :items="metricsItems"
         />
         <nuxt-link
-          to="about/sparc-portal/metrics"
+          to="about/metrics"
         >
           <el-button class="secondary mt-16">
             View All Metrics
