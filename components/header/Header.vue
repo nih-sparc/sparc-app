@@ -42,79 +42,77 @@
               <sparc-logo />
             </nuxt-link>
           </div>
-          <div :class="[mobileSearchOpen ? 'search-overlay' : '']">
-            <div :class="[menuOpen ? 'overlay' : '']">
-              <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
-                <ul>
-                  <li
-                    v-for="link in links"
-                    :key="link.href"
-                    style="z-index: 100;"
+          <div :class="[menuOpen ? 'overlay' : '']">
+            <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
+              <ul>
+                <li
+                  v-for="link in links"
+                  :key="link.href"
+                  style="z-index: 100;"
+                >
+                  <nuxt-link
+                    :to="link.href"
+                    :class="{ active: activeLink(link.href) }"
+                    exact-active-class="active"
                   >
-                    <nuxt-link
-                      :to="link.href"
-                      :class="{ active: activeLink(link.href) }"
-                      exact-active-class="active"
-                    >
-                      {{ link.displayTitle }}
-                    </nuxt-link>
-                  </li>
-                  <hr class="divider" />
-                </ul>
-                <ul class="mobile-navigation__links">
-                  <li>
-                    <svg-icon icon="icon-contact" width="18" height="18" />
-                    <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
-                      Contact Us
-                    </nuxt-link>
-                  </li>
-                  <li>
-                    <svg-icon icon="icon-help" width="18" height="18" />
-                    <a href="https://docs.sparc.science/" target="_blank">
-                      Help
-                    </a>
-                  </li>
-                  <li v-if="showLoginFeature">
-                    <svg-icon
-                      name="icon-sign-in"
-                      class="login-menu-logo"
-                      height="1rem"
-                      width="1rem"
-                    />
-                    <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
-                      Sign in
-                    </a>
-                    <span v-else>
-                      <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
-                        Profile
-                      </a>
-                      <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
-                        Logout
-                      </a>
-                    </span>
-                  </li>
-                </ul>
-                <div class="mobile-navigation__links--social">
-                  <a href="https://twitter.com/sparc_science" target="_blank">
-                    <svg-icon
-                      icon="icon-twitter"
-                      width="30"
-                      height="26"
-                      color="#606266"
-                    />
+                    {{ link.displayTitle }}
+                  </nuxt-link>
+                </li>
+                <hr class="divider" />
+              </ul>
+              <ul class="mobile-navigation__links">
+                <li>
+                  <svg-icon icon="icon-contact" width="18" height="18" />
+                  <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
+                    Contact Us
+                  </nuxt-link>
+                </li>
+                <li>
+                  <svg-icon icon="icon-help" width="18" height="18" />
+                  <a href="https://docs.sparc.science/" target="_blank">
+                    Help
                   </a>
-                  <a
-                    href="https://www.youtube.com/results?search_query=sparc+nih"
-                    target="_blank"
-                  >
-                    <svg-icon
-                      icon="icon-youtube"
-                      width="30"
-                      height="26"
-                      color="#606266"
-                    />
+                </li>
+                <li v-if="showLoginFeature">
+                  <svg-icon
+                    name="icon-sign-in"
+                    class="login-menu-logo"
+                    height="1rem"
+                    width="1rem"
+                  />
+                  <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
+                    Sign in
                   </a>
-                </div>
+                  <span v-else>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
+                      Profile
+                    </a>
+                    <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
+                      Logout
+                    </a>
+                  </span>
+                </li>
+              </ul>
+              <div class="mobile-navigation__links--social">
+                <a href="https://twitter.com/sparc_science" target="_blank">
+                  <svg-icon
+                    icon="icon-twitter"
+                    width="30"
+                    height="26"
+                    color="#606266"
+                  />
+                </a>
+                <a
+                  href="https://www.youtube.com/results?search_query=sparc+nih"
+                  target="_blank"
+                >
+                  <svg-icon
+                    icon="icon-youtube"
+                    width="30"
+                    height="26"
+                    color="#606266"
+                  />
+                </a>
               </div>
             </div>
           </div>
@@ -130,7 +128,6 @@
 
 <script>
 import SparcLogo from '../logo/SparcLogo.vue'
-import SearchForm from '@/components/SearchForm/SearchForm.vue'
 import Request from '@/mixins/request'
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { mapState, mapGetters } from 'vuex'
@@ -167,7 +164,6 @@ export default {
   name: 'SparcHeader',
   components: {
     SparcLogo,
-    SearchForm,
     LoginModal
   },
   mixins: [Request],
@@ -180,9 +176,6 @@ export default {
     return {
       links,
       menuOpen: false,
-      mobileSearchOpen: false,
-      searchQuery: '',
-      searchSelect: 'data',
       showLoginDialog: false,
       showLoginFeature: (process.env.SHOW_LOGIN_FEATURE == 'true') ? true : false,
       searchSelectOptions: [
@@ -256,7 +249,7 @@ export default {
   },
 
   methods: {
-    handleUserMenuSelect(menuId, menuIdPath) {
+    handleUserMenuSelect(menuId) {
       if (menuId === 'logout') {
         this.$cookies.set('sign-out-redirect-url', this.$nuxt.$route.fullPath)
         this.$store.dispatch('user/logout')
@@ -281,69 +274,12 @@ export default {
      */
     openMobileNav: function() {
       if (!this.menuOpen) {
-        this.mobileSearchOpen = false // just in case the search menu is open also
         this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
         this.menuOpen = true
       } else {
         this.menuOpen = false
         this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
       }
-    },
-
-    /**
-     * Opens the mobile version of the search bar
-     */
-    openMobileSearch: function() {
-      this.mobileSearchOpen = true
-      this.menuOpen = false
-      this.$store.dispatch('layouts/default/updateDisabledScrolling', true)
-    },
-
-    /**
-     * Closes the mobile version of the search bar
-     */
-    closeMobileSearch: function() {
-      this.mobileSearchOpen = false
-      this.$store.dispatch('layouts/default/updateDisabledScrolling', false)
-    },
-
-    executeMobileSearch: function(term) {
-      this.executeSearch(term)
-      this.closeMobileSearch()
-    },
-
-    /**
-     * Executes a search query based on selected
-     * option and query
-     */
-    executeSearch: function(term) {
-      const option = this.searchSelectOptions.find(
-        o => o.value === this.searchSelect
-      )
-      // Set up an object for the nuxt router
-      let type = option.value
-      let routeParams = {
-        name: type,
-        query: {
-          search: term
-        }
-      }
-
-      // Searching on 'data' takes user directly to the dataset, as opposed to the /data page
-      if (option.value === 'data'){
-        type = 'dataset'
-        routeParams = {
-          name: 'data',
-          query: {
-            type,
-            search: term
-          }
-        }
-      }
-      this.$router.push(routeParams)
-
-      this.searchQuery = ''
-      this.searchSelect = 'data'
     }
   }
 }
