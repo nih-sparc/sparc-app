@@ -250,9 +250,22 @@ export default {
   border: 1px solid $lineColor1;
 }
 
-::v-deep h2 {
-  font-size: 1.5rem;
-  line-height: 2.25rem;
-  font-weight: 500;
+::v-deep h1 {
+  font-size:2rem;
+  font-weight:500;
+  line-height:2.75rem;
 }
+
+::v-deep h2 {
+  font-size:1.5rem;
+  font-weight:500;
+  line-height:2.25rem;
+}
+
+::v-deep h3 {
+  font-size:1rem;
+  font-weight:500;
+  line-height:1.875rem;
+}
+
 </style>
