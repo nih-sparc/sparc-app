@@ -1,4 +1,4 @@
-import marked from 'marked'
+import { marked } from 'marked'
 import youtubeEmbeddedSrc from '../youtube-embedded-src'
 import DOMPurify from 'isomorphic-dompurify'
 
