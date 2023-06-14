@@ -334,13 +334,13 @@ export default {
               scaffold => {
                 const file_path = scaffold.dataset.path
                 const id = scaffold.identifier
-                const thumbnail = this.getThumbnailForScaffold(
+                const thumbnail = this.getThumbnailPathForScaffold(
                   scaffold,
                   scicrunchData["abi-scaffold-view-file"],
                   scicrunchData["abi-thumbnail"],
                   index
                 )
-                this.getThumbnailWithInfo(items, {
+                this.retrieveThumbnailFromInfo(items, {
                     id,
                     fetchAttempts: 0,
                     datasetId,
@@ -448,11 +448,11 @@ export default {
             ...Array.from(scicrunchData['abi-plot'], plot => {
               const id = plot.identifier
               const file_path = plot.dataset.path
-              const thumbnail = this.getThumbnailForScaffold(
+              const thumbnail = this.getThumbnailPathForPlot(
                 plot,
                 scicrunchData["abi-thumbnail"]
               )
-              this.getThumbnailWithInfo(items, {
+              this.retrieveThumbnailFromInfo(items, {
                   id,
                   fetchAttempts: 0,
                   datasetId,
@@ -572,7 +572,7 @@ export default {
       }
       return undefined
     },
-    getThumbnailForPlot(plot, thumbnails) {
+    getThumbnailPathForPlot(plot, thumbnails) {
       if (thumbnails && plot) {
         return this.findEntryWithPathInArray(thumbnails, plot.datacite.isSourceOf.path[0])
       }
@@ -589,7 +589,7 @@ export default {
      * Use the scaffoldViews to help with finding the correct thumbnails.
      * Use the index if the workflow stated above fails.
      */
-    getThumbnailForScaffold(scaffold, scaffoldViews, thumbnails, index) {
+    getThumbnailPathForScaffold(scaffold, scaffoldViews, thumbnails, index) {
       if (thumbnails && thumbnails.length > 0) {
         let thumbnail = undefined
         if (scaffold && scaffoldViews) {
@@ -614,7 +614,7 @@ export default {
         }
       }
     },
-    getThumbnailWithInfo(items, info, defaultImg) {
+    retrieveThumbnailFromInfo(items, info, defaultImg) {
       discover
         .fetch(info.datasetId, info.datasetVersion, info.file_path, true, info.s3Bucket)
         .then(
@@ -632,7 +632,7 @@ export default {
               info.fetchAttempts < 3
             ) {
               info.fetchAttempts += 1
-              return this.getThumbnailWithInfo(items, info)
+              return this.retrieveThumbnailFromInfo(items, info)
             } else {
               let item = items.find(x => x.id === info.id)
               this.$set(item, 'thumbnail', defaultImg)
