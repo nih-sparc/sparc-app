@@ -43,6 +43,7 @@
             </nuxt-link>
           </div>
           <button
+            v-if="showSearchDialog"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch(searchQuery)"
@@ -144,7 +145,7 @@
               </div>
             </div>
           </div>
-          <div class="nav-main-container__search">
+          <div v-if="showSearchDialog" class="nav-main-container__search">
             <el-input
               v-model="searchQuery"
               type="text"
@@ -239,6 +240,7 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
+      showSearchDialog: false,
       showLoginDialog: false,
       showLoginFeature: (process.env.SHOW_LOGIN_FEATURE == 'true') ? true : false,
       searchSelectOptions: [

@@ -709,7 +709,7 @@ export default {
         linkedFundingProgramTargetType = funding ? 'program' : undefined
       }
       if (contentType === undefined) {
-        this.isLoadingSearch = false;
+        this.isLoadingSearch = false
       }
       else {
         client
