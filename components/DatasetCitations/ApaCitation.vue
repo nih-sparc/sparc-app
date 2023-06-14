@@ -117,19 +117,21 @@ export default {
     authorCitations() {
       let authorCitationText = ""
       let num = 0
-      if (this.authors.length == 1) {
-        let author = this.authors[0]
-        let lastName = this.getAuthorLastName(author)
-        let firstName = this.getAuthorFirstName(author)
-        authorCitationText = `${lastName}, ${firstName.charAt(0)}. `
-      }
-      else {
-        this.authors.forEach(author => {
+      if (this.authors) {
+        if (this.authors.length == 1) {
+          let author = this.authors[0]
           let lastName = this.getAuthorLastName(author)
           let firstName = this.getAuthorFirstName(author)
-          authorCitationText += num === this.authors.length-1 ? `and ${lastName}, ${firstName.charAt(0)}. ` : `${lastName}, ${firstName.charAt(0)}., `
-          num++
-        })
+          authorCitationText = `${lastName}, ${firstName.charAt(0)}. `
+        }
+        else {
+          this.authors.forEach(author => {
+            let lastName = this.getAuthorLastName(author)
+            let firstName = this.getAuthorFirstName(author)
+            authorCitationText += num === this.authors.length-1 ? `and ${lastName}, ${firstName.charAt(0)}. ` : `${lastName}, ${firstName.charAt(0)}., `
+            num++
+          })
+        }
       }
       return authorCitationText
     },
