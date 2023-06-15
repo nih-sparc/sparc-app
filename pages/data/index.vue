@@ -329,6 +329,11 @@ export default {
           property: 'og:title',
           content: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
         },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse datasets'
+        },
       ]
     }
   },
