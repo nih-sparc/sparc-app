@@ -214,7 +214,19 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
 
   head() {
     return {
-      title: this.searchTypes[1].label
+      title: this.searchTypes[1].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.searchTypes[1].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse events'
+        },
+      ]
     }
   },
 

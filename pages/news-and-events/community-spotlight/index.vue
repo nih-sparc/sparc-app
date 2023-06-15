@@ -251,7 +251,19 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
   },
   head() {
     return {
-      title: this.searchTypes[2].label
+      title: this.searchTypes[2].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.searchTypes[2].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse community spotlight'
+        },
+      ]
     }
   },
   watch: {
