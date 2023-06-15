@@ -137,7 +137,19 @@ export default {
 
   head() {
     return {
-      title: this.pageTitle
+      title: this.pageTitle,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.pageTitle,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.heroCopy ? this.heroCopy : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
     }
   },
 

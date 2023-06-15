@@ -100,7 +100,14 @@ export default {
 
   head() {
     return {
-      title: this.aboutDetailsItem.fields.title
+      title: this.aboutDetailsItem.fields.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.aboutDetailsItem.fields.title,
+        },
+      ]
     }
   },
 

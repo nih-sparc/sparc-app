@@ -180,7 +180,14 @@ export default {
 
   head() {
     return {
-      title: this.searchTypes[0].label
+      title: this.searchTypes[0].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.searchTypes[0].label,
+        },
+      ]
     }
   },
 
