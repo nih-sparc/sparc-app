@@ -163,7 +163,19 @@ export default {
 
   head() {
     return {
-      title: this.title
+      title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse software'
+        },
+      ]
     }
   },
 

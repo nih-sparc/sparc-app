@@ -134,6 +134,7 @@ export default {
     return {
       meta: [
         {
+          hid: 'description',
           name: 'description',
           content:
             'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
@@ -143,13 +144,9 @@ export default {
           content: 'website'
         },
         {
-          name: 'og:title',
+          hid: 'og:title',
+          property: 'og:title',
           content: 'SPARC Portal'
-        },
-        {
-          name: 'og:description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
         },
         {
           hid: 'og:image',
