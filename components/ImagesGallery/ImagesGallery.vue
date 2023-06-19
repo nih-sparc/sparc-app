@@ -377,7 +377,6 @@ export default {
               const url = new URL(`${process.env.portal_api}/s3-resource/${datasetId}/${datasetVersion}/files/${thumbnailPaths[videoFile.dataset.path]}`)
               url.searchParams.append('encodeBase64', true)
               const img = await fetch(url).then(resp => resp.ok ? resp.text() : null)
-              console.log(url.toString(), img)
               if (img) {
                 thumbnail = 'data:image/png;base64,' + img
               }
