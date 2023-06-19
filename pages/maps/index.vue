@@ -250,6 +250,18 @@ export default {
   head() {
     return {
       title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'SPARC is creating detailed PNS maps based on SPARC data and information available from the literature.'
+        },
+      ]
     }
   },
   watch: {

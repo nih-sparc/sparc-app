@@ -857,11 +857,13 @@ export default {
           content: 'website'
         },
         {
+          hid: 'og:title',
           property: 'og:title',
           content: this.datasetTitle
         },
         {
-          property: 'og:description',
+          hid: 'description',
+          name: 'description',
           content: this.datasetDescription
         },
         {
@@ -913,10 +915,6 @@ export default {
         {
           name: 'DC.version',
           content: this.datasetInfo.version
-        },
-        {
-          property: 'og:url',
-          content: process.env.ROOT_URL
         }
       ],
       script: [

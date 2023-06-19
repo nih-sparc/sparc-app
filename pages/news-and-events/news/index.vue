@@ -209,7 +209,19 @@ export default Vue.extend<NewsData, NewsMethods, NewsComputed, never>({
 
   head() {
     return {
-      title: this.searchTypes[0].label
+      title: this.searchTypes[0].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.searchTypes[0].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse news'
+        },
+      ]
     }
   },
 

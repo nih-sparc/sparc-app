@@ -16,7 +16,7 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: process.env.npm_package_description || ''
+        content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)',
       },
       {
         hid: 'keywords',
@@ -26,7 +26,7 @@ export default {
       // default social cards information for site sharing url's
       { hid: 'og:type', property: 'og:type', content: 'website' },
       { hid: 'og:title', property: 'og:title', content: 'SPARC Portal' },
-      { hid: 'og:desc', property: 'og:description', content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)' },
+      { hid: 'og:description', property: 'og:description', content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)' },
       { hid: 'og:image', property: 'og:image',
         content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
       },
@@ -77,7 +77,8 @@ export default {
     ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
     ctf_about_portal_page_id: '2156L8jQgaifFNpgeylaQp',
     ctf_about_details_content_type_id: 'aboutPageSecondLevel',
-    ctf_about_details_page_types: ['Policies', 'Portal', 'Team', 'Get Involved', 'What We Offer'],
+    ctf_learn_more_item_id: 'learnMoreItem',
+    ctf_sparc_policies_id: 'sparcPolicies',
     ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
     ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
     ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',

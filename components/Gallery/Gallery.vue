@@ -8,20 +8,41 @@
       <div class="filler" />
       <div class="card-line">
         <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
-          <ResourceCard
-            v-if="item"
-            :width="cardWidth"
-            :key="item.sys.id"
-            :showShadow="isActive(index)"
-            :title="item.fields.name"
-            :subtitle="item.fields.resourceType.join(', ')"
-            :showSparcTag="item.fields.developedBySparc"
-            :description="item.fields.description"
-            :thumbnail-url="item.fields.logo.fields.file.url"
-            :button-link="`/resources/${item.sys.id}`"
-            :external-url="item.fields.url"
-            @card-clicked="cardClicked"
-          />
+          <template v-if="item">
+            <component
+              v-if="galleryItemType === 'resources'"
+              :is="galleryItemComponent"
+              :width="cardWidth"
+              :key="item.sys.id"
+              :showShadow="isActive(index)"
+              :title="item.fields.name"
+              :subtitle="item.fields.resourceType.join(', ')"
+              :showSparcTag="item.fields.developedBySparc"
+              :description="item.fields.description"
+              :thumbnail-url="item.fields.logo.fields.file.url"
+              :button-link="`/resources/${item.sys.id}`"
+              :external-url="item.fields.url"
+              @card-clicked="cardClicked"
+            />
+            <component
+              v-else-if="galleryItemType === 'metrics'"
+              :is="galleryItemComponent"
+              :width="cardWidth"
+              :key="index"
+              :showShadow="isActive(index)"
+              :title="item.title"
+              :data="item.data"
+              :subData="item.subData"
+            />
+            <component
+              v-else-if="galleryItemType === 'highlights'"
+              :is="galleryItemComponent"
+              :width="cardWidth"
+              :key="index"
+              :showShadow="isActive(index)"
+              :item="item"
+            />
+          </template>
         </span>
       </div>
       <div class="filler" />
@@ -30,22 +51,33 @@
       </a>
       <div v-else style="width: 2rem" />
     </div>
-    <index-indicator class="mt-32" :count="itemCount" :current="currentIndex" @clicked="indicatorClicked" />
+    <index-indicator v-if="items.length > 1" class="mt-32" :count="itemCount" :current="currentIndex" @clicked="indicatorClicked" />
   </div>
 </template>
 
 <script>
-import IndexIndicator from './IndexIndicator'
-import ResourceCard from './ResourceCard.vue'
+import IndexIndicator from '~/components/Gallery/IndexIndicator.vue'
+import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
+import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
+import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
+import { defaultTo } from 'ramda'
+
+const galleryItemComponents = {
+  resources: ResourceCard,  
+  metrics: MetricsCard,
+  highlights: HighlightCard,
+}
+
 function convertRemToPixels(rem) {
   if (typeof window !== 'undefined') {
     return rem * parseFloat(window.getComputedStyle(document.documentElement).fontSize)
   }
   return rem * 16
 }
+
 export default {
-  name: 'ResourcesGallery',
-  components: { IndexIndicator, ResourceCard },
+  name: 'Gallery',
+  components: { IndexIndicator, ResourceCard, MetricsCard, HighlightCard },
   props: {
     items: {
       type: Array,
@@ -65,6 +97,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    galleryItemType: {
+      type: String,
+      default: 'resources'
+    }
   },
   data() {
     return {
@@ -81,6 +117,9 @@ export default {
     delete this.resizeObserver
   },
   computed: {
+    galleryItemComponent: function() {
+      return defaultTo('', galleryItemComponents[this.galleryItemType])
+    },
     itemCount() {
       return this.items.length
     },
@@ -106,7 +145,8 @@ export default {
       const cardWidthPx = convertRemToPixels(this.cardWidth)
       const cardItems = (this.maxWidth - 2 * buttonPx - 2 * cardSpacingPx) / (1.1 * cardWidthPx)
       //Display at least one item
-      return Math.max(1, Math.floor(cardItems))
+      const possibleNumberVisible = Math.max(1, Math.floor(cardItems))
+      return this.itemCount < possibleNumberVisible ? this.itemCount : possibleNumberVisible
     },
     valueAdjustment() {
       const halfWindow = Math.floor(this.numberOfItemsVisible / 2)
@@ -155,9 +195,11 @@ export default {
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .arrow-button {
-  width: 2rem;
-  height: 2rem;
-  line-height: 2rem;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  border-radius: 50%;
+  background: $purple;
+  line-height: 1.1rem;
   display: flex;
   justify-content: center;
   user-select: none;
@@ -174,9 +216,8 @@ export default {
   flex-grow: 2;
 }
 .progress-button {
-  font-size: 3rem;
-  font-weight: bold;
-  color: $purple;
+  font-size: 2rem;
+  color: white;
 }
 .filler {
   flex-grow: .5;

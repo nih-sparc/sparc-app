@@ -114,7 +114,19 @@ export default {
 
   head() {
     return {
-      title: this.resource.fields.name
+      title: this.resource.fields.name,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.resource.fields.name,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.resource.fields.description ? this.resource.fields.description : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
     }
   },
 

@@ -1,6 +1,6 @@
 <template>
   <div class="about-page pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" title="About" />
+    <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
     <page-hero v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
       <!-- eslint-disable vue/no-v-html -->
@@ -8,21 +8,11 @@
       <div v-html="parseMarkdown(heroCopy)" />
     </page-hero>
     <div class="page-wrap container">
-      <div class="row">
-        <div class="col">
-          <div
-            class="about-page-text mt-32"
-            v-html="parseMarkdown(overview)"
-          />
-        </div>
-      </div>
-
       <paper
         class="row mt-32"
         :text="parseMarkdown(sparcPortal)"
-        :button-text="' About the SPARC Portal '"
-        :button-link="aboutLink(aboutPortalPageId)"
-        :img-src="sparcPortalImage ? sparcPortalImage.fields.file.url : null"
+        :button-text="' View The Roadmap '"
+        button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap"
       />
 
       <div class="row mt-32">
@@ -35,36 +25,46 @@
         <paper
           class="row-item"
           :text="parseMarkdown(teamLeadership)"
-          :button-text="' Team & Leadership '"
+          :button-text="' Who We Are '"
           :button-link="aboutLink(teamAndLeadershipPageId)"
         />
         <paper
           class="row-item"
           :text="parseMarkdown(getInvolved)"
-          :button-text="' Get Involved '"
+          :button-text="' Help Us Grow '"
           :button-link="aboutLink(getInvolvedPageId)"
         />
       </div>
 
-      <div class="row mt-32 about-page-border">
-        <img
-          v-if="sparcPortalImage"
-          slot="image"
-          class="portal-image"
-          :src="communitySpotlightImage.fields.file.url"
+      <div class="gallery-items-container p-32 mt-32">
+        <div class="heading2 mb-16">Portal Metrics</div>
+        <gallery
+          galleryItemType="metrics"
+          :items="metricsItems"
         />
-        <div class="subpage-col midnightblue-background">
-          <div
-            class="about-page-text white-text"
-            v-html="parseMarkdown(communitySpotlight)"
-          />
-          <NuxtLink
-            class="margin-top-auto"
-            to="/news-and-events/community-spotlight"
-          >
-            <el-button class="secondary"> View Spotlight </el-button>
-          </NuxtLink>
-        </div>
+        <nuxt-link
+          to="about/metrics"
+        >
+          <el-button class="secondary mt-16">
+            View All Metrics
+          </el-button>
+        </nuxt-link>
+      </div>
+
+      <div class="gallery-items-container p-32 mt-32">
+        <div class="heading2 mb-16">Highlights</div>
+        <gallery
+          galleryItemType="highlights"
+          :cardWidth="68"
+          :items="highlightsItems"
+        />
+      </div>
+
+      <div class="gallery-items-container p-32 mt-32">
+        <div
+          class="about-page-text"
+          v-html="parseMarkdown(overview)"
+        />
       </div>
     </div>
   </div>
@@ -74,6 +74,7 @@
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import Paper from '@/components/Paper/Paper.vue'
+import Gallery from '~/components/Gallery/Gallery.vue'
 
 import createClient from '@/plugins/contentful.js'
 
@@ -88,7 +89,8 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    Paper
+    Paper,
+    Gallery
   },
 
   mixins: [ContentfulErrorHandle, MarkedMixin],
@@ -121,6 +123,8 @@ export default {
           label: 'Home'
         }
       ],
+      metricsItems: [],
+      highlightsItems: [],
       projectId: process.env.ctf_project_id,
       heroImage: {},
       futurePlans: '',
@@ -133,8 +137,61 @@ export default {
 
   head() {
     return {
-      title: this.pageTitle
+      title: this.pageTitle,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.pageTitle,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.heroCopy ? this.heroCopy : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
     }
+  },
+
+  async fetch() {
+    const month = new Date().getMonth()
+    const year = new Date().getFullYear()
+    await this.$axios
+      .$get(`https://dev-metrics.sparc.science/pennsieve?year=${year}&month=${month}`)
+      .then((response) => {
+        const metrics = response[0]
+        const downloadsLastQuarter = parseInt(metrics['number_of_sparc_downloads_last_quarter']['N'])
+        const downloadsLastMonth = parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+        const totalContributors = parseInt(metrics['number_of_sparc_users_overall']['N'])
+        const newContributors = parseInt(metrics['number_of_new_sparc_users_last_quarter']['N'])
+        this.metricsItems = [
+          {
+            title: 'Downloads last month',
+            data: `${downloadsLastMonth}`,
+            subData: `(${downloadsLastQuarter} last quarter)`
+          },
+          {
+            title: 'Dataset Contributors',
+            data: `${totalContributors}`,
+            subData: `(${newContributors} new in the last month)`
+          }
+        ]
+      })
+      .catch(() => {
+        console.log("ERROR RETRIEVING METRICS")
+      })
+    await client.getEntries({
+        content_type: process.env.ctf_news_id,
+        order: '-fields.publishedDate',
+        limit: '999',
+        'fields.subject': 'Highlight'
+      })
+      .then(({ items })=> {
+        this.highlightsItems = items
+      })
+      .catch(() => {
+        console.log("ERROR RETRIEVING HIGHLIGHTS")
+      })
   },
 
   methods: {
@@ -157,31 +214,6 @@ export default {
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .about-page {
   background-color: $background;
-}
-.page {
-  display: flex;
-  margin-top: 7rem;
-
-  p {
-    color: #606266;
-  }
-}
-
-.subpage-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background-color: white;
-  padding: 2rem;
-
-  @media screen and (max-width: 767px) {
-    margin-top: 0;
-  }
-  .about-page-text {
-    @media screen and (max-width: 767px) {
-      margin-left: 0;
-    }
-  }
 }
 
 .row-item {
@@ -225,4 +257,27 @@ export default {
 .about-page-border {
   border: 1px solid $lineColor2;
 }
+.gallery-items-container {
+  background-color: white;
+  border: 1px solid $lineColor1;
+}
+
+::v-deep h1 {
+  font-size:2rem;
+  font-weight:500;
+  line-height:2.75rem;
+}
+
+::v-deep h2 {
+  font-size:1.5rem;
+  font-weight:500;
+  line-height:2.25rem;
+}
+
+::v-deep h3 {
+  font-size:1rem;
+  font-weight:500;
+  line-height:1.875rem;
+}
+
 </style>

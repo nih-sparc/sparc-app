@@ -322,7 +322,19 @@ export default {
 
   head() {
     return {
-      title: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1])
+      title: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse datasets'
+        },
+      ]
     }
   },
 
@@ -709,7 +721,7 @@ export default {
         linkedFundingProgramTargetType = funding ? 'program' : undefined
       }
       if (contentType === undefined) {
-        this.isLoadingSearch = false;
+        this.isLoadingSearch = false
       }
       else {
         client

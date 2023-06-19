@@ -26,7 +26,18 @@ export default {
     ...mapState('layouts/default', {
       hasAcceptedGDPR: state => state.hasAcceptedGDPR
     })
-  }
+  },
+  head() {
+    return {
+      meta: [
+        { 
+          hid: 'og:url',
+          property: 'og:url',
+          content: `${process.env.ROOT_URL}${this.$route.fullPath}`,
+        },
+      ]
+    }
+  },
 }
 </script>
 
