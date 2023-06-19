@@ -120,6 +120,9 @@ export default {
           redirectionUrl.searchParams.append('download_link', fileUrl)
           redirectionUrl.searchParams.append('file_size', fileSize)
           redirectionUrl.searchParams.append('file_type', this.fileExtension)
+          if (this.selectedFile.name) {
+            redirectionUrl.searchParams.append('file_name', this.selectedFile.name)
+          }
 
           window.open(redirectionUrl, '_blank')
 
