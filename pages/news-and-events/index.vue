@@ -263,7 +263,19 @@ export default Vue.extend<Data, Methods, Computed, never>({
 
   head() {
     return {
-      title: this.title
+      title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.page.fields.heroCopy ? this.page.fields.heroCopy : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
     }
   },
 

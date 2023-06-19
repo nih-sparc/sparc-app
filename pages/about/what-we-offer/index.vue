@@ -88,7 +88,19 @@ export default {
 
   head() {
     return {
-      title: this.title
+      title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.summary ? this.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
     }
   },
 
@@ -123,14 +135,27 @@ export default {
 .page-data {
   background-color: $background;
 }
-.heading1 {
-  font-weight: 300;
-}
-
 hr {
   opacity: 0.3;
 }
-h1 {
-  font-weight: 300;
+::v-deep h1 {
+  font-size:2rem;
+  font-weight:500;
+  line-height:2.75rem;
+}
+
+::v-deep h2 {
+  font-size:1.5rem;
+  font-weight:500;
+  line-height:2.25rem;
+}
+
+::v-deep h3 {
+  font-size:1rem;
+  font-weight:500;
+  line-height:1.875rem;
+}
+::v-deep img {
+  width: 100%;
 }
 </style>
