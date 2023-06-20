@@ -154,31 +154,32 @@ export default {
   },
 
   async fetch() {
-    const month = new Date().getMonth()
+    const day = new Date().getDay().toString().padStart(2, "0")
+    const month = new Date().getMonth().toString().padStart(2, "0")
     const year = new Date().getFullYear()
+    let totalDownloads, downloadsLastMonth, totalContributors, newContributors = 0
     await this.$axios
       .$get(`https://dev-metrics.sparc.science/pennsieve?year=${year}&month=${month}`)
       .then((response) => {
         const metrics = response[0]
-        const downloadsLastQuarter = parseInt(metrics['number_of_sparc_downloads_last_quarter']['N'])
-        const downloadsLastMonth = parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
-        const totalContributors = parseInt(metrics['number_of_sparc_users_overall']['N'])
-        const newContributors = parseInt(metrics['number_of_new_sparc_users_last_quarter']['N'])
-        this.metricsItems = [
-          {
-            title: 'Downloads last month',
-            data: `${downloadsLastMonth}`,
-            subData: `(${downloadsLastQuarter} last quarter)`
-          },
-          {
-            title: 'Dataset Contributors',
-            data: `${totalContributors}`,
-            subData: `(${newContributors} new in the last month)`
-          }
-        ]
+        totalContributors = parseInt(metrics['number_of_sparc_users_overall']['N'])
+        newContributors = parseInt(metrics['number_of_new_sparc_users_last_quarter']['N'])
+        downloadsLastMonth = parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+      }).catch((e) => {
+        console.log("ERROR RETRIEVING CONTRIBUTORS: ", e)
       })
-      .catch(() => {
-        console.log("ERROR RETRIEVING METRICS")
+    await this.$axios
+      .$get(`${process.env.discover_api_host}/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${year}-${month}-${day}`)
+      .then((data) => {
+        totalDownloads = 0
+        data.forEach(item => {
+          if (item['origin'] === "SPARC") {
+            totalDownloads += parseInt(item['downloads'])
+          }
+        })
+      })
+      .catch((e) => {
+        console.log("ERROR RETRIEVING DOWNLOADS: ", e)
       })
     await client.getEntries({
         content_type: process.env.ctf_news_id,
@@ -192,6 +193,18 @@ export default {
       .catch(() => {
         console.log("ERROR RETRIEVING HIGHLIGHTS")
       })
+    this.metricsItems = [
+      {
+        title: 'Total Downloads',
+        data: `${totalDownloads}`,
+        subData: `(${downloadsLastMonth} last month)`
+      },
+      {
+        title: 'Dataset Contributors',
+        data: `${totalContributors}`,
+        subData: `(${newContributors} new in the last month)`
+      }
+    ]
   },
 
   methods: {
