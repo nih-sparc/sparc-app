@@ -10,12 +10,13 @@
         <client-only placeholder="Loading video ...">
           <div class="video-container">
             <video ref="vid" class="video" controls crossorigin playsinline>
-              <source :src="video_src" :type="mimetype" size="1080" />
+              <source :src="video_src" :type="mimetype" size="1080" @error="failedVideo = true"/>
               <p>
                 Your browser doesn't support HTML5 video. Here is a a
                 <a :href="video_src">link to the video</a> instead.
               </p>
             </video>
+            <p v-show="failedVideo">There was a problem while opening the video. You can try with another browser or use the Download button below.</p>
           </div>
         </client-only>
       </detail-tabs>
@@ -153,7 +154,8 @@ export default {
       activeTab: 'video',
       file: {},
       traditional: true,
-      backgroundToggle: true
+      backgroundToggle: true,
+      failedVideo: false
     }
   },
   computed: {
