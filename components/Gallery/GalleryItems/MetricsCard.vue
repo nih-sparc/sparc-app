@@ -5,7 +5,7 @@
         {{ title }}
       </div>
     </div>
-    <div class="heading1">
+    <div class="heading1 data">
       {{ data }}
     </div>
     <div class="body1 mb-16">
@@ -53,7 +53,9 @@ export default {
 
 <style scoped lang="scss">
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
-
+.data {
+  color: $purple;
+}
 .card {
   background-color: transparent;
   position: relative;
