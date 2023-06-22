@@ -159,7 +159,7 @@ export default {
     const year = new Date().getFullYear()
     let totalDownloads, downloadsLastMonth, totalContributors, newContributors = 0
     await this.$axios
-      .$get(`https://dev-metrics.sparc.science/pennsieve?year=${year}&month=${month}`)
+      .$get(`${process.env.METRICS_URL}/pennsieve?year=${year}&month=${month}`)
       .then((response) => {
         const metrics = response[0]
         totalContributors = parseInt(metrics['number_of_sparc_users_overall']['N'])
