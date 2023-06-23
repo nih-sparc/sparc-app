@@ -76,11 +76,11 @@ const metricsTypes = [
 ]
 
 const fetchMetrics = async (axios, month, year) => {
-  let ga4MetricsData = await axios.get(`https://dev-metrics.sparc.science/ga4?year=${year}&month=${month}`)
+  let ga4MetricsData = await axios.get(`${process.env.METRICS_URL}/ga4?year=${year}&month=${month}`)
   ga4MetricsData = ga4MetricsData.data[0]
-  let pennsieveMetricsData = await axios.get(`https://dev-metrics.sparc.science/pennsieve?year=${year}&month=${month}`)
+  let pennsieveMetricsData = await axios.get(`${process.env.METRICS_URL}/pennsieve?year=${year}&month=${month}`)
   pennsieveMetricsData = pennsieveMetricsData.data[0]
-  let sparcMetricsData = await axios.get(`https://dev-metrics.sparc.science/sparc?year=${year}&month=${month}`)
+  let sparcMetricsData = await axios.get(`${process.env.METRICS_URL}/sparc?year=${year}&month=${month}`)
   sparcMetricsData = sparcMetricsData.data[0]
 
   const top5AnatomicalStructuresObject = sparcMetricsData['anatomical_structures_breakdown']['M']

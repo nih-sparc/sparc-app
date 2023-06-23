@@ -142,6 +142,7 @@ export default {
     SHOW_METRICS: process.env.SHOW_METRICS || 'false',
     SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false',
     SHOW_OSPARC_TAB: process.env.SHOW_OSPARC_TAB || 'false',
+    METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science'
   },
 
   serverMiddleware: [
