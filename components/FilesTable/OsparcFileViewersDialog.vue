@@ -73,7 +73,7 @@ export default {
       selectedViewer: '',
       isFetching: false,
       filePickerDummy: {
-        title: "Open stand-alone",
+        title: "No service",
         "view_url": osparcViewUrl.toString()
       }
     }
