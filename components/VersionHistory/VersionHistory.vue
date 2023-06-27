@@ -67,20 +67,7 @@
         justify="center"
       >
         <el-col :span="4" :pull="1">
-          <router-link
-            :to="{
-              name: 'version',
-              params: {
-                version: version.version,
-                datasetId
-              },
-              query: {
-                type: 'dataset'
-              }
-            }"
-          >
-            Version {{ version.version }}
-          </router-link>
+          Version {{ version.version }}
         </el-col>
         <el-col :span="4">
           Revision {{ version.revision ? version.revision : '0' }}
