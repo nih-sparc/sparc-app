@@ -10,7 +10,7 @@
         <client-only placeholder="Loading video ...">
           <div class="video-container">
             <video ref="vid" class="video" controls crossorigin playsinline>
-              <source :src="video_src" :type="mimetype" size="1080" />
+              <source :src="video_src" :type="mimetype" size="1080" @error="failedVideoHandler"/>
               <p>
                 Your browser doesn't support HTML5 video. Here is a a
                 <a :href="video_src">link to the video</a> instead.
@@ -83,6 +83,8 @@ import DatasetInfo from '@/mixins/dataset-info'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
+
+import { failMessage } from '@/utils/notification-messages'
 
 import { extractS3BucketName } from '@/utils/common'
 
@@ -179,6 +181,13 @@ export default {
      */
     versionNumber: function() {
       return this.$route.query.dataset_version
+    }
+  },
+  methods: {
+    failedVideoHandler: function() {
+      this.$message(
+        failMessage('There was a problem while opening the video. Please try with another browser or use the Download button below.')
+      )
     }
   },
   mounted() {
