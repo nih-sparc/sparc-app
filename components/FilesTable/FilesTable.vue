@@ -198,11 +198,12 @@
                 <sparc-tooltip
                   placement="bottom-center"
                 >
-                  <div slot="data">
-                    Open in oSPARC. More info on oSPARC can be found
-                    <a href="/resources/4LkLiH5s4FV0LVJd3htsvH" target="_blank">
+                  <div slot="data" class="osparc-service-btn-tooltip">
+                    Open in o<sup>2</sup>S<sup>2</sup>PARC. Login is required, 
+                    <a href="/resources/4LkLiH5s4FV0LVJd3htsvH#user-accounts" target="_blank">
                       <u>here</u>
                     </a>
+                    you can find more information on how to get an account.
                   </div>
                   <svg-icon slot="item" name="icon-osparc" height="1.5rem" width="1.5rem" />
                 </sparc-tooltip>
@@ -901,6 +902,16 @@ export default {
       padding: 0 16px;
       text-overflow: unset;
     }
+  }
+}
+.osparc-service-btn-tooltip {
+  sup, sub {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+  }
+  sub {
+    top: 0.4em;
   }
 }
 </style>
