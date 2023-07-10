@@ -139,5 +139,8 @@ export default {
   .purple-fill {
     fill: $purple;
   }
+  ::v-deep .popover {
+    background-color: #f9f2fc;
+  }
 }
 </style>

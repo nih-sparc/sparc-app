@@ -1,5 +1,5 @@
 <template>
-  <el-card :shadow="shadow" :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
+  <el-card :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
     <news-list-item
       :item="item"
     />
@@ -23,16 +23,7 @@ export default {
       type: Number,
       default: 68
     },
-    showShadow: {
-      type: Boolean,
-      default: false
-    }
   },
-  computed: {
-    shadow() {
-      return this.showShadow ? 'always' : 'never'
-    },
-  }
 }
 </script>
 
