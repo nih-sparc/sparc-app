@@ -92,6 +92,7 @@
             </sparc-tooltip>
           </div>
           <a
+            v-show="sdsViewer"
             :href="sdsViewer"
             target="_blank"
           >
