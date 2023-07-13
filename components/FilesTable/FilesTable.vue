@@ -321,7 +321,8 @@ export const contentTypes = {
   png: 'image/png',
   svg: 'img/svg+xml',
   mp4: 'video/mp4',
-  csv: 'text/csv'
+  csv: 'text/csv',
+  msword: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 }
 
 export default {
