@@ -7,73 +7,88 @@
         The SPARC Portal account allows you to fully utilize portal functionality. <a href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">Learn more</a> about which features require login and find out more details about why a Pennsieve account is created for you in the process.
       </p>
     </page-hero>
-    <div class="container my-24">
-      <div class="section p-16 mt-16">
-        <div class="heading2">
-          My Information
-        </div>
-        <el-row>
-          <el-col :span=12>
-            <div class="body1">First name: <span class="heading3">{{firstName}}</span></div>
-            <div class="body1">Last name: <span class="heading3">{{lastName}}</span></div>
-            <div class="body1">E-mail: <span class="heading3">{{profileEmail}}</span></div>
-          </el-col>
-          <el-col :span=12>
-            <div v-if="orcid" class="body1">ORCID: 
-              <span>
-                <a :href="orcidUri" target="_blank">{{ orcid }}</a>
-              </span>
-            </div>
-          </el-col>
-        </el-row>
-        
-      </div>
-      <div class="section heading2 p-16 mt-16">
-        Communication Preferences
-        <div class="body1">
-          SPARC Newsletter: 
-          <template v-if="!isSubscribed">
-            <span class="heading3">You are not subscribed.</span>
-            <div class="body1">
-              Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our newsletter. View all past newsletters <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">here</a>.
-            </div>
-            <div class="mt-8">
-              <el-button class='secondary' v-on:click='subscribeToNewsletter(profileEmail, firstName, lastName)'>Subscribe to newsletter</el-button>
-            </div>
-          </template>
-          <template v-else>
-            <span class="heading3">You are currently subscribed.</span>
-            <div class="body1">
-              View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
-            </div>
-            <div class="mt-8">
-              <el-button class='secondary' v-on:click='unsubscribeFromNewsletter(profileEmail)'>Un-subscribe from newsletter</el-button>
-            </div>
-          </template>
-        </div>
-      </div>
-
-      <div class="section heading2 p-16 mt-16">
-        <div class="datasets-container-title">
-          <span class="heading2 mb-16">My Published Datasets ({{ datasets.length }})</span>
-          <span>
-            <el-popover
-              width="fit-content"
-              trigger="hover"
-              :append-to-body=false
-              popper-class="popover"
-              >
-              <svg-icon slot="reference" class="icon-help" icon="icon-help" width="26" height="26" />
-              <div>
-                My published Datasets relates to all Datasets, Computational and Anatomical models where you have been associated to the dataset using your ORCID number. If there are datasets that you feel should be linked to you please contact curation@sparc.science
+    <div class="background-container">
+      <div class="container py-24">
+        <div class="section p-16 mt-16">
+          <div class="heading2">
+            My Information
+          </div>
+          <el-row>
+            <el-col :span=12>
+              <div class="body1">First name: <span class="heading3"><b>{{firstName}}</b></span></div>
+              <div class="body1">Last name: <span class="heading3"><b>{{lastName}}</b></span></div>
+              <div class="body1">E-mail: <span class="heading3"><b>{{profileEmail}}</b></span></div>
+            </el-col>
+            <el-col :span=12>
+              <div v-if="orcid" class="body1">ORCID: 
+                <span>
+                  <a :href="orcidUri" target="_blank">{{ orcid }}</a>
+                </span>
               </div>
-            </el-popover>
-          </span>
+            </el-col>
+          </el-row>
         </div>
-        <gallery
-          galleryItemType="datasets"
-          :items="datasets"
-        />
+        <div class="section heading2 p-16 mt-16">
+          Available Resources
+          <div class="resource-container heading2">
+            SPARC Newsletter: 
+            <template v-if="!isSubscribed">
+              <div class="heading3"><b>You are not subscribed.</b></div>
+              <div class="body1">
+                Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our newsletter. View all past newsletters <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">here</a>.
+              </div>
+              <div class="mt-8">
+                <el-button class='secondary' v-on:click='subscribeToNewsletter(profileEmail, firstName, lastName)'>Subscribe to newsletter</el-button>
+              </div>
+            </template>
+            <template v-else>
+              <span class="heading3"><b>You are currently subscribed.</b></span>
+              <div class="body1">
+                View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
+              </div>
+              <div class="mt-8">
+                <el-button class='secondary' v-on:click='unsubscribeFromNewsletter(profileEmail)'>Un-subscribe from newsletter</el-button>
+              </div>
+            </template>
+          </div>
+          <div class="resource-container heading2">
+            Pennsieve: 
+            <div class="heading3"><b>You are registered.</b></div>
+            <div class="body1">
+              The Pennsieve Data Management Platform provides a scalable cloud-based solution for managing, analyzing, and sharing scientific datasets.
+            </div>
+            <div class="mt-8">
+              <a href="https://app.pennsieve.io/#" target="_blank">
+                <el-button class='secondary'>
+                  Launch Pennsieve <svg-icon icon="icon-open" height="16" width="16" />
+                </el-button>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="section heading2 p-16 mt-16">
+          <div class="datasets-container-title">
+            <span class="heading2 mb-16">My Published Datasets ({{ datasets.length }})</span>
+            <span>
+              <el-popover
+                width="fit-content"
+                trigger="hover"
+                :append-to-body=false
+                popper-class="popover"
+                >
+                <svg-icon slot="reference" class="icon-help" icon="icon-help" width="26" height="26" />
+                <div>
+                  My published Datasets relates to all Datasets, Computational and Anatomical models where you have been associated to the dataset using your ORCID number. If there are datasets that you feel should be linked to you please contact curation@sparc.science
+                </div>
+              </el-popover>
+            </span>
+          </div>
+          <gallery
+            galleryItemType="datasets"
+            :items="datasets"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -190,7 +205,7 @@ export default {
     async fetchPublishedDatasets() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
       this.datasets = await this.$axios
-        .$get(`${process.env.LOGIN_API_URL}/datasets/paginated?publicationStatus=completed&includeBannerUrl=true&onlyMyDatasets=true`, { headers })
+        .$get(`${process.env.LOGIN_API_URL}/datasets/paginated?publicationStatus=completed&includeBannerUrl=true&onlyMyDatasets=false`, { headers })
         .then(async (response) => {
           let items = []
           const datasets = response.datasets
@@ -243,13 +258,20 @@ a {
   text-decoration: underline;
 }
 .section {
+  background-color: white;
   border: 2px solid $lineColor1;
 }
-
 .icon-help {
   fill: $purple;
 }
-
+.background-container {
+  background-color: #f5f7fa
+}
+.resource-container {
+  padding: .5rem;
+  margin-top: .5rem;
+  border: 1px solid $lineColor2;
+}
 .datasets-container-title {
   display: flex;
   justify-content: space-between;
