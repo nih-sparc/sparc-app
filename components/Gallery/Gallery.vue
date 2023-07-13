@@ -1,11 +1,6 @@
 <template>
   <div ref="myButton" class="gallery">
     <div class="resources-gallery-strip">
-      <a v-if="items.length > 1" href="#" :class="['arrow-button', 'prev', { disabled: !isPrevPossible }]" @click.prevent="goPrev">
-        <span class="progress-button">&lsaquo;</span>
-      </a>
-      <div v-else style="width: 2rem" />
-      <div class="filler" />
       <div class="card-line">
         <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
           <template v-if="item">
@@ -13,8 +8,7 @@
               v-if="galleryItemType === 'resources'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="item.sys.id"
-              :showShadow="isActive(index)"
+              :key="'resource-' + index"
               :title="item.fields.name"
               :subtitle="item.fields.resourceType.join(', ')"
               :showSparcTag="item.fields.developedBySparc"
@@ -28,8 +22,7 @@
               v-else-if="galleryItemType === 'metrics'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="index"
-              :showShadow="isActive(index)"
+              :key="'metric-' + index"
               :title="item.title"
               :data="item.data"
               :subData="item.subData"
@@ -38,34 +31,36 @@
               v-else-if="galleryItemType === 'highlights'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="index"
-              :showShadow="isActive(index)"
+              :key="'highlight-' + index"
+              :item="item"
+            />
+            <component
+              v-else-if="galleryItemType === 'datasets'"
+              :is="galleryItemComponent"
+              :width="cardWidth"
+              :key="'dataset-' + index"
               :item="item"
             />
           </template>
         </span>
       </div>
-      <div class="filler" />
-      <a v-if="items.length > 1" href="#" :class="['arrow-button', 'next', { disabled: !isNextPossible }]" @click.prevent="goNext">
-        <span class="progress-button">&rsaquo;</span>
-      </a>
-      <div v-else style="width: 2rem" />
     </div>
-    <index-indicator v-if="items.length > 1" class="mt-32" :count="itemCount" :current="currentIndex" @clicked="indicatorClicked" />
+    <pagination  v-if="items.length > 0" background :total-count="itemCount" :selected="currentIndex" :page-size="numberOfItemsVisible" :pager-count=7 @select-page="indicatorClicked"/>
   </div>
 </template>
 
 <script>
-import IndexIndicator from '~/components/Gallery/IndexIndicator.vue'
 import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
 import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
 import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
+import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
 import { defaultTo } from 'ramda'
 
 const galleryItemComponents = {
   resources: ResourceCard,  
   metrics: MetricsCard,
   highlights: HighlightCard,
+  datasets: DatasetCard
 }
 
 function convertRemToPixels(rem) {
@@ -77,7 +72,7 @@ function convertRemToPixels(rem) {
 
 export default {
   name: 'Gallery',
-  components: { IndexIndicator, ResourceCard, MetricsCard, HighlightCard },
+  components: { DatasetCard, ResourceCard, MetricsCard, HighlightCard },
   props: {
     items: {
       type: Array,
@@ -90,10 +85,6 @@ export default {
       default: 21,
     },
     showIndicatorBar: {
-      type: Boolean,
-      default: true,
-    },
-    highlightActive: {
       type: Boolean,
       default: true,
     },
@@ -149,8 +140,7 @@ export default {
       return this.itemCount < possibleNumberVisible ? this.itemCount : possibleNumberVisible
     },
     valueAdjustment() {
-      const halfWindow = Math.floor(this.numberOfItemsVisible / 2)
-      let valueAdjust = this.currentIndex - halfWindow
+      let valueAdjust = (this.currentIndex - 1) * this.numberOfItemsVisible
       if (valueAdjust < 0) {
         valueAdjust = 0
       } else if (valueAdjust + this.numberOfItemsVisible > this.itemCount) {
@@ -169,9 +159,6 @@ export default {
   methods: {
     cardClicked(payload) {
       this.$emit('card-clicked', payload)
-    },
-    isActive(index) {
-      return this.currentIndex - this.valueAdjustment === index && this.highlightActive
     },
     goNext() {
       this.currentIndex += 1

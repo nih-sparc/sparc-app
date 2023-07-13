@@ -1,5 +1,5 @@
 <template>
-  <el-card :shadow="shadow" :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
+  <el-card :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
     <div class="title-container">
       <div class="title heading2">
         {{ title }}
@@ -26,10 +26,6 @@ export default {
       type: Number,
       default: 21
     },
-    showShadow: {
-      type: Boolean,
-      default: false
-    },
     title: {
       type: String,
       default: ''
@@ -43,11 +39,6 @@ export default {
       default: '0'
     },
   },
-  computed: {
-    shadow() {
-      return this.showShadow ? 'always' : 'never'
-    },
-  }
 }
 </script>
 
