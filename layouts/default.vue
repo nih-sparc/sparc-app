@@ -13,6 +13,7 @@ import sparcFooter from '@/components/footer/Footer.vue'
 import CookieNotice from '@/components/CookieNotice/CookieNotice.vue'
 import { mapState } from 'vuex'
 import { propOr } from 'ramda'
+import DOMPurify from 'isomorphic-dompurify'
 
 export default {
   components: {
@@ -46,7 +47,10 @@ export default {
     showPortalNotification() {
       const displayOnHomePageOnly = propOr("", 'displayOn', this.portalNotification) === 'Homepage Only'
       const currentlyOnHomePage = this.$route.fullPath === "/"
-      const message = propOr("", 'message', this.portalNotification).trim()
+      const message = DOMPurify.sanitize(propOr("", 'message', this.portalNotification).trim(), {
+        ALLOWED_TAGS: ['a', 'br', 'sup'], // We allow links, line breaks, and sup tags
+        ALLOWED_ATTR: ['href'], // We allow the href attribute for links
+      })
       const messageType = propOr("", 'messageType', this.portalNotification)
       const onlyShowOnce = propOr(true, 'showOnce', this.portalNotification)
       if (message != "") {
