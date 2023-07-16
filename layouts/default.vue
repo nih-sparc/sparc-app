@@ -12,6 +12,7 @@ import sparcHeader from '@/components/header/Header.vue'
 import sparcFooter from '@/components/footer/Footer.vue'
 import CookieNotice from '@/components/CookieNotice/CookieNotice.vue'
 import { mapState } from 'vuex'
+import { propOr } from 'ramda'
 
 export default {
   components: {
@@ -21,11 +22,14 @@ export default {
   },
   computed: {
     ...mapState('layouts/default', {
-      scrollingState: state => state.disableScrolling
+      scrollingState: state => state.disableScrolling,
+      hasAcceptedGDPR: state => state.hasAcceptedGDPR,
+      hasSeenPortalNotification: state => state.hasSeenPortalNotification,
+      portalNotification: state => state.portalNotification
     }),
-    ...mapState('layouts/default', {
-      hasAcceptedGDPR: state => state.hasAcceptedGDPR
-    })
+  },
+  mounted() {
+    this.showPortalNotification()
   },
   head() {
     return {
@@ -38,6 +42,57 @@ export default {
       ]
     }
   },
+  methods: {
+    showPortalNotification() {
+      const displayOnHomePageOnly = propOr("", 'displayOn', this.portalNotification) === 'Homepage Only'
+      const currentlyOnHomePage = this.$route.fullPath === "/"
+      const message = propOr("", 'message', this.portalNotification).trim()
+      const messageType = propOr("", 'messageType', this.portalNotification)
+      const onlyShowOnce = propOr(true, 'showOnce', this.portalNotification)
+      if (message != "") {
+        if (!onlyShowOnce || !this.hasSeenPortalNotification) {
+          if (!displayOnHomePageOnly || (displayOnHomePageOnly && currentlyOnHomePage)) {
+            switch (messageType) {
+              case 'Error': {
+                this.$message({
+                  message: message,
+                  showClose: true,
+                  iconClass: 'el-icon-circle-close',
+                  customClass: 'el-message--error',
+                  dangerouslyUseHTMLString: true,
+                  duration: 0
+                })
+                break
+              }
+              case 'Success': {
+                this.$message({
+                  message: message,
+                  showClose: true,
+                  iconClass: 'el-icon-circle-check',
+                  customClass: 'el-message--success',
+                  dangerouslyUseHTMLString: true,
+                  duration: 0
+                })
+                break
+              }
+              case 'Information': {
+                this.$message({
+                  message: message,
+                  showClose: true,
+                  iconClass: 'about-icon',
+                  customClass: 'el-message--info',
+                  dangerouslyUseHTMLString: true,
+                  duration: 0
+                })
+                break
+              }
+            }
+            this.$cookies.set('PortalNotification:hasBeenSeen', true)
+          }
+        }
+      }
+    }
+  }
 }
 </script>
 
