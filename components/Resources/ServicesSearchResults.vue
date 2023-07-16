@@ -22,7 +22,7 @@
         />
       </div>
       <div  class="resources-search-results__items--button">
-        <sparc-tooltip placement="top-center" content="Instantiate this service in o²S²PARC. Login credentials are required.">
+        <sparc-tooltip placement="top-center">
           <div slot="item">
             <a :href="service['view_url']" target="_blank">
               <el-button class="secondary">
@@ -31,6 +31,13 @@
                 </div>
               </el-button>
             </a>
+          </div>
+          <div slot="data" class="osparc-service-btn-tooltip">
+            Instantiate this service in o<sup>2</sup>S<sup>2</sup>PARC. Login is required, 
+            <a href="/resources/4LkLiH5s4FV0LVJd3htsvH#user-accounts" target="_blank">
+              <u>here</u>
+            </a>
+            you can find more information on how to get an account.
           </div>
         </sparc-tooltip>
       </div>
@@ -133,6 +140,16 @@ export default {
         align-items: center;
       }
     }
+  }
+}
+.osparc-service-btn-tooltip {
+  sup, sub {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+  }
+  sub {
+    top: 0.4em;
   }
 }
 .metadata-title {
