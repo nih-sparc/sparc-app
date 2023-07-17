@@ -64,6 +64,7 @@ export default {
     zipit_api_host:
       process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
     osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
+    bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
     ctf_community_spotlight_item_id: 'communitySpotlight',
@@ -115,6 +116,7 @@ export default {
     ALGOLIA_INDEX_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC || 'k-core_dev_published_time_asc',
     ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
     ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
+    BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
     BL_API_URL: 'https://sparc.biolucida.net/api/v1/',
     BL_SERVER_URL: 'https://sparc.biolucida.net',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
