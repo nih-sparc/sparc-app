@@ -57,6 +57,12 @@ import { getAlgoliaFacets, facetPropPathMapping } from '../data/utils'
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
+const formatLabel = (text) => {
+  if (text && (typeof text === 'string' || text instanceof String))
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+  return text
+}
+
 const getFlatmapEntry = async (route) => {
   const uberonid = route.query.uberonid
   //Specify the gender of human
@@ -371,6 +377,7 @@ export default {
       }
     },
     updateFacets: async function(dataset_id) {
+      //Create the array of facets to pass onto the sidebar
       const filter = `objectID:${dataset_id}`
       const facets = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
         return data
@@ -378,13 +385,10 @@ export default {
       facets.forEach(facet => {
         if (facet.key && facet.key === 'anatomy.organ.name' ||
         facet.key === 'organisms.primary.species.name') {
-          let term = facet.label;
-          if (facet.key === 'anatomy.organ.name') {
-            term = 'Anatomical structure';
-          }
+          let term = formatLabel(facet.label);
           facet.children.forEach(child => {
             this.facets.push({
-              facet: child.label,
+              facet: formatLabel(child.label),
               term: term,
               facetPropPath: facet.key,
             });
@@ -437,7 +441,6 @@ export default {
       }
     },
     facetsUpdated: function () {
-      console.log(this.facets)
       if (this.facets.length > 0 && this.$refs.map) this.$refs.map.openSearch(this.facets, "")
     },
     currentEntryUpdated: function () {
