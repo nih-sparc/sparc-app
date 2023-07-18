@@ -814,7 +814,6 @@ export default {
       return 0; 
     },
     s3Path(file) {
-      // path is not guaranteed to be the same as the s3 path
       const uri = file.uri
       return uri.substring(uri.indexOf('files/'))
     },
