@@ -122,7 +122,7 @@
                     <br />
                     <br />
                     <template v-for="dataType in dataTypes">
-                      <dd v-if="resultCounts[dataType] > 0 && dataType != 'projects'" :key="dataType">
+                      <dd v-if="resultCounts[dataType] > 0 && dataType !== 'projects'" :key="dataType">
                         <nuxt-link
                           :to="{
                             name: 'data',
