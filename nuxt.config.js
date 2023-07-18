@@ -104,6 +104,7 @@ export default {
     ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
     ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
     ctf_sparc_login_modal_id: '4FSEoB6SW8xrEAsh4t0vGt',
+    ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
