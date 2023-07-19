@@ -175,7 +175,7 @@ export default {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['verifyUserProfileComplete', 'documentationHubRedirects', 'signOutRedirect']
+    middleware: ['documentationHubRedirects', 'signOutRedirect']
   },
   /*
    ** Global CSS
