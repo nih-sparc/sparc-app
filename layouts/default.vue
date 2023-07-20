@@ -94,7 +94,9 @@ export default {
                 break
               }
             }
-            this.$cookies.set('PortalNotification:hasBeenSeen', true)
+            const today = new Date()
+            const expirationDate = new Date(today.setDate(today.getDate() + 30))
+            this.$cookies.set('PortalNotification:hasBeenSeen', true, { expires: expirationDate })
           }
         }
       }
