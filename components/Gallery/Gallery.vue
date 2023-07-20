@@ -8,7 +8,7 @@
               v-if="galleryItemType === 'resources'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="'resource-' + index"
+              :key="item.sys.id"
               :title="item.fields.name"
               :subtitle="item.fields.resourceType.join(', ')"
               :showSparcTag="item.fields.developedBySparc"
@@ -22,7 +22,7 @@
               v-else-if="galleryItemType === 'metrics'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="'metric-' + index"
+              :key="item.title"
               :title="item.title"
               :data="item.data"
               :subData="item.subData"
@@ -31,14 +31,14 @@
               v-else-if="galleryItemType === 'highlights'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="'highlight-' + index"
+              :key="item.sys.id"
               :item="item"
             />
             <component
               v-else-if="galleryItemType === 'datasets'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="'dataset-' + index"
+              :key="item.intId"
               :item="item"
             />
           </template>
