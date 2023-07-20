@@ -53,7 +53,10 @@ export default {
       })
       const messageType = propOr("", 'messageType', this.portalNotification)
       const onlyShowOnce = propOr(true, 'showOnce', this.portalNotification)
-      if (message != "") {
+      const stopShowingDate = propOr(undefined, 'stopShowingDate', this.portalNotification)
+      // If the stop showing time is not set then always display message, therwise check if the date has passed
+      const stopShowing = stopShowingDate === undefined ? false : new Date(stopShowingDate).getTime() < new Date().getTime()
+      if (message != "" && !stopShowing) {
         if (!onlyShowOnce || !this.hasSeenPortalNotification) {
           if (!displayOnHomePageOnly || (displayOnHomePageOnly && currentlyOnHomePage)) {
             switch (messageType) {
