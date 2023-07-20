@@ -49,8 +49,7 @@ export const actions = {
       const oldNotificationMessage = this.$cookies.get('PortalNotificationMessage')
       // If the message has changes then reset if the user has seen it to false
       if (newNotificationMessage != oldNotificationMessage) {
-        const expirationDate = new Date(today.setDate(today.getDate() + 30))
-        this.$cookies.set('PortalNotification:hasBeenSeen', false, { expires: expirationDate })
+        this.$cookies.set('PortalNotification:hasBeenSeen', false)
         this.$cookies.set('PortalNotificationMessage', newNotificationMessage)
       }
       const hasSeenPortalNotification = this.$cookies.get('PortalNotification:hasBeenSeen')
