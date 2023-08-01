@@ -114,7 +114,7 @@
                   />
 
                   <!-- Alternative search suggestions -->
-                  <div v-if="searchHasAltResults">
+                  <div v-if="searchHasAltResults" class="mt-24">
                     <template v-if="searchData.total === 0">
                       No results were found for <strong>{{ searchType.label }}</strong>.
                     </template>

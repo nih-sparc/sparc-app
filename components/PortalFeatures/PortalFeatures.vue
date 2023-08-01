@@ -32,7 +32,7 @@ export default {
     },
     title: {
       type: String,
-      default: "What Can I Do with SPARC?"
+      default: "What Can I Do With SPARC?"
     },
     iconIsTopElement: {
       type: Boolean,
