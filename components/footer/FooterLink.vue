@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
+import { opensInNewTab } from '@/mixins/marked/index'
 
 export default {
   name: 'FooterLink',
@@ -26,7 +26,6 @@ export default {
   },
 
   methods: {
-    isInternalLink,
     opensInNewTab
   },
 

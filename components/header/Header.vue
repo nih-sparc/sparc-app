@@ -270,7 +270,7 @@ export default {
 
   computed: {
     ...mapState('user', ['cognitoUser', 'pennsieveUser']),
-    ...mapGetters('user', ['profileComplete', 'pennsieveUsername']),
+    ...mapGetters('user', ['profileComplete', 'cognitoUserToken', 'pennsieveUsername']),
     firstPath: function() {
       const path = this.$nuxt.$route.path
       // ignore the first backslash
@@ -286,6 +286,12 @@ export default {
   },
 
   watch: {
+    profileComplete: {
+      handler: function() {
+        this.verifyProfileComplete()
+      },
+      immediate: true
+    },
     /**
      * Watches for the route path to hide
      * mobile nav on menu click
@@ -295,6 +301,7 @@ export default {
         if (val) {
           this.menuOpen = false
         }
+        this.verifyProfileComplete()
       },
       immediate: true
     },
@@ -314,6 +321,19 @@ export default {
   },
 
   methods: {
+    verifyProfileComplete() {
+      if (this.cognitoUserToken != "") {
+        // If the user is logged in and their profile is incomplete then make sure they complete it. Otherwise, do not allow them to visit the welcome page again
+        if (!this.profileComplete) {
+          if (this.$route.name !== 'welcome') {
+            this.$router.push("/welcome")
+          }
+        }
+        else if (this.$route.name == 'welcome') {
+          this.$router.push("/")
+        }
+      }
+    },
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
         this.$cookies.set('sign-out-redirect-url', this.$nuxt.$route.fullPath)

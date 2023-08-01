@@ -97,7 +97,7 @@
                             datasetVersion: datasetInfo.version
                           },
                           query: {
-                            path: s3Path(scope.row.path)
+                            path: s3Path(scope.row)
                           }
                         }"
                       >
@@ -321,7 +321,8 @@ export const contentTypes = {
   png: 'image/png',
   svg: 'img/svg+xml',
   mp4: 'video/mp4',
-  csv: 'text/csv'
+  csv: 'text/csv',
+  msword: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 }
 
 export default {
@@ -721,7 +722,7 @@ export default {
           datasetVersion: this.datasetInfo.version
         },
         query: {
-          path: this.s3Path(scope.row.path)
+          path: s3Path(scope.row)
         }
       }
 
@@ -812,10 +813,9 @@ export default {
          return -1 
       return 0; 
     },
-    s3Path(path) {
-      // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
-      path = path.replaceAll(' ', '_')
-      return path.replaceAll(',', '_')
+    s3Path(file) {
+      const uri = file.uri
+      return uri.substring(uri.indexOf('files/'))
     },
   }
 }

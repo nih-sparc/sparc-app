@@ -1,5 +1,5 @@
 <template>
-  <div class="news-list-item">
+  <div :v-if="isDestinationLinkRetreived" class="news-list-item">
     <div v-if="item.fields.image" class="image">
       <event-banner-image :src="item.fields.image.fields.file.url"/>
       <sparc-pill class="sparc-pill" v-if="fundingOpportunity">
@@ -19,10 +19,10 @@
         <a
           v-else
           :href="item.fields.url"
-          :target="!opensInNewTab(item.fields.url) ? '_self' : '_blank'"
+          :target="openInNewTab ? '_blank' : '_self'"
         >
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
-          <svg-icon v-if="!isInternalLink(item.fields.url)" name="icon-open" height="30" width="30" />
+          <svg-icon v-if="openInNewTab" name="icon-open" height="30" width="30" />
         </a>
       </h3>
       <p v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
@@ -59,6 +59,35 @@ export default {
     },
   },
 
+  data() {
+    return {
+      isDestinationLinkRetreived: false,
+      openInNewTab: false
+    }
+  },
+  async mounted() {
+    const url = pathOr("", ['fields', 'url'], this.item)
+    if (url.includes('bit.ly')) {
+      const bitlyId = url.replace("https://", "")
+      try {
+        const response = await this.$axios.post(process.env.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
+          headers: {
+            Authorization: `Bearer ${process.env.BITLY_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json',
+          }
+        })
+        const newUrl = response.data.long_url
+        this.openInNewTab = !isInternalLink(newUrl)
+      } catch {
+        console.log("Error retreiving bitly link destination url")
+        this.openInNewTab = !isInternalLink(url)
+      }
+    }
+    else {
+      this.openInNewTab = !isInternalLink(url)
+    }
+    this.isDestinationLinkRetreived = true
+  },
   computed: {
     /**
      * Compute and formate start date

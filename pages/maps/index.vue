@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import createAlgoliaClient from '@/plugins/algolia.js'
+
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 
@@ -50,6 +52,16 @@ import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 
 import { extractS3BucketName } from '@/utils/common'
 import { successMessage, failMessage } from '@/utils/notification-messages'
+import { getAlgoliaFacets, facetPropPathMapping } from '../data/utils'
+
+const algoliaClient = createAlgoliaClient()
+const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
+
+const formatLabel = (text) => {
+  if (text && (typeof text === 'string' || text instanceof String))
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+  return text
+}
 
 const getFlatmapEntry = async (route) => {
   const uberonid = route.query.uberonid
@@ -180,7 +192,7 @@ export default {
         },
       ],
       currentEntry: undefined,
-      doi: undefined,
+      facets: [],
       uuid: undefined,
       startingMap: "AC",
       state: undefined,
@@ -266,7 +278,7 @@ export default {
   },
   watch: {
     currentEntry: 'currentEntryUpdated',
-    doi: 'doiUpdated',
+    facets: 'facetsUpdated',
   },
   fetchOnServer: false,
   created: function () {
@@ -364,9 +376,29 @@ export default {
         }
       }
     },
+    updateFacets: async function(dataset_id) {
+      //Create the array of facets to pass onto the sidebar
+      const filter = `objectID:${dataset_id}`
+      const facets = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
+        return data
+      });
+      facets.forEach(facet => {
+        if (facet.key && facet.key === 'anatomy.organ.name' ||
+        facet.key === 'organisms.primary.species.name') {
+          let term = formatLabel(facet.label);
+          facet.children.forEach(child => {
+            this.facets.push({
+              facet: formatLabel(child.label),
+              term: term,
+              facetPropPath: facet.key,
+            });
+          });
+        }
+      });
+    },
     openViewWithQuery: async function () {
       //Open the map with specific view defined by the query.
-      //First get the DOI and bucket information if available
+      //First get the bucket and facets information if available
       let s3Bucket = undefined
 
       if (this.$route.query.dataset_id && this.$route.query.dataset_version) {
@@ -376,10 +408,10 @@ export default {
           this.$route.query.dataset_version,
           this.$cookies.get('user-token')
         )
-        this.doi = datasetInfo ? datasetInfo.doi : undefined
         s3Bucket = datasetInfo
           ? extractS3BucketName(datasetInfo.uri)
           : undefined
+        await this.updateFacets(this.$route.query.dataset_id)
       }
       //Get the entry information if we are not opening with the default settings or
       //resuming from previous saved state
@@ -408,8 +440,8 @@ export default {
         this.startingMap = "WholeBody"
       }
     },
-    doiUpdated: function () {
-      if (this.doi && this.$refs.map) this.$refs.map.openSearch([], this.doi)
+    facetsUpdated: function () {
+      if (this.facets.length > 0 && this.$refs.map) this.$refs.map.openSearch(this.facets, "")
     },
     currentEntryUpdated: function () {
       if (this.$refs.map && this.currentEntry) {
@@ -418,7 +450,7 @@ export default {
     },
     mapMounted: function () {
       this.currentEntryUpdated()
-      this.doiUpdated()
+      this.facetsUpdated()
     },
   },
 }

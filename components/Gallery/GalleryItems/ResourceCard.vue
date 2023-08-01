@@ -1,5 +1,5 @@
 <template>
-  <el-card :shadow="shadow" :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
+  <el-card :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
     <div class="image-container mb-16">
       <img class="thumbnail" :src="thumbnailUrl" alt="thumbnail loading ..." />
     </div>
@@ -37,10 +37,6 @@ export default {
       type: Number,
       default: 13.8
     },
-    showShadow: {
-      type: Boolean,
-      default: false
-    },
     title: {
       type: String,
       default: ''
@@ -71,9 +67,6 @@ export default {
     },
   },
   computed: {
-    shadow() {
-      return this.showShadow ? 'always' : 'never'
-    },
     truncatedDescription() {
       return this.description.length > 134 ? 
         `${this.description.substring(0, 134)}...` :
