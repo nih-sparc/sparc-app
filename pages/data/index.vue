@@ -122,7 +122,7 @@
                     <br />
                     <br />
                     <template v-for="dataType in dataTypes">
-                      <dd v-if="resultCounts[dataType] > 0" :key="dataType">
+                      <dd v-if="resultCounts[dataType] > 0 && dataType !== 'projects'" :key="dataType">
                         <nuxt-link
                           :to="{
                             name: 'data',
@@ -352,13 +352,11 @@ export default {
         dataset: 'Datasets',
         model: 'Anatomical Models',
         simulation: 'Computational Models',
-        projects: 'Projects'
       },
       resultCounts: {
         model: 0,
         dataset: 0,
         simulation: 0,
-        projects: 0
       },
       searchHasAltResults: false,
       visibleFacets: {},
@@ -676,25 +674,6 @@ export default {
           .then(response => {
             response.nbHits > 0 ? (this.searchHasAltResults = true) : null
             this.resultCounts[searchType] = response.nbHits
-          })
-      } else {
-        // Contentful search
-        let anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
-        let funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
-        let linkedFundingProgramTargetType = funding ? 'program' : undefined
-        client
-          .getEntries({
-            content_type: 'sparcAward',
-            query: this.$route.query.search,
-            include: 2,
-            'fields.projectSection.sys.contentType.sys.id': 'awardSection',
-            'fields.projectSection.fields.title[in]': anatomicalFocus,
-            'fields.fundingProgram.sys.contentType.sys.id': linkedFundingProgramTargetType,
-            'fields.fundingProgram.fields.name[in]': funding
-          })
-          .then(async response => {
-            response.total > 0 ? (this.searchHasAltResults = true) : null
-            this.resultCounts[searchType] = response.total
           })
       }
     },

@@ -64,6 +64,7 @@ export default {
     zipit_api_host:
       process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
     osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
+    bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
     ctf_event_id: 'event',
     ctf_news_id: 'news',
     ctf_community_spotlight_item_id: 'communitySpotlight',
@@ -104,6 +105,7 @@ export default {
     ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
     ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
     ctf_sparc_login_modal_id: '4FSEoB6SW8xrEAsh4t0vGt',
+    ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
     CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
@@ -115,6 +117,7 @@ export default {
     ALGOLIA_INDEX_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC || 'k-core_dev_published_time_asc',
     ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
     ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
+    BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
     BL_API_URL: 'https://sparc.biolucida.net/api/v1/',
     BL_SERVER_URL: 'https://sparc.biolucida.net',
     BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
@@ -172,7 +175,7 @@ export default {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['verifyUserProfileComplete', 'documentationHubRedirects', 'signOutRedirect']
+    middleware: ['documentationHubRedirects', 'signOutRedirect']
   },
   /*
    ** Global CSS

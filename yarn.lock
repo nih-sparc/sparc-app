@@ -83,15 +83,15 @@
     vue "^2.6.10"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.4.6.tgz#19a0cc3caade184dd4c651da7854e9eddeef80dd"
-  integrity sha512-3s4lBtBCzMLqLvDn7Y1rHtk8tpTQ/XNoiFqi7IbX0iD7/Ilhlhh36l2l86Tw5sOOK1fOodOPNglGbWw30f4G7Q==
+"@abi-software/mapintegratedvuer@0.4.7":
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.4.7.tgz#1368966d23353ba78d13188ab136301978356e8c"
+  integrity sha512-AqF+Hg4qciw08EUOKPHaigD0waivaNCh9CPZFr7O6YF5vcJk/lnOIx+q2jGcRmtoNmNxpMOWUsFllYaemevxKQ==
   dependencies:
     "@abi-software/flatmapvuer" "^0.5.4"
     "@abi-software/map-side-bar" "^1.4.1-beta.1"
     "@abi-software/plotvuer" "^0.3.9"
-    "@abi-software/scaffoldvuer" "^0.2.1"
+    "@abi-software/scaffoldvuer" "^0.2.2"
     "@abi-software/simulationvuer" "^0.6.5"
     "@abi-software/svg-sprite" "^0.2.0"
     "@soda/get-current-script" "^1.0.2"
@@ -162,12 +162,12 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^3.2.0"
 
-"@abi-software/scaffoldvuer@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.2.1.tgz#ef560ac9e4f6453e0ec15174327ba7f0a6f731b7"
-  integrity sha512-3sw18OjVSKUaDlvwwFhujzigcXgJR4FaxGHHdVHlaEuo+JpyBijV3fELEnIsoCzt73GXhO2cCfmnClfYzvL7lA==
+"@abi-software/scaffoldvuer@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-0.2.2.tgz#64db0f9867f2f70901d1df1aa4eac4f436292924"
+  integrity sha512-VJUPkTNNoxHqexnAM7rYp03Sl+tumvLVxhhjehq80A5Ug4lEZgC8MSiJ5ynAfjcx7MLo0N1jZhkVaOEb0i0fOw==
   dependencies:
-    "@abi-software/svg-sprite" "^0.1.15"
+    "@abi-software/svg-sprite" "^0.3.0"
     axios "^0.21.2"
     core-js "^3.22.5"
     current-script-polyfill "^1.0.0"
@@ -223,6 +223,15 @@
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.2.0.tgz#c7437405709bf67a0c766c97317a0672037bc750"
   integrity sha512-vK/D4Wd9ntg/b7B5o2FPK2CtFrqNuuNHBOCWbZlvtrVvk90WH9JgJWx1+UPPzzTmrKRCvwE24osF/nQef206vg==
+  dependencies:
+    core-js "^3.6.5"
+    svg-inline-loader "^0.8.2"
+    vue "^2.6.11"
+
+"@abi-software/svg-sprite@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.3.0.tgz#75b452c3722aabaf6d9c7f2b71a063815ea6946d"
+  integrity sha512-BU04RCF9iP2ncRQTHeXGX/bO41eDeybaiUcadIeuU2I0npSkun5rQdLroocH4FgMaygi2jOl+YObmg5tNdU8SA==
   dependencies:
     core-js "^3.6.5"
     svg-inline-loader "^0.8.2"
@@ -2326,10 +2335,10 @@
   resolved "https://registry.yarnpkg.com/@miyaoka/nuxt-twitter-widgets-module/-/nuxt-twitter-widgets-module-0.0.1.tgz#fdca759252e7496c783e69b926623551bf8a4a01"
   integrity sha512-vYJkz9EemNS4Ur4uXI8R/tKFyXWrGypQwpFF/PSA/JZaGx19gpAfzTxHg0e7EQ1VIS+GTN2U6AUXz9MD05P+Nw==
 
-"@nih-sparc/sparc-design-system-components@^0.26.29":
-  version "0.26.29"
-  resolved "https://registry.yarnpkg.com/@nih-sparc/sparc-design-system-components/-/sparc-design-system-components-0.26.29.tgz#6d3f06479606b8043ed62bc66d305302b7d6543a"
-  integrity sha512-fLokJ+c0Jry+LAENIKOSVYQUnCUeo7epINsezFph4MbldW5uN1lkXryO4zY+IryUVkpL8ksaiuqsTU4tz1PT1Q==
+"@nih-sparc/sparc-design-system-components@^0.26.30":
+  version "0.26.30"
+  resolved "https://registry.yarnpkg.com/@nih-sparc/sparc-design-system-components/-/sparc-design-system-components-0.26.30.tgz#a98c596af355696646786fb55bca887ead68483b"
+  integrity sha512-kbXs3MNvzST6bwi09lsdv+FmcHohSE/BpIDm+9IaLdx8td20dqw7jrV947vMrLSkfUUVNLiyuR3ImV7pNCMJfQ==
   dependencies:
     "@carbon/grid" "10.17.0"
     core-js "^3.6.5"

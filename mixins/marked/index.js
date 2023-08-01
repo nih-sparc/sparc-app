@@ -1,6 +1,7 @@
 import marked from 'marked'
 import youtubeEmbeddedSrc from '../youtube-embedded-src'
 import DOMPurify from 'isomorphic-dompurify'
+import axios from 'axios'
 
 /**
  * Modify the link renderer to add `target="blank"`
@@ -22,12 +23,12 @@ export const isAnchor = str => {
 export const isInternalLink = str => {
   return isAnchor(str)
     ? true
-    : str.includes(process.env.ROOT_URL) || str.includes("docs.sparc.science") || str.startsWith('/')
+    : str.includes(process.env.ROOT_URL) || str.includes("sparc.science") || str.startsWith('/')
 }
 
 // docs.sparc.science is considered an internal link, but should always open in new tab
 export const opensInNewTab = link => {
-  return !isInternalLink(link) || link.includes("docs.sparc.science")
+  return !isInternalLink(link)
 }
 
 renderer.link = function(href, title, text) {

@@ -43,6 +43,8 @@ import { mapState } from 'vuex'
 
 import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 
+import { failMessage } from '@/utils/notification-messages'
+
 const getBiolucidaData = async datasetId => {
   try {
     return biolucida.searchDataset(datasetId)
@@ -68,6 +70,7 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
       biolucidaImageData = biolucida_response
       biolucidaImageData['discover_dataset_version'] = datasetVersion
     }
+
     if (scicrunch_response.data.result.length > 0) {
       scicrunchData = scicrunch_response.data.result[0]
       scicrunchData.discover_dataset = {

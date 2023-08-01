@@ -4,9 +4,9 @@
       News &amp; Upcoming Events
     </h2>
     <sparc-card
-      v-for="(item, idx) in upcomingNews"
+      v-for="(item, index) in upcomingNews"
       :key="item.sys.id"
-      :image-align="idx % 2 ? 'right' : ''"
+      :image-align="index % 2 ? 'right' : ''"
     >
       <template slot="image">
         <div class="sparc-card__image-container">
@@ -19,7 +19,7 @@
           </a>
           <template v-else>
             <div class="centered" v-if="item.fields.url">
-              <a :href="item.fields.url" :target="isInternalLink(item.fields.url) ? '_self' : '_blank'">
+              <a :href="item.fields.url" :target="newsItemIsInternalLink[index] ? '_self' : '_blank'">
                 <img
                   class="sparc-card__image"
                   :src="getImageSrc(item)" 
@@ -48,7 +48,7 @@
           <a
             v-else
             :href="item.fields.url"
-            :target="isInternalLink(item.fields.url) ? '_self' : '_blank'"
+            :target="newsItemIsInternalLink[index] ? '_self' : '_blank'"
           >
             {{ item.fields.title }}
           </a>
@@ -80,7 +80,7 @@
       <a
         v-else
         :href="item.fields.url"
-        :target="isInternalLink(item.fields.url) ? '_self' : '_blank'"
+        :target="newsItemIsInternalLink[index] ? '_self' : '_blank'"
       >
         <el-button size="medium" class="secondary">
           Learn More
@@ -111,7 +111,18 @@ export default {
       default: () => []
     }
   },
+  data() {
+    return {
+      itemIsInternalLink: []
+    }
+  },
+  async created() {
+    await this.fetchBitlyLinks()
+  },
   computed: {
+    newsItemIsInternalLink() {
+      return this.itemIsInternalLink
+    },
     /**
      * Filter news to remove past events
      * @returns {Array}
@@ -122,6 +133,30 @@ export default {
   },
   methods: {
     isInternalLink,
+    async fetchBitlyLinks() {
+      this.upcomingNews.forEach(async item => {
+        const url = pathOr("", ['fields', 'url'], item)
+        if (url.includes('bit.ly')) {
+          const bitlyId = url.replace("https://", "")
+          try {
+            const response = await this.$axios.post(process.env.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
+              headers: {
+                Authorization: `Bearer ${process.env.BITLY_ACCESS_TOKEN}`,
+                'Content-Type': 'application/json',
+              }
+            })
+            const newUrl = response.data.long_url
+            this.itemIsInternalLink.push(isInternalLink(newUrl))
+          } catch {
+            console.log("Error retreiving bitly link destination url")
+            this.itemIsInternalLink.push(isInternalLink(url))
+          }
+        }
+        else {
+          this.itemIsInternalLink.push(isInternalLink(url))
+        }
+      })
+    },
     /**
      * Get image source
      * @param {Object} item

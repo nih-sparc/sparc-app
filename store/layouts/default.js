@@ -1,9 +1,12 @@
 import createClient from '~/plugins/contentful'
+import { pathOr } from 'ramda'
 
 export const state = () => ({
   disableScrolling: false,
   footerData: {},
-  hasAcceptedGDPR: false
+  hasAcceptedGDPR: false,
+  portalNotification: {},
+  hasSeenPortalNotification: false
 })
 
 export const mutations = {
@@ -15,7 +18,13 @@ export const mutations = {
   },
   SET_HAS_ACCEPTED_GDPR(state, hasAcceptedGDPR) {
     state.hasAcceptedGDPR = hasAcceptedGDPR
-  }
+  },
+  SET_HAS_SEEN_PORTAL_NOTIFICATION(state, hasSeen) {
+    state.hasSeenPortalNotification = hasSeen
+  },
+  SET_PORTAL_NOTIFICATION(state, data) {
+    state.portalNotification = data
+  },
 }
 
 export const actions = {
@@ -24,6 +33,30 @@ export const actions = {
   },
   setHasAcceptedGdpr: ({ commit }, state) => {
     commit('SET_HAS_ACCEPTED_GDPR', state)
+  },
+  setPortalNotification: ({ commit }, state) => {
+    commit('SET_PORTAL_NOTIFICATION', state)
+  },
+  setHasSeenPortalNotification: ({ commit }, state) => {
+    commit('SET_HAS_SEEN_PORTAL_NOTIFICATION', state)
+  },
+  async fetchPortalNotification({ commit, dispatch }) {
+    try {
+      const client = createClient()
+      const response = await client.getEntry(process.env.ctf_portal_notification_entry_id)
+      dispatch('setPortalNotification', response.fields)
+      const newNotificationMessage = pathOr('', ['fields', 'message'], response)
+      const oldNotificationMessage = this.$cookies.get('PortalNotificationMessage')
+      // If the message has changes then reset if the user has seen it to false
+      if (newNotificationMessage != oldNotificationMessage) {
+        this.$cookies.set('PortalNotification:hasBeenSeen', false)
+        this.$cookies.set('PortalNotificationMessage', newNotificationMessage)
+      }
+      const hasSeenPortalNotification = this.$cookies.get('PortalNotification:hasBeenSeen')
+      dispatch('setHasSeenPortalNotification', hasSeenPortalNotification)
+    } catch (e) {
+      console.error(e)
+    }
   },
   async fetchFooterData({ commit, dispatch }) {
     try {

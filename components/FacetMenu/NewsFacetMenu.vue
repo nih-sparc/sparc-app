@@ -53,6 +53,10 @@ const SUBJECT_CATEGORY = {
       label: 'Highlight',
       id: 'Highlight',
     },
+    {
+      label: 'Portal Update',
+      id: 'Portal Update',
+    },
   ]
 }
 
