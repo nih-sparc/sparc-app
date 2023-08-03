@@ -76,6 +76,16 @@
         Cite Dataset
       </el-button>
     </div>
+    <div class="button-container" v-show="sdsViewer">
+      <a
+        :href="sdsViewer"
+        target="_blank"
+      >
+        <el-button class="secondary">
+          SDS Viewer
+        </el-button>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -138,6 +148,14 @@ export default {
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
     },
+    sdsViewer: function() {
+      if (this.datasetInfo.doi) {
+        const metacellUrl = new URL(process.env.METACELL_SDS_VIEWER_URL)
+        metacellUrl.searchParams.append('doi', this.datasetInfo.doi)
+        return metacellUrl.toString()
+      }
+      return null
+    }
   },
 
   methods: {

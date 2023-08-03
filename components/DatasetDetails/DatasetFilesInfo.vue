@@ -91,6 +91,15 @@
               <el-button slot="item" disabled class="my-16">Download full dataset</el-button>
             </sparc-tooltip>
           </div>
+          <a
+            v-show="sdsViewer"
+            :href="sdsViewer"
+            target="_blank"
+          >
+            <el-button class="secondary">
+              SDS Viewer
+            </el-button>
+          </a>
         </div>
         <div class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
           <div class="mb-8">
@@ -266,6 +275,14 @@ export default {
         url += `&api_key=${this.userToken}`
       }
       return url
+    },
+    sdsViewer: function() {
+      if (this.datasetInfo.doi) {
+        const metacellUrl = new URL(process.env.METACELL_SDS_VIEWER_URL)
+        metacellUrl.searchParams.append('doi', this.datasetInfo.doi)
+        return metacellUrl.toString()
+      }
+      return null
     }
   },
 
