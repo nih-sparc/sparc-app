@@ -273,9 +273,6 @@ export default {
         removeComments: true,
         removeEmptyElements: true
       }
-    },
-    // loaders: {
-    //   scss: { sourceMap: false }
-    // }
+    }
   }
 }
