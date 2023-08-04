@@ -356,8 +356,8 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
 }
 .story-result {
   border-top: 1px solid $lineColor2;
-  padding-top: 1.5em;
-  padding-bottom: 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   &:first-child {
     border: none;
     padding-top: 0;

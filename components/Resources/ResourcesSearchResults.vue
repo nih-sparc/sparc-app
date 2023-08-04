@@ -96,7 +96,6 @@ export default {
   &__items {
     display: flex;
     flex-direction: row;
-    border-bottom: solid 1px $lineColor2;
     padding: 1.25em 0;
     @media screen and (max-width: 768px) {
       display: block;

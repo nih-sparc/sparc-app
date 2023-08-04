@@ -1,10 +1,5 @@
 <template>
   <div class="file-detail-page">
-    <breadcrumb
-      class="mb-16"
-      :breadcrumb="breadcrumb"
-      :title="file.name"
-    />
     <div class="page-wrap container">
       <client-only>
         <content-tab-card
@@ -78,7 +73,6 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import { mapGetters } from 'vuex'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
@@ -94,8 +88,7 @@ export default {
 
   components: {
     BfButton,
-    DetailTabs,
-    Breadcrumb
+    DetailTabs
   },
 
   mixins: [DatasetInfo, FileDetails, RequestDownloadFile, FetchPennsieveFile],
@@ -160,34 +153,6 @@ export default {
     filePath: function() {
       return this.$route.query.file_path
     },
-    breadcrumb: function() {
-      return [
-        {
-          to: {
-            name: 'index'
-          },
-          label: 'Home'
-        },
-        {
-          to: {
-            name: 'data',
-            query: {
-              type: 'dataset'
-            }
-          },
-          label: 'Data & Models'
-        },
-        {
-          to: {
-            path: `/datasets/${this.$route.query.dataset_id}`,
-            query: {
-              type: 'dataset'
-            }
-          },
-          label: `${this.title}`
-        },
-      ]
-    }
   },
 }
 </script>
