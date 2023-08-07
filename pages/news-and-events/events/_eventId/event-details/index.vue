@@ -175,7 +175,7 @@ export default {
   ::v-deep img {
     height: auto;
     margin: 0.5em 0;
-    max-width: 100%;
+    width: 100%;
   }
 }
 .subpage {

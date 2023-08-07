@@ -83,9 +83,7 @@
             <div class="heading2 mb-32">
               {{ title }}
             </div>
-            <div class="body1">
-              {{ description }}
-            </div>
+            <div class="body1" v-html="parseMarkdown(description)" />
           </el-col>
         </div>
       </div>
@@ -100,6 +98,7 @@
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
+import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { propOr, isEmpty } from 'ramda'
 
@@ -114,7 +113,7 @@ export default {
     DatasetCard,
     ShareLinks
   },
-
+  mixins: [marked],
   async asyncData({ route, $axios }) {
     try {
       const project = await client.getEntry(route.params.projectId)

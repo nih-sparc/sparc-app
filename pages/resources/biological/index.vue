@@ -242,7 +242,7 @@ export default {
 .page-data {
   background-color: $background;
 }
-.event-list-item {
+::v-deep .resources-search-results__items {
   border-top: 1px solid $lineColor2;
   padding: 1rem 0;
   &:first-child {
