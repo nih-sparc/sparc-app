@@ -80,6 +80,7 @@ import createClient from '@/plugins/contentful.js'
 
 import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import MarkedMixin from '@/mixins/marked'
+import { getPreviousMonth } from '@/utils/common'
 
 const client = createClient()
 
@@ -165,9 +166,19 @@ export default {
         totalContributors = parseInt(metrics['number_of_sparc_users_overall']['N'])
         newContributors = parseInt(metrics['number_of_new_sparc_users_last_quarter']['N'])
         downloadsLastMonth = parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
-      }).catch((e) => {
-        console.log("ERROR RETRIEVING CONTRIBUTORS: ", e)
-      })
+      }).catch(() => {
+        const lastMonthsDate = getPreviousMonth()
+        this.$axios
+          .$get(`${process.env.METRICS_URL}/pennsieve?year=${lastMonthsDate.year}&month=${lastMonthsDate.month}`)
+          .then((response) => {
+            const metrics = response[0]
+            totalContributors = parseInt(metrics['number_of_sparc_users_overall']['N'])
+            newContributors = parseInt(metrics['number_of_new_sparc_users_last_quarter']['N'])
+            downloadsLastMonth = parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+          }).catch((e) => {
+          console.log("ERROR RETRIEVING CONTRIBUTORS: ", e)
+          })
+        })
     await this.$axios
       .$get(`${process.env.discover_api_host}/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${year}-${month}-${day}`)
       .then((data) => {

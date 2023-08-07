@@ -26,16 +26,10 @@
       </div>
     </div>
     <div class="container mt-16">
-      <div v-loading="isLoadingMetrics" class="table-wrap">
-        <p v-if="searchFailed" class="search-error">
-          Sorry, an unexpected error has occured, please try again later.
-        </p>
-        <component
-          v-else
-          :is="metricsComponent"
-          :metrics-data="metricsData"
-        />
-      </div>
+      <component
+        :is="metricsComponent"
+        :metrics-data="metricsData"
+      />
     </div>
   </div>
 </template>
@@ -50,6 +44,8 @@ import {
   propEq,
   propOr
 } from 'ramda'
+import { getPreviousMonth } from '@/utils/common'
+import ErrorMessages from '@/mixins/error-messages'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 
 const UserBehaviorsMetrics = () =>
@@ -143,16 +139,25 @@ export default {
   name: 'MetricsPage',
 
   components: {
-    Breadcrumb
+    Breadcrumb,
+    Error
   },
 
-  async asyncData({ redirect, env, $axios }) {
+  async asyncData({ redirect, env, $axios, error }) {
     if (env.SHOW_METRICS == 'false') {
       redirect('/')
     }
     const month = new Date().getMonth()
     const year = new Date().getFullYear()
-    const metricsData = await fetchMetrics($axios, month, year)
+    let metricsData = undefined
+    try {
+      metricsData = await fetchMetrics($axios, month, year)
+    } catch (e) {
+      const lastMonthsDate = getPreviousMonth()
+      metricsData = await fetchMetrics($axios, lastMonthsDate.month, lastMonthsDate.year).catch(() => {
+        error({ statusCode: 400, message: ErrorMessages.methods.metrics(), display: true, error: e} )
+      })
+    }
     return {
       metricsData
     }

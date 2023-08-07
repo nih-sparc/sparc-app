@@ -28,7 +28,10 @@ export default {
     discover: function() {
       return 'Sorry, we have encountered an unexpected error \
         while trying to load the information. Please try again later.'
-
-    }
+    },
+    metrics: function() {
+      return 'Sorry, we have encountered an unexpected error \
+        while trying to load the portal metrics. Please try again later.'
+    },
   }
 }
