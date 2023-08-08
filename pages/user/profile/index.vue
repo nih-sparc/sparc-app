@@ -205,7 +205,7 @@ export default {
     async fetchPublishedDatasets() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
       this.datasets = await this.$axios
-        .$get(`${process.env.LOGIN_API_URL}/datasets/paginated?publicationType=publication&publicationStatus=completed&includeBannerUrl=true`, { headers })
+        .$get(`${process.env.LOGIN_API_URL}/datasets/paginated?publicationType=publication&publicationStatus=completed&includeBannerUrl=true&onlyMyDatasets=true`, { headers })
         .then(async (response) => {
           let items = []
           const datasets = response.datasets
