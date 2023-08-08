@@ -502,6 +502,13 @@ export default {
   .map-icon {
     color: #8300bf!important;
   }
+
+
+  .pathway-container {
+    .container {
+      padding-left: 0px;
+    }
+  }
 }
 
 .gallery-popper {
