@@ -509,6 +509,13 @@ export default {
       padding-left: 0px;
     }
   }
+
+  .el-popover.right-popper {
+    .popper__arrow {
+      border-top-color:transparent!important;
+      border-bottom-color:transparent!important;
+    }
+  }
 }
 
 .gallery-popper {
