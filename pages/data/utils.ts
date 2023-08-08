@@ -162,10 +162,17 @@ export const facetPropPathMapping = [
     facetPropPath: 'item.types.name',
     facetSubpropPath: 'item.types.subcategory.name'
   },
+  // This cannot be removed until the maps sidebar implements heirarchal facets. So in the meantime we simply don't make this category visible on the facet menu
   {
     label: 'Anatomical Structure',
     id: 'anatomy.organ',
     facetPropPath: 'anatomy.organ.name',
+    facetSubpropPath: 'anatomy.organ.subcategory.name'
+  },
+  {
+    label: 'Anatomical Structure',
+    id: 'anatomy.organ.category',
+    facetPropPath: 'anatomy.organ.category.name',
     facetSubpropPath: 'anatomy.organ.subcategory.name'
   },
   {
