@@ -63,8 +63,7 @@ $tablet-large: 64em;
   &__image {
     width: 100%;
     height: 100%;
-    aspect-ratio: 1;
-    object-fit: contain;
+    object-fit: cover;
   }
   &__content-wrap {
     display: flex;
