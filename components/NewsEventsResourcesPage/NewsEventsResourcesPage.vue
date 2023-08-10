@@ -173,7 +173,7 @@ export default {
   }
   img {
     height: auto;
-    width: 100%;
+    max-width: 100%;
   }
 }
 .back-link {
