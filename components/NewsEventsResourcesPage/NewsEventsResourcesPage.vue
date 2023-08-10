@@ -151,8 +151,9 @@ export default {
 .content {
   & ::v-deep img,
   & ::v-deep video {
+    display: block;
     height: auto;
-    margin: 0.5em 0;
+    margin: auto;
     max-width: 100%;
   }
 }
@@ -172,8 +173,10 @@ export default {
     text-transform: uppercase;
   }
   img {
+    display: block;
+    margin: auto;
     height: auto;
-    width: 100%;
+    max-width: 100%;
   }
 }
 .back-link {

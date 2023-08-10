@@ -173,9 +173,10 @@ export default {
 }
 .content {
   ::v-deep img {
+    display: block;
+    margin: auto;
     height: auto;
-    margin: 0.5em 0;
-    width: 100%;
+    max-width: 100%;
   }
 }
 .subpage {

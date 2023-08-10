@@ -123,3 +123,10 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+
+hr {
+  margin: 1rem 0;
+}
+</style>
