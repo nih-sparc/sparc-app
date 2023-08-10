@@ -173,8 +173,9 @@ export default {
 }
 .content {
   ::v-deep img {
+    display: block;
+    margin: auto;
     height: auto;
-    margin: 0.5em 0;
     max-width: 100%;
   }
 }
