@@ -127,8 +127,9 @@ export default {
 .content {
   & ::v-deep img,
   & ::v-deep video {
+    display: block;
     height: auto;
-    margin: 0.5em 0;
+    margin: auto;
     max-width: 100%;
   }
 }

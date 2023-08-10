@@ -83,7 +83,7 @@
             <div class="heading2 mb-32">
               {{ title }}
             </div>
-            <div class="body1" v-html="parseMarkdown(description)" />
+            <div class="body1 content" v-html="parseMarkdown(description)" />
           </el-col>
         </div>
       </div>
@@ -257,6 +257,14 @@ hr {
   overflow: auto;
   overflow-x: hidden;
   text-overflow: hidden;
+}
+.content {
+  ::v-deep img {
+    display: block;
+    margin: auto;
+    height: auto;
+    max-width: 100%;
+  }
 }
 @media screen and (max-width: 760px) {
   .row {
