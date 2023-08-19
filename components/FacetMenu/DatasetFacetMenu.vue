@@ -142,7 +142,7 @@ export default {
       if (item === null || item === undefined) {
         return
       }
-      const categoryFacet = facetPropPathMapping.find(category => category.label === item.label)
+      const categoryFacet = facetPropPathMapping.find(category => category.facetPropPath === item.key)
       const category = {
         label: item.label,
         facet: categoryFacet,
