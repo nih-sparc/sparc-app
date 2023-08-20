@@ -20,14 +20,25 @@
           <div class="capitalize mb-8">{{facet.label}}:</div>
           <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
             <div v-if="child.children.length > 0">
+              <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
+                  <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
+                    <a
+                      :href="getSelectedFacetLink(getFacetId(child))"
+                    >
+                      <div class="facet-label capitalize">
+                        {{child.label}}
+                      </div>
+                    </a>
+                  </div>
+              </sparc-tooltip>
               <div class="facet-button-container" v-for="nestedChild in child.children" :key="nestedChild.id">
                 <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
-                  <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
+                  <div class="ml-16 tooltip-item facet-button my-2 px-12 label2" slot="item">
                     <a
                       :href="getSelectedFacetLink(getFacetId(nestedChild))"
                     >
                       <div class="facet-label capitalize">
-                        {{heirarchalFacetLabel(nestedChild.label)}}
+                        {{nestedChild.label.split('.')[1]}}
                       </div>
                     </a>
                   </div>
@@ -229,6 +240,7 @@ hr {
 }
 
 .facet-button {
+  display: block !important;
   border-radius: 15px;
   max-width: fit-content;
   background-color: #f9f2fc;
