@@ -15,11 +15,37 @@
         </div>
         <hr class="mt-16"/>
       </div>
-      <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.label">
+      <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.key">
         <div v-if="facet.children && showFacet(facet)">
           <div class="capitalize mb-8">{{facet.label}}:</div>
           <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
-            <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
+            <div v-if="child.children.length > 0">
+              <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
+                  <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
+                    <a
+                      :href="getSelectedFacetLink(getFacetId(child))"
+                    >
+                      <div class="facet-label capitalize">
+                        {{child.label}}
+                      </div>
+                    </a>
+                  </div>
+              </sparc-tooltip>
+              <div class="facet-button-container" v-for="nestedChild in child.children" :key="nestedChild.id">
+                <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
+                  <div class="ml-16 tooltip-item facet-button my-2 px-12 label2" slot="item">
+                    <a
+                      :href="getSelectedFacetLink(getFacetId(nestedChild))"
+                    >
+                      <div class="facet-label capitalize">
+                        {{nestedChild.label.split('.')[1]}}
+                      </div>
+                    </a>
+                  </div>
+                </sparc-tooltip> 
+              </div>
+            </div>
+            <sparc-tooltip v-else placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
               <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
                 <nuxt-link
                   :to="getSelectedFacetLink(getFacetId(child))"
@@ -140,9 +166,30 @@ export default {
       if (this.allFacetsData === []) {
         return
       }
-      const category = this.allFacetsData.find(facet => facet.key === key);
+      let category = this.allFacetsData.find(facet => facet.key === key)
       if (category === undefined) {
-        return
+        // check heirarchal facets
+        this.allFacetsData.forEach(facet => {
+          let foundCategory = false
+          facet.children.forEach(child => {
+            if (child.children.length > 0) {
+              const childPropPath = child.children[0].facetPropPath
+              const childLabel = child.children[0].label
+              const childParentFacetLabel = childLabel.substring(0, childLabel.indexOf('.'))
+              if (childPropPath === key && label.includes(childParentFacetLabel)) {
+                category = child
+                foundCategory = true
+                return
+              }
+            }
+          })
+          if (foundCategory) {
+            return
+          }
+        })
+        if (category === undefined) {
+          return
+        }
       }
       const correspondingFacet = category.children.find(child => child.label === label)
       return correspondingFacet.id
@@ -156,8 +203,16 @@ export default {
       const pageName = getPageTypeName(this.datasetTypeName)
       return `/data?type=${pageName}&search=${name}`
     },
+    heirarchalFacetLabel(label) {
+      const labels = label.split('.')
+      return `${labels[0]} > ${labels[1]}`
+    },
     showFacet(facet) {
       if (facet.label === EXPERIMENTAL_APPROACH_LABEL && !this.showExperimentalApproachFacet) {
+        return false
+      }
+      // hide the parent facets
+      if (facet.key === 'anatomy.organ.name') {
         return false
       }
       return true
@@ -185,6 +240,7 @@ hr {
 }
 
 .facet-button {
+  display: block !important;
   border-radius: 15px;
   max-width: fit-content;
   background-color: #f9f2fc;

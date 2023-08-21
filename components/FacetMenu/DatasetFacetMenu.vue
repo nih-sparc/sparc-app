@@ -142,7 +142,7 @@ export default {
       if (item === null || item === undefined) {
         return
       }
-      const categoryFacet = facetPropPathMapping.find(category => category.label === item.label)
+      const categoryFacet = facetPropPathMapping.find(category => category.facetPropPath === item.key)
       const category = {
         label: item.label,
         facet: categoryFacet,
@@ -240,7 +240,15 @@ export default {
     },
     containsSelectedId(item) {
       const children = propOr([], 'children', item)
-      return children.some(child => this.defaultCheckedFacetIds.some(checkedId => parseInt(checkedId) == (propOr('', 'id', child))))
+      return children.some(child => {
+        let found = this.defaultCheckedFacetIds.some(checkedId => parseInt(checkedId) == (propOr('', 'id', child)))
+        if (!found && child.children.length > 0) {
+          found = child.children.some(nestedChild => {
+            return this.defaultCheckedFacetIds.some(checkedId => parseInt(checkedId) == (propOr('', 'id', nestedChild)))
+          })
+        }
+        return found
+      })
     }
 	}
 }

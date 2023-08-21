@@ -159,19 +159,19 @@ export default {
       return propOr(false, 'embargo', this.datasetInfo)
     },
     anatomicalStructureText: function() {
-      return this.getFacetText('Anatomical Structure')
+      return this.getFacetText('anatomy.organ.name')
     },
     experimentalApproachText: function() {
-      return this.getFacetText('Experimental Approach')
+      return this.getFacetText('item.modalities.keyword')
     },
     speciesText: function() {
-      return this.getFacetText('Species')
+      return this.getFacetText('organisms.primary.species.name')
     },
     sexText: function() {
-      return this.getFacetText('Sex')
+      return this.getFacetText('attributes.subject.sex.value')
     },
     ageRangeText: function() {
-      return this.getFacetText('Age Categories')
+      return this.getFacetText('attributes.subject.ageCategory.value')
     },
     numberSamples: function() {
       return _.get(this.datasetMetadataInfo.item, 'statistics.samples.count')
@@ -225,9 +225,9 @@ export default {
   },
 
   methods: {
-    getFacetText(facetLabel) {
+    getFacetText(facetKey) {
       let text = ''
-      const facet = this.datasetFacetsData.find(item => item.label === facetLabel)
+      const facet = this.datasetFacetsData.find(item => item.key === facetKey)
       if (facet === undefined || !facet.children)
       {
         return 'n/a'
