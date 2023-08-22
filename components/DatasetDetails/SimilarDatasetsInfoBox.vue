@@ -173,12 +173,14 @@ export default {
           let foundCategory = false
           facet.children.forEach(child => {
             if (child.children.length > 0) {
-              const childPropPath = child.children[0].facetPropPath
-              const childLabel = child.children[0].label
-              const childParentFacetLabel = childLabel.substring(0, childLabel.indexOf('.'))
-              if (childPropPath === key && label.includes(childParentFacetLabel)) {
-                category = child
-                foundCategory = true
+              child.children.forEach(nestedChild => {
+                if (nestedChild.facetPropPath === key && nestedChild.label === label) {
+                  category = child
+                  foundCategory = true
+                  return
+                }
+              })
+              if (foundCategory) {
                 return
               }
             }
@@ -192,6 +194,9 @@ export default {
         }
       }
       const correspondingFacet = category.children.find(child => child.label === label)
+      if (correspondingFacet == undefined) {
+        return
+      }
       return correspondingFacet.id
     },
     getSelectedFacetLink(facetId) {
