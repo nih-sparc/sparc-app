@@ -216,9 +216,16 @@ export default {
       if (facet.label === EXPERIMENTAL_APPROACH_LABEL && !this.showExperimentalApproachFacet) {
         return false
       }
-      // hide the parent facets
-      if (facet.key === 'anatomy.organ.name') {
-        return false
+      if (process.env.SHOW_HIERARCHAL_FACETS === 'true') {
+        // hide the parent facets
+        if (facet.key === 'anatomy.organ.name') {
+          return false
+        }
+      } else {
+        // hide the child facets
+        if (facet.key === 'anatomy.category.organ.name') {
+          return false
+        }
       }
       return true
     },

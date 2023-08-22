@@ -10,7 +10,7 @@
         <a href="https://docs.sparc.science/" target="_blank">
           Help
         </a>
-        <template v-if="showLoginFeature">
+        <template>
           <svg-icon
             name="icon-sign-in"
             class="login-logo"
@@ -102,7 +102,7 @@
                     Help
                   </a>
                 </li>
-                <li v-if="showLoginFeature">
+                <li>
                   <svg-icon
                     name="icon-sign-in"
                     class="login-menu-logo"
@@ -229,9 +229,7 @@ export default {
   },
   mixins: [Request],
   mounted: async function() {
-    if (this.showLoginFeature) {
-      await this.$store.dispatch('user/fetchUser')
-    }
+    await this.$store.dispatch('user/fetchUser')
   },
   data: () => {
     return {
@@ -242,7 +240,6 @@ export default {
       searchSelect: 'data',
       showSearchDialog: false,
       showLoginDialog: false,
-      showLoginFeature: (process.env.SHOW_LOGIN_FEATURE == 'true') ? true : false,
       searchSelectOptions: [
         {
           key: 'data',

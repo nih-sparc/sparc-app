@@ -191,15 +191,9 @@ export default {
 
   async fetch() {
     // Get oSPARC file viewers
-    this.osparcViewers = process.env.SHOW_OSPARC_TAB == 'true' ? 
+    this.osparcViewers = 
       await this.$axios
         .$get(`${process.env.portal_api}/sim/file`)
-        .then(osparcData => osparcData['file_viewers'])
-        .catch(() => {
-          return {}
-        }) :
-      await this.$axios
-        .$get(`${process.env.portal_api}/get_osparc_data`)
         .then(osparcData => osparcData['file_viewers'])
         .catch(() => {
           return {}

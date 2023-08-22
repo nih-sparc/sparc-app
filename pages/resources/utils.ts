@@ -36,7 +36,7 @@ export const fetchResources = async (resourceType: String, terms?: String, sortO
   }
 }
 
-export const searchTypes = process.env.SHOW_OSPARC_TAB == 'true' ? 
+export const searchTypes = 
   [
     {
       label: 'Databases',
@@ -67,33 +67,6 @@ export const searchTypes = process.env.SHOW_OSPARC_TAB == 'true' ?
       label: 'o²S²PARC Services',
       path: 'osparc-services'
     }
-  ] :
-  [
-    {
-      label: 'Databases',
-      path: 'databases',
-      contentfulLabel: 'Data and Models'
-    },
-    {
-      label: 'Software',
-      path: 'software',
-      contentfulLabel: 'Software'
-    },
-    {
-      label: 'Information Services',
-      path: 'information-services',
-      contentfulLabel: 'Information Services'
-    },
-    {
-      label: 'Devices',
-      path: 'devices',
-      contentfulLabel: 'Devices'
-    },
-    {
-      label: 'Biological',
-      path: 'biological',
-      contentfulLabel: 'Biologicals'
-    },
   ]
 
 export const sortOptions = [
