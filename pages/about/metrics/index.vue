@@ -144,9 +144,6 @@ export default {
   },
 
   async asyncData({ redirect, env, $axios, error }) {
-    if (env.SHOW_METRICS == 'false') {
-      redirect('/')
-    }
     const month = new Date().getMonth()
     const year = new Date().getFullYear()
     let metricsData = undefined

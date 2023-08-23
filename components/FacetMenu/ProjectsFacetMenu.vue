@@ -20,7 +20,6 @@
       @selection-change="onAnatomicalFacetSelectionChange"
     />
     <dropdown-multiselect
-      v-if="showFundingFacet"
       ref="fundingCategory"
       collapse-by-default
       :category="fundingCategory"
@@ -55,7 +54,6 @@ export default {
   
   data() {
     return {
-      showFundingFacet: process.env.SHOW_FUNDING_FACET == 'true',
       selectedAnatomicalFocusFacets: [],
       selectedFundingFacets: [],
       defaultCheckedAnatomicalFocusIds: [],
@@ -79,9 +77,7 @@ export default {
       }
     },
     visibleCategories: function() {
-      return this.showFundingFacet ? 
-        [ANATOMICAL_FOCUS_CATEGORY_ID, FUNDING_CATEGORY_ID] :
-        [ANATOMICAL_FOCUS_CATEGORY_ID]
+      return [ANATOMICAL_FOCUS_CATEGORY_ID, FUNDING_CATEGORY_ID]
     },
     selectedAnatomicalFocusIds: function() {
       return pluck('id', this.selectedAnatomicalFocusFacets).toString()

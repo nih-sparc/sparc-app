@@ -134,7 +134,6 @@ export default {
     AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
     AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
     AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
-    SHOW_LOGIN_FEATURE: process.env.SHOW_LOGIN_FEATURE || 'false',
     LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
     GOOGLE_ANALYTICS_GA4: process.env.GOOGLE_ANALYTICS_GA4,
@@ -142,11 +141,9 @@ export default {
     SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
-    SHOW_METRICS: process.env.SHOW_METRICS || 'false',
-    SHOW_FUNDING_FACET: process.env.SHOW_FUNDING_FACET || 'false',
-    SHOW_OSPARC_TAB: process.env.SHOW_OSPARC_TAB || 'false',
     METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
-    METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer'
+    METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
+    SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false'
   },
 
   serverMiddleware: [
