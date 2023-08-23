@@ -143,7 +143,8 @@ export default {
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
     METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
     METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
-    SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false'
+    SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
+    SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false'
   },
 
   serverMiddleware: [
