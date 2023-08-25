@@ -69,7 +69,7 @@
 
         <div class="section heading2 p-16 mt-16">
           <div class="datasets-container-title">
-            <span class="heading2 mb-16">My Published Datasets ({{ datasets.length }})</span>
+            <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
             <span>
               <el-popover
                 width="fit-content"
@@ -91,7 +91,7 @@
         </div>
         <div class="section heading2 p-16 mt-16">
           <div class="datasets-container-title">
-            <span class="heading2 mb-16">My Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
+            <span class="heading2 mb-16">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
             <span>
               <el-popover
                 width="fit-content"
@@ -108,7 +108,7 @@
           </div>
           <template v-for="datasetSubmission in datasetSubmissions">
             <div :key="datasetSubmission.id" class="submission-request">
-              {{ datasetSubmission.title }}
+              {{ datasetSubmission.name }}
             </div>
           </template>
           <el-button class='secondary' v-on:click='showDatasetSubmissionModal = true'>Submit new request</el-button>
@@ -118,6 +118,7 @@
     <dataset-submission-modal
       :show-modal="showDatasetSubmissionModal"
       @modal-closed="showDatasetSubmissionModal = false"
+      @proposal-submitted="fetchDatasetSubmissions"
     />
   </div>
 </template>
@@ -228,6 +229,7 @@ export default {
       handler: async function(newValue) {
         if (newValue && newValue !== '') {
           this.fetchPublishedDatasets()
+          this.fetchDatasetSubmissions()
         }
       },
       immediate: true
@@ -256,6 +258,16 @@ export default {
           return items
         })
         .catch(() => {
+          return []
+        })
+    },
+    async fetchDatasetSubmissions() {
+      const headers = { 'Authorization': `Bearer ${this.userToken}` }
+      this.datasetSubmissions = await this.$axios
+        .get(`${process.env.PENNSIEVE_API_VERSION_2}/publishing/proposal`, { headers })
+        .then(({ data }) => {
+          return data
+        }).catch(() => {
           return []
         })
     },

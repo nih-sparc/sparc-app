@@ -14,6 +14,24 @@
         :rules="formRules"
         :hide-required-asterisk="true"
       >
+        <el-form-item
+          prop="shortDescription"
+          label="Provide a short description of your data *"
+        >
+          <el-input
+            v-model="form.shortDescription"
+            placeholder="(Example: I am studying the effects of <approach> on <anatomical structure>)"
+          />
+        </el-form-item>
+
+        <el-form-item prop="detailedDescription" label="Provide a detailed description of your data *">
+          <el-input
+            v-model="form.detailedDescription"
+            type="textarea"
+            :rows="3"
+            placeholder="Please provide specifics about your data. Our curation team will then contact you."
+          />
+        </el-form-item>
         <template v-for="question in questions">
           <el-form-item
             :key="question.id"
@@ -50,7 +68,10 @@ export default {
     return {
       modalVisible: false,
       questions: [],
-      form: {},
+      form: {
+        detailedDescription: '',
+        shortDescription: '',
+      },
       isSubmitting: false,
     }
   },
@@ -98,15 +119,14 @@ export default {
     },
     formRules() {
       let formRules = {}
-      this.questions.forEach(question => {
-        const key = question.id
-        const value = [{
-          required: true,
-          message: 'Please enter a response',
-          trigger: 'blur'
-        }]
-        formRules[key] = value
-      })
+      const formRuleValue = [{
+        required: true,
+        message: 'Please enter a response',
+        trigger: 'blur'
+      }]
+      for (const formKey in this.form) {
+        formRules[formKey] = formRuleValue
+      }
       return formRules
     },
   },
@@ -118,12 +138,8 @@ export default {
           return
         }
         if (!this.hasError) {
-          for (const key in this.form) {
-            const value = this.form[key]
-            this.questions.find(question => question.id == key)['answer'] = value
-          }
+          await this.sendForm()
           this.resetForm()
-          this.sendForm()
         }
       })
     },
@@ -137,7 +153,10 @@ export default {
             question['answer'] =  ""
           })
           this.questions = data
-          let form = {}
+          let form = {
+            detailedDescription: '',
+            shortDescription: '',
+          }
           this.questions.forEach(question => {
             const key = question.id
             const formValue = question.answer
@@ -149,27 +168,59 @@ export default {
           this.hasError = true
         })
     },
-    sendForm() {
+    async sendForm() {
       this.isSubmitting = true
       this.modalVisible = false
-      /*await this.$axios
-        .post(`${process.env.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
-          } else {
-            this.$emit('submit', this.form.firstName)
-          }
-        })
-        .catch(() => {
+      const survey = this.questions.map(question => {
+        const questionId = parseInt(question.id)
+        const answer = this.form[questionId]
+        return {
+          "questionId": questionId,
+          "response": answer
+        }
+      })
+      const headers = { 'Authorization': `Bearer ${this.userToken}` }
+      const url = `${process.env.PENNSIEVE_API_VERSION_2}/publishing/repositories`
+      let orgNodeId = ''
+      await this.$axios
+        .get(url, { headers })
+        .then(({ data }) => {
+          orgNodeId = data.find(repo => repo.name === 'sparc')?.organizationNodeId
+        }).catch(() => {
           this.hasError = true
+        }).finally(() => {
+          const formData = {
+            "name": this.form.shortDescription,
+            "description": this.form.detailedDescription,
+            "organizationNodeId": orgNodeId,
+            "survey": survey,
+            "contributors": []
+          }
+          this.$axios
+            .post(`${process.env.PENNSIEVE_API_VERSION_2}/publishing/proposal`, formData, { headers })
+            .then(({ data }) => {
+              this.$emit('proposal-submitted', data.nodeId)
+              /*this.$axios
+                .post(`${process.env.PENNSIEVE_API_VERSION_2}/publishing/proposal/submit?node_id=${nodeId}`, { headers })
+                .catch(() => {
+                  this.hasError = true
+                }).finally(() => {
+                  
+                })*/
+            })
+            .catch(() => {
+              this.hasError = true
+            })
+            .finally(() => {
+              this.isSubmitting = false
+            })
         })
-        .finally(() => {
-          this.isSubmitting = false
-        })*/
     },
     resetForm() {
-      this.form = {}
+      this.form = {
+        detailedDescription: '',
+        shortDescription: '',
+      }
     }
   }
 }
