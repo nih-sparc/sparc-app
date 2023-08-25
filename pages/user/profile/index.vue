@@ -89,8 +89,36 @@
             :items="datasets"
           />
         </div>
+        <div class="section heading2 p-16 mt-16">
+          <div class="datasets-container-title">
+            <span class="heading2 mb-16">My Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
+            <span>
+              <el-popover
+                width="fit-content"
+                trigger="hover"
+                :append-to-body=false
+                popper-class="popover"
+                >
+                <svg-icon slot="reference" class="icon-help" icon="icon-help" width="26" height="26" />
+                <div>
+                  In order to publish a dataset on the SPARC Portal your submission must first be approved by the curation team. If there are dataset requests that you think are missing please contact curation@sparc.science
+                </div>
+              </el-popover>
+            </span>
+          </div>
+          <template v-for="datasetSubmission in datasetSubmissions">
+            <div :key="datasetSubmission.id" class="submission-request">
+              {{ datasetSubmission.title }}
+            </div>
+          </template>
+          <el-button class='secondary' v-on:click='showDatasetSubmissionModal = true'>Submit new request</el-button>
+        </div>
       </div>
     </div>
+    <dataset-submission-modal
+      :show-modal="showDatasetSubmissionModal"
+      @modal-closed="showDatasetSubmissionModal = false"
+    />
   </div>
 </template>
 
@@ -103,12 +131,14 @@ import Gallery from '~/components/Gallery/Gallery.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import AuthenticatedMixin from '@/mixins/authenticated/index'
+import DatasetSubmissionModal from '@/components/DatasetSubmissionModal/DatasetSubmissionModal.vue'
 
 export default {
   name: 'profile',
 
   components: {
     Breadcrumb,
+    DatasetSubmissionModal,
     Gallery,
     PageHero
   },
@@ -144,6 +174,8 @@ export default {
         }
       ],
       datasets: [],
+      datasetSubmissions: [],
+      showDatasetSubmissionModal: false,
     }
   },
 
@@ -253,7 +285,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
-
+.submission-request {
+  border: 1px solid $lineColor2;
+}
 a {
   text-decoration: underline;
 }

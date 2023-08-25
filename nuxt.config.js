@@ -135,6 +135,7 @@ export default {
     AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
     AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
     LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
+    PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
     GOOGLE_ANALYTICS_GA4: process.env.GOOGLE_ANALYTICS_GA4,
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
