@@ -222,22 +222,24 @@ export default {
       }).then(async ({ hits }) => {
         let items = []
         await hits.forEach(async hit => {
-            const datasetId = propOr('', 'objectID', hit)
-            const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
-            const numCitations = await this.getCitationsCount(pennsieveIdentifier)
-            const numDownloads = this.getDownloadsCount(datasetId)
-            items.push({
-              ...hit,
-              'banner': pathOr('', ['pennsieve','banner','uri'], hit),
-              'numDownloads': numDownloads,
-              'numCitations': numCitations
-            })
+          const datasetName = pathOr('', ['item','name'], hit)
+          const datasetId = propOr('', 'objectID', hit)
+          const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
+          const numCitations = await this.getCitationsCount(pennsieveIdentifier)
+          const numDownloads = this.getDownloadsCount(datasetId)
+          items.push({
+            'name': datasetName,
+            'intId': datasetId,
+            'banner': pathOr('', ['pennsieve','banner','uri'], hit),
+            'numDownloads': numDownloads,
+            'numCitations': numCitations
           })
-          return items
         })
-        .catch(() => {
-          return []
-        })
+        return items
+      })
+      .catch(() => {
+        return []
+      })
     },
     async getCitationsCount(id) {
       try {
