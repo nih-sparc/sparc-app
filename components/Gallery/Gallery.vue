@@ -38,7 +38,7 @@
               v-else-if="galleryItemType === 'datasets'"
               :is="galleryItemComponent"
               :width="cardWidth"
-              :key="item.intId"
+              :key="item.objectID"
               :item="item"
             />
           </template>
