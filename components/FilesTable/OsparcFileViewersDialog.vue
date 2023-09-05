@@ -31,7 +31,7 @@
           @click="openFile"
           class="open-btn"
         >
-          Open in oSPARC
+          Open in o²S²PARC
         </bf-button>
       </div>
     </dialog-body>
@@ -73,7 +73,7 @@ export default {
       selectedViewer: '',
       isFetching: false,
       filePickerDummy: {
-        title: "No service",
+        title: "o²S²PARC file service",
         "view_url": osparcViewUrl.toString()
       }
     }
