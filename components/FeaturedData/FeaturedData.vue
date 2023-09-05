@@ -74,7 +74,7 @@ export default {
       getAlgoliaFacets(algoliaIndex, facetPropPathMapping)
         .then(data => {
           this.organFacets = data.find(
-            facet => facet.key === 'anatomy.organ.name'
+            facet => facet.key === 'anatomy.organ.category.name'
           ).children
         })
         .finally(() => {
@@ -83,14 +83,23 @@ export default {
     },
     filterOrgans(contentfulFields) {
       const normStr = str => str.toLowerCase().trim()
-      return this.organFacets.filter(
+      let organs = this.organFacets.filter(
         organ =>
-          normStr(organ.label).includes(normStr(contentfulFields.label)) ||
-          (contentfulFields.containsSearch &&
-            contentfulFields.containsSearch.some(keyword =>
-              normStr(organ.label).includes(normStr(keyword))
-            ))
+          normStr(organ.label).includes(normStr(contentfulFields.label)) || 
+          (contentfulFields.containsSearch && contentfulFields.containsSearch.some(keyword => normStr(organ.label).includes(normStr(keyword))))
       )
+      this.organFacets.forEach(organFacet => {
+        if (organFacet.children.length == 0) {
+          return
+        }
+        const subOrgans = organFacet.children.filter(
+          subOrgan =>
+            normStr(subOrgan.label).includes(normStr(contentfulFields.label)) || 
+            (contentfulFields.containsSearch && contentfulFields.containsSearch.some(keyword => normStr(subOrgan.label).includes(normStr(keyword))))
+        )
+        organs = organs.concat(subOrgans)
+      })
+      return organs
     },
     getLink(contentfulFields) {
       if (isEmpty(this.organFacetIds)) {

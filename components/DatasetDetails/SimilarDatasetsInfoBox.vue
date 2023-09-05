@@ -18,7 +18,7 @@
       <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.key">
         <div v-if="facet.children && showFacet(facet)">
           <div class="capitalize mb-8">{{facet.label}}:</div>
-          <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
+          <div class="facet-button-container parent-facet mt-8" v-for="child in facet.children" :key="child.id">
             <div v-if="child.children.length > 0">
               <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
                   <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
@@ -31,9 +31,9 @@
                     </a>
                   </div>
               </sparc-tooltip>
-              <div class="facet-button-container" v-for="nestedChild in child.children" :key="nestedChild.id">
-                <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
-                  <div class="ml-16 tooltip-item facet-button my-2 px-12 label2" slot="item">
+              <div class="facet-button-container child-facet" v-for="nestedChild in child.children" :key="nestedChild.id">
+                <sparc-tooltip class="ml-32" placement="left-center" :content="capitalize(nestedChild.label.split('.')[1])" is-repeating-item-content>
+                  <div class="ml-4 tooltip-item facet-button my-2 px-12 label2" slot="item">
                     <a
                       :href="getSelectedFacetLink(getFacetId(nestedChild))"
                     >
@@ -287,5 +287,16 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inherit;
+}
+.parent-facet .child-facet:first-of-type::after {
+  content: url('../../static/images/child-parent-relationship.png');
+  display: block;
+  height: 0;
+  position: relative;
+  top: -1.8rem;
+}
+
+::v-deep .child-facet > span {
+  display: block;
 }
 </style>

@@ -271,7 +271,7 @@ export default {
       return url
     },
     sdsViewer: function() {
-      if (this.datasetInfo.doi) {
+      if (this.datasetInfo.doi && process.env.SHOW_SDS_VIEWER === 'true') {
         const metacellUrl = new URL(process.env.METACELL_SDS_VIEWER_URL)
         metacellUrl.searchParams.append('doi', this.datasetInfo.doi)
         return metacellUrl.toString()

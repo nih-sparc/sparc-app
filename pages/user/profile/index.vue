@@ -133,6 +133,10 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import AuthenticatedMixin from '@/mixins/authenticated/index'
 import DatasetSubmissionModal from '@/components/DatasetSubmissionModal/DatasetSubmissionModal.vue'
+import createAlgoliaClient from '@/plugins/algolia.js'
+
+const algoliaClient = createAlgoliaClient()
+const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 export default {
   name: 'profile',
@@ -234,32 +238,42 @@ export default {
       },
       immediate: true
     },
+    orcid: {
+      handler: async function(newValue) {
+        if (newValue && newValue !== '') {
+          this.fetchPublishedDatasets(newValue)
+        }
+      },
+      immediate: true
+    },
   },
   methods: {
-    async fetchPublishedDatasets() {
-      const headers = { 'Authorization': `Bearer ${this.userToken}` }
-      this.datasets = await this.$axios
-        .$get(`${process.env.LOGIN_API_URL}/datasets/paginated?publicationType=publication&publicationStatus=completed&includeBannerUrl=true&onlyMyDatasets=true`, { headers })
-        .then(async (response) => {
-          let items = []
-          const datasets = response.datasets
-          await datasets.forEach(async dataset => {
-            const datasetIntId = pathOr('', ['content', 'intId'], dataset)
-            const datasetId = pathOr('', ['content', 'id'], dataset)
-            const numCitations = await this.getCitationsCount(datasetId)
-            const numDownloads = this.getDownloadsCount(datasetIntId)
-            items.push({
-              ...propOr('', 'content', dataset),
-              'banner': propOr('', 'bannerPresignedUrl', dataset),
-              'numDownloads': numDownloads,
-              'numCitations': numCitations
-            })
+    async fetchPublishedDatasets(orcid) {
+      const filter = `contributors.curie:\"ORCID:${orcid}\"`
+      this.datasets = await algoliaIndex.search('', {
+        filters:filter,
+        hitsPerPage: 999
+      }).then(async ({ hits }) => {
+        let items = []
+        await hits.forEach(async hit => {
+          const datasetName = pathOr('', ['item','name'], hit)
+          const datasetId = propOr('', 'objectID', hit)
+          const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
+          const numCitations = await this.getCitationsCount(pennsieveIdentifier)
+          const numDownloads = this.getDownloadsCount(datasetId)
+          items.push({
+            'name': datasetName,
+            'intId': datasetId,
+            'banner': pathOr('', ['pennsieve','banner','uri'], hit),
+            'numDownloads': numDownloads,
+            'numCitations': numCitations
           })
-          return items
         })
-        .catch(() => {
-          return []
-        })
+        return items
+      })
+      .catch(() => {
+        return []
+      })
     },
     async fetchDatasetSubmissions() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }

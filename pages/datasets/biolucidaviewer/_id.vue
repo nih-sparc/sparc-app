@@ -127,7 +127,7 @@ export default {
   async asyncData({ route, error, $axios }) {
     try {
       const image_identifier = route.params.id
-      const identifier = route.query.item_id.substring(2)
+      const identifier = route.query.dataset_id
 
       const [
         blv_info,
@@ -139,7 +139,7 @@ export default {
         biolucida.getBLVLink(image_identifier),
         biolucida.decodeViewParameter(route.query.view),
         biolucida.getImageInfo(image_identifier),
-        scicrunch.getDatasetInfoFromObjectIdentifier(identifier),
+        scicrunch.getDatasetInfoFromPennsieveIdentifier(identifier),
         biolucida.getXMPInfo(image_identifier)
       ])
 

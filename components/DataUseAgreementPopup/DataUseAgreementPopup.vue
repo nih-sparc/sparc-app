@@ -6,7 +6,7 @@
   >
     <div class="content" slot="mainContent">
       <h1 class="heading1 mb-8">
-        Sign Data Use Agreement
+        Data Use Agreement
       </h1>
       <div class="agreement-body">
         <p class="body1">
@@ -81,7 +81,7 @@
           Cancel
         </el-button>
         <el-button :disabled="!hasAcceptedAgreement" @click="submit">
-          Sign and Submit
+          Accept and Submit
         </el-button>
       </div>
     </div>
