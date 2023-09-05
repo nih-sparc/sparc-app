@@ -49,43 +49,23 @@
               combination of components
             -->
             <client-only>
-              <content-tab-card
-                class="tabs p-32"
-                :tabs="eventsTabs"
-                :active-tab-id="activeTabId"
-                @tab-changed="eventsTabChanged"
-              >
-                <template v-if="activeTabId === 'upcoming'">
-                  <div class="upcoming-events">
-                    <event-card
-                      v-for="event in upcomingEvents.items"
-                      :key="event.sys.id"
-                      :event="event"
-                    />
-                  </div>
-
-                </template>
-
-                <template v-if="activeTabId === 'past'">
-                  <div class="past-events">
-                    <event-card
-                      v-for="event in pastEvents.items"
-                      :key="event.sys.id"
-                      :event="event"
-                    />
-                  </div>
-                </template>
-                <div class="mt-16">
-                  <nuxt-link
-                    class="btn-load-more"
-                    :to="{
-                      name: 'news-and-events-events',
-                    }"
-                  >
-                    View All Events
-                  </nuxt-link>
-                </div>
-              </content-tab-card>
+              <div class="upcoming-events">
+                <event-card
+                  v-for="event in upcomingEvents.items"
+                  :key="event.sys.id"
+                  :event="event"
+                />
+              </div>
+              <div class="mt-16">
+                <nuxt-link
+                  class="btn-load-more"
+                  :to="{
+                    name: 'news-and-events-events',
+                  }"
+                >
+                  View All Events
+                </nuxt-link>
+              </div>
             </client-only>
           </el-col>
         </el-row>
@@ -220,9 +200,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
   watch: {
     '$route.query': {
       handler: async function(this: NewsAndEventsComponent) {
-        const { upcomingEvents, pastEvents, news, page, stories } = await fetchData(client, this.$route.query.search as string, 2)
+        const { upcomingEvents, news, page, stories } = await fetchData(client, this.$route.query.search as string, 2)
         this.upcomingEvents = upcomingEvents;
-        this.pastEvents = pastEvents;
         this.news = news;
         this.page = page;
         this.stories = stories;
@@ -242,19 +221,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
           label: 'Home'
         }
       ],
-      activeTabId: 'upcoming',
-      eventsTabs: [
-        {
-          label: 'Upcoming',
-          id: 'upcoming'
-        },
-        {
-          label: 'Past',
-          id: 'past'
-        }
-      ],
       upcomingEvents: {} as EventsCollection,
-      pastEvents: {} as EventsCollection,
       news: {} as NewsCollection,
       page: {} as PageEntry,
       stories: {} as CommunitySpotlightItemsCollection
@@ -297,20 +264,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
       const news = await fetchNews(client, this.$route.query.search as string, undefined, undefined, undefined, undefined, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     },
-    eventsTabChanged(newTab) {
-      this.activeTabId = newTab.id
-    },
-    // Calculate the eventYear param based off the tab being shown
-    eventYear() {
-      if (this.activeTabId === 'upcoming')
-      {
-
-      }
-      else if (this.activeTabId === 'past') {
-
-      }
-      return undefined
-    },
     currentMonth() {
       return new Date().getMonth()
     }
@@ -342,7 +295,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
   margin: 1em 0;
   padding: 0;
 }
-.upcoming-events, .past-events {
+.upcoming-events {
   justify-content: space-between;
   display: flex;
   flex-wrap: wrap;
