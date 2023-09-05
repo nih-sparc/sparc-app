@@ -1,6 +1,20 @@
 <template>
   <div class="pb-32">
     <div class="page-wrap container">
+      <client-only>
+        <content-tab-card
+          v-if="hasViewer"
+          class="tabs p-32"
+          :tabs="tabs"
+          :active-tab-id="activeTabId"
+        >
+          <biolucida-viewer
+            v-if="hasBiolucidaViewer"
+            v-show="activeTabId === 'imageViewer'"
+            :data="biolucidaData"
+          />
+        </content-tab-card>
+      </client-only>
       <div class="subpage">
         <div class="page-heading">
           <h1>{{ file.name }}</h1>
@@ -66,20 +80,6 @@
           </div>
         </div>
       </div>
-      <client-only>
-        <content-tab-card
-          v-if="hasViewer"
-          class="tabs p-32"
-          :tabs="tabs"
-          :active-tab-id="activeTabId"
-        >
-          <biolucida-viewer
-            v-if="hasBiolucidaViewer"
-            v-show="activeTabId === 'imageViewer'"
-            :data="biolucidaData"
-          />
-        </content-tab-card>
-      </client-only>
     </div>
   </div>
 </template>
