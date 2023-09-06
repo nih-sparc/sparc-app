@@ -61,7 +61,7 @@
       <div>
         <el-button
           class="my-8"
-          :disabled="embargoAccess != null"
+          :disabled="embargoAccess != null && agreementId != null"
           @click="openAgreementPopup()"
         >
           Request Access
@@ -156,6 +156,7 @@
     </div>
     <data-use-agreement-popup
       :show-dialog="showAgreementPopup"
+      @agreement-loaded="agreementLoaded"
       @dialog-closed="showAgreementPopup = false"
       @agreement-signed="requestAccess"
     />
@@ -286,7 +287,8 @@ export default {
       awsMessage: 'us-east-1',
       showAgreementPopup: false,
       showLoginDialog: false,
-      osparcViewers: {}
+      osparcViewers: {},
+      agreementId: null
     }
   },
 
@@ -306,6 +308,15 @@ export default {
           this.$message(failMessage('Failed to copy.'))
         }
     },
+    agreementLoaded(id) {
+      if (id == null) {
+        this.$message(
+          failMessage('Could not load dataset agreement in order to Request Access')
+        )
+      } else {
+        this.agreementId = id
+      }
+    },
     openAgreementPopup: function() {
       this.showAgreementPopup = true
     },
@@ -314,7 +325,7 @@ export default {
 
       this.$axios
         .$post(url, {
-          datasetId: this.datasetInfo.id,
+          dataUseAgreementId: this.agreementId,
         })
         .then(() => {
           this.updateEmbargoAccess(EMBARGO_ACCESS.REQUESTED)
