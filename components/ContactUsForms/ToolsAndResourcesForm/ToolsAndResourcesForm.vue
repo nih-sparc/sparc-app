@@ -175,36 +175,25 @@ export default {
   mixins: [RecaptchaMixin, NewsletterMixin],
 
   data() {
-    console.log('generating data')
-    let form = {
-      typeOfUser: '',
-      resourceName: '',
-      resourceLinks: [''],
-      resourceCategories: [],
-      otherCategoryDescription: '',
-      isFree: '',
-      hasSpecificApplications: '',
-      isCreator: '',
-      linksToUsages: [''],
-      tutorialsAvailable: '',
-      linksToTutorials: [''],
-      firstName: '',
-      lastName: '',
-      email: '',
-      shouldSubscribe: false,
-      sendCopy: true
-    }
-    const savedForm = sessionStorage.getItem('SPARC-CONTACT-FORM')
-    if (savedForm) {
-      try {
-        form = JSON.parse(savedForm)
-      }
-      catch {
-        console.error('Could not parse a saved contact form.')
-      }
-    }
     return {
-      form,
+      form: {
+        typeOfUser: '',
+        resourceName: '',
+        resourceLinks: [''],
+        resourceCategories: [],
+        otherCategoryDescription: '',
+        isFree: '',
+        hasSpecificApplications: '',
+        isCreator: '',
+        linksToUsages: [''],
+        tutorialsAvailable: '',
+        linksToTutorials: [''],
+        firstName: '',
+        lastName: '',
+        email: '',
+        shouldSubscribe: false,
+        sendCopy: true
+      },
       isSubmitting: false,
       formRules: {
         resourceName: [
@@ -321,6 +310,18 @@ export default {
       }
       return isEmpty(message) ? 'N/A<br>' : message
     },
+  },
+
+  beforeMount() {
+    const savedForm = sessionStorage.getItem('toolsAndResourcesForm')
+    if (savedForm) {
+      try {
+        this.form = JSON.parse(savedForm)
+      }
+      catch {
+        console.error('Could not parse a saved contact form.')
+      }
+    }
   },
 
   mounted() {
