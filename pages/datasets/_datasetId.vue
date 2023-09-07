@@ -324,7 +324,7 @@ export default {
       versions,
       datasetTypeName,
       downloadsSummary,
-      showTombstone: datasetDetails.isUnpublished,
+      showTombstone: propOr(false, 'isUnpublished', datasetDetails),
       errorMessages
     }
   },
