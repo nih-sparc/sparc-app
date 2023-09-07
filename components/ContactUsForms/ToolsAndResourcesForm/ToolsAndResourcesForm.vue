@@ -175,25 +175,36 @@ export default {
   mixins: [RecaptchaMixin, NewsletterMixin],
 
   data() {
+    console.log('generating data')
+    let form = {
+      typeOfUser: '',
+      resourceName: '',
+      resourceLinks: [''],
+      resourceCategories: [],
+      otherCategoryDescription: '',
+      isFree: '',
+      hasSpecificApplications: '',
+      isCreator: '',
+      linksToUsages: [''],
+      tutorialsAvailable: '',
+      linksToTutorials: [''],
+      firstName: '',
+      lastName: '',
+      email: '',
+      shouldSubscribe: false,
+      sendCopy: true
+    }
+    const savedForm = sessionStorage.getItem('SPARC-CONTACT-FORM')
+    if (savedForm) {
+      try {
+        form = JSON.parse(savedForm)
+      }
+      catch {
+        console.error('Could not parse a saved contact form.')
+      }
+    }
     return {
-      form: {
-        typeOfUser: '',
-        resourceName: '',
-        resourceLinks: [''],
-        resourceCategories: [],
-        otherCategoryDescription: '',
-        isFree: '',
-        hasSpecificApplications: '',
-        isCreator: '',
-        linksToUsages: [''],
-        tutorialsAvailable: '',
-        linksToTutorials: [''],
-        firstName: '',
-        lastName: '',
-        email: '',
-        shouldSubscribe: false,
-        sendCopy: true
-      },
+      form,
       isSubmitting: false,
       formRules: {
         resourceName: [
@@ -314,7 +325,6 @@ export default {
 
   mounted() {
     // Reset form fields when showing the form
-    this.$refs.submitForm.resetFields()
     this.hasError = false
   },
 
