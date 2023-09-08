@@ -45,16 +45,7 @@
 
     <hr/>
 
-    <user-contact-form-item
-      showFollowUpOption
-      @type-of-user-updated="form.typeOfUser = $event"
-      @first-name-updated="form.firstName = $event"
-      @last-name-updated="form.lastName = $event"
-      @email-updated="form.email = $event"
-      @follow-up-updated="form.shouldFollowUp = $event"
-      @sned-copy-updated="form.sendCopy = $event"
-      @subscribe-updated="form.shouldSubscribe = $event"
-    />
+    <user-contact-form-item v-model="form.user" showFollowUpOption/>
 
     <hr/>
 
@@ -80,7 +71,8 @@
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import { loadForm, saveForm } from '~/pages/data/utils'
 
 export default {
   name: 'FeedbackForm',
@@ -95,51 +87,51 @@ export default {
     return {
       form: {
         pageOrResource: '',
-        typeOfUser: '',
         detailedDescription: '',
         shortDescription: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        sendCopy: true,
-        shouldFollowUp: true,
-        shouldSubscribe: false
+        user: {
+          typeOfUser: '',
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.profileEmail,
+          sendCopy: true,
+          shouldFollowUp: true,
+          shouldSubscribe: false,
+        }
       },
       isSubmitting: false,
       formRules: {
-        typeOfUser: [
-          {
-            required: true,
-            message: 'Please select one',
-            trigger: 'change'
-          }
-        ],
-
-        email: [
-          {
-            required: true,
-            message: 'Please enter your email',
-            type: 'email',
-            trigger: 'blur',
-          }
-        ],
-
-        firstName: [
-          {
-            required: true,
-            message: 'Please enter your first name',
-            trigger: 'blur',
-          }
-        ],
-
-        lastName: [
-          {
-            required: true,
-            message: 'Please enter your last name',
-            trigger: 'blur',
-          }
-        ],
-
+        user: {
+          typeOfUser: [
+            {
+              required: true,
+              message: 'Please select one',
+              trigger: 'change'
+            }
+          ],
+          email: [
+            {
+              required: true,
+              message: 'Please enter your email',
+              type: 'email',
+              trigger: 'blur',
+            }
+          ],
+          firstName: [
+            {
+              required: true,
+              message: 'Please enter your first name',
+              trigger: 'blur',
+            }
+          ],
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
+        },
         shortDescription: [
           {
             required: true,
@@ -147,7 +139,6 @@ export default {
             trigger: 'change'
           }
         ],
-
         detailedDescription: [
           {
             required: true,
@@ -161,15 +152,19 @@ export default {
 
   computed: {
     ...mapState('pages/contact-us', {
-      userTypes: state => state.formOptions.userTypes,
       areasOfSparc: state => state.formOptions.areasOfSparc
     }),
+    ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
   },
 
   mounted() {
     // Reset form fields when showing the form
-    this.$refs.submitForm.resetFields()
     this.hasError = false
+    this.$refs.submitForm.resetFields()
+    const form = loadForm('feedbackForm')
+    if (form) {
+      this.form = form
+    }
   },
 
   methods: {
@@ -181,23 +176,26 @@ export default {
       const description = `
         <b>What area of the SPARC Portal is this related to?</b><br>${this.form.pageOrResource}<br><br>
         <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
-        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
-        <b>Email:</b><br>${this.form.email}<br><br>
-        <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
+        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
+        <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
+        <b>Email:</b><br>${this.form.user.email}<br><br>
+        <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
       `
       let formData = new FormData();
       formData.append("type", "feedback")
-      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `SPARC Feedback Submission: ${this.form.shortDescription}`)
       formData.append("description", description)
-      formData.append("userEmail", this.form.email)
+      formData.append("userEmail", this.form.user.email)
+
+      // Save form to sessionStorage
+      saveForm(this.form, 'feedbackForm')
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          if (this.form.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          if (this.form.user.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
           } else {
             this.$emit('submit', this.form.firstName)
           }

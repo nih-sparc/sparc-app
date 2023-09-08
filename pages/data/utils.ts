@@ -285,3 +285,43 @@ export const highlightMatches = (text: string, search: string): string => {
   }
   return text
 }
+
+export const saveForm = (payload: any, storageKey: string): void => {
+  const { user, ...rest } = payload
+  saveJsonToSessionStorage(user, 'userDataForm')
+  saveJsonToSessionStorage(rest, storageKey)
+}
+
+export const loadForm = (storageKey: string): any => {
+  const json = loadJsonFromSessionStorage(storageKey)
+  const user = loadJsonFromSessionStorage('userDataForm')
+  if (json == null && user == null) {
+    return null
+  }
+  return {
+    ...json,
+    user
+  }
+}
+
+export const saveJsonToSessionStorage = (payload: any, storageKey: string): void => {
+  try {
+    const json = JSON.stringify(payload)
+    sessionStorage.setItem(storageKey, json)
+  }
+  catch {
+    console.error('Could not serialize object to JSON for storing it')
+  }
+}
+
+export const loadJsonFromSessionStorage = (storageKey: string): any => {
+  const json = sessionStorage.getItem(storageKey)
+  if (json) {
+    try {
+      return JSON.parse(json)
+    }
+    catch {
+      console.error('Could not deserialize stored form to a JS object')
+    }
+  }
+}

@@ -124,15 +124,7 @@
 
     <hr/>
 
-    <user-contact-form-item
-      @type-of-user-updated="form.typeOfUser = $event"
-      @first-name-updated="form.firstName = $event"
-      @last-name-updated="form.lastName = $event"
-      @email-updated="form.email = $event"
-      @follow-up-updated="form.shouldFollowUp = $event"
-      @sned-copy-updated="form.sendCopy = $event"
-      @subscribe-updated="form.shouldSubscribe = $event"
-    />
+    <user-contact-form-item v-model="form.user"/>
 
     <hr/>
 
@@ -162,7 +154,8 @@ import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { isEmpty } from 'ramda'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import { loadForm, saveForm } from '~/pages/data/utils'
 
 export default {
   name: 'ToolsAndResourcesForm',
@@ -177,7 +170,6 @@ export default {
   data() {
     return {
       form: {
-        typeOfUser: '',
         resourceName: '',
         resourceLinks: [''],
         resourceCategories: [],
@@ -188,14 +180,42 @@ export default {
         linksToUsages: [''],
         tutorialsAvailable: '',
         linksToTutorials: [''],
-        firstName: '',
-        lastName: '',
-        email: '',
-        shouldSubscribe: false,
-        sendCopy: true
+        user: {
+          typeOfUser: '',
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.profileEmail,
+          sendCopy: true,
+          shouldFollowUp: true,
+          shouldSubscribe: false,
+        }
       },
       isSubmitting: false,
       formRules: {
+        user: {
+          email: [
+            {
+              required: true,
+              message: 'Please enter your email',
+              type: 'email',
+              trigger: 'blur',
+            }
+          ],
+          firstName: [
+            {
+              required: true,
+              message: 'Please enter your first name',
+              trigger: 'blur',
+            }
+          ],
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
+        },
         resourceName: [
           {
             required: true,
@@ -244,36 +264,13 @@ export default {
             message: 'Please select one',
             trigger: 'blur',
           }
-        ],
-        firstName: [
-          {
-            required: true,
-            message: 'Please enter your first name',
-            trigger: 'blur',
-          }
-        ],
-        lastName: [
-          {
-            required: true,
-            message: 'Please enter your last name',
-            trigger: 'blur',
-          }
-        ],
-        email: [
-          {
-            required: true,
-            message: 'Please enter your email',
-            type: 'email',
-            trigger: 'blur'
-          }
-        ],
+        ]
       }
     }
   },
 
   computed: {
     ...mapState('pages/contact-us', {
-      userTypes: state => state.formOptions.userTypes,
       resourceCategoryOptions: state => state.formOptions.resourceCategories
     }),
     isOtherSelected: function() {
@@ -310,23 +307,17 @@ export default {
       }
       return isEmpty(message) ? 'N/A<br>' : message
     },
-  },
-
-  beforeMount() {
-    const savedForm = sessionStorage.getItem('toolsAndResourcesForm')
-    if (savedForm) {
-      try {
-        this.form = JSON.parse(savedForm)
-      }
-      catch {
-        console.error('Could not parse a saved contact form.')
-      }
-    }
+    ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
   },
 
   mounted() {
     // Reset form fields when showing the form
     this.hasError = false
+    this.$refs.submitForm.resetFields()
+    const form = loadForm('toolsAndResourcesForm')
+    if (form) {
+      this.form = form
+    }
   },
 
   methods: {
@@ -371,25 +362,28 @@ export default {
         <b>Please provide any links to datasets or publications using this tool/resource</b><br>${this.linksToUsagesText}<br>
         <b>Do you have any tutorials/user guides available?</b><br>${this.form.tutorialsAvailable}<br><br>
         <b>Links to tutorials/user guides:</b><br>${this.linksToTutorialsText}<br>
-        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>First Name:</b><br>${this.form.firstName}<br><br>
-        <b>Last Name:</b><br>${this.form.lastName}<br><br>
-        <b>Email:</b><br>${this.form.email}
+        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
+        <b>First Name:</b><br>${this.form.user.firstName}<br><br>
+        <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
+        <b>Email:</b><br>${this.form.user.email}
       `
       let formData = new FormData();
       formData.append("type", "toolsAndResources")
-      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `T&R Submission: ${this.form.resourceName}`)
       formData.append("description", description)
-      formData.append("userEmail", this.form.email)
+      formData.append("userEmail", this.form.user.email)
+
+      // Save form to sessionStorage
+      saveForm(this.form, 'toolsAndResourcesForm')
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          if (this.form.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          if (this.form.user.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
           } else {
-            this.$emit('submit', this.form.firstName)
+            this.$emit('submit', this.form.user.firstName)
           }
         })
         .catch(() => {
