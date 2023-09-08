@@ -111,7 +111,7 @@ export default {
   background: #fff;
   border: 1px solid #dbdfe6;
   color: $dark-sky;
-  padding: 1em;
+  padding: 1.5em 1em;
   &__image {
     margin-bottom: 1rem;
     overflow: hidden;

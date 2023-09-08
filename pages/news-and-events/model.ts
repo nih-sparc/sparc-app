@@ -28,15 +28,6 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
       limit
     })
 
-    const pastEvents = await client.getEntries<EventsEntry>({
-      content_type: process.env.ctf_event_id,
-      order: '-fields.startDate',
-      'fields.startDate[lt]': todaysDate.toISOString(),
-      'fields.startDate[gte]': sub(todaysDate, { years: 2 }).toISOString(),
-      query,
-      limit
-    })
-
     const news = await fetchNews(client, query, undefined, undefined, undefined, undefined, limit)
 
     const page = await client.getEntry<PageData>(process.env.ctf_news_and_events_page_id ?? '')
@@ -45,7 +36,6 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
 
     return {
       upcomingEvents,
-      pastEvents,
       news,
       page,
       stories
@@ -54,7 +44,6 @@ export const fetchData = async (client: ContentfulClientApi, terms?: string, lim
     console.error(e)
     return {
       upcomingEvents: {} as unknown as EventsCollection,
-      pastEvents: {} as unknown as EventsCollection,
       news: {} as unknown as NewsCollection,
       page: {} as unknown as PageEntry,
       stories: {} as unknown as CommunitySpotlightItemsCollection
@@ -124,7 +113,7 @@ export const fetchCommunitySpotlightItems = async (client: ContentfulClientApi, 
   }
 }
 
-export type AsyncData = Pick<Data, "upcomingEvents" | "pastEvents" | "news" | "page" | "stories">
+export type AsyncData = Pick<Data, "upcomingEvents" | "news" | "page" | "stories">
 
 export interface PageData {
   featuredEvent?: EventsEntry;
@@ -179,7 +168,6 @@ export interface Data {
   activeTab: string;
   eventsTabs: Tab[];
   upcomingEvents: EventsCollection;
-  pastEvents: EventsCollection;
   news: NewsCollection;
   page: PageEntry;
   stories: CommunitySpotlightItemsCollection

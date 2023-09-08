@@ -65,7 +65,7 @@ import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { highlightMatches } from '../../pages/data/utils'
 
 export default {
-  name: 'EventCard',
+  name: 'EventListItem',
   components: {
     eventBannerImage
   },
