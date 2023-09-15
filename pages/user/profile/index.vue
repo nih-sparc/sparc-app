@@ -356,7 +356,7 @@ export default {
       this.datasetSubmissions = await this.$axios
         .get(`${process.env.PENNSIEVE_API_VERSION_2}/publishing/proposal`, { headers })
         .then(({ data }) => {
-          return data
+          return data == null ? [] : data
         }).catch(() => {
           return []
         }).finally(() => {
