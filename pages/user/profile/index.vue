@@ -159,9 +159,16 @@
       @cancelled="showDeleteConfirmationModal = false"
       @modal-closed="submissionToDelete = ''"
     >
-      <p class="body1" slot="confirmation-body">
-        Are you sure you want to delete?
-      </p>
+      <template slot="confirmation-body">
+        <div class="confirmation-body">
+          <p class="label4">
+            Delete Dataset Proposal: "{{submissionToDelete.name}}"?
+          </p>
+          <p class="body4 danger-text">
+            This will permanently delete the dataset proposal.
+          </p>
+        </div>
+      </template>
     </confirmation-modal>
     <confirmation-modal
       :show-modal="showRetractConfirmationModal"
