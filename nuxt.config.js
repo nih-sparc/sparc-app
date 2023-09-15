@@ -135,6 +135,7 @@ export default {
     AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
     AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
     LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
+    PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
     GOOGLE_ANALYTICS_GA4: process.env.GOOGLE_ANALYTICS_GA4,
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
@@ -144,7 +145,8 @@ export default {
     METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
     METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
     SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
-    SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false'
+    SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
+    SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false'
   },
 
   serverMiddleware: [
