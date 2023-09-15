@@ -38,7 +38,7 @@
                 Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our newsletter. View all past newsletters <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">here</a>.
               </div>
               <div class="mt-8">
-                <el-button class='secondary' v-on:click='subscribeToNewsletter(profileEmail, firstName, lastName)'>Subscribe to newsletter</el-button>
+                <el-button class='secondary' @click="subscribeToNewsletter(profileEmail, firstName, lastName)">Subscribe to newsletter</el-button>
               </div>
             </template>
             <template v-else>
@@ -47,7 +47,7 @@
                 View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
               </div>
               <div class="mt-8">
-                <el-button class='secondary' v-on:click='unsubscribeFromNewsletter(profileEmail)'>Un-subscribe from newsletter</el-button>
+                <el-button class='secondary' @click="unsubscribeFromNewsletter(profileEmail)">Un-subscribe from newsletter</el-button>
               </div>
             </template>
           </div>
@@ -124,24 +124,24 @@
                 </span>
                 <span class="right-col">
                   <template v-if="isDraft(datasetSubmission)">
-                    <el-button v-on:click="submitDraft(datasetSubmission.nodeId)"  class="secondary submit-button">
+                    <el-button @click="submitDraft(datasetSubmission.nodeId)"  class="secondary submit-button">
                       Submit Draft
                     </el-button>
-                    <el-button v-on:click="deleteClicked(datasetSubmission)" class="danger">
+                    <el-button @click="deleteClicked(datasetSubmission)" class="danger">
                       Delete Draft
                     </el-button>
                   </template>
-                  <el-button v-else-if="isSubmitted(datasetSubmission)" v-on:click="retractClicked(datasetSubmission)" class="secondary">
+                  <el-button v-else-if="isSubmitted(datasetSubmission)" @click="retractClicked(datasetSubmission)" class="secondary">
                     Retract Request
                   </el-button>
-                  <el-button v-else-if="isWithdrawn(datasetSubmission) || isRejected(datasetSubmission)" v-on:click="deleteClicked(datasetSubmission)" class="danger">
+                  <el-button v-else-if="isWithdrawn(datasetSubmission) || isRejected(datasetSubmission)" @click="deleteClicked(datasetSubmission)" class="danger">
                     Delete Request
                   </el-button>
                 </span>
               </div>
             </template>
           </div>
-          <el-button class='secondary mt-16' v-on:click='newRequestClicked'>Submit new request</el-button>
+          <el-button class='secondary mt-16' @click="newRequestClicked">Submit new request</el-button>
         </div>
       </div>
     </div>

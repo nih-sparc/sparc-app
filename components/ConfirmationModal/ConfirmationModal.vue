@@ -8,8 +8,8 @@
       <h2>Confirmation required</h2>
       <slot name="confirmation-body"/>
       <div class="buttons-container">
-        <span><el-button class="secondary" v-on:click="confirmationCancelled">Cancel</el-button></span>
-        <span><el-button class="danger" v-on:click="confirmationAccepted">Remove</el-button></span>
+        <span><el-button class="secondary" @click="confirmationCancelled">Cancel</el-button></span>
+        <span><el-button class="danger" @click="confirmationAccepted">Remove</el-button></span>
       </div>
     </div>
   </large-modal>
