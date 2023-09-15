@@ -145,7 +145,8 @@ export default {
     METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
     METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
     SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
-    SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false'
+    SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
+    SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false'
   },
 
   serverMiddleware: [

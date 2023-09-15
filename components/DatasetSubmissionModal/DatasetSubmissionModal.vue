@@ -21,6 +21,7 @@
           <el-input
             v-model="form.shortDescription"
             placeholder="(Example: I am studying the effects of <approach> on <anatomical structure>)"
+            :disabled="disabled"
           />
         </el-form-item>
 
@@ -30,6 +31,7 @@
             type="textarea"
             :rows="3"
             placeholder="Please provide specifics about your data. Our curation team will then contact you."
+            :disabled="disabled"
           />
         </el-form-item>
         <template v-for="question in questions">
@@ -43,11 +45,12 @@
               type="textarea"
               :rows="1"
               placeholder="Please provide an answer."
+              :disabled="disabled"
             />
           </el-form-item>
         </template>
 
-        <el-button class="secondary" :disabled="isSubmitting" @click="onSubmit">
+        <el-button class="secondary" :disabled="disabled || isSubmitting" @click="onSubmit">
           Send Submission Request
         </el-button>
         <p v-if="hasError" class="error">
@@ -67,7 +70,6 @@ export default {
   data: function() {
     return {
       modalVisible: false,
-      questions: [],
       form: {
         detailedDescription: '',
         shortDescription: '',
@@ -76,7 +78,19 @@ export default {
     }
   },
   props: {
+    questions: {
+      type: Array,
+      default: []
+    },
     showModal: {
+      type: Boolean,
+      default: false
+    },
+    defaultForm: {
+      type: Object,
+      default: () => {}
+    },
+    disabled: {
       type: Boolean,
       default: false
     }
@@ -96,14 +110,15 @@ export default {
         }
       }
     },
-    userToken: {
-      handler: function(token) {
-        if (token) {
-          this.fetchQuestions()
-        }
+    questions: {
+      handler: function() {
+        this.updateForm()
       },
       immediate: true
     },
+    defaultForm() {
+      this.updateForm()
+    }
   },
   mounted() {
     // Reset form fields when showing the form
@@ -143,31 +158,6 @@ export default {
         }
       })
     },
-    fetchQuestions() {
-      const headers = { 'Authorization': `Bearer ${this.userToken}` }
-      const url = `${process.env.PENNSIEVE_API_VERSION_2}/publishing/questions`
-      this.$axios
-        .get(url, { headers })
-        .then(({ data }) => {
-          data.forEach(question => {
-            question['answer'] =  ""
-          })
-          this.questions = data
-          let form = {
-            detailedDescription: '',
-            shortDescription: '',
-          }
-          this.questions.forEach(question => {
-            const key = question.id
-            const formValue = question.answer
-            form[key] = formValue
-          })
-          this.form = form
-        })
-        .catch(() => {
-          this.hasError = true
-        })
-    },
     async sendForm() {
       this.isSubmitting = true
       this.modalVisible = false
@@ -199,14 +189,15 @@ export default {
           this.$axios
             .post(`${process.env.PENNSIEVE_API_VERSION_2}/publishing/proposal`, formData, { headers })
             .then(({ data }) => {
-              this.$emit('proposal-submitted', data.nodeId)
-              /*this.$axios
-                .post(`${process.env.PENNSIEVE_API_VERSION_2}/publishing/proposal/submit?node_id=${nodeId}`, { headers })
+              this.$axios
+                .post(`${process.env.PENNSIEVE_API_VERSION_2}/publishing/proposal/submit?node_id=${data.nodeId}`, {}, { headers })
                 .catch(() => {
                   this.hasError = true
+                  this.$message(failMessage('Failed to submit proposal.'))
                 }).finally(() => {
-                  
-                })*/
+                  this.$emit('proposal-submitted', data.nodeId)
+                  this.isSubmitting = false
+                })
             })
             .catch(() => {
               this.hasError = true
@@ -221,6 +212,23 @@ export default {
         detailedDescription: '',
         shortDescription: '',
       }
+    },
+    updateForm() {
+      if (this.questions == [])
+        return
+      this.questions.forEach(question => {
+        question['answer'] = this.defaultForm == {} ?  "" : this.defaultForm[question.id]
+      })
+      let form = {
+        detailedDescription: this.defaultForm == {} ?  '' : this.defaultForm.detailedDescription,
+        shortDescription: this.defaultForm == {} ?  '' : this.defaultForm.shortDescription,
+      }
+      this.questions.forEach(question => {
+        const key = question.id
+        const formValue = question.answer
+        form[key] = formValue
+      })
+      this.form = form
     }
   }
 }
@@ -259,4 +267,8 @@ export default {
     color: $lightGrey;
   }
 }
+::v-deep .el-input.is-disabled .el-input__inner {
+  color: #c0c4cc !important;
+}
+
 </style>
