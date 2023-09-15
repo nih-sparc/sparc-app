@@ -10,6 +10,7 @@ a<template>
           <li v-for="type in formTypes" :key="type.label">
             <nuxt-link
               class="tabs__button"
+              @click.native="resetForms"
               :class="{ active: type.type === $route.query.type || (type.subtypes != undefined && type.subtypes.includes($route.query.type)) || ($route.query.type === undefined && type.type === 'feedback') }"
               :to="{
                 name: 'contact-us',
@@ -33,21 +34,23 @@ a<template>
     <div class="page-wrap container">
       <div class="subpage mb-0">
         <template v-if="isFeedbackForm">
-          <div class="heading2 mb-8">Let us know why you are contacting us:</div>
-          <el-select
-            v-model="formType"
-            class="input-reason"
-            placeholder="Select a reason"
-            :popper-append-to-body="false"
-          >
-            <el-option
-              v-for="option in feedbackFormTypeOptions"
-              :key="option.key"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-          <hr v-if="isFeedbackForm && formType != undefined && formType != 'feedback'" class="mt-32 mb-32" />
+          <template v-if="!isSubmitted">
+            <div class="heading2 mb-8">Let us know why you are contacting us:</div>
+            <el-select
+              v-model="formType"
+              class="input-reason"
+              placeholder="Select a reason"
+              :popper-append-to-body="false"
+            >
+              <el-option
+                v-for="option in feedbackFormTypeOptions"
+                :key="option.key"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
+            <hr v-if="isFeedbackForm && formType != undefined && formType != 'feedback'" class="mt-32 mb-32" />  
+          </template>
         </template>
         <component
           v-if="!isSubmitted"
