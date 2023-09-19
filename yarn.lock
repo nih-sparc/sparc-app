@@ -83,10 +83,10 @@
     vue "^2.6.10"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.6.0.tgz#e246aaa8b8472f32d39c48a04cc1f24b84e350a1"
-  integrity sha512-J0z5FF50SofHmaNvOkrzhFWSH6ggzZsfYWHpZkrp3A8MjOGIGGvfz8+2ZIBvncwqlMcX48LiXqFJ0IS3ZBc4Dw==
+"@abi-software/mapintegratedvuer@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.6.1.tgz#f7d32e7c76c832fc7e9e404689e7c9af7491cf34"
+  integrity sha512-tf9RIvq7mN16JEdiamrmag5L55NjsfjDJywihN1cTlGd5loA20h/uR7F765Mei0jAiNUkX5Q/acxdbAjMDqVtA==
   dependencies:
     "@abi-software/flatmapvuer" "^0.5.7"
     "@abi-software/map-side-bar" "^1.5.0"
