@@ -51,8 +51,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import { loadJsonFromSessionStorage } from '~/pages/data/utils'
+import { mapState } from 'vuex'
 
 export default {
   name: 'UserContactFormItem',
