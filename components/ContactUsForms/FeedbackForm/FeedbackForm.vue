@@ -163,7 +163,10 @@ export default {
     this.$refs.submitForm.resetFields()
     const form = loadForm('feedbackForm')
     if (form) {
-      this.form = form
+      this.form = {
+        ...this.form,
+        ...form
+      }
     }
   },
 

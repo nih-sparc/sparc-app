@@ -176,7 +176,10 @@ export default {
 
     const form = loadForm('bugForm')
     if (form) {
-      this.form = form
+      this.form = {
+        ...this.form,
+        ...form
+      }
     }
   },
 

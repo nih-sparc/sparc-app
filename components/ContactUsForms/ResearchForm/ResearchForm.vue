@@ -143,7 +143,10 @@ export default {
     this.$refs.submitForm.resetFields()
     const form = loadForm('researchForm')
     if (form) {
-      this.form = form
+      this.form = {
+        ...this.form,
+        ...form
+      }
     }
   },
 

@@ -177,7 +177,10 @@ export default {
     this.hasError = false
     const form = loadForm('generalForm')
     if (form) {
-      this.form = form
+      this.form = {
+        ...this.form,
+        ...form
+      }
     }
   },
 

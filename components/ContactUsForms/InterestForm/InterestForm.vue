@@ -145,7 +145,10 @@ export default {
     this.hasError = false
     const form = loadForm('interestForm')
     if (form) {
-      this.form = form
+      this.form = {
+        ...this.form,
+        ...form
+      }
     }
   },
 
