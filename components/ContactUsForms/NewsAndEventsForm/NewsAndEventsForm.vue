@@ -190,15 +190,16 @@ export default {
     this.hasError = false
     const form = loadForm('newsAndEventsForm')
     if (form) {
-      this.form = form
+      this.form = {
+        ...this.form,
+        ...form
+      }
     }
   },
 
   computed: {
     isVirtual: function() {
-      return this.form?.locationCategories.some(category => {
-        return category == 'Virtual'
-      })
+      return this.form?.locationCategories.includes('Virtual')
     },
     supportingLinksText: function() {
       let message = ''

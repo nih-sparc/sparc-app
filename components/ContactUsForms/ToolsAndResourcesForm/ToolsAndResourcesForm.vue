@@ -274,7 +274,7 @@ export default {
       resourceCategoryOptions: state => state.formOptions.resourceCategories
     }),
     isOtherSelected: function() {
-      return this.form.resourceCategories.includes('Other')
+      return this.form?.resourceCategories.includes('Other')
     },
     isTutorialAvailable: function() {
       return this.form?.tutorialsAvailable === 'Yes'
@@ -314,7 +314,10 @@ export default {
     this.$refs.submitForm.resetFields()
     const form = loadForm('toolsAndResourcesForm')
     if (form) {
-      this.form = form
+      this.form = {
+        ...this.form,
+        ...form
+      }
     }
   },
 
