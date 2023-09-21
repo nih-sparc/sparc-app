@@ -309,13 +309,7 @@ export default {
         }
     },
     agreementLoaded(id) {
-      if (id == null) {
-        this.$message(
-          failMessage('Could not load dataset agreement in order to Request Access')
-        )
-      } else {
-        this.agreementId = id
-      }
+      this.agreementId = id
     },
     openAgreementPopup: function() {
       this.showAgreementPopup = true

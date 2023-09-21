@@ -10,14 +10,17 @@ export default {
      */
     async onSubmit() {
       this.hasError = false
+      this.$nuxt.$loading.start()
       await this.verifyRecaptcha()
       await this.$refs.submitForm.validate(async valid => {
         if (!valid) {
+          this.$nuxt.$loading.finish()
           return
         }
         if (!this.hasError) {
           await this.sendForm()
         }
+        this.$nuxt.$loading.finish()
         await this.$recaptcha.reset()
       })
     },
