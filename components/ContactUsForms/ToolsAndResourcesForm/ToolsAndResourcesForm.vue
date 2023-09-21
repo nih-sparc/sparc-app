@@ -25,8 +25,8 @@
       <client-only>
         <sparc-checkbox
           v-for="resourceCategory in resourceCategoryOptions"
-          v-bind:key="resourceCategory"
           v-model="form.resourceCategories"
+          :key="resourceCategory"
           :label="resourceCategory"
           :display="resourceCategory"
         />
@@ -274,9 +274,7 @@ export default {
       resourceCategoryOptions: state => state.formOptions.resourceCategories
     }),
     isOtherSelected: function() {
-      return this.form?.resourceCategories.some(resource => {
-        return resource == 'Other'
-      })
+      return this.form.resourceCategories.includes('Other')
     },
     isTutorialAvailable: function() {
       return this.form?.tutorialsAvailable === 'Yes'
