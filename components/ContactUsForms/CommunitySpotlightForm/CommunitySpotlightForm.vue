@@ -37,7 +37,7 @@
     </el-form-item>
 
     <el-form-item prop="supportingLinks" label="Supporting Information">
-      <url-list :default-links="form.supportingLinks" @links-updated="form.supportingLinks = $event" @add-link="addSupportingLink" placeholder="Enter URL">
+      <url-list v-model="form.supportingLinks" @add-link="addSupportingLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>

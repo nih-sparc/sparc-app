@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="url-input mr-16">
-      <el-input :disabled="disabled" :placeholder="placeholder" :value="link" @input="link = $event">
+      <el-input :disabled="disabled" :placeholder="placeholder" v-model="value">
           <template slot="prepend">
             <slot name="prepend" />
           </template>
@@ -25,23 +25,15 @@ export default {
       type: String,
       default: ''
     },
-    defaultLink: {
-      type: String,
-      default: ''
-    },
     disabled: {
       type: Boolean,
       default: false
-    }
-  },
-  data() {
-    return {
-      link: this.defaultLink
-    }
+    },
+    value: String
   },
   watch: {
-    link(value) {
-      this.$emit("link-updated", value)
+    value() {
+      this.$emit("input", this.value)
     }
   },
   methods: {

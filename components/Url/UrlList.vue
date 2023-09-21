@@ -1,6 +1,10 @@
 <template>
   <div>
-    <url-input class="my-4" v-for="(link, index) in links" :disabled="disabled" :default-link="link" @link-updated="links[index] = $event" placeholder="Enter URL" @add-link="addLink" :showAddLink="index === links.length-1" :key="index">
+    <url-input class="my-4" v-for="(val, index) in value"
+      :disabled="disabled" v-model="value[index]"
+      :placeholder="placeholder" @add-link="addLink" :showAddLink="index === value.length-1"
+      :key="index"
+    >
       <template slot="prepend">Http://</template>
     </url-input>
   </div>
@@ -16,32 +20,24 @@ export default {
     UrlInput
   },
   props: {
-    defaultLinks: {
-      type: Array,
-      default: ['']
+    value: {
+      type: Array
     },
     disabled: {
       type: Boolean,
       default: false
-    }
-  },
-  data() {
-    return {
-      links: this.defaultLinks
-    }
+    },
+    placeholder: String
   },
   watch: {
-    links(value) {
-      this.$emit("links-updated", value)
-    },
-    defaultLinks(value) {
-      this.links = value
+    value() {
+      this.$emit("input", this.value)
     }
   },
   methods: {
     addLink() {
       this.$emit('add-link')
-    },
+    }
   }
 }
 </script>

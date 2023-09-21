@@ -145,7 +145,6 @@ export default {
     this.hasError = false
     const form = loadForm('interestForm')
     if (form) {
-      console.log(form)
       this.form = form
     }
   },
