@@ -11,7 +11,7 @@
     </el-form-item>
 
     <el-form-item class="mt-32" prop="resourceLinks" label="What is the webpage link for this tool/resource? *">
-      <url-list :default-links="form.resourceLinks" @links-updated="form.resourceLinks = $event" @add-link="addResourceLink" placeholder="Enter URL">
+      <url-list v-model="form.resourceLinks" @add-link="addResourceLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>
@@ -95,7 +95,7 @@
     </el-form-item>
 
     <el-form-item class="mt-32" prop="linksToUsages" label="Please provide any links to datasets or publications using this tool/resource">
-      <url-list :default-links="form.linksToUsages" @links-updated="form.linksToUsages = $event" @add-link="addUsageLink" placeholder="Enter URL">
+      <url-list v-model="form.linksToUsages" @add-link="addUsageLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>
@@ -117,7 +117,7 @@
           display="No"
         />
       </client-only>
-      <url-list class="mt-8" :disabled="!isTutorialAvailable" :default-links="form.linksToTutorials" @links-updated="form.linksToTutorials = $event" @add-link="addTutorialLink" placeholder="Enter URL">
+      <url-list class="mt-8" :disabled="!isTutorialAvailable" v-model="form.linksToTutorials" @add-link="addTutorialLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>
