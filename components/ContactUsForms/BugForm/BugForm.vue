@@ -76,8 +76,8 @@ import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { propOr } from 'ramda'
-import { mapState, mapGetters } from 'vuex'
-import { loadForm, saveForm } from '~/pages/data/utils'
+import { mapGetters } from 'vuex'
+import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
 
 export default {
   name: 'BugForm',
@@ -181,6 +181,7 @@ export default {
         ...form
       }
     }
+    populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
   methods: {
@@ -233,6 +234,18 @@ export default {
         .finally(() => {
           this.isSubmitting = false
         })
+    }
+  },
+
+  watch: {
+    firstName() {
+      this.form.user.firstName = this.firstName
+    },
+    lastName() {
+      this.form.user.lastName = this.lastName
+    },
+    profileEmail() {
+      this.form.user.email = this.profileEmail
     }
   }
 }

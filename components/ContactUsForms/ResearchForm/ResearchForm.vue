@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex'
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
-import { saveForm, loadForm } from '~/pages/data/utils'
+import { saveForm, loadForm, populateFormWithUserData } from '~/pages/data/utils'
 
 export default {
   name: 'FeedbackForm',
@@ -148,6 +148,7 @@ export default {
         ...form
       }
     }
+    populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
   methods: {
@@ -187,6 +188,18 @@ export default {
         .finally(() => {
           this.isSubmitting = false
         })
+    }
+  },
+
+  watch: {
+    firstName() {
+      this.form.user.firstName = this.firstName
+    },
+    lastName() {
+      this.form.user.lastName = this.lastName
+    },
+    profileEmail() {
+      this.form.user.email = this.profileEmail
     }
   }
 }

@@ -155,7 +155,7 @@ import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { isEmpty } from 'ramda'
 import { mapState, mapGetters } from 'vuex'
-import { loadForm, saveForm } from '~/pages/data/utils'
+import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
 
 export default {
   name: 'ToolsAndResourcesForm',
@@ -319,6 +319,7 @@ export default {
         ...form
       }
     }
+    populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
   methods: {
@@ -393,6 +394,18 @@ export default {
         .finally(() => {
           this.isSubmitting = false
         })
+    }
+  },
+
+  watch: {
+    firstName() {
+      this.form.user.firstName = this.firstName
+    },
+    lastName() {
+      this.form.user.lastName = this.lastName
+    },
+    profileEmail() {
+      this.form.user.email = this.profileEmail
     }
   }
 }

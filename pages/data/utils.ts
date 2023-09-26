@@ -325,3 +325,25 @@ export const loadJsonFromSessionStorage = (storageKey: string): any => {
     }
   }
 }
+
+/**
+ * Function used in contact form templates to populate the form with the user info
+ * coming from its login profile.
+ * @param form Form data to populate
+ * @param firstName First name of the user as found in log in info
+ * @param lastName Last Name of the user as found in log in info
+ * @param email Email of the user as found in log in info
+ */
+export const populateFormWithUserData = (form: any, firstName?: string, lastName?: string, email?: string) => {
+  if (form.user) {
+    if (firstName) {
+      form.user.firstName = firstName
+    }
+    if (lastName) {
+      form.user.lastName = lastName
+    }
+    if (email) {
+      form.user.email = email
+    }
+  }
+}
