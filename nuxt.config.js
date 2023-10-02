@@ -228,14 +228,14 @@ export default {
     proxy: true
   },
   gtm: {
-    enabled: true,
-    debug: true,
+    enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+    debug: false,
     
     id: 'GTM-TPT2CVCS',
     layer: 'dataLayer',
     variables: {},
 
-    pageTracking: false,
+    pageTracking: true,
     pageViewEventName: 'nuxtRoute',
 
     autoInit: true,
