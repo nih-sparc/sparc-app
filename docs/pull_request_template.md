@@ -18,8 +18,8 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 
 # Checklist:
 
-- [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have utilized components from the Design System Library where applicable
-- [ ] I have added unit tests that prove my fix is effective or that my feature works
+- [ ] I have added or updated unit tests that prove my fix is effective or that my feature works
+- [ ] I updated any relevant QC tests to match my changes found here: https://docs.google.com/document/d/1tlV89PMOv8XlmC7LVqifi7NfQ5-AYN8DuEQpmO7O_2Q
