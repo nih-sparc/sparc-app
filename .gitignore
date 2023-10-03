@@ -109,3 +109,5 @@ sw.*
 
 # Certifact files
 .certs/
+
+cypress/videos
