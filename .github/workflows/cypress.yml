@@ -52,14 +52,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14.17.6
-      - name: Build
-        uses: cypress-io/github-action@v6
-        with:
-          runTests: false
-          build: yarn build
       - name: Run e2e tests
         uses: cypress-io/github-action@v6
         with:
+          build: yarn build
           start: yarn start
           wait-on: ${{ secrets.ROOT_URL }}
           command: yarn test-e2e-ci
