@@ -155,21 +155,6 @@ const getDatasetFacetsData = async (route) => {
 }
 
 /**
- * Get organ entries from contentful
- * @returns {Array}
- */
-const getOrganEntries = async () => {
-  try {
-    const organEntries = await client.getEntries({
-      content_type: process.env.ctf_organ_id
-    })
-    return organEntries.items || []
-  } catch (error) {
-    return []
-  }
-}
-
-/**
  * Get associated project from contentful
  * @returns {Array}
  */
@@ -296,8 +281,7 @@ export default {
 
     const errorMessages = []
 
-    const [organEntries, datasetDetails, versions, downloadsSummary] = await Promise.all([
-      getOrganEntries(),
+    const [datasetDetails, versions, downloadsSummary] = await Promise.all([
       getDatasetDetails(
         datasetId,
         route.params.version,
@@ -319,7 +303,6 @@ export default {
     store.dispatch('pages/datasets/datasetId/setDatasetTypeName', datasetTypeName)
 
     return {
-      entries: organEntries,
       tabs: tabsData,
       versions,
       datasetTypeName,
@@ -687,19 +670,6 @@ export default {
       },
       immediate: true
     },
-    datasetTags: {
-      handler: function(val) {
-        if (val) {
-          this.entries.forEach(entry => {
-            const name = pathOr('', ['fields', 'name'], entry)
-            if (this.datasetTags.includes(name.toLowerCase())) {
-              this.subtitles.push(entry.fields.name)
-            }
-          })
-        }
-      },
-      immediate: true
-    }
   },
   methods: {
     tabChanged(newTab) {
