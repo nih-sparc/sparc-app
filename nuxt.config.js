@@ -146,7 +146,8 @@ export default {
     METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
     SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
     SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
-    SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false'
+    SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
+    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS'
   },
 
   serverMiddleware: [
@@ -211,6 +212,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
+    '@nuxtjs/gtm',
     '@nuxtjs/axios',
     '@nuxtjs/robots',
     'cookie-universal-nuxt',
@@ -224,6 +226,34 @@ export default {
   ],
   axios: {
     proxy: true
+  },
+  gtm: {
+    enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+    debug: false,
+    
+    id: 'GTM-TPT2CVCS',
+    layer: 'dataLayer',
+    variables: {},
+
+    pageTracking: true,
+    pageViewEventName: 'nuxtRoute',
+
+    autoInit: true,
+    respectDoNotTrack: true,
+
+    scriptId: 'gtm-script',
+    scriptDefer: false,
+    scriptURL: 'https://www.googletagmanager.com/gtm.js',
+    crossOrigin: false,
+
+    noscript: true,
+    noscriptId: 'gtm-noscript',
+    noscriptURL: 'https://www.googletagmanager.com/ns.html'
+  },
+  publicRuntimeConfig: {
+    gtm: {
+      id: process.env.GOOGLE_TAG_MANAGER_ID
+    }
   },
   proxy: {
     "/captcha-api/": {
