@@ -108,7 +108,6 @@ export default {
         undefined
       )
         .then(resp => {
-          console.log('Alternative Search results call:', resp)
           this.resultCounts[category] = resp.total
           resp.total > 0 ? (this.searchHasAltResults = true) : null
         })
