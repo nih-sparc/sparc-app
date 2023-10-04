@@ -174,7 +174,7 @@ export default {
       this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
     }
 
-    const form = loadForm('bugForm')
+    const form = loadForm()
     if (form) {
       this.form = {
         ...this.form,
@@ -217,7 +217,7 @@ export default {
         formData.append("attachment", this.file, this.file.name)
       }
       // Save form to sessionStorage
-      saveForm(this.form, 'bugForm')
+      saveForm(this.form)
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)

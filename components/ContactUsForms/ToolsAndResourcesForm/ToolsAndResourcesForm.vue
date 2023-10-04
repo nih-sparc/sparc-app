@@ -312,7 +312,7 @@ export default {
     // Reset form fields when showing the form
     this.hasError = false
     this.$refs.submitForm.resetFields()
-    const form = loadForm('toolsAndResourcesForm')
+    const form = loadForm()
     if (form) {
       this.form = {
         ...this.form,
@@ -377,7 +377,7 @@ export default {
       formData.append("userEmail", this.form.user.email)
 
       // Save form to sessionStorage
-      saveForm(this.form, 'toolsAndResourcesForm')
+      saveForm(this.form)
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)

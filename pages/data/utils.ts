@@ -286,20 +286,17 @@ export const highlightMatches = (text: string, search: string): string => {
   return text
 }
 
-export const saveForm = (payload: any, storageKey: string): void => {
+export const saveForm = (payload: any): void => {
   const { user, ...rest } = payload
   saveJsonToSessionStorage(user, 'userDataForm')
-  saveJsonToSessionStorage(rest, storageKey)
 }
 
-export const loadForm = (storageKey: string): any => {
-  const json = loadJsonFromSessionStorage(storageKey)
+export const loadForm = (): any => {
   const user = loadJsonFromSessionStorage('userDataForm')
-  if (json == null && user == null) {
+  if (user == null) {
     return null
   }
   return {
-    ...json,
     user
   }
 }

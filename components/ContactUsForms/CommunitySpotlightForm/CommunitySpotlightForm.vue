@@ -154,7 +154,7 @@ export default {
     // Reset form fields when showing the form
     this.$refs.submitForm.resetFields()
     this.hasError = false
-    const form = loadForm('communitySpotlightForm')
+    const form = loadForm()
     if (form) {
       this.form = {
         ...this.form,
@@ -209,7 +209,7 @@ export default {
       }  
 
       // Save form to sessionStorage
-      saveForm(this.form, 'communitySpotlightForm')
+      saveForm(this.form)
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
