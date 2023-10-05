@@ -285,3 +285,62 @@ export const highlightMatches = (text: string, search: string): string => {
   }
   return text
 }
+
+export const saveForm = (payload: any): void => {
+  const { user, ...rest } = payload
+  saveJsonToSessionStorage(user, 'userDataForm')
+}
+
+export const loadForm = (): any => {
+  const user = loadJsonFromSessionStorage('userDataForm')
+  if (user == null) {
+    return null
+  }
+  return {
+    user
+  }
+}
+
+export const saveJsonToSessionStorage = (payload: any, storageKey: string): void => {
+  try {
+    const json = JSON.stringify(payload)
+    sessionStorage.setItem(storageKey, json)
+  }
+  catch {
+    console.error('Could not serialize object to JSON for storing it')
+  }
+}
+
+export const loadJsonFromSessionStorage = (storageKey: string): any => {
+  const json = sessionStorage.getItem(storageKey)
+  if (json) {
+    try {
+      return JSON.parse(json)
+    }
+    catch {
+      console.error('Could not deserialize stored form to a JS object')
+    }
+  }
+}
+
+/**
+ * Function used in contact form templates to populate the form with the user info
+ * coming from its login profile.
+ * @param form Form data to populate
+ * @param firstName First name of the user as found in log in info
+ * @param lastName Last Name of the user as found in log in info
+ * @param email Email of the user as found in log in info
+ */
+export const populateFormWithUserData = (form: any, firstName?: string, lastName?: string, email?: string) => {
+  if (form.user) {
+    if (firstName) {
+      form.user.firstName = firstName
+    }
+    if (lastName) {
+      form.user.lastName = lastName
+    }
+    if (email) {
+      form.user.email = email
+    }
+  }
+}

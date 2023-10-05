@@ -11,7 +11,7 @@
     </el-form-item>
 
     <el-form-item class="mt-32" prop="resourceLinks" label="What is the webpage link for this tool/resource? *">
-      <url-list :default-links="form.resourceLinks" @links-updated="form.resourceLinks = $event" @add-link="addResourceLink" placeholder="Enter URL">
+      <url-list v-model="form.resourceLinks" @add-link="addResourceLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>
@@ -25,8 +25,8 @@
       <client-only>
         <sparc-checkbox
           v-for="resourceCategory in resourceCategoryOptions"
-          v-bind:key="resourceCategory"
           v-model="form.resourceCategories"
+          :key="resourceCategory"
           :label="resourceCategory"
           :display="resourceCategory"
         />
@@ -95,7 +95,7 @@
     </el-form-item>
 
     <el-form-item class="mt-32" prop="linksToUsages" label="Please provide any links to datasets or publications using this tool/resource">
-      <url-list :default-links="form.linksToUsages" @links-updated="form.linksToUsages = $event" @add-link="addUsageLink" placeholder="Enter URL">
+      <url-list v-model="form.linksToUsages" @add-link="addUsageLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>
@@ -117,22 +117,14 @@
           display="No"
         />
       </client-only>
-      <url-list class="mt-8" :disabled="!isTutorialAvailable" :default-links="form.linksToTutorials" @links-updated="form.linksToTutorials = $event" @add-link="addTutorialLink" placeholder="Enter URL">
+      <url-list class="mt-8" :disabled="!isTutorialAvailable" v-model="form.linksToTutorials" @add-link="addTutorialLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>
 
     <hr/>
 
-    <user-contact-form-item
-      @type-of-user-updated="form.typeOfUser = $event"
-      @first-name-updated="form.firstName = $event"
-      @last-name-updated="form.lastName = $event"
-      @email-updated="form.email = $event"
-      @follow-up-updated="form.shouldFollowUp = $event"
-      @sned-copy-updated="form.sendCopy = $event"
-      @subscribe-updated="form.shouldSubscribe = $event"
-    />
+    <user-contact-form-item v-model="form.user"/>
 
     <hr/>
 
@@ -162,7 +154,8 @@ import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { isEmpty } from 'ramda'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
 
 export default {
   name: 'ToolsAndResourcesForm',
@@ -177,7 +170,6 @@ export default {
   data() {
     return {
       form: {
-        typeOfUser: '',
         resourceName: '',
         resourceLinks: [''],
         resourceCategories: [],
@@ -188,14 +180,42 @@ export default {
         linksToUsages: [''],
         tutorialsAvailable: '',
         linksToTutorials: [''],
-        firstName: '',
-        lastName: '',
-        email: '',
-        shouldSubscribe: false,
-        sendCopy: true
+        user: {
+          typeOfUser: '',
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.profileEmail,
+          sendCopy: true,
+          shouldFollowUp: true,
+          shouldSubscribe: false,
+        }
       },
       isSubmitting: false,
       formRules: {
+        user: {
+          email: [
+            {
+              required: true,
+              message: 'Please enter your email',
+              type: 'email',
+              trigger: 'blur',
+            }
+          ],
+          firstName: [
+            {
+              required: true,
+              message: 'Please enter your first name',
+              trigger: 'blur',
+            }
+          ],
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
+        },
         resourceName: [
           {
             required: true,
@@ -244,42 +264,17 @@ export default {
             message: 'Please select one',
             trigger: 'blur',
           }
-        ],
-        firstName: [
-          {
-            required: true,
-            message: 'Please enter your first name',
-            trigger: 'blur',
-          }
-        ],
-        lastName: [
-          {
-            required: true,
-            message: 'Please enter your last name',
-            trigger: 'blur',
-          }
-        ],
-        email: [
-          {
-            required: true,
-            message: 'Please enter your email',
-            type: 'email',
-            trigger: 'blur'
-          }
-        ],
+        ]
       }
     }
   },
 
   computed: {
     ...mapState('pages/contact-us', {
-      userTypes: state => state.formOptions.userTypes,
       resourceCategoryOptions: state => state.formOptions.resourceCategories
     }),
     isOtherSelected: function() {
-      return this.form?.resourceCategories.some(resource => {
-        return resource == 'Other'
-      })
+      return this.form?.resourceCategories.includes('Other')
     },
     isTutorialAvailable: function() {
       return this.form?.tutorialsAvailable === 'Yes'
@@ -310,12 +305,21 @@ export default {
       }
       return isEmpty(message) ? 'N/A<br>' : message
     },
+    ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
   },
 
   mounted() {
     // Reset form fields when showing the form
-    this.$refs.submitForm.resetFields()
     this.hasError = false
+    this.$refs.submitForm.resetFields()
+    const form = loadForm()
+    if (form) {
+      this.form = {
+        ...this.form,
+        ...form
+      }
+    }
+    populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
   methods: {
@@ -360,25 +364,28 @@ export default {
         <b>Please provide any links to datasets or publications using this tool/resource</b><br>${this.linksToUsagesText}<br>
         <b>Do you have any tutorials/user guides available?</b><br>${this.form.tutorialsAvailable}<br><br>
         <b>Links to tutorials/user guides:</b><br>${this.linksToTutorialsText}<br>
-        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>First Name:</b><br>${this.form.firstName}<br><br>
-        <b>Last Name:</b><br>${this.form.lastName}<br><br>
-        <b>Email:</b><br>${this.form.email}
+        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
+        <b>First Name:</b><br>${this.form.user.firstName}<br><br>
+        <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
+        <b>Email:</b><br>${this.form.user.email}
       `
       let formData = new FormData();
       formData.append("type", "toolsAndResources")
-      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `T&R Submission: ${this.form.resourceName}`)
       formData.append("description", description)
-      formData.append("userEmail", this.form.email)
+      formData.append("userEmail", this.form.user.email)
+
+      // Save form to sessionStorage
+      saveForm(this.form)
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          if (this.form.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          if (this.form.user.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
           } else {
-            this.$emit('submit', this.form.firstName)
+            this.$emit('submit', this.form.user.firstName)
           }
         })
         .catch(() => {
@@ -387,6 +394,18 @@ export default {
         .finally(() => {
           this.isSubmitting = false
         })
+    }
+  },
+
+  watch: {
+    firstName() {
+      this.form.user.firstName = this.firstName
+    },
+    lastName() {
+      this.form.user.lastName = this.lastName
+    },
+    profileEmail() {
+      this.form.user.email = this.profileEmail
     }
   }
 }

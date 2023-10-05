@@ -37,7 +37,7 @@
     </el-form-item>
 
     <el-form-item prop="supportingLinks" label="Supporting Information">
-      <url-list :default-links="form.supportingLinks" @links-updated="form.supportingLinks = $event" @add-link="addSupportingLink" placeholder="Enter URL">
+      <url-list v-model="form.supportingLinks" @add-link="addSupportingLink" placeholder="Enter URL">
         <template slot="prepend">Http://</template>
       </url-list>
     </el-form-item>
@@ -75,15 +75,7 @@
 
     <hr/>
 
-    <user-contact-form-item
-      @type-of-user-updated="form.typeOfUser = $event"
-      @first-name-updated="form.firstName = $event"
-      @last-name-updated="form.lastName = $event"
-      @email-updated="form.email = $event"
-      @follow-up-updated="form.shouldFollowUp = $event"
-      @sned-copy-updated="form.sendCopy = $event"
-      @subscribe-updated="form.shouldSubscribe = $event"
-    />
+    <user-contact-form-item v-model="form.user"/>
 
     <hr/>
 
@@ -114,7 +106,8 @@ import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { propOr, isEmpty } from 'ramda'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
+import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
 
 export default {
   name: 'NewsAndEventsForm',
@@ -129,10 +122,6 @@ export default {
   data() {
     return {
       form: {
-        typeOfUser: '',
-        firstName: '',
-        lastName: '',
-        email: '',
         title: '',
         summary: '',
         url: '',
@@ -141,37 +130,46 @@ export default {
         startDate: '',
         endDate: '',
         supportingLinks: [''],
-        shouldSubscribe: false,
-        sendCopy: true
+        user: {
+          typeOfUser: '',
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.profileEmail,
+          sendCopy: true,
+          shouldFollowUp: true,
+          shouldSubscribe: false,
+        }
       },
       isSubmitting: false,
       formRules: {
-        email: [
-          {
-            required: true,
-            message: 'Please enter your email',
-            type: 'email',
-            trigger: 'blur'
-          }
-        ],
-        firstName: [
-          {
-            required: true,
-            message: 'Please enter your first name',
-            trigger: 'blur',
-          }
-        ],
-        lastName: [
-          {
-            required: true,
-            message: 'Please enter your last name',
-            trigger: 'blur',
-          }
-        ],
+        user: {
+          email: [
+            {
+              required: true,
+              message: 'Please enter your email',
+              type: 'email',
+              trigger: 'blur',
+            }
+          ],
+          firstName: [
+            {
+              required: true,
+              message: 'Please enter your first name',
+              trigger: 'blur',
+            }
+          ],
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
+        },
         title: [
           {
             required: true,
-            message: 'Please a title',
+            message: 'Please enter a title',
             trigger: 'blur',
           }
         ],
@@ -190,16 +188,19 @@ export default {
     // Reset form fields when showing the form
     this.$refs.submitForm.resetFields()
     this.hasError = false
+    const form = loadForm()
+    if (form) {
+      this.form = {
+        ...this.form,
+        ...form
+      }
+    }
+    populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
   computed: {
-    ...mapState('pages/contact-us', {
-      userTypes: state => state.formOptions.userTypes
-    }),
     isVirtual: function() {
-      return this.form?.locationCategories.some(category => {
-        return category == 'Virtual'
-      })
+      return this.form?.locationCategories.includes('Virtual')
     },
     supportingLinksText: function() {
       let message = ''
@@ -211,7 +212,8 @@ export default {
     },
     locationText: function() {
       return this.isVirtual ? 'Virtual' : this.form.location == '' ? 'N/A' : this.form.location
-    }
+    },
+    ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
   },
 
   methods: {
@@ -226,9 +228,9 @@ export default {
       const fileName = propOr('', 'name', this.file)
       const description = `
         <b>Contact Information</b><br><br>
-        <b>First Name:</b><br>${this.form.firstName}<br><br>
-        <b>Last Name:</b><br>${this.form.lastName}<br><br>
-        <b>E-mail:</b><br>${this.form.email}<br><br>
+        <b>First Name:</b><br>${this.form.user.firstName}<br><br>
+        <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
+        <b>E-mail:</b><br>${this.form.user.email}<br><br>
         <b>News or Event Details:</b><br><br>
         <b>Title:</b><br>${this.form.title}<br><br>
         <b>Summary:</b><br>${this.form.summary}<br><br>
@@ -249,20 +251,23 @@ export default {
         formData.append("type", "event")
         formData.append("title", `Event Submission: ${this.form.title}`)
       }
-      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("description", description)
-      formData.append("userEmail", this.form.email)
+      formData.append("userEmail", this.form.user.email)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)
       }
 
+      // Save form to sessionStorage
+      saveForm(this.form)
+
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          if (this.form.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          if (this.form.user.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
           } else {
-            this.$emit('submit', this.form.firstName)
+            this.$emit('submit', this.form.user.firstName)
           }
         })
         .catch(() => {
@@ -271,6 +276,18 @@ export default {
         .finally(() => {
           this.isSubmitting = false
         })
+    }
+  },
+
+  watch: {
+    firstName() {
+      this.form.user.firstName = this.firstName
+    },
+    lastName() {
+      this.form.user.lastName = this.lastName
+    },
+    profileEmail() {
+      this.form.user.email = this.profileEmail
     }
   }
 }

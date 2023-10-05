@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="value">
     <el-form-item
-      prop="typeOfUser"
+      prop="user.typeOfUser"
       label="What type of user are you? *"
     >
       <el-select
-        v-model="typeOfUser"
-        v-on:change="$emit('type-of-user-updated', $event)"
+        v-model="value.typeOfUser"
         placeholder="Select one"
         :popper-append-to-body="false"
       >
@@ -19,32 +18,32 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item prop="userFirstName" label="First Name *">
-      <el-input v-model="userFirstName" placeholder="Enter your first name" v-on:input="$emit('first-name-updated', $event)" />
+    <el-form-item prop="user.firstName" label="First Name *">
+      <el-input v-model="value.firstName" placeholder="Enter your first name" />
     </el-form-item>
 
-    <el-form-item prop="userLastName" label="Last Name *">
-      <el-input v-model="userLastName" placeholder="Enter your last name" v-on:input="$emit('last-name-updated', $event)" />
+    <el-form-item prop="user.lastName" label="Last Name *">
+      <el-input v-model="value.lastName" placeholder="Enter your last name" />
     </el-form-item>
 
-    <el-form-item prop="userEmail" label="Email *" class="mb-0">
-      <el-input v-model="userEmail" placeholder="Enter your email address" type="email" v-on:input="$emit('email-updated', $event)" />
+    <el-form-item prop="user.email" label="Email *" class="mb-0">
+      <el-input v-model="value.email" placeholder="Enter your email address" type="email" />
     </el-form-item>
 
-    <el-form-item v-if="showFollowUpOption" prop="shouldFollowUp" class="mt-16 mb-0">
-      <el-checkbox v-model="shouldFollowUp" v-on:change="$emit('follow-up-updated', $event)">
+    <el-form-item v-if="showFollowUpOption" prop="user.shouldFollowUp" class="mt-16 mb-0">
+      <el-checkbox v-model="value.shouldFollowUp">
         <span class="body1">Let me know when you resolve this issue</span>
       </el-checkbox>
     </el-form-item>
 
-    <el-form-item prop="sendCopy" :class="['mb-0', { 'mt-16': !showFollowUpOption }]">
-      <el-checkbox v-model="sendCopy" v-on:change="$emit('send-copy-updated', $event)">
+    <el-form-item prop="user.sendCopy" :class="['mb-0', { 'mt-16': !showFollowUpOption }]">
+      <el-checkbox v-model="value.sendCopy">
         <span class="body1">Please send me a copy of this message</span>
       </el-checkbox>
     </el-form-item>
 
-    <el-form-item prop="shouldSubscribe">
-      <el-checkbox v-model="shouldSubscribe" v-on:change="$emit('subscribe-updated', $event)">
+    <el-form-item prop="user.shouldSubscribe">
+      <el-checkbox v-model="value.shouldSubscribe">
         <span class="body1">Subscribe to the SPARC Newsletter</span>
       </el-checkbox>
     </el-form-item>
@@ -52,7 +51,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'UserContactFormItem',
@@ -60,47 +59,20 @@ export default {
     showFollowUpOption: {
       type: Boolean,
       default: false
-    }
-  },
-  data() {
-    return {
-      typeOfUser: '',
-      userFirstName: this.firstName,
-      userLastName: this.lastName,
-      userEmail: this.profileEmail,
-      shouldFollowUp: true,
-      sendCopy: true,
-      shouldSubscribe: false,
+    },
+    value: {
+      type: Object
     }
   },
   computed: {
     ...mapState('pages/contact-us', {
       userTypes: state => state.formOptions.userTypes,
-    }),
-    ...mapGetters('user', ['firstName', 'lastName', 'profileEmail']),
+    })
   },
   watch: {
-    firstName: {
-      handler: async function(name) {
-        this.userFirstName = name
-        this.$emit('first-name-updated', name)
-      },
-      immediate: true
-    },
-    lastName: {
-      handler: async function(name) {
-        this.userLastName = name
-        this.$emit('last-name-updated', name)
-      },
-      immediate: true
-    },
-    profileEmail: {
-      handler: async function(email) {
-        this.userEmail = email
-        this.$emit('email-updated', email)
-      },
-      immediate: true
-    },
+    value() {
+      this.$emit('input', this.value)
+    }
   }
 }
 </script>
