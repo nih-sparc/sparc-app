@@ -406,7 +406,9 @@ export default {
           items.push(
             ...Array.from(scicrunchData.flatmaps, f => {
               let title = f.uberonid ? f.uberonid : null
-              if (f.organ) title = this.capitalize(f.organ)
+              if (f.organ) {
+                title = `View the ${f.organ} on the ${f.species ? f.species : 'rat'} flatmap`
+              }
 
               let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
               if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
