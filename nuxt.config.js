@@ -130,6 +130,7 @@ export default {
     LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
     PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
+    GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
     SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
@@ -191,6 +192,12 @@ export default {
    */
   buildModules: [
     '@nuxt/typescript-build',
+    [
+      '@nuxtjs/google-analytics',
+      {
+        id: process.env.GOOGLE_ANALYTICS_UA
+      }
+    ]
   ],
   /*
    ** Nuxt.js modules
