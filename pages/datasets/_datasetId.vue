@@ -341,7 +341,6 @@ export default {
         }
       ],
       subtitles: [],
-      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
       errorMessages: [],
     }
   },

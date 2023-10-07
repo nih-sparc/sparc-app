@@ -70,34 +70,21 @@ export default {
     ctf_community_spotlight_item_id: 'communitySpotlight',
     ctf_news_and_events_id: 'newsAndEvents',
     ctf_resource_id: 'sparcPartners',
-    ctf_resource_hero_id: '3ImGx7UyDXPwM3oTag06nt',
     ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
-    ctf_help_id: 'helpDocument',
-    ctf_help_list_id: 'helpSection',
-    ctf_help_aws_id: 'zQfzadwADutviJjT19hA5',
     ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
     ctf_about_portal_page_id: '2156L8jQgaifFNpgeylaQp',
     ctf_about_details_content_type_id: 'aboutPageSecondLevel',
     ctf_learn_more_item_id: 'learnMoreItem',
-    ctf_sparc_policies_id: 'sparcPolicies',
     ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
     ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
     ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
-    ctf_about_policies_page_id: '71a9NzpuHvaTpgTf9ir1xg',
     ctf_contact_us_form_type_id: 'contactUsForm',
-    ctf_support_page_id: '59F0dM5goobqjw3TsqINRw',
     ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
     ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
-    ctf_dataset_navigation_info_page_id: 'qvEcnv56c76V0JC0KvtSd',
-    ctf_dataset_format_info_page_id: '3FXikFXC8shPRd8xZqhjVT',
     ctf_project_id: 'sparcAward',
     ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
-    ctf_terms_id: '6XCER8v1TVVCoZdaBWg66t',
-    ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
-    ctf_success_story_id: 'successStory',
     ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
     ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
-    ctf_sparc_login_modal_id: '4FSEoB6SW8xrEAsh4t0vGt',
     ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
@@ -159,11 +146,6 @@ export default {
   router: {
     linkActiveClass: 'active-link',
     extendRoutes(routes) {
-      // Redirects
-      routes.push({
-        path: '/submit_data.html',
-        redirect: '/help/7k8nEPuw3FjOq2HuS8OVsd'
-      })
       routes.push({
         name: 'version',
         path: '/datasets/:datasetId/version/:version',
