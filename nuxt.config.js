@@ -91,13 +91,6 @@ export default {
     ctf_dataset_navigation_info_page_id: 'qvEcnv56c76V0JC0KvtSd',
     ctf_dataset_format_info_page_id: '3FXikFXC8shPRd8xZqhjVT',
     ctf_project_id: 'sparcAward',
-    ctf_organ_id: 'organ',
-    ctf_filter_id: '6bya4tyw8399',
-    ctf_filters_dataset_id: '7fL88ABgKSB2tPJmysn2V',
-    ctf_filters_project_id: 'YVan5NSd4bgj2Q5WZdOVw',
-    ctf_filters_organ_id: '5Hhlb7Lf4yijMQUSBai1fh',
-    ctf_filters_image_id: '4R4zfdND13xLLGU9nPpNCD',
-    ctf_filters_simulation_id: '6qMQRugMyzeaUrTIPQDdF1',
     ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
     ctf_terms_id: '6XCER8v1TVVCoZdaBWg66t',
     ctf_privacy_policy_id: '2p44GCn1rrWUETwTRF2ElS',
@@ -146,7 +139,8 @@ export default {
     METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
     SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
     SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
-    SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false'
+    SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
+    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS'
   },
 
   serverMiddleware: [
@@ -211,6 +205,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
+    '@nuxtjs/gtm',
     '@nuxtjs/axios',
     '@nuxtjs/robots',
     'cookie-universal-nuxt',
@@ -224,6 +219,34 @@ export default {
   ],
   axios: {
     proxy: true
+  },
+  gtm: {
+    enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+    debug: false,
+    
+    id: 'GTM-TPT2CVCS',
+    layer: 'dataLayer',
+    variables: {},
+
+    pageTracking: true,
+    pageViewEventName: 'nuxtRoute',
+
+    autoInit: true,
+    respectDoNotTrack: true,
+
+    scriptId: 'gtm-script',
+    scriptDefer: false,
+    scriptURL: 'https://www.googletagmanager.com/gtm.js',
+    crossOrigin: false,
+
+    noscript: true,
+    noscriptId: 'gtm-noscript',
+    noscriptURL: 'https://www.googletagmanager.com/ns.html'
+  },
+  publicRuntimeConfig: {
+    gtm: {
+      id: process.env.GOOGLE_TAG_MANAGER_ID
+    }
   },
   proxy: {
     "/captcha-api/": {

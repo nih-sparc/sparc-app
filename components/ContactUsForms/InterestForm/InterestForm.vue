@@ -15,8 +15,8 @@
       <client-only>
         <sparc-checkbox
           v-for="service in services"
-          v-bind:key="service"
           v-model="form.serviceCategories"
+          :key="service"
           :label="service"
           :display="service"
         />
@@ -34,16 +34,7 @@
 
     <hr/>
 
-    <user-contact-form-item
-      showFollowUpOption
-      @type-of-user-updated="form.typeOfUser = $event"
-      @first-name-updated="form.firstName = $event"
-      @last-name-updated="form.lastName = $event"
-      @email-updated="form.email = $event"
-      @follow-up-updated="form.shouldFollowUp = $event"
-      @sned-copy-updated="form.sendCopy = $event"
-      @subscribe-updated="form.shouldSubscribe = $event"
-    />
+    <user-contact-form-item showFollowUpOption v-model="form.user" />
 
     <hr/>
 
@@ -70,7 +61,8 @@ import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { isEmpty } from 'ramda'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
 
 export default {
   name: 'InterestForm',
@@ -84,72 +76,81 @@ export default {
   data() {
     return {
       form: {
-        serviceCategories:[],
+        serviceCategories: [],
         additionalInfo:'',
-        typeOfUser: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        shouldFollowUp: true,
-        shouldSubscribe: false,
-        sendCopy: true
+        user: {
+          typeOfUser: '',
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.profileEmail,
+          sendCopy: true,
+          shouldFollowUp: true,
+          shouldSubscribe: false,
+        }
       },
       isSubmitting: false,
       formRules: {
+        user: {
+          typeOfUser: [
+            {
+              required: true,
+              message: 'Please select one',
+              trigger: 'change'
+            }
+          ],
+          email: [
+            {
+              required: true,
+              message: 'Please enter your email',
+              type: 'email',
+              trigger: 'blur',
+            }
+          ],
+          firstName: [
+            {
+              required: true,
+              message: 'Please enter your first name',
+              trigger: 'blur',
+            }
+          ],
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
+        },
         serviceCategories: [
           {
             required: true,
             message: 'Please select at least one',
             trigger: 'change'
           }
-        ],
-        typeOfUser: [
-          {
-            required: true,
-            message: 'Please select one',
-            trigger: 'change'
-          }
-        ],
-
-        email: [
-          {
-            required: true,
-            message: 'Please enter your email',
-            type: 'email',
-            trigger: 'blur',
-          }
-        ],
-
-        firstName: [
-          {
-            required: true,
-            message: 'Please enter your first name',
-            trigger: 'blur',
-          }
-        ],
-
-        lastName: [
-          {
-            required: true,
-            message: 'Please enter your last name',
-            trigger: 'blur',
-          }
-        ],
+        ]
       }
     }
   },
 
   computed: {
     ...mapState('pages/contact-us', {
-      userTypes: state => state.formOptions.userTypes,
       services: state => state.formOptions.services
     }),
+    ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
   },
 
   mounted() {
     // Reset form fields when showing the form
     this.$refs.submitForm.resetFields()
     this.hasError = false
+    const form = loadForm()
+    if (form) {
+      this.form = {
+        ...this.form,
+        ...form
+      }
+    }
+    populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
   methods: {
@@ -161,25 +162,28 @@ export default {
       const description = `
         <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
         <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
-        <b>What type of user are you?</b><br>${this.form.typeOfUser}<br><br>
-        <b>Name:</b><br>${this.form.firstName} ${this.form.lastName}<br><br>
-        <b>Email:</b><br>${this.form.email}<br><br>
-        <b>I'd like updates about this submission:</b><br>${this.form.shouldFollowUp ? 'Yes' : 'No'}
+        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
+        <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
+        <b>Email:</b><br>${this.form.user.email}<br><br>
+        <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
       `
       let formData = new FormData();
       formData.append("type", "interest")
-      formData.append("sendCopy", this.form.sendCopy)
+      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `SPARC Service Request`)
       formData.append("description", description)
-      formData.append("userEmail", this.form.email)
+      formData.append("userEmail", this.form.user.email)
+
+      // Save form to sessionStorage
+      saveForm(this.form)
 
       await this.$axios
         .post(`${process.env.portal_api}/tasks`, formData)
         .then(() => {
-          if (this.form.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.email, this.form.firstName, this.form.lastName)
+          if (this.form.user.shouldSubscribe) {
+            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
           } else {
-            this.$emit('submit', this.form.firstName)
+            this.$emit('submit', this.form.user.firstName)
           }
         })
         .catch(() => {
@@ -188,6 +192,18 @@ export default {
         .finally(() => {
           this.isSubmitting = false
         })
+    }
+  },
+
+  watch: {
+    firstName() {
+      this.form.user.firstName = this.firstName
+    },
+    lastName() {
+      this.form.user.lastName = this.lastName
+    },
+    profileEmail() {
+      this.form.user.email = this.profileEmail
     }
   }
 }
