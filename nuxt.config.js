@@ -117,7 +117,6 @@ export default {
     LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
     PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
-    GOOGLE_ANALYTICS_GA4: process.env.GOOGLE_ANALYTICS_GA4,
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
     SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
@@ -166,7 +165,6 @@ export default {
     '@/plugins/contentful',
     '@/plugins/amplify',
     '@/plugins/documentation-hub-redirects',
-    "@/plugins/vue-gtag.client.js",
     { src: '@/plugins/postscribe', mode: 'client' },
     { src: '@/plugins/system-design-components', mode: 'client' },
     { src: '@/plugins/tsviewer', mode: 'client' }
@@ -204,7 +202,7 @@ export default {
   },
   gtm: {
     enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
-    debug: false,
+    debug: process.env.ROOT_URL == 'http://localhost:3000' ? true : false,
     
     id: 'GTM-TPT2CVCS',
     layer: 'dataLayer',
