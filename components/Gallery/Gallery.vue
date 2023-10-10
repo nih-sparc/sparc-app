@@ -197,7 +197,7 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
-  align-items: start;
+  align-items: flex-start;
 }
 .card-line {
   flex-grow: 2;
