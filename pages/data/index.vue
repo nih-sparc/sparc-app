@@ -300,10 +300,8 @@ export default {
       projectsAnatomicalFocusFacets = facetData
     })
     await client.getContentType('sparcAward').then(contentType => {
-      console.log("CONTENT TYPE = ", contentType)
       contentType.fields.forEach((field) => {
         if (field.name === 'Funding') {
-          console.log(`Predefined values:`, field.items?.validations[0]['in']);
           let fundingItems = field.items?.validations[0]['in']
           let facetData = []
           fundingItems.forEach(itemLabel => {
