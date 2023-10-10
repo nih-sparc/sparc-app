@@ -83,7 +83,6 @@ export default {
     ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
     ctf_project_id: 'sparcAward',
     ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
-    ctf_documentation_hub_redirects_id: 'yhBSKvDSpBQbeHQWHgj9j',
     ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
     ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
     CTF_SPACE_ID: process.env.CTF_SPACE_ID,
@@ -164,7 +163,6 @@ export default {
     '@/plugins/bootstrap',
     '@/plugins/contentful',
     '@/plugins/amplify',
-    '@/plugins/documentation-hub-redirects',
     { src: '@/plugins/postscribe', mode: 'client' },
     { src: '@/plugins/system-design-components', mode: 'client' },
     { src: '@/plugins/tsviewer', mode: 'client' }
