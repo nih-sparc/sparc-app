@@ -285,35 +285,35 @@ export default {
     let projectsAnatomicalFocusFacets = []
     let projectsFundingFacets = []
     await client.getEntries({
-        content_type: 'awardSection',
-      })
-      .then(async response => {
-        let facetData = []
-        const items = propOr([], 'items', response)
-        items.forEach(item => {
-          const label = pathOr('', ['fields','title'], item)
-          facetData.push({
-            label: label,
-            id: label,
-          })
+      content_type: 'awardSection',
+    })
+    .then(response => {
+      let facetData = []
+      const items = propOr([], 'items', response)
+      items.forEach(item => {
+        const label = pathOr('', ['fields','title'], item)
+        facetData.push({
+          label: label,
+          id: label,
         })
-        projectsAnatomicalFocusFacets = facetData
       })
-      await client.getEntries({
-        content_type: 'program',
-      })
-      .then(async response => {
-        let facetData = []
-        const items = propOr([], 'items', response)
-        items.forEach(item => {
-          const label = pathOr('', ['fields','name'], item)
-          facetData.push({
-            label: label,
-            id: label,
+      projectsAnatomicalFocusFacets = facetData
+    })
+    await client.getContentType('sparcAward').then(contentType => {
+      contentType.fields.forEach((field) => {
+        if (field.name === 'Funding') {
+          let fundingItems = field.items?.validations[0]['in']
+          let facetData = []
+          fundingItems.forEach(itemLabel => {
+            facetData.push({
+              label: itemLabel,
+              id: itemLabel,
+            })
           })
-        })
-        projectsFundingFacets = facetData
+          projectsFundingFacets = facetData
+        }
       })
+    })
     return {
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
@@ -690,14 +690,12 @@ export default {
       var anatomicalFocus = undefined
       var funding = undefined
       var linkedEntriesTargetType = undefined
-      var linkedFundingProgramTargetType = undefined
       if (this.$route.query.type === "projects") {
         contentType = 'sparcAward',
         sortOrder = this.selectedProjectsSortOption.sortOrder,
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
-        linkedFundingProgramTargetType = funding ? 'program' : undefined
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false
@@ -713,8 +711,7 @@ export default {
             include: 2,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
             'fields.projectSection.fields.title[in]' : anatomicalFocus,
-            'fields.fundingProgram.sys.contentType.sys.id': linkedFundingProgramTargetType,
-            'fields.fundingProgram.fields.name[in]' : funding
+            'fields.program[in]' : funding
           })
           .then(async response => {
             this.searchData = { ...response }
