@@ -13,11 +13,10 @@
             </p>
           </div>
           <gallery
+            class="file-viewer-gallery"
+            galleryItemType="fileViewer"
             :items="galleryItems"
-            :max-width="maxWidth"
-            :show-indicator-bar="true"
-            :show-card-details="true"
-            :highlight-active="shouldHighlight"
+            :cardWidth="13.8"
           />
         </div>
         <div v-else-if="!$fetchState.pending">
@@ -34,6 +33,7 @@ import scicrunch from '@/services/scicrunch'
 import flatmaps from '@/services/flatmaps'
 import Uberons from '@/static/js/uberon-map.js'
 import ErrorMessages from '@/mixins/error-messages'
+import Gallery from '@/components/Gallery/Gallery.vue'
 
 import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
@@ -144,9 +144,7 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
 export default {
   name: 'ImagesGallery',
   components: {
-    Gallery: process.client
-      ? () => import('@abi-software/gallery').then(gallery => gallery)
-      : null
+    Gallery
   },
   mixins: [FormatString, MarkedMixin],
   props: {
@@ -818,7 +816,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+::v-deep .file-viewer-gallery {
+  .card-line {
+    flex-grow: 0 !important;
+    gap: 1rem;
+  }
+}
 .loading-gallery {
   overflow: hidden;
   min-height: 4rem;
@@ -900,11 +904,5 @@ a.next {
 
 ::v-deep .one-item .card-line {
   flex-grow: unset !important;
-}
-</style>
-
-<style lang="scss">
-.gallery-container {
-  @import '~@abi-software/gallery/dist/gallery';
 }
 </style>
