@@ -593,7 +593,10 @@ export default {
     },
     getThumbnailPathForPlot(plot, thumbnails) {
       if (thumbnails && plot) {
-        return this.findEntryWithPathInArray(thumbnails, plot.datacite.isSourceOf.path[0])
+        const thumbnail = this.findEntryWithPathInArray(thumbnails, plot.datacite.isSourceOf.path[0])
+        if (thumbnail) {
+          return thumbnail
+        }
       }
       return {
         dataset: {
