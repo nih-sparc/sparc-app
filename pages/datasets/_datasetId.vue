@@ -35,6 +35,7 @@
                 routeName="datasetDetailsTab"
               >
                 <dataset-description-info
+                  class="body1"
                   v-show="activeTabId === 'abstract'"
                   :markdown="markdown"
                   :dataset-records="datasetRecords"
@@ -42,31 +43,37 @@
                   :dataset-tags="datasetTags"
                 />
                 <dataset-about-info
+                  class="body1"
                   v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision"
                   :latestVersionDate="latestVersionDate"
                   :associated-projects="associatedProjects"
                 />
                 <citation-details
+                  class="body1"
                   v-show="activeTabId === 'cite'"
                   :doi-value="datasetInfo.doi"
                 />
                 <dataset-files-info
+                  class="body1"
                   v-if="hasFiles"
                   v-show="activeTabId === 'files'"
                 />
                 <images-gallery
+                  class="body1"
                   :markdown="markdown.markdownTop"
                   v-show="activeTabId === 'images'"
                 />
                 <dataset-references
                   v-if="hasCitations"
+                  class="body1"
                   v-show="activeTabId === 'references'"
                   :primary-publications="primaryPublications"
                   :associated-publications="associatedPublications"
                 />
                 <version-history
                   v-if="canViewVersions"
+                  class="body1"
                   v-show="activeTabId === 'versions'"
                   :versions="versions"
                 />
