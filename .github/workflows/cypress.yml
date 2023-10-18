@@ -3,12 +3,13 @@ run-name: "Cypress E2E testing for SPARC Portal"
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: [opened, reopened]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
     branches: [master, main]
 
 env:
   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
   ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
   ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
   ALGOLIA_INDEX: ${{ secrets.ALGOLIA_INDEX }}
@@ -24,6 +25,7 @@ env:
   CTF_CDA_ACCESS_TOKEN: ${{ secrets.CTF_CDA_ACCESS_TOKEN }}
   CTF_SPACE_ID: ${{ secrets.CTF_SPACE_ID }}
   DEPLOY_ENV: ${{ secrets.DEPLOY_ENV }}
+  DISABLE_REDIRECT_SSL: ${{ secrets.DISABLE_REDIRECT_SSL }}
   FLATMAP_API_HOST: ${{ secrets.FLATMAP_API_HOST }}
   LOGIN_API_URL: ${{ secrets.LOGIN_API_URL }}
   NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -46,16 +48,36 @@ jobs:
    e2e-testing:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "event name is:" ${{ github.event_name }} 
+      - uses: actions-cool/check-user-permission@main
+        if: github.event_name == 'pull_request_target'
+        id: checkUser
+        with:
+          require: 'write'
+          username: ${{ github.event.pull_request.user.name }}
       - name: Checkout
+        if: github.event_name == 'pull_request_target' && steps.checkUser.outputs.require-result == 'true'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Checkout
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 14.17.6
       - name: Run e2e tests
+        if: github.event_name == 'workflow_dispatch' || steps.checkUser.outputs.require-result == 'true'
         uses: cypress-io/github-action@v6
         with:
           build: yarn build
           start: yarn start
           wait-on: ${{ secrets.ROOT_URL }}
-          command: yarn test-e2e-ci
+          command: yarn test-run-e2e
+      - name: Skip tests
+        if: github.event_name == 'pull_request_target' || steps.checkUser.outputs.require-result == 'false'
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('Pull request is opened by an user without write permission, tests are skipped for security reason')
