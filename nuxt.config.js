@@ -199,10 +199,10 @@ export default {
     proxy: true
   },
   gtm: {
-    enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
-    debug: process.env.ROOT_URL == 'http://localhost:3000' ? true : false,
-    
     id: 'GTM-TPT2CVCS',
+    enabled: true,
+    debug: true,
+
     layer: 'dataLayer',
     variables: {},
 
@@ -223,7 +223,9 @@ export default {
   },
   publicRuntimeConfig: {
     gtm: {
-      id: process.env.GOOGLE_TAG_MANAGER_ID
+      id: process.env.GOOGLE_TAG_MANAGER_ID,
+      enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+      debug: true,
     }
   },
   proxy: {
