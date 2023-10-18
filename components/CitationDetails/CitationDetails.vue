@@ -134,6 +134,11 @@ export default {
      */
     handleCitationCopy: function(citationType) {
       this.$copyText(citationType.citationText).then(() => {
+        this.$gtm.push({
+          event: 'copy_citation_button_click',
+          datasetId: this.$route.params.datasetId,
+          citationType: citationType.label
+        })
         this.$message(
           successMessage(
             `${citationType.label} citation copied to clipboard.`
