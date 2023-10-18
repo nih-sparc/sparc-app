@@ -45,7 +45,7 @@ import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 import { mapGetters } from 'vuex'
-import { pathOr } from 'ramda'
+import { pathOr, isEmpty } from 'ramda'
 
 const client = createClient()
 export default {
@@ -71,6 +71,9 @@ export default {
         const datasetSectionTitle = homepage.fields.datasetSectionTitle
         const url = `${process.env.portal_api}/get_featured_dataset`
         await $axios.$get(url).then(({ datasets }) => {
+          if (isEmpty(datasets)) {
+            return
+          }
           fields = { ...fields, 'featuredDataset': { 'title': datasets[0].name, 'description': datasets[0].description, 'banner': datasets[0].banner, 'id': datasets[0].id }, 'datasetSectionTitle': datasetSectionTitle }
         })
         if (pathOr(undefined, ["featuredProject","fields","institution"], fields) != undefined) {

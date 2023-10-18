@@ -41,6 +41,14 @@
               :key="item.objectID"
               :item="item"
             />
+            <component
+              v-else-if="galleryItemType === 'fileViewer'"
+              :is="galleryItemComponent"
+              :data="item"
+              :width="cardWidth"
+              show-card-details
+              @card-clicked="cardClicked"
+            />
           </template>
         </span>
       </div>
@@ -54,13 +62,15 @@ import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
 import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
 import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
 import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
+import FileViewerCard from '~/components/Gallery/GalleryItems/FileViewerCard.vue'
 import { defaultTo } from 'ramda'
 
 const galleryItemComponents = {
   resources: ResourceCard,  
   metrics: MetricsCard,
   highlights: HighlightCard,
-  datasets: DatasetCard
+  datasets: DatasetCard,
+  fileViewer: FileViewerCard
 }
 
 function convertRemToPixels(rem) {
@@ -197,7 +207,7 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
-  align-items: start;
+  align-items: flex-start;
 }
 .card-line {
   flex-grow: 2;

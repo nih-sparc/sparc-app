@@ -76,7 +76,7 @@ export default {
   computed: {
     selectedFacet: function() {
       let facets = []
-      if (this.selectedAnatomicalStructures !== []) {
+      if (this.selectedAnatomicalStructures != []) {
         this.selectedAnatomicalStructures.forEach(selectedOption => {
           facets.push({
             label: `${selectedOption.label}`,
@@ -85,7 +85,7 @@ export default {
           })
         })
       }
-      if (this.selectedSpotlightTypes !== []) {
+      if (this.selectedSpotlightTypes != []) {
         this.selectedSpotlightTypes.forEach(selectedOption => {
           facets.push({
             label: `${selectedOption.label}`,

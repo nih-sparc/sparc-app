@@ -105,7 +105,7 @@
           <div class="mb-8">
             <span class="label4">Option 2 - AWS download: </span>
             Download or transfer the dataset to your AWS Account. The files and metadata are stored in an AWS S3 Requester Pays bucket. You can learn more about downloading data from AWS on our
-            <a href="https://sparc.science/help/zQfzadwADutviJjT19hA5" target="_blank">Help Page</a>.
+            <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">Help Page</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
             <div class="heading3">Resource Type</div>
@@ -139,17 +139,12 @@
           <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
         </span>
         <span class="dataset-link inline">
-          <nuxt-link
-            :to="{
-              name: 'help-helpId',
-              params: {
-                helpId: ctfDatasetNavigationInfoPageId
-              }
-            }"
+          <a
+            href="https://docs.sparc.science/docs/accessing-public-datasets"
             class="dataset-link"
           >
             How to navigate datasets
-          </nuxt-link>
+          </a>
         </span>
       </div>
       <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch"/>
@@ -283,7 +278,6 @@ export default {
 
   data() {
     return {
-      ctfDatasetNavigationInfoPageId: process.env.ctf_dataset_navigation_info_page_id,
       awsMessage: 'us-east-1',
       showAgreementPopup: false,
       showLoginDialog: false,

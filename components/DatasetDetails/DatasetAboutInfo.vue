@@ -128,8 +128,8 @@ export default {
      * @returns {String}
      */
      getFundingProgram: function(associatedProject) {
-      const programName = pathOr(null, ['fields','fundingProgram','fields','name'], associatedProject)
-      return programName ?? 'N/A'
+      const program = pathOr(null, ['fields','program'], associatedProject)
+      return program.length > 0 ? program[0] : 'N/A'
     },
     /**
      * Construct the project title

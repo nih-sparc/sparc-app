@@ -87,7 +87,7 @@ export default {
     },
     selectedFacets: function() {
       let facets = []
-      if (this.selectedAnatomicalFocusFacets !== []) {
+      if (this.selectedAnatomicalFocusFacets != []) {
         this.selectedAnatomicalFocusFacets.forEach(selectedOption => {
           facets.push({
             label: `${selectedOption.label}`,
@@ -96,7 +96,7 @@ export default {
           })
         })
       }
-      if (this.selectedFundingFacets !== []) {
+      if (this.selectedFundingFacets != []) {
         this.selectedFundingFacets.forEach(selectedOption => {
           facets.push({
             label: `${selectedOption.label}`,
