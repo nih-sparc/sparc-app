@@ -6,7 +6,7 @@
     </sparc-pill>
     <div class="button-container">
       <template v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
-        <div v-if="hasFiles" class="button-container">
+        <template v-if="hasFiles">
           <el-button
             class="dataset-button"
             @click="actionButtonClicked('images')"
@@ -19,7 +19,7 @@
           >
             Get Scaffold
           </el-button>
-        </div>
+        </template>
         <el-button class="secondary" @click="actionButtonClicked('cite')">
           Cite Scaffold
         </el-button>
@@ -83,7 +83,7 @@
           target="_blank"
         >
           <el-button class="secondary">
-            SDS Viewer
+            Explore in SDS Viewer
           </el-button>
         </a>
       </template>

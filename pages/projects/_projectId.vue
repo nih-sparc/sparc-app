@@ -38,12 +38,12 @@
                   {{ institution }}
                 </div>
               </template>
-              <template v-if="fundingProgram">
+              <template v-if="fundingProgram.length > 0">
                 <div class="label4">
                   FUNDING PROGRAM
                 </div>
                 <div class="mb-16">
-                  {{ fundingProgram }}
+                  {{ fundingProgram[0] }}
                 </div>
               </template>
               <template v-if="awardId">
@@ -178,7 +178,7 @@ export default {
       return this.fields.description
     },
     fundingProgram: function() {
-      return this.fields.fundingProgram?.fields.name
+      return this.fields.program
     },
     awardId: function() {
       return this.fields.awardId

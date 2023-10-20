@@ -25,53 +25,59 @@
                 :numCitations="numCitations"
                 :numDownloads="numDownloads"
               />
-              <div class="tabs-container mt-16 mb-0 mx-0 p-16">
-                <content-tab-card
-                  id="datasetDetailsTabsContainer"
-                  :tabs="tabs"
-                  :active-tab-id="activeTabId"
-                  @tab-changed="tabChanged"
-                  linkComponent="nuxt-link"
-                  routeName="datasetDetailsTab"
-                >
-                  <dataset-description-info
-                    v-show="activeTabId === 'abstract'"
-                    :markdown="markdown"
-                    :dataset-records="datasetRecords"
-                    :loading-markdown="loadingMarkdown"
-                    :dataset-tags="datasetTags"
-                  />
-                  <dataset-about-info
-                    v-show="activeTabId === 'about'"
-                    :latestVersionRevision="latestVersionRevision"
-                    :latestVersionDate="latestVersionDate"
-                    :associated-projects="associatedProjects"
-                  />
-                  <citation-details
-                    v-show="activeTabId === 'cite'"
-                    :doi-value="datasetInfo.doi"
-                  />
-                  <dataset-files-info
-                    v-if="hasFiles"
-                    v-show="activeTabId === 'files'"
-                  />
-                  <images-gallery
-                    :markdown="markdown.markdownTop"
-                    v-show="activeTabId === 'images'"
-                  />
-                  <dataset-references
-                    v-if="hasCitations"
-                    v-show="activeTabId === 'references'"
-                    :primary-publications="primaryPublications"
-                    :associated-publications="associatedPublications"
-                  />
-                  <version-history
-                    v-if="canViewVersions"
-                    v-show="activeTabId === 'versions'"
-                    :versions="versions"
-                  />
-                </content-tab-card>
-              </div>
+              <content-tab-card
+                class="mt-16"
+                id="datasetDetailsTabsContainer"
+                :tabs="tabs"
+                :active-tab-id="activeTabId"
+                @tab-changed="tabChanged"
+                linkComponent="nuxt-link"
+                routeName="datasetDetailsTab"
+              >
+                <dataset-description-info
+                  class="body1"
+                  v-show="activeTabId === 'abstract'"
+                  :markdown="markdown"
+                  :dataset-records="datasetRecords"
+                  :loading-markdown="loadingMarkdown"
+                  :dataset-tags="datasetTags"
+                />
+                <dataset-about-info
+                  class="body1"
+                  v-show="activeTabId === 'about'"
+                  :latestVersionRevision="latestVersionRevision"
+                  :latestVersionDate="latestVersionDate"
+                  :associated-projects="associatedProjects"
+                />
+                <citation-details
+                  class="body1"
+                  v-show="activeTabId === 'cite'"
+                  :doi-value="datasetInfo.doi"
+                />
+                <dataset-files-info
+                  class="body1"
+                  v-if="hasFiles"
+                  v-show="activeTabId === 'files'"
+                />
+                <images-gallery
+                  class="body1"
+                  :markdown="markdown.markdownTop"
+                  v-show="activeTabId === 'images'"
+                />
+                <dataset-references
+                  v-if="hasCitations"
+                  class="body1"
+                  v-show="activeTabId === 'references'"
+                  :primary-publications="primaryPublications"
+                  :associated-publications="associatedPublications"
+                />
+                <version-history
+                  v-if="canViewVersions"
+                  class="body1"
+                  v-show="activeTabId === 'versions'"
+                  :versions="versions"
+                />
+              </content-tab-card>
             </div>
           </div>
         </div>
@@ -342,7 +348,6 @@ export default {
         }
       ],
       subtitles: [],
-      ctfDatasetFormatInfoPageId: process.env.ctf_dataset_format_info_page_id,
       errorMessages: [],
     }
   },
@@ -932,10 +937,6 @@ export default {
     order: 1;
     margin-top: 0;
   }
-}
-.tabs-container {
-  border: solid 1px $lineColor1;
-  background: white;
 }
 ::v-deep .details-tabs__container--data {
   padding-top: 0;
