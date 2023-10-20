@@ -68,7 +68,7 @@ jobs:
         with:
           node-version: 14.17.6
       - name: Run e2e tests
-        if: github.event_name == 'workflow_dispatch' && steps.checkUser.outputs.require-result == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.checkUser.outputs.require-result == 'true'
         uses: cypress-io/github-action@v6
         with:
           build: yarn build
@@ -76,7 +76,7 @@ jobs:
           wait-on: ${{ secrets.ROOT_URL }}
           command: yarn test-run-e2e
       - name: Skip tests
-        if: github.event_name == 'pull_request_target' || steps.checkUser.outputs.require-result == 'false'
+        if: github.event_name == 'pull_request_target' && steps.checkUser.outputs.require-result == 'false'
         uses: actions/github-script@v3
         with:
           script: |
