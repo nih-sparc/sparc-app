@@ -68,7 +68,7 @@ jobs:
         with:
           node-version: 14.17.6
       - name: Run e2e tests
-        if: github.event_name == 'workflow_dispatch' || steps.checkUser.outputs.require-result == 'true'
+        if: github.event_name == 'workflow_dispatch' && steps.checkUser.outputs.require-result == 'true'
         uses: cypress-io/github-action@v6
         with:
           build: yarn build
