@@ -41,8 +41,7 @@ describe("Dataset 127", function () {
     cy.get('.heading2').should('be.visible')
     cy.url().should('include', '/projects/')
   });
-/* ==== End Cypress Studio ==== */
-  //it("Abstract Tab", function () {
-    // Extend test with Cypress Studio
-  //});
+  it("Abstract Tab", function () {
+    //Extend test with Cypress Studio
+  });
 });
