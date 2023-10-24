@@ -314,6 +314,15 @@ import { extractExtension } from '@/pages/data/utils'
 
 import * as path from 'path'
 
+const openableFileTypes = [
+  'pdf',
+  'text',
+  'jpeg',
+  'png',
+  'svg',
+  'mp4',
+]
+
 export const contentTypes = {
   pdf: 'application/pdf',
   text: 'text/plain',
@@ -454,11 +463,10 @@ export default {
      * - Vector Drawings (svg)
      */
     isFileOpenable(scope) {
-      const allowableExtensions = Object.keys(contentTypes).map(key => key)
       const fileType = scope.row.fileType.toLowerCase()
       return (
         this.isMicrosoftFileType(scope) ||
-        allowableExtensions.includes(fileType)
+        openableFileTypes.includes(fileType)
       )
     },
 
