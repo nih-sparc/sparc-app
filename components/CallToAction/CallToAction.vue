@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-html="parseMarkdown(data.description)" />
-    <nuxt-link :to="data.buttonUrl">
-      <el-button class="call-to-action-btn">{{ data.buttonText }}</el-button>
+    <nuxt-link :to="data.url">
+      <el-button class="call-to-action-btn">{{ data.title }}</el-button>
     </nuxt-link>
   </div>
 </template>
