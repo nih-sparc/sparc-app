@@ -217,6 +217,11 @@ const links = [
     title: 'about',
     displayTitle: 'About',
     href: '/about'
+  },
+  {
+    title: 'share-data',
+    displayTitle: 'Share Data',
+    href: '/share-data'
   }
 ]
 
