@@ -96,8 +96,8 @@
             :href="sdsViewer"
             target="_blank"
           >
-            <el-button class="secondary">
-              SDS Viewer
+            <el-button class="secondary" @click="onSdsButtonClick">
+              Explore in SDS Viewer
             </el-button>
           </a>
         </div>
@@ -301,6 +301,13 @@ export default {
         () => {
           this.$message(failMessage('Failed to copy.'))
         }
+    },
+    onSdsButtonClick() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'sds_viewer_button_click',
+        button_location: 'files_tab'
+      })
     },
     agreementLoaded(id) {
       this.agreementId = id

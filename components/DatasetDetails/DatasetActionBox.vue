@@ -82,7 +82,7 @@
           :href="sdsViewer"
           target="_blank"
         >
-          <el-button class="secondary">
+          <el-button class="secondary" @click="onSdsButtonClick">
             Explore in SDS Viewer
           </el-button>
         </a>
@@ -168,7 +168,13 @@ export default {
     getDatasetDetailsTabArea: function() {
       return document.getElementById('datasetDetailsTabsContainer')
     },
-
+    onSdsButtonClick(){
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'sds_viewer_button_click',
+        button_location: 'dataset_action_box'
+      })
+    },
     /**
      * scroll to the dataset details tab area
      */

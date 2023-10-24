@@ -367,6 +367,16 @@ export default {
       this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', { ...this.datasetInfo, 'ownerEmail': datasetOwnerEmail })
   },
 
+  mounted() {
+    this.$gtm.push({
+      event: 'interaction_event',
+      event_name: 'dataset_page_view',
+      dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
+      version_id: propOr('undefined', 'version', this.datasetInfo),
+      doi: propOr('undefined', 'doi', this.datasetInfo)
+    })
+  },
+
   computed: {
     ...mapState('pages/datasets/datasetId', 
       ['datasetInfo', 'datasetFacetsData']
