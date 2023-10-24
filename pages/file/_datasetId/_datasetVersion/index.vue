@@ -103,16 +103,6 @@ import {
   propOr
 } from 'ramda'
 
-export const contentTypes = {
-  pdf: 'application/pdf',
-  text: 'text/plain',
-  jpeg: 'image/jpeg',
-  png: 'image/png',
-  svg: 'img/svg+xml',
-  mp4: 'video/mp4',
-  csv: 'text/csv'
-}
-
 export default {
   name: 'FileDetailPage',
 
@@ -250,24 +240,6 @@ export default {
       })
     },
     /**
-     * Check if the file is openable
-     * MS Office files and native browser files
-     * - Documents (pdf, text)
-     * - Images (jpg, png)
-     * - Video (MP4)
-     * - Vector Drawings (svg)
-     */
-    isFileOpenable(file) {
-      if (!file.fileType) {
-        return false
-      }
-      const allowableExtensions = Object.keys(contentTypes).map(key => key)
-      const fileType = file.fileType.toLowerCase()
-      return (
-        this.isMicrosoftFileType(file) || allowableExtensions.includes(fileType)
-      )
-    },
-    /**
      * Checks if file is MS Word, MS Excel, or MS Powerpoint
      * @param {Object} file
      */
@@ -278,40 +250,6 @@ export default {
         file.fileType === 'PowerPoint'
       )
     },
-    /**
-     * Opens a file in a new tab
-     * This is currently for MS Word, MS Excel, and Powerpoint files only
-     * @param {Object} file
-     */
-    openFile: function(file) {
-      this.getViewFileUrl(file).then(response => {
-        window.open(response, '_blank')
-      })
-    },
-    getViewFileUrl(file) {
-      let uri = `${propOr('', 'uri', file).replace("s3://", "")}`
-      let s3BucketName = uri.substring(0, uri.indexOf("/"))
-
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split(`s3://${s3BucketName}/`),
-        propOr('', 'uri')
-      )(file)
-
-      const fileType = file.fileType.toLowerCase()
-      const contentType = contentTypes[fileType]
-
-      const requestUrl = `${process.env.portal_api}/download?s3BucketName=${s3BucketName}&key=${filePath}&contentType=${contentType}`
-
-      return this.$axios.$get(requestUrl).then(response => {
-        const url = response
-        const encodedUrl = encodeURIComponent(url)
-        return this.isMicrosoftFileType(file)
-          ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
-          : url
-      })
-    }
   }
 }
 </script>
