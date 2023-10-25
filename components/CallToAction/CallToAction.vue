@@ -1,9 +1,9 @@
 <template>
   <div>
     <div v-html="parseMarkdown(data.description)" />
-    <nuxt-link :to="data.url">
+    <a :href="data.url">
       <el-button class="call-to-action-btn">{{ data.title }}</el-button>
-    </nuxt-link>
+    </a>
   </div>
 </template>
 

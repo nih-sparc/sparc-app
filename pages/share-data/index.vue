@@ -9,7 +9,7 @@
     <div class="subpage px-32 py-16">
       <div v-html="parseMarkdown(description)" />
       <hr />
-      <div v-for="callToAction in callsToAction" :key="callToAction.sys.id" class="call-to-action-container">
+      <div v-for="callToAction in callsToAction" :key="callToAction.sys.id" class="mb-16">
         <call-to-action :data="callToAction.fields"/>
       </div>
     </div>
@@ -20,7 +20,7 @@
           :about-details-item="item"
           :parent-path="slug"
         />
-        <hr v-if="i < learnMore.length - 1" />
+        <hr v-if="i < learnMore.length - 1 && index != learnMore.length - 1" />
       </div>
     </div>
   </div>
@@ -74,8 +74,32 @@ export default {
 }
 </script>
 
-<style scoped>
-.call-to-action-container {
-  margin-bottom: 1.8em
+<style scoped lang="scss">
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+.page-data {
+  background-color: $background;
+}
+hr {
+  opacity: 0.3;
+}
+::v-deep h1 {
+  font-size:2rem;
+  font-weight:500;
+  line-height:2.75rem;
+}
+
+::v-deep h2 {
+  font-size:1.5rem;
+  font-weight:500;
+  line-height:2.25rem;
+}
+
+::v-deep h3 {
+  font-size:1rem;
+  font-weight:500;
+  line-height:1.875rem;
+}
+::v-deep img {
+  width: 100%;
 }
 </style>
