@@ -275,11 +275,42 @@ export const HIGHLIGHT_HTML_TAG = 'b'
  */
 export const highlightMatches = (text: string, search: string): string => {
   if (text && search) {
+    // Replacement fn
+    const replaceHtmlTextNoHref = (html: string, term: string) => {
+      let savedIndex = 0
+      let i = 0
+      let j = 0
+      let quoteChar = '"'
+      let res = ''
+      const regExp = new RegExp(term, 'ig')
+      while (i < html.length - 6) {
+        if (html[i] === 'h' && html[i + 1] === 'r' && html[i + 2] === 'e' && html[i + 3] === 'f' && html[i + 4] === '=') {
+          // Found an href
+          quoteChar = html[i + 5]
+          // Add previous substr with replaced hits
+          res += html.slice(savedIndex, i + 6).replace(regExp, `<${HIGHLIGHT_HTML_TAG}>$&</${HIGHLIGHT_HTML_TAG}>`)
+          savedIndex = i + 6
+          j = savedIndex
+          while (j < html.length && html[j] !== quoteChar) {
+            j++
+          }
+          // j contains end of href, add without replacement
+          res += html.slice(savedIndex, j)
+          savedIndex = i = j
+        }
+        else {
+          i++
+        }
+      }
+      // Add remaining
+      res += html.slice(savedIndex).replace(regExp, '<b>$&</b>')
+      return res
+    }
     const terms = search.split(' ')
     let result = text
     terms.forEach(t => {
       const trimmed = t.replace(/^"|"$/, '') // Trims out double quotes that could be used in searching
-      result = result.replace(new RegExp(trimmed, 'ig'), `<${HIGHLIGHT_HTML_TAG}>$&</${HIGHLIGHT_HTML_TAG}>`)
+      result = replaceHtmlTextNoHref(result, trimmed)
     })
     return result
   }
