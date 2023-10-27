@@ -26,6 +26,7 @@
     </div>
     <login-modal
       :show-dialog="showLoginDialog"
+      redirectUrl="/user/profile"
       @dialog-closed="showLoginDialog = false"
     />
   </div>
