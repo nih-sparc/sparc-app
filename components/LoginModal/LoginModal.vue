@@ -67,6 +67,10 @@ export default {
     showDialog: {
       type: Boolean,
       default: false
+    },
+    redirectUrl: {
+      type: String,
+      default: ''
     }
   },
   watch: {
@@ -90,7 +94,7 @@ export default {
     onLoginWithORCID: async function(x) {
       x.preventDefault()
       this.dialogVisible = false
-      this.$cookies.set('sign-in-redirect-url', this.$nuxt.$route.fullPath)
+      this.$cookies.set('sign-in-redirect-url', this.redirectUrl || this.$nuxt.$route.fullPath)
       await this.$store.dispatch('user/login', 'ORCID')
       
     },

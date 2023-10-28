@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-html="parseMarkdown(data.description)" />
-    <a :href="data.url">
+    <a :href="data.url" @click="data.url == null && $emit('click')">
       <el-button class="call-to-action-btn">{{ data.title }}</el-button>
     </a>
   </div>

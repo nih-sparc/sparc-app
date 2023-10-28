@@ -1,30 +1,35 @@
 <template>
   <div class="page-data pb-16">
-  <breadcrumb :breadcrumb="breadcrumb" :title="title" />
-  <page-hero>
-    <h1>{{ title }}</h1>
-    <p>{{ summary }}</p>
-  </page-hero>
-  <div class="container">
-    <div class="subpage px-32 py-16">
-      <div v-html="parseMarkdown(description)" />
-      <hr />
-      <div v-for="callToAction in callsToAction" :key="callToAction.sys.id" class="mb-16">
-        <call-to-action :data="callToAction.fields"/>
+    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <page-hero>
+      <h1>{{ title }}</h1>
+      <p>{{ summary }}</p>
+    </page-hero>
+    <div class="container">
+      <div class="subpage px-32 py-16">
+        <div v-html="parseMarkdown(description)" />
+        <hr />
+        <div v-for="callToAction in callsToAction" :key="callToAction.sys.id" class="mb-16">
+          <call-to-action :data="callToAction.fields" @click="showLoginDialog = true"/>
+        </div>
+      </div>
+      <div v-if="learnMore" class="subpage px-32 mb-0">
+        <div class="heading1 mb-16">Learn More</div>
+        <div v-for="(item, i) in learnMore" :key="item.sys.id">
+          <learn-more-card
+            :about-details-item="item"
+            :parent-path="slug"
+          />
+          <hr v-if="i < learnMore.length - 1" />
+        </div>
       </div>
     </div>
-    <div v-if="learnMore" class="subpage px-32 mb-0">
-      <div class="heading1 mb-16">Learn More</div>
-      <div v-for="(item, i) in learnMore" :key="item.sys.id">
-        <learn-more-card
-          :about-details-item="item"
-          :parent-path="slug"
-        />
-        <hr v-if="i < learnMore.length - 1 && index != learnMore.length - 1" />
-      </div>
-    </div>
+    <login-modal
+      :show-dialog="showLoginDialog"
+      redirectUrl="/user/profile"
+      @dialog-closed="showLoginDialog = false"
+    />
   </div>
-</div>
 </template>
 
 <script>
@@ -34,6 +39,7 @@ import PageHero from '@/components/PageHero/PageHero.vue'
 import MarkedMixin from '@/mixins/marked'
 import createClient from '@/plugins/contentful.js'
 import CallToAction from '~/components/CallToAction/CallToAction.vue'
+import LoginModal from '@/components/LoginModal/LoginModal.vue'
 
 const client = createClient()
 
@@ -43,7 +49,8 @@ export default {
     Breadcrumb,
     PageHero,
     LearnMoreCard,
-    CallToAction
+    CallToAction,
+    LoginModal
   },
   mixins: [MarkedMixin],
 
@@ -68,7 +75,8 @@ export default {
           },
           label: 'Home'
         }
-      ]
+      ],
+      showLoginDialog: false
     }
   }
 }
@@ -98,8 +106,5 @@ hr {
   font-size:1rem;
   font-weight:500;
   line-height:1.875rem;
-}
-::v-deep img {
-  width: 100%;
 }
 </style>
