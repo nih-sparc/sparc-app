@@ -4,7 +4,7 @@ require('dotenv').config();
 module.exports = defineConfig({
   defaultCommandTimeout: 5000,
   experimentalMemoryManagement: true,
-  numTestsKeptInMemory: 1,
+  numTestsKeptInMemory: 0,
   e2e: {
     baseUrl: process.env.ROOT_URL ? process.env.ROOT_URL : 'http://localhost:3000',
     experimentalStudio: true,
