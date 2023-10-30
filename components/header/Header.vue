@@ -220,7 +220,7 @@ const links = [
   },
   {
     title: 'share-data',
-    displayTitle: 'Share Data',
+    displayTitle: 'Share with SPARC',
     href: '/share-data'
   }
 ]
