@@ -25,6 +25,30 @@
       />
     </el-form-item>
 
+    <el-form-item
+      class="mt-32 vertical-content"
+      prop="publishedManuscript"
+      label="Has data been published in a manuscript? *"
+    >
+      <client-only>
+        <sparc-radio
+          v-model="form.publishedManuscript"
+          label="Yes"
+          display="Yes"
+        />
+        <sparc-radio
+          v-model="form.publishedManuscript"
+          label="No"
+          display="No"
+        />
+        <sparc-radio
+          v-model="form.publishedManuscript"
+          label="Pending"
+          display="Pending"
+        />
+      </client-only>
+    </el-form-item>
+
     <hr/>
 
     <user-contact-form-item v-model="form.user"/>
@@ -70,6 +94,7 @@ export default {
       form: {
         detailedDescription: '',
         shortDescription: '',
+        publishedManuscript: '',
         user: {
           typeOfUser: '',
           firstName: this.firstName,
@@ -129,6 +154,14 @@ export default {
             trigger: 'change'
           }
         ],
+
+        publishedManuscript: [
+          {
+            required: true,
+            message: 'Please select one option',
+            trigger: 'change'
+          }
+        ],
       }
     }
   },
@@ -159,6 +192,7 @@ export default {
       this.isSubmitting = true
       const description = `
         <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
+        <b>Has a published manuscript:</b><br>${this.form.publishedManuscript}<br><br>
         <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}
