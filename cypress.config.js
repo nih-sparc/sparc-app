@@ -11,6 +11,8 @@ module.exports = defineConfig({
     projectId: process.env.CYPRESS_PROJECT_ID,
     viewportWidth: 1600,
     viewportHeight: 900,
+    //Prevent huge amount of time on reloading page
+    testIsolation: false,
     // pageLoadTimeout: 1024*1024*1024,
     setupNodeEvents(on, config) {
       // implement node event listeners here
