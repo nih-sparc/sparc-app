@@ -90,14 +90,14 @@ import createClient from '@/plugins/contentful.js'
 const client = createClient()
 let formTypes = [
   {
-    type: 'feedback',
-    id: '1PEIbcIV21upAq55ocnakO',
-    subtypes: ['bug', 'portal-feedback', 'sparc-service', 'general']
-  },
-  {
     type: 'research',
     id: '3gBm9CkPV1QiqevHHtQxqP',
     subtypes: []
+  },
+  {
+    type: 'feedback',
+    id: '1PEIbcIV21upAq55ocnakO',
+    subtypes: ['bug', 'portal-feedback', 'sparc-service', 'general']
   },
   {
     type: 'news-event',
