@@ -179,6 +179,7 @@ export default {
       this.isSubmitting = true
       const description = `
         <b>What area of the SPARC Portal is this related to?</b><br>${this.form.pageOrResource}<br><br>
+        <b>Short description:</b><br>${this.form.shortDescription}<br><br>
         <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
         <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>

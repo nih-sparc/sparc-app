@@ -200,6 +200,7 @@ export default {
       const fileName = propOr('', 'name', this.file)
       const description = `
         <b>Problematic page URL:</b><br>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}<br><br>
+        <b>Short description:</b><br>${this.form.shortDescription}<br><br>
         <b>Detailed Description</b><br>${this.form.detailedDescription}<br><br>
         ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
         <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
