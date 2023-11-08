@@ -310,9 +310,16 @@ import { mapGetters, mapState } from 'vuex'
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
-import { extractExtension } from '@/pages/data/utils'
-
 import * as path from 'path'
+
+const openableFileTypes = [
+  'pdf',
+  'text',
+  'jpeg',
+  'png',
+  'svg',
+  'mp4',
+]
 
 export const contentTypes = {
   pdf: 'application/pdf',
@@ -454,11 +461,10 @@ export default {
      * - Vector Drawings (svg)
      */
     isFileOpenable(scope) {
-      const allowableExtensions = Object.keys(contentTypes).map(key => key)
       const fileType = scope.row.fileType.toLowerCase()
       return (
         this.isMicrosoftFileType(scope) ||
-        allowableExtensions.includes(fileType)
+        openableFileTypes.includes(fileType)
       )
     },
 
@@ -617,6 +623,13 @@ export default {
      * @param {Object} scope
      */
     openFile: function(scope) {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'view_file_in_web_browser',
+        file_name: pathOr('', ['row','name'], scope),
+        file_path: pathOr('', ['row','path'], scope),
+        file_type: pathOr('', ['row','fileType'], scope),
+      })
       this.getViewFileUrl(scope).then(response => {
         window.open(response, '_blank')
       })
@@ -638,6 +651,11 @@ export default {
       this.zipData = JSON.stringify(payload, undefined)
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
+      })
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'dataset_file_download',
+        files: propOr('', 'paths', payload)
       })
     },
 

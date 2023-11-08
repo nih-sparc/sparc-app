@@ -452,18 +452,27 @@ export default {
   },
 
   watch: {
-    '$route.query.type': function(val) {
-      /**
-       * Clear table data so the new table that is rendered can
-       * properly render data and account for any missing data
-       */
-      if (!this.$route.query.type) {
-        const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
-        this.$router.replace({ query: { type: firstTabType } })
-      } else {
-        this.searchData = clone(searchData)
-        this.fetchResults()
-      }
+    '$route.query.type': {
+      handler: function() {
+        /**
+         * Clear table data so the new table that is rendered can
+         * properly render data and account for any missing data
+         */
+        if (!this.$route.query.type) {
+          const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
+          this.$router.replace({ query: { type: firstTabType } })
+        } else {
+          this.searchData = clone(searchData)
+          this.fetchResults()
+        }
+        const category = searchTypes.find(searchType => searchType.type == this.$route.query.type)
+        this.$gtm.push({
+          event: 'interaction_event',
+          event_name: 'data_page_view',
+          category: propOr('Datasets', 'label', category)
+        })
+      },
+      immediate: true
     },
 
     '$route.query.search': {
@@ -471,7 +480,6 @@ export default {
         this.searchQuery = this.$route.query.search
         this.fetchResults()
       },
-      immediate: true
     },
 
     selectedAlgoliaSortOption: function(option) {

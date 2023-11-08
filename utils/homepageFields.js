@@ -13,6 +13,8 @@ export default (fields = {}) => {
     portalFeatures: fields.portalFeatures || [],
     featuredProject: fields.featuredProject || {},
     datasetSectionTitle: fields.datasetSectionTitle || 'Here is a dataset you might be interested in: ',
-    title: fields.title || ''
+    title: fields.title || '',
+    heroButtonLink: fields.heroButtonLink,
+    heroButtonLabel: fields.heroButtonLabel
   }
 }

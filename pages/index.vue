@@ -13,6 +13,11 @@
         class="page-hero-img"
         :src="heroImage.fields.file.url"
       />
+      <a v-if="heroButtonLink && heroButtonLabel" class="btn-link" :href="heroButtonLink">
+        <el-button class="secondary">
+          {{ heroButtonLabel }}
+        </el-button>
+      </a>
     </page-hero>
     <div class="secondary-background">
       <featured-data :featured-data="featuredData" />

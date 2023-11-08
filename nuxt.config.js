@@ -76,6 +76,7 @@ const config = {
     ctf_about_details_content_type_id: 'aboutPageSecondLevel',
     ctf_learn_more_item_id: 'learnMoreItem',
     ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
+    ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
     ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
     ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
     ctf_contact_us_form_type_id: 'contactUsForm',
@@ -197,10 +198,10 @@ const config = {
     proxy: true
   },
   gtm: {
-    enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
-    debug: process.env.ROOT_URL == 'http://localhost:3000' ? true : false,
-    
     id: 'GTM-TPT2CVCS',
+    enabled: true,
+    debug: true,
+
     layer: 'dataLayer',
     variables: {},
 
@@ -221,7 +222,9 @@ const config = {
   },
   publicRuntimeConfig: {
     gtm: {
-      id: process.env.GOOGLE_TAG_MANAGER_ID
+      id: process.env.GOOGLE_TAG_MANAGER_ID,
+      enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+      debug: true,
     }
   },
   proxy: {
