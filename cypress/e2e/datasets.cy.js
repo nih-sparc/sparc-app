@@ -3,7 +3,7 @@ const datasetIds = [127];
 
 datasetIds.forEach(datasetId => {
 
-  describe(`Dataset ${datasetId}`, function () {
+  describe(`Dataset ${datasetId}`, {testIsolation: false }, function () {
     before(function () {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
