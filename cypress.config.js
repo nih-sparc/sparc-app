@@ -12,7 +12,7 @@ module.exports = defineConfig({
     viewportWidth: 1600,
     viewportHeight: 900,
     //Prevent huge amount of time on reloading page
-    testIsolation: false,
+    testIsolation: true,
     // pageLoadTimeout: 1024*1024*1024,
     setupNodeEvents(on, config) {
       // implement node event listeners here

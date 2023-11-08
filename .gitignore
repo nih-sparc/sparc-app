@@ -111,3 +111,4 @@ sw.*
 .certs/
 
 cypress/videos
+cypress/downloads
