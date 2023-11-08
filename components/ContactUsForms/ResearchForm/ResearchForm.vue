@@ -219,6 +219,7 @@ export default {
     async sendForm() {
       this.isSubmitting = true
       const description = `
+        <b>Short description:</b><br>${this.form.shortDescription}<br><br>
         <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
         <b>Has a published manuscript:</b><br>${this.form.publishedManuscript === 'Yes' ? this.form.manuscriptDoi : this.form.publishedManuscript}<br><br>
         <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
