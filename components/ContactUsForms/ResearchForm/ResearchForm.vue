@@ -49,6 +49,16 @@
       </client-only>
     </el-form-item>
 
+    <el-form-item
+      class="mt-32 vertical-content"
+      prop="manuscriptDoi"
+      :disabled="form.publishedManuscript !== 'Yes'"
+    >
+      <url-input :disabled="form.publishedManuscript !== 'Yes'" v-model="form.manuscriptDoi" placeholder="Enter DOI URL">
+        <template slot="prepend">Http://</template>
+      </url-input>
+    </el-form-item>
+
     <hr/>
 
     <user-contact-form-item v-model="form.user"/>
@@ -79,6 +89,7 @@ import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { saveForm, loadForm, populateFormWithUserData } from '~/pages/data/utils'
+import UrlInput from '@/components/Url/UrlInput.vue'
 
 export default {
   name: 'FeedbackForm',
@@ -86,15 +97,25 @@ export default {
   mixins: [NewsletterMixin, RecaptchaMixin],
 
   components: {
-    UserContactFormItem
+    UserContactFormItem,
+    UrlInput
   },
 
   data() {
+    const validateDoi = (rule, value, callback) => {
+      const form = this.$refs.submitForm
+      const publishedManuscriptField = form.fields.find(field => field.prop === 'publishedManuscript')
+      if (publishedManuscriptField && publishedManuscriptField.fieldValue === 'Yes' && value === '') {
+        callback(new Error('Please enter a DOI URL'))
+      }
+      callback()
+    }
     return {
       form: {
         detailedDescription: '',
         shortDescription: '',
         publishedManuscript: '',
+        manuscriptDoi: '',
         user: {
           typeOfUser: '',
           firstName: this.firstName,
@@ -162,6 +183,13 @@ export default {
             trigger: 'change'
           }
         ],
+
+        manuscriptDoi: [
+          {
+            trigger: 'change',
+            validator: validateDoi
+          }
+        ],
       }
     }
   },
@@ -192,7 +220,7 @@ export default {
       this.isSubmitting = true
       const description = `
         <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
-        <b>Has a published manuscript:</b><br>${this.form.publishedManuscript}<br><br>
+        <b>Has a published manuscript:</b><br>${this.form.publishedManuscript === 'Yes' ? this.form.manuscriptDoi : this.form.publishedManuscript}<br><br>
         <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}
