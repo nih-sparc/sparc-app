@@ -1,10 +1,12 @@
 <template>
   <div class="pb-32">
     <div class="page-wrap container">
+      <form ref="zipForm" method="POST" :action="zipitUrl">
+        <input v-model="zipData" type="hidden" name="data" />
+      </form>
       <client-only>
         <content-tab-card
           v-if="hasViewer"
-          class="tabs p-32"
           :tabs="tabs"
           :active-tab-id="activeTabId"
         >
@@ -12,108 +14,58 @@
             v-if="hasBiolucidaViewer"
             v-show="activeTabId === 'imageViewer'"
             :data="biolucidaData"
+            :datasetInfo="datasetInfo"
+            :file="file"
+            @download-file="executeDownload"
+          />
+          <segmentation-viewer
+            v-if="hasSegmentationViewer"
+            v-show="activeTabId === 'segmentationViewer'"
+            :data="segmentationData"
           />
         </content-tab-card>
       </client-only>
-      <div class="subpage">
-        <div class="page-heading">
-          <h1>{{ file.name }}</h1>
-          <div class="page-heading__button">
-            <bf-button @click="executeDownload(file)">
-              Download
-            </bf-button>
-            <form ref="zipForm" method="POST" :action="zipitUrl">
-              <input v-model="zipData" type="hidden" name="data" />
-            </form>
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Type</strong>
-          <div class="file-detail__column">
-            {{ file.fileType }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Size</strong>
-          <div class="file-detail__column">
-            {{ file.size ? formatMetric(file.size) : 'undefined' }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Date Created</strong>
-          <div class="file-detail__column">
-            {{ file.createdAt ? formatDate(file.createdAt) : 'undefined' }}
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">Dataset</strong>
-          <div class="file-detail__column">
-            <nuxt-link
-              :to="{
-                name: 'datasets-datasetId',
-                params: {
-                  datasetId
-                }
-              }"
-            >
-              {{ datasetTitle }}
-            </nuxt-link>
-          </div>
-        </div>
-        <div class="file-detail">
-          <strong class="file-detail__column">File location</strong>
-          <div class="file-detail__column">
-            <nuxt-link
-              :to="{
-                name: `datasets-datasetId`,
-                params: {
-                  datasetId
-                },
-                query: {
-                  datasetDetailsTab: 'files',
-                  path: location
-                }
-              }"
-            >
-              {{ location }}
-            </nuxt-link>
-          </div>
-        </div>
-      </div>
+      <file-viewer-metadata
+        v-if="!hasViewer"
+        :datasetInfo="datasetInfo"
+        :file="file"
+        @download-file="executeDownload"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import discover from '@/services/discover'
+import scicrunch from '@/services/scicrunch'
+import general from '@/services/general'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
+import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'
 
-import BfStorageMetrics from '@/mixins/bf-storage-metrics'
 import DatasetInfo from '@/mixins/dataset-info'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
 
-import {
-  compose,
-  split,
-  last,
-  defaultTo,
-  propOr
-} from 'ramda'
+import { baseName, extractS3BucketName } from '@/utils/common'
+
+import { propOr } from 'ramda'
 
 export default {
   name: 'FileDetailPage',
 
   components: {
     BiolucidaViewer,
+    SegmentationViewer,
+    FileViewerMetadata,
     DetailTabs,
     BfButton
   },
 
   mixins: [
-    BfStorageMetrics,
     DatasetInfo,
     FormatDate,
     FetchPennsieveFile,
@@ -121,7 +73,14 @@ export default {
   ],
 
   async asyncData({ app, redirect, route, error, $axios }) {
-    const filePath = route.query.path
+    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
+      $axios,
+      route.params.datasetId,
+      route.params.datasetVersion,
+      app.$cookies.get('user-token')
+    )
+    const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
+    const filePath = route.query.path   
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       $axios,
       filePath,
@@ -133,9 +92,32 @@ export default {
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(
       `${process.env.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`
-    )
 
+    )
     const hasBiolucidaViewer = biolucidaData.status !== 'error'
+    let hasSegmentationViewer = false
+    try {
+      const [segmentation_info_response, dataset_response] = await Promise.all([
+        discover.getSegmentationInfo(
+          route.params.datasetId,
+          route.params.datasetVersion,
+          route.query.path,
+          s3Bucket
+        ),
+        scicrunch.getDatasetInfoFromPennsieveIdentifier(route.params.datasetId)
+      ])
+      hasSegmentationViewer = segmentation_info_response.data != undefined
+      
+      const segmentation_info = {
+        ...segmentation_info_response.data,
+        name: baseName(route.query.path)
+      }
+      const species_lookup_response = await general.lookupOntoTerm(
+        segmentation_info.subject.species
+      )
+    } catch (e) {
+      hasSegmentationViewer = false
+    }
 
     let packageType = "None"
     if (sourcePackageId !== 'details') {
@@ -147,19 +129,18 @@ export default {
     }
 
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
-      hasTimeseriesViewer ? 'timeseriesViewer' : ''
-
-    const datasetInfo = await DatasetInfo.methods.getDatasetInfo(
-      $axios,
-      route.params.datasetId,
-      route.query.datasetVersion,
-      app.$cookies.get('user-token')
-    )
+      hasTimeseriesViewer ? 'timeseriesViewer' :
+      hasSegmentationViewer ? 'segmentationViewer' : ''
 
     return {
       biolucidaData,
+      segmentationData: {
+        share_link: `${process.env.NL_LINK_PREFIX}/dataviewer?datasetId=${route.params.datasetId}&version=${route.params.datasetVersion}&path=${filePath}`,
+        status: ''
+      },
       file,
       hasBiolucidaViewer,
+      hasSegmentationViewer,
       sourcePackageId,
       packageType,
       activeTabId,
@@ -182,26 +163,15 @@ export default {
   },
 
   computed: {
-    /**
-     * Compute location of the file
-     * @returns {String}
-     */
-    location: function() {
-      return this.file.path.replace(`/${this.file.name}`, '')
-    },
     hasViewer: function() {
-      return this.hasBiolucidaViewer
+      return this.hasBiolucidaViewer || this.hasSegmentationViewer
     },
     datasetId: function() {
       return this.$route.params.datasetId
     },
-    /**
-     * Return the dataset's name.
-     * @returns String
-     */
-    datasetTitle: function() {
-      return this.datasetInfo ? this.datasetInfo.name : 'Go to dataset'
-    }
+    readme: function() {
+      return propOr('', 'readme', this.datasetInfo)
+    },
   },
 
   watch: {
@@ -209,11 +179,24 @@ export default {
       handler: function(hasViewer) {
         if (hasViewer) {
           this.tabs.push({
-            label: 'Image Viewer',
+            label: 'Biolucida Viewer',
             id: 'imageViewer'
           })
         } else {
           this.tabs = this.tabs.filter(tab => tab.id !== 'imageViewer')
+        }
+      },
+      immediate: true
+    },
+    hasSegmentationViewer: {
+      handler: function(hasViewer) {
+        if (hasViewer) {
+          this.tabs.push({
+            label: 'Segmentation Viewer',
+            id: 'segmentationViewer'
+          })
+        } else {
+          this.tabs = this.tabs.filter(tab => tab.id !== 'segmentationViewer')
         }
       },
       immediate: true
@@ -256,42 +239,7 @@ export default {
 
 <style scoped lang="scss">
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
-h1 {
-  flex: 1;
-  font-size: 1.5em;
-  line-height: 2rem;
-}
-.page-heading {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.375rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-  align-items: center;
-}
-.page-heading__button {
-  flex-shrink: 0;
-}
-
-.file-detail {
-  border-bottom: 1px solid $lineColor2;
-  flex-direction: column;
-  font-size: 0.875em;
-  display: flex;
-  padding: 1rem 0.625rem;
-  @media (min-width: 48em) {
-    flex-direction: row;
-  }
-}
-.file-detail__column {
-  flex: 1;
-}
-
 .tabs {
   border: 1px solid $lineColor2;
-}
-.link-to-dataset {
-  margin-right: 10px;
 }
 </style>
