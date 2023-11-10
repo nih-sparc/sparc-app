@@ -16,12 +16,13 @@
             :data="biolucidaData"
             :datasetInfo="datasetInfo"
             :file="file"
-            @download-file="executeDownload"
           />
           <segmentation-viewer
             v-if="hasSegmentationViewer"
             v-show="activeTabId === 'segmentationViewer'"
             :data="segmentationData"
+            :datasetInfo="datasetInfo"
+            :file="file"
           />
         </content-tab-card>
       </client-only>
