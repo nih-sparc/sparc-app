@@ -131,24 +131,21 @@ export default {
   },
   mixins: [MarkedMixin, FileDetails, RequestDownloadFile],
 
-  mounted: function() {
-    const html = this.parseMarkdown(this.readme)
-    this.data_collection = extractSection(/data collect[^:]+:/i, html)
-  },
-
   async fetch() {
     try {
       const s3Bucket = this.datasetInfo ? extractS3BucketName(this.datasetInfo.uri) : undefined
 
-      const [segmentation_info_response] = await Promise.all([
+      const [segmentation_info_response, readme_markdown] = await Promise.all([
         discover.getSegmentationInfo(
           this.datasetId,
           this.versionId,
           this.filePath,
           s3Bucket
         ),
+        fetch(this.datasetInfo.readme).then((response) => {
+          return response.text()
+        })
       ])
-
       const segmentation_info = {
         ...segmentation_info_response.data,
         name: baseName(this.filePath)
@@ -162,6 +159,8 @@ export default {
 
       this.segmentation_info = segmentation_info
       this.human_readable_species = human_readable_species
+      const html = this.parseMarkdown(readme_markdown)
+      this.data_collection = extractSection(/data collect[^:]+:/i, html)
     } catch (e) {
       console.log(e)
     }
@@ -170,9 +169,6 @@ export default {
   computed: {
     title: function() {
       return propOr("", 'name', this.datasetInfo)
-    },
-    readme() {
-      return propOr("", 'readme', this.datasetInfo)
     },
     datasetId() {
       return propOr(undefined, "id", this.datasetInfo)

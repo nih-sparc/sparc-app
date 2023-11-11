@@ -133,17 +133,23 @@ export default {
         blv_info,
         view_info,
         image_info,
-        xmp_metadata
+        xmp_metadata,
+        readme_markdown
       ] = await Promise.all([
         biolucida.getBLVLink(image_identifier),
         biolucida.decodeViewParameter(this.viewId),
         biolucida.getImageInfo(image_identifier),
-        biolucida.getXMPInfo(image_identifier)
+        biolucida.getXMPInfo(image_identifier),
+        fetch(this.datasetInfo.readme).then((response) => {
+          return response.text()
+        })
       ])
       const BASE_URL = `blv:${process.env.BL_SERVER_URL}`
       const queryParameters = `image_id=${image_identifier}&type=${view_info[1]}${view_info[2]}&filename=${image_info.name}`
       const webNeurolucidaLink = BASE_URL + '/image_view?' + queryParameters
 
+      const html = this.parseMarkdown(readme_markdown)
+      this.data_collection = extractSection(/data collect[^:]+:/i, html)
       this.blv_link = blv_info['link']
       this.web_neurolucida_link = webNeurolucidaLink
       this.image_info = image_info
@@ -151,10 +157,6 @@ export default {
     } catch (e) {
       console.log(e)
     }
-  },
-  mounted: function() {
-    const html = this.parseMarkdown(this.readme)
-    this.data_collection = extractSection(/data collect[^:]+:/i, html)
   },
   computed: {
     viewId() {
@@ -165,9 +167,6 @@ export default {
     },
     title: function() {
       return propOr("", 'name', this.datasetInfo)
-    },
-    readme: function() {
-      return propOr("", 'readme', this.datasetInfo)
     },
     datasetId() {
       return propOr(undefined, "id", this.datasetInfo)
