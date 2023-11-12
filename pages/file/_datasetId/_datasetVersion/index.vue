@@ -24,6 +24,13 @@
             :datasetInfo="datasetInfo"
             :file="file"
           />
+          <plot-viewer
+            v-if="hasPlotViewer"
+            v-show="activeTabId === 'plotViewer'"
+            :plotData="plotData"
+            :datasetInfo="datasetInfo"
+            :file="file"
+          />
         </content-tab-card>
       </client-only>
       <file-viewer-metadata
@@ -39,11 +46,10 @@
 <script>
 import discover from '@/services/discover'
 import scicrunch from '@/services/scicrunch'
-import general from '@/services/general'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
+import PlotViewer from '@/components/PlotViewer/PlotViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'
 
 import DatasetInfo from '@/mixins/dataset-info'
@@ -51,19 +57,19 @@ import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
 
-import { baseName, extractS3BucketName } from '@/utils/common'
+import { extractS3BucketName } from '@/utils/common'
 
-import { propOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 
 export default {
   name: 'FileDetailPage',
 
   components: {
     BiolucidaViewer,
+    PlotViewer,
     SegmentationViewer,
     FileViewerMetadata,
     DetailTabs,
-    BfButton
   },
 
   mixins: [
@@ -93,32 +99,35 @@ export default {
     const sourcePackageId = file.sourcePackageId
     const biolucidaData = await $axios.$get(
       `${process.env.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`
-
     )
     const hasBiolucidaViewer = biolucidaData.status !== 'error'
     let hasSegmentationViewer = false
     try {
-      const [segmentation_info_response, dataset_response] = await Promise.all([
+      const [segmentation_info_response] = await Promise.all([
         discover.getSegmentationInfo(
           route.params.datasetId,
           route.params.datasetVersion,
           route.query.path,
           s3Bucket
         ),
-        scicrunch.getDatasetInfoFromPennsieveIdentifier(route.params.datasetId)
       ])
       hasSegmentationViewer = segmentation_info_response.data != undefined
       
-      const segmentation_info = {
-        ...segmentation_info_response.data,
-        name: baseName(route.query.path)
-      }
-      const species_lookup_response = await general.lookupOntoTerm(
-        segmentation_info.subject.species
-      )
     } catch (e) {
       hasSegmentationViewer = false
     }
+    // We must remove the N: in order for scicrunch to realize the package
+    const expectedScicrunchIdentifier = sourcePackageId.replace("N:", "")
+    const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(
+      expectedScicrunchIdentifier
+    )
+    const result = pathOr([], ['data', 'result'], scicrunchResponse)
+    const scicrunchData = result?.length > 0 ? result[0] : []
+    const matchedData = scicrunchData['abi-plot']?.filter(function(el) {
+      return el.identifier == expectedScicrunchIdentifier
+    })
+    const plotData = matchedData?.length > 0 ? matchedData[0] : {}
+    const hasPlotViewer = plotData != {}
 
     let packageType = "None"
     if (sourcePackageId !== 'details') {
@@ -131,16 +140,19 @@ export default {
 
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' :
-      hasSegmentationViewer ? 'segmentationViewer' : ''
+      hasSegmentationViewer ? 'segmentationViewer' : 
+      hasPlotViewer ? 'plotViewer' : ''
 
     return {
       biolucidaData,
+      plotData,
       segmentationData: {
         share_link: `${process.env.NL_LINK_PREFIX}/dataviewer?datasetId=${route.params.datasetId}&version=${route.params.datasetVersion}&path=${filePath}`,
         status: ''
       },
       file,
       hasBiolucidaViewer,
+      hasPlotViewer,
       hasSegmentationViewer,
       sourcePackageId,
       packageType,
@@ -165,7 +177,7 @@ export default {
 
   computed: {
     hasViewer: function() {
-      return this.hasBiolucidaViewer || this.hasSegmentationViewer
+      return this.hasBiolucidaViewer || this.hasSegmentationViewer || this.hasPlotViewer
     },
     datasetId: function() {
       return this.$route.params.datasetId
@@ -185,6 +197,19 @@ export default {
           })
         } else {
           this.tabs = this.tabs.filter(tab => tab.id !== 'imageViewer')
+        }
+      },
+      immediate: true
+    },
+    hasPlotViewer: {
+      handler: function(hasViewer) {
+        if (hasViewer) {
+          this.tabs.push({
+            label: 'Plot Viewer',
+            id: 'plotViewer'
+          })
+        } else {
+          this.tabs = this.tabs.filter(tab => tab.id !== 'plotViewer')
         }
       },
       immediate: true
