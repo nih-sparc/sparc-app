@@ -50,7 +50,7 @@
     </el-form-item>
 
     <el-form-item
-      class="mt-32 vertical-content"
+      class="mt-0 vertical-content"
       prop="manuscriptDoi"
       :disabled="form.publishedManuscript !== 'Yes'"
     >

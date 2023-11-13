@@ -318,7 +318,6 @@ const openableFileTypes = [
   'jpeg',
   'png',
   'svg',
-  'mp4',
 ]
 
 export const contentTypes = {
