@@ -77,7 +77,7 @@
           <div v-if="!isDatasetSizeLarge">
             <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and metadata directly to your computer free of charge. Please note that the files will be compressed upon download.</div>
             <a :href="downloadUrl">
-              <el-button class="my-16">Download full dataset</el-button>
+              <el-button @click="sendGtmEvent" class="my-16">Download full dataset</el-button>
             </a>
           </div>
           <div v-else>
@@ -96,8 +96,8 @@
             :href="sdsViewer"
             target="_blank"
           >
-            <el-button class="secondary">
-              SDS Viewer
+            <el-button class="secondary" @click="onSdsButtonClick">
+              Explore in SDS Viewer
             </el-button>
           </a>
         </div>
@@ -302,6 +302,13 @@ export default {
           this.$message(failMessage('Failed to copy.'))
         }
     },
+    onSdsButtonClick() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'sds_viewer_button_click',
+        button_location: 'files_tab'
+      })
+    },
     agreementLoaded(id) {
       this.agreementId = id
     },
@@ -333,6 +340,15 @@ export default {
       }
 
       this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
+    },
+    sendGtmEvent() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'download_full_dataset',
+        dataset_id: this.datasetId,
+        version_id: propOr('undefined', 'version', this.datasetInfo),
+        doi: propOr('undefined', 'doi', this.datasetInfo)
+      })
     }
   }
 }
