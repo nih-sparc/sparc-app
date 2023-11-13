@@ -196,7 +196,7 @@ const links = [
   {
     title: 'data',
     displayTitle: 'Data & Models',
-    href: '/data'
+    href: '/data?type=dataset'
   },
   {
     title: 'resources',
@@ -217,6 +217,11 @@ const links = [
     title: 'about',
     displayTitle: 'About',
     href: '/about'
+  },
+  {
+    title: 'share-data',
+    displayTitle: 'Submit to SPARC',
+    href: '/share-data'
   }
 ]
 

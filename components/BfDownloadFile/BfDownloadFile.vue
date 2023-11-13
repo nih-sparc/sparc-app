@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { propOr } from 'ramda'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 
 const DEFAULT_ARCHIVE_NAME = 'sparc-portal-data'
@@ -188,6 +189,11 @@ export default {
       this.zipData = JSON.stringify(payload, undefined)
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
+      })
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'dataset_file_download',
+        files: propOr('', 'paths', payload)
       })
       this.closeConfirmDownload()
     },
