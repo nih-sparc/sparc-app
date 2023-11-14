@@ -37,7 +37,7 @@ import Gallery from '@/components/Gallery/Gallery.vue'
 
 import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
-import { propOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 
 import { mapState } from 'vuex'
 
@@ -67,8 +67,10 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
     ])
 
     if (biolucida_response.status === 'success') {
+      const scicrunchData = pathOr([], ['data','result'], scicrunch_response)
       biolucidaImageData = biolucida_response
       biolucidaImageData['discover_dataset_version'] = datasetVersion
+      biolucidaImageData['dataset_info'] = scicrunchData.length > 0 ? scicrunchData[0] : {}
     }
 
     if (scicrunch_response.data.result.length > 0) {
@@ -385,12 +387,7 @@ export default {
                 thumbnail = 'data:image/png;base64,' + img
               }
             }
-            const filePath = this.getS3FilePath(
-              datasetId,
-              datasetVersion,
-              videoFile.dataset.path
-            )
-            const linkUrl = `${baseRoute}datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}&mimetype=${videoFile.mimetype.name}`
+            const linkUrl = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${videoFile.dataset.path}`
             items.push({
               title: videoFile.name,
               type: 'Video',
@@ -441,7 +438,7 @@ export default {
               // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
               file_path = file_path.replaceAll(' ', '_')
               file_path = file_path.replaceAll(',', '_')
-              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=files/${file_path}`
+              const link = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
 
               this.getSegmentationThumbnail(items, {
                 id,
@@ -482,7 +479,7 @@ export default {
                 },
                 this.defaultPlotImg
               )
-              const linkUrl = `${baseRoute}datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&identifier=${id}`
+              const linkUrl = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
               return {
                 id,
                 title: baseName(file_path),
@@ -517,11 +514,18 @@ export default {
       deep: true,
       immediate: true,
       handler: function(biolucidaData) {
+        const biolucida2DItems = pathOr([], ['dataset_info','biolucida-2d'], biolucidaData)
         let items = []
         const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
           items.push(
             ...Array.from(biolucidaData.dataset_images, dataset_image => {
+              let filePath = ""
+              biolucida2DItems.forEach(biolucida2DItem => {
+                if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
+                  filePath = "files/" + pathOr("", ['dataset','path'], biolucida2DItem)
+                }
+              })
               this.getThumbnailFromBiolucida(items, {
                 id: dataset_image.image_id,
                 fetchAttempts: 0
@@ -534,8 +538,10 @@ export default {
                 process.env.BL_SHARE_LINK_PREFIX,
                 ''
               )
-              // https://sparc.science/datasets/imageviewer/2724?view=MjcyNC1jb2wtMTA4&dataset_version=5&dataset_id=43
-              let linkUrl =
+              // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
+              let linkUrl = filePath != "" ?
+                baseRoute +
+                `datasets/file/${biolucidaData.discover_dataset_id}/${biolucidaData.discover_dataset_version}?path=${filePath}` :
                 baseRoute +
                 'datasets/biolucidaviewer/' +
                 dataset_image.image_id +
