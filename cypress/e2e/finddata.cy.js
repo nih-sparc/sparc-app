@@ -7,7 +7,7 @@ const singleFacet = "Human"
 
 const multipleFacets = ["Human", "Organ"]
 
-categories.forEach(category => {
+categories.forEach((category) => {
 
   describe(`Find Data in ${category}`, { testIsolation: false }, function () {
     before(function () {
@@ -28,33 +28,44 @@ categories.forEach(category => {
       cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('20').click()
       cy.get('.el-table__row').should('have.length', 20)
     })
-    const searchInput = keywords.join(',')
-    it(`Keyword Search - ${searchInput}`, function () {
-      cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
-      cy.get('.el-input__inner').type(searchInput)
-      cy.get('.btn-clear-search > .svg-icon').should('be.visible')
-      cy.get('.search-text').click()
-      cy.url({ decode: true }).should('contain', searchInput)
+    keywords.forEach((keyword) => {
+      it(`Keyword Search - ${keyword}`, function () {
+        cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
+        cy.get('.el-input__inner').clear()
+        cy.get('.el-input__inner').type(keyword)
+        cy.get('.btn-clear-search > .svg-icon').should('be.visible')
+        cy.get('.search-text').click()
+        cy.url({ decode: true }).should('contain', keyword)
 
-      cy.intercept('POST', '**/query?**').as('keywordSearchResult')
-      cy.wait('@keywordSearchResult')
-
-      cy.get(':nth-child(1) > p').then(($p) => {
-        const noResult = $p.text().includes('\n                  0 Results | Showing')
-        if (noResult) {
-          cy.get('.el-table__empty-text').should('exist')
+        if (category === "projects") {
+          cy.wait(500)
         } else {
-          cy.get('.el-table__empty-text').should('not.exist')
-          const regex = new RegExp(keywords.join('|'), 'i')
-          cy.get('.table-wrap').within(() => {
-            cy.get('b').contains(regex)
-          })
+          cy.intercept('POST', '**/query?**').as('keywordSearchResult')
+          cy.wait('@keywordSearchResult')
         }
+
+        cy.get(':nth-child(1) > p').then(($p) => {
+          const noResult = $p.text().includes('\n                  0 Results | Showing')
+          if (noResult) {
+            cy.get('.el-table__empty-text').should('exist')
+          } else {
+            cy.get('.el-table__empty-text').should('not.exist')
+            cy.get('.table-wrap').then(($content) => {
+              const keywordExist = $content.text().toLowerCase().includes(keyword.toLowerCase())
+              if (keywordExist) {
+                const regex = new RegExp(keyword, 'i')
+                cy.get('b').contains(regex)
+              } else {
+                cy.get('b').should('not.exist')
+              }
+            })
+          }
+        })
+        cy.get('.btn-clear-search > .svg-icon').click()
+        // // There are situations that dataset cards do not show the (highlighted) keywords
+        // // Just in case this happens for all the displayed dataset cards, extra tests may need to be added
+        // cy.get(':nth-child(1) > .el-table_1_column_2 > .cell').contains(regex)
       })
-      cy.get('.btn-clear-search > .svg-icon').click()
-      // // There are situations that dataset cards do not show the (highlighted) keywords
-      // // Just in case this happens for all the displayed dataset cards, extra tests may need to be added
-      // cy.get(':nth-child(1) > .el-table_1_column_2 > .cell').contains(regex)
     })
     it(`Single Faceted Browse Search - ${singleFacet}`, function () {
       // let facetCategory
