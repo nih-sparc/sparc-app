@@ -375,7 +375,9 @@ export default {
       version_id: propOr('undefined', 'version', this.datasetInfo),
       doi: propOr('undefined', 'doi', this.datasetInfo)
     })
-    window['google_tag_manager'][`${process.env.GOOGLE_TAG_MANAGER_ID}`].dataLayer.reset()
+    this.$nextTick(() => {
+      window['google_tag_manager'][`${process.env.GOOGLE_TAG_MANAGER_ID}`].dataLayer.reset()
+    })
   },
 
   computed: {
