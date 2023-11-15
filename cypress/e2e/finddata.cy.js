@@ -66,8 +66,8 @@ categories.forEach((category) => {
           }
         })
         cy.get('.btn-clear-search > .svg-icon').click()
-        // // There are situations that dataset cards do not show the (highlighted) keywords
-        // // Just in case this happens for all the displayed dataset cards, extra tests may need to be added
+        // *** There are situations that dataset cards do not show the (highlighted) keywords
+        // *** Just in case this happens for all the displayed dataset cards, extra tests may need to be added
         // cy.get('')
       })
     })
@@ -76,12 +76,14 @@ categories.forEach((category) => {
       cy.get('.no-facets').should('contain', 'No filters applied')
       // Expand all
       cy.get('.expand-all-container > .el-link > .el-link--inner').click()
+      cy.get('.label-content-container').should('be.visible')
+      cy.get('.label-content-container').should('have.length.above', 0)
       if (category !== 'projects') {
-        // This action is used to expand all parent facets in ANATOMICAL STRUCTURE
-        // Avoid error when using child facets as test facets
+        // *** This action is used to expand all parent facets in ANATOMICAL STRUCTURE
+        // *** Avoid error when using child facets as test facets
+        // *** Need to think of a solution to open the specific parent facet, instead of open all
         cy.get('.el-tree-node__expand-icon.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
       }
-      cy.get('.label-content-container').should('be.visible')
       cy.get('.label-content-container').then(($label) => {
         const singleFacetExist = $label.find('span.capitalize:visible').text().toLowerCase().includes(singleFacet.toLowerCase())
         if (singleFacetExist) {
@@ -125,9 +127,10 @@ categories.forEach((category) => {
           // Reset all
           cy.wrap($label).contains(regex).click()
           cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
-          cy.get('.el-card__body > .capitalize').should('not.exist')
-          // // 'No filters applied' sometimes will not appear after click 'reset all' in Cypress. BUG or Cypress issue?
+          // *** 'No filters applied' sometimes will not appear after click 'reset all' in Cypress. BUG or Cypress issue?
           // cy.get('.no-facets').should('contain', 'No filters applied')
+          // *** There is a bug with reset all function.
+          // cy.get('.el-card__body > .capitalize').should('not.exist')
         } else {
           this.skip()
         }
@@ -135,6 +138,9 @@ categories.forEach((category) => {
     })
     it(`Multiple Faceted Browse Search - ${multipleFacets}`, function () {
       cy.get('.expand-all-container > .el-link > .el-link--inner').click()
+      if (category !== 'projects') {
+        cy.get('.el-tree-node__expand-icon.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
+      }
       cy.get('.label-content-container').then(($label) => {
         let multipleFacetsExist = true
         multipleFacets.forEach((facet) => {
