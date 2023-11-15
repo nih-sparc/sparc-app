@@ -4,6 +4,7 @@
       <client-only placeholder="Loading plot ...">
         <div class="plotvuer-container">
           <plot-vuer
+            v-if="source_url"
             :data-source="{ url: source_url }"
             :metadata="metadata"
             :supplemental-data="supplemental_data"
