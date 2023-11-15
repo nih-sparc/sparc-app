@@ -26,7 +26,7 @@
                 :numDownloads="numDownloads"
               />
               <content-tab-card
-                class="mt-16"
+                class="mt-32"
                 id="datasetDetailsTabsContainer"
                 :tabs="tabs"
                 :active-tab-id="activeTabId"
