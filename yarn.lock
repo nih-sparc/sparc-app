@@ -2335,10 +2335,10 @@
   resolved "https://registry.yarnpkg.com/@miyaoka/nuxt-twitter-widgets-module/-/nuxt-twitter-widgets-module-0.0.1.tgz#fdca759252e7496c783e69b926623551bf8a4a01"
   integrity sha512-vYJkz9EemNS4Ur4uXI8R/tKFyXWrGypQwpFF/PSA/JZaGx19gpAfzTxHg0e7EQ1VIS+GTN2U6AUXz9MD05P+Nw==
 
-"@nih-sparc/sparc-design-system-components@^0.27.3":
-  version "0.27.3"
-  resolved "https://registry.yarnpkg.com/@nih-sparc/sparc-design-system-components/-/sparc-design-system-components-0.27.3.tgz#5186698906beb2976b1cc11c85d1fa5dcde1cc96"
-  integrity sha512-t472d18892Edt3tvnUhRuFRedHbFvjbV5tvUZGOIIlGKElXndsr4M9cLfdH5rXirjnvXYhN0O0SOSARjGGOouA==
+"@nih-sparc/sparc-design-system-components@^0.27.4":
+  version "0.27.4"
+  resolved "https://registry.yarnpkg.com/@nih-sparc/sparc-design-system-components/-/sparc-design-system-components-0.27.4.tgz#63685c736d2b23cd67edd9eefcd9e94a7b31dbab"
+  integrity sha512-h10Nt7sB3zSaWoXsrCz5/TDJiDKHAIqQB+BPIXJaME9fFUO13F2AYzpk6niSC0zNudXiCfYv+oT8rHmz+VIBPA==
   dependencies:
     "@carbon/grid" "10.17.0"
     core-js "^3.6.5"
