@@ -1,5 +1,6 @@
 const datasetIds = [150, 155]
 
+// const apinatomyModels = ['Rat']
 const apinatomyModels = ['Rat', 'Human Female']
 
 describe('Maps viewer', { testIsolation: false }, function () {
@@ -8,12 +9,17 @@ describe('Maps viewer', { testIsolation: false }, function () {
   })
 
   apinatomyModels.forEach((model) => {
+
     it.only(`Provenance card for ${model}`, function () {
-      cy.wait(5000)
-      cy.get('#flatmap-select').click()
-      cy.get('.el-select-dropdown__item').should('be.visible')
-      cy.get('.el-select-dropdown__item:visible').filter(`:contains(${model})`).click()
-      cy.get('.maplibregl-touch-drag-pan > .maplibregl-canvas').click({ multiple: true });
+      cy.intercept('**/flatmap/**').as('flatmap')
+      cy.wait('@flatmap')
+      if (model !== 'Rat') {
+        cy.get('#flatmap-select').click()
+        cy.get('.el-select-dropdown__item').should('be.visible')
+        cy.get('.el-select-dropdown__item:visible').filter(`:contains(${model})`).click()
+      }
+      // When 'numTestsKeptInMemory' is 0, there will have more than one result
+      cy.get('.maplibregl-touch-drag-pan.maplibregl-touch-zoom-rotate > .maplibregl-canvas').click({ multiple: true });
       cy.get('.maplibregl-popup-content').should('be.visible')
       cy.get('.maplibregl-popup-content').within(() => {
         cy.get('.title').should('exist')
