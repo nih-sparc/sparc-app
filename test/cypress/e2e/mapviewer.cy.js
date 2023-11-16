@@ -1,27 +1,30 @@
+// const datasetIds = [150]
 const datasetIds = [150, 155]
 
-// const apinatomyModels = ['Rat']
+// const apinatomyModels = ['Human Female']
 const apinatomyModels = ['Rat', 'Human Female']
 
-describe('Maps viewer', { testIsolation: false }, function () {
+const threeDSyncView = 'Human Male'
+
+describe('Maps Viewer', { testIsolation: false }, function () {
   before(function () {
     cy.visit('/maps?type=ac')
+    cy.intercept('**/flatmap/**').as('flatmap')
+    cy.wait('@flatmap')
   })
 
   apinatomyModels.forEach((model) => {
 
-    it.only(`Provenance card for ${model}`, function () {
-      cy.intercept('**/flatmap/**').as('flatmap')
-      cy.wait('@flatmap')
+    it(`Provenance card for ${model}`, function () {
       if (model !== 'Rat') {
         cy.get('#flatmap-select').click()
         cy.get('.el-select-dropdown__item').should('be.visible')
-        cy.get('.el-select-dropdown__item:visible').filter(`:contains(${model})`).click()
+        cy.get('.el-select-dropdown__item').contains(new RegExp(model, 'i')).click({ force: true })
       }
-      // When 'numTestsKeptInMemory' is 0, there will have more than one result
-      cy.get('.maplibregl-touch-drag-pan.maplibregl-touch-zoom-rotate > .maplibregl-canvas').click({ multiple: true });
-      cy.get('.maplibregl-popup-content').should('be.visible')
-      cy.get('.maplibregl-popup-content').within(() => {
+      // There will have more than one matched result, only when 'numTestsKeptInMemory' is 0
+      // Unable to DEBUG as 'numTestsKeptInMemory' is 0, logs won't show in the console
+      cy.get('.maplibregl-touch-drag-pan.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').click();
+      cy.get('.maplibregl-popup-content:visible').within(() => {
         cy.get('.title').should('exist')
         cy.get('.subtitle').should('exist')
         cy.contains(/COMPONENTS/i).should('exist')
@@ -29,9 +32,20 @@ describe('Maps viewer', { testIsolation: false }, function () {
       cy.get('.maplibregl-popup-close-button').click()
     })
   })
-  it('From 2D human, open 3D map for synchronised view (split screen)', function () {
-    cy.get('.open-tab > .el-icon-arrow-left').click();
-    cy.get('.close-tab > .el-icon-arrow-right').click();
+  it(`From 2D ${threeDSyncView}, open 3D map for synchronised view`, function () {
+    cy.get('#flatmap-select').click()
+    cy.get('.el-select-dropdown__item').should('be.visible')
+    cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
+    cy.get('.settings-group.open > .el-row:visible').filter(':contains(Open new map)').within(() => {
+      cy.get('use').click()
+    })
+    cy.get('.open-map-popper:visible').contains(/Open Sync Map/i).click()
+    cy.get('.toolbar-flex-container').should('have.length', 2)
+    cy.get('.context-card > .card-right').within(()=>{
+      cy.get('.title').contains(/3D human whole-body/i).should('exist')
+      cy.get('p').contains(/Visualization/i).should('exist')
+      cy.get('.subtitle').contains(/Scaffold Views/i).should('exist')
+    })
   })
   it('Search within display', function () {
     cy.get('.open-tab > .el-icon-arrow-left').click();
@@ -60,7 +74,6 @@ describe('Maps viewer', { testIsolation: false }, function () {
         }
       })
       cy.contains(/View Scaffold/i).click()
-      cy.get('.close-tab > .el-icon-arrow-right').click();
     })
   })
 })
