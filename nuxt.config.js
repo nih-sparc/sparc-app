@@ -1,9 +1,9 @@
-export default {
+const config = {
   /**
    * Outside of localhost visibility
    */
   // server: {
-  //   host: '0.0.0.0'
+  //   host: '0.0.0.0',
   // },
   /*
    ** Headers of the page
@@ -130,8 +130,6 @@ export default {
   },
 
   serverMiddleware: [
-    // Will register redirect-ssl npm package
-    'redirect-ssl'
   ],
 
   /*
@@ -278,5 +276,14 @@ export default {
         removeEmptyElements: true
       }
     }
-  }
+  },
 }
+
+if (process.env.DISABLE_REDIRECT_SSL !== 'true') {
+  //Need to set a flag to disable redirect ssl for e2e testing
+  //on github action. 
+  config.serverMiddleware.push('redirect-ssl');
+}
+
+
+export default config

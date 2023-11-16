@@ -14,7 +14,8 @@
     "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
     "generate-icons": "vsvg -s ./static/icons-svg -t ./static/icons-js",
     "test": "jest",
-    "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
+    "test-run-e2e": "cypress run"
   },
   "dependencies": {
     "@abi-software/gallery": "0.3.2",
@@ -71,6 +72,7 @@
     "@types/node": "^13.7.0",
     "@vue/test-utils": "1.1.0",
     "babel-jest": "^24.1.0",
+    "cypress": "12.17.4",
     "jest": "^24.1.0",
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
@@ -80,6 +82,6 @@
     "maplibre-gl": "2.4.0"
   },
   "engines": {
-    "node": "12.13.1"
+    "node": "14.17.6"
   }
 }
