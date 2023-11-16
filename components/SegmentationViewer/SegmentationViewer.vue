@@ -3,7 +3,7 @@
     <template v-if="data.status !== 'error'">
       <p>
         <a :href="data.share_link" target="_blank">
-          <bf-button>
+          <el-button>
             View Full Screen
             <svg-icon
               class="icon-full-screen"
@@ -11,10 +11,15 @@
               height="24"
               width="24"
             />
-          </bf-button>
+          </el-button>
         </a>
       </p>
       <iframe :src="data.share_link" />
+      <segmentation-viewer-metadata
+        :segmentationData="data"
+        :datasetInfo="datasetInfo"
+        :file="file"
+      />
     </template>
     <p v-else class="error">
       Sorry, an error has occurred
@@ -23,13 +28,13 @@
 </template>
 
 <script>
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import SegmentationViewerMetadata from '@/components/ViewersMetadata/SegmentationViewerMetadata.vue'
 
 export default {
   name: 'SegmentationViewer',
 
   components: {
-    BfButton
+    SegmentationViewerMetadata
   },
 
   props: {
@@ -41,7 +46,15 @@ export default {
           status: ''
         }
       }
-    }
+    },
+    file: {
+      type: Object,
+      default: () => {}
+    },
+    datasetInfo: {
+      type: Object,
+      default: () => {}
+    },
   }
 }
 </script>
