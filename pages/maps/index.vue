@@ -64,35 +64,6 @@ const formatLabel = (text) => {
   return text
 }
 
-const getFlatmapEntry = async (route) => {
-  const uberonid = route.query.uberonid
-  //Specify the gender of human
-  let organ_name = uberonid
-  let biologicalSex = route.query.biologicalSex
-  if (route.query.taxo && route.query.taxo === 'NCBITaxon:9606') {
-    if (!biologicalSex) {
-      biologicalSex = 'PATO:0000384'
-    }
-  }
-  try {
-    let name = await scicrunch.getOrganFromUberonId(uberonid)
-    //We do not want to display the body proper
-    if (name && name.toLowerCase() === 'body proper') {
-      organ_name = undefined
-    }
-  } catch (e) {
-    // Error caught return empty data.
-  }
-
-  return {
-    type: 'MultiFlatmap',
-    taxo: route.query.taxo,
-    biologicalSex: biologicalSex,
-    uuid: route.query.fid,
-    organ: organ_name,
-  }
-}
-
 const getScaffoldState = async (uuid, $axios) => {
   if (uuid) {
     let url = `${process.env.portal_api}/scaffold/getstate`
@@ -193,6 +164,7 @@ export default {
         },
       ],
       currentEntry: undefined,
+      organ_name: undefined,
       facets: [],
       uuid: undefined,
       startingMap: "AC",
@@ -358,7 +330,7 @@ export default {
           ) {
             this.$message(
               failMessage(
-                `Sorry! A flatmap for a ${this.forSpecies} does not yet exist. The ${this.organ} of a rat has been shown instead.`
+                `Sorry! A flatmap for a ${this.forSpecies} does not yet exist. The ${this.organ_name} of a rat has been shown instead.`
               )
             )
           }
@@ -397,6 +369,59 @@ export default {
         }
       });
     },
+    //Process any taxon or anatomy parameters if they are available
+    processEntry: async function(route) {
+      //anatomy and taxon query parameters should be replaced taxo 
+      //and uberonid.
+      const anatomy = route.query.anatomy ? route.query.anatomy : route.query.uberonid
+      const taxon = route.query.taxon ? route.query.taxon : route.query.taxo
+      if (anatomy || taxon) {
+        //Specify the gender of human
+        let biologicalSex = route.query.biologicalSex
+        if (taxon && taxon === 'NCBITaxon:9606') {
+          if (!biologicalSex) {
+            biologicalSex = 'PATO:0000384'
+          }
+        }
+        try {
+          this.organ_name = await scicrunch.getOrganFromUberonId(anatomy)
+          //We do not want to display the body proper
+          if (this.organ_name && this.organ_name.toLowerCase() === 'body proper') {
+            anatomy = undefined
+          }
+        } catch (e) {
+          // Error caught return empty data.
+        }
+        if (this.$route.query.type === 'ac' || this.$route.query.type === 'flatmap') {
+          this.currentEntry = {
+            type: 'MultiFlatmap',
+            taxo: taxon,
+            biologicalSex: biologicalSex,
+            uuid: route.query.fid,
+            organ: anatomy,
+          }
+          this.checkSpecies()
+          return
+        }
+        if (this.$route.query.type === 'fc' && anatomy) {
+          this.currentEntry = {
+            type: 'Flatmap',
+            resource: 'FunctionalConnectivity',
+            label: 'Functional',
+            state: {searchTerm: anatomy}
+          }
+          return
+        }
+      }
+      if (this.$route.query.type === 'ac' || this.$route.query.type === 'flatmap') {
+        this.startingType = "AC"
+        return
+      }
+      if (this.$route.query.type === 'fc') {
+        this.startingMap = "FC"
+        return
+      }
+    },
     openViewWithQuery: async function () {
       //Open the map with specific view defined by the query.
       //First get the bucket and facets information if available
@@ -429,14 +454,10 @@ export default {
             )
           )
         }
-      } else if (this.$route.query.type === 'flatmap') {
-        this.currentEntry = await getFlatmapEntry(this.$route)
-        //Check species information
-        this.checkSpecies()
-      } else if (this.$route.query.type === 'fc') {
-        this.startingMap = "FC"
-      } else if (this.$route.query.type === 'ac') {
-        this.startingMap = "AC"
+      } else if (this.$route.query.type === 'fc' || 
+        this.$route.query.type === 'ac' || 
+        this.$route.query.type === 'flatmap') {
+        await this.processEntry(this.$route)
       } else if (this.$route.query.type === 'wholebody') {
         this.startingMap = "WholeBody"
       }
