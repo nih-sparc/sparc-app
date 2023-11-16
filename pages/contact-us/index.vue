@@ -11,7 +11,7 @@
             <nuxt-link
               class="tabs__button"
               @click.native="resetForms"
-              :class="{ active: type.type === $route.query.type || (type.subtypes != undefined && type.subtypes.includes($route.query.type)) || ($route.query.type === undefined && type.type === 'feedback') }"
+              :class="{ active: type.type === $route.query.type || (type.subtypes != undefined && type.subtypes.includes($route.query.type)) || ($route.query.type === undefined && type.type === 'research') }"
               :to="{
                 name: 'contact-us',
                 query: {
@@ -215,10 +215,13 @@ export default {
     },
     isFeedbackForm() {
       const feedbackFormType = this.formTypes.find(formType => formType.type === 'feedback')
-      return this.$route.query.type === undefined || this.$route.query.type === 'feedback' || this.formType === feedbackFormType.type || feedbackFormType.subtypes.includes(this.formType)
+      return this.$route.query.type === 'feedback' || this.formType === feedbackFormType.type || feedbackFormType.subtypes.includes(this.formType)
     },
     formComponent: function() {
-      return defaultTo('', formComponents[this.$route.query.type])
+      if (this.$route.query.type === 'feedback') {
+        return ''
+      }
+      return defaultTo(ResearchForm, formComponents[this.$route.query.type])
     },
     formTypeObject() {
       if (this.formType == undefined)
@@ -257,7 +260,7 @@ export default {
      */
     $route: {
       handler(to) {
-        this.formType = to.query.type === 'feedback' ? undefined : to.query.type
+        this.formType = to.query.type === 'research' ? undefined : to.query.type
       },
       immediate: true
     },

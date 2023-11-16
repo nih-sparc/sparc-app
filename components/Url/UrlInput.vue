@@ -2,9 +2,9 @@
   <div>
     <div class="url-input mr-16">
       <el-input :disabled="disabled" :placeholder="placeholder" v-model="value">
-          <template slot="prepend">
-            <slot name="prepend" />
-          </template>
+        <template slot="prepend">
+          <slot name="prepend" />
+        </template>
       </el-input>
     </div>
     <span v-on:click="addLinkClicked" class="add-link-button link1" v-if="showAddLink && !disabled">
