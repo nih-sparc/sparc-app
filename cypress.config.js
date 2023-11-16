@@ -9,6 +9,8 @@ module.exports = defineConfig({
     baseUrl: process.env.ROOT_URL ? process.env.ROOT_URL : 'http://localhost:3000',
     experimentalStudio: true,
     projectId: process.env.CYPRESS_PROJECT_ID,
+    specPattern: "test/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
+    supportFile: "test/cypress/support/e2e.js",
     viewportWidth: 1600,
     viewportHeight: 900,
     //Prevent huge amount of time on reloading page
@@ -18,4 +20,8 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
   },
+  fixturesFolder: "test/cypress/fixtures",
+  screenshotsFolder: "test/cypress/screenshots",
+  videosFolder: "test/cypress/videos",
+  downloadsFolder: "test/cypress/downloads",
 });
