@@ -26,7 +26,7 @@
                 :numDownloads="numDownloads"
               />
               <content-tab-card
-                class="mt-16"
+                class="mt-32"
                 id="datasetDetailsTabsContainer"
                 :tabs="tabs"
                 :active-tab-id="activeTabId"
@@ -369,13 +369,10 @@ export default {
 
   mounted() {
     this.$gtm.push({
-      event: 'interaction_event',
-      event_name: 'dataset_page_view',
       dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
       version_id: propOr('undefined', 'version', this.datasetInfo),
       doi: propOr('undefined', 'doi', this.datasetInfo)
     })
-    window['google_tag_manager'][`${process.env.GOOGLE_TAG_MANAGER_ID}`].dataLayer.reset()
   },
 
   computed: {
