@@ -4,7 +4,7 @@
       <client-only>
         <content-tab-card
           v-if="hasTimeseriesViewer"
-          class="tabs p-32"
+          class="tabs p-32 pt-48"
           :tabs="tabs"
           :active-tab-id="activeTabId"
         >

@@ -3,7 +3,7 @@
     <template v-if="data.status !== 'error'">
       <el-row class="mb-2 justify-space-between" type="flex">
         <div>
-          <bf-button class="ml-8" @click="launchViewer">
+          <el-button class="ml-8" @click="launchViewer">
             <sparc-tooltip
               placement="bottom-center"
               content="Open in Biolucida desktop application"
@@ -12,8 +12,8 @@
                 View in 3D
               </div>
             </sparc-tooltip>
-          </bf-button>
-          <bf-button class="ml-8" @click="launchNL360C">
+          </el-button>
+          <el-button class="ml-8" @click="launchNL360C">
             <sparc-tooltip
               placement="top-center"
               content="Open in Neurolucida 360 Cloud"
@@ -22,7 +22,7 @@
                 View in Neurolucida 360
               </div>
             </sparc-tooltip>
-          </bf-button>
+          </el-button>
         </div>
         <client-only>
           <button class="btn-copy-permalink" @click="queryView">
@@ -38,6 +38,11 @@
         </client-only>
       </el-row>
       <iframe ref="biolucida" :src="data.share_link" @load="biolucidaLoaded" />
+      <biolucida-viewer-metadata
+        :biolucidaData="data"
+        :datasetInfo="datasetInfo"
+        :file="file"
+      />
     </template>
     <p v-else class="error">
       Sorry, an error has occurred
@@ -48,14 +53,14 @@
 <script>
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
-import BfButton from '@/components/shared/BfButton/BfButton.vue'
+import BiolucidaViewerMetadata from '@/components/ViewersMetadata/BiolucidaViewerMetadata.vue'
 import biolucida from '~/services/biolucida'
 
 export default {
   name: 'BiolucidaViewer',
 
   components: {
-    BfButton
+    BiolucidaViewerMetadata,
   },
 
   props: {
@@ -71,8 +76,17 @@ export default {
           web_neurolucida_link: ''
         }
       }
-    }
+    },
+    file: {
+      type: Object,
+      default: () => {}
+    },
+    datasetInfo: {
+      type: Object,
+      default: () => {}
+    },
   },
+
   mounted() {
     window.addEventListener('message', this.receiveMessage)
   },
