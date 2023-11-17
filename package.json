@@ -15,7 +15,8 @@
     "generate-icons": "vsvg -s ./static/icons-svg -t ./static/icons-js",
     "test": "jest",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
-    "test-run-e2e": "cypress run"
+    "test-cypress": "cypress run",
+    "test-run-e2e": "cypress run --record"
   },
   "dependencies": {
     "@abi-software/gallery": "0.3.2",
@@ -25,7 +26,7 @@
     "@aws-amplify/auth": "^4.4.4",
     "@aws-amplify/core": "^4.4.2",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
-    "@nih-sparc/sparc-design-system-components": "^0.27.3",
+    "@nih-sparc/sparc-design-system-components": "^0.27.4",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
     "@nuxtjs/gtm": "^2.4.0",
