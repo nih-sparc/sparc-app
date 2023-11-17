@@ -15,7 +15,8 @@
     "generate-icons": "vsvg -s ./static/icons-svg -t ./static/icons-js",
     "test": "jest",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
-    "test-run-e2e": "cypress run"
+    "test-cypress": "cypress run",
+    "test-run-e2e": "cypress run --record"
   },
   "dependencies": {
     "@abi-software/gallery": "0.3.2",
