@@ -1,8 +1,8 @@
 // const datasetIds = [150]
 const datasetIds = [150, 155]
 
-// const apinatomyModels = ['Human Female']
-const apinatomyModels = ['Rat', 'Human Female']
+// const taxonModels = ['Human Female']
+const taxonModels = ['Rat', 'Human Female']
 
 const threeDSyncView = 'Human Male'
 
@@ -15,7 +15,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.wait('@flatmap')
   })
 
-  apinatomyModels.forEach((model) => {
+  taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
       cy.intercept('**/flatmap/**').as('flatmap')
@@ -37,8 +37,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     })
   })
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    cy.intercept('**/get_body_scaffold_info/**').as('body_scaffold')
-    cy.intercept('**/s3-resource/**').as('resource')
+    cy.intercept('GET', '**/get_body_scaffold_info/**').as('body_scaffold')
+    cy.intercept('GET', '**/s3-resource/**').as('resource')
     cy.get('#flatmap-select').click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
     cy.get('.settings-group.open > .el-row:visible').filter(':contains(Open new map)').within(() => {
@@ -63,9 +63,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   datasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
-      cy.intercept('**/query?**').as('query')
-      cy.intercept('**/dataset_info/**').as('dataset_info')
-      cy.intercept('**/datasets/**').as('datasets')
+      cy.intercept('POST', '**/query?**').as('query')
+      cy.intercept('GET', '**/dataset_info/**').as('dataset_info')
+      cy.intercept('GET', '**/datasets/**').as('datasets')
       cy.get('.open-tab > .el-icon-arrow-left').click()
       cy.get('.search-input > .el-input__inner').clear()
       cy.get('.search-input > .el-input__inner').type(datasetId)
