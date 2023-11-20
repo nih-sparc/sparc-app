@@ -16,17 +16,18 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
+      cy.intercept('**/flatmap/**').as('flatmap')
+
+      cy.wait('@flatmap', { timeout: 20000 })
+
       // Loading mask should not exist after the default flatmap is loaded
       cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
       if (model !== 'Rat') {
-        cy.intercept('**/flatmap/**').as('flatmap')
-
         // Switch to the second flatmap
         cy.get('#flatmap-select').click()
         cy.get('.el-select-dropdown__item').should('be.visible')
         cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
-        cy.wait('@flatmap', { timeout: 20000 })
 
         // Loading mask should not exist after the new flatmap is loaded
         cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
@@ -47,11 +48,14 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     })
   })
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    // Loading mask should not exist after the default flatmap is loaded
-    cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
+    cy.intercept('**/flatmap/**').as('flatmap')
     cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
     cy.intercept('**/s3-resource/**').as('s3-resource')
+
+    cy.wait('@flatmap', { timeout: 20000 })
+
+    // Loading mask should not exist after the default flatmap is loaded
+    cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
     // Switch to the human related flatmap
     cy.get('#flatmap-select').click()
