@@ -1,9 +1,11 @@
 // const categories = ['dataset']
 const categories = ['dataset', 'model', 'simulation', 'projects']
 
+const limit = 20
+
 const keywords = ['Spine', 'neck']
 
-const singleFacet = 'Male'
+const singleFacet = 'Colon'
 
 const multipleFacets = ['Human', 'Organ']
 
@@ -38,17 +40,21 @@ categories.forEach((category) => {
       // Dataset show testing
       // Test whether the number of displayed datasets can be changed
       cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-      cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('20').click()
-      cy.get('.el-table__row').should('have.length', 20)
+      cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(limit).click()
+      cy.url().should('contain', `limit=${limit}`)
+      cy.get('.el-table__row').should('have.length', limit)
     })
+
     keywords.forEach((keyword) => {
+
       it(`Keyword Search - ${keyword}`, function () {
+        cy.intercept('POST', '**/query?**').as('query')
         cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
         cy.get('.el-input__inner').clear().type(keyword)
         cy.get('.btn-clear-search > .svg-icon').should('be.visible')
         cy.get('.search-text').click()
-        cy.url({ decode: true }).should('contain', keyword)
-        cy.wait(500)
+        cy.url().should('contain', keyword)
+        cy.wait('@query')
         cy.get(':nth-child(1) > p').then(($p) => {
           const noResult = $p.text().includes('\n                  0 Results | Showing')
           if (noResult) {
@@ -66,12 +72,15 @@ categories.forEach((category) => {
           }
         })
         cy.get('.btn-clear-search > .svg-icon').click()
+        cy.wait('@query')
         // *** There are situations that dataset cards do not show the (highlighted) keywords
         // *** Just in case this happens for all the displayed dataset cards, extra tests may need to be added
         // cy.get('')
       })
     })
     it(`Single Faceted Browse Search - ${singleFacet}`, function () {
+      cy.intercept('POST', '**/query?**').as('query')
+      cy.intercept('GET', '**/entries?**').as('entries')
       // let facetCategory
       cy.get('.no-facets').should('contain', 'No filters applied')
       // Expand all
@@ -79,10 +88,13 @@ categories.forEach((category) => {
       cy.get('.label-content-container').should('be.visible')
       cy.get('.label-content-container').should('have.length.above', 0)
       if (category !== 'projects') {
+        // If multiple facets are matched, the first will be checked by default
         // *** This action is used to expand all parent facets in ANATOMICAL STRUCTURE
         // *** Avoid error when using child facets as test facets
         // *** Need to think of a solution to open the specific parent facet, instead of open all
-        cy.get('.el-tree-node__expand-icon.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
+        cy.get('.el-icon-caret-right:visible').not('.is-leaf').each(($node) => {
+          cy.wrap($node).click()
+        })
       }
       cy.get('.label-content-container').then(($label) => {
         const singleFacetExist = $label.find('span.capitalize:visible').text().toLowerCase().includes(singleFacet.toLowerCase())
@@ -94,8 +106,14 @@ categories.forEach((category) => {
           // })
           const regex = new RegExp(`(^| )${singleFacet}`, 'i')
           cy.wrap($label).contains(regex).click()
-          cy.url({ decode: true }).should('contain', 'selectedFacetIds')
           cy.get('.el-card__body > .capitalize').contains(regex).should('have.length', 1)
+          if (category === 'projects') {
+            cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
+            cy.wait('@entries')
+          } else {
+            cy.url().should('contain', 'selectedFacetIds')
+            cy.wait('@query')
+          }
           cy.get(':nth-child(1) > p').then(($p) => {
             const noResult = $p.text().includes('\n                  0 Results | Showing')
             if (noResult) {
@@ -137,10 +155,9 @@ categories.forEach((category) => {
       })
     })
     it(`Multiple Faceted Browse Search - ${multipleFacets}`, function () {
+      cy.intercept('POST', '**/query?**').as('query')
+      cy.intercept('GET', '**/entries?**').as('entries')
       cy.get('.expand-all-container > .el-link > .el-link--inner').click()
-      if (category !== 'projects') {
-        cy.get('.el-tree-node__expand-icon.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
-      }
       cy.get('.label-content-container').then(($label) => {
         let multipleFacetsExist = true
         multipleFacets.forEach((facet) => {
@@ -153,6 +170,13 @@ categories.forEach((category) => {
           const multipleRegex = new RegExp(multipleFacets.join('|'), 'i')
           cy.get('.el-card__body > .capitalize:visible').should('have.length.above', 1)
           cy.get('.el-card__body > .capitalize:visible').contains(multipleRegex).should('exist')
+          if (category === 'projects') {
+            cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
+            cy.wait('@entries')
+          } else {
+            cy.url().should('contain', 'selectedFacetIds')
+            cy.wait('@query')
+          }
           cy.get(':nth-child(1) > p').then(($p) => {
             const noResult = $p.text().includes('\n                  0 Results | Showing')
             if (noResult) {
