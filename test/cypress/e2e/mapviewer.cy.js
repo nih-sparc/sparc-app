@@ -121,18 +121,21 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         if (noResult) {
           // Error message should exist if no result
           cy.get('.error-feedback').should('exist')
-          cy.get('.error-feedback').should('contain', 'No results found')
+          cy.get('.error-feedback').contains(/No results found/i).should('exist')
         } else {
           cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
 
           // Check for search result and the tag 'Scaffold'
-          cy.get(':nth-child(1) > .dataset-card-container > .dataset-card > :nth-child(2)').contains(datasetId).should('exist')
-          cy.get(':nth-child(1) > .dataset-card-container > .dataset-card > :nth-child(2) > .card-right > .badges-container > .container').should('contain', 'Scaffold')
-
-          // Close the sidebar
-          cy.get('.close-tab > .el-icon-arrow-right').click()
+          cy.get(':nth-child(1) > .dataset-card-container > .dataset-card > :nth-child(2)', { timeout: 30000 }).within(() => {
+            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').contains(datasetId).should('exist')
+            cy.get('.card-right > .badges-container > .container').contains(/Scaffold/i).should('exist')
+            cy.get('.card-right > .badges-container > .container').contains(/Scaffold/i).click()
+            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').contains(/View Scaffold/i).should('exist')
+          })
         }
       })
+      // Close the sidebar
+      cy.get('.close-tab > .el-icon-arrow-right').click()
     })
   })
 })
