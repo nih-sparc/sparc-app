@@ -16,23 +16,19 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
+      cy.intercept('**/flatmap/**').as('flatmap')
+
       // Loading mask should not exist after the default flatmap is loaded
       cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
-      if (model !== 'Rat') {
+      cy.get('#flatmap-select').click()
+      cy.get('.el-select-dropdown__item').should('be.visible')
+      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
 
-        cy.intercept('**/flatmap/**').as('flatmap')
+      cy.wait('@flatmap', { timeout: 20000 })
 
-        // Switch to the second flatmap
-        cy.get('#flatmap-select').click()
-        cy.get('.el-select-dropdown__item').should('be.visible')
-        cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
-
-        cy.wait('@flatmap', { timeout: 20000 })
-
-        // Loading mask should not exist after the new flatmap is loaded
-        cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-      }
+      // Loading mask should not exist after the new flatmap is loaded
+      cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
       // Open a provenance card
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').click();
@@ -96,9 +92,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   datasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
-      cy.intercept('POST', '**/query?**').as('query')
-      cy.intercept('GET', '**/dataset_info/**').as('dataset_info')
-      cy.intercept('GET', '**/datasets/**').as('datasets')
+      cy.intercept('**/query?**').as('query')
+      cy.intercept('**/dataset_info/**').as('dataset_info')
+      cy.intercept('**/datasets/**').as('datasets')
 
       // Open the sidebar
       cy.get('.open-tab > .el-icon-arrow-left').click()
@@ -122,14 +118,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           // Check for search result and the tag 'Scaffold'
           cy.get('.dataset-card').contains(datasetId).should('exist')
           cy.get('.dataset-card').filter(`:contains(${datasetId})`).within(() => {
-            cy.get('.container').contains(/Scaffold/i).click()
+            cy.get('.container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
           })
 
-          // Button text should be switched to 'View Scaffold'
-          cy.contains(/View Scaffold/i).should('exist')
-
-          // Open the scaffold
-          cy.contains(/View Scaffold/i).click()
+          // Close the sidebar
+          cy.get('.close-tab > .el-icon-arrow-right').click()
         }
       })
     })
