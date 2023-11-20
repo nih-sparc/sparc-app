@@ -16,10 +16,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
-      cy.intercept('**/flatmap/**').as('flatmap')
-
-      cy.wait('@flatmap', { timeout: 20000 })
-
       // Loading mask should not exist after the default flatmap is loaded
       cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
@@ -48,11 +44,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     })
   })
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    cy.intercept('**/flatmap/**').as('flatmap')
     cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
     cy.intercept('**/s3-resource/**').as('s3-resource')
-
-    cy.wait('@flatmap', { timeout: 20000 })
 
     // Loading mask should not exist after the default flatmap is loaded
     cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
