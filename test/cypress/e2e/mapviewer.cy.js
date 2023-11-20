@@ -10,7 +10,7 @@ const searchInput = 'heart'
 
 describe('Maps Viewer', { testIsolation: false }, function () {
   before(function () {
-    cy.intercept('GET', '**/flatmap/**').as('flatmap')
+    cy.intercept('**/flatmap/**').as('flatmap')
     cy.visit('/maps?type=ac')
     cy.wait('@flatmap')
   })
@@ -18,7 +18,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   apinatomyModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
-      cy.intercept('GET', '**/flatmap/**').as('flatmap')
+      cy.intercept('**/flatmap/**').as('flatmap')
       if (model !== 'Rat') {
         cy.get('#flatmap-select').click()
         cy.get('.el-select-dropdown__item').should('be.visible')
@@ -27,8 +27,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         cy.get('.el-select-dropdown__item').contains(new RegExp(model, 'i')).click({ force: true })
       }
       cy.wait('@flatmap')
-      // There will have more than one matched result, only when 'numTestsKeptInMemory' is 0
-      // Unable to DEBUG as 'numTestsKeptInMemory' is 0, logs won't show in the console
       cy.get('.maplibregl-touch-drag-pan.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').click();
       cy.get('.maplibregl-popup-content:visible').within(() => {
         cy.get('.title').should('exist')
