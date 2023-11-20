@@ -17,30 +17,49 @@ categories.forEach((category) => {
     })
 
     it('All Page Features', function () {
-      // Sort dropdown function testing
-      // Test whether the sort function can be triggered and text can be shown
+      /**
+       * Sort dropdown function testing
+       * Test whether the sort function can be triggered and text can be shown
+       */
       cy.get('.label1 > .el-dropdown > .filter-dropdown').then(($dropdown) => {
         cy.wrap($dropdown).click()
+
+        // Change the order to 'Z-A'
         cy.contains('Z-A').click()
+
+        // CHeck for the order
         cy.wrap($dropdown).should('contain', 'Z-A')
       })
-      // Tooltips showup testing
-      // Test whether content will be displayed
+
+      /**
+       * Tooltips showup testing
+       * Test whether content will be displayed
+       */
       cy.get('[role="tooltip"]').should('not.be.visible')
       cy.get('.purple-fill').click()
       cy.get('[role="tooltip"]').should('be.visible')
+
+      // Check for tooltip content
       cy.get('[role="tooltip"] > .el-popover__title').should('contain', 'How do filters work?')
       cy.get('.label-header > :nth-child(1) > .label-title').then(($label) => {
         const tooltipExist = $label.text().includes('Availability')
         if (tooltipExist) {
           cy.get('.el-tooltip').click()
+
+          // Check for tooltip content
           cy.get('[role="tooltip"]:visible').should('contain', 'SPARC')
         }
       })
-      // Dataset show testing
-      // Test whether the number of displayed datasets can be changed
+
+      /**
+       * Dataset show testing
+       * Test whether the number of displayed datasets can be changed
+       */
+      // Change the limit
       cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
       cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(limit).click()
+
+      // Check for limit change in URL
       cy.url().should('contain', `limit=${limit}`)
       cy.get('.el-table__row').should('have.length', limit)
     })
@@ -49,18 +68,34 @@ categories.forEach((category) => {
 
       it(`Keyword Search - ${keyword}`, function () {
         cy.intercept('POST', '**/query?**').as('query')
+
         cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
-        cy.get('.el-input__inner').clear().type(keyword)
+
+        // Type keyword
+        cy.get('.el-input__inner').clear()
+        cy.get('.el-input__inner').type(keyword)
+
+        // Check for clear search icon
         cy.get('.btn-clear-search > .svg-icon').should('be.visible')
+
+        // Click search button
         cy.get('.search-text').click()
+
+        // Check for keyword in URL
         cy.url().should('contain', keyword)
-        cy.wait('@query')
-        cy.get(':nth-child(1) > p').then(($p) => {
-          const noResult = $p.text().includes('\n                  0 Results | Showing')
+
+        cy.wait('@query', { timeout: 20000 })
+
+        // Check for result
+        cy.get(':nth-child(1) > p').then(($result) => {
+          const noResult = $result.text().includes('\n                  0 Results | Showing')
           if (noResult) {
+            // Empty text should exist if no result
             cy.get('.el-table__empty-text').should('exist')
           } else {
             cy.get('.el-table__empty-text').should('not.exist')
+
+            // Check for (highlighted) keyword
             cy.get('.table-wrap').then(($table) => {
               const keywordExist = $table.text().toLowerCase().includes(keyword.toLowerCase())
               if (keywordExist) {
@@ -71,19 +106,24 @@ categories.forEach((category) => {
             })
           }
         })
+
+        // Clear search input
         cy.get('.btn-clear-search > .svg-icon').click()
-        cy.wait('@query')
+
+        cy.wait('@query', { timeout: 20000 })
+
         // *** There are situations that dataset cards do not show the (highlighted) keywords
         // *** Just in case this happens for all the displayed dataset cards, extra tests may need to be added
-        // cy.get('')
       })
     })
     it(`Single Faceted Browse Search - ${singleFacet}`, function () {
-      cy.intercept('POST', '**/query?**').as('query')
-      cy.intercept('GET', '**/entries?**').as('entries')
-      // let facetCategory
+      cy.intercept('**/query?**').as('query')
+      cy.intercept('**/entries?**').as('entries')
+
+      // Check for filters applied box
       cy.get('.no-facets').should('contain', 'No filters applied')
-      // Expand all
+
+      // Expand all filters/facets
       cy.get('.expand-all-container > .el-link > .el-link--inner').click()
       cy.get('.label-content-container').should('be.visible')
       cy.get('.label-content-container').should('have.length.above', 0)
@@ -96,52 +136,62 @@ categories.forEach((category) => {
           cy.wrap($node).click()
         })
       }
+
       cy.get('.label-content-container').then(($label) => {
         const singleFacetExist = $label.find('span.capitalize:visible').text().toLowerCase().includes(singleFacet.toLowerCase())
         if (singleFacetExist) {
-          // cy.wrap($label).contains(singleFacet).parents('.sparc-design-system-component-dropdown-multiselect').within(() => {
-          //   cy.get('.label-title').then(($el) => {
-          //     facetCategory = $el.text()
-          //   })
-          // })
           const regex = new RegExp(`(^| )${singleFacet}`, 'i')
+
+          // Check the matched facet checkbox
           cy.wrap($label).contains(regex).click()
+
+          // Check for the number of facet tags in filters applied box
           cy.get('.el-card__body > .capitalize').contains(regex).should('have.length', 1)
+
+          // Check for the facet tags in filters applied box
+          cy.get('.el-card__body > .capitalize:visible').contains(regex).should('exist')
+
+          // Check for URL
           if (category === 'projects') {
             cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
-            cy.wait('@entries')
+            cy.wait('@entries', { timeout: 20000 })
           } else {
             cy.url().should('contain', 'selectedFacetIds')
-            cy.wait('@query')
+            cy.wait('@query', { timeout: 20000 })
           }
-          cy.get(':nth-child(1) > p').then(($p) => {
-            const noResult = $p.text().includes('\n                  0 Results | Showing')
+
+          // Check for result
+          cy.get(':nth-child(1) > p').then(($result) => {
+            const noResult = $result.text().includes('\n                  0 Results | Showing')
             if (noResult) {
+              // Empty text should exist if no result
               cy.get('.el-table__empty-text').should('exist')
             } else {
               cy.get('.el-table__empty-text').should('not.exist')
+
+              // Check for facets
               cy.get('.table-wrap').then(($table) => {
                 const facetFoundInCard = $table.text().includes(singleFacet)
                 if (facetFoundInCard) {
                   cy.wrap($table).should('contain', singleFacet)
                 } else {
                   cy.wrap($table).should('not.contain', singleFacet)
-                  // cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > a').click()
-                  // cy.wait(5000)
-                  // cy.get('.dataset-description-info').contains(singleFacet)
                 }
               })
             }
           })
+
           // Uncheck
           cy.get('.el-card__body > .capitalize').contains(regex).should('have.length', 1)
           cy.wrap($label).contains(regex).click()
           cy.get('.no-facets').should('contain', 'No filters applied')
+
           // Close tag
           cy.wrap($label).contains(regex).click()
           cy.get('.el-card__body > .capitalize').contains(regex).should('have.length', 1)
           cy.get('.el-tag__close').eq(0).click()
           cy.get('.no-facets').should('contain', 'No filters applied')
+
           // Reset all
           cy.wrap($label).contains(regex).click()
           cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
@@ -155,8 +205,9 @@ categories.forEach((category) => {
       })
     })
     it(`Multiple Faceted Browse Search - ${multipleFacets}`, function () {
-      cy.intercept('POST', '**/query?**').as('query')
-      cy.intercept('GET', '**/entries?**').as('entries')
+      cy.intercept('**/query?**').as('query')
+      cy.intercept('**/entries?**').as('entries')
+
       cy.get('.expand-all-container > .el-link > .el-link--inner').click()
       cy.get('.label-content-container').then(($label) => {
         let multipleFacetsExist = true
@@ -168,21 +219,32 @@ categories.forEach((category) => {
             cy.wrap($label).contains(new RegExp(`^${facet}`, 'i')).click()
           })
           const multipleRegex = new RegExp(multipleFacets.join('|'), 'i')
+
+          // Check for the number of facet tags in filters applied box
           cy.get('.el-card__body > .capitalize:visible').should('have.length.above', 1)
+
+          // Check for the facet tags in filters applied box
           cy.get('.el-card__body > .capitalize:visible').contains(multipleRegex).should('exist')
+
+                    // Check for URL
           if (category === 'projects') {
             cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
-            cy.wait('@entries')
+            cy.wait('@entries', { timeout: 20000 })
           } else {
             cy.url().should('contain', 'selectedFacetIds')
-            cy.wait('@query')
+            cy.wait('@query', { timeout: 20000 })
           }
-          cy.get(':nth-child(1) > p').then(($p) => {
-            const noResult = $p.text().includes('\n                  0 Results | Showing')
+
+          // Check for result
+          cy.get(':nth-child(1) > p').then(($result) => {
+            const noResult = $result.text().includes('\n                  0 Results | Showing')
             if (noResult) {
+              // Empty text should exist if no result
               cy.get('.el-table__empty-text').should('exist')
             } else {
               cy.get('.el-table__empty-text').should('not.exist')
+
+              // Check for facets
               cy.get('.table-wrap').then(($content) => {
                 let facetsExistInCard = true
                 multipleFacets.forEach((facet) => {
@@ -197,6 +259,7 @@ categories.forEach((category) => {
             }
           })
           multipleFacets.forEach((facet) => {
+            // Uncheck all facets in filters applied box
             cy.get('.el-card__body > .capitalize').contains(new RegExp(` ${facet} `, 'i')).within(() => {
               cy.get('.el-tag__close').click()
             })
