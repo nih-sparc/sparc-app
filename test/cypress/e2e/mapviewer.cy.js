@@ -10,7 +10,7 @@ const searchInput = 'heart'
 
 describe('Maps Viewer', { testIsolation: false }, function () {
   before(function () {
-    cy.intercept('GET', '**/flatmap/**').as('flatmap')
+    cy.intercept('**/flatmap/**').as('flatmap')
     cy.visit('/maps?type=ac')
     cy.wait('@flatmap')
   })
@@ -18,7 +18,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   apinatomyModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
-      cy.intercept('GET', '**/flatmap/**').as('flatmap')
+      cy.intercept('**/flatmap/**').as('flatmap')
       if (model !== 'Rat') {
         cy.get('#flatmap-select').click()
         cy.get('.el-select-dropdown__item').should('be.visible')
@@ -27,8 +27,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         cy.get('.el-select-dropdown__item').contains(new RegExp(model, 'i')).click({ force: true })
       }
       cy.wait('@flatmap')
-      // There will have more than one matched result, only when 'numTestsKeptInMemory' is 0
-      // Unable to DEBUG as 'numTestsKeptInMemory' is 0, logs won't show in the console
       cy.get('.maplibregl-touch-drag-pan.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').click();
       cy.get('.maplibregl-popup-content:visible').within(() => {
         cy.get('.title').should('exist')
@@ -39,8 +37,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     })
   })
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    cy.intercept('GET', '**/get_body_scaffold_info/**').as('body_scaffold')
-    cy.intercept('GET', '**/s3-resource/**').as('resource')
+    cy.intercept('**/get_body_scaffold_info/**').as('body_scaffold')
+    cy.intercept('**/s3-resource/**').as('resource')
     cy.get('#flatmap-select').click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
     cy.get('.settings-group.open > .el-row:visible').filter(':contains(Open new map)').within(() => {
@@ -65,9 +63,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   datasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
-      cy.intercept('POST', '**/query?**').as('query')
-      cy.intercept('GET', '**/dataset_info/**').as('dataset_info')
-      cy.intercept('GET', '**/datasets/**').as('datasets')
+      cy.intercept('**/query?**').as('query')
+      cy.intercept('**/dataset_info/**').as('dataset_info')
+      cy.intercept('**/datasets/**').as('datasets')
       cy.get('.open-tab > .el-icon-arrow-left').click()
       cy.get('.search-input > .el-input__inner').clear()
       cy.get('.search-input > .el-input__inner').type(datasetId)
