@@ -193,7 +193,16 @@ export default {
       this.$gtm.push({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
-        files: propOr('', 'paths', payload)
+        files: propOr('', 'paths', payload),
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        category: "",
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: "",
+        location: ""
       })
       this.closeConfirmDownload()
     },

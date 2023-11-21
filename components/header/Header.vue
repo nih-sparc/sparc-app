@@ -81,7 +81,7 @@
                 >
                   <nuxt-link
                     :to="link.href"
-                    :class="{ active: activeLink(link.title) }"
+                    :class="{ active: activeLink(link.href) }"
                     exact-active-class="active"
                   >
                     {{ link.displayTitle }}
