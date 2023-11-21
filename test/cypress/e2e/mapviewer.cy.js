@@ -1,8 +1,9 @@
-// const taxonModels = ['Cat']
+// const taxonModels = ['Rat']
+// Currentlly, avoid to test 'Pig' flatmap
 const taxonModels = ['Rat', 'Human Female']
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top
-const coordinates = { 'x': 800, 'y': 325 }
+const coordinates = { 'x': 800, 'y': 333 }
 
 const threeDSyncView = 'Human Male'
 
@@ -19,22 +20,22 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
-      // Loading mask should not exist after the default flatmap is loaded
+      cy.intercept('**/flatmap/**').as('flatmap')
+
+      // Loading mask should not exist after the new flatmap is loaded
       cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
       if (model !== 'Rat') {
-        cy.intercept('**/flatmap/**').as('flatmap')
-
         // Switch to the second flatmap
         cy.get('#flatmap-select').click()
         cy.get('.el-select-dropdown__item').should('be.visible')
         cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
-
-        cy.wait('@flatmap', { timeout: 20000 })
-
-        // Loading mask should not exist after the new flatmap is loaded
-        cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
       }
+
+      cy.wait('@flatmap', { timeout: 20000 })
+
+      // Loading mask should not exist after the new flatmap is loaded
+      cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
       // Open a provenance card
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').click(coordinates.x, coordinates.y);
@@ -48,10 +49,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       })
 
       // Close the provenance card
-      cy.get('.maplibregl-popup-close-button').click()
+      cy.get('.maplibregl-popup-close-button').click({ force: true })
     })
   })
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
+    cy.intercept('**/flatmap/**').as('flatmap')
     cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
     cy.intercept('**/s3-resource/**').as('s3-resource')
 
@@ -61,6 +63,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     // Switch to the human related flatmap
     cy.get('#flatmap-select').click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
+
+    cy.wait('@flatmap', { timeout: 20000 })
 
     // Loading mask should not exist after the new flatmap is loaded
     cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
