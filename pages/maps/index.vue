@@ -371,8 +371,7 @@ export default {
     },
     //Process any taxon or anatomy parameters if they are available
     processEntry: async function(route) {
-      //anatomy and taxon query parameters should be replaced taxo 
-      //and uberonid.
+      //uberionid and taxo are now deprecated and replaced by Anatomy and taxon
       const anatomy = route.query.anatomy ? route.query.anatomy : route.query.uberonid
       const taxon = route.query.taxon ? route.query.taxon : route.query.taxo
       if (anatomy || taxon) {
