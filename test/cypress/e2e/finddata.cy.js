@@ -89,14 +89,12 @@ categories.forEach((category) => {
         // Check for result
         cy.get(':nth-child(1) > p').then(($result) => {
           const noResult = $result.text().includes('\n                  0 Results | Showing')
-          console.log("🚀 ~ file: finddata.cy.js:90 ~ cy.get ~ $result.text():", $result.text())
           if (noResult) {
             // Empty text should exist if no result
             cy.get('.el-table__empty-text').should('exist')
           } else {
-            let keywordExist = false
             cy.get('.table-wrap').then(($content) => {
-              keywordExist = keywordExist || $content.text().toLowerCase().includes(keyword.toLowerCase())
+              const keywordExist = $content.text().toLowerCase().includes(keyword.toLowerCase())
               if (keywordExist) {
                 // Check for (highlighted) keyword
                 cy.wrap($content).contains(new RegExp(keyword, 'i')).should('exist')
@@ -107,7 +105,6 @@ categories.forEach((category) => {
             })
           }
         })
-
         // Clear search input
         cy.get('.btn-clear-search > .svg-icon').click()
 
