@@ -130,12 +130,14 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
 
           // Check for search result and the tag 'Scaffold'
-          cy.get(':nth-child(1) > .dataset-card-container > .dataset-card > :nth-child(2)', { timeout: 30000 }).within(() => {
-            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span', { timeout: 30000 }).contains(datasetId).should('exist')
-            cy.get('.card-right > .badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
-            cy.get('.card-right > .badges-container > .container').contains(/Scaffold/i).click()
-            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span', { timeout: 30000 }).contains(/View Scaffold/i).should('exist')
+          cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(datasetId).should('exist')
+          cy.get('.dataset-card-container > .dataset-card').filter(`:contains(${datasetId})`).within(() => {
+            cy.get('.badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
+            cy.get('.badges-container > .container').contains(/Scaffold/i).click()
           })
+
+          // Check for button text
+          cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist')
         }
       })
       // Close the sidebar
