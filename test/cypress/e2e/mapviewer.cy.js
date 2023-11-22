@@ -131,10 +131,10 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
           // Check for search result and the tag 'Scaffold'
           cy.get(':nth-child(1) > .dataset-card-container > .dataset-card > :nth-child(2)', { timeout: 30000 }).within(() => {
-            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').contains(datasetId).should('exist')
-            cy.get('.card-right > .badges-container > .container').contains(/Scaffold/i).should('exist')
+            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span', { timeout: 30000 }).contains(datasetId).should('exist')
+            cy.get('.card-right > .badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
             cy.get('.card-right > .badges-container > .container').contains(/Scaffold/i).click()
-            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').contains(/View Scaffold/i).should('exist')
+            cy.get('.card-left > .full-size > .gallery > .gallery-strip > .card-line > .key-image-span > .el-card > .el-card__body > :nth-child(1) > .details > .el-button > span', { timeout: 30000 }).contains(/View Scaffold/i).should('exist')
           })
         }
       })
