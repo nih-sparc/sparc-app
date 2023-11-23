@@ -16,7 +16,29 @@ categories.forEach((category) => {
       cy.visit(`/data?type=${category}`)
     })
 
+    it('Dataset card', function () {
+      if (category === 'projects') {
+        cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > .image-container > .img-project').should('have.attr', 'src').and('contain', '//images.ctfassets.net/');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Focus');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(2) > .property-name-column').should('contain', 'Principle Investigator');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(3) > .property-name-column').should('contain', 'Institution');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(4) > .property-name-column').should('contain', 'Funding Program');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(5) > .property-name-column').should('contain', 'Award');
+      } else {
+        cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').should('have.attr', 'src').and('contain', 'https://assets.discover.pennsieve.io/dataset-assets/')
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Anatomical Structure');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(2) > .property-name-column').should('contain', 'Species');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(3) > .property-name-column').should('contain', 'Experimental Approach');
+        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(4) > .property-name-column').should('contain', 'Publication Date');
+      }
+    })
     it('All Page Features', function () {
+      cy.get('h5').should('contain', 'Search within category');
+      cy.get('.heading2').should('contain', 'Refine results');
+      cy.get('.tags-container > .flex').should('contain', 'Filters applied');
+      cy.get('.el-col-md-16 > :nth-child(1) > p').should('contain', 'Results | Showing');
+      cy.get('.label1').should('contain', 'Sort');
+
       /**
        * Sort dropdown function testing
        * Test whether the sort function can be triggered and text can be shown
