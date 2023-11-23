@@ -27,25 +27,29 @@ categories.forEach((category) => {
       cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('Z-A').click()
 
       // CHeck for the order
-      cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').contains('Z-A').should('exist')
+      cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').should('contain', 'Z-A')
 
       /**
        * Tooltips showup testing
        * Test whether content will be displayed
        */
-      cy.get('[role="tooltip"]').should('not.be.visible')
-      cy.get('.purple-fill').click()
-      cy.get('[role="tooltip"]').should('be.visible')
-
       // Check for tooltip content
-      cy.get('[role="tooltip"]:visible > .el-popover__title').contains(/How do filters work?/i).should('exist')
+      cy.get('.purple-fill').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+      cy.get('[role="tooltip"]').should('be.visible')
+      cy.get('[role="tooltip"]:visible > .el-popover__title').should('have.text', 'How do filters work?')
+      cy.get('.purple-fill').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+      cy.get('[role="tooltip"]').should('not.be.visible')
+
       cy.get('.label-header > :nth-child(1) > .label-title').then(($label) => {
-        const tooltipExist = $label.text().includes('Availability')
-        if (tooltipExist) {
-          cy.get('.el-tooltip').click()
+        if ($label.text().includes('Availability')) {
+          cy.get('.el-tooltip').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+          cy.get('[role="tooltip"]').should('be.visible')
 
           // Check for tooltip content
-          cy.get('[role="tooltip"]:visible').contains(/SPARC/i).should('exist')
+          cy.get('[role="tooltip"]').should('contain', 'SPARC')
+
+          cy.get('.el-tooltip').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+          cy.get('[role="tooltip"]').should('not.be.visible')
         }
       })
 
@@ -88,15 +92,14 @@ categories.forEach((category) => {
 
         // Check for result
         cy.get(':nth-child(1) > p').then(($result) => {
-          const noResult = $result.text().includes('\n                  0 Results | Showing')
-          if (noResult) {
+          if ($result.text().includes(' 0 Results | Showing')) {
             // Empty text should exist if no result
-            cy.get('.el-table__empty-text').should('exist')
+            cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
           } else {
             cy.get('.table-wrap').then(($content) => {
               const keywordExist = $content.text().toLowerCase().includes(keyword.toLowerCase())
               if (keywordExist) {
-                // Check for (highlighted) keyword
+                // Check for keyword
                 cy.wrap($content).contains(new RegExp(keyword, 'i')).should('exist')
 
                 // Check for highlighted keyword
@@ -120,12 +123,11 @@ categories.forEach((category) => {
       cy.intercept('**/entries?**').as('entries')
 
       // Check for filters applied box
-      cy.get('.no-facets').contains(/No filters applied/i).should('exist')
+      cy.get('.no-facets').should('contain', 'No filters applied')
 
       // Expand all filters/facets
       cy.get('.expand-all-container > .el-link > .el-link--inner').click()
-      cy.get('.label-content-container').should('be.visible')
-      cy.get('.label-content-container').should('have.length.above', 0)
+      cy.get('.label-content-container').should('be.visible').and('have.length.above', 0)
       if (category !== 'projects') {
         // If multiple facets are matched, the first will be checked by default
         // *** This action is used to expand all parent facets in ANATOMICAL STRUCTURE
@@ -143,9 +145,6 @@ categories.forEach((category) => {
           cy.wrap($label).contains(regex).click()
 
           // Check for the number of facet tags in filters applied box
-          cy.get('.el-card__body > .capitalize:visible').contains(regex).should('have.length.above', 0)
-
-          // Check for the facet tags in filters applied box
           cy.get('.el-card__body > .capitalize:visible').contains(regex).should('exist')
 
           // Check for URL
@@ -161,10 +160,9 @@ categories.forEach((category) => {
 
           // Check for result
           cy.get(':nth-child(1) > p').then(($result) => {
-            const noResult = $result.text().includes('\n                  0 Results | Showing')
-            if (noResult) {
+            if ($result.text().includes(' 0 Results | Showing')) {
               // Empty text should exist if no result
-              cy.get('.el-table__empty-text').should('exist')
+              cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
             } else {
               cy.get('.property-table').then(($content) => {
                 const facetFoundInCard = $content.text().includes(singleFacet)
@@ -180,25 +178,22 @@ categories.forEach((category) => {
           })
 
           // Uncheck
-          cy.get('.el-card__body > .capitalize').contains(regex).should('have.length.above', 0)
           cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
           cy.wrap($label).contains(regex).click()
-          cy.get('.no-facets').contains(/No filters applied/i).should('exist')
+          cy.get('.no-facets').should('contain', 'No filters applied')
 
           // Close tag
           cy.wrap($label).contains(regex).click()
-          cy.get('.el-card__body > .capitalize').contains(regex).should('have.length.above', 0)
           cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
           cy.get('.el-tag__close').eq(0).click()
-          cy.get('.no-facets').contains(/No filters applied/i).should('exist')
+          cy.get('.no-facets').should('contain', 'No filters applied')
 
           // Reset all
           cy.wrap($label).contains(regex).click()
-          cy.get('.el-card__body > .capitalize').contains(regex).should('have.length.above', 0)
           cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
           cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
           // *** 'No filters applied' sometimes will not appear after click 'reset all' in Cypress. BUG or Cypress issue?
-          // cy.get('.no-facets').contains(/No filters applied/i).should('exist')
+          // cy.get('.no-facets').should('contain', 'No filters applied')
           // *** There is a bug with reset all function.
           // cy.get('.el-card__body > .capitalize').should('not.exist')
         } else {
@@ -219,14 +214,10 @@ categories.forEach((category) => {
         if (multipleFacetsExist) {
           multipleFacets.forEach((facet) => {
             cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+
+            // Check for the number of facet tags in filters applied box
+            cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).should('exist')
           })
-          const multipleRegex = new RegExp(multipleFacets.join('|'), 'i')
-
-          // Check for the number of facet tags in filters applied box
-          cy.get('.el-card__body > .capitalize:visible').should('have.length.above', 1)
-
-          // Check for the facet tags in filters applied box
-          cy.get('.el-card__body > .capitalize:visible').contains(multipleRegex).should('exist')
 
           // Check for URL
           if (category === 'projects') {
@@ -241,29 +232,27 @@ categories.forEach((category) => {
 
           // Check for result
           cy.get(':nth-child(1) > p').then(($result) => {
-            const noResult = $result.text().includes('\n                  0 Results | Showing')
-            if (noResult) {
+            if ($result.text().includes(' 0 Results | Showing')) {
               // Empty text should exist if no result
-              cy.get('.el-table__empty-text').should('exist')
+              cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
             } else {
               // Check for facets
               cy.get('.property-table').then(($content) => {
-                let facetsExistInCard = true
                 multipleFacets.forEach((facet) => {
-                  facetsExistInCard = facetsExistInCard || $content.text().toLowerCase().includes(facet.toLowerCase())
+                  const facetExistInCard = $content.text().toLowerCase().includes(facet.toLowerCase())
+                  if (facetExistInCard) {
+                    cy.wrap($content).contains(new RegExp(facet, 'i')).should('exist')
+                  } else {
+                    // *** Ignore when facets cannot be found or
+                    // *** Find some other solutions in the future
+                  }
                 })
-                if (facetsExistInCard) {
-                  cy.wrap($content).contains(multipleRegex).should('exist')
-                } else {
-                  // *** Ignore when facets cannot be found or
-                  // *** Find some other solutions in the future
-                }
               })
             }
           })
           multipleFacets.forEach((facet) => {
-            // Uncheck all facets in filters applied box
-            cy.get('.el-card__body > .capitalize').contains(new RegExp(` ${facet} `, 'i')).within(() => {
+            // Close all facet tags in filters applied box
+            cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).within(() => {
               cy.get('.el-tag__close').click()
             })
           })
