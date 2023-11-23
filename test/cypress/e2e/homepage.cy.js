@@ -24,14 +24,19 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for the number of categories
     cy.get('.data-wrap > a:visible').should('have.length', 6)
 
-    // Show all categories
+    // Show more categories
     cy.get('.featured-data > .el-button').should('have.text', '\n    View more\n  ')
     cy.get('.featured-data > .el-button > span').click()
 
     // Check for the number of categories after showing more
     cy.get('.data-wrap > a:visible').should('have.length.above', 6)
 
+    // Show less categories
     cy.get('.featured-data > .el-button > span').should('have.text', '\n    View less\n  ')
+    cy.get('.featured-data > .el-button > span').click()
+
+    // Check for the number of categories after showing less
+    cy.get('.data-wrap > a:visible').should('have.length', 6)
   })
   it('Body - What Can I Do With SPARC?', function () {
     // Check for the number of features
