@@ -172,7 +172,16 @@ export default {
       this.$gtm.push({
         event: 'interaction_event',
         event_name: 'sds_viewer_button_click',
-        button_location: 'dataset_action_box'
+        location: 'dataset_action_box',
+        category: "",
+        dataset_id: propOr('', 'id', this.datasetInfo),
+        version_id: propOr('', 'version', this.datasetInfo),
+        doi: propOr('', 'doi', this.datasetInfo),
+        citation_type: "",
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
       })
     },
     /**
