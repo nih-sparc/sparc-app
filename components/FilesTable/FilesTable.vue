@@ -628,6 +628,13 @@ export default {
         file_name: pathOr('', ['row','name'], scope),
         file_path: pathOr('', ['row','path'], scope),
         file_type: pathOr('', ['row','fileType'], scope),
+        location: "",
+        category: "",
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: "",
+        files: ""
       })
       this.getViewFileUrl(scope).then(response => {
         window.open(response, '_blank')
@@ -654,7 +661,16 @@ export default {
       this.$gtm.push({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
-        files: propOr('', 'paths', payload)
+        files: propOr('', 'paths', payload),
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: "",
+        category: "",
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
       })
     },
 

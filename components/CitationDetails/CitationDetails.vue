@@ -138,7 +138,15 @@ export default {
           event: 'interaction_event',
           event_name: 'copy_citation_button_click',
           dataset_id: this.$route.params.datasetId,
-          citation_type: citationType.label
+          citation_type: citationType.label,
+          category: "",
+          version_id: "",
+          doi: "",
+          location: "",
+          files: "",
+          file_name: "",
+          file_path: "",
+          file_type: "",     
         })
         this.$message(
           successMessage(

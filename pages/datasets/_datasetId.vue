@@ -369,9 +369,18 @@ export default {
 
   mounted() {
     this.$gtm.push({
+      event: "",
+      category: "",
       dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
-      version_id: propOr('undefined', 'version', this.datasetInfo),
-      doi: propOr('undefined', 'doi', this.datasetInfo)
+      version_id: propOr('', 'version', this.datasetInfo),
+      doi: propOr('', 'doi', this.datasetInfo),
+      event_name: "",
+      citation_type: "",
+      location: "",
+      files: "",
+      file_name: "",
+      file_path: "",
+      file_type: "",
     })
   },
 

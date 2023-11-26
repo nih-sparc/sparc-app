@@ -405,7 +405,7 @@ export default {
                 title = `View ${f.organ}`
               }
 
-              let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
+              let linkUrl = `${baseRoute}maps?type=ac&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxon=${f.taxo}&anatomy=${f.uberonid}`
               if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
               const item = {
                 id: f.uberonid,

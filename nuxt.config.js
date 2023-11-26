@@ -149,7 +149,7 @@ const config = {
         component: '@/pages/datasets/_datasetId.vue'
       })
     },
-    middleware: ['documentationHubRedirects', 'signOutRedirect']
+    middleware: ['documentationHubRedirects', 'signOutRedirect', 'clearDatalayer']
   },
   /*
    ** Global CSS

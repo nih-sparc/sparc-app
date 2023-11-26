@@ -467,9 +467,18 @@ export default {
         }
         const category = searchTypes.find(searchType => searchType.type == this.$route.query.type)
         this.$gtm.push({
-          event: 'interaction_event',
-          event_name: 'data_page_view',
-          category: propOr('Datasets', 'label', category)
+          event: "",
+          event_name: '',
+          category: propOr('Datasets', 'label', category),
+          files: "",
+          file_name: "",
+          file_path: "",
+          file_type: "",
+          location: "",
+          dataset_id: "",
+          version_id: "",
+          doi: "",
+          citation_type: ""
         })
       },
       immediate: true
