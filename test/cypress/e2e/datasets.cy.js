@@ -98,17 +98,17 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('have.text', ' About ');
 
       // Check for content
-      cy.get('.dataset-about-info').contains(/Title: *(.+)/);
-      cy.get('.dataset-about-info').contains(/First Published: *(.+)/);
-      cy.get('.dataset-about-info').contains(/Last Published: *(.+)/);
-      cy.get('.dataset-about-info').contains(/Contact Author: *(.+)/);
-      cy.get('.dataset-about-info').contains(/Award[(]s[)]: (.+)/);
-      cy.get('.dataset-about-info').contains(/Funding Program[(]s[)]: *(.+)/);
-      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/);
-      cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/);
-      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/);
-      cy.get('.dataset-about-info').contains(/Version (.+) Revision (.+): *(.+)/);
-      cy.get('.dataset-about-info').contains(/Dataset DOI: *(.+)/);
+      cy.get('.dataset-about-info').contains(/Title: *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/First Published: *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Last Published: *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Contact Author: *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Award[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Funding Program[(]s[)]: *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Version (.+) Revision (.+): *(.+)/).should('exist')
+      cy.get('.dataset-about-info').contains(/Dataset DOI: *(.+)/).should('exist')
 
       // Check for email exist
       cy.get('.about-section-container > :nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto');
