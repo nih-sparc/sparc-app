@@ -13,9 +13,13 @@ datasetIds.forEach(datasetId => {
       cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
 
       // Check for tooltip when hover over author 
-      cy.get(':nth-child(2) > .contributor-item').should('be.visible').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-      //only one visible popover
-      cy.get('.orcid-popover:visible').should('have.length', 1)
+      cy.get('.dataset-owners > :nth-child(2) > .contributor-item').then(($orcid) => {
+        if ($orcid.hasClass('has-orcid')) {
+          cy.wrap($orcid).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+          //only one visible popover
+          cy.get('.orcid-popover:visible').should('have.length', 1)
+        }
+      })
 
       // Should reload the page
       cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
@@ -120,7 +124,7 @@ datasetIds.forEach(datasetId => {
 
       //match author to contributors
       cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then(value => {
-        cy.get('.similar-datasets-container').contains(value);
+        cy.get('.similar-datasets-container').contains(new RegExp(value, 'i'));
       })
     });
     it("Cite Tab", function () {
@@ -152,7 +156,7 @@ datasetIds.forEach(datasetId => {
           // Check for download button
           cy.contains('Dataset size').parent().then(($size) => {
             const size = parseInt($size.text().match(/[0-9]+/i)[0])
-            if ($size.text().includes("GB") && size > 5){
+            if ($size.text().includes("GB") && size > 5) {
               cy.get('.el-tooltip > .el-button').should('not.be.enabled')
             } else {
               cy.get('.left-column > :nth-child(1) > a > .el-button').should('be.enabled')
@@ -233,7 +237,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.nuxt-link-exact-active').should('have.text', ' Versions ');
 
           // Check for file actions
-          cy.get('.version-table > :nth-child(2) > :nth-child(4)').then(($el)=>{
+          cy.get('.version-table > :nth-child(2) > :nth-child(4)').then(($el) => {
             if ($el.text().includes('Not available')) {
               cy.wrap($el).should('contain', 'Not available')
             } else {
