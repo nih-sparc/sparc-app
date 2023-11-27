@@ -66,7 +66,7 @@ datasetIds.forEach(datasetId => {
 
       //The following regular expression should capture space and letters
       cy.get('.dataset-description-info').contains(/Study Purpose: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Data Collection: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Data (Collection|Collected): *(.+)/).should('exist')
       cy.get('.dataset-description-info').contains(/(Primary)? Conclusion(s)?: *(.+)/).should('exist')
 
       // Check for Experimental Design
