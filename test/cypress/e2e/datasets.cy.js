@@ -155,7 +155,7 @@ datasetIds.forEach(datasetId => {
 
           // Check for download button
           cy.contains('Dataset size').parent().then(($size) => {
-            const size = parseInt($size.text().match(/[0-9]+/i)[0])
+            const size = parseFloat($size.text().match(/[0-9](.[0-9]+)?/i)[0])
             if ($size.text().includes("GB") && size > 5) {
               cy.get('.el-tooltip > .el-button').should('not.be.enabled')
             } else {
