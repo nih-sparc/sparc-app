@@ -92,7 +92,7 @@ datasetIds.forEach(datasetId => {
         })
       })
     });
-    it.only("About Tab", function () {
+    it("About Tab", function () {
       // Should switch to 'About'
       cy.contains('#datasetDetailsTabsContainer .style1', ' About ').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' About ');
@@ -123,10 +123,15 @@ datasetIds.forEach(datasetId => {
         cy.get('.similar-datasets-container').contains(value);
       })
     });
-    it("Cite Tab", function () {
+    it.only("Cite Tab", function () {
+      // Should switch to 'Cite'
       cy.contains('#datasetDetailsTabsContainer .style1', ' Cite ').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' Cite ');
+
       cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then(value => {
+        // Check for citation doi
+        cy.get('.info-citation > .citation-text').should('contain', value.toUpperCase())
+        
         const expectedLink = 'https://citation.crosscite.org/?doi=' + value;
         cy.get('.citation-details > p > a').should('have.attr', 'href', expectedLink);
       })
