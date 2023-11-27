@@ -3,45 +3,56 @@ const datasetIds = [127];
 
 datasetIds.forEach(datasetId => {
 
-  describe(`Dataset ${datasetId}`, {testIsolation: false }, function () {
+  describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
     before(function () {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
-    it("Landing page", function () {
-      cy.get('.dataset-image').should('have.attr', 'src').and('include', 'https://assets.discover.pennsieve.io/')
-      // Hover over author 
-      cy.get(':nth-child(2) > .contributor-item').should('be.visible').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+    it.only("Landing page", function () {
+      // Should display image with correct dataset src
+      cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
 
+      // Check for tooltip when hover over author 
+      cy.get(':nth-child(2) > .contributor-item').should('be.visible').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
       //only one visible popover
       cy.get('.orcid-popover:visible').should('have.length', 1)
 
-      //Check Get Dataset directs to files tab
-      cy.contains('.button-container span', 'Get Dataset').click()
-      cy.get('.nuxt-link-exact-active').should('have.text', ' Files ');
-      cy.get('[style=""] > .heading2.mb-8').should('have.text', 'Download Dataset').and('be.visible')
-      //Checkt Cite Dataset direccts to Cite tab
-      cy.contains('.button-container span', 'Cite Dataset').click()
-      cy.get('.nuxt-link-exact-active').should('have.text', ' Cite ');
-      cy.get('.citation-details > .heading2').should('have.text', '\n    Dataset Citation\n  ').and('be.visible')
+      // Should reload the page
       cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
         cy.request(href).then((resp) => {
           expect(resp.status).to.eq(200);
           expect(resp.body).to.include(`datasets/${datasetId}/version`);
         })
       });
+
+      // Should search for contributor in find data page
       cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip > .tooltip-item > a').each($el => {
-        cy.wrap($el).should('have.attr', 'href').and('include', '/data?type=');
+        cy.wrap($el).should('have.attr', 'href').and('include', '/data?type=').and('contains', '&search=');
       });
+
+      // Check 'View other version' directs to Versions tab
       cy.get('.dataset-information-box > div').contains('View other versions').click();
-      //Check if each link 
+      cy.get('.nuxt-link-exact-active').should('have.text', ' Versions ');
+      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
+      // Each link should load correct version
       cy.get('.el-col-push-1 > a').each(($link) => {
         cy.wrap($link).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
           cy.request(href).then((resp) => {
-            cy.request(href).its('body').should('include', `/datasets/${datasetId}/version`); 
-          });
+            expect(resp.status).to.eq(200);
+            expect(resp.body).to.include(`datasets/${datasetId}/version`);
+          })
         });
       })
+
+      //Check 'Get Dataset' directs to files tab
+      cy.contains('.button-container span', 'Get Dataset').click()
+      cy.get('.nuxt-link-exact-active').should('have.text', ' Files ');
+      cy.get('[style=""] > .heading2.mb-8').should('have.text', 'Download Dataset').and('be.visible')
+
+      //Check 'Cite Dataset' directs to Cite tab
+      cy.contains('.button-container span', 'Cite Dataset').click()
+      cy.get('.nuxt-link-exact-active').should('have.text', ' Cite ');
+      cy.get('.citation-details > .heading2').should('have.text', '\n    Dataset Citation\n  ').and('be.visible')
     });
     it("Abstract Tab", function () {
       cy.contains('#datasetDetailsTabsContainer .style1', ' Abstract ').click();
@@ -116,10 +127,10 @@ datasetIds.forEach(datasetId => {
           //there should be 4 icons, one for each action
           cy.get('@icons').find('svg').should('have.length', 4);
           //Check get share links
-          cy.get('@icons').find(':nth-child(4)').click({force: true});
+          cy.get('@icons').find(':nth-child(4)').click({ force: true });
           cy.get('.el-message').should('be.visible');
           //Check oSPARC link
-          cy.get('@icons').find(':nth-child(3) > .el-tooltip > .svg-icon').click({force: true});
+          cy.get('@icons').find(':nth-child(3) > .el-tooltip > .svg-icon').click({ force: true });
           cy.get('.files-table-table .el-dialog  .svg-icon').click();
         } else {
           this.skip();
@@ -169,7 +180,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.nuxt-link-exact-active').should('have.text', ' Versions ');
           cy.get('.table-rows .el-col-push-1 > a').each($el => {
             cy.wrap($el).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-              cy.request(href).its('body').should('include', `/datasets/${datasetId}/version`); 
+              cy.request(href).its('body').should('include', `/datasets/${datasetId}/version`);
             })
           });
         }
