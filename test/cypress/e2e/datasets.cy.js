@@ -180,7 +180,7 @@ datasetIds.forEach(datasetId => {
         }
       });
     });
-    it.only("Gallery Tab", function () {
+    it("Gallery Tab", function () {
       // Should switch to 'Gallery'
       cy.contains('#datasetDetailsTabsContainer .style1', ' Gallery ').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' Gallery ');
@@ -197,24 +197,27 @@ datasetIds.forEach(datasetId => {
           // Check for gallery card
           cy.wrap(gallery).find('.el-card').should('have.length.least', 1).each($card => {
             cy.wrap($card).contains('span', ' View ');
-            //Need to test newly opened viewers
+            //***Need to test newly opened viewers
           });
         } else {
           cy.wrap($content).contains(' This dataset does not contain gallery items ');
         }
       });
     });
-    it("References Tab", function () {
+    it.only("References Tab", function () {
       //First check if reference tab is present
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
         if ($tab.text().includes(' References ')) {
+          // Should switch to 'References' if exist
           cy.contains('#datasetDetailsTabsContainer .style1', ' References ').click();
           cy.get('.nuxt-link-exact-active').should('have.text', ' References ');
+
+          // Check for content
           cy.get('.dataset-references .heading2').contains('Associated Publications for this Dataset');
           cy.get('.dataset-references .citation-container').each(el => {
             cy.wrap(el).find('div > a').should('have.attr', 'href').and('include', 'doi.org');
             cy.wrap(el).find('.copy-button').click();
-            cy.get('.el-message').should('be.visible');
+            cy.get('.el-message').should('be.visible').and('have.text', 'Successfully copied citation.')
           });
         } else {
           this.skip();
