@@ -123,7 +123,7 @@ datasetIds.forEach(datasetId => {
         cy.get('.similar-datasets-container').contains(value);
       })
     });
-    it.only("Cite Tab", function () {
+    it("Cite Tab", function () {
       // Should switch to 'Cite'
       cy.contains('#datasetDetailsTabsContainer .style1', ' Cite ').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' Cite ');
@@ -131,32 +131,47 @@ datasetIds.forEach(datasetId => {
       cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then(value => {
         // Check for citation doi
         cy.get('.info-citation > .citation-text').should('contain', value.toUpperCase())
-        
+
         const expectedLink = 'https://citation.crosscite.org/?doi=' + value;
         cy.get('.citation-details > p > a').should('have.attr', 'href', expectedLink);
       })
     });
-    it("Files Tab", function () {
+    it.only("Files Tab", function () {
       //First check if there is a Files tab
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
         if ($tab.text().includes(' Files ')) {
+          // Should switch to 'Files' if exist
           cy.contains('#datasetDetailsTabsContainer .style1', ' Files ').click();
           cy.get('.nuxt-link-exact-active').should('have.text', ' Files ');
+
+          // Check for content
           cy.get('[style=""] > .heading2.mb-8').should('have.text', 'Download Dataset');
           cy.get('.left-column > :nth-child(1) > div > .label4').should('have.text', 'Option 1 - Direct download: ');
           cy.get('.aws-download-column > :nth-child(1) > .label4').should('have.text', 'Option 2 - AWS download: ');
-          //cy.get('.left-column > :nth-child(1) > a > .el-button > span').should('be.visible');
+
+          // Check for download button
+          cy.contains('Dataset size').parent().then(($size) => {
+            const size = parseInt($size.text().match(/[0-9]+/i)[0])
+            if ($size.text().includes("GB") && size > 5){
+              cy.get('.el-tooltip > .el-button').should('not.be.enabled')
+            } else {
+              cy.get('.left-column > :nth-child(1) > a > .el-button').should('be.enabled')
+            }
+          })
           cy.get('.left-column .el-button').contains('Download full dataset').should('be.visible');
-          //cy.get('.left-column > :nth-child(1) > a > .el-button').should('be.enabled');
+
           //Find the download file button
           cy.contains('.content .body1 .el-table__fixed-body-wrapper .el-table__row', ' dataset_description.xlsx ').should('have.length', 1).as('datasetDescription');
           cy.get('@datasetDescription').find('.el-table_1_column_5').should('have.length', 1).as('icons');
           cy.get('@icons').find('form[id=zipForm]').should('have.length', 1);
+
           //there should be 4 icons, one for each action
           cy.get('@icons').find('svg').should('have.length', 4);
+
           //Check get share links
           cy.get('@icons').find(':nth-child(4)').click({ force: true });
-          cy.get('.el-message').should('be.visible');
+          cy.get('.el-message').should('be.visible').and('have.text', 'File URL copied to clipboard.')
+
           //Check oSPARC link
           cy.get('@icons').find(':nth-child(3) > .el-tooltip > .svg-icon').click({ force: true });
           cy.get('.files-table-table .el-dialog  .svg-icon').click();
