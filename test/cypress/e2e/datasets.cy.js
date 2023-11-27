@@ -8,7 +8,7 @@ datasetIds.forEach(datasetId => {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
-    it.only("Landing page", function () {
+    it("Landing page", function () {
       // Should display image with correct dataset src
       cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
 
@@ -34,7 +34,8 @@ datasetIds.forEach(datasetId => {
       cy.get('.dataset-information-box > div').contains('View other versions').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' Versions ');
       cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
-      // Each link should load correct version
+
+      // Each DOI link should load correct version
       cy.get('.el-col-push-1 > a').each(($link) => {
         cy.wrap($link).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
           cy.request(href).then((resp) => {
@@ -54,22 +55,37 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('have.text', ' Cite ');
       cy.get('.citation-details > .heading2').should('have.text', '\n    Dataset Citation\n  ').and('be.visible')
     });
-    it("Abstract Tab", function () {
+    it.only("Abstract Tab", function () {
+      // Should switch to 'Abstract'
       cy.contains('#datasetDetailsTabsContainer .style1', ' Abstract ').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' Abstract ');
-      cy.get('.dataset-description-info > :nth-child(1) > :nth-child(1) > strong').contains('Study Purpose');
-      cy.get('.dataset-description-info > :nth-child(1) > :nth-child(2) > strong').contains('Data Collection');
-      cy.get('.dataset-description-info > :nth-child(1) > :nth-child(3) > strong').contains('Primary Conclusion');
-      cy.get('.experimental-design-section-text-column').contains('Protocol Links');
-      //cy.get('.experimental-design-container .link2').should('have.attr', 'href').and('include', 'https://doi.org/')
+
       //The following regular expression should capture space and letters
-      cy.get('.dataset-description-info').contains(/Experimental Approach: *(.+)/);
-      cy.get('.dataset-description-info').contains('Subject Information:');
-      cy.get('.dataset-description-info').contains(/Anatomical structure: *(.+)/);
-      cy.get('.dataset-description-info').contains(/Species: *(.+)/);
-      cy.get('.dataset-description-info').contains(/Sex: *(.+)/);
-      cy.get('.dataset-description-info').contains(/Number of samples: *(.+)/);
-      cy.get('.dataset-description-info').contains(/Keywords: *(.+)/);
+      cy.get('.dataset-description-info').contains(/Study Purpose: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Data Collection: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Primary Conclusion: *(.+)/).should('exist')
+
+      // Check for Experimental Design
+      cy.get('.dataset-description-info').contains('Experimental Design:').should('exist')
+      cy.get('.dataset-description-info').contains('Protocol Links:').should('exist')
+      cy.get('.dataset-description-info').within(() => {
+        cy.get('.link2').should('exist')
+        cy.get('.link2').should('have.length.above', 0)
+        cy.get('.link2').should('have.attr', 'href').and('include', 'https://doi.org/')
+      })
+      cy.get('.dataset-description-info').contains(/Experimental Approach: *(.+)/).should('exist')
+
+      // Check for Subject Information
+      cy.get('.dataset-description-info').contains('Subject Information:').should('exist')
+      cy.get('.dataset-description-info').contains(/Anatomical structure: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Species: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Sex: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Number of samples: *(.+)/).should('exist')
+
+      // Check for Keywords
+      cy.get('.dataset-description-info').contains(/Keywords: *(.+)/).should('exist')
+
+      // Check for downloading
       cy.contains('.dataset-description-info a', 'Download Metadata file').should('have.attr', 'href').and('include', 'metadata').then((href) => {
         cy.request(href).then((resp) => {
           expect(resp.status).to.eq(200)
