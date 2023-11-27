@@ -63,7 +63,7 @@ datasetIds.forEach(datasetId => {
       //The following regular expression should capture space and letters
       cy.get('.dataset-description-info').contains(/Study Purpose: *(.+)/).should('exist')
       cy.get('.dataset-description-info').contains(/Data Collection: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Primary Conclusion: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/(Primary)? Conclusion(s)?: *(.+)/).should('exist')
 
       // Check for Experimental Design
       cy.get('.dataset-description-info').contains('Experimental Design:').should('exist')
@@ -204,7 +204,7 @@ datasetIds.forEach(datasetId => {
         }
       });
     });
-    it.only("References Tab", function () {
+    it("References Tab", function () {
       //First check if reference tab is present
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
         if ($tab.text().includes(' References ')) {
@@ -228,8 +228,24 @@ datasetIds.forEach(datasetId => {
       //First check if version tab is present
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
         if ($tab.text().includes(' Versions ')) {
+          // Should switch to 'Versions' if exist
           cy.contains('#datasetDetailsTabsContainer .style1', ' Versions ').click();
           cy.get('.nuxt-link-exact-active').should('have.text', ' Versions ');
+
+          // Check for file actions
+          cy.get('.version-table > :nth-child(2) > :nth-child(4)').then(($el)=>{
+            if ($el.text().includes('Not available')) {
+              cy.wrap($el).should('contain', 'Not available')
+            } else {
+              cy.wrap($el).get('.el-tooltip > .svg-icon:visible').should('have.length', 2)
+              cy.get(':nth-child(4) > :nth-child(1) > .el-tooltip > .svg-icon').click()
+              cy.get('.optional-content-container').should('be.visible');
+              cy.get('.main-content-container').should('be.visible');
+              cy.get('.close-icon > path').click();
+            }
+          })
+
+          // Check for link
           cy.get('.table-rows .el-col-push-1 > a').each($el => {
             cy.wrap($el).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
               cy.request(href).its('body').should('include', `/datasets/${datasetId}/version`);
