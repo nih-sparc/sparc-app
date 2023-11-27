@@ -117,10 +117,15 @@ datasetIds.forEach(datasetId => {
       // Check for email exist
       cy.get('.about-section-container > :nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto');
 
-      //Match award link to associated project
-      cy.get(':nth-child(11) > :nth-child(2) > a').invoke('attr', 'href').then(value => {
-        cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
-      });
+      // Ignore tests if project not exist
+      cy.get('.similar-datasets-container').then(($content) => {
+        if ($content.text().includes('project(s):')) {
+          //Match award link to associated project
+          cy.get(':nth-child(11) > :nth-child(2) > a').invoke('attr', 'href').then(value => {
+            cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
+          });
+        }
+      })
 
       //match author to contributors
       cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then(value => {
@@ -259,18 +264,24 @@ datasetIds.forEach(datasetId => {
       });
     });
     it("Landing page project page", function () {
-      // Should switch to 'About'
-      cy.contains('#datasetDetailsTabsContainer .style1', ' About ').click();
-      cy.get('.nuxt-link-exact-active').should('have.text', ' About ');
+      cy.get('.similar-datasets-container').then(($content) => {
+        if ($content.text().includes('project(s):')) {
+          // Should switch to 'About'
+          cy.contains('#datasetDetailsTabsContainer .style1', ' About ').click();
+          cy.get('.nuxt-link-exact-active').should('have.text', ' About ');
 
-      cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).children().not('.label4').invoke('text').then((value) => {
-        cy.get('.mt-8 > a > u').click()
-        cy.get('.heading2').should('be.visible')
-        cy.url().should('include', '/projects/')
+          cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).children().not('.label4').invoke('text').then((value) => {
+            cy.get('.mt-8 > a > u').click()
+            cy.get('.heading2').should('be.visible')
+            cy.url().should('include', '/projects/')
 
-        // Check for Institution
-        const institution = value.match(/[ a-zA-Z]+/)[0].trim()
-        cy.get('.body1 > :nth-child(6)').should('contain', institution);
+            // Check for Institution
+            const institution = value.match(/[ a-zA-Z]+/)[0].trim()
+            cy.get('.body1 > :nth-child(6)').should('contain', institution);
+          })
+        } else {
+          this.skip()
+        }
       })
     });
   });
