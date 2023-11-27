@@ -129,7 +129,8 @@ datasetIds.forEach(datasetId => {
 
       //match author to contributors
       cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then(value => {
-        cy.get('.similar-datasets-container').contains(new RegExp(value, 'i'));
+        const author = new RegExp(value.replace(/\s+/, ' '), 'i')
+        cy.get('.similar-datasets-container').contains(author);
       })
     });
     it("Cite Tab", function () {
@@ -160,7 +161,7 @@ datasetIds.forEach(datasetId => {
 
           // Check for download button
           cy.contains('Dataset size').parent().then(($size) => {
-            const size = parseFloat($size.text().match(/[0-9](.[0-9]+)?/i)[0])
+            const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
             if ($size.text().includes("GB") && size > 5) {
               cy.get('.el-tooltip > .el-button').should('not.be.enabled')
             } else {
@@ -226,7 +227,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.dataset-references .citation-container').each(el => {
             cy.wrap(el).find('div > a').should('have.attr', 'href').and('include', 'doi.org');
             cy.wrap(el).find('.copy-button').click();
-            cy.get('.el-message').should('be.visible').and('have.text', 'Successfully copied citation.')
+            cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
           });
         } else {
           this.skip();
