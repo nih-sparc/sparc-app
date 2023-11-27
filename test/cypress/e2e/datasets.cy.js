@@ -259,11 +259,19 @@ datasetIds.forEach(datasetId => {
       });
     });
     it("Landing page project page", function () {
-      cy.get('.mt-8 > a > u').click()
-      cy.get('.subpage').click()
-      cy.get('.heading2').should('be.visible')
-      cy.url().should('include', '/projects/')
+      // Should switch to 'About'
+      cy.contains('#datasetDetailsTabsContainer .style1', ' About ').click();
+      cy.get('.nuxt-link-exact-active').should('have.text', ' About ');
+
+      cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).children().not('.label4').invoke('text').then((value) => {
+        cy.get('.mt-8 > a > u').click()
+        cy.get('.heading2').should('be.visible')
+        cy.url().should('include', '/projects/')
+
+        // Check for Institution
+        const institution = value.match(/[ a-zA-Z]+/)[0].trim()
+        cy.get('.body1 > :nth-child(6)').should('contain', institution);
+      })
     });
   });
-
 });
