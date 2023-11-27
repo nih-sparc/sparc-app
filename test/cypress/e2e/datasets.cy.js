@@ -55,7 +55,7 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('have.text', ' Cite ');
       cy.get('.citation-details > .heading2').should('have.text', '\n    Dataset Citation\n  ').and('be.visible')
     });
-    it.only("Abstract Tab", function () {
+    it("Abstract Tab", function () {
       // Should switch to 'Abstract'
       cy.contains('#datasetDetailsTabsContainer .style1', ' Abstract ').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' Abstract ');
@@ -92,9 +92,12 @@ datasetIds.forEach(datasetId => {
         })
       })
     });
-    it("About Tab", function () {
+    it.only("About Tab", function () {
+      // Should switch to 'About'
       cy.contains('#datasetDetailsTabsContainer .style1', ' About ').click();
       cy.get('.nuxt-link-exact-active').should('have.text', ' About ');
+
+      // Check for content
       cy.get('.dataset-about-info').contains(/Title: *(.+)/);
       cy.get('.dataset-about-info').contains(/First Published: *(.+)/);
       cy.get('.dataset-about-info').contains(/Last Published: *(.+)/);
@@ -106,11 +109,15 @@ datasetIds.forEach(datasetId => {
       cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/);
       cy.get('.dataset-about-info').contains(/Version (.+) Revision (.+): *(.+)/);
       cy.get('.dataset-about-info').contains(/Dataset DOI: *(.+)/);
+
+      // Check for email exist
       cy.get('.about-section-container > :nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto');
+
       //Match award link to associated project
       cy.get(':nth-child(11) > :nth-child(2) > a').invoke('attr', 'href').then(value => {
         cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
       });
+
       //match author to contributors
       cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then(value => {
         cy.get('.similar-datasets-container').contains(value);
