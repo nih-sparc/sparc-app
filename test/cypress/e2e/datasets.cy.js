@@ -136,7 +136,7 @@ datasetIds.forEach(datasetId => {
         cy.get('.citation-details > p > a').should('have.attr', 'href', expectedLink);
       })
     });
-    it.only("Files Tab", function () {
+    it("Files Tab", function () {
       //First check if there is a Files tab
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
         if ($tab.text().includes(' Files ')) {
@@ -180,15 +180,21 @@ datasetIds.forEach(datasetId => {
         }
       });
     });
-    it("Gallery Tab", function () {
+    it.only("Gallery Tab", function () {
+      // Should switch to 'Gallery'
       cy.contains('#datasetDetailsTabsContainer .style1', ' Gallery ').click();
+      cy.get('.nuxt-link-exact-active').should('have.text', ' Gallery ');
+
       cy.get('.content > .full-size').then(($content) => {
         //The following call may fail if the wait() is not implemented here
         cy.wait(500);
         const gallery = $content.find('.gallery-container');
         if (gallery && gallery.length) {
+          // Check for pagination
           cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
           cy.get('@pagination').find('li.number').should('have.length.least', 1);
+
+          // Check for gallery card
           cy.wrap(gallery).find('.el-card').should('have.length.least', 1).each($card => {
             cy.wrap($card).contains('span', ' View ');
             //Need to test newly opened viewers
