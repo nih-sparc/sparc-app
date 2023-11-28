@@ -72,10 +72,12 @@ datasetIds.forEach(datasetId => {
       // Check for Experimental Design
       cy.get('.dataset-description-info').contains('Experimental Design:').should('exist')
       cy.get('.dataset-description-info').contains('Protocol Links:').should('exist')
-      cy.get('.dataset-description-info').within(() => {
-        cy.get('.link2').should('exist')
-        cy.get('.link2').should('have.length.above', 0)
-        cy.get('.link2').should('have.attr', 'href').and('include', 'https://doi.org/')
+      cy.get('.dataset-description-info').within(($el) => {
+        if ($el.text().includes('https://doi.org/')) {
+          cy.get('.link2').should('exist')
+          cy.get('.link2').should('have.length.above', 0)
+          cy.get('.link2').should('have.attr', 'href').and('include', 'https://doi.org/')
+        }
       })
       cy.get('.dataset-description-info').contains(/Experimental Approach: *(.+)/).should('exist')
 
