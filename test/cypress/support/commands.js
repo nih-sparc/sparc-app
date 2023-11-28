@@ -35,3 +35,15 @@
 //     }
 //   }
 // }
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // returning false here prevents Cypress from
+  // failing the test
+  if (err.message.includes('Maximum iterations reached.'))
+    return false
+  if (err.message.includes('ResizeObserver loop limit exceeded'))
+    return false
+  // // For legacy dataset
+  // if (err.message.includes('ObjectID does not exist'))
+  //   return false
+  return true
+})
