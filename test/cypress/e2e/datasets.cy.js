@@ -1,4 +1,5 @@
 const datasetIds = [127];
+// const datasetIds = [127, 282, 290, 34, 76];
 
 
 datasetIds.forEach(datasetId => {
@@ -206,7 +207,7 @@ datasetIds.forEach(datasetId => {
           cy.get('@icons').eq(2).click({ force: true });
           cy.get('.files-table-table .el-dialog  .svg-icon').click({ force: true });
 
-          // Check for files component link
+          // Check for files breadcrumb
           cy.get('.inline > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
           cy.get('.breadcrumb-link').should('have.class', 'breadcrumb-link');
           cy.get('.breadcrumb-link').should('have.attr', 'href').and('contain', 'datasetDetailsTab=files&path=files');
@@ -277,8 +278,33 @@ datasetIds.forEach(datasetId => {
           cy.contains('#datasetDetailsTabsContainer .style1', ' Versions ').click();
           cy.get('.nuxt-link-exact-active').should('contain', ' Versions ');
 
+          // Check for file actions
+          cy.get('.version-table > :nth-child(2) > :nth-child(4)').then(($cell) => {
+            if ($cell.text().includes('Not available')) {
+              cy.wrap($cell).should('contain', 'Not available')
+            } else {
+              // Check for changelog
+              cy.wrap($cell).find('.svg-icon').as('icons').should('have.length', 2)
+              cy.get('@icons').eq(0).click()
+
+              // Check for changelog popover
+              cy.get('.optional-content-container').should('be.visible');
+              cy.get('.main-content-container').should('be.visible');
+              cy.get('.close-icon > path').click();
+
+              // Check for download
+              cy.intercept('**/zipit/discover').as('changelogDownload')
+              cy.get('@icons').eq(1).click({ force: true })
+              cy.get('@changelogDownload').should(({ request, response }) => {
+                expect(request.method).to.equal('POST')
+                expect(request.body.data.datasetId).to.equal(`${datasetId}`)
+                expect(response.statusCode).to.equal(200)
+              })
+            }
+          })
+
           // DOI link should reload page with correct version
-          cy.get(':nth-child(2) > .el-col-push-1 > a').click({ force: true })
+          cy.get(':nth-child(2) > .el-col-push-1 > a').click()
           cy.origin('https://sparc.science', () => {
             cy.url().should('contain', 'version')
             cy.go('back')
@@ -291,20 +317,6 @@ datasetIds.forEach(datasetId => {
           //     })
           //   });
           // })
-
-          // Check for file actions
-          cy.get('.version-table > :nth-child(2) > :nth-child(4)').within(($el) => {
-            if ($el.text().includes('Not available')) {
-              cy.wrap($el).should('contain', 'Not available')
-            } else {
-              // Check for changlog
-              cy.get('.el-tooltip > .svg-icon:visible').should('have.length', 2)
-              cy.get(':nth-child(1) > .el-tooltip > .svg-icon').click()
-              // cy.get('.optional-content-container').should('be.visible');
-              // cy.get('.main-content-container').should('be.visible');
-              // cy.get('.close-icon > path').click();
-            }
-          })
         }
       });
     });
