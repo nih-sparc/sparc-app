@@ -77,7 +77,7 @@
           <div v-if="!isDatasetSizeLarge">
             <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and metadata directly to your computer free of charge. Please note that the files will be compressed upon download.</div>
             <a :href="downloadUrl">
-              <el-button @click="sendGtmEvent" class="my-16">Download full dataset</el-button>
+              <el-button @click='sendFullDownloadGtmEvent("portal")' class="my-16">Download full dataset</el-button>
             </a>
           </div>
           <div v-else>
@@ -112,7 +112,7 @@
             <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
             <div class="download-text-block mb-8 p-4">
               {{ datasetArn }}
-              <button class="copy-button" @click="handleCitationCopy(datasetArn)">
+              <button class="copy-button" @click="handleS3CopyButtonClicked(datasetArn)">
                 <img src="../../static/images/copyIcon.png" />
               </button>
             </div>
@@ -350,14 +350,18 @@ export default {
 
       this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
     },
-    sendGtmEvent() {
+    handleS3CopyButtonClicked(text) {
+      this.sendFullDownloadGtmEvent("aws")
+      this.handleCitationCopy(text)
+    },
+    sendFullDownloadGtmEvent(location) {
       this.$gtm.push({
         event: 'interaction_event',
         event_name: 'download_full_dataset',
         dataset_id: this.datasetId,
         version_id: propOr('', 'version', this.datasetInfo),
         doi: propOr('', 'doi', this.datasetInfo),
-        location: "",
+        location: location,
         category: "",
         citation_type: "",
         files: "",
