@@ -22,15 +22,15 @@ datasetIds.forEach(datasetId => {
       })
 
       // Should reload the page
-      cy.get('.dataset-information-box > :nth-child(2) > a').click()
-      cy.url().should('contain', 'version')
-      cy.go('back')
-      // cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-      //   cy.request(href).then((resp) => {
-      //     expect(resp.status).to.eq(200);
-      //     expect(resp.body).to.include(`datasets/${datasetId}/version`);
-      //   })
-      // });
+      // cy.get('.dataset-information-box > :nth-child(2) > a').click()
+      // cy.url().should('contain', 'version')
+      // cy.go('back')
+      cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
+        cy.request(href).then((resp) => {
+          expect(resp.status).to.eq(200);
+          expect(resp.body).to.include(`datasets/${datasetId}/version`);
+        })
+      });
 
       // Should search for contributor in find data page
       cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip > .tooltip-item > a').then(($name) => {
@@ -117,6 +117,12 @@ datasetIds.forEach(datasetId => {
       // Check for email exist
       cy.get('.about-section-container > :nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto');
 
+      //match author to contributors
+      cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
+        const author = new RegExp(value.replace(/\s+/, ' '), 'i')
+        cy.get('.similar-datasets-container').contains(author);
+      })
+
       // Ignore tests if project not exist
       cy.get('.similar-datasets-container').then(($content) => {
         if ($content.text().includes('project(s):')) {
@@ -135,12 +141,6 @@ datasetIds.forEach(datasetId => {
             cy.go('back')
           })
         }
-      })
-
-      //match author to contributors
-      cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
-        const author = new RegExp(value.replace(/\s+/, ' '), 'i')
-        cy.get('.similar-datasets-container').contains(author);
       })
     });
     it("Cite Tab", function () {
@@ -291,6 +291,7 @@ datasetIds.forEach(datasetId => {
 
           // DOI link should reload page with correct version
           cy.get(':nth-child(2) > .el-col-push-1 > a').click({ force: true })
+          cy.wait(500)
           cy.url().should('contain', 'version')
           // cy.get('.el-col-push-1 > a').each(($link) => {
           //   cy.wrap($link).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
