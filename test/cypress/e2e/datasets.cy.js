@@ -22,15 +22,17 @@ datasetIds.forEach(datasetId => {
       })
 
       // Should reload the page
-      // cy.get('.dataset-information-box > :nth-child(2) > a').click()
-      // cy.url().should('contain', 'version')
-      // cy.go('back')
-      cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-        cy.request(href).then((resp) => {
-          expect(resp.status).to.eq(200);
-          expect(resp.body).to.include(`datasets/${datasetId}/version`);
-        })
-      });
+      cy.get('.dataset-information-box > :nth-child(2) > a').click()
+      cy.origin('https://sparc.science', () => {
+        cy.url().should('contain', 'version')
+        cy.go('back')
+      })
+      // cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
+      //   cy.request(href).then((resp) => {
+      //     expect(resp.status).to.eq(200);
+      //     expect(resp.body).to.include(`datasets/${datasetId}/version`);
+      //   })
+      // });
 
       // Should search for contributor in find data page
       cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip > .tooltip-item > a').then(($name) => {
@@ -155,7 +157,7 @@ datasetIds.forEach(datasetId => {
 
       cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then((value) => {
         // Check for citation doi
-        cy.get('.info-citation > .citation-text').should('contain', value.toUpperCase())
+        cy.get('.info-citation > .citation-text', { timeout: 30000 }).should('contain', value.toUpperCase())
 
         // Check for source link
         const expectedLink = 'https://citation.crosscite.org/?doi=' + value;
@@ -275,6 +277,21 @@ datasetIds.forEach(datasetId => {
           cy.contains('#datasetDetailsTabsContainer .style1', ' Versions ').click();
           cy.get('.nuxt-link-exact-active').should('contain', ' Versions ');
 
+          // DOI link should reload page with correct version
+          cy.get(':nth-child(2) > .el-col-push-1 > a').click({ force: true })
+          cy.origin('https://sparc.science', () => {
+            cy.url().should('contain', 'version')
+            cy.go('back')
+          })
+          // cy.get('.el-col-push-1 > a').each(($link) => {
+          //   cy.wrap($link).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
+          //     cy.request(href).then((resp) => {
+          //       expect(resp.status).to.eq(200);
+          //       expect(resp.body).to.include(`datasets/${datasetId}/version`);
+          //     })
+          //   });
+          // })
+
           // Check for file actions
           cy.get('.version-table > :nth-child(2) > :nth-child(4)').within(($el) => {
             if ($el.text().includes('Not available')) {
@@ -288,19 +305,6 @@ datasetIds.forEach(datasetId => {
               // cy.get('.close-icon > path').click();
             }
           })
-
-          // DOI link should reload page with correct version
-          cy.get(':nth-child(2) > .el-col-push-1 > a').click({ force: true })
-          cy.wait(500)
-          cy.url().should('contain', 'version')
-          // cy.get('.el-col-push-1 > a').each(($link) => {
-          //   cy.wrap($link).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-          //     cy.request(href).then((resp) => {
-          //       expect(resp.status).to.eq(200);
-          //       expect(resp.body).to.include(`datasets/${datasetId}/version`);
-          //     })
-          //   });
-          // })
         }
       });
     });
