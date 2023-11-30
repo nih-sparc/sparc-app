@@ -6,7 +6,9 @@
         <el-col :xs="24" :sm="12" class="newsletter-wrap">
           <div class="heading2">Sign up for the SPARC Newsletter</div>
           <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
-          <newsletter-form />
+          <newsletter-form
+            location="stay connected"
+          />
         </el-col>
         <el-col class="office-hours-column" :xs="24" :sm="12">
           <div class="heading2">Open Office Hours</div>

@@ -18,6 +18,7 @@
               native-type="submit"
               name="subscribe"
               class="secondary"
+              @click="sendGtmEvent"
             >
               Sign Up <svg-icon icon="icon-open" height="16" width="16" />
             </el-button>
@@ -30,7 +31,31 @@
 
 <script>
 export default {
-  name: 'NewsletterForm'
+  name: 'NewsletterForm',
+  props: {
+    location: {
+      type: String,
+      default: ""
+    }
+  },
+  methods: {
+    sendGtmEvent() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'newsletter_signup',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: this.location,
+        category: "",
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
+    }
+  }
 }
 </script>
 
