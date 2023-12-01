@@ -137,11 +137,17 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           })
 
           // Check for button text
-          cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist')
+          cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist').click()
+
+          // Loading mask should not exist after the scaffold is loaded
+          cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+          // Check for context card
+          cy.get('.context-card').should('be.visible')
+          cy.get('.context-image:visible').should('have.attr', 'src').and('contain', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
+          cy.get('[style="margin-right: 8px;"] > .title:visible').should('have.class', 'title')
         }
       })
-      // Close the sidebar
-      cy.get('.close-tab > .el-icon-arrow-right').click()
     })
   })
 })
