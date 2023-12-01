@@ -37,9 +37,9 @@
 // }
 
 Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    if (err.message.includes('Avoided redundant navigation to current location'))
-        return false
-      return true
+  // returning false here prevents Cypress from
+  // failing the test
+  if (err.message.includes('Avoided redundant navigation to current location'))
+    return false
+  return true
 })
