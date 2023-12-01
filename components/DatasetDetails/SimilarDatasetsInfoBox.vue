@@ -163,7 +163,7 @@ export default {
     getFacetId(datasetFacet) {
       const key = datasetFacet.facetPropPath;
       const label = datasetFacet.label;
-      if (this.allFacetsData === []) {
+      if (this.allFacetsData == []) {
         return
       }
       let category = this.allFacetsData.find(facet => facet.key === key)
