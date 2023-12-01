@@ -91,6 +91,7 @@ export default {
   },
   methods: {
     openFile() {
+      this.sendGtmEvent()
       const fileSize = this.selectedFile.size
       let uri = `${pathOr('', ['uri'], this.selectedFile).replace("s3://", "")}`
       let s3BucketName = uri.substring(0, uri.indexOf("/"))
@@ -132,6 +133,22 @@ export default {
         .finally(() => {
           this.isFetching = false
         })
+    },
+    sendGtmEvent() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'open_in_osparc',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: this.selectedViewer?.view_url,
+        category: this.selectedViewer?.title,
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
     },
     beforeClose(done) {
       this.selectedViewer = ''

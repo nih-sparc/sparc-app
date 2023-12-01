@@ -16,11 +16,11 @@
     <div class="body1 my-16">
       {{ description }}
     </div>
-    <a class="button-link" :href="buttonLink">
-      <el-button class="secondary">
+    <nuxt-link class="button-link" :to="buttonLink">
+      <el-button class="secondary" @click="sendGtmEvent">
         {{ buttonText }}
       </el-button>
-    </a>
+    </nuxt-link>
   </div>
 </template>
 
@@ -58,6 +58,25 @@ export default {
       return pathOr('', ['fields','icon', 'fields', 'file', 'url'], this.feature)
     }
   },
+
+  methods: {
+    sendGtmEvent(e) {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'portal_feature_button_click',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: this.buttonText,
+        category: this.title,
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
+    }
+  }
 }
 </script>
 

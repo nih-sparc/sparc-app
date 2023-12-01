@@ -38,7 +38,7 @@
                 Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our newsletter. View all past newsletters <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">here</a>.
               </div>
               <div class="mt-8">
-                <el-button class='secondary' @click="subscribeToNewsletter(profileEmail, firstName, lastName)">Subscribe to newsletter</el-button>
+                <el-button class='secondary' @click="handleSubscribeButtonClicked">Subscribe to newsletter</el-button>
               </div>
             </template>
             <template v-else>
@@ -478,6 +478,26 @@ export default {
           this.showRetractConfirmationModal = false
         })
     },
+    handleSubscribeButtonClicked() {
+      this.sendGtmEvent()
+      this.subscribeToNewsletter(this.profileEmail, this.firstName, this.lastName)
+    },
+    sendGtmEvent() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'newsletter_signup',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: "profile page",
+        category: "",
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
+    }
   }
 }
 

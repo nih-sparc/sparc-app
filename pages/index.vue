@@ -13,11 +13,11 @@
         class="page-hero-img"
         :src="heroImage.fields.file.url"
       />
-      <a v-if="heroButtonLink && heroButtonLabel" class="btn-link" :href="heroButtonLink">
-        <el-button class="secondary">
+      <nuxt-link v-if="heroButtonLink && heroButtonLabel" class="btn-link" :to="heroButtonLink">
+        <el-button @click="heroButtonClick" class="secondary">
           {{ heroButtonLabel }}
         </el-button>
-      </a>
+      </nuxt-link>
     </page-hero>
     <div class="secondary-background">
       <featured-data :featured-data="featuredData" />
@@ -135,6 +135,25 @@ export default {
       heroCopy: '',
       heroHeading: '',
       heroImage: {}
+    }
+  },
+
+  methods: {
+    heroButtonClick() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'submit_to_sparc_button_click',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: "Banner",
+        category: "",
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
     }
   },
 
