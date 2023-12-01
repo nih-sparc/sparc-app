@@ -369,14 +369,18 @@ export default {
 
   mounted() {
     this.$gtm.push({
-      event: 'interaction_event',
-      event_name: 'dataset_page_view',
+      event: "",
+      category: "",
       dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
-      version_id: propOr('undefined', 'version', this.datasetInfo),
-      doi: propOr('undefined', 'doi', this.datasetInfo)
-    })
-    this.$nextTick(() => {
-      window['google_tag_manager'][`${process.env.GOOGLE_TAG_MANAGER_ID}`].dataLayer.reset()
+      version_id: propOr('', 'version', this.datasetInfo),
+      doi: propOr('', 'doi', this.datasetInfo),
+      event_name: "",
+      citation_type: "",
+      location: "",
+      files: "",
+      file_name: "",
+      file_path: "",
+      file_type: "",
     })
   },
 

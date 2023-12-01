@@ -318,7 +318,6 @@ const openableFileTypes = [
   'jpeg',
   'png',
   'svg',
-  'mp4',
 ]
 
 export const contentTypes = {
@@ -390,7 +389,9 @@ export default {
         ? this.$route.query.path
         : this.schemaRootPath
     },
-
+    doi() {
+      return propOr('', 'doi', this.datasetInfo)
+    },
     breadcrumbs: function() {
       return compose(reject(isEmpty), split('/'))(this.path)
     },
@@ -629,6 +630,13 @@ export default {
         file_name: pathOr('', ['row','name'], scope),
         file_path: pathOr('', ['row','path'], scope),
         file_type: pathOr('', ['row','fileType'], scope),
+        location: "",
+        category: "",
+        dataset_id: this.datasetId,
+        version_id: this.datasetVersion,
+        doi: this.doi,
+        citation_type: "",
+        files: ""
       })
       this.getViewFileUrl(scope).then(response => {
         window.open(response, '_blank')
@@ -654,8 +662,17 @@ export default {
       })
       this.$gtm.push({
         event: 'interaction_event',
-        event_name: 'dataset_file_download',
-        files: propOr('', 'paths', payload)
+        event_name: 'download_dataset_files',
+        files: propOr('', 'paths', payload),
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: "",
+        category: "",
+        dataset_id: this.datasetId,
+        version_id: this.datasetVersion,
+        doi: this.doi,
+        citation_type: ""
       })
     },
 

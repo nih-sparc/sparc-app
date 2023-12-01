@@ -25,7 +25,7 @@
         <sparc-tooltip placement="top-center">
           <div slot="item">
             <a :href="service['view_url']" target="_blank">
-              <el-button class="secondary">
+              <el-button @click="sendGtmEvent(service)" class="secondary">
                 <div class="open-osparc-btn-content">
                   Open in o<sup>2</sup>S<sup>2</sup>PARC <svg-icon icon="icon-open" height="18" width="18" />
                 </div>
@@ -62,7 +62,23 @@ export default {
   },
 
   methods: {
-    highlightMatches
+    highlightMatches,
+    sendGtmEvent(service) {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'open_in_osparc',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: service?.view_url,
+        category: service?.title,
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
+    }
   }
 }
 </script>
