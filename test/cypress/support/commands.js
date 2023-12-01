@@ -38,6 +38,8 @@
 Cypress.on('uncaught:exception', (err, runnable) => {
   // returning false here prevents Cypress from
   // failing the test
+  if (err.message.includes('Avoided redundant navigation to current location'))
+    return false
   if (err.message.includes('Maximum iterations reached.'))
     return false
   if (err.message.includes('ResizeObserver loop limit exceeded'))

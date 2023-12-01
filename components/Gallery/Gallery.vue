@@ -46,6 +46,9 @@
               :is="galleryItemComponent"
               :data="item"
               :width="cardWidth"
+              :datasetId="datasetId"
+              :versionId="versionId"
+              :doi="doi"
               show-card-details
               @card-clicked="cardClicked"
             />
@@ -101,6 +104,18 @@ export default {
     galleryItemType: {
       type: String,
       default: 'resources'
+    },
+    datasetId: {
+      type: Number,
+      default: undefined,
+    },
+    versionId: {
+      type: Number,
+      default: undefined,
+    },
+    doi: {
+      type: String,
+      default: "",
     }
   },
   data() {

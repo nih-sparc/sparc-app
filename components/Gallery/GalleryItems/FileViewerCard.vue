@@ -72,6 +72,18 @@ export default {
       type: Number,
       default: 3,
     },
+    datasetId: {
+      type: Number,
+      default: undefined,
+    },
+    versionId: {
+      type: Number,
+      default: undefined,
+    },
+    doi: {
+      type: String,
+      default: "",
+    },
     showCardDetails: {
       type: Boolean,
     },
@@ -149,6 +161,20 @@ export default {
      */
     cardClicked: function () {
       if (this.data.link) {
+        this.$gtm.push({
+          event: 'interaction_event',
+          event_name: 'gallery_item_clicked',
+          files: "",
+          file_name: this.data.title,
+          file_path: this.data.link,
+          file_type: this.data.type,
+          location: "",
+          category: "file_viewer",
+          dataset_id: this.datasetId,
+          version_id: this.versionId,
+          doi: this.doi,
+          citation_type: ""
+        })
         const link = document.createElement('a')
         link.href = this.data.link
         link.target = '_blank'
