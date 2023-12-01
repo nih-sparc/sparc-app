@@ -227,13 +227,23 @@ const searchTypes = [
 
 const algoliaSortOptions = [
   {
-    label: 'Published (desc)',
+    label: 'Date (desc)',
     id: 'newest',
+    algoliaIndexName: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC
+  },
+  {
+    label: 'Date (asc)',
+    id: 'oldest',
+    algoliaIndexName: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC
+  },
+  {
+    label: 'Date published (desc)',
+    id: 'newestPub',
     algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
   },
   {
-    label: 'Published (asc)',
-    id: 'oldest',
+    label: 'Date published (asc)',
+    id: 'oldestPub',
     algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
   },
   {
