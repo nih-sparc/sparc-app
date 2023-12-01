@@ -494,6 +494,7 @@ export default {
 
     selectedAlgoliaSortOption: function(option) {
       this.algoliaIndex = algoliaClient.initIndex(option.algoliaIndexName)
+      window.algIndex = algoliaClient
     }
   },
 
