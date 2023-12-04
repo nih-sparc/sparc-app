@@ -426,6 +426,9 @@ export default {
     datasetVersion: function() {
       return propOr(1, 'version', this.datasetInfo)
     },
+    datasetId: function() {
+      return propOr("", 'id', this.datasetInfo)
+    },
     /**
      * Compute URL for zipit service
      * @returns {String}
@@ -659,20 +662,20 @@ export default {
       this.zipData = JSON.stringify(payload, undefined)
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
-      })
-      this.$gtm.push({
-        event: 'interaction_event',
-        event_name: 'download_dataset_files',
-        files: propOr('', 'paths', payload),
-        file_name: "",
-        file_path: "",
-        file_type: "",
-        location: "",
-        category: "",
-        dataset_id: this.datasetId,
-        version_id: this.datasetVersion,
-        doi: this.doi,
-        citation_type: ""
+        this.$gtm.push({
+          event: 'interaction_event',
+          event_name: 'download_dataset_files',
+          files: [propOr('', 'paths', payload)[0]],
+          file_name: "",
+          file_path: "",
+          file_type: "",
+          location: "",
+          category: "",
+          dataset_id: this.datasetId,
+          version_id: this.datasetVersion,
+          doi: this.doi,
+          citation_type: ""
+        })
       })
     },
 
