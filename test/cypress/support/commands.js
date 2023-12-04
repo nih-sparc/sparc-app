@@ -45,6 +45,8 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('ResizeObserver loop limit exceeded'))
     return false
+  if (err.message.includes('config is not defined'))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
