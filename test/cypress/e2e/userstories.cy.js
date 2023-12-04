@@ -1,7 +1,8 @@
 // The position of selected datasets
+const datasetIndex = [1, 2]
 const segmentationUseFlowSearchInput = 'segmentation'
 const scaffoldUseFlowSearchInput = 'scaffold'
-const datasetIndex = [1, 2]
+const categories = ['stomach', 'lung']
 
 describe('User stories', function () {
   describe('Should find segmentation in the gallery', { testIsolation: false }, function () {
@@ -28,7 +29,7 @@ describe('User stories', function () {
         cy.get('@dataset').find('.cell > :nth-child(1) > a').last().click();
 
         // Enter the 'Gallery' tab
-        cy.get(':nth-child(5) > .style1').click();
+        cy.get(':nth-child(5) > .style1', { timeout: 30000 }).click();
         cy.get('.gallery-container > .description-info > p > strong', { timeout: 30000 }).should('have.text', 'Data collection:');
 
         // Check for segmentation
@@ -69,7 +70,7 @@ describe('User stories', function () {
         cy.get('@dataset').find('.cell > :nth-child(1) > a', { timeout: 30000 }).last().click();
 
         // Enter the 'Gallery' tab
-        cy.get(':nth-child(5) > .style1').click();
+        cy.get(':nth-child(5) > .style1', { timeout: 30000 }).click();
         cy.get('.gallery-container > .description-info > p > strong', { timeout: 30000 }).should('have.text', 'Data collection:');
 
         // Check for scaffold
@@ -125,6 +126,39 @@ describe('User stories', function () {
           })
         })
         cy.goBackToBrowser('model');
+      })
+    })
+  })
+  describe('Should find data by category', { testIsolation: false }, function () {
+    before('Visit homepage', function () {
+      cy.visit('');
+    })
+    categories.forEach((category) => {
+      it(`Filter datasets by ${category}`, function () {
+        cy.intercept('**/query?**').as('query');
+
+        // Expand all cateories
+        cy.get('.featured-data > .el-button > span').click();
+        cy.get('.data-wrap').should('be.visible');
+
+        // Check for category exist
+        const regex = new RegExp(category, 'i')
+        cy.get('.data-wrap > a > p').contains(regex).as('facetsCategory');
+        cy.get('@facetsCategory').should('be.visible');
+        cy.get('@facetsCategory').click();
+
+        cy.wait('@query', { timeout: 20000 });
+
+        datasetIndex.forEach((index) => {
+          cy.get('.cell > :nth-child(1) > .property-table > :nth-child(1) > :nth-child(2)', { timeout: 30000 }).eq(index - 1).contains(regex).should('exist');
+
+          // Check for detail page
+          cy.get('.el-table__row', { timeout: 30000 }).eq(index - 1).as('dataset');
+          cy.get('@dataset').find('.cell > :nth-child(1) > a').last().click();
+          cy.contains(regex).should('have.length.above', 0);
+          cy.goBackToBrowser('dataset');
+        })
+        cy.go('back');
       })
     })
   })
