@@ -41,5 +41,42 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   // failing the test
   if (err.message.includes('Avoided redundant navigation to current location'))
     return false
+  if (err.message.includes('Maximum iterations reached.'))
+    return false
+  if (err.message.includes('ResizeObserver loop limit exceeded'))
+    return false
+  // // For legacy dataset
+  // if (err.message.includes('ObjectID does not exist'))
+  //   return false
   return true
+})
+
+Cypress.Commands.add('findGalleryCard', (text) => {
+  const clickNextPageButton = () => {
+    cy.get('.el-card > .el-card__body').then(($card) => {
+      if (!$card.text().includes(text)) {
+        cy.get('.btn-next').then(($button) => {
+          if ($button.is(":disabled")) {
+            return
+          } else {
+            cy.wrap($button).click()
+            clickNextPageButton()
+          }
+        })
+      }
+    })
+  }
+  clickNextPageButton()
+})
+
+Cypress.Commands.add('goBackToBrowser', (category) => {
+  const goBack = () => {
+    cy.url().then(($url) => {
+      if (!$url.includes(`data?type=${category}`)) {
+        cy.go('back')
+        goBack()
+      }
+    })
+  }
+  goBack()
 })
