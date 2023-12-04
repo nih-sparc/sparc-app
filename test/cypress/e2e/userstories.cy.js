@@ -41,7 +41,7 @@ describe('User stories', function () {
       })
     })
   })
-  describe('Should find scaffold in the gallery', { testIsolation: false }, function () {
+  describe('Should open scaffold through the gallery', { testIsolation: false }, function () {
     before('Go to Anatomical Models', function () {
       cy.intercept('**/query?**').as('query');
       cy.visit('');
