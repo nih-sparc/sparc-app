@@ -340,7 +340,7 @@ export default {
 
   data: () => {
     return {
-      algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC),
+      algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC),
       selectedAlgoliaSortOption: algoliaSortOptions[0],
       algoliaSortOptions,
       selectedProjectsSortOption: projectsSortOptions[0],
