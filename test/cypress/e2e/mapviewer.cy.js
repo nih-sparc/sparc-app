@@ -1,9 +1,11 @@
+// Human Female, Human Male, Rat, Mouse, Pig, Cat
 // const taxonModels = ['Rat']
-// Currentlly, avoid to test 'Pig' flatmap
 const taxonModels = ['Rat', 'Human Female']
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top
-const coordinates = { 'x': 800, 'y': 333 }
+// central coordinate { 'x': 768, 'y': 373 }
+const coordinate = { 'x': 800, 'y': 333 }
+const pixelChange = 3
 
 const threeDSyncView = 'Human Male'
 
@@ -37,19 +39,39 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       // Loading mask should not exist after the new flatmap is loaded
       cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
+      // Hide organs and outlines
+      cy.get('.settings-group > :nth-child(2):visible').click()
+      cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true });
+      cy.get('.settings-group > :nth-child(2):visible').click()
+
+      let coorX = coordinate.x
+      let coorY = coordinate.y
+      cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
       // Open a provenance card
-      cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').click(coordinates.x, coordinates.y);
+      const clickNeuron = () => {
+        cy.get('@canvas').click(coorX, coorY)
 
-      // Check for the popover provenance card content
-      cy.get('.maplibregl-popup-content > .tooltip-container > .el-main', { timeout: 30000 }).within(() => {
-        cy.get('.title').should('exist')
-        cy.get('.subtitle').should('exist')
-        cy.get('.attribute-title').should('exist')
-        cy.get('.attribute-content').should('exist')
-      })
+        cy.wait(5000)
 
-      // Close the provenance card
-      cy.get('.maplibregl-popup-close-button').click({ force: true })
+        cy.get('body').then(($body) => {
+          if ($body.find('.maplibregl-popup-close-button').length > 0) {
+            cy.wrap($body).find('.maplibregl-popup-content > .tooltip-container > .el-main', { timeout: 30000 }).within(() => {
+
+              // Check for the popover provenance card content
+              cy.get('.title').should('exist')
+              cy.get('.subtitle').should('exist')
+              cy.get('.attribute-title').should('exist')
+              cy.get('.attribute-content').should('exist')
+            })
+            // Close the provenance card
+            cy.get('.maplibregl-popup-close-button').click({ force: true })
+          } else {
+            coorX -= pixelChange
+            clickNeuron()
+          }
+        })
+      }
+      clickNeuron()
     })
   })
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
