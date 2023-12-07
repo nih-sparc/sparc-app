@@ -28,22 +28,28 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for content title
     cy.get('.featured-data > h2').should('have.text', 'Find Data by Category')
 
+    cy.get('.data-wrap > a:visible').as('category')
+
+    cy.get('@category').first().click()
+    cy.url().should('contain', 'selectedFacetIds')
+    cy.visit('')
+
     // Check for the number of categories
-    cy.get('.data-wrap > a:visible').should('have.length', 6)
+    cy.get('@category').should('have.length', 6)
 
     // Show more categories
     cy.get('.featured-data > .el-button').should('have.text', '\n    View more\n  ')
     cy.get('.featured-data > .el-button > span').click()
 
     // Check for the number of categories after showing more
-    cy.get('.data-wrap > a:visible').should('have.length.above', 6)
+    cy.get('@category').should('have.length.above', 6)
 
     // Show less categories
     cy.get('.featured-data > .el-button > span').should('have.text', '\n    View less\n  ')
     cy.get('.featured-data > .el-button > span').click()
 
     // Check for the number of categories after showing less
-    cy.get('.data-wrap > a:visible').should('have.length', 6)
+    cy.get('@category').should('have.length', 6)
   })
   it('Portal features', function () {
     // Check for the number of features
@@ -82,6 +88,14 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for card 'view all' link
     cy.get('.row > :nth-child(1) > .view-all-link').should('contain', 'View All')
     cy.get(':nth-child(2) > .view-all-link').should('contain', 'View All Datasets')
+
+    // Check for button redirect to dataset
+    cy.get(':nth-child(2) > .card-container > .el-row > .el-col-18 > .dataset-name').then(($link)=>{
+      const title = $link.text().replace('\n', '').trim()
+      cy.get(':nth-child(2) > .card-container > .el-row > .el-col-18 > .button-link > .el-button').click()
+      cy.contains(title).should('exist')
+    })
+    cy.visit('')
   })
   it('Homepage news', function () {
     // Check for content title
