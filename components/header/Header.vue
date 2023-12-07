@@ -80,6 +80,7 @@
                   style="z-index: 100;"
                 >
                   <nuxt-link
+                    @click.native="handleClick"
                     :to="link.href"
                     :class="{ active: activeLink(link.href) }"
                     exact-active-class="active"
@@ -323,6 +324,24 @@ export default {
   },
 
   methods: {
+    handleClick(e){
+      if (e.target.href.includes('share-data')) {
+        this.$gtm.push({
+          event: 'interaction_event',
+          event_name: 'submit_to_sparc_button_click',
+          files: "",
+          file_name: "",
+          file_path: "",
+          file_type: "",
+          location: "Header",
+          category: "",
+          dataset_id: "",
+          version_id: "",
+          doi: "",
+          citation_type: ""
+        })
+      }
+    },
     verifyProfileComplete() {
       if (this.cognitoUserToken != "") {
         // If the user is logged in and their profile is incomplete then make sure they complete it. Otherwise, do not allow them to visit the welcome page again

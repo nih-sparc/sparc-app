@@ -227,14 +227,14 @@ const searchTypes = [
 
 const algoliaSortOptions = [
   {
-    label: 'Published (desc)',
+    label: 'Date (desc)',
     id: 'newest',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
+    algoliaIndexName: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC
   },
   {
-    label: 'Published (asc)',
+    label: 'Date (asc)',
     id: 'oldest',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
+    algoliaIndexName: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC
   },
   {
     label: 'A-Z',
@@ -340,7 +340,7 @@ export default {
 
   data: () => {
     return {
-      algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC),
+      algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC),
       selectedAlgoliaSortOption: algoliaSortOptions[0],
       algoliaSortOptions,
       selectedProjectsSortOption: projectsSortOptions[0],

@@ -17,6 +17,9 @@
             galleryItemType="fileViewer"
             :items="galleryItems"
             :cardWidth="13.8"
+            :datasetId="datasetId"
+            :versionId="versionId"
+            :doi="doi"
           />
         </div>
         <div v-else-if="!$fetchState.pending">
@@ -218,6 +221,12 @@ export default {
     ),
     datasetId() {
       return propOr('', 'id', this.datasetInfo)
+    },
+    versionId() {
+      return propOr('', 'version', this.datasetInfo)
+    },
+    doi() {
+      return propOr('', 'doi', this.datasetInfo)
     },
     isPrevPossible() {
       return this.currentIndex > 0
