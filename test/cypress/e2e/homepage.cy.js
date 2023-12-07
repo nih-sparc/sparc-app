@@ -5,21 +5,28 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Navigation Bar', function () {
     // Check for navigation bar
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').contains(/Data & Models/i).should('exist')
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').contains(/Tools & Resources/i).should('exist')
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(3) > a').contains(/Maps/i).should('exist')
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(4) > a').contains(/News & Events/i).should('exist')
-    cy.get(':nth-child(1) > :nth-child(5) > a').contains(/About/i).should('exist')
-    cy.get(':nth-child(1) > :nth-child(6) > a').contains(/Submit to SPARC/i).should('exist')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data?type=dataset')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').should('contain', 'Tools & Resources').and('have.attr', 'href', '/resources')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(3) > a').should('contain', 'Maps').and('have.attr', 'href', '/maps')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(4) > a').should('contain', 'News & Events').and('have.attr', 'href', '/news-and-events')
+    cy.get(':nth-child(1) > :nth-child(5) > a').should('contain', 'About').and('have.attr', 'href', '/about')
+    cy.get(':nth-child(1) > :nth-child(6) > a').should('contain', 'Submit to SPARC').and('have.attr', 'href', '/share-data')
   })
-  it('Banner', function () {
+  it('Page hero', function () {
     // Check for banner
-    cy.get('h1').contains(/SPARC/).should('exist')
-    cy.get('.btn-link > .el-button > span').contains(/Submit to SPARC/i).should('exist')
+    cy.get('h1').should('contain', 'SPARC')
+    cy.get('[class="page-hero-img"]').should('exist')
+
+    // Check for button function
+    cy.get('.btn-link > .el-button').should('contain', 'Submit to SPARC')
+    cy.get('.btn-link > .el-button').click()
+    cy.url().should('contain', 'share-data')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(6) > a').should('have.class', 'active')
+    cy.go('back')
   })
-  it('Body - Find Data by Category', function () {
+  it('Featured data', function () {
     // Check for content title
-    cy.get('.featured-data > h2').contains(/Find Data by Category/i).should('exist')
+    cy.get('.featured-data > h2').should('have.text', 'Find Data by Category')
 
     // Check for the number of categories
     cy.get('.data-wrap > a:visible').should('have.length', 6)
@@ -38,7 +45,7 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for the number of categories after showing less
     cy.get('.data-wrap > a:visible').should('have.length', 6)
   })
-  it('Body - What Can I Do With SPARC?', function () {
+  it('Portal features', function () {
     // Check for the number of features
     cy.get('.feature-container').should('have.length', 4)
 
@@ -49,13 +56,19 @@ describe('Homepage', { testIsolation: false }, function () {
       cy.get('.body1').should('exist')
       cy.get('.button-link > .el-button > span').should('exist')
     })
+
+    // Check for button function
+    cy.get(':nth-child(1) > .feature-container > .button-link > .el-button').click()
+    cy.url().should('contain', 'data?type=dataset')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('have.class', 'active')
+    cy.go('back')
   })
-  it('Body - Resources & Datasets', function () {
+  it('Projects and datasets', function () {
     // Check for content title
-    cy.get(':nth-child(6) > .section-container > .heading2').contains(/Resources & Datasets/i).should('exist')
+    cy.get(':nth-child(6) > .section-container > .heading2').should('contain', 'Resources & Datasets')
 
     // Check for card description
-    cy.get('.row > :nth-child(1) > .mb-16').should('have.text', 'Here is a resource you might be interested in:')
+    cy.get('.row > :nth-child(1) > .mb-16').should('contain', 'you might be interested in:')
     cy.get('.row > :nth-child(2) > .mb-16').should('have.text', 'Featured Datasets')
 
     // Check for card content
@@ -67,11 +80,12 @@ describe('Homepage', { testIsolation: false }, function () {
     })
 
     // Check for card 'view all' link
-    cy.get(':nth-child(6) > .section-container > .row').contains(/View All/i).should('exist')
+    cy.get('.row > :nth-child(1) > .view-all-link').should('contain', 'View All')
+    cy.get(':nth-child(2) > .view-all-link').should('contain', 'View All Datasets')
   })
-  it('Body - News & Upcoming Events', function () {
+  it('Homepage news', function () {
     // Check for content title
-    cy.get('.featured-datasets > .heading2').contains(/News & Upcoming Events/i).should('exist')
+    cy.get('.featured-datasets > .heading2').should('contain', 'News & Upcoming Events')
 
     // Check for card image
     cy.get('.sparc-card__image').should('exist')
@@ -81,12 +95,12 @@ describe('Homepage', { testIsolation: false }, function () {
 
     // Check for card subtitle
     cy.get('.markdown-text > p').should('exist')
-    cy.get(':nth-child(2) > .el-button').contains(/Learn More/i).should('exist')
+    cy.get(':nth-child(2) > .el-button').should('contain', 'Learn More')
 
     // Check for card 'view all' link
     cy.get('.sparc-card__content-wrap__content > .view-all-link').should('exist')
   })
-  it('Body - Stay Connected', function () {
+  it('Stay connected', function () {
     // Check for content title
     cy.get('.subheader').should('have.text', 'Stay Connected')
 
@@ -100,6 +114,6 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(2) > :nth-child(1) > h3').should('have.text', 'Help Us Improve')
     cy.get(':nth-child(2) > :nth-child(2) > h3').should('have.text', 'Stay Up-to-Date')
     cy.get('.footer__info--logo > .nuxt-link-exact-active > .logo').should('have.attr', 'src', '/_nuxt/img/logo-sparc-wave-primary.291d1ca.svg')
-    cy.get('.footer__info--blurb > p').contains(/The NIH Common/i).should('exist')
+    cy.get('.footer__info--blurb > p').should('contain', 'The NIH Common')
   })
 })
