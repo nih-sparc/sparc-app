@@ -40,9 +40,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
       // Hide organs and outlines
-      cy.get('.settings-group > :nth-child(2):visible').click()
+      cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
       cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true });
-      cy.get('.settings-group > :nth-child(2):visible').click()
+      cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
 
       let coorX = coordinate.x
       let coorY = coordinate.y
