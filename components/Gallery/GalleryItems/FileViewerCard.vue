@@ -227,7 +227,7 @@ export default {
           else this.disableTooltip = false
         } else {
           //text not rendered yet
-          if (this.data.title.length > 20) this.disableTooltip = false
+          if (this.data.title && this.data.title.length > 20) this.disableTooltip = false
           else this.disableTooltip = true
         }
       }
