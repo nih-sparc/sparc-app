@@ -137,12 +137,14 @@ export default {
     }
     const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
     // We must remove the N: in order for scicrunch to realize the package
-    const expectedScicrunchIdentifier = sourcePackageId.replace("N:", "")
+    const expectedScicrunchIdentifier = sourcePackageId != "" ? sourcePackageId.replace("N:", "") : ""
     let scicrunchData = {}
     try {
-      const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(expectedScicrunchIdentifier)
-      const result = pathOr([], ['data', 'result'], scicrunchResponse)
-      scicrunchData = result?.length > 0 ? result[0] : []
+      if (expectedScicrunchIdentifier != "") {
+        const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(expectedScicrunchIdentifier)
+        const result = pathOr([], ['data', 'result'], scicrunchResponse)
+        scicrunchData = result?.length > 0 ? result[0] : []
+      }
     } catch(e) {
       console.log(`Error retrieving sci crunch data (possibly because there is none for this file): ${e}`)
     }
