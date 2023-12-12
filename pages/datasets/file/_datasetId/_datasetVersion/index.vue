@@ -114,15 +114,19 @@ export default {
     // const sourcePackageId = file.sourcePackageId
     // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
     let sourcePackageId = ""
-    const bioData = await biolucida.searchDataset(route.params.datasetId)
-    await Promise.all(bioData['dataset_images'].map(async image => {
-      const imageInfo = await biolucida.getImageInfo(image.image_id)
-      if (imageInfo['name'] == file.name)
-      {
-        sourcePackageId = image['sourcepkg_id']
-        return
-      }
-    }))
+    const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
+    const imagesData = biolucidaSearchResults['dataset_images']
+    if (imagesData != undefined) {
+      await Promise.all(imagesData.map(async image => {
+        const imageInfo = await biolucida.getImageInfo(image.image_id)
+        if (imageInfo['name'] == file.name)
+        {
+          sourcePackageId = image['sourcepkg_id']
+          return
+        }
+      }))
+    }
+    
     
     let biolucidaData = {}
     try {
@@ -130,9 +134,8 @@ export default {
         biolucidaData = await $axios.$get(`${process.env.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`)
     } catch(e) {
       console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
-      console.log(e)
     }
-    const hasBiolucidaViewer = biolucidaData != {} && biolucidaData.status !== 'error'
+    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
     // We must remove the N: in order for scicrunch to realize the package
     const expectedScicrunchIdentifier = sourcePackageId.replace("N:", "")
     let scicrunchData = {}
