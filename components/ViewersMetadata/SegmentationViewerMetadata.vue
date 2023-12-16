@@ -138,7 +138,6 @@ export default {
       const [segmentation_info_response, readme_markdown] = await Promise.all([
         discover.getSegmentationInfo(
           this.datasetId,
-          this.versionId,
           this.filePath,
           s3Bucket
         ),

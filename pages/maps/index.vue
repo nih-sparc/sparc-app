@@ -74,7 +74,7 @@ const getScaffoldState = async (uuid, $axios) => {
 const getScaffoldEntry = async (route, $axios, s3Bucket) => {
   //Check if file path from scicrunch can be found on the server
   const filePath = route.query.file_path
-  let path = `${route.query.dataset_id}/${route.query.dataset_version}/${filePath}`
+  let path = `${route.query.dataset_id}/${filePath}`
   if (s3Bucket) {
     path = path + `?s3BucketName=${s3Bucket}`
   }
@@ -102,7 +102,7 @@ const getScaffoldEntry = async (route, $axios, s3Bucket) => {
       route.query.dataset_id,
       route.query.dataset_version
     )
-    path = `${route.query.dataset_id}/${route.query.dataset_version}/${file.path}`
+    path = `${route.query.dataset_id}/${file.path}`
     if (s3Bucket) {
       path = path + `?s3BucketName=${s3Bucket}`
     }
