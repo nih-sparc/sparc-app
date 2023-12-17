@@ -127,7 +127,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(1) > :nth-child(2) > h3').should('have.text', 'Policies')
     cy.get(':nth-child(2) > :nth-child(1) > h3').should('have.text', 'Help Us Improve')
     cy.get(':nth-child(2) > :nth-child(2) > h3').should('have.text', 'Stay Up-to-Date')
-    cy.get('.footer__info--logo > .nuxt-link-exact-active > .logo').should('have.attr', 'src', '/_nuxt/img/logo-sparc-wave-primary.291d1ca.svg')
+    cy.get('.footer__info--logo > .nuxt-link-exact-active > .logo').should('have.attr', 'src').and('contain', 'logo-sparc-wave-primary')
     cy.get('.footer__info--blurb > p').should('contain', 'The NIH Common')
   })
 })
