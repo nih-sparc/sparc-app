@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@abi-software/gallery": "0.3.2",
-    "@abi-software/mapintegratedvuer": "0.6.4",
+    "@abi-software/mapintegratedvuer": "^0.6.5",
     "@abi-software/plotvuer": "^0.3.0",
     "@abi-software/simulationvuer": "0.6.5",
     "@aws-amplify/auth": "^4.4.4",
