@@ -110,7 +110,6 @@ export default {
 
     const response = await discover.fetch(
       route.query.dataset_id,
-      route.query.dataset_version,
       route.query.file_path,
       true, 
       s3Bucket

@@ -224,7 +224,8 @@ export default {
     },
     viewChangeLogFile(versionInfo) {
       // Note that requestFileContent is a mixin
-      this.requestFileContent(this.getChangelogFile(versionInfo.version)).then(content => {
+      const changelogFile = this.getChangelogFile(versionInfo.version)
+      this.requestFileContent(changelogFile).then(content => {
         this.markdown = content
         this.dialogVisible = true
         this.changeLogFileInfo = versionInfo // Set the version metadata for the currently stored markdown
