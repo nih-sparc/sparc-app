@@ -44,7 +44,7 @@
       </div>
     </div>
     <div class="pt-16">
-      <bf-button @click="requestDownloadFile(file)">
+      <bf-button @click="requestDownloadFile({...file, version: versionId})">
         Download file
       </bf-button>
     </div>
@@ -85,6 +85,9 @@ export default {
     },
     datasetId() {
       return propOr(undefined, "id", this.datasetInfo)
+    },
+    versionId() {
+      return propOr(undefined, "version", this.datasetInfo)
     },
   },
 }

@@ -69,7 +69,7 @@
       </div>
     </div>
     <div v-if="filePath" class="pt-16">
-      <el-button @click="requestDownloadFile(file)">
+      <el-button @click="requestDownloadFile({...file, version: versionId})">
         Download file
       </el-button>
     </div>
@@ -170,7 +170,10 @@ export default {
     },
     datasetId() {
       return propOr(undefined, "id", this.datasetInfo)
-    }
+    },
+    versionId() {
+      return propOr(undefined, "version", this.datasetInfo)
+    },
   }
 }
 </script>
