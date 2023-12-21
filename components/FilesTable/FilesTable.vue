@@ -647,7 +647,6 @@ export default {
     },
 
     executeDownload(downloadInfo) {
-      const version = propOr('', 'version', downloadInfo)
       const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
       let params = downloadInfo.uri.replace("s3://", "")
       let firstIndex = params.indexOf("/") + 1
@@ -657,7 +656,7 @@ export default {
       const payload = {
         paths: [matches.groups.filePath],
         datasetId: matches.groups.datasetId,
-        version: version
+        version: this.datasetVersion
       }
 
       this.zipData = JSON.stringify(payload, undefined)
