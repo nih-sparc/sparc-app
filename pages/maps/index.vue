@@ -252,6 +252,7 @@ export default {
   watch: {
     currentEntry: 'currentEntryUpdated',
     facets: 'facetsUpdated',
+    isLandingPage: 'openViewWithQuery',
   },
   fetchOnServer: false,
   created: function () {
@@ -413,7 +414,7 @@ export default {
         }
       }
       if (this.$route.query.type === 'ac' || this.$route.query.type === 'flatmap') {
-        this.startingType = "AC"
+        this.startingMap = "AC"
         return
       }
       if (this.$route.query.type === 'fc') {
@@ -425,7 +426,8 @@ export default {
       //Open the map with specific view defined by the query.
       //First get the bucket and facets information if available
       let s3Bucket = undefined
-
+      this.startingMap = "AC"
+      
       if (this.$route.query.dataset_id && this.$route.query.dataset_version) {
         const datasetInfo = await this.getDatasetInfo(
           this.$axios,
