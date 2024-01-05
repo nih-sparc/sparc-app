@@ -155,8 +155,9 @@ export default {
   },
 
   async fetch() {
-    const day = new Date().getDay().toString().padStart(2, "0")
-    const month = new Date().getMonth().toString().padStart(2, "0")
+    const day = new Date().getDate().toString().padStart(2, "0")
+    let month = new Date().getMonth() + 1
+    month = month.toString().padStart(2, "0")
     const year = new Date().getFullYear()
     let totalDownloads, downloadsLastMonth, totalContributors, newContributors = 0
     await this.$axios
