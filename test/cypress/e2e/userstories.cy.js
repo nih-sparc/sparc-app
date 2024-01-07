@@ -1,29 +1,32 @@
-// The position of selected datasets
-const datasetIndex = [1, 2]
-const segmentationUseFlowSearchInput = 'segmentation'
+// To check the segmentation card
+// should use datasets which have segmentation data
+const segmentationDatasetIds = [226, 77]
+const scaffoldDatasetCategories = ['heart', 'stomach']
 const scaffoldUseFlowSearchInput = 'scaffold'
 const categories = ['stomach', 'lung']
 
 describe('User stories', function () {
   describe('Should find segmentation in the gallery', { testIsolation: false }, function () {
-    before(`Search for ${segmentationUseFlowSearchInput}`, function () {
+    before('Loading Datasets', function () {
       cy.intercept('**/query?**').as('query');
       cy.visit('');
       cy.wait('@query', { timeout: 20000 });
 
       // Navigate to 'Data&Models' page
-      cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a', { timeout: 30000 }).click();
-      cy.wait(500)
-
-      // Search for segmentation related dataset
-      cy.get('.el-input__inner').type(segmentationUseFlowSearchInput);
-      cy.get('.search-text').click();
-      cy.wait(500)
+      cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').click();
     })
 
-    datasetIndex.forEach((index) => {
-      it(`Access dataset ${index}`, function () {
-        cy.get('.el-table__row', { timeout: 30000 }).eq(index - 1).as('dataset');
+    segmentationDatasetIds.forEach((id) => {
+      it(`Access dataset ${id}`, function () {
+        // Search for segmentation related dataset
+        cy.get('.el-input__inner').clear();
+        cy.get('.search-text').click();
+        cy.get('.el-table__row', { timeout: 30000 }).should('have.length', 10)
+
+        cy.get('.el-input__inner').type(id);
+        cy.get('.search-text').click();
+
+        cy.get('.el-table__row', { timeout: 30000 }).should('have.length', 1).first().as('dataset');
 
         // Enter the dataset
         cy.get('@dataset').find('.cell > :nth-child(1) > a').last().click();
@@ -42,29 +45,30 @@ describe('User stories', function () {
     })
   })
   describe('Should open scaffold through the gallery', { testIsolation: false }, function () {
-    before('Go to Anatomical Models', function () {
+    before('Loading Anatomical Models', function () {
       cy.intercept('**/query?**').as('query');
       cy.visit('');
       cy.wait('@query', { timeout: 20000 });
 
       // Navigate to 'Data&Models' page
       cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').click();
-      cy.wait(500)
 
       // Go to 'Anatomical Models'
       cy.get(':nth-child(2) > .search-tabs__button').click();
       cy.get(':nth-child(2) > .search-tabs__button').should('have.class', 'active');
-      cy.wait(500)
-
-      // Search for scaffold related dataset
-      cy.get('.el-input__inner').type(scaffoldUseFlowSearchInput);
-      cy.get('.search-text').click();
-      cy.wait(500)
     })
 
-    datasetIndex.forEach((index) => {
-      it(`Access dataset ${index}`, function () {
-        cy.get('.el-table__row', { timeout: 30000 }).eq(index - 1).as('dataset');
+    scaffoldDatasetCategories.forEach((category) => {
+      it(`Access scaffold ${category}`, function () {
+        // Search for scaffold related dataset
+        cy.get('.el-input__inner').clear();
+        cy.get('.search-text').click();
+        cy.get('.el-table__row', { timeout: 30000 }).should('have.length', 10)
+
+        cy.get('.el-input__inner').type(category);
+        cy.get('.search-text').click();
+
+        cy.get('.el-table__row', { timeout: 30000 }).first().as('dataset');
 
         // Enter the dataset
         cy.get('@dataset').find('.cell > :nth-child(1) > a', { timeout: 30000 }).last().click();
@@ -148,16 +152,13 @@ describe('User stories', function () {
         cy.get('@facetsCategory').click();
 
         cy.wait('@query', { timeout: 20000 });
+        cy.get('.cell > :nth-child(1) > .property-table > :nth-child(1) > :nth-child(2)', { timeout: 30000 }).first().contains(regex).should('exist');
 
-        datasetIndex.forEach((index) => {
-          cy.get('.cell > :nth-child(1) > .property-table > :nth-child(1) > :nth-child(2)', { timeout: 30000 }).eq(index - 1).contains(regex).should('exist');
-
-          // Check for detail page
-          cy.get('.el-table__row', { timeout: 30000 }).eq(index - 1).as('dataset');
-          cy.get('@dataset').find('.cell > :nth-child(1) > a').last().click();
-          cy.contains(regex).should('have.length.above', 0);
-          cy.goBackToBrowser('dataset');
-        })
+        // Check for detail page
+        cy.get('.el-table__row', { timeout: 30000 }).first().as('dataset');
+        cy.get('@dataset').find('.cell > :nth-child(1) > a').last().click();
+        cy.contains(regex).should('have.length.above', 0);
+        cy.goBackToBrowser('dataset');
         cy.go('back');
       })
     })
