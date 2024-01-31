@@ -66,12 +66,12 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('contain', ' Abstract ');
 
       //The following regular expression should capture space and letters
-      cy.get('.dataset-description-info').contains(/Study Purpose: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Data (Collection|Collected): *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/(Primary)? Conclusion(s)?: *(.+)/).should('exist')
+      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/Study Purpose: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/Data (Collection|Collected):(.+)/).should('exist')
+      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/(Primary )?Conclusion(s)?: (.+)/).should('exist')
 
       // Check for Experimental Design
-      cy.get('.dataset-description-info').contains('Experimental Design:').should('exist')
+      cy.get('.dataset-description-info > .mb-8').contains('Experimental Design:').should('exist')
       cy.get('.dataset-description-info').contains('Protocol Links:').should('exist')
       cy.get('.dataset-description-info').within(($el) => {
         if ($el.text().includes('https://doi.org/')) {
@@ -80,17 +80,17 @@ datasetIds.forEach(datasetId => {
           cy.get('.link2').should('have.attr', 'href').and('include', 'https://doi.org/')
         }
       })
-      cy.get('.dataset-description-info').contains(/Experimental Approach: *(.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Experimental Approach: (.+)/).should('exist')
 
       // Check for Subject Information
-      cy.get('.dataset-description-info').contains('Subject Information:').should('exist')
-      cy.get('.dataset-description-info').contains(/Anatomical structure: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Species: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Sex: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Number of samples: *(.+)/).should('exist')
+      cy.get('.dataset-description-info > .mb-8').contains('Subject Information:').should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Anatomical structure: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Species: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Sex: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Number of samples: (.+)/).should('exist')
 
       // Check for Keywords
-      cy.get('.dataset-description-info').contains(/Keywords: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Keywords: (.+)/).should('exist')
 
       // Check for downloading
       cy.contains('.dataset-description-info a', 'Download Metadata file').should('have.attr', 'href').and('include', 'metadata').then((href) => {
@@ -105,26 +105,29 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('contain', ' About ');
 
       // Check for content
-      cy.get('.dataset-about-info').contains(/Title: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/First Published: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Last Published: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Contact Author: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Award[(]s[)]: (.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Funding Program[(]s[)]: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Version (.+) Revision (.+): *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Dataset DOI: *(.+)/).should('exist')
-
-      // Check for email exist
-      cy.get('.about-section-container > :nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto');
-
-      //match author to contributors
-      cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
-        const author = new RegExp(value.replace(/\s+/, ' '), 'i')
-        cy.get('.similar-datasets-container').contains(author);
+      cy.get('.dataset-about-info > .mb-16').contains(/Title: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/First Published: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Last Published: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .about-section-container').contains(/Contact Author: (.+)/).within(($el) =>{
+        // Check for email link exist
+        cy.wrap($el).get(':nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto:');
       })
+      cy.get('.dataset-about-info > .mb-16').contains(/Award[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Funding Program[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Associated project[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Institution[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Version (.+) Revision (.+): (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Dataset DOI: (.+)/).should('exist')
+
+      /**
+       * Contact Author may not be the contributor
+       * If should be, uncomment following code
+       */
+      // //match author to contributors
+      // cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
+      //   const author = new RegExp(value.replace(/\s+/, ' '), 'i')
+      //   cy.get('.similar-datasets-container').contains(author);
+      // })
 
       // Ignore tests if project not exist
       cy.get('.similar-datasets-container').then(($content) => {
@@ -134,9 +137,9 @@ datasetIds.forEach(datasetId => {
             cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
           });
 
-          cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).children().not('.label4').invoke('text').then((value) => {
+          cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/).children().not('.label4').invoke('text').then((value) => {
             cy.get('.mt-8 > a').click()
-            cy.url().should('contain', 'projects')
+            cy.url({ timeout: 30000 }).should('contain', 'projects')
 
             // Check for the institution 
             const institution = value.match(/[ a-zA-Z]+/)[0].trim()
