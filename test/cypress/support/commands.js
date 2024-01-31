@@ -52,11 +52,12 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   return true
 })
 
-Cypress.Commands.add('findGalleryCard', (text) => {
+Cypress.Commands.add('findGalleryCard', (text, dir) => {
+  let direction = '.btn-next'
   const clickNextPageButton = () => {
     cy.get('.el-card > .el-card__body').then(($card) => {
       if (!$card.text().includes(text)) {
-        cy.get('.btn-next').then(($button) => {
+        cy.get(direction).then(($button) => {
           if ($button.is(":disabled")) {
             return
           } else {
@@ -66,6 +67,10 @@ Cypress.Commands.add('findGalleryCard', (text) => {
         })
       }
     })
+  }
+  if (dir === 'prev') {
+    cy.get('.el-pager > .number').last().click()
+    direction = '.btn-prev'
   }
   clickNextPageButton()
 })

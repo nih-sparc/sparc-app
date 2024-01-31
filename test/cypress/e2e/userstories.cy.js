@@ -36,7 +36,7 @@ describe('User stories', function () {
         cy.get('.gallery-container > .description-info > p > strong', { timeout: 30000 }).should('have.text', 'Data collection:');
 
         // Check for segmentation
-        cy.findGalleryCard('Segmentation');
+        cy.findGalleryCard('Segmentation', 'prev');
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > :nth-child(1) > b').should('contain', 'Segmentation');
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').should('contain', ' View Segmentation');
 
@@ -78,7 +78,7 @@ describe('User stories', function () {
         cy.get('.gallery-container > .description-info > p > strong', { timeout: 30000 }).should('have.text', 'Data collection:');
 
         // Check for scaffold
-        cy.findGalleryCard('Scaffold');
+        cy.findGalleryCard('Scaffold', 'prev');
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > :nth-child(1) > b').contains('Scaffold').should('exist');
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').contains('View Scaffold').should('exist').as('scaffold');
 
