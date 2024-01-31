@@ -6,6 +6,8 @@ datasetIds.forEach(datasetId => {
 
   describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
     before(function () {
+      cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
+      cy.intercept('**/knowledge/query/**').as('flatmap')
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
@@ -108,7 +110,7 @@ datasetIds.forEach(datasetId => {
       cy.get('.dataset-about-info > .mb-16').contains(/Title: (.+)/).should('exist')
       cy.get('.dataset-about-info > .mb-16').contains(/First Published: (.+)/).should('exist')
       cy.get('.dataset-about-info > .mb-16').contains(/Last Published: (.+)/).should('exist')
-      cy.get('.dataset-about-info > .about-section-container').contains(/Contact Author: (.+)/).within(($el) =>{
+      cy.get('.dataset-about-info > .about-section-container').contains(/Contact Author: (.+)/).within(($el) => {
         // Check for email link exist
         cy.wrap($el).get(':nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto:');
       })
@@ -236,7 +238,7 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('contain', ' Gallery ');
 
       cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
-        const gallery = $content.find('.gallery-container');
+        const gallery = $content.find('.gallery-container', { timeout: 30000 });
         if (gallery && gallery.length) {
           // Check for pagination
           cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
@@ -248,6 +250,18 @@ datasetIds.forEach(datasetId => {
             cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
             cy.wrap($card).contains('span', ' View ')
           });
+
+          // Only check for dataset when it has valid flatmap data
+          cy.wait('@dataset_info').then((intercept) => {
+            if (intercept.response.body.result[0].organs) {
+              cy.wait('@flatmap').then((intercept) => {
+                if (intercept.response.body.values.length > 0) {
+                  cy.findGalleryCard('flatmap', 'prev');
+                  cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
+                }
+              })
+            }
+          })
         } else {
           cy.wrap($content).contains(' This dataset does not contain gallery items ');
         }
