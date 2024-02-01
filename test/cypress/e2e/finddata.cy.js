@@ -147,16 +147,23 @@ categories.forEach((category) => {
       // Check for filters applied box
       cy.get('.no-facets').should('contain', 'No filters applied')
 
+      cy.wait(5000)
+
       // Expand all filters/facets
       cy.get('.expand-all-container > .el-link > .el-link--inner').click()
       cy.get('.label-content-container').should('be.visible').and('have.length.above', 0)
-      if (category !== 'projects') {
-        // If multiple facets are matched, the first will be checked by default
-        // *** This action is used to expand all parent facets in ANATOMICAL STRUCTURE
-        // *** Avoid error when using child facets as test facets
-        // *** Need to think of a solution to open the specific parent facet, instead of open all
-        cy.get('.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
-      }
+
+      // Expand nested facet menu item if facet not found
+      cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
+        const singleFacetExist = $label.text().toLowerCase().includes(singleFacet.toLowerCase())
+        if (!singleFacetExist && category !== 'projects') {
+          // If multiple facets are matched, the first will be checked by default
+          // *** This action is used to expand all parent facets in ANATOMICAL STRUCTURE
+          // *** Avoid error when using child facets as test facets
+          // *** Need to think of a solution to open the specific parent facet, instead of open all
+          cy.get('.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
+        }
+      })
 
       cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
         const singleFacetExist = $label.text().toLowerCase().includes(singleFacet.toLowerCase())
@@ -203,21 +210,33 @@ categories.forEach((category) => {
           cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
           cy.wrap($label).contains(regex).click()
           cy.get('.no-facets').should('contain', 'No filters applied')
-
+          cy.url().should('not.contain', 'selectedFacetIds')
+          
           // Close tag
           cy.wrap($label).contains(regex).click()
           cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
           cy.get('.el-tag__close').eq(0).click()
           cy.get('.no-facets').should('contain', 'No filters applied')
-
+          cy.url().should('not.contain', 'selectedFacetIds')
+          
           // Reset all
           cy.wrap($label).contains(regex).click()
           cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
           cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
-          // *** 'No filters applied' sometimes will not appear after click 'reset all' in Cypress. BUG or Cypress issue?
-          // cy.get('.no-facets').should('contain', 'No filters applied')
-          // *** There is a bug with reset all function.
-          // cy.get('.el-card__body > .capitalize').should('not.exist')
+          cy.get('.no-facets').should('contain', 'No filters applied')
+          cy.get('.el-card__body > .capitalize').should('not.exist')
+          cy.url().should('not.contain', 'selectedFacetIds')
+
+          // Close the second tag and then click reset all
+          cy.wrap($label).contains(regex).click()
+          cy.get('.el-card__body > .capitalize').then(($tag) => {
+            if ($tag.length > 1) {
+              cy.get('.el-tag__close').eq(1).click()
+              cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
+              cy.get('.no-facets').should('contain', 'No filters applied')
+              cy.url().should('not.contain', 'selectedFacetIds')
+            }
+          })
         } else {
           this.skip()
         }
