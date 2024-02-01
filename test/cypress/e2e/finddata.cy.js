@@ -5,11 +5,17 @@ const limit = 20
 
 const keywords = ['Spine', 'neck']
 
-const singleFacet = 'Colon'
-
-// If "ANATOMICAL STRUCTURE" parent facet selected, put it to the end of the array
-// To make sure "close tag" test will close the child facet
-const multipleFacets = ['Human', 'Vagus Nerve']
+/**
+ * 1.
+ * If multiple facets are selected which includes one or more "ANATOMICAL STRUCTURE" parent facet,
+ * place it/them to the end of the array,
+ * this is to make sure the "ANATOMICAL STRUCTURE" child facet can be closed during "close tag" process.
+ * 2.
+ * If multiple facets are selected,
+ * all facets need to be matched, 
+ * otherwise that test will be skipped.
+ */
+const facets = [['Human'], ['Heart', 'Adult']]
 
 categories.forEach((category) => {
 
@@ -142,250 +148,153 @@ categories.forEach((category) => {
         // *** Just in case this happens for all the displayed dataset cards, extra tests may need to be added
       })
     })
-    it(`Single Faceted Browse Search - ${singleFacet}`, function () {
-      cy.intercept('**/query?**').as('query')
-      cy.intercept('**/entries?**').as('entries')
 
-      // Check for filters applied box
-      cy.get('.no-facets').should('contain', 'No filters applied')
+    facets.forEach((facetList) => {
 
-      cy.wait(5000)
+      it(`Faceted Browse Search - ${facetList}`, function () {
+        cy.intercept('**/query?**').as('query')
+        cy.intercept('**/entries?**').as('entries')
 
-      // Expand all filters/facets
-      cy.get('.expand-all-container > .el-link > .el-link--inner').click()
-      cy.get('.label-content-container').should('be.visible').and('have.length.above', 0)
+        // Check for filters applied box
+        cy.get('.no-facets').should('contain', 'No filters applied')
 
-      // Expand nested facet menu item if facet not found
-      cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
-        const singleFacetExist = $label.text().toLowerCase().includes(singleFacet.toLowerCase())
-        if (!singleFacetExist && category !== 'projects') {
-          // If multiple facets are matched, the first will be checked by default
-          // *** This action is used to expand all parent facets in ANATOMICAL STRUCTURE
-          // *** Avoid error when using child facets as test facets
-          // *** Need to think of a solution to open the specific parent facet, instead of open all
-          cy.get('.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
-        }
-      })
+        cy.wait(5000)
 
-      cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
-        const singleFacetExist = $label.text().toLowerCase().includes(singleFacet.toLowerCase())
-        if (singleFacetExist) {
-          const regex = new RegExp(`(^| )${singleFacet}($| )`, 'i')
+        // Expand all filters/facets
+        cy.get('.expand-all-container > .el-link > .el-link--inner').click()
+        cy.get('.label-content-container').should('be.visible').and('have.length.above', 0)
 
-          // Check the matched facet checkbox
-          cy.wrap($label).contains(regex).click()
-
-          // Check for the number of facet tags in filters applied box
-          cy.get('.el-card__body > .capitalize:visible').contains(regex).should('exist')
-
-          // Check for URL
-          if (category === 'projects') {
-            cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
-            cy.wait('@entries', { timeout: 20000 })
-          } else {
-            cy.url().should('contain', 'selectedFacetIds')
-            cy.wait('@query', { timeout: 20000 })
-          }
-
-          cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
-          // Check for result
-          cy.get(':nth-child(1) > p').then(($result) => {
-            if ($result.text().includes(' 0 Results | Showing')) {
-              // Empty text should exist if no result
-              cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
-            } else {
-              cy.get('.property-table').then(($content) => {
-                const facetFoundInCard = $content.text().includes(singleFacet)
-                if (facetFoundInCard) {
-                  // Check for facets
-                  cy.wrap($content).contains(new RegExp(singleFacet, 'i')).should('exist')
-                } else {
-                  // *** Ignore when facet cannot be found or
-                  // *** Find some other solutions in the future
-                }
-              })
-            }
+        // Expand nested facet menu item if facet not found
+        cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
+          let facetIsObserved = true
+          facetList.forEach((facet) => {
+            facetIsObserved = facetIsObserved && $label.text().toLowerCase().includes(facet.toLowerCase())
           })
+          if (!facetIsObserved && category !== 'projects') {
+            // If the same facet are found in multiple place, the first will be checked by default
+            // This action is used to expand all parent facets in ANATOMICAL STRUCTURE
+            // To avoid facet not found when using child facets as test facets
+            // *** Need to think of a solution to open the specific parent facet, instead of open all
+            cy.get('.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
+          }
+        })
 
-          for (let index = 0; index < 2; index++) {
-            if (index === 1) {
-              // Combine with search
-              cy.get('.el-input__inner').clear()
-              cy.get('.el-input__inner').type('dataset')
-              cy.wrap($label).contains(regex).click()
+        cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
+          let facetIsObserved = true
+          facetList.forEach((facet) => {
+            facetIsObserved = facetIsObserved && $label.text().toLowerCase().includes(facet.toLowerCase())
+          })
+          if (!facetIsObserved && category !== 'projects') {
+            // If the same facet are found in multiple place, the first will be checked by default
+            // This action is used to expand all parent facets in ANATOMICAL STRUCTURE
+            // To avoid facet not found when using child facets as test facets
+            // *** Need to think of a solution to open the specific parent facet, instead of open all
+            cy.get('.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
+          }
+          if (facetIsObserved) {
+            facetList.forEach((facet) => {
+              // Check the matched facet checkbox
+              cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+
+              // Check for the number of facet tags in filters applied box
+              cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).should('exist')
+            })
+
+            // Check for URL
+            if (category === 'projects') {
+              cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
+              cy.wait('@entries', { timeout: 20000 })
+            } else {
+              cy.url().should('contain', 'selectedFacetIds')
+              cy.wait('@query', { timeout: 20000 })
             }
 
-            // Uncheck
-            cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
-            cy.wrap($label).contains(regex).click()
-            cy.get('.el-card__body > .capitalize').should('not.exist')
-            cy.get('.no-facets').should('contain', 'No filters applied')
-            cy.url().should('not.contain', 'selectedFacetIds')
+            cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
-            // Close tag
-            cy.wrap($label).contains(regex).click()
-            cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
-            cy.get('.el-tag__close').first().click()
-            cy.get('.el-card__body > .capitalize').should('not.exist')
-            cy.get('.no-facets').should('contain', 'No filters applied')
-            cy.url().should('not.contain', 'selectedFacetIds')
-
-            // Reset all
-            cy.wrap($label).contains(regex).click()
-            cy.get('.el-card__body > .capitalize').contains(regex).should('exist')
-            cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
-            cy.get('.el-card__body > .capitalize').should('not.exist')
-            cy.get('.no-facets').should('contain', 'No filters applied')
-            cy.url().should('not.contain', 'selectedFacetIds')
-
-            // Close the child facet tag and then click reset all
-            cy.wrap($label).contains(regex).click()
-            cy.get('.el-card__body > .capitalize').then(($tag) => {
-              if ($tag.length > 1) {
-                cy.get('.el-tag__close').last().click()
-                cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
-                cy.get('.el-card__body > .capitalize').should('not.exist')
-                cy.get('.no-facets').should('contain', 'No filters applied')
-                cy.url().should('not.contain', 'selectedFacetIds')
+            // Check for result correctness
+            cy.get(':nth-child(1) > p').then(($result) => {
+              if ($result.text().includes(' 0 Results | Showing')) {
+                // Empty text should exist if no result
+                cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
               } else {
-                cy.wrap($label).contains(regex).click()
+                // Check for facets exist in dataset card
+                cy.get('.property-table').then(($content) => {
+                  facetList.forEach((facet) => {
+                    const facetExistInCard = $content.text().toLowerCase().includes(facet.toLowerCase())
+                    if (facetExistInCard) {
+                      cy.wrap($content).contains(new RegExp(facet, 'i')).should('exist')
+                    } else {
+                      // *** Ignore when facets cannot be found or
+                      // *** Find some other solutions in the future
+                    }
+                  })
+                })
               }
             })
-          }
-        } else {
-          this.skip()
-        }
-      })
-    })
-    it(`Multiple Faceted Browse Search - ${multipleFacets}`, function () {
-      cy.intercept('**/query?**').as('query')
-      cy.intercept('**/entries?**').as('entries')
 
-      cy.wait(5000)
-
-      cy.get('.expand-all-container > .el-link > .el-link--inner').click()
-      cy.get('.label-content-container').should('be.visible').and('have.length.above', 0)
-
-      // Expand nested facet menu item if facet not found
-      cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
-        const singleFacetExist = $label.text().toLowerCase().includes(singleFacet.toLowerCase())
-        if (!singleFacetExist && category !== 'projects') {
-          // If multiple facets are matched, the first will be checked by default
-          // *** This action is used to expand all parent facets in ANATOMICAL STRUCTURE
-          // *** Avoid error when using child facets as test facets
-          // *** Need to think of a solution to open the specific parent facet, instead of open all
-          cy.get('.el-icon-caret-right:visible').not('.is-leaf').click({ multiple: true })
-        }
-      })
-
-      cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
-        let multipleFacetsExist = true
-        multipleFacets.forEach((facet) => {
-          multipleFacetsExist = multipleFacetsExist && $label.text().toLowerCase().includes(facet.toLowerCase())
-        })
-        if (multipleFacetsExist) {
-          multipleFacets.forEach((facet) => {
-            cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-
-            // Check for the number of facet tags in filters applied box
-            cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).should('exist')
-          })
-
-          // Check for URL
-          if (category === 'projects') {
-            cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
-            cy.wait('@entries', { timeout: 20000 })
-          } else {
-            cy.url().should('contain', 'selectedFacetIds')
-            cy.wait('@query', { timeout: 20000 })
-          }
-
-          cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
-          // Check for result correctness
-          cy.get(':nth-child(1) > p').then(($result) => {
-            if ($result.text().includes(' 0 Results | Showing')) {
-              // Empty text should exist if no result
-              cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
-            } else {
-              // Check for facets exist in dataset card
-              cy.get('.property-table').then(($content) => {
-                multipleFacets.forEach((facet) => {
-                  const facetExistInCard = $content.text().toLowerCase().includes(facet.toLowerCase())
-                  if (facetExistInCard) {
-                    cy.wrap($content).contains(new RegExp(facet, 'i')).should('exist')
-                  } else {
-                    // *** Ignore when facets cannot be found or
-                    // *** Find some other solutions in the future
-                  }
-                })
-              })
-            }
-          })
-
-          for (let index = 0; index < 2; index++) {
-            if (index === 1) {
-              // Combine with search
-              cy.get('.el-input__inner').clear()
-              cy.get('.el-input__inner').type('dataset')
-              multipleFacets.forEach((facet) => {
-                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              })
-            }
-
-            // Uncheck
-            multipleFacets.forEach((facet) => {
-              cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-            })
-            cy.get('.el-card__body > .capitalize').should('not.exist')
-            cy.get('.no-facets').should('contain', 'No filters applied')
-            cy.url().should('not.contain', 'selectedFacetIds')
-
-            // Close all tags in order
-            multipleFacets.forEach((facet) => {
-              cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-            })
-            multipleFacets.forEach((facet) => {
-              // Close all facet tags in filters applied box
-              cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).within(() => {
-                cy.get('.el-tag__close').click()
-              })
-            })
-            cy.get('.el-card__body > .capitalize').should('not.exist')
-            cy.get('.no-facets').should('contain', 'No filters applied')
-            cy.url().should('not.contain', 'selectedFacetIds')
-
-            // Reset all
-            multipleFacets.forEach((facet) => {
-              cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-            })
-            cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
-            cy.get('.el-card__body > .capitalize').should('not.exist')
-            cy.get('.no-facets').should('contain', 'No filters applied')
-            cy.url().should('not.contain', 'selectedFacetIds')
-
-            // Close the child facet tag and then click reset all
-            multipleFacets.forEach((facet) => {
-              cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-            })
-            cy.get('.el-card__body > .capitalize').then(($tag) => {
-              if ($tag.length > 1) {
-                cy.get('.el-tag__close').last().click()
-                cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
-                cy.get('.el-card__body > .capitalize').should('not.exist')
-                cy.get('.no-facets').should('contain', 'No filters applied')
-                cy.url().should('not.contain', 'selectedFacetIds')
-              } else {
-                multipleFacets.forEach((facet) => {
+            for (let index = 0; index < 2; index++) {
+              if (index === 1) {
+                // Combine with search
+                cy.get('.el-input__inner').clear()
+                cy.get('.el-input__inner').type('dataset')
+                facetList.forEach((facet) => {
                   cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
                 })
               }
-            })
+
+              // Uncheck
+              facetList.forEach((facet) => {
+                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+              })
+              cy.get('.el-card__body > .capitalize').should('not.exist')
+              cy.get('.no-facets').should('contain', 'No filters applied')
+              cy.url().should('not.contain', 'selectedFacetIds')
+
+              // Close all tags in order
+              facetList.forEach((facet) => {
+                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+              })
+              facetList.forEach((facet) => {
+                // Close all facet tags in filters applied box
+                cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).within(() => {
+                  cy.get('.el-tag__close').click()
+                })
+              })
+              cy.get('.el-card__body > .capitalize').should('not.exist')
+              cy.get('.no-facets').should('contain', 'No filters applied')
+              cy.url().should('not.contain', 'selectedFacetIds')
+
+              // Reset all
+              facetList.forEach((facet) => {
+                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+              })
+              cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
+              cy.get('.el-card__body > .capitalize').should('not.exist')
+              cy.get('.no-facets').should('contain', 'No filters applied')
+              cy.url().should('not.contain', 'selectedFacetIds')
+
+              // Close the child facet tag and then click reset all
+              facetList.forEach((facet) => {
+                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+              })
+              cy.get('.el-card__body > .capitalize').then(($tag) => {
+                if ($tag.length > 1) {
+                  cy.get('.el-tag__close').last().click()
+                  cy.get('.tags-container > .flex > .el-link > .el-link--inner').click()
+                  cy.get('.el-card__body > .capitalize').should('not.exist')
+                  cy.get('.no-facets').should('contain', 'No filters applied')
+                  cy.url().should('not.contain', 'selectedFacetIds')
+                } else {
+                  facetList.forEach((facet) => {
+                    cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+                  })
+                }
+              })
+            }
+          } else {
+            this.skip()
           }
-        } else {
-          this.skip()
-        }
+        })
       })
     })
   })
