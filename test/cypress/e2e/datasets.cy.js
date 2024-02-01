@@ -11,6 +11,43 @@ datasetIds.forEach(datasetId => {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
+    it("Gallery Tab", function () {
+      // Should switch to 'Gallery'
+      cy.contains('#datasetDetailsTabsContainer .style1', ' Gallery ').click();
+      cy.get('.nuxt-link-exact-active').should('contain', ' Gallery ');
+
+      cy.wait(5000)
+
+      cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
+        const gallery = $content.find('.gallery-container');
+        if (gallery && gallery.length) {
+          // Check for pagination
+          cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
+          cy.get('@pagination').find('li.number').should('have.length.least', 1);
+
+          // Check for gallery card
+          cy.wrap(gallery).find('.el-card').as('card').should('have.length.least', 1)
+          cy.get('@card').first().within(($card) => {
+            cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
+            cy.wrap($card).contains('span', ' View ')
+          });
+
+          // Only check for dataset when it has valid flatmap data
+          cy.wait('@dataset_info').then((intercept) => {
+            if (intercept.response.body.result[0].organs) {
+              cy.wait('@flatmap').then((intercept) => {
+                if (intercept.response.body.values.length > 0) {
+                  cy.findGalleryCard('flatmap', 'prev');
+                  cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
+                }
+              })
+            }
+          })
+        } else {
+          cy.wrap($content).contains(' This dataset does not contain gallery items ');
+        }
+      });
+    });
     it("Landing page", function () {
       // Should display image with correct dataset src
       cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
@@ -229,41 +266,6 @@ datasetIds.forEach(datasetId => {
           })
         } else {
           this.skip();
-        }
-      });
-    });
-    it("Gallery Tab", function () {
-      // Should switch to 'Gallery'
-      cy.contains('#datasetDetailsTabsContainer .style1', ' Gallery ').click();
-      cy.get('.nuxt-link-exact-active').should('contain', ' Gallery ');
-
-      cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
-        const gallery = $content.find('.gallery-container', { timeout: 30000 });
-        if (gallery && gallery.length) {
-          // Check for pagination
-          cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
-          cy.get('@pagination').find('li.number').should('have.length.least', 1);
-
-          // Check for gallery card
-          cy.wrap(gallery).find('.el-card').as('card').should('have.length.least', 1)
-          cy.get('@card').first().within(($card) => {
-            cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
-            cy.wrap($card).contains('span', ' View ')
-          });
-
-          // Only check for dataset when it has valid flatmap data
-          cy.wait('@dataset_info').then((intercept) => {
-            if (intercept.response.body.result[0].organs) {
-              cy.wait('@flatmap').then((intercept) => {
-                if (intercept.response.body.values.length > 0) {
-                  cy.findGalleryCard('flatmap', 'prev');
-                  cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
-                }
-              })
-            }
-          })
-        } else {
-          cy.wrap($content).contains(' This dataset does not contain gallery items ');
         }
       });
     });
