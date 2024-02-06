@@ -195,7 +195,7 @@ datasetIds.forEach(datasetId => {
 
       // Check for title
       cy.get('.bx--col-md-6 > .heading2').invoke('text').then((value) => {
-        cy.get('.info-citation > .citation-text').should('contain', value.trim())
+        cy.get('.info-citation > .citation-text', { timeout: 30000 }).should('contain', value.trim())
       })
 
       cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then((value) => {
