@@ -120,10 +120,13 @@ export default {
     img {
       display: block;
       height: auto;
-      left: 0;
+      width: 100%;
       position: absolute;
       top: 0;
-      width: 100%;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
     }
     div {
       position: absolute;
