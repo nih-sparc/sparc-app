@@ -305,6 +305,25 @@ datasetIds.forEach(datasetId => {
             cy.wrap(el).find('.copy-button').click();
             cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
           });
+
+          // Check if redundant doi exist
+          let doiList = []
+          cy.get('.dataset-references').then(($content) => {
+            if (
+              $content.text().includes('Primary Publications for this Dataset') &&
+              $content.text().includes('Preprints')
+            ) {
+              cy.get('.dataset-references .citation-container > div > a').each($doi => {
+                cy.wrap($doi).invoke('attr', 'href').then((link) => {
+                  if (!doiList.includes(link)) {
+                    doiList.push(link)
+                  } else {
+                    throw new Error("Redundant doi is found")
+                  }
+                })
+              });
+            }
+          })
         } else {
           this.skip();
         }
