@@ -49,6 +49,8 @@ datasetIds.forEach(datasetId => {
       });
     });
     it("Landing page", function () {
+      cy.intercept('**/query?**').as('query')
+
       // Should display image with correct dataset src
       cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
 
@@ -77,6 +79,25 @@ datasetIds.forEach(datasetId => {
       // Should search for contributor in find data page
       cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip > .tooltip-item > a').then(($name) => {
         cy.wrap($name).click()
+
+        cy.wait('@query', { timeout: 20000 })
+
+        cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+        // Check for result
+        cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
+        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+
+        let datasetShowUp = false
+        cy.get('.img-dataset > img').each(($img) => {
+          cy.wrap($img).invoke('attr', 'src').then((src) => {
+            datasetShowUp = datasetShowUp || src.includes(datasetId)
+          })
+        }).then(() => {
+          if (!datasetShowUp) {
+            throw new Error("Can not find the dataset for current contributor")
+          }
+        })
 
         // Check for URL and search input
         cy.url({ decode: true }).should('contain', `search=${$name.text()}`)
