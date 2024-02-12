@@ -6,10 +6,51 @@ datasetIds.forEach(datasetId => {
 
   describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
     before(function () {
+      cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
+      cy.intercept('**/knowledge/query/**').as('flatmap')
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
+    it("Gallery Tab", function () {
+      // Should switch to 'Gallery'
+      cy.contains('#datasetDetailsTabsContainer .style1', ' Gallery ').click();
+      cy.get('.nuxt-link-exact-active').should('contain', ' Gallery ');
+
+      cy.wait(5000)
+
+      cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
+        const gallery = $content.find('.gallery-container');
+        if (gallery && gallery.length) {
+          // Check for pagination
+          cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
+          cy.get('@pagination').find('li.number').should('have.length.least', 1);
+
+          // Check for gallery card
+          cy.wrap(gallery).find('.el-card').as('card').should('have.length.least', 1)
+          cy.get('@card').first().within(($card) => {
+            cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
+            cy.wrap($card).contains('span', ' View ')
+          });
+
+          // Only check for dataset when it has valid flatmap data
+          cy.wait('@dataset_info').then((intercept) => {
+            if (intercept.response.body.result[0].organs) {
+              cy.wait('@flatmap').then((intercept) => {
+                if (intercept.response.body.values.length > 0) {
+                  cy.findGalleryCard('flatmap', 'prev');
+                  cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
+                }
+              })
+            }
+          })
+        } else {
+          cy.wrap($content).contains(' This dataset does not contain gallery items ');
+        }
+      });
+    });
     it("Landing page", function () {
+      cy.intercept('**/query?**').as('query')
+
       // Should display image with correct dataset src
       cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
 
@@ -39,6 +80,25 @@ datasetIds.forEach(datasetId => {
       cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip > .tooltip-item > a').then(($name) => {
         cy.wrap($name).click()
 
+        cy.wait('@query', { timeout: 20000 })
+
+        cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+        // Check for result
+        cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
+        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+
+        let datasetShowUp = false
+        cy.get('.img-dataset > img').each(($img) => {
+          cy.wrap($img).invoke('attr', 'src').then((src) => {
+            datasetShowUp = datasetShowUp || src.includes(datasetId)
+          })
+        }).then(() => {
+          if (!datasetShowUp) {
+            throw new Error("Can not find the dataset for current contributor")
+          }
+        })
+
         // Check for URL and search input
         cy.url({ decode: true }).should('contain', `search=${$name.text()}`)
         cy.get('.el-input__inner').should('have.value', $name.text());
@@ -66,12 +126,12 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('contain', ' Abstract ');
 
       //The following regular expression should capture space and letters
-      cy.get('.dataset-description-info').contains(/Study Purpose: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Data (Collection|Collected): *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/(Primary)? Conclusion(s)?: *(.+)/).should('exist')
+      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/Study Purpose: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/Data (Collection|Collected):(.+)/).should('exist')
+      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/(Primary )?Conclusion(s)?: (.+)/).should('exist')
 
       // Check for Experimental Design
-      cy.get('.dataset-description-info').contains('Experimental Design:').should('exist')
+      cy.get('.dataset-description-info > .mb-8').contains('Experimental Design:').should('exist')
       cy.get('.dataset-description-info').contains('Protocol Links:').should('exist')
       cy.get('.dataset-description-info').within(($el) => {
         if ($el.text().includes('https://doi.org/')) {
@@ -80,17 +140,17 @@ datasetIds.forEach(datasetId => {
           cy.get('.link2').should('have.attr', 'href').and('include', 'https://doi.org/')
         }
       })
-      cy.get('.dataset-description-info').contains(/Experimental Approach: *(.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Experimental Approach: (.+)/).should('exist')
 
       // Check for Subject Information
-      cy.get('.dataset-description-info').contains('Subject Information:').should('exist')
-      cy.get('.dataset-description-info').contains(/Anatomical structure: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Species: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Sex: *(.+)/).should('exist')
-      cy.get('.dataset-description-info').contains(/Number of samples: *(.+)/).should('exist')
+      cy.get('.dataset-description-info > .mb-8').contains('Subject Information:').should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Anatomical structure: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Species: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Sex: (.+)/).should('exist')
+      cy.get('.dataset-description-info > .experimental-design-container').contains(/Number of samples: (.+)/).should('exist')
 
       // Check for Keywords
-      cy.get('.dataset-description-info').contains(/Keywords: *(.+)/).should('exist')
+      cy.get('.dataset-description-info').contains(/Keywords: (.+)/).should('exist')
 
       // Check for downloading
       cy.contains('.dataset-description-info a', 'Download Metadata file').should('have.attr', 'href').and('include', 'metadata').then((href) => {
@@ -105,26 +165,29 @@ datasetIds.forEach(datasetId => {
       cy.get('.nuxt-link-exact-active').should('contain', ' About ');
 
       // Check for content
-      cy.get('.dataset-about-info').contains(/Title: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/First Published: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Last Published: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Contact Author: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Award[(]s[)]: (.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Funding Program[(]s[)]: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Associated project[(]s[)]: *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Version (.+) Revision (.+): *(.+)/).should('exist')
-      cy.get('.dataset-about-info').contains(/Dataset DOI: *(.+)/).should('exist')
-
-      // Check for email exist
-      cy.get('.about-section-container > :nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto');
-
-      //match author to contributors
-      cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
-        const author = new RegExp(value.replace(/\s+/, ' '), 'i')
-        cy.get('.similar-datasets-container').contains(author);
+      cy.get('.dataset-about-info > .mb-16').contains(/Title: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/First Published: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Last Published: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .about-section-container').contains(/Contact Author: (.+)/).within(($el) => {
+        // Check for email link exist
+        cy.wrap($el).get(':nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto:');
       })
+      cy.get('.dataset-about-info > .mb-16').contains(/Award[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Funding Program[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Associated project[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Institution[(]s[)]: (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Version (.+) Revision (.+): (.+)/).should('exist')
+      cy.get('.dataset-about-info > .mb-16').contains(/Dataset DOI: (.+)/).should('exist')
+
+      /**
+       * Contact Author may not be the contributor
+       * If should be, uncomment following code
+       */
+      // //match author to contributors
+      // cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
+      //   const author = new RegExp(value.replace(/\s+/, ' '), 'i')
+      //   cy.get('.similar-datasets-container').contains(author);
+      // })
 
       // Ignore tests if project not exist
       cy.get('.similar-datasets-container').then(($content) => {
@@ -134,9 +197,9 @@ datasetIds.forEach(datasetId => {
             cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
           });
 
-          cy.get('.dataset-about-info').contains(/Institution[(]s[)]:  *(.+)/).children().not('.label4').invoke('text').then((value) => {
+          cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/).children().not('.label4').invoke('text').then((value) => {
             cy.get('.mt-8 > a').click()
-            cy.url().should('contain', 'projects')
+            cy.url({ timeout: 30000 }).should('contain', 'projects')
 
             // Check for the institution 
             const institution = value.match(/[ a-zA-Z]+/)[0].trim()
@@ -153,7 +216,7 @@ datasetIds.forEach(datasetId => {
 
       // Check for title
       cy.get('.bx--col-md-6 > .heading2').invoke('text').then((value) => {
-        cy.get('.info-citation > .citation-text').should('contain', value.trim())
+        cy.get('.info-citation > .citation-text', { timeout: 30000 }).should('contain', value.trim())
       })
 
       cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then((value) => {
@@ -227,29 +290,6 @@ datasetIds.forEach(datasetId => {
         }
       });
     });
-    it("Gallery Tab", function () {
-      // Should switch to 'Gallery'
-      cy.contains('#datasetDetailsTabsContainer .style1', ' Gallery ').click();
-      cy.get('.nuxt-link-exact-active').should('contain', ' Gallery ');
-
-      cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
-        const gallery = $content.find('.gallery-container');
-        if (gallery && gallery.length) {
-          // Check for pagination
-          cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
-          cy.get('@pagination').find('li.number').should('have.length.least', 1);
-
-          // Check for gallery card
-          cy.wrap(gallery).find('.el-card').as('card').should('have.length.least', 1)
-          cy.get('@card').first().within(($card) => {
-            cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
-            cy.wrap($card).contains('span', ' View ')
-          });
-        } else {
-          cy.wrap($content).contains(' This dataset does not contain gallery items ');
-        }
-      });
-    });
     it("References Tab", function () {
       //First check if reference tab is present
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
@@ -265,6 +305,25 @@ datasetIds.forEach(datasetId => {
             cy.wrap(el).find('.copy-button').click();
             cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
           });
+
+          // Check if redundant doi exist
+          let doiList = []
+          cy.get('.dataset-references').then(($content) => {
+            if (
+              $content.text().includes('Primary Publications for this Dataset') &&
+              $content.text().includes('Preprints')
+            ) {
+              cy.get('.dataset-references .citation-container > div > a').each($doi => {
+                cy.wrap($doi).invoke('attr', 'href').then((link) => {
+                  if (!doiList.includes(link)) {
+                    doiList.push(link)
+                  } else {
+                    throw new Error("Redundant doi is found")
+                  }
+                })
+              });
+            }
+          })
         } else {
           this.skip();
         }
