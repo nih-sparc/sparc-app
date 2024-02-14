@@ -1,35 +1,35 @@
 <template>
   <sparc-card>
     <template slot="image">
-      <nuxt-link
-        v-if="event.fields.requiresADetailsPage"
-        :to="{
-          name: 'news-and-events-events-id',
-          params: { id: event.sys.id }
-        }"
-        class="sparc-card__image"
-        :style="`background-image: url(${imageSrc})`"
-      >
-        <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
-      </nuxt-link>
-      <template v-else>
-        <a
-          v-if="event.fields.url"
-          :href="event.fields.url"
-          target="_blank"
-          class="sparc-card__image"
-          :style="`background-image: url(${imageSrc})`"
-        >
-          <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
+      <div class="sparc-card__image-container">
+        <a v-if="event.fields.requiresADetailsPage" :href="href(event)">
+          <img
+            class="sparc-card__image"
+            :src="imageSrc"
+            :alt="imageAlt" 
+          />
         </a>
-        <div
-          v-else
-          class="sparc-card__image"
-          :style="`background-image: url(${imageSrc})`"
-        >
-          <img class="visuallyhidden" :src="imageSrc" :alt="imageAlt" />
-        </div>
-      </template>
+        <template v-else>
+          <div v-if="event.fields.url">
+            <a :href="event.fields.url" :target="isInternalLink(event.fields.url) ? '_self' : '_blank'">
+              <img
+                class="sparc-card__image"
+                :src="imageSrc"
+                :alt="imageAlt" 
+              />
+            </a>
+          </div>
+          <div
+            v-else
+          >
+          <img
+              class="sparc-card__image"
+              :src="imageSrc"
+              :alt="imageAlt" 
+            />
+          </div>
+        </template>
+      </div>
     </template>
 
     <div>
@@ -97,6 +97,7 @@ import SparcCard from '@/components/SparcCard/SparcCard.vue'
 
 import FormatDate from '@/mixins/format-date'
 import MarkedMixin from '@/mixins/marked'
+import { isInternalLink} from '@/mixins/marked'
 
 export default {
   name: 'FeaturedEvent',
@@ -114,6 +115,14 @@ export default {
         return {}
       }
     }
+  },
+
+  methods: {
+    isInternalLink,
+    href: function(event) {
+      const eventId = pathOr("", ["sys","id"], event)
+      return `news-and-events/events/${eventId}`
+    },
   },
 
   computed: {

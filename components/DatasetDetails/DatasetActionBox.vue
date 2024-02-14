@@ -4,77 +4,89 @@
     <sparc-pill class="sparc-pill" v-if="embargoed">
       Embargoed
     </sparc-pill>
-    <div class="button-container" v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
-      <div v-if="hasFiles" class="button-container">
-        <el-button
-          class="dataset-button"
-          @click="actionButtonClicked('images')"
-        >
-          View Scaffold
+    <div class="button-container">
+      <template v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
+        <template v-if="hasFiles">
+          <el-button
+            class="dataset-button"
+            @click="actionButtonClicked('images')"
+          >
+            View Scaffold
+          </el-button>
+          <el-button
+            class="dataset-button"
+            @click="actionButtonClicked('files')"
+          >
+            Get Scaffold
+          </el-button>
+        </template>
+        <el-button class="secondary" @click="actionButtonClicked('cite')">
+          Cite Scaffold
         </el-button>
+      </template>
+      <template v-else-if="datasetTypeName === 'computational model'">
+        <el-button v-if="canViewSimulation" @click="openSimulationViewer()">
+          View Simulation
+        </el-button>
+        <a
+          v-if="canRunSimulation"
+          :href="`https://osparc.io/study/${simulationId}`"
+          target="_blank"
+        >
+          <el-button>
+            Run Simulation
+          </el-button>
+        </a>
         <el-button
-          class="dataset-button"
+          v-if="hasFiles"
           @click="actionButtonClicked('files')"
         >
-          Get Scaffold
+          Get Model
         </el-button>
-      </div>
-      <el-button class="secondary" @click="actionButtonClicked('cite')">
-        Cite Scaffold
-      </el-button>
-    </div>
-    <div class="button-container" v-else-if="datasetTypeName === 'computational model'">
-      <el-button v-if="canViewSimulation" @click="openSimulationViewer()">
-        View Simulation
-      </el-button>
-      <a
-        v-if="canRunSimulation"
-        :href="`https://osparc.io/study/${simulationId}`"
-        target="_blank"
-      >
-        <el-button>
-          Run Simulation
+        <el-button class="secondary" @click="actionButtonClicked('cite')">
+          Cite Model
         </el-button>
-      </a>
-      <el-button
-        v-if="hasFiles"
-        @click="actionButtonClicked('files')"
-      >
-        Get Model
-      </el-button>
-      <el-button class="secondary" @click="actionButtonClicked('cite')">
-        Cite Model
-      </el-button>
-      <a
-        v-if="canViewSimulation || canRunSimulation"
-        href="https://osparc.io/"
-        target="_blank"
-      >
-        <sparc-tooltip
-          placement="left-center"
+        <a
+          v-if="canViewSimulation || canRunSimulation"
+          href="https://osparc.io/"
+          target="_blank"
         >
-          <div slot="data">
-            oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at
-            <a class="ospac-tooltip" href="https://osparc.io/">
-              osparc.io
-            </a>
-          </div>
-          <el-button slot="item" style="width: 100%;" class="secondary">
-            Go to oSPARC
+          <sparc-tooltip
+            placement="left-center"
+          >
+            <div slot="data">
+              oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at
+              <a class="ospac-tooltip" href="https://osparc.io/">
+                osparc.io
+              </a>
+            </div>
+            <el-button slot="item" style="width: 100%;" class="secondary">
+              Go to oSPARC
+            </el-button>
+          </sparc-tooltip>
+        </a>
+      </template>
+      <template>
+        <el-button
+          v-if="hasFiles"
+          @click="actionButtonClicked('files')"
+        >
+          Get Dataset
+        </el-button>
+        <el-button class="secondary" @click="actionButtonClicked('cite')">
+          Cite Dataset
+        </el-button>
+      </template>
+      <template v-if="sdsViewer">
+        <a
+          :href="sdsViewer"
+          target="_blank"
+        >
+          <el-button class="secondary" @click="onSdsButtonClick">
+            Explore in SDS Viewer
           </el-button>
-        </sparc-tooltip>
-      </a>
-    </div>
-    <div class="button-container" v-else>
-      <el-button
-        v-if="hasFiles"
-        @click="actionButtonClicked('files')"
-      >
-        Get Dataset
-      </el-button>
-      <el-button class="secondary" @click="actionButtonClicked('cite')">
-        Cite Dataset
-      </el-button>
+        </a>
+      </template>
     </div>
   </div>
 </template>
@@ -138,6 +150,14 @@ export default {
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
     },
+    sdsViewer: function() {
+      if (this.datasetInfo.doi && process.env.SHOW_SDS_VIEWER === 'true') {
+        const metacellUrl = new URL(process.env.METACELL_SDS_VIEWER_URL)
+        metacellUrl.searchParams.append('doi', this.datasetInfo.doi)
+        return metacellUrl.toString()
+      }
+      return null
+    }
   },
 
   methods: {
@@ -148,7 +168,22 @@ export default {
     getDatasetDetailsTabArea: function() {
       return document.getElementById('datasetDetailsTabsContainer')
     },
-
+    onSdsButtonClick(){
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'sds_viewer_button_click',
+        location: 'dataset_action_box',
+        category: "",
+        dataset_id: propOr('', 'id', this.datasetInfo),
+        version_id: propOr('', 'version', this.datasetInfo),
+        doi: propOr('', 'doi', this.datasetInfo),
+        citation_type: "",
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+      })
+    },
     /**
      * scroll to the dataset details tab area
      */

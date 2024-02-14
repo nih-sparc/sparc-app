@@ -81,6 +81,24 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.heroTitle,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.heroTitle,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.heroSummary ? this.heroSummary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
+    }
+  },
+
   computed: {
     /**
      * Compute HTML Event Details for the page
@@ -155,8 +173,9 @@ export default {
 }
 .content {
   ::v-deep img {
+    display: block;
+    margin: auto;
     height: auto;
-    margin: 0.5em 0;
     max-width: 100%;
   }
 }

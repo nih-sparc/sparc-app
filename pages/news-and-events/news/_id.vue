@@ -76,6 +76,24 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.page.fields.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.page.fields.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.page.fields.summary ? this.page.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
+    }
+  },
+
   computed: {
     /**
      * Get news and event image
@@ -105,3 +123,10 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+
+hr {
+  margin: 1rem 0;
+}
+</style>

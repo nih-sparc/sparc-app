@@ -1,5 +1,6 @@
 <template>
-  <div class="event-list-item">
+  <div :v-if="isDestinationLinkRetreived" :class="['event-list-item', { 'past-events-divider': showPastEventsDivider }]" >
+    <hr v-if="showPastEventsDivider" class="divider-text" data-content="PAST EVENTS" />
     <div class="event-content">
       <div class="image">
         <event-banner-image :src="bannerUrl" />
@@ -14,10 +15,13 @@
           }"
           v-html="highlightMatches(item.fields.title, $route.query.search)"
         />
-        <a v-else class="link1" :href="item.fields.url" :target="isInternalLink('item.fields.url') ? '_self' : '_blank'">
+        <a v-else-if="item.fields.url" class="link1" :href="item.fields.url" :target="openInNewTab ? '_blank' : '_self'">
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
-          <svg-icon v-if="!isInternalLink('item.fields.url')" name="icon-open" height="30" width="30" />
+          <svg-icon v-if="openInNewTab" name="icon-open" height="30" width="30" />
         </a>
+        <div v-else>
+          <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
+        </div>
         <div>
           <div class="body1 my-8" v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
           <table class="property-table">
@@ -57,11 +61,11 @@ import { isEmpty, pathOr } from 'ramda'
 import eventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
 import FormatDate from '@/mixins/format-date'
 
-import { isInternalLink } from '@/mixins/marked/index'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { highlightMatches } from '../../pages/data/utils'
 
 export default {
-  name: 'EventCard',
+  name: 'EventListItem',
   components: {
     eventBannerImage
   },
@@ -70,7 +74,40 @@ export default {
     item: {
       type: Object,
       default: () => {}
+    },
+    showPastEventsDivider: {
+      type: Boolean,
+      default: false
     }
+  },
+  data() {
+    return {
+      isDestinationLinkRetreived: false,
+      openInNewTab: false
+    }
+  },
+  async mounted() {
+    const url = pathOr("", ['fields', 'url'], this.item)
+    if (url.includes('bit.ly')) {
+      const bitlyId = url.replace("https://", "")
+      try {
+        const response = await this.$axios.post(process.env.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
+          headers: {
+            Authorization: `Bearer ${process.env.BITLY_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json',
+          }
+        })
+        const newUrl = response.data.long_url
+        this.openInNewTab = !isInternalLink(newUrl)
+      } catch {
+        console.log("Error retreiving bitly link destination url")
+        this.openInNewTab = !isInternalLink(url)
+      }
+    }
+    else {
+      this.openInNewTab = !isInternalLink(url)
+    }
+    this.isDestinationLinkRetreived = true
   },
   computed: {
     /**
@@ -106,13 +143,14 @@ export default {
   },
   methods: {
     isInternalLink,
-    highlightMatches
+    highlightMatches,
+    opensInNewTab
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .el-table {
   width: 100%;
 }
@@ -138,6 +176,34 @@ table:not([class^='el-table__'])::before {
   border-radius: 3px 3px 0 0;
   background-color: white;
   margin-bottom: 5px;
+}
+.divider-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: $grey;
+  text-align: center;
+  height: 1.5em;
+  &:before {
+    content: '';
+    background: linear-gradient(to right, transparent, $grey, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: $grey;
+    padding: 0 .5em;
+    line-height: 1.5em;
+    font-weight: 500;
+    background-color: white;
+  }
 }
 .event-content {
   display: flex;

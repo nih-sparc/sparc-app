@@ -1,18 +1,14 @@
 <template>
-  <nuxt-link
-    v-if="isInternalLink(link.fields.url || '')"
-    :to="link.fields.url"
-    data-jest="nuxt-link"
+  <a
+    :href="linkUrl"
+    :target="!opensInNewTab(linkUrl) && !isFeedbackLink ? '_self' : '_blank'"
   >
-    {{ link.fields.title }}
-  </nuxt-link>
-  <a v-else :href="link.fields.longUrl || link.fields.url" target="_blank">
-    {{ link.fields.title }}
+  {{ link.fields.title }}
   </a>
 </template>
 
 <script>
-import { isInternalLink } from '@/mixins/marked/index'
+import { opensInNewTab } from '@/mixins/marked/index'
 
 export default {
   name: 'FooterLink',
@@ -30,7 +26,24 @@ export default {
   },
 
   methods: {
-    isInternalLink
+    opensInNewTab
+  },
+
+  computed: {
+    currentUrl() {
+      return encodeURIComponent(this.$nuxt.$route.fullPath)
+    },
+    isFeedbackLink() {
+      const title = this.link.fields.title
+      return title == 'Site Feedback'
+    },
+    linkUrl() {
+      let url = this.link.fields.longUrl || this.link.fields.url
+      if (this.isFeedbackLink) {
+        url = url + `&source_url=${this.currentUrl}`
+      }
+      return url
+    }
   }
 }
 </script>

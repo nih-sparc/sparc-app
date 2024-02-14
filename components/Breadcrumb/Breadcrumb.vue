@@ -7,7 +7,7 @@
         </nuxt-link>
         >
       </template>
-      {{ title }}
+      <span class="title" v-html="parseMarkdown(title)"/>
     </div>
   </div>
 </template>
@@ -16,9 +16,12 @@
 import Vue from 'vue'
 
 import { Methods, Props } from './model'
+import marked from '@/mixins/marked/index'
 
 export default Vue.extend<never, Methods, never, Props>({
   name: 'Breadcrumb',
+
+  mixins: [marked],
 
   props: {
     breadcrumb: {
@@ -29,11 +32,11 @@ export default Vue.extend<never, Methods, never, Props>({
       type: String,
       default: ''
     }
-  },
+  }
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 
 .breadcrumb {
@@ -42,6 +45,17 @@ export default Vue.extend<never, Methods, never, Props>({
   a {
     text-decoration: none;
     color: $darkBlue;
+  }
+  & sup {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+  }
+}
+::v-deep .title {
+  display: inline-block;
+  p {
+    margin: 0;
   }
 }
 </style>

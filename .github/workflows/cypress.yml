@@ -1,0 +1,83 @@
+name: Cypress Tests
+run-name: "Cypress E2E testing for SPARC Portal"
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [master, main]
+
+env:
+  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+  ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+  ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+  ALGOLIA_INDEX: ${{ secrets.ALGOLIA_INDEX }}
+  AWS_USER_POOL_ID: ${{ secrets.AWS_USER_POOL_ID }}
+  AWS_USER_POOL_WEB_CLIENT_ID: ${{ secrets.AWS_USER_POOL_WEB_CLIENT_ID }}
+  BIOLUCIDA_PASSWORD: ${{ secrets.BIOLUCIDA_PASSWORD }}
+  BIOLUCIDA_USERNAME: ${{ secrets.BIOLUCIDA_USERNAME }}
+  BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
+  BLACKFYNN_API_SECRET: ${{ secrets.BLACKFYNN_API_SECRET }}
+  BLACKFYNN_API_TOKEN: ${{ secrets.BLACKFYNN_API_TOKEN }}
+  BLACKFYNN_CONCEPTS_API_HOST: ${{ secrets.BLACKFYNN_CONCEPTS_API_HOST }}
+  CTF_API_HOST: ${{ secrets.CTF_API_HOST }}
+  CTF_CDA_ACCESS_TOKEN: ${{ secrets.CTF_CDA_ACCESS_TOKEN }}
+  CTF_SPACE_ID: ${{ secrets.CTF_SPACE_ID }}
+  DEPLOY_ENV: ${{ secrets.DEPLOY_ENV }}
+  DISABLE_REDIRECT_SSL: ${{ secrets.DISABLE_REDIRECT_SSL }}
+  FLATMAP_API_HOST: ${{ secrets.FLATMAP_API_HOST }}
+  LOGIN_API_URL: ${{ secrets.LOGIN_API_URL }}
+  NODE_ENV: ${{ secrets.NODE_ENV }}
+  NPM_CONFIG_PRODUCTION: ${{ secrets.NPM_CONFIG_PRODUCTION }}
+  OSPARC_HOST: ${{ secrets.OSPARC_HOST }}
+  PORTAL_API_HOST: ${{ secrets.PORTAL_API_HOST }}
+  RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+  RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
+  ROOT_URL: ${{ secrets.ROOT_URL }}
+  SHOW_FUNDING_FACET: ${{ secrets.SHOW_FUNDING_FACET }}
+  SHOW_HIERARCHAL_FACETS: ${{ secrets.SHOW_HIERARCHAL_FACETS }}
+  SHOW_LOGIN_FEATURE: ${{ secrets.SHOW_LOGIN_FEATURE }}
+  SHOW_METRICS: ${{ secrets.SHOW_METRICS }}
+  SHOW_OSPARC_TAB: ${{ secrets.SHOW_OSPARC_TAB }}
+  SHOW_TIMESERIES_VIEWER: ${{ secrets.SHOW_TIMESERIES_VIEWER }}
+  SPARC_PORTAL_USER_ID: ${{ secrets.SPARC_PORTAL_USER_ID }}
+  SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
+
+jobs:
+   e2e-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "event name is:" ${{ github.event_name }} 
+      - uses: actions-cool/check-user-permission@main
+        if: github.event_name == 'pull_request_target'
+        id: checkUser
+        with:
+          require: 'write'
+          username: ${{ github.event.pull_request.user.name }}
+      - name: Checkout
+        if: github.event_name == 'pull_request_target' && steps.checkUser.outputs.require-result == 'true'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Checkout
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.17.6
+      - name: Run e2e tests
+        if: github.event_name == 'workflow_dispatch' || steps.checkUser.outputs.require-result == 'true'
+        uses: cypress-io/github-action@v6
+        with:
+          build: yarn build
+          start: yarn start
+          wait-on: ${{ secrets.ROOT_URL }}
+          command: yarn test-run-e2e
+      - name: Skip tests
+        if: github.event_name == 'pull_request_target' && steps.checkUser.outputs.require-result == 'false'
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('Pull request is opened by an user without write permission, tests are skipped for security reason')

@@ -64,7 +64,8 @@
                 :lg="6"
               >
                 <projects-facet-menu
-                  :anatomicalFocusFacets="projectsFacets"
+                  :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
+                  :fundingFacets="projectsFundingFacets"
                   @projects-selections-changed="onPaginationPageChange(1)"
                   @hook:mounted="facetMenuMounted"
                   ref="projectsFacetMenu"
@@ -111,6 +112,34 @@
                     :table-data="tableData"
                     :title-column-width="titleColumnWidth"
                   />
+
+                  <!-- Alternative search suggestions -->
+                  <div v-if="searchHasAltResults" class="mt-24">
+                    <template v-if="searchData.total === 0">
+                      No results were found for <strong>{{ searchType.label }}</strong>.
+                    </template>
+                    The following results were discovered for the other categories:
+                    <br />
+                    <br />
+                    <template v-for="dataType in dataTypes">
+                      <dd v-if="resultCounts[dataType] > 0 && dataType !== 'projects'" :key="dataType">
+                        <nuxt-link
+                          :to="{
+                            name: 'data',
+                            query: {
+                              ...$route.query,
+                              type: dataType
+                            }
+                          }"
+                        >
+                          {{ resultCounts[dataType] }} result{{
+                            resultCounts[dataType] > 1 ? 's' : ''
+                          }}
+                        </nuxt-link>
+                        - {{ humanReadableDataTypesLookup[dataType] }}
+                      </dd>
+                    </template>
+                  </div>
                 </div>
                 <div class="search-heading">
                   <p v-if="!isLoadingSearch && searchData.items.length">
@@ -198,14 +227,14 @@ const searchTypes = [
 
 const algoliaSortOptions = [
   {
-    label: 'Published (desc)',
+    label: 'Date (desc)',
     id: 'newest',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
+    algoliaIndexName: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC
   },
   {
-    label: 'Published (asc)',
+    label: 'Date (asc)',
     id: 'oldest',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
+    algoliaIndexName: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC
   },
   {
     label: 'A-Z',
@@ -253,36 +282,83 @@ export default {
   mixins: [],
 
   async asyncData() {
-    let projectsFacets = []
+    let projectsAnatomicalFocusFacets = []
+    let projectsFundingFacets = []
     await client.getEntries({
-        content_type: 'awardSection',
-      })
-      .then(async response => {
-        let facetData = []
-        const items = propOr([], 'items', response)
-        items.forEach(item => {
-          const label = pathOr('', ['fields','title'], item)
-          facetData.push({
-            label: label,
-            id: label,
-          })
+      content_type: 'awardSection',
+    })
+    .then(response => {
+      let facetData = []
+      const items = propOr([], 'items', response)
+      items.forEach(item => {
+        const label = pathOr('', ['fields','title'], item)
+        facetData.push({
+          label: label,
+          id: label,
         })
-        projectsFacets = facetData
       })
+      projectsAnatomicalFocusFacets = facetData
+    })
+    await client.getContentType('sparcAward').then(contentType => {
+      contentType.fields.forEach((field) => {
+        if (field.name === 'Funding') {
+          let fundingItems = field.items?.validations[0]['in']
+          let facetData = []
+          fundingItems.forEach(itemLabel => {
+            facetData.push({
+              label: itemLabel,
+              id: itemLabel,
+            })
+          })
+          projectsFundingFacets = facetData
+        }
+      })
+    })
     return {
-      projectsFacets
+      projectsAnatomicalFocusFacets,
+      projectsFundingFacets
+    }
+  },
+
+  head() {
+    return {
+      title: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse datasets'
+        },
+      ]
     }
   },
 
   data: () => {
     return {
-      algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC),
+      algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC),
       selectedAlgoliaSortOption: algoliaSortOptions[0],
       algoliaSortOptions,
       selectedProjectsSortOption: projectsSortOptions[0],
       projectsSortOptions,
       searchQuery: '',
       facets: [],
+      dataTypes: ['dataset', 'simulation', 'model', 'projects'],
+      humanReadableDataTypesLookup: {
+        dataset: 'Datasets',
+        model: 'Anatomical Models',
+        simulation: 'Computational Models',
+      },
+      resultCounts: {
+        model: 0,
+        dataset: 0,
+        simulation: 0,
+      },
+      searchHasAltResults: false,
       visibleFacets: {},
       searchTypes,
       searchData: clone(searchData),
@@ -304,7 +380,7 @@ export default {
               type: 'dataset'
             }
           },
-          label: 'Find Data'
+          label: 'Data & Models'
         },
       ],
       titleColumnWidth: 300,
@@ -376,18 +452,36 @@ export default {
   },
 
   watch: {
-    '$route.query.type': function(val) {
-      /**
-       * Clear table data so the new table that is rendered can
-       * properly render data and account for any missing data
-       */
-      if (!this.$route.query.type) {
-        const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
-        this.$router.replace({ query: { type: firstTabType } })
-      } else {
-        this.searchData = clone(searchData)
-        this.fetchResults()
-      }
+    '$route.query.type': {
+      handler: function() {
+        /**
+         * Clear table data so the new table that is rendered can
+         * properly render data and account for any missing data
+         */
+        if (!this.$route.query.type) {
+          const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
+          this.$router.replace({ query: { type: firstTabType } })
+        } else {
+          this.searchData = clone(searchData)
+          this.fetchResults()
+        }
+        const category = searchTypes.find(searchType => searchType.type == this.$route.query.type)
+        this.$gtm.push({
+          event: "",
+          event_name: '',
+          category: propOr('Datasets', 'label', category),
+          files: "",
+          file_name: "",
+          file_path: "",
+          file_type: "",
+          location: "",
+          dataset_id: "",
+          version_id: "",
+          doi: "",
+          citation_type: ""
+        })
+      },
+      immediate: true
     },
 
     '$route.query.search': {
@@ -395,7 +489,6 @@ export default {
         this.searchQuery = this.$route.query.search
         this.fetchResults()
       },
-      immediate: true
     },
 
     selectedAlgoliaSortOption: function(option) {
@@ -532,6 +625,10 @@ export default {
                 }
                 this.searchData = mergeLeft(searchData, this.searchData)
                 this.isLoadingSearch = false
+
+                // Update alternative search results
+                this.alternativeSearchUpdate()
+
                 // update facet result numbers
                 /*for (const [key, value] of Object.entries(this.visibleFacets)) {
                   if ( (this.$refs.datasetFacetMenu?.getLatestUpdateKey() === key && !this.$refs.datasetFacetMenu?.hasKeys()) || (this.$refs.datasetFacetMenu?.getLatestUpdateKey() !== key) ){
@@ -553,6 +650,51 @@ export default {
           }) 
     },
 
+    // alternaticeSearchUpdate: Updates this.resultCounts which is used for displaying other search options to the user
+    //    when a search returns 0 results
+    alternativeSearchUpdate: function() {
+      const searchTypeInURL = pathOr('dataset', ['query', 'type'], this.$route) // Get current data type
+
+      this.searchHasAltResults = false
+      for (let key in this.resultCounts) { // reset reults list
+        this.resultCounts[key] = 0
+      }
+      let altSearchTypes = this.dataTypes.filter(e => e !== searchTypeInURL) // Remove from list of data types
+
+      altSearchTypes.forEach(type => {  // Search on each data type remaining
+        this.searchContentsCheck(type)
+      })
+    },
+
+    //  searchContentsCheck(searchType): Takes in a search type and returns the number of datasets found with the current filters
+    searchContentsCheck: function(searchType) {
+      const query = this.$route.query.search
+
+      if (searchType !== 'projects'){
+
+        // Alogilia searches
+        const datasetsFilter =
+          searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)' 
+            : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)' 
+            : "item.types.name:Dataset"
+
+        var filters = this.$refs.datasetFacetMenu?.getFilters()
+        filters = filters === undefined ? 
+          `${datasetsFilter}` : 
+          filters + ` AND ${datasetsFilter}`
+
+        this.algoliaIndex
+          .search(query, {
+            facets: ['*'],
+            filters: filters
+          })
+          .then(response => {
+            response.nbHits > 0 ? (this.searchHasAltResults = true) : null
+            this.resultCounts[searchType] = response.nbHits
+          })
+      }
+    },
+
     /**
      * Get search results
      * This is using the contentful.js client
@@ -561,17 +703,19 @@ export default {
       this.isLoadingSearch = true
 
       var contentType = this.$route.query.type  
-      var sortOrder = undefined;
-      var anatomicalFocus = undefined;
+      var sortOrder = undefined
+      var anatomicalFocus = undefined
+      var funding = undefined
       var linkedEntriesTargetType = undefined
       if (this.$route.query.type === "projects") {
         contentType = 'sparcAward',
         sortOrder = this.selectedProjectsSortOption.sortOrder,
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
+        funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
       }
       if (contentType === undefined) {
-        this.isLoadingSearch = false;
+        this.isLoadingSearch = false
       }
       else {
         client
@@ -583,10 +727,13 @@ export default {
             order: sortOrder,
             include: 2,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
-            'fields.projectSection.fields.title[in]' : anatomicalFocus
+            'fields.projectSection.fields.title[in]' : anatomicalFocus,
+            'fields.program[in]' : funding
           })
           .then(async response => {
             this.searchData = { ...response }
+            // Update alternative search results
+            this.alternativeSearchUpdate()
           })
           .catch(() => {
             this.searchData = clone(searchData)
@@ -756,7 +903,6 @@ export default {
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $median;

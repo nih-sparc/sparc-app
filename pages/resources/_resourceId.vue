@@ -18,8 +18,11 @@
               {{ resource.fields.name }}
             </div>
           </sparc-tooltip>
-          <span v-if="resource.fields.developedBySparc" class="mb-16 resource-category">
+          <span v-if="resource.fields.developedBySparc" class="mb-4 resource-category">
             SPARC
+          </span>
+          <span v-if="resource.fields.codeathon" class="mb-16 resource-category">
+            Codeathon
           </span>
           <div class="label4">
             URL
@@ -27,7 +30,31 @@
           <a class="resource-url truncated" :href="resource.fields.url" target="_blank">
             {{ resource.fields.url }}
           </a>
-          <div class="mt-16 label4">
+          <template v-if="resource.fields.owner">
+            <div class="label4">
+              Owner
+            </div>
+            <div class="truncated">
+              {{ resource.fields.owner }}
+            </div>
+          </template>
+          <template v-if="resource.fields.contactEmail">
+            <div class="label4">
+              Contact Email
+            </div>
+            <div class="truncated">
+              {{ resource.fields.contactEmail }}
+            </div>
+          </template>
+          <template v-if="resource.fields.program">
+            <div class="label4">
+              Funding Program
+            </div>
+            <div class="truncated">
+              {{ resource.fields.program[0] }}
+            </div>
+          </template>
+          <div class="mt-4 label4">
             Share
           </div>
           <share-links class="mb-16"/>
@@ -85,6 +112,24 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.resource.fields.name,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.resource.fields.name,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.resource.fields.description ? this.resource.fields.description : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
+    }
+  },
+
   computed: {
     /**
      * Compute the URL for the resource's logo
@@ -118,10 +163,10 @@ export default {
   background: $purple;
   border-radius: 15px;
   color: #fff;
-  display: block;
+  margin-right: .25rem;
   font-size: 0.875rem;
   top: 10px;
-  padding: 0 0.65rem;
+  padding: 0.2rem 0.6rem;
   right: 14px;
   width: fit-content;
 }

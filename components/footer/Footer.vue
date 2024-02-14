@@ -46,6 +46,11 @@
                 />
               </a>
             </div>
+            <div class="footer__info--re3data">
+              <object type="image/svg+xml" data="/images/100013719.svg">
+                <img src="/images/100013719.svg" alt="re3data badge"/>
+              </object>
+            </div>
           </div>
         </el-col>
         <el-col :sm="{ span: 22, offset: 1 }" :md="{ span: 8, offset: 4 }">
@@ -201,6 +206,10 @@ export default {
         p {
           margin-bottom: 1rem;
         }
+      }
+
+      &--re3data {
+        margin-bottom: 1.5rem;
       }
     }
   }

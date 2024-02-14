@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isDoiValid">
     <div v-if="canCopyCitation" class="citation-container py-16 pl-16 pr-24" v-loading="citationLoading">
       <button class="copy-button" @click="handleCitationCopy">
         <img src="../../static/images/copyIcon.png" />
@@ -43,7 +43,8 @@ export default {
       title: "",
       publisher: "",
       year: 0,
-      url: ""
+      url: "",
+      isDoiValid: true
     }
   },
 
@@ -72,15 +73,22 @@ export default {
         method: 'GET',
         headers: { Accept: 'application/json'}
       })
-        .then(response => response.json())
-        .then(json => {
+      .then(async response => {
+        if (response.status == '404') {
+          this.isDoiValid = false
+          this.$emit('doi-invalid', this.doi)
+        } else {
+          const json = await response.json()
           this.title = json.title
           this.authors = json.author
           this.publisher = json["container-title"]
           this.year = json.published["date-parts"][0][0]
           this.url = json.URL
-          this.citationLoading = false
-        })
+        }
+      })
+      .finally(() => {
+        this.citationLoading = false
+      })
     },
     /**
      * Handle copy citation to clipboard
@@ -109,19 +117,21 @@ export default {
     authorCitations() {
       let authorCitationText = ""
       let num = 0
-      if (this.authors.length == 1) {
-        let author = this.authors[0]
-        let lastName = this.getAuthorLastName(author)
-        let firstName = this.getAuthorFirstName(author)
-        authorCitationText = `${lastName}, ${firstName.charAt(0)}. `
-      }
-      else {
-        this.authors.forEach(author => {
+      if (this.authors) {
+        if (this.authors.length == 1) {
+          let author = this.authors[0]
           let lastName = this.getAuthorLastName(author)
           let firstName = this.getAuthorFirstName(author)
-          authorCitationText += num === this.authors.length-1 ? `and ${lastName}, ${firstName.charAt(0)}. ` : `${lastName}, ${firstName.charAt(0)}., `
-          num++
-        })
+          authorCitationText = `${lastName}, ${firstName.charAt(0)}. `
+        }
+        else {
+          this.authors.forEach(author => {
+            let lastName = this.getAuthorLastName(author)
+            let firstName = this.getAuthorFirstName(author)
+            authorCitationText += num === this.authors.length-1 ? `and ${lastName}, ${firstName.charAt(0)}. ` : `${lastName}, ${firstName.charAt(0)}., `
+            num++
+          })
+        }
       }
       return authorCitationText
     },

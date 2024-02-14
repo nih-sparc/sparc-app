@@ -83,7 +83,7 @@ export default {
           }
         },
         {
-          label: 'About',
+          label: 'About SPARC',
           to: {
             name: 'about'
           }
@@ -94,6 +94,19 @@ export default {
             name: 'about-get-involved'
           }
         }
+      ]
+    }
+  },
+
+  head() {
+    return {
+      title: this.aboutDetailsItem.fields.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.aboutDetailsItem.fields.title,
+        },
       ]
     }
   },

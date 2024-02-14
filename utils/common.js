@@ -60,3 +60,25 @@ export const extractSection = (section_regex, html_in) => {
   })
   return html_section
 }
+
+export const extractS3BucketName = uri => {
+  if (uri) {
+    const substring = uri.split("//")[1]
+    if (substring) {
+      return substring.split("/")[0]
+    }
+  }
+  return undefined
+}
+
+export const getPreviousMonth = () => {
+  const currentDate = new Date()
+  const currentMonth = currentDate.getMonth() + 1
+  const previousMonth = (currentMonth === 1) ? 12 : currentMonth - 1
+  const previousYear = (currentMonth === 1) ? currentDate.getFullYear() - 1 : currentDate.getFullYear()
+
+  return {
+    year: previousYear,
+    month: previousMonth
+  }
+}

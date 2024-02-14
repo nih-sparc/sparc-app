@@ -16,7 +16,7 @@
             <div class="body1">
               <template v-if="projectSection">
                 <div class="label4">
-                  ANATOMICAL FOCUS
+                  FOCUS
                 </div>
                 <div class="mb-16">
                   {{ projectSection }}
@@ -38,12 +38,20 @@
                   {{ institution }}
                 </div>
               </template>
-              <template v-if="awardId">
+              <template v-if="fundingProgram.length > 0">
                 <div class="label4">
-                  NIH AWARD
+                  FUNDING PROGRAM
                 </div>
                 <div class="mb-16">
-                  <a :href="nihReporterUrl" target="_blank">
+                  {{ fundingProgram[0] }}
+                </div>
+              </template>
+              <template v-if="awardId">
+                <div class="label4">
+                  AWARD
+                </div>
+                <div class="mb-16">
+                  <a :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">
                     {{ awardId }}
                     <svg-icon v-if="!isInternalLink(nihReporterUrl)" name="icon-open" height="25" width="25" />
                   </a>
@@ -75,9 +83,7 @@
             <div class="heading2 mb-32">
               {{ title }}
             </div>
-            <div class="body1">
-              {{ description }}
-            </div>
+            <div class="body1 content" v-html="parseMarkdown(description)" />
           </el-col>
         </div>
       </div>
@@ -92,7 +98,8 @@
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
-import { isInternalLink } from '@/mixins/marked/index'
+import marked from '@/mixins/marked/index'
+import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { propOr, isEmpty } from 'ramda'
 
 import createClient from '@/plugins/contentful.js'
@@ -106,7 +113,7 @@ export default {
     DatasetCard,
     ShareLinks
   },
-
+  mixins: [marked],
   async asyncData({ route, $axios }) {
     try {
       const project = await client.getEntry(route.params.projectId)
@@ -148,6 +155,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.title
+    }
+  },
+
   computed: {
     /**
      * Get image Source
@@ -163,6 +176,9 @@ export default {
     },
     description: function() {
       return this.fields.description
+    },
+    fundingProgram: function() {
+      return this.fields.program
     },
     awardId: function() {
       return this.fields.awardId
@@ -201,6 +217,7 @@ export default {
 
   methods: {
     isInternalLink,
+    opensInNewTab
   }
 }
 </script>
@@ -240,6 +257,14 @@ hr {
   overflow: auto;
   overflow-x: hidden;
   text-overflow: hidden;
+}
+.content {
+  ::v-deep img {
+    display: block;
+    margin: auto;
+    height: auto;
+    max-width: 100%;
+  }
 }
 @media screen and (max-width: 760px) {
   .row {

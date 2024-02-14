@@ -63,6 +63,7 @@ export default {
 
   methods: {
     submit() {
+      this.terms = this.terms?.trim()
       this.$router.push({ path: this.path, query: { ...this.$route.query, search: this.terms } })
     },
     clear() {

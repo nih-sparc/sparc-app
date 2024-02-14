@@ -15,11 +15,37 @@
         </div>
         <hr class="mt-16"/>
       </div>
-      <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.label">
+      <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.key">
         <div v-if="facet.children && showFacet(facet)">
           <div class="capitalize mb-8">{{facet.label}}:</div>
-          <div class="facet-button-container" v-for="child in facet.children" :key="child.id">
-            <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
+          <div class="facet-button-container parent-facet mt-8" v-for="child in facet.children" :key="child.id">
+            <div v-if="child.children.length > 0">
+              <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
+                  <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
+                    <a
+                      :href="getSelectedFacetLink(getFacetId(child))"
+                    >
+                      <div class="facet-label capitalize">
+                        {{child.label}}
+                      </div>
+                    </a>
+                  </div>
+              </sparc-tooltip>
+              <div class="facet-button-container child-facet" v-for="nestedChild in child.children" :key="nestedChild.id">
+                <sparc-tooltip class="ml-32" placement="left-center" :content="capitalize(nestedChild.label.split('.')[1])" is-repeating-item-content>
+                  <div class="ml-4 tooltip-item facet-button my-2 px-12 label2" slot="item">
+                    <a
+                      :href="getSelectedFacetLink(getFacetId(nestedChild))"
+                    >
+                      <div class="facet-label capitalize">
+                        {{nestedChild.label.split('.')[1]}}
+                      </div>
+                    </a>
+                  </div>
+                </sparc-tooltip> 
+              </div>
+            </div>
+            <sparc-tooltip v-else placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
               <div class="tooltip-item facet-button my-2 px-12 label2" slot="item">
                 <nuxt-link
                   :to="getSelectedFacetLink(getFacetId(child))"
@@ -71,7 +97,17 @@ import FormatString from '@/mixins/format-string'
 
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
-const EXPERIMENTAL_APPROACH_LABEL = facetPropPathMapping['item.modalities.keyword']
+const EXPERIMENTAL_APPROACH_LABEL = facetPropPathMapping.find(item => item.id == 'item.modalities').label
+
+const getPageTypeName = typeFacet => {
+  let typeName = 'dataset'
+  if (typeFacet === 'scaffold') {
+    typeName = 'model'
+  } else if (typeFacet === 'computational model') {
+    typeName = 'simulation'
+  }
+  return typeName
+}
 
 export default {
   name: 'SimilarDatasetsInfoBox',
@@ -127,30 +163,69 @@ export default {
     getFacetId(datasetFacet) {
       const key = datasetFacet.facetPropPath;
       const label = datasetFacet.label;
-      if (this.allFacetsData === []) {
+      if (this.allFacetsData == []) {
         return
       }
-      const category = this.allFacetsData.find(facet => facet.key === key);
+      let category = this.allFacetsData.find(facet => facet.key === key)
       if (category === undefined) {
-        return
+        // check heirarchal facets
+        this.allFacetsData.forEach(facet => {
+          let foundCategory = false
+          facet.children.forEach(child => {
+            if (child.children.length > 0) {
+              child.children.forEach(nestedChild => {
+                if (nestedChild.facetPropPath === key && nestedChild.label === label) {
+                  category = child
+                  foundCategory = true
+                  return
+                }
+              })
+              if (foundCategory) {
+                return
+              }
+            }
+          })
+          if (foundCategory) {
+            return
+          }
+        })
+        if (category === undefined) {
+          return
+        }
       }
       const correspondingFacet = category.children.find(child => child.label === label)
+      if (correspondingFacet == undefined) {
+        return
+      }
       return correspondingFacet.id
     },
     getSelectedFacetLink(facetId) {
-      return this.datasetTypeName === 'dataset' ?
-        `/data?type=dataset&selectedFacetIds=${facetId}` :
-        `/data?type=simulation&selectedFacetIds=${facetId}`
+      const pageName = getPageTypeName(this.datasetTypeName)
+      return `/data?type=${pageName}&selectedFacetIds=${facetId}`
     },
     getSelectedContributorLink(contributor) {
       const name = this.getContributorFullName(contributor)
-      return this.datasetTypeName === 'dataset' ?
-        `/data?type=dataset&q=${name}` :
-        `/data?type=simulation&q=${name}`
+      const pageName = getPageTypeName(this.datasetTypeName)
+      return `/data?type=${pageName}&search=${name}`
+    },
+    heirarchalFacetLabel(label) {
+      const labels = label.split('.')
+      return `${labels[0]} > ${labels[1]}`
     },
     showFacet(facet) {
       if (facet.label === EXPERIMENTAL_APPROACH_LABEL && !this.showExperimentalApproachFacet) {
         return false
+      }
+      if (process.env.SHOW_HIERARCHAL_FACETS === 'true') {
+        // hide the parent facets
+        if (facet.key === 'anatomy.organ.name') {
+          return false
+        }
+      } else {
+        // hide the child facets
+        if (facet.key === 'anatomy.category.organ.name') {
+          return false
+        }
       }
       return true
     },
@@ -177,6 +252,7 @@ hr {
 }
 
 .facet-button {
+  display: block !important;
   border-radius: 15px;
   max-width: fit-content;
   background-color: #f9f2fc;
@@ -210,5 +286,17 @@ hr {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: inherit;
+}
+.parent-facet .child-facet:first-of-type::after {
+  content: url('../../static/images/child-parent-relationship.png');
+  display: block;
+  height: 0;
+  position: relative;
+  top: -1.8rem;
+}
+
+::v-deep .child-facet > span {
+  display: block;
 }
 </style>

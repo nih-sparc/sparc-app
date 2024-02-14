@@ -8,25 +8,32 @@
   >
     <bf-dialog-header slot="title" title="Select a service" />
     <dialog-body>
-      <el-select
-        v-model="selectedViewer"
-        value-key="title"
-        placeholder="Select a service..."
-      >
-        <el-option
-          v-for="viewer in viewersForFile"
-          :key="viewer.title"
-          :value="viewer"
-          :label="viewer.title"
-        />
-      </el-select>
-      <bf-button
-        :disabled="selectedViewer === ''"
-        :processing="isFetching"
-        @click="openFile"
-      >
-        Open in oSPARC
-      </bf-button>
+      <div class="content-body">
+        <el-select
+          v-model="selectedViewer"
+          value-key="title"
+          placeholder="Select a service..."
+        >
+          <el-option
+            :value="filePickerDummy"
+            :label="filePickerDummy.title"
+          />
+          <el-option
+            v-for="viewer in viewersForFile"
+            :key="viewer.title"
+            :value="viewer"
+            :label="viewer.title"
+          />
+        </el-select>
+        <bf-button
+          :disabled="selectedViewer === ''"
+          :processing="isFetching"
+          @click="openFile"
+          class="open-btn"
+        >
+          Open in o²S²PARC
+        </bf-button>
+      </div>
     </dialog-body>
   </el-dialog>
 </template>
@@ -38,6 +45,9 @@ import DialogBody from '@/components/dialog-body/DialogBody.vue'
 import BfButton from '@/components/shared/BfButton/BfButton.vue'
 import { extractExtension } from '~/pages/data/utils'
 import { contentTypes } from '@/components/FilesTable/FilesTable.vue'
+
+const osparcViewUrl = new URL(process.env.osparc_host)
+osparcViewUrl.pathname = '/view'
 
 export default {
   name: 'OsparcFileViewersDialog',
@@ -61,7 +71,11 @@ export default {
   data() {
     return {
       selectedViewer: '',
-      isFetching: false
+      isFetching: false,
+      filePickerDummy: {
+        title: "o²S²PARC file service",
+        "view_url": osparcViewUrl.toString()
+      }
     }
   },
   computed: {
@@ -77,11 +91,14 @@ export default {
   },
   methods: {
     openFile() {
+      this.sendGtmEvent()
       const fileSize = this.selectedFile.size
+      let uri = `${pathOr('', ['uri'], this.selectedFile).replace("s3://", "")}`
+      let s3BucketName = uri.substring(0, uri.indexOf("/"))
       const filePath = compose(
         last,
         defaultTo([]),
-        split('s3://pennsieve-prod-discover-publish-use1/'),
+        split(`s3://${s3BucketName}/`),
         pathOr('', ['uri'])
       )(this.selectedFile)
 
@@ -89,6 +106,7 @@ export default {
 
       const requestUrl = new URL(process.env.portal_api + '/download')
       requestUrl.searchParams.append('key', filePath)
+      requestUrl.searchParams.append('s3BucketName', s3BucketName)
       const fileType = this.selectedFile.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
       if (contentType) {
@@ -102,6 +120,10 @@ export default {
 
           redirectionUrl.searchParams.append('download_link', fileUrl)
           redirectionUrl.searchParams.append('file_size', fileSize)
+          redirectionUrl.searchParams.append('file_type', this.fileExtension)
+          if (this.selectedFile.name) {
+            redirectionUrl.searchParams.append('file_name', this.selectedFile.name)
+          }
 
           window.open(redirectionUrl, '_blank')
 
@@ -112,12 +134,28 @@ export default {
           this.isFetching = false
         })
     },
+    sendGtmEvent() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'open_in_osparc',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: this.selectedViewer?.view_url,
+        category: this.selectedViewer?.title,
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
+    },
     beforeClose(done) {
       this.selectedViewer = ''
       done()
     },
     openedHandler() {
-      this.selectedViewer = this.viewersForFile[0]
+      this.selectedViewer = this.filePickerDummy
     },
     closeHandler() {
       this.$emit('close')
@@ -125,3 +163,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.content-body {
+  display: flex;
+  & > button {
+    margin-left: .5em;
+  }
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="Devices" />
+    <breadcrumb :breadcrumb="breadcrumb" :title=title />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -73,8 +73,10 @@
                   </span>
                 </div>
                 <div class="subpage">
-                  <resources-search-results
-                    :table-data="resources.items"
+                  <resources-search-results :table-data="resources.items" />
+                  <alternative-search-results
+                    ref="alternativeSearchResults"
+                    :search-had-results="resources.items.length > 0"
                   />
                 </div>
                 <div class="search-heading">
@@ -99,6 +101,9 @@
         </el-col>
       </el-row>
     </div>
+    <div class="pb-16 pt-16 container">
+      <submit-tool-section/>
+    </div>
   </div>
 </template>
 
@@ -110,6 +115,8 @@ import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils.ts'
+import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
+import AlternativeSearchResults from '~/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
 
 export default {
   name: 'DevicesPage',
@@ -119,7 +126,9 @@ export default {
     SearchControlsContentful,
     ResourcesSearchResults,
     ToolsAndResourcesFacetMenu,
-    SortMenu
+    SortMenu,
+    SubmitToolSection,
+    AlternativeSearchResults
   },
 
   async asyncData({ route }) {
@@ -131,6 +140,7 @@ export default {
 
   data() {
     return {
+      title: "Devices",
       searchTypes,
       selectedSortOption: sortOptions[0],
       sortOptions,
@@ -151,12 +161,31 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse devices'
+        },
+      ]
+    }
+  },
+
   watch: {
     '$route.query': {
       handler: async function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          this.resources = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, 10, 0)
+          this.resources = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, 10, 0)
+          this.$refs.alternativeSearchResults.retrieveAltTotals()
         })
       },
       immediate: true
@@ -174,8 +203,8 @@ export default {
     sortOrder: function() {
       return propOr('-fields.name', 'sortOrder', this.selectedSortOption)
     },
-    developedBySparc: function() {
-      return this.$route.query.developedBySparc || undefined
+    type: function() {
+      return this.$route.query.type || undefined
     },
   },
 
@@ -187,7 +216,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.resources
       const offset = (page - 1) * limit
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, limit, offset)
+      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, limit, offset)
       this.resources = response
     },
     /**
@@ -196,12 +225,12 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, newLimit, 0)
+      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
       this.resources = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.developedBySparc, this.resources.limit, 0)
+      const response = await fetchResources('Devices', this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
       this.resources = response
     }
   }
@@ -213,7 +242,7 @@ export default {
 .page-data {
   background-color: $background;
 }
-.event-list-item {
+::v-deep .resources-search-results__items {
   border-top: 1px solid $lineColor2;
   padding: 1rem 0;
   &:first-child {
@@ -296,7 +325,6 @@ export default {
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;

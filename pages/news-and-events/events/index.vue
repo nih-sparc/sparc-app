@@ -79,6 +79,11 @@
                     v-for="item in events.items"
                     :key="item.sys.id"
                     :item="item"
+                    :show-past-events-divider="showPastEventsDivider && item.sys.id == firstPastEventId"
+                  />
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="events.items.length > 0"
                   />
                 </div>
                 <div class="search-heading">
@@ -103,19 +108,24 @@
         </el-col>
       </el-row>
     </div>
+    <div class="pb-16 pt-16 container">
+      <submit-news-section/>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 // @ts-nocheck
 import Vue from 'vue'
-import { propOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import EventsFacetMenu from '@/components/FacetMenu/EventsFacetMenu.vue'
 import EventListItem from '@/components/EventListItem/EventListItem.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import createClient from '@/plugins/contentful.js'
+import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
+import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
 
 import { fetchEvents, EventsData, EventsComputed, EventsMethods } from '../model'
 
@@ -138,6 +148,11 @@ const searchTypes = [
 
 const sortOptions = [
   {
+    label: 'Upcoming',
+    id: 'upcoming',
+    sortOrder: '-fields.upcomingSortOrder'
+  },
+  {
     label: 'Latest',
     id: 'latest',
     sortOrder: '-fields.startDate'
@@ -158,11 +173,13 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   name: 'EventsPage',
 
   components: {
+    AlternativeSearchResultsNews,
     Breadcrumb,
     EventsFacetMenu,
     EventListItem,
     SearchControlsContentful,
-    SortMenu
+    SortMenu,
+    SubmitNewsSection
   },
 
   async asyncData({ route }) {
@@ -195,12 +212,31 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     }
   },
 
+  head() {
+    return {
+      title: this.searchTypes[1].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.searchTypes[1].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse events'
+        },
+      ]
+    }
+  },
+
   watch: {
     '$route.query': {
       handler: async function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
           this.events = await fetchEvents(client, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, 10, 0)
+          this.$refs.altSearchResults?.retrieveAltTotals()
         })
       },
       immediate: true
@@ -226,6 +262,28 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     },
     sortOrder: function() {
       return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
+    },
+    firstPastEventId: function() {
+      const events = propOr([], 'items', this.events)
+      for (let i = 0; i < events.length; i++) {
+        const event = events[i]
+        const upcomingSortOrder = pathOr("", ['fields','upcomingSortOrder'], event)
+        if (upcomingSortOrder < 0) {
+          return pathOr("", ['sys','id'], event)
+        }
+      }
+      return -1
+    },
+    showPastEventsDivider: function() {
+      if (this.selectedSortOption.id != "upcoming") {
+        return false
+      }
+      const events = propOr([], 'items', this.events)
+      if (events.length == 0) {
+        return false
+      }
+      const firstEventId = pathOr(-1, ['sys', 'id'], events[0])
+      return this.firstPastEventId != firstEventId
     }
   },
 
@@ -273,6 +331,10 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
   &:last-child {
     padding-bottom: 0;
   }
+}
+::v-deep .past-events-divider {
+  border-top: none;
+  padding-top: 0;
 }
 .subpage {
   margin-bottom: 1rem;
@@ -346,7 +408,6 @@ export default Vue.extend<EventsData, EventsMethods, EventsComputed, never>({
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;

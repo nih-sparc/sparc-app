@@ -1,21 +1,30 @@
 <template>
   <div class="full-size">
-    <div v-if="hasDescription" class="description-info">
-      <p>
-        <strong>Data collection:</strong>
-        {{ description }}
-      </p>
-    </div>
     <client-only placeholder="Loading gallery ...">
-      <div :class="['gallery-container', { 'one-item': galleryItems.length === 1 }]">
-        <gallery
-          :items="galleryItems"
-          :max-width="maxWidth"
-          :show-indicator-bar="true"
-          :show-card-details="true"
-          :highlight-active="shouldHighlight"
-        />
-      </div>
+        <div class="loading-gallery mt-16" v-if="$fetchState.pending" v-loading="$fetchState.pending" />
+        <div v-else-if="$fetchState.error">
+          There was an error loading the gallery items
+        </div>
+        <div v-else-if="galleryItems.length > 0" :class="['gallery-container', { 'one-item': galleryItems.length === 1 }]">
+          <div v-if="hasDescription" class="description-info">
+            <p>
+              <strong>Data collection:</strong>
+              {{ description }}
+            </p>
+          </div>
+          <gallery
+            class="file-viewer-gallery"
+            galleryItemType="fileViewer"
+            :items="galleryItems"
+            :cardWidth="13.8"
+            :datasetId="datasetId"
+            :versionId="versionId"
+            :doi="doi"
+          />
+        </div>
+        <div v-else-if="!$fetchState.pending">
+          This dataset does not contain gallery items
+        </div>
     </client-only>
   </div>
 </template>
@@ -23,34 +32,127 @@
 <script>
 import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
+import scicrunch from '@/services/scicrunch'
 import flatmaps from '@/services/flatmaps'
+import Uberons from '@/static/js/uberon-map.js'
+import ErrorMessages from '@/mixins/error-messages'
+import Gallery from '@/components/Gallery/Gallery.vue'
 
 import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
+import { pathOr, propOr } from 'ramda'
 
-import { baseName, extractSection } from '@/utils/common'
+import { mapState } from 'vuex'
+
+import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
+
+import { failMessage } from '@/utils/notification-messages'
+
+const getBiolucidaData = async datasetId => {
+  try {
+    return biolucida.searchDataset(datasetId)
+  } catch (e) {
+    return {}
+  }
+}
+
+/**
+ * Get data for objects that have a data specific viewer.
+ * @param {Number} datasetId
+ */
+const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
+  let biolucidaImageData = {}
+  let scicrunchData = {}
+  try {
+    const [biolucida_response, scicrunch_response] = await Promise.all([
+      getBiolucidaData(datasetId),
+      scicrunch.getDatasetInfoFromDOI(datasetDoi)
+    ])
+
+    if (biolucida_response.status === 'success') {
+      const scicrunchData = pathOr([], ['data','result'], scicrunch_response)
+      biolucidaImageData = biolucida_response
+      biolucidaImageData['discover_dataset_version'] = datasetVersion
+      biolucidaImageData['dataset_info'] = scicrunchData.length > 0 ? scicrunchData[0] : {}
+    }
+
+    if (scicrunch_response.data.result.length > 0) {
+      scicrunchData = scicrunch_response.data.result[0]
+      scicrunchData.discover_dataset = {
+        id: Number(datasetId),
+        version: datasetVersion
+      }
+      // Check for flatmap data
+      if (scicrunchData.organs) {
+        let flatmapData = []
+        let species = undefined
+        // Get species data from algolia if it exists
+        if (datasetFacetsData){
+          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
+          if (speciesArray && speciesArray.length > 0)
+            species = speciesArray[0].children[0].label.toLowerCase()
+        }
+
+        // check if there is a flatmap for the given species, use a rat if there is not
+        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
+
+        // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
+        // if a flatmap of (species) has (anatomy)
+        let foundAnatomy = []
+        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
+          // Send a requst to flatmap knowledgebase
+          const anatomy = scicrunchData.organs.map(organ => organ.curie)
+          const data = await flatmaps.anatomyQuery(taxo, anatomy)
+
+          // Check request was successful
+          const anatomyResponse = data.data ? data.data.values : undefined
+          if (anatomyResponse && anatomyResponse.length > 0) {
+            foundAnatomy = anatomyResponse.map(val => val[1]) // uberon is stored in second element of tuple
+          }
+        }
+
+        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        scicrunchData.organs.forEach(organ => {
+          if (foundAnatomy.includes(organ.curie)){
+            let organData = {
+              taxo,
+              uberonid: organ.curie,
+              organ: organ.name,
+              id: datasetId,
+              version: datasetVersion,
+              species: species
+            }
+            flatmapData.push(organData)
+          }
+        })
+        //Only create a flatmaps field if flatmapData is not empty
+        if (flatmapData.length > 0)
+          scicrunchData['flatmaps'] = flatmapData
+      }
+    }
+  } catch (e) {
+    console.error(
+      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
+      e
+    )
+    return {
+      biolucidaImageData: {},
+      scicrunchData: {}
+    }
+  }
+  return {
+    biolucidaImageData,
+    scicrunchData
+  }
+}
 
 export default {
   name: 'ImagesGallery',
   components: {
-    Gallery: process.client
-      ? () => import('@abi-software/gallery').then(gallery => gallery)
-      : null
+    Gallery
   },
   mixins: [FormatString, MarkedMixin],
   props: {
-    datasetScicrunch: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
-    datasetBiolucida: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
     datasetImages: {
       type: Array,
       default: () => {
@@ -70,12 +172,6 @@ export default {
       }
     },
     datasetVideos: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    timeseriesData: {
       type: Array,
       default: () => {
         return []
@@ -113,10 +209,25 @@ export default {
       maxWidth: 3,
       scicrunchItems: [],
       biolucidaItems: [],
-      timeseriesItems: []
+      timeseriesItems: [],
+      timeseriesData: [],
+      datasetScicrunch: {},
+      datasetBiolucida: {},
     }
   },
   computed: {
+    ...mapState('pages/datasets/datasetId', 
+      ['datasetInfo', 'datasetFacetsData']
+    ),
+    datasetId() {
+      return propOr('', 'id', this.datasetInfo)
+    },
+    versionId() {
+      return propOr('', 'version', this.datasetInfo)
+    },
+    doi() {
+      return propOr('', 'doi', this.datasetInfo)
+    },
     isPrevPossible() {
       return this.currentIndex > 0
     },
@@ -151,10 +262,61 @@ export default {
       return this.hasDescription || this.galleryItems.length > 1
     }
   },
+  async fetch() {
+    const { biolucidaImageData, scicrunchData } = await getThumbnailData(
+      this.datasetInfo.doi,
+      this.datasetId,
+      this.datasetInfo.version,
+      this.datasetFacetsData
+    )
+    if (Object.keys(biolucidaImageData).length === 0 &&
+      Object.keys(scicrunchData).length === 0 ) {
+      //Non critical error
+      this.$message(failMessage(ErrorMessages.methods.scicrunch()))
+    }
+    this.datasetBiolucida = biolucidaImageData
+    this.datasetScicrunch = scicrunchData
+
+    const newDatasetInfo = {
+      ...this.datasetInfo,
+      sciCrunch: scicrunchData
+    }
+
+    this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
+
+        // Get all timeseries files (those with an '.edf' extension)
+    const timeseriesData = process.env.SHOW_TIMESERIES_VIEWER
+    ? await this.$axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${this.datasetId}`)
+        .then(({ files }) => {
+          let data = []
+          files.forEach(file => {
+            const filePath = file.uri.substring(file.uri.indexOf('files'))
+            const linkUrl =
+                process.env.ROOT_URL +
+                `/datasets/timeseriesviewer?&dataset_id=${file.datasetId}&dataset_version=${file.datasetVersion}&file_path=${filePath}`
+
+            data.push({
+              title: file.name,
+              type: 'Timeseries',
+              thumbnail: undefined,
+              link: linkUrl
+            })
+          })
+          return data
+        })
+        .catch(() => {
+          return []
+        }) 
+    : []
+    this.timeseriesData = timeseriesData
+  },
   watch: {
-    markdown: function(text) {
-      const html = this.parseMarkdown(text)
-      this.description = extractSection(/data collect[^:]+:/i, html)
+    markdown: {
+      immediate: true,
+      handler: function(text) {
+        const html = this.parseMarkdown(text)
+        this.description = extractSection(/data collect[^:]+:/i, html)
+      }
     },
     timeseriesData: {
       deep: true,
@@ -171,11 +333,11 @@ export default {
         const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
         let datasetVersion = -1
+        let s3Bucket = extractS3BucketName(scicrunchData['s3uri'])
         if ('discover_dataset' in scicrunchData) {
           datasetId = scicrunchData.discover_dataset.id
           datasetVersion = scicrunchData.discover_dataset.version
         }
-
         if ('abi-scaffold-metadata-file' in scicrunchData) {
           let index = 0
           items.push(
@@ -184,21 +346,24 @@ export default {
               scaffold => {
                 const file_path = scaffold.dataset.path
                 const id = scaffold.identifier
-                const thumbnail = this.getThumbnailForScaffold(
-                  index,
-                  scicrunchData
+                const thumbnail = this.getThumbnailPathForScaffold(
+                  scaffold,
+                  scicrunchData["abi-scaffold-view-file"],
+                  scicrunchData["abi-thumbnail"],
+                  index
                 )
-
-                this.getScaffoldThumbnail(items, {
-                  id,
-                  fetchAttempts: 0,
-                  datasetId,
-                  datasetVersion,
-                  mimetype: thumbnail.mimetype.name,
-                  file_path: thumbnail.dataset.path
-                })
+                this.retrieveThumbnailFromInfo(items, {
+                    id,
+                    fetchAttempts: 0,
+                    datasetId,
+                    mimetype: thumbnail.mimetype.name,
+                    file_path: thumbnail.dataset.path,
+                    s3Bucket: s3Bucket
+                  },
+                  this.defaultScaffoldImg
+                )
                 let filePath = encodeURIComponent(`files/${file_path}`)
-                const linkUrl = `${baseRoute}datasets/scaffoldviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
+                const linkUrl = `${baseRoute}maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
                 index += 1
                 return {
                   id,
@@ -213,35 +378,49 @@ export default {
         }
 
         if ('video' in scicrunchData) {
-          items.push(
-            ...Array.from(scicrunchData.video, videoFile => {
-              const filePath = this.getS3FilePath(
-                datasetId,
-                datasetVersion,
-                videoFile.dataset.path
-              )
-              const linkUrl = `${baseRoute}datasets/videoviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&file_path=${filePath}&mimetype=${videoFile.mimetype.name}`
-              return {
-                title: videoFile.name,
-                type: 'Video',
-                thumbnail: this.defaultVideoImg,
-                link: linkUrl
-              }
+          const thumbnailPaths = {}
+          if (scicrunchData['abi-thumbnail']) {
+            scicrunchData['abi-thumbnail'].forEach(thumbnail => {
+              const videoPath = thumbnail.datacite.isDerivedFrom.path[0]
+              thumbnailPaths[videoPath] = thumbnail.dataset.path
             })
-          )
+          }
+          scicrunchData.video.forEach(async videoFile => {
+            let thumbnail = this.defaultVideoImg
+            if (thumbnailPaths[videoFile.dataset.path]) {
+              const url = new URL(`${process.env.portal_api}/s3-resource/${datasetId}/files/${thumbnailPaths[videoFile.dataset.path]}`)
+              url.searchParams.append('encodeBase64', true)
+              const img = await fetch(url).then(resp => resp.ok ? resp.text() : null)
+              if (img) {
+                thumbnail = 'data:image/png;base64,' + img
+              }
+            }
+            const linkUrl = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${videoFile.dataset.path}`
+            items.push({
+              title: videoFile.name,
+              type: 'Video',
+              thumbnail,
+              link: linkUrl
+            })
+          })
         }
 
         if ('flatmaps' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData.flatmaps, f => {
               let title = f.uberonid ? f.uberonid : null
-              if (f.organ) title = this.capitalize(f.organ)
+              if (f.organ) {
+                title = `View ${f.organ}`
+              }
 
-              const linkUrl = `${baseRoute}datasets/flatmapviewer?dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}&for_species=${f.species}&organ=${f.organ}`
+              let linkUrl = `${baseRoute}maps?type=ac&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxon=${f.taxo}&anatomy=${f.uberonid}`
+              if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
               const item = {
                 id: f.uberonid,
                 title: title,
-                type: 'Flatmap',
+                type: `${this.capitalize(
+                  f.species ? f.species : 'rat'
+                )} flatmap`,
                 thumbnail: null,
                 link: linkUrl
               }
@@ -262,12 +441,12 @@ export default {
         if ('mbf-segmentation' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
-              const id = segmentation.id
+              const id = segmentation.identifier
               let file_path = segmentation.dataset.path
               // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
               file_path = file_path.replaceAll(' ', '_')
               file_path = file_path.replaceAll(',', '_')
-              const link = `${baseRoute}datasets/segmentationviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=files/${file_path}`
+              const link = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
 
               this.getSegmentationThumbnail(items, {
                 id,
@@ -293,7 +472,21 @@ export default {
             ...Array.from(scicrunchData['abi-plot'], plot => {
               const id = plot.identifier
               const file_path = plot.dataset.path
-              const linkUrl = `${baseRoute}datasets/plotviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&identifier=${id}`
+              const thumbnail = this.getThumbnailPathForPlot(
+                plot,
+                scicrunchData["abi-thumbnail"]
+              )
+              this.retrieveThumbnailFromInfo(items, {
+                  id,
+                  fetchAttempts: 0,
+                  datasetId,
+                  mimetype: thumbnail.mimetype.name,
+                  file_path: thumbnail.dataset.path,
+                  s3Bucket: s3Bucket
+                },
+                this.defaultPlotImg
+              )
+              const linkUrl = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
               return {
                 id,
                 title: baseName(file_path),
@@ -310,14 +503,6 @@ export default {
             ...Array.from(scicrunchData['common-images'], generic_image => {
               const filePath = generic_image.dataset.path
               const id = generic_image.identifier
-              // this.getImageFromS3(items, {
-              //   id,
-              //   fetchAttempts: 0,
-              //   datasetId,
-              //   datasetVersion,
-              //   imageFilePath: filePath,
-              //   mimetype: generic_image.mimetype.name
-              // })
               const linkUrl = `${baseRoute}datasets/imageviewer?dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}&mimetype=${generic_image.mimetype.name}`
               return {
                 id,
@@ -336,11 +521,18 @@ export default {
       deep: true,
       immediate: true,
       handler: function(biolucidaData) {
+        const biolucida2DItems = pathOr([], ['dataset_info','biolucida-2d'], biolucidaData)
         let items = []
         const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
           items.push(
             ...Array.from(biolucidaData.dataset_images, dataset_image => {
+              let filePath = ""
+              biolucida2DItems.forEach(biolucida2DItem => {
+                if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
+                  filePath = "files/" + pathOr("", ['dataset','path'], biolucida2DItem)
+                }
+              })
               this.getThumbnailFromBiolucida(items, {
                 id: dataset_image.image_id,
                 fetchAttempts: 0
@@ -353,8 +545,10 @@ export default {
                 process.env.BL_SHARE_LINK_PREFIX,
                 ''
               )
-              // https://sparc.science/datasets/imageviewer/2724?view=MjcyNC1jb2wtMTA4&dataset_version=5&dataset_id=43
-              let linkUrl =
+              // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
+              let linkUrl = filePath != "" ?
+                baseRoute +
+                `datasets/file/${biolucidaData.discover_dataset_id}/${biolucidaData.discover_dataset_version}?path=${filePath}` :
                 baseRoute +
                 'datasets/biolucidaviewer/' +
                 dataset_image.image_id +
@@ -399,17 +593,51 @@ export default {
       const encoded_file_path = encodeURIComponent(file_path)
       return `${dataset_id}/${dataset_version}/files/${encoded_file_path}`
     },
-    getThumbnailForScaffold(index, scaffold_info) {
-      if (
-        'abi-scaffold-thumbnail' in scaffold_info &&
-        index < scaffold_info['abi-scaffold-thumbnail'].length
-      ) {
-        return scaffold_info['abi-scaffold-thumbnail'][index]
-      } else if (
-        'abi-thumbnail' in scaffold_info &&
-        index < scaffold_info['abi-thumbnail'].length
-      ) {
-        return scaffold_info['abi-thumbnail'][index]
+    /**
+     * Find data path in the array that matches the provide path
+     */
+    findEntryWithPathInArray(array, path) {
+      if (path && array) {
+        for (let i = 0; i < array.length; i++) {
+          if (path === array[i].dataset.path) return array[i]
+        }
+      }
+      return undefined
+    },
+    getThumbnailPathForPlot(plot, thumbnails) {
+      if (thumbnails && plot) {
+        const thumbnail = this.findEntryWithPathInArray(thumbnails, plot.datacite.isSourceOf.path[0])
+        if (thumbnail) {
+          return thumbnail
+        }
+      }
+      return {
+        dataset: {
+          path: ''
+        },
+        mimetype: {
+          name: ''
+        }
+      }
+    },
+    /**
+     * Use the scaffoldViews to help with finding the correct thumbnails.
+     * Use the index if the workflow stated above fails.
+     */
+    getThumbnailPathForScaffold(scaffold, scaffoldViews, thumbnails, index) {
+      if (thumbnails && thumbnails.length > 0) {
+        let thumbnail = undefined
+        if (scaffold && scaffoldViews) {
+          const view = this.findEntryWithPathInArray(scaffoldViews, scaffold.datacite.isSourceOf.path[0])
+          if (view) {
+            thumbnail = this.findEntryWithPathInArray(thumbnails, view.datacite.isSourceOf.path[0])
+          }
+        }
+        if (thumbnail) {
+          return thumbnail
+        } else if (index < thumbnails.length) {
+          return thumbnails[index]
+        }
       }
 
       return {
@@ -421,9 +649,9 @@ export default {
         }
       }
     },
-    getScaffoldThumbnail(items, info) {
+    retrieveThumbnailFromInfo(items, info, defaultImg) {
       discover
-        .fetch(info.datasetId, info.datasetVersion, info.file_path, true)
+        .fetch(info.datasetId, info.file_path, true, info.s3Bucket)
         .then(
           response => {
             let item = items.find(x => x.id === info.id)
@@ -439,10 +667,10 @@ export default {
               info.fetchAttempts < 3
             ) {
               info.fetchAttempts += 1
-              return this.getScaffoldThumbnail(items, info)
+              return this.retrieveThumbnailFromInfo(items, info)
             } else {
               let item = items.find(x => x.id === info.id)
-              this.$set(item, 'thumbnail', this.defaultScaffoldImg)
+              this.$set(item, 'thumbnail', defaultImg)
             }
 
             return Promise.reject('Maximum iterations reached.')
@@ -550,37 +778,6 @@ export default {
         }
       }
     },
-    getImageFromS3(items, image_info) {
-      discover
-        .fetch(
-          image_info.datasetId,
-          image_info.datasetVersion,
-          image_info.imageFilePath,
-          true
-        )
-        .then(
-          response => {
-            let item = items.find(x => x.id === image_info.id)
-            this.scaleThumbnailImage(item, {
-              mimetype: image_info.mimetype,
-              data: response.data
-            })
-          },
-          reason => {
-            if (
-              reason.message.includes('timeout') &&
-              reason.message.includes('exceeded') &&
-              image_info.fetchAttempts < 3
-            ) {
-              image_info.fetchAttempts += 1
-              this.getImageFromS3(items, image_info)
-            } else {
-              let item = items.find(x => x.id === image_info.id)
-              this.$set(item, 'thumbnail', this.defaultImg)
-            }
-          }
-        )
-    },
     getThumbnailFromBiolucida(items, info) {
       biolucida.getThumbnail(info.id).then(
         response => {
@@ -637,7 +834,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+::v-deep .file-viewer-gallery {
+  .card-line {
+    flex-grow: 0 !important;
+    gap: 1rem;
+  }
+}
+.loading-gallery {
+  overflow: hidden;
+  min-height: 4rem;
+}
+
 .full-size {
   width: 100%;
   height: 100%;
@@ -714,11 +922,5 @@ a.next {
 
 ::v-deep .one-item .card-line {
   flex-grow: unset !important;
-}
-</style>
-
-<style lang="scss">
-.gallery-container {
-  @import '~@abi-software/gallery/dist/gallery';
 }
 </style>

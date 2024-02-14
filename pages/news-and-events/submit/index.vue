@@ -2,7 +2,7 @@
   <div class="submit-page">
     <breadcrumb :breadcrumb="breadcrumb" title="Submit" />
     <page-hero>
-      <h1>Share your News or Event</h1>
+      <h1>{{heroTitle}}</h1>
       <p>Submit your news or event with SPARC. We will then be in contact about how we share this to the SPARC community.</p>
     </page-hero>
     <div class="page-wrap container">
@@ -31,7 +31,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import NewsAndEventsForm from '@/components/NewsAndEventsForm/NewsAndEventsForm.vue'
+import NewsAndEventsForm from '@/components/ContactUsForms/NewsAndEventsForm/NewsAndEventsForm.vue'
 
 export default {
   name: 'SubmitNewsAndEventsPage',
@@ -58,8 +58,15 @@ export default {
           }
         },
       ],
+      heroTitle: "Share your News or Event",
       isNewsAndEventsFormSubmitted: false,
       name: ''
+    }
+  },
+
+  head() {
+    return {
+      title: this.heroTitle
     }
   },
 

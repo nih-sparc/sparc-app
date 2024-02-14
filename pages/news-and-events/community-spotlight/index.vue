@@ -89,6 +89,10 @@
                       <hr />
                     </div>
                   </template>
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="communitySpotlightItems.items.length > 0"
+                  />
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="communitySpotlightItems.items.length">
@@ -112,6 +116,9 @@
         </el-col>
       </el-row>
     </div>
+    <div class="pb-16 pt-16 container">
+      <submit-community-section/>
+    </div>
   </div>
 </template>
 
@@ -125,6 +132,8 @@ import CommunitySpotlightFacetMenu from '@/components/FacetMenu/CommunitySpotlig
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import SubmitCommunitySection from '~/components/NewsEventsResourcesPage/SubmitCommunitySection.vue'
+import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
 
 import { fetchCommunitySpotlightItems, CommunitySpotlightData, CommunitySpotlightComputed, CommunitySpotlightMethods } from '../model'
 
@@ -182,7 +191,9 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     CommunitySpotlightItem,
     CommunitySpotlightFacetMenu,
     SearchControlsContentful,
-    SortMenu
+    SortMenu,
+    SubmitCommunitySection,
+    AlternativeSearchResultsNews
   },
 
   // In order to allow for sorting or fireside chats and success stories we needed
@@ -191,25 +202,26 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
   // https://www.contentfulcommunity.com/t/how-to-query-on-multiple-content-types/473
   async asyncData({ route }) {
     const communitySpotlightItems = await fetchCommunitySpotlightItems(client, route.query.search, undefined, undefined, undefined, 10, 0)
-    const anatomicalStructures = await client.getEntries({
-      content_type: 'communitySpotlightAnatomicalStructure',
-      order: 'fields.name',
-    }).then(async ({ items }) => {
-      let data = []
-      items.forEach(( item ) => {
-        const name = pathOr('', ['fields','name'], item)
-        const entryId = pathOr('', ['sys','id'], item)
-        data.push({
-          label: name,
-          id: name,
-          entryId
-        })
+    // get all the available pre-defined values for creating the facet menu
+    let anatomicalStructures = {}
+    await client.getContentType('communitySpotlight').then(contentType => {
+      contentType.fields.forEach((field) => {
+        if (field.id === 'anatomicalStructure') {
+          let structures = field.items?.validations[0]['in']
+          let facetData = []
+          structures.forEach(itemLabel => {
+            facetData.push({
+              label: itemLabel,
+              id: itemLabel,
+            })
+          })
+          anatomicalStructures = {
+            label: 'Focus',
+            id: 'spotlightAnatomicalStructure',
+            data: facetData
+          }
+        }
       })
-      return {
-        label: 'Anatomical Structure',
-        id: 'spotlightAnatomicalStructure',
-        data: data
-      }
     })
 
     return {
@@ -238,12 +250,30 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
       ]
     }
   },
+  head() {
+    return {
+      title: this.searchTypes[2].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.searchTypes[2].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Browse community spotlight'
+        },
+      ]
+    }
+  },
   watch: {
     '$route.query': {
       handler: async function() {
         // we use next tick to wait for the facet menu to be mounted
         this.$nextTick(async () => {
-          this.communitySpotlightItems = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructuresEntryIds, this.sortOrder, 10, 0)
+          this.communitySpotlightItems = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, 10, 0)
+          this.$refs.altSearchResults?.retrieveAltTotals()
         })
       },
       immediate: true
@@ -253,22 +283,8 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     spotlightTypes: function() {
       return this.$route.query.selectedSpotlightTypes || undefined
     },
-    selectedAnatomicalStructuresEntryIds: function() {
-      const selectedStructures = this.$route.query.selectedAnatomicalStructures?.split(",") || undefined
-      let ids = []
-      const data = this.anatomicalStructures.data
-
-      if (selectedStructures == undefined) { return undefined }
-
-      selectedStructures.forEach((structure) => {
-        // check if the anatomical structure name is in the list, and if so grab its entry id (we need to use the entry ID for contentful query purposes)
-        data.some((dataItem) => {
-          if (dataItem.id == structure) {
-            ids.push(`${dataItem.entryId}`)
-          }
-        })
-      })
-      return ids
+    selectedAnatomicalStructures: function() {
+      return this.$route.query.selectedAnatomicalStructures?.split(",") || undefined
     },
     sortOrder: function() {
       return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
@@ -282,7 +298,7 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     async onPaginationPageChange(page) {
       const { limit } = this.communitySpotlightItems
       const offset = (page - 1) * limit
-      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructuresEntryIds, this.sortOrder, limit, offset)
+      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, limit, offset)
       this.communitySpotlightItems = response
     },
     /**
@@ -291,21 +307,18 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.communitySpotlightItems.total : limit
-      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructuresEntryIds, this.sortOrder, newLimit, 0)
+      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, newLimit, 0)
       this.communitySpotlightItems = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructuresEntryIds, this.sortOrder, this.communitySpotlightItems.limit, 0)
+      const response = await fetchCommunitySpotlightItems(client, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, this.communitySpotlightItems.limit, 0)
       this.communitySpotlightItems = response
     },
     // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
     getLinkedItems(communitySpotlightItem) {
       const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
-      const anatomicalFocus = pathOr('', ['fields','anatomicalFocus'], communitySpotlightItem)
-      const anatomicalStructures = anatomicalFocus.map((focusItem) => {
-        return pathOr('', ['fields', 'name'], focusItem)
-      })
+      const anatomicalStructures = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
       const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
       const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
         return item.id == spotlightTypeId
@@ -327,8 +340,8 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
 }
 .story-result {
   border-top: 1px solid $lineColor2;
-  padding-top: 1.5em;
-  padding-bottom: 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   &:first-child {
     border: none;
     padding-top: 0;
@@ -409,7 +422,6 @@ export default Vue.extend<CommunitySpotlightData, CommunitySpotlightMethods, Com
     text-transform: none;
   }
   &:hover,
-  &:focus,
   &.active {
     color: white;
     background-color: $purple;

@@ -48,6 +48,7 @@
           />
           <div
             class="my-8"
+            v-if="scope.row._highlightResult.item.description"
             v-html="scope.row._highlightResult.item.description.value"
           />
           <table class="property-table">
@@ -162,11 +163,14 @@ export default {
         }
         case 'Publication Date': {
           const pennsieve = _.get(item, property.propPath)
-          const createdAt = pennsieve.createdAt.timestamp.split(",")[0]
-          const updatedAt = pennsieve.updatedAt.timestamp.split(",")[0]
-          return this.formatDate(createdAt) +
+          if (pennsieve.firstPublishedAt == undefined || pennsieve.versionPublishedAt == undefined) {
+            return undefined
+          }
+          const firstPublishedAt = pennsieve.firstPublishedAt.timestamp.split(",")[0]
+          const versionPublishedAt = pennsieve.versionPublishedAt.timestamp.split(",")[0]
+          return this.formatDate(firstPublishedAt) +
                     ' (Last updated ' +
-                    this.formatDate(updatedAt) +
+                    this.formatDate(versionPublishedAt) +
                     ')'
         }
         default: {

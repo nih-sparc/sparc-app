@@ -16,12 +16,15 @@
       Sign in</a> to the SPARC Portal to request
       access to or view the status of an access request to embargoed data.
       <div>
-        <el-button
-          class="mt-8"
-          disabled
-        >
-          Request Access
-        </el-button>
+        <sparc-tooltip content="Sign in to request access" placement="top-center">
+          <el-button
+            class="mt-8"
+            disabled
+            slot="item"
+          >
+            Request Access
+          </el-button>
+        </sparc-tooltip>
       </div>
     </div>
     <div v-else-if="embargoed && requestPending">
@@ -31,12 +34,15 @@
       release date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
       and will become available to the public on that day.
       <div>
-        <el-button
-          class="mt-8"
-          disabled
-        >
-          Request Access
-        </el-button>
+        <sparc-tooltip content="Access request is pending" placement="top-center">
+          <el-button
+            class="mt-8"
+            disabled
+            slot="item"
+          >
+            Request Access
+          </el-button>
+        </sparc-tooltip>
       </div>
     </div>
     <div v-else-if="embargoed && !accessGranted">
@@ -55,7 +61,7 @@
       <div>
         <el-button
           class="my-8"
-          :disabled="embargoAccess != null"
+          :disabled="embargoAccess != null && agreementId != null"
           @click="openAgreementPopup()"
         >
           Request Access
@@ -71,7 +77,7 @@
           <div v-if="!isDatasetSizeLarge">
             <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and metadata directly to your computer free of charge. Please note that the files will be compressed upon download.</div>
             <a :href="downloadUrl">
-              <el-button class="my-16">Download full dataset</el-button>
+              <el-button @click='sendFullDownloadGtmEvent("portal")' class="my-16">Download full dataset</el-button>
             </a>
           </div>
           <div v-else>
@@ -85,19 +91,28 @@
               <el-button slot="item" disabled class="my-16">Download full dataset</el-button>
             </sparc-tooltip>
           </div>
+          <a
+            v-show="sdsViewer"
+            :href="sdsViewer"
+            target="_blank"
+          >
+            <el-button class="secondary" @click="onSdsButtonClick">
+              Explore in SDS Viewer
+            </el-button>
+          </a>
         </div>
         <div class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
           <div class="mb-8">
             <span class="label4">Option 2 - AWS download: </span>
             Download or transfer the dataset to your AWS Account. The files and metadata are stored in an AWS S3 Requester Pays bucket. You can learn more about downloading data from AWS on our
-            <a href="https://sparc.science/help/zQfzadwADutviJjT19hA5" target="_blank">Help Page</a>.
+            <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">Help Page</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
             <div class="heading3">Resource Type</div>
             <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
             <div class="download-text-block mb-8 p-4">
               {{ datasetArn }}
-              <button class="copy-button" @click="handleCitationCopy(datasetArn)">
+              <button class="copy-button" @click="handleS3CopyButtonClicked(datasetArn)">
                 <img src="../../static/images/copyIcon.png" />
               </button>
             </div>
@@ -124,23 +139,19 @@
           <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
         </span>
         <span class="dataset-link inline">
-          <nuxt-link
-            :to="{
-              name: 'help-helpId',
-              params: {
-                helpId: ctfDatasetNavigationInfoPageId
-              }
-            }"
+          <a
+            href="https://docs.sparc.science/docs/accessing-public-datasets"
             class="dataset-link"
           >
             How to navigate datasets
-          </nuxt-link>
+          </a>
         </span>
       </div>
       <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch"/>
     </div>
     <data-use-agreement-popup
       :show-dialog="showAgreementPopup"
+      @agreement-loaded="agreementLoaded"
       @dialog-closed="showAgreementPopup = false"
       @agreement-signed="requestAccess"
     />
@@ -174,15 +185,15 @@ export default {
 
   mixins: [DateUtils, FormatMetric],
 
-  props: {
-    osparcViewers: {
-      type: Object,
-      default: () => {}
-    },
-    datasetScicrunch: {
-      type: Object,
-      default: () => {}
-    }
+  async fetch() {
+    // Get oSPARC file viewers
+    this.osparcViewers = 
+      await this.$axios
+        .$get(`${process.env.portal_api}/sim/file`)
+        .then(osparcData => osparcData['file_viewers'])
+        .catch(() => {
+          return {}
+        })
   },
 
   computed: {
@@ -192,6 +203,9 @@ export default {
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
     ...mapGetters('user', ['cognitoUserToken']),
+    datasetScicrunch() {
+      return propOr({}, 'sciCrunch', this.datasetInfo)
+    },
     userToken() {
       return this.cognitoUserToken || this.$cookies.get('user-token')
     },
@@ -251,15 +265,24 @@ export default {
         url += `&api_key=${this.userToken}`
       }
       return url
+    },
+    sdsViewer: function() {
+      if (this.datasetInfo.doi && process.env.SHOW_SDS_VIEWER === 'true') {
+        const metacellUrl = new URL(process.env.METACELL_SDS_VIEWER_URL)
+        metacellUrl.searchParams.append('doi', this.datasetInfo.doi)
+        return metacellUrl.toString()
+      }
+      return null
     }
   },
 
   data() {
     return {
-      ctfDatasetNavigationInfoPageId: process.env.ctf_dataset_navigation_info_page_id,
       awsMessage: 'us-east-1',
       showAgreementPopup: false,
       showLoginDialog: false,
+      osparcViewers: {},
+      agreementId: null
     }
   },
 
@@ -279,6 +302,25 @@ export default {
           this.$message(failMessage('Failed to copy.'))
         }
     },
+    onSdsButtonClick() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'sds_viewer_button_click',
+        location: 'files_tab',
+        category: "",
+        dataset_id: propOr('', 'id', this.datasetInfo),
+        version_id: propOr('', 'version', this.datasetInfo),
+        doi: propOr('', 'doi', this.datasetInfo),
+        citation_type: "",
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+      })
+    },
+    agreementLoaded(id) {
+      this.agreementId = id
+    },
     openAgreementPopup: function() {
       this.showAgreementPopup = true
     },
@@ -287,7 +329,7 @@ export default {
 
       this.$axios
         .$post(url, {
-          datasetId: this.datasetInfo.id,
+          dataUseAgreementId: this.agreementId,
         })
         .then(() => {
           this.updateEmbargoAccess(EMBARGO_ACCESS.REQUESTED)
@@ -307,6 +349,26 @@ export default {
       }
 
       this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
+    },
+    handleS3CopyButtonClicked(text) {
+      this.sendFullDownloadGtmEvent("aws")
+      this.handleCitationCopy(text)
+    },
+    sendFullDownloadGtmEvent(location) {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'download_full_dataset',
+        dataset_id: this.datasetId,
+        version_id: propOr('', 'version', this.datasetInfo),
+        doi: propOr('', 'doi', this.datasetInfo),
+        location: location,
+        category: "",
+        citation_type: "",
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+      })
     }
   }
 }

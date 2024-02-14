@@ -12,6 +12,9 @@
         class="page-hero-img"
         :src="page.fields.heroImage.fields.file.url"
       />
+      <NuxtLink to="/news-and-events/news">
+        <el-button class="secondary mb-16">Browse all News &amp; Events</el-button>
+      </NuxtLink>
     </page-hero>
 
     <div class="pt-32 pb-16">
@@ -34,7 +37,7 @@
                     name: 'news-and-events-news'
                   }"
                 >
-                  View All News &gt;
+                  View All News
                 </nuxt-link>
               </div>
             </div>
@@ -46,43 +49,23 @@
               combination of components
             -->
             <client-only>
-              <content-tab-card
-                class="tabs p-32"
-                :tabs="eventsTabs"
-                :active-tab-id="activeTabId"
-                @tab-changed="eventsTabChanged"
-              >
-                <template v-if="activeTabId === 'upcoming'">
-                  <div class="upcoming-events">
-                    <event-card
-                      v-for="event in upcomingEvents.items"
-                      :key="event.sys.id"
-                      :event="event"
-                    />
-                  </div>
-
-                </template>
-
-                <template v-if="activeTabId === 'past'">
-                  <div class="past-events">
-                    <event-card
-                      v-for="event in pastEvents.items"
-                      :key="event.sys.id"
-                      :event="event"
-                    />
-                  </div>
-                </template>
-                <div class="mt-16">
-                  <nuxt-link
-                    class="btn-load-more"
-                    :to="{
-                      name: 'news-and-events-events',
-                    }"
-                  >
-                    View All Events >
-                  </nuxt-link>
-                </div>
-              </content-tab-card>
+              <div class="upcoming-events">
+                <event-card
+                  v-for="event in upcomingEvents.items"
+                  :key="event.sys.id"
+                  :event="event"
+                />
+              </div>
+              <div class="mt-16">
+                <nuxt-link
+                  class="btn-load-more"
+                  :to="{
+                    name: 'news-and-events-events',
+                  }"
+                >
+                  View All Events
+                </nuxt-link>
+              </div>
             </client-only>
           </el-col>
         </el-row>
@@ -98,7 +81,9 @@
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
               <div class="heading2">Sign up for the SPARC Newsletter</div>
               <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
-              <newsletter-form />
+              <newsletter-form
+                location="news and events"
+              />
               <div class="newsletter-archive mt-16">
                 <style type="text/css">
                   .campaign { margin-top: .5rem; }
@@ -112,24 +97,32 @@
               <div class="heading2 mt-24">Get Involved</div>
               <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your science story, news, or event.</div>
               <div class="get-involved-buttons-container">
-                <el-button class="get-involved-button secondary">
-                  <nuxt-link
-                    :to="{
-                      name: 'news-and-events-submit',
-                    }"
-                  >
+                <nuxt-link
+                  :to="{
+                    name: 'contact-us',
+                    query: {
+                      type: 'news-event'
+                    }
+                  }"
+                  target="_blank"
+                >
+                  <el-button class="get-involved-button secondary">
                     Share news or events
-                  </nuxt-link>
-                </el-button>
-                <el-button class="get-involved-button secondary mt-8">
-                  <nuxt-link
-                    :to="{
-                      name: 'news-and-events-community-spotlight-submit',
-                    }"
-                  >
+                  </el-button>
+                </nuxt-link>
+                <nuxt-link
+                  :to="{
+                    name: 'contact-us',
+                    query: {
+                      type: 'story'
+                    }
+                  }"
+                  target="_blank"
+                >
+                  <el-button class="get-involved-button secondary mt-8">
                     Submit a community spotlight idea
-                  </nuxt-link>
-                </el-button>
+                  </el-button>
+                </nuxt-link>
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
@@ -209,9 +202,8 @@ export default Vue.extend<Data, Methods, Computed, never>({
   watch: {
     '$route.query': {
       handler: async function(this: NewsAndEventsComponent) {
-        const { upcomingEvents, pastEvents, news, page, stories } = await fetchData(client, this.$route.query.search as string, 2)
+        const { upcomingEvents, news, page, stories } = await fetchData(client, this.$route.query.search as string, 2)
         this.upcomingEvents = upcomingEvents;
-        this.pastEvents = pastEvents;
         this.news = news;
         this.page = page;
         this.stories = stories;
@@ -231,22 +223,28 @@ export default Vue.extend<Data, Methods, Computed, never>({
           label: 'Home'
         }
       ],
-      activeTabId: 'upcoming',
-      eventsTabs: [
-        {
-          label: 'Upcoming',
-          id: 'upcoming'
-        },
-        {
-          label: 'Past',
-          id: 'past'
-        }
-      ],
       upcomingEvents: {} as EventsCollection,
-      pastEvents: {} as EventsCollection,
       news: {} as NewsCollection,
       page: {} as PageEntry,
       stories: {} as CommunitySpotlightItemsCollection
+    }
+  },
+
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.page.fields.heroCopy ? this.page.fields.heroCopy : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
     }
   },
 
@@ -267,20 +265,6 @@ export default Vue.extend<Data, Methods, Computed, never>({
     getAllNews: async function() {
       const news = await fetchNews(client, this.$route.query.search as string, undefined, undefined, undefined, undefined, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
-    },
-    eventsTabChanged(newTab) {
-      this.activeTabId = newTab.id
-    },
-    // Calculate the eventYear param based off the tab being shown
-    eventYear() {
-      if (this.activeTabId === 'upcoming')
-      {
-
-      }
-      else if (this.activeTabId === 'past') {
-
-      }
-      return undefined
     },
     currentMonth() {
       return new Date().getMonth()
@@ -313,7 +297,7 @@ export default Vue.extend<Data, Methods, Computed, never>({
   margin: 1em 0;
   padding: 0;
 }
-.upcoming-events, .past-events {
+.upcoming-events {
   justify-content: space-between;
   display: flex;
   flex-wrap: wrap;
@@ -352,16 +336,13 @@ export default Vue.extend<Data, Methods, Computed, never>({
 .btn-load-more {
   background: none;
   border: none;
-  color: $darkBlue;
+  color: $purple;
   cursor: pointer;
   display: block;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 500;
   padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 }
 
 .newsletter-archive {

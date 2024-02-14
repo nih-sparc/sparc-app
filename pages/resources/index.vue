@@ -6,18 +6,19 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(fields.summary)" />
-      <NuxtLink to="/resources/biological">
+      <NuxtLink to="/resources/databases">
         <el-button class="secondary mb-16">Browse all Tools &amp; Resources</el-button>
       </NuxtLink>
     </page-hero>
     <div class="page-wrap container">
       <div v-if="fields.featured !== undefined">
         <div class="heading2 my-32">Featured Tools &amp; Resources</div>
-        <resources-gallery
+        <gallery
+          galleryItemType="resources"
           :items="fields.featured"
         />
         <div class="link-container mt-16">
-          <NuxtLink class="browse-all-link" to="/resources/biological">
+          <NuxtLink class="browse-all-link" to="/resources/databases">
             Browse All Tools &amp; Resources
           </NuxtLink>
         </div>
@@ -27,7 +28,8 @@
         <paper
           :text="parseMarkdown(fields.paperText)"
           :button-text="'Submit a recommendation'"
-          :button-link="submissionLink"
+          :button-link="{ name: 'contact-us', query: { type: 'tool'} }"
+          new-tab
         />
       </div>
     </div>
@@ -41,7 +43,7 @@ import createClient from '@/plugins/contentful.js'
 import ErrorMessages from '@/mixins/error-messages'
 import marked from '@/mixins/marked/index'
 import Paper from '~/components/Paper/Paper.vue'
-import ResourcesGallery from '~/components/ResourcesGallery/ResourcesGallery.vue'
+import Gallery from '~/components/Gallery/Gallery.vue'
 
 const client = createClient()
 
@@ -54,7 +56,7 @@ export default {
     Breadcrumb,
     PageHero,
     Paper,
-    ResourcesGallery,
+    Gallery,
   },
 
   asyncData( { error } ) {
@@ -83,10 +85,21 @@ export default {
     }
   },
 
-  computed: {
-    submissionLink() {
-      const route = 'resources-submit'
-      return { name: route }
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.fields.summary ? this.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
     }
   }
 }

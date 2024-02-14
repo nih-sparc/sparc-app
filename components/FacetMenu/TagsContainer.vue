@@ -37,7 +37,7 @@
         closable
         @close="deselectFacet(facet.id)"
       >
-        {{ facet.label }}
+        {{ facet.label.split('.').pop() }}
       </el-tag>
     </el-card>
   </div>
@@ -138,6 +138,9 @@ export default {
   }
   .purple-fill {
     fill: $purple;
+  }
+  ::v-deep .popover {
+    background-color: #f9f2fc;
   }
 }
 </style>

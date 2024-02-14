@@ -9,9 +9,12 @@ export default (fields = {}) => {
     heroCopy: fields.heroCopy || '',
     heroImage: fields.heroImage || {},
     featuredData: fields.featuredData || [],
+    newsAndEvents: fields.newsAndEvents || [],
     portalFeatures: fields.portalFeatures || [],
     featuredProject: fields.featuredProject || {},
-    featuredDatasetId: fields.featuredDatasetId || '',
-    title: fields.title || ''
+    datasetSectionTitle: fields.datasetSectionTitle || 'Here is a dataset you might be interested in: ',
+    title: fields.title || '',
+    heroButtonLink: fields.heroButtonLink,
+    heroButtonLabel: fields.heroButtonLabel
   }
 }

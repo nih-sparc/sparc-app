@@ -42,13 +42,21 @@ const SUBJECT_CATEGORY = {
   id: 'subject',
   data: [
     {
-      label: 'News article',
+      label: 'General News',
       id: 'News Article',
     },
     {
-      label: 'Funding oppotunity',
+      label: 'Funding Opportunity',
       id: 'Funding Opportunity',
-    }
+    },
+    {
+      label: 'Highlight',
+      id: 'Highlight',
+    },
+    {
+      label: 'Portal Update',
+      id: 'Portal Update',
+    },
   ]
 }
 
@@ -65,8 +73,8 @@ export default {
       newsSubjects: SUBJECT_CATEGORY,
       selectedNewsSubjectIds: [],
       publicationDateOption: 'show all',
-      publicationMonth: 'Mar',
-      publicationYear: 2020,
+      publicationMonth: new Date().toLocaleString('en-US', {month: 'short'}),
+      publicationYear: new Date().getFullYear(),
       visibleCategories: visibleCategories,
     }
   },

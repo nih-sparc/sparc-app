@@ -67,20 +67,7 @@
         justify="center"
       >
         <el-col :span="4" :pull="1">
-          <router-link
-            :to="{
-              name: 'version',
-              params: {
-                version: version.version,
-                datasetId
-              },
-              query: {
-                type: 'dataset'
-              }
-            }"
-          >
-            Version {{ version.version }}
-          </router-link>
+          Version {{ version.version }}
         </el-col>
         <el-col :span="4">
           Revision {{ version.revision ? version.revision : '0' }}
@@ -133,7 +120,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { propOr } from 'ramda'
 
 import RequestDownloadFile from '@/mixins/request-download-file'
@@ -150,17 +137,33 @@ export default {
       type: Array,
       default: () => []
     },
-    changelogFiles: {
-      type: Array,
-      default: () => []
-    }
   },
   data: function() {
     return {
       markdown: '',
       dialogVisible: false,
-      changeLogFileInfo: {}
+      changeLogFileInfo: {},
+      changelogFiles: []
     }
+  },
+  async fetch() {
+    const changelogFileRequests = []
+    this.versions.forEach(({ version }) => {
+      var changelogEndpoint = `${process.env.discover_api_host}/datasets/${this.datasetId}/versions/${version}/files?path=changelog.md`
+      if (this.userToken) { changelogEndpoint += `&api_key=${this.userToken}` }
+      changelogFileRequests.push(
+        this.$axios.$get(changelogEndpoint).then(response => {
+          return {
+            ...response,
+            version: version
+          }
+        }).catch(() => {
+          return {}
+        })
+      )
+    })
+
+    this.changelogFiles = await Promise.all(changelogFileRequests)
   },
   computed: {
     /**
@@ -168,6 +171,10 @@ export default {
      * @returns {Object}
      */
     ...mapState('pages/datasets/datasetId', ['datasetInfo']),
+    ...mapGetters('user', ['cognitoUserToken']),
+    userToken() {
+      return this.cognitoUserToken || this.$cookies.get('user-token')
+    },
     /**
      * Gets dataset id
      * @returns {Number}
@@ -217,7 +224,8 @@ export default {
     },
     viewChangeLogFile(versionInfo) {
       // Note that requestFileContent is a mixin
-      this.requestFileContent(this.getChangelogFile(versionInfo.version)).then(content => {
+      const changelogFile = this.getChangelogFile(versionInfo.version)
+      this.requestFileContent(changelogFile).then(content => {
         this.markdown = content
         this.dialogVisible = true
         this.changeLogFileInfo = versionInfo // Set the version metadata for the currently stored markdown

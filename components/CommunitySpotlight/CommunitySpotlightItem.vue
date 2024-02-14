@@ -1,36 +1,31 @@
 <template>
   <div class="story-result">
-    <div>
-      <div class="banner-wrapper">
-        <client-only
+    <div class="banner-wrapper">
+        <iframe
           v-if="story.fields.youtubeUrl"
           placeholder="Loading video ..."
-        >
-          <iframe
-            class="banner-asset"
-            :src="embeddedVideoSrc"
-            allowfullscreen
-            allowtransparency
-            allow="autoplay"
-            frameBorder="0"
-          />
-        </client-only>
-        <img
-          v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('image')"
           class="banner-asset"
-          :src="story.fields.files[0].fields.file.url"
-          :alt="story.fields.files[0].description"
+          :src="embeddedVideoSrc"
+          allowfullscreen
+          allowtransparency
+          allow="autoplay"
+          frameBorder="0"
         />
-        <video
-          v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('video')"
-          class="banner-asset"
-          controls=""
-          autoplay="false"
-          name="media"
-        >
-          <source :src="story.fields.files[0].fields.file.url" :type="story.fields.files[0].fields.file.contentType">
-        </video>
-      </div>
+      <img
+        v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('image')"
+        class="banner-asset"
+        :src="story.fields.files[0].fields.file.url"
+        :alt="story.fields.files[0].description"
+      />
+      <video
+        v-else-if="story.fields.files && story.fields.files[0].fields.file.contentType.includes('video')"
+        class="banner-asset"
+        controls=""
+        autoplay="false"
+        name="media"
+      >
+        <source :src="story.fields.files[0].fields.file.url" :type="story.fields.files[0].fields.file.contentType">
+      </video>
     </div>
     <div class="story-text">
       <div class="link1 mb-8">
@@ -60,7 +55,7 @@
         </tr>
         <tr>
           <td class="property-name-column">
-            Anatomical Structure(s)
+            Focus
           </td>
           <td>
             {{ anatomicalStructureText }}
@@ -100,24 +95,20 @@ export default {
 
 .banner-wrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
   width: 12rem;
+  height: auto;
 }
 
 .banner-wrapper .banner-asset {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: auto;
+  object-fit: contain;
 }
 
 .story-result {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
-  min-height: 10.875rem;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -141,7 +132,6 @@ export default {
   }
   border: none;
   padding: 0;
-  padding-bottom: 1rem;
 }
 // The outermost bottom border of the table. Element UI adds psuedo elements to create the bottom table border that we must hide to remove
 table:not([class^='el-table__'])::before {

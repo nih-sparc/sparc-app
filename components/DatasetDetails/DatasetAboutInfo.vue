@@ -32,6 +32,15 @@
         <span v-if="index < associatedProjects.length - 1">, </span>
       </span>
     </div>
+    <div class="mb-16">
+      <span class="label4">
+        Funding Program(s): 
+      </span>
+      <span v-for="(project, index) in associatedProjects" :key="index">
+        {{ getFundingProgram(project) }}
+        <span v-if="index < associatedProjects.length - 1">, </span>
+      </span>
+    </div>
     <hr />
     <div class="mb-16">
       <span class="label4">
@@ -60,7 +69,6 @@
     <div class="mb-16"><span class="label4">Dataset DOI: </span>
       <a
           :href="doiLink"
-          target="_blank"
       >
         {{ doiLink }}
       </a>
@@ -69,7 +77,7 @@
 </template>
 
 <script>
-import { propOr} from 'ramda'
+import { pathOr, propOr } from 'ramda'
 import { mapState } from 'vuex'
 
 import DateUtils from '@/mixins/format-date'
@@ -114,6 +122,14 @@ export default {
       const fields = propOr(null, 'fields', associatedProject)
       const awardNumber = propOr(null, 'awardId', fields)
       return awardNumber !== null ? `NIH ${awardNumber}` : 'N/A'
+    },
+    /**
+     * Get the funding program name
+     * @returns {String}
+     */
+     getFundingProgram: function(associatedProject) {
+      const program = pathOr(null, ['fields','program'], associatedProject)
+      return program.length > 0 ? program[0] : 'N/A'
     },
     /**
      * Construct the project title

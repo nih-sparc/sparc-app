@@ -16,7 +16,7 @@
         name: linkLocation
       }"
     >
-      {{ linkText }} &gt;
+      {{ linkText }}
     </nuxt-link>
   </div>
 </template>
@@ -63,7 +63,7 @@ export default {
     // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
     getLinkedItem(communitySpotlightItem) {
       const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
-      const anatomicalStructure = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
+      const anatomicalStructures = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
       const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
       const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
         return item.id == spotlightTypeId
@@ -71,7 +71,7 @@ export default {
       return {
         ...linkedItem,
         spotlightType,
-        anatomicalStructure
+        anatomicalStructures
       }
     }
   }
@@ -91,15 +91,11 @@ export default {
 .btn-load-more {
   background: none;
   border: none;
-  color: $darkBlue;
+  color: $purple;
   cursor: pointer;
   display: block;
-  font-size: 1rem;
-  font-weight: 700;
   padding: 0;
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
+  font-weight: 500;
+  text-decoration: underline;
 }
 </style>

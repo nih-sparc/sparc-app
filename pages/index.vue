@@ -13,6 +13,11 @@
         class="page-hero-img"
         :src="heroImage.fields.file.url"
       />
+      <nuxt-link v-if="heroButtonLink && heroButtonLabel" class="btn-link" :to="heroButtonLink">
+        <el-button @click="heroButtonClick" class="secondary">
+          {{ heroButtonLabel }}
+        </el-button>
+      </nuxt-link>
     </page-hero>
     <div class="secondary-background">
       <featured-data :featured-data="featuredData" />
@@ -21,20 +26,23 @@
     <portal-features :features="portalFeatures" />
     <hr />
     <div class="secondary-background">
-      <projects-and-datasets :project="featuredProject" :dataset="featuredDataset" />
+      <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
     </div>
     <hr />
-    <latest-news-and-events />
-    <stay-connected />
+    <homepage-news :news="newsAndEvents" />
+    <hr />
+    <div class="secondary-background">
+      <stay-connected />
+    </div>
   </div>
 </template>
 
 <script>
 import PageHero from '@/components/PageHero/PageHero.vue'
 import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
+import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
-import LatestNewsAndEvents from '@/components/LatestNewsAndEvents/LatestNewsAndEvents.vue'
 import StayConnected from '@/components/StayConnected/StayConnected.vue'
 
 import createClient from '@/plugins/contentful.js'
@@ -42,6 +50,7 @@ import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 import { mapGetters } from 'vuex'
+import { pathOr, isEmpty } from 'ramda'
 
 const client = createClient()
 export default {
@@ -50,9 +59,9 @@ export default {
   components: {
     PageHero,
     FeaturedData,
+    HomepageNews,
     PortalFeatures,
     ProjectsAndDatasets,
-    LatestNewsAndEvents,
     StayConnected
   },
 
@@ -64,15 +73,16 @@ export default {
       client.getEntry(process.env.ctf_home_page_id)
     ]).then(async ([homepage]) => {
         let fields = getHomepageFields(homepage.fields)
-        const featuredDatasetId = homepage.fields.featuredDatasetId
-        if (featuredDatasetId != '') {
-          const url = `${process.env.discover_api_host}/datasets/${featuredDatasetId}`
-          await $axios.$get(url).then(({ name, description, banner }) => {
-            fields = { ...fields, 'featuredDataset': { 'title': name, 'description': description, 'banner': banner, 'id': featuredDatasetId } }
-          })
-        }
-        if (fields.featuredProject.fields.institution != undefined) {
-          const institutionId = fields.featuredProject.fields.institution.sys.id
+        const datasetSectionTitle = homepage.fields.datasetSectionTitle
+        const url = `${process.env.portal_api}/get_featured_dataset`
+        await $axios.$get(url).then(({ datasets }) => {
+          if (isEmpty(datasets)) {
+            return
+          }
+          fields = { ...fields, 'featuredDataset': { 'title': datasets[0].name, 'description': datasets[0].description, 'banner': datasets[0].banner, 'id': datasets[0].id }, 'datasetSectionTitle': datasetSectionTitle }
+        })
+        if (pathOr(undefined, ["featuredProject","fields","institution"], fields) != undefined) {
+          const institutionId = pathOr("", ["featuredProject","fields","institution","sys","id"], fields)
           await client.getEntry(institutionId).then(( response ) => {
             fields.featuredProject.fields = { ...fields.featuredProject.fields, 'banner': response.fields.logo.fields.file.url }
           })
@@ -89,7 +99,7 @@ export default {
   watch: {
     cognitoUserToken: function (val) {
       if (val != '') {
-        const profileComplete = this.$cookies.get('profile-complete')
+        const profileComplete = this.$cookies.get('profile-complete') || this.profileComplete
         if (!profileComplete) {
           this.$router.push("/welcome")
         }
@@ -98,7 +108,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('user', ['cognitoUserToken']),
+    ...mapGetters('user', ['cognitoUserToken', 'profileComplete']),
   },
 
   beforeMount() {
@@ -117,9 +127,10 @@ export default {
   data: () => {
     return {
       featuredData: [],
+      newsAndEvents: [],
       portalFeatures: [],
       featuredProject: {},
-      featuredDatasetId: '',
+      datasetSectionTitle: '',
       featuredDataset: {},
       heroCopy: '',
       heroHeading: '',
@@ -127,12 +138,30 @@ export default {
     }
   },
 
+  methods: {
+    heroButtonClick() {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'submit_to_sparc_button_click',
+        files: "",
+        file_name: "",
+        file_path: "",
+        file_type: "",
+        location: "Banner",
+        category: "",
+        dataset_id: "",
+        version_id: "",
+        doi: "",
+        citation_type: ""
+      })
+    }
+  },
+
   head() {
     return {
-      title: 'SPARC Portal',
-      titleTemplate: '%s - SPARC Portal',
       meta: [
         {
+          hid: 'description',
           name: 'description',
           content:
             'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
@@ -142,13 +171,17 @@ export default {
           content: 'website'
         },
         {
-          name: 'og:title',
+          hid: 'og:title',
+          property: 'og:title',
           content: 'SPARC Portal'
         },
         {
-          name: 'og:description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          hid: 'og:image',
+          property: 'og:image',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+        },
+        { hid: 'og:image:secure_url', property: 'og:image:secure_url',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
         },
         {
           name: 'og:site_name',
@@ -163,9 +196,16 @@ export default {
           content: '@sparc_science'
         },
         {
+          name: 'twitter:title',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:image',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+        },
+        {
           name: 'twitter:description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
         }
       ]
     }
@@ -176,10 +216,10 @@ export default {
 <style lang="scss" scoped>
 @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
 .page-data {
-  background-color: $background;
+  background-color: #f8faff;
 }
 .secondary-background {
-  background-color: #f8faff;
+  background-color: $background;
 }
 ::v-deep h2 {
   font-size: 1.5em;

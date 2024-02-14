@@ -14,25 +14,30 @@
     "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
     "generate-icons": "vsvg -s ./static/icons-svg -t ./static/icons-js",
     "test": "jest",
-    "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
+    "test-cypress": "cypress run",
+    "test-run-e2e": "cypress run --record"
   },
   "dependencies": {
-    "@abi-software/flatmapvuer": "0.3.10",
-    "@abi-software/gallery": "0.3.1",
-    "@abi-software/mapintegratedvuer": "0.3.9-fixes-2",
+    "@abi-software/gallery": "0.3.2",
+    "@abi-software/mapintegratedvuer": "0.6.7",
     "@abi-software/plotvuer": "^0.3.0",
-    "@abi-software/scaffoldvuer": "0.1.55",
-    "@abi-software/simulationvuer": "^0.6.5",
+    "@abi-software/simulationvuer": "0.6.5",
     "@aws-amplify/auth": "^4.4.4",
     "@aws-amplify/core": "^4.4.2",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
-    "@nih-sparc/sparc-design-system-components": "^0.26.26",
+    "@nih-sparc/sparc-design-system-components": "^0.27.4",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
+    "@nuxtjs/gtm": "^2.4.0",
+    "@nuxtjs/proxy": "^2.1.0",
+    "@nuxtjs/recaptcha": "^1.1.1",
     "@nuxtjs/robots": "^2.4.2",
     "@vue/shared": "^3.2.37",
     "algoliasearch": "^4.9.3",
     "babel-eslint": "^10.0.3",
+    "chart.js": "^2.9.4",
+    "chartjs-plugin-datalabels": "1.0.0",
     "contentful": "^7.10.0",
     "cookie-universal-nuxt": "^2.1.1",
     "core-js": "3.25.1",
@@ -43,6 +48,7 @@
     "eslint-loader": "^3.0.3",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-vue": "^6.1.2",
+    "isomorphic-dompurify": "0.19.0",
     "js-file-download": "^0.4.12",
     "marked": "^0.7.0",
     "nuxt": "^2.12.1",
@@ -54,25 +60,29 @@
     "striptags": "^3.2.0",
     "tsviewer": "^0.1.0",
     "vue": "^2.6.10",
+    "vue-chartjs": "^3.5.1",
     "vue-clipboard2": "^0.3.1",
     "vue-gtag": "1.16.1",
     "vue-infinite-loading": "^2.4.4",
     "vue-meta": "^2.3.2",
     "vue-social-sharing": "^3.0.4",
-    "vue-svgicon": "^3.2.6",
-    "vuex-persistedstate": "^4.1.0"
+    "vue-svgicon": "^3.2.6"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.5.6",
     "@types/node": "^13.7.0",
     "@vue/test-utils": "1.1.0",
     "babel-jest": "^24.1.0",
+    "cypress": "12.17.4",
     "jest": "^24.1.0",
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
     "vue-jest": "^4.0.0-0"
   },
+  "resolutions": {
+    "maplibre-gl": "2.4.0"
+  },
   "engines": {
-    "node": "12.13.1"
+    "node": "14.17.6"
   }
 }

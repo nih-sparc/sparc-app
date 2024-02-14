@@ -10,7 +10,7 @@
         <a href="https://docs.sparc.science/" target="_blank">
           Help
         </a>
-        <template v-if="showLoginFeature">
+        <template>
           <svg-icon
             name="icon-sign-in"
             class="login-logo"
@@ -43,6 +43,7 @@
             </nuxt-link>
           </div>
           <button
+            v-if="showSearchDialog"
             class="nav-main-container__mobile-search"
             @click="openMobileSearch"
             @enter="executeSearch(searchQuery)"
@@ -79,6 +80,7 @@
                   style="z-index: 100;"
                 >
                   <nuxt-link
+                    @click.native="handleClick"
                     :to="link.href"
                     :class="{ active: activeLink(link.href) }"
                     exact-active-class="active"
@@ -101,7 +103,7 @@
                     Help
                   </a>
                 </li>
-                <li v-if="showLoginFeature">
+                <li>
                   <svg-icon
                     name="icon-sign-in"
                     class="login-menu-logo"
@@ -144,7 +146,7 @@
               </div>
             </div>
           </div>
-          <div class="nav-main-container__search">
+          <div v-if="showSearchDialog" class="nav-main-container__search">
             <el-input
               v-model="searchQuery"
               type="text"
@@ -194,8 +196,8 @@ import { mapState, mapGetters } from 'vuex'
 const links = [
   {
     title: 'data',
-    displayTitle: 'Find Data',
-    href: '/data'
+    displayTitle: 'Data & Models',
+    href: '/data?type=dataset'
   },
   {
     title: 'resources',
@@ -216,6 +218,11 @@ const links = [
     title: 'about',
     displayTitle: 'About',
     href: '/about'
+  },
+  {
+    title: 'share-data',
+    displayTitle: 'Submit to SPARC',
+    href: '/share-data'
   }
 ]
 
@@ -228,9 +235,7 @@ export default {
   },
   mixins: [Request],
   mounted: async function() {
-    if (this.showLoginFeature) {
-      await this.$store.dispatch('user/fetchUser')
-    }
+    await this.$store.dispatch('user/fetchUser')
   },
   data: () => {
     return {
@@ -239,8 +244,8 @@ export default {
       mobileSearchOpen: false,
       searchQuery: '',
       searchSelect: 'data',
+      showSearchDialog: false,
       showLoginDialog: false,
-      showLoginFeature: (process.env.SHOW_LOGIN_FEATURE == 'true') ? true : false,
       searchSelectOptions: [
         {
           key: 'data',
@@ -248,8 +253,8 @@ export default {
           label: 'Data'
         },
         {
-          key: 'resources-biological',
-          value: 'resources-biological',
+          key: 'resources-databases',
+          value: 'resources-databases',
           label: 'Tools & Resources'
         },
         {
@@ -268,7 +273,7 @@ export default {
 
   computed: {
     ...mapState('user', ['cognitoUser', 'pennsieveUser']),
-    ...mapGetters('user', ['profileComplete', 'pennsieveUsername']),
+    ...mapGetters('user', ['profileComplete', 'cognitoUserToken', 'pennsieveUsername']),
     firstPath: function() {
       const path = this.$nuxt.$route.path
       // ignore the first backslash
@@ -279,11 +284,17 @@ export default {
       return path.substring(0, endIndex)
     },
     currentUrl: function() {
-      return this.$nuxt.$route.fullPath;
-    }
+      return encodeURIComponent(this.$nuxt.$route.fullPath)
+    },
   },
 
   watch: {
+    profileComplete: {
+      handler: function() {
+        this.verifyProfileComplete()
+      },
+      immediate: true
+    },
     /**
      * Watches for the route path to hide
      * mobile nav on menu click
@@ -293,6 +304,7 @@ export default {
         if (val) {
           this.menuOpen = false
         }
+        this.verifyProfileComplete()
       },
       immediate: true
     },
@@ -312,6 +324,37 @@ export default {
   },
 
   methods: {
+    handleClick(e){
+      if (e.target.href.includes('share-data')) {
+        this.$gtm.push({
+          event: 'interaction_event',
+          event_name: 'submit_to_sparc_button_click',
+          files: "",
+          file_name: "",
+          file_path: "",
+          file_type: "",
+          location: "Header",
+          category: "",
+          dataset_id: "",
+          version_id: "",
+          doi: "",
+          citation_type: ""
+        })
+      }
+    },
+    verifyProfileComplete() {
+      if (this.cognitoUserToken != "") {
+        // If the user is logged in and their profile is incomplete then make sure they complete it. Otherwise, do not allow them to visit the welcome page again
+        if (!this.profileComplete) {
+          if (this.$route.name !== 'welcome') {
+            this.$router.push("/welcome")
+          }
+        }
+        else if (this.$route.name == 'welcome') {
+          this.$router.push("/")
+        }
+      }
+    },
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
         this.$cookies.set('sign-out-redirect-url', this.$nuxt.$route.fullPath)
@@ -552,8 +595,7 @@ export default {
   display: flex;
   outline: none;
   padding-bottom: 1rem;
-  &:hover:not(:active),
-  &:focus:not(:active) {
+  &:hover:not(:active) {
     color: $app-primary-color;
   }
   @media (min-width: 64em) {
@@ -647,8 +689,7 @@ export default {
   transform: translate(12px, -8px);
   -webkit-appearance: none;
 
-  &:hover:not(:active),
-  &:focus:not(:active) {
+  &:hover:not(:active) {
     color: $app-primary-color;
   }
 
@@ -684,8 +725,7 @@ export default {
         font-weight: 500;
 
         &.active,
-        &:hover,
-        &:focus {
+        &:hover {
           border-bottom: 2px solid $median;
           color: $median;
         }

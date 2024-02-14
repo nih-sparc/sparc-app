@@ -97,7 +97,7 @@
                             datasetVersion: datasetInfo.version
                           },
                           query: {
-                            path: s3Path(scope.row.path)
+                            path: s3Path(scope.row)
                           }
                         }"
                       >
@@ -192,20 +192,20 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="hasOsparcViewer(scope)"
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
                 <sparc-tooltip
                   placement="bottom-center"
                 >
-                  <div slot="data">
-                    Open in oSPARC. More info on oSPARC can be found
-                    <a href="/help/4EFMev665H4i6tQHfoq5NM" target="_blank">
+                  <div slot="data" class="osparc-service-btn-tooltip">
+                    Open in o<sup>2</sup>S<sup>2</sup>PARC. Login is required, 
+                    <a href="/resources/4LkLiH5s4FV0LVJd3htsvH#user-accounts" target="_blank">
                       <u>here</u>
                     </a>
+                    you can find more information on how to get an account.
                   </div>
-                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                  <svg-icon slot="item" name="icon-osparc" height="1.5rem" width="1.5rem" />
                 </sparc-tooltip>
               </div>
               <div
@@ -310,9 +310,15 @@ import { mapGetters, mapState } from 'vuex'
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
-import { extractExtension } from '@/pages/data/utils'
-
 import * as path from 'path'
+
+const openableFileTypes = [
+  'pdf',
+  'text',
+  'jpeg',
+  'png',
+  'svg',
+]
 
 export const contentTypes = {
   pdf: 'application/pdf',
@@ -321,7 +327,8 @@ export const contentTypes = {
   png: 'image/png',
   svg: 'img/svg+xml',
   mp4: 'video/mp4',
-  csv: 'text/csv'
+  csv: 'text/csv',
+  msword: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 }
 
 export default {
@@ -382,7 +389,9 @@ export default {
         ? this.$route.query.path
         : this.schemaRootPath
     },
-
+    doi() {
+      return propOr('', 'doi', this.datasetInfo)
+    },
     breadcrumbs: function() {
       return compose(reject(isEmpty), split('/'))(this.path)
     },
@@ -416,6 +425,9 @@ export default {
      */
     datasetVersion: function() {
       return propOr(1, 'version', this.datasetInfo)
+    },
+    datasetId: function() {
+      return propOr("", 'id', this.datasetInfo)
     },
     /**
      * Compute URL for zipit service
@@ -453,11 +465,10 @@ export default {
      * - Vector Drawings (svg)
      */
     isFileOpenable(scope) {
-      const allowableExtensions = Object.keys(contentTypes).map(key => key)
       const fileType = scope.row.fileType.toLowerCase()
       return (
         this.isMicrosoftFileType(scope) ||
-        allowableExtensions.includes(fileType)
+        openableFileTypes.includes(fileType)
       )
     },
 
@@ -531,14 +542,6 @@ export default {
       )
     },
     /**
-     * Checks if file has a viewer in oSPARC
-     * @param {Object} scope
-     */
-    hasOsparcViewer(scope) {
-      const fileType = extractExtension(scope.row.path)
-      return Object.keys(this.osparcViewers).includes(fileType)
-    },
-    /**
      * Get contents of directory
      */
     getFiles: function() {
@@ -595,17 +598,19 @@ export default {
     },
 
     getViewFileUrl(scope) {
+      let uri = `${pathOr('', ['row', 'uri'], scope).replace("s3://", "")}`
+      let s3BucketName = uri.substring(0, uri.indexOf("/"))
       const filePath = compose(
         last,
         defaultTo([]),
-        split('s3://pennsieve-prod-discover-publish-use1/'),
+        split(`s3://${s3BucketName}/`),
         pathOr('', ['row', 'uri'])
       )(scope)
 
       const fileType = scope.row.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
 
-      const requestUrl = `${process.env.portal_api}/download?key=${filePath}&contentType=${contentType}`
+      const requestUrl = `${process.env.portal_api}/download?s3BucketName=${s3BucketName}&key=${filePath}&contentType=${contentType}`
 
       return this.$axios.$get(requestUrl).then(response => {
         const url = response
@@ -622,24 +627,55 @@ export default {
      * @param {Object} scope
      */
     openFile: function(scope) {
+      this.$gtm.push({
+        event: 'interaction_event',
+        event_name: 'view_file_in_web_browser',
+        file_name: pathOr('', ['row','name'], scope),
+        file_path: pathOr('', ['row','path'], scope),
+        file_type: pathOr('', ['row','fileType'], scope),
+        location: "",
+        category: "",
+        dataset_id: this.datasetId,
+        version_id: this.datasetVersion,
+        doi: this.doi,
+        citation_type: "",
+        files: ""
+      })
       this.getViewFileUrl(scope).then(response => {
         window.open(response, '_blank')
       })
     },
 
     executeDownload(downloadInfo) {
-      const datasetVersionRegexp = /s3:\/\/pennsieve-prod-discover-publish-use1\/(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
-      const matches = downloadInfo.uri.match(datasetVersionRegexp)
+      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
+      let params = downloadInfo.uri.replace("s3://", "")
+      let firstIndex = params.indexOf("/") + 1
+      params = params.substr(firstIndex)
+      const matches = params.match(datasetVersionRegexp)
 
       const payload = {
         paths: [matches.groups.filePath],
         datasetId: matches.groups.datasetId,
-        version: matches.groups.version
+        version: this.datasetVersion
       }
 
       this.zipData = JSON.stringify(payload, undefined)
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
+        this.$gtm.push({
+          event: 'interaction_event',
+          event_name: 'download_dataset_files',
+          files: [propOr('', 'paths', payload)[0]],
+          file_name: "",
+          file_path: "",
+          file_type: "",
+          location: "",
+          category: "",
+          dataset_id: this.datasetId,
+          version_id: this.datasetVersion,
+          doi: this.doi,
+          citation_type: ""
+        })
       })
     },
 
@@ -651,9 +687,9 @@ export default {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       return {
-        name: 'datasets-scaffoldviewer-id',
+        name: 'maps',
         params: {},
-        query: { dataset_id: id, dataset_version: version, file_path: scope.row.path }
+        query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scope.row.path }
       }
     },
 
@@ -682,7 +718,6 @@ export default {
 
         // Create paths for fetching the files from 'sparc-api/s3-resource/'
         const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.relative.path[0]}`
-        const s3Path = `${id}/${version}/${scaffoldPath}`
 
         // View paths need to be relative
         const viewPath = path.relative(
@@ -690,9 +725,9 @@ export default {
           scope.row.path
         )
         return {
-          name: 'datasets-scaffoldviewer-id',
+          name: 'maps',
           params: {},
-          query: { scaffold: s3Path, viewURL: viewPath }
+          query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scaffoldPath, viewURL: viewPath }
         }
       }
       return {}
@@ -725,7 +760,7 @@ export default {
           datasetVersion: this.datasetInfo.version
         },
         query: {
-          path: this.s3Path(scope.row.path)
+          path: s3Path(scope.row)
         }
       }
 
@@ -816,10 +851,9 @@ export default {
          return -1 
       return 0; 
     },
-    s3Path(path) {
-      // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
-      path = path.replaceAll(' ', '_')
-      return path.replaceAll(',', '_')
+    s3Path(file) {
+      const uri = file.uri
+      return uri.substring(uri.indexOf('files/'))
     },
   }
 }
@@ -906,6 +940,16 @@ export default {
       padding: 0 16px;
       text-overflow: unset;
     }
+  }
+}
+.osparc-service-btn-tooltip {
+  sup, sub {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+  }
+  sub {
+    top: 0.4em;
   }
 }
 </style>

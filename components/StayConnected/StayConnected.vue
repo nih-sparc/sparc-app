@@ -1,19 +1,21 @@
 <template>
-  <div class="container pb-32">
-    <div class="heading2 subheader mb-16">Stay Connected</div>
+  <div class="container py-32">
+    <h2 class="heading2 subheader mb-32">Stay Connected</h2>
     <div class="subpage py-16">
       <el-row :gutter="32">
         <el-col :xs="24" :sm="12" class="newsletter-wrap">
           <div class="heading2">Sign up for the SPARC Newsletter</div>
           <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
-          <newsletter-form />
+          <newsletter-form
+            location="stay connected"
+          />
         </el-col>
         <el-col class="office-hours-column" :xs="24" :sm="12">
           <div class="heading2">Open Office Hours</div>
           <div class="body1 mb-16 mt-8">Join one of our weekly office hours to ask questions and learn more from the SPARC Data Resource Center Team.</div>
-          <a href="https://docs.sparc.science/docs/sparc-drc-open-office-hours">
+          <a href="https://docs.sparc.science/docs/sparc-drc-open-office-hours" target="_blank">
             <el-button class="secondary">
-            Find out more
+              Find out more
             </el-button>
           </a>
         </el-col>
@@ -50,7 +52,7 @@ export default {
   margin: 0 !important;
 }
 .subheader {
-  font-weight: 100;
+  text-align: center;
 }
 .office-hours-column {
   border-left: 2px solid $lineColor2;

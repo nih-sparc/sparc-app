@@ -31,7 +31,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
-import ToolsAndResourcesForm from '@/components/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
+import ToolsAndResourcesForm from '@/components/ContactUsForms/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
 
 export default {
   name: 'SubmitToolsAndResourcesPage',
@@ -115,14 +115,13 @@ h2 {
     color: $lightGrey;
   }
 }
-::v-deep .el-input__inner, ::v-deep .el-textarea__inner {
+::v-deep .el-textarea__inner {
   border-color: $lightGrey;
   border-radius: 4px;
   padding-right: 1rem;
-}
-::v-deep .el-textarea__inner {
   font-family: inherit;
   padding-top: .75rem;
+  padding-bottom: .75rem;
 }
 ::v-deep .input-reason {
   max-width: 36rem;

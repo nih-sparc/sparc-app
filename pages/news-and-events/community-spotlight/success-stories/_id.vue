@@ -12,7 +12,10 @@
       <div class="subpage">
         <el-row :gutter="38">
           <el-col :sm="13">
-            <div class="content" v-html="parseMarkdown(entry.story)" />
+            <div
+              class="content"
+              v-html="parseMarkdown(entry.story)"
+            />
           </el-col>
           <el-col :sm="11">
             <div class="banner-wrapper">
@@ -175,6 +178,23 @@ export default {
             name: 'news-and-events-community-spotlight-success-stories'
           }
         }
+      ]
+    }
+  },
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.entry.summary ? this.entry.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
       ]
     }
   },

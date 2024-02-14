@@ -1,5 +1,7 @@
 import marked from 'marked'
 import youtubeEmbeddedSrc from '../youtube-embedded-src'
+import DOMPurify from 'isomorphic-dompurify'
+import axios from 'axios'
 
 /**
  * Modify the link renderer to add `target="blank"`
@@ -21,14 +23,18 @@ export const isAnchor = str => {
 export const isInternalLink = str => {
   return isAnchor(str)
     ? true
-    : str.includes(process.env.ROOT_URL) || str.startsWith('/')
+    : str.includes(process.env.ROOT_URL) || str.includes("sparc.science") || str.startsWith('/')
+}
+
+// docs.sparc.science is considered an internal link, but should always open in new tab
+export const opensInNewTab = link => {
+  return !isInternalLink(link)
 }
 
 renderer.link = function(href, title, text) {
   const html = linkRenderer.call(renderer, href, title, text)
-  const isInternal = isInternalLink(href)
 
-  return isInternal
+  return !opensInNewTab(href) 
     ? html
     : html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
 }
@@ -57,10 +63,7 @@ renderer.image = function(href, title, text) {
   }
 }
 
-marked.setOptions({
-  sanitize: true,
-  renderer
-})
+marked.setOptions({ renderer })
 
 let renderYoutube = function(href, title) {
   // for further reading on fluid sizing of videos: https://css-tricks.com/fluid-width-video/
@@ -85,8 +88,9 @@ export default {
      * @param {String} markdown
      * @returns {HTML}
      */
-    parseMarkdown: function(markdown = '') {
-      return marked(markdown)
+    parseMarkdown: function(markdown = '', purifyOptions={}) {
+      purifyOptions = {...purifyOptions, ADD_ATTR: ['target']}
+      return DOMPurify.sanitize(marked(markdown), purifyOptions)
     }
   }
 }

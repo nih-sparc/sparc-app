@@ -27,7 +27,7 @@
         <table class="property-table">
           <tr v-if="scope.row.fields.projectSection">
             <td class="property-name-column">
-              Anatomical Focus
+              Focus
             </td>
             <td v-html="highlightMatches(scope.row.fields.projectSection.fields.title, $route.query.search)"/>
           </tr>
@@ -45,9 +45,17 @@
               {{ scope.row.fields.institution.fields.name }}
             </td>
           </tr>
+          <tr v-if="scope.row.fields.program.length > 0">
+            <td class="property-name-column">
+              Funding Program
+            </td>
+            <td 
+              v-html="highlightMatches(scope.row.fields.program[0], $route.query.search)"
+            />
+          </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">
-              NIH Award
+              Award
             </td>
             <td>
               <a :href="getNihReporterUrl(scope)" target="_blank">

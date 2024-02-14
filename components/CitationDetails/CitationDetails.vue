@@ -10,7 +10,7 @@
       option of different formats, under the Cite tab of each dataset page. For
       more Information, please see our
       <a
-        href="https://sparc.science/help/1lmX4FWezRPTCOfGsBATnt"
+        href="https://docs.sparc.science/docs/instructions-for-sparc-investigators-to-cite-their-datasets-in-manuscripts-1"
         target="_blank"
       >
         Help page
@@ -134,6 +134,20 @@ export default {
      */
     handleCitationCopy: function(citationType) {
       this.$copyText(citationType.citationText).then(() => {
+        this.$gtm.push({
+          event: 'interaction_event',
+          event_name: 'copy_citation_button_click',
+          dataset_id: this.$route.params.datasetId,
+          citation_type: citationType.label,
+          category: "",
+          version_id: "",
+          doi: "",
+          location: "",
+          files: "",
+          file_name: "",
+          file_path: "",
+          file_type: "",     
+        })
         this.$message(
           successMessage(
             `${citationType.label} citation copied to clipboard.`
