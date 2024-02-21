@@ -192,6 +192,54 @@
                 </sparc-tooltip>
               </div>
               <div
+                v-if="isBiolucidaViewFile(scope)"
+                class="circle"
+                @click="openViewerFile(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open Biolucida Viewer"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
+                v-if="isPlotViewFile(scope)"
+                class="circle"
+                @click="openViewerFile(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open Plot Viewer"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
+                v-if="isVideoViewFile(scope)"
+                class="circle"
+                @click="openViewerFile(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open Video Viewer"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
+                v-if="isSegmentationViewFile(scope)"
+                class="circle"
+                @click="openViewerFile(scope)"
+              >
+                <sparc-tooltip
+                  placement="bottom-center"
+                  content="Open Segmentation Viewer"
+                >
+                  <svg-icon slot="item" name="icon-view" height="1.5rem" width="1.5rem" />
+                </sparc-tooltip>
+              </div>
+              <div
                 class="circle"
                 @click="setDialogSelectedFile(scope)"
               >
@@ -209,9 +257,9 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="isTimeseriesFile(scope.row)"
+                v-if="isTimeseriesViewFile(scope.row)"
                 class="circle"
-                @click="openTimeseriesView(scope)"
+                @click="openViewerFile(scope)"
               >
                 <sparc-tooltip
                   placement="bottom-center"
@@ -481,7 +529,7 @@ export default {
       this.selected = val
     },
 
-    isTimeseriesFile(file) {
+    isTimeseriesViewFile(file) {
       const type = propOr('', 'packageType', file)
       return type === 'TimeSeries' && process.env.SHOW_TIMESERIES_VIEWER
     },
@@ -751,22 +799,6 @@ export default {
         this.$router.push(scaffoldViewLink)
       }
     },
-
-    openTimeseriesView: function(scope) {
-      const route = {
-        name: 'file-datasetId-datasetVersion',
-        params: {
-          datasetId: this.datasetInfo.id,
-          datasetVersion: this.datasetInfo.version
-        },
-        query: {
-          path: s3Path(scope.row)
-        }
-      }
-
-      this.$router.push(route)
-    },
-
     /**
      * Checks if file is a scaffold view port
      * @param {Object} scope
@@ -803,7 +835,80 @@ export default {
       }
       return false
     },
+    isBiolucidaViewFile: function (scope) {
+      if (
+        this.datasetScicrunch &&
+        (this.datasetScicrunch['biolucida-2d'] || this.datasetScicrunch['biolucida-3d'])
+      ) {
+        let biolucidaObjects = this.datasetScicrunch['biolucida-2d'].concat(this.datasetScicrunch['biolucida-3d']).filter((item) => item !== undefined)
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for (let i = 0; i < biolucidaObjects.length; i++) {
+          if (biolucidaObjects[i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
+    },
+    isPlotViewFile: function (scope) {
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['abi-plot']
+      ) {
+        let plotObjects = this.datasetScicrunch['abi-plot']
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for (let i = 0; i < plotObjects.length; i++) {
+          if (plotObjects[i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
+    },
+    isVideoViewFile: function (scope) {
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['video']
+      ) {
+        let videoObjects = this.datasetScicrunch['video']
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for (let i = 0; i < videoObjects.length; i++) {
+          if (videoObjects[i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
+    },
+    isSegmentationViewFile: function (scope) {
+      if (
+        this.datasetScicrunch &&
+        this.datasetScicrunch['mbf-segmentation']
+      ) {
+        let segmentationObjects = this.datasetScicrunch['mbf-segmentation']
+        let shortened = scope.row.path
+        shortened = shortened.replace('files/', '')
+        for (let i = 0; i < segmentationObjects.length; i++) {
+          if (segmentationObjects[i].dataset.path === shortened)
+            return true
+        }
+      }
+      return false
+    },
+    openViewerFile(scope) {
+      const route = {
+        name: 'file-datasetId-datasetVersion',
+        params: {
+          datasetId: this.datasetInfo.id,
+          datasetVersion: this.datasetInfo.version
+        },
+        query: {
+          path: this.s3Path(scope.row)
+        }
+      }
 
+      this.$router.push(route)
+    },
     /**
      * Compute if the file is an image
      * @returns {Boolean}
