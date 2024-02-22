@@ -840,7 +840,9 @@ export default {
         this.datasetScicrunch &&
         (this.datasetScicrunch['biolucida-2d'] || this.datasetScicrunch['biolucida-3d'])
       ) {
-        let biolucidaObjects = this.datasetScicrunch['biolucida-2d'].concat(this.datasetScicrunch['biolucida-3d']).filter((item) => item !== undefined)
+        const biolucida2dObjects = this.datasetScicrunch['biolucida-2d']
+        const biolucida3dObjects = this.datasetScicrunch['biolucida-3d']
+        const biolucidaObjects = biolucida2dObjects == undefined ? biolucida3dObjects : biolucida2dObjects.concat(biolucida3dObjects).filter((item) => item !== undefined)
         let shortened = scope.row.path
         shortened = shortened.replace('files/', '')
         for (let i = 0; i < biolucidaObjects.length; i++) {
