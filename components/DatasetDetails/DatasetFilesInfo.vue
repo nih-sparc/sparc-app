@@ -140,7 +140,7 @@
         </span>
         <span class="dataset-link inline">
           <a
-            href="https://docs.sparc.science/docs/accessing-public-datasets"
+            href="https://docs.sparc.science/docs/navigating-a-sparc-dataset"
             class="dataset-link"
           >
             How to navigate datasets

@@ -164,7 +164,7 @@ export default {
           hid: 'description',
           name: 'description',
           content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+            'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
         },
         {
           name: 'og:type',
@@ -205,7 +205,7 @@ export default {
         },
         {
           name: 'twitter:description',
-          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
         }
       ]
     }

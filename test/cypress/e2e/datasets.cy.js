@@ -271,7 +271,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.files-table-table .el-dialog  .svg-icon').click({ force: true });
 
           // Check for files breadcrumb
-          cy.get('.inline > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
+          cy.get('.inline > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/navigating-a-sparc-dataset');
           cy.get('.breadcrumb-link').should('have.class', 'breadcrumb-link');
           cy.get('.breadcrumb-link').should('have.attr', 'href').and('contain', 'datasetDetailsTab=files&path=files');
           cy.get('.el-table__body-wrapper > .el-table__body > tbody > .el-table__row').then(($table) => {

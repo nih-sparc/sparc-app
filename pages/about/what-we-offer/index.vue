@@ -98,7 +98,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.summary ? this.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: this.summary ? this.summary : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
         },
       ]
     }
