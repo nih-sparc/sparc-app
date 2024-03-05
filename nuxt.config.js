@@ -126,7 +126,9 @@ const config = {
     SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
     SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
     SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
-    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS'
+    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
+    SPARC_ORG_ID: process.env.SPARC_ORG_ID || 'N:organization:618e8dd9-f8d2-4dc4-9abb-c6aaab2e78a0',
+    REJOIN_ORG_ID: process.env.REJOIN_ORG_ID || 'N:organization:f08e188e-2316-4668-ae2c-8a20dc88502f'
   },
 
   serverMiddleware: [

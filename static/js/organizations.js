@@ -4,13 +4,12 @@ import rejoinLogo from '@/assets/rejoin.jpg'
 const organizationsData = [
   {
     name: 'SPARC',
-    id: 'N:organization:df3d6291-7fc7-4bb4-b916-5eca3a026380', // Test SPARC id
-    //id: 'N:organization:618e8dd9-f8d2-4dc4-9abb-c6aaab2e78a0',
+    id: process.env.SPARC_ORG_ID,
     logo: sparcLogo
   },
   {
-    name: 'REJOIN',
-    id: '',
+    name: 'RE-JOIN',
+    id: process.env.REJOIN_ORG_ID,
     logo: rejoinLogo
   }
 ]
