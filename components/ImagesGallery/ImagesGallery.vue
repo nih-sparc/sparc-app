@@ -285,7 +285,7 @@ export default {
     this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', newDatasetInfo)
 
         // Get all timeseries files (those with an '.edf' extension)
-    const timeseriesData = process.env.SHOW_TIMESERIES_VIEWER
+    const timeseriesData = process.env.SHOW_TIMESERIES_VIEWER == 'true'
     ? await this.$axios.$get(`${process.env.discover_api_host}/search/files?fileType=edf&datasetId=${this.datasetId}`)
         .then(({ files }) => {
           let data = []

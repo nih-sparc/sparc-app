@@ -118,7 +118,7 @@ const config = {
     PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
     ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
     GOOGLE_ANALYTICS_UA: process.env.GOOGLE_ANALYTICS_UA,
-    SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || false,
+    SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || 'false',
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
     METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
@@ -126,7 +126,9 @@ const config = {
     SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
     SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
     SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
-    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS'
+    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
+    SPARC_ORG_ID: process.env.SPARC_ORG_ID || 'N:organization:618e8dd9-f8d2-4dc4-9abb-c6aaab2e78a0',
+    REJOIN_ORG_ID: process.env.REJOIN_ORG_ID || 'N:organization:f08e188e-2316-4668-ae2c-8a20dc88502f'
   },
 
   serverMiddleware: [

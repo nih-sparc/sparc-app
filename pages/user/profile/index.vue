@@ -54,19 +54,20 @@
           <div class="resource-container body1">
             Pennsieve: 
             <span class="label4"><b>You are registered.</b></span>
-            <div class="body4">
+            <div class="body4 mb-8">
               The Pennsieve Data Management Platform provides a scalable cloud-based solution for managing, analyzing, and sharing scientific datasets.
             </div>
-            <div class="mt-8">
-              <a href="https://app.pennsieve.io/#" target="_blank">
-                <el-button class='secondary'>
-                  Launch Pennsieve <svg-icon icon="icon-open" height="16" width="16" />
-                </el-button>
-              </a>
-            </div>
+            <template v-for="organization in organizations">
+              <repository-card
+                :key="organization.id"
+                :thumbnailUrl="organization.logo"
+                :description="getOrganizationDescription(organization)"
+                :status="organization.status"
+                buttonLink="https://pennsieve.io"
+              />
+            </template>
           </div>
         </div>
-
         <div class="section heading2 p-16 mt-16">
           <div class="datasets-container-title">
             <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
@@ -202,6 +203,8 @@ import AuthenticatedMixin from '@/mixins/authenticated/index'
 import DatasetSubmissionModal from '@/components/DatasetSubmissionModal/DatasetSubmissionModal.vue'
 import createAlgoliaClient from '@/plugins/algolia.js'
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal.vue'
+import RepositoryCard from '@/components/RepositoryCard/RepositoryCard.vue'
+import { getOrganizationInfo, getOrganizationStatus } from '@/static/js/organizations'
 
 const algoliaClient = createAlgoliaClient()
 const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
@@ -214,7 +217,8 @@ export default {
     ConfirmationModal,
     DatasetSubmissionModal,
     Gallery,
-    PageHero
+    PageHero,
+    RepositoryCard
   },
 
   async asyncData({env, $axios}) {
@@ -259,6 +263,7 @@ export default {
       showDeleteConfirmationModal: false,
       submissionToRetract: '',
       showRetractConfirmationModal: false,
+      organizations: [],
     }
   },
 
@@ -311,11 +316,12 @@ export default {
       immediate: true
     },
     orcid: {
-      handler: async function(newValue) {
+      handler: function(newValue) {
         if (newValue && newValue !== '') {
           this.fetchPublishedDatasets(newValue)
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
+          this.fetchOrganizations()
         }
       },
       immediate: true
@@ -385,6 +391,28 @@ export default {
       } catch (error) {
         return 0
       }
+    },
+    async fetchOrganizations() {
+      const headers = { 'Authorization': `Bearer ${this.userToken}` }
+      const url = `${process.env.LOGIN_API_URL}/organizations?includeAdmins=false`
+      this.organizations = await this.$axios.$get(url, { headers }).then(response => {
+        const orgsResponse = propOr([], 'organizations', response)
+        let orgs = []
+        orgsResponse.forEach(org => {
+          const organization = propOr({}, 'organization', org)
+          const organizationInfo = getOrganizationInfo(organization.id)
+          if (organizationInfo != null) {
+            orgs.push({ ...organizationInfo, status: getOrganizationStatus(org) })
+          }
+        })
+        return orgs
+      }).catch(() => {
+        this.hasError = true
+        return []
+      })
+    },
+    getOrganizationDescription(org) {
+      return `Open the ${org.name} workspace in Pennsieve`
     },
     getDownloadsCount(id) {
       let numDownloads = 0
