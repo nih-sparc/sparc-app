@@ -57,15 +57,17 @@
             <div class="body4 mb-8">
               The Pennsieve Data Management Platform provides a scalable cloud-based solution for managing, analyzing, and sharing scientific datasets.
             </div>
-            <template v-for="organization in organizations">
-              <repository-card
-                :key="organization.id"
-                :thumbnailUrl="organization.logo"
-                :description="getOrganizationDescription(organization)"
-                :status="organization.status"
-                buttonLink="https://pennsieve.io"
-              />
-            </template>
+            <div class="org-container">
+              <template v-for="organization in organizations">
+                <repository-card
+                  :key="organization.id"
+                  :thumbnailUrl="organization.logo"
+                  :description="getOrganizationDescription(organization)"
+                  :status="organization.status"
+                  buttonLink="https://pennsieve.io"
+                />
+              </template>
+            </div>
           </div>
         </div>
         <div class="section heading2 p-16 mt-16">
@@ -587,6 +589,9 @@ a {
 }
 .confirmation-body {
   text-align: center;
+}
+.org-container {
+  display: flex;
 }
 ::v-deep .popover {
   background-color: #f9f2fc;
