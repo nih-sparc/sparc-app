@@ -202,7 +202,7 @@ export default {
       packageType = file.packageType
     }
     const hasTimeseriesViewer = packageType === 'TimeSeries'
-    if (hasTimeseriesViewer && process.env.SHOW_TIMESERIES_VIEWER) {
+    if (hasTimeseriesViewer && process.env.SHOW_TIMESERIES_VIEWER == 'true') {
       redirect(`/datasets/timeseriesviewer?dataset_id=${route.params.datasetId}&dataset_version=${route.params.datasetVersion}&file_path=${filePath}`)
     }
 
