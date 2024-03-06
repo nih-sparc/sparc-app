@@ -3,24 +3,24 @@
     <span class="flex">
       Filters applied
       <el-popover
-          title="How do filters work?"
-          width="165"
-          trigger="hover"
-          :append-to-body=false
-          popper-class="popover"
-          >
-          <svg-icon slot="reference" class="purple-fill" icon="icon-help" width="26" height="26" />
-          <div >
-            <strong>Within categories:</strong> OR 
-            <br/>
-            example: 'heart' OR 'colon'
-            <br/>
-            <br/>
-            <strong>Between categories:</strong> AND
-            <br/>
-            example: 'rat' AND 'lung'
-          </div>
-        </el-popover>
+        title="How do filters work?"
+        width="165"
+        trigger="hover"
+        :append-to-body=false
+        popper-class="popover"
+      >
+        <svg-icon slot="reference" class="purple-fill" icon="icon-help" width="26" height="26" />
+        <div >
+          <strong>Within categories:</strong> OR 
+          <br/>
+          example: 'heart' OR 'colon'
+          <br/>
+          <br/>
+          <strong>Between categories:</strong> AND
+          <br/>
+          example: 'rat' AND 'lung'
+        </div>
+      </el-popover>
       <el-link @click="deselectAllFacets">Reset all</el-link>
     </span>
     <hr />
