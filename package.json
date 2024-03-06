@@ -26,7 +26,7 @@
     "@aws-amplify/auth": "^4.4.4",
     "@aws-amplify/core": "^4.4.2",
     "@miyaoka/nuxt-twitter-widgets-module": "^0.0.1",
-    "@nih-sparc/sparc-design-system-components": "^0.27.5",
+    "@nih-sparc/sparc-design-system-components": "^0.27.6",
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/google-analytics": "^2.2.3",
     "@nuxtjs/gtm": "^2.4.0",
