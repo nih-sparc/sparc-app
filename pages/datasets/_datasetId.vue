@@ -196,7 +196,7 @@ const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName,
   const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
 
   const datasetDetails =
-    (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
+    (datasetTypeName == 'dataset' || datasetTypeName == 'scaffold' || datasetTypeName == 'computational model')
       ? await $axios.$get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
