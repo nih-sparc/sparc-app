@@ -128,7 +128,9 @@ const config = {
     SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
     GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
     SPARC_ORG_ID: process.env.SPARC_ORG_ID || 'N:organization:618e8dd9-f8d2-4dc4-9abb-c6aaab2e78a0',
-    REJOIN_ORG_ID: process.env.REJOIN_ORG_ID || 'N:organization:f08e188e-2316-4668-ae2c-8a20dc88502f'
+    REJOIN_ORG_ID: process.env.REJOIN_ORG_ID || 'N:organization:f08e188e-2316-4668-ae2c-8a20dc88502f',
+    PRECISION_ORG_ID: process.env.PRECISION_ORG_ID || 'N:organization:98d6e84c-9a27-48f8-974f-93c0cca15aae',
+    PENNSIEVE_URL: process.env.PENNSIEVE_URL || 'https://app.pennsieve.io'
   },
 
   serverMiddleware: [
