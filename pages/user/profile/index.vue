@@ -64,7 +64,7 @@
                   :thumbnailUrl="organization.logo"
                   :description="getOrganizationDescription(organization)"
                   :status="organization.status"
-                  buttonLink="https://pennsieve.io"
+                  :buttonLink="getButtonLink(organization)"
                 />
               </template>
             </div>
@@ -416,6 +416,9 @@ export default {
     getOrganizationDescription(org) {
       return `Open the ${org.name} workspace in Pennsieve`
     },
+    getButtonLink(org) {
+      return `${process.env.PENNSIEVE_URL}/${org.id}/datasets`
+    },
     getDownloadsCount(id) {
       let numDownloads = 0
       this.downloadsSummary.filter(download => download.datasetId == id).forEach(item => {
@@ -592,6 +595,9 @@ a {
 }
 .org-container {
   display: flex;
+  @media (max-width: 49em) {
+    flex-direction: column;
+  }
 }
 ::v-deep .popover {
   background-color: #f9f2fc;

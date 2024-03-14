@@ -1,24 +1,37 @@
 <template>
-  <el-card :style="{ border: 'none', maxWidth: width + 'rem' }" class="card centered">
-    <div class="image-container">
-      <img class="thumbnail" :src="thumbnailUrl" alt="thumbnail loading ..." />
+  <el-card
+    class="mr-8"
+    :style="{ border: 'none', maxWidth: width + 'rem', minWidth: width + 'rem' }" 
+    :body-style="{ 
+      'height': '90%',
+      'display': 'flex',
+      'flex-direction': 'column',
+      'justify-content': 'space-between',
+      'text-align': 'center' }" 
+  >
+    <div>
+      <div class="image-container">
+        <img class="thumbnail" :src="thumbnailUrl" alt="thumbnail loading ..." />
+      </div>
+      <div class="body1">
+        {{description}}
+      </div>
     </div>
-    <div class="body1 mb-16">
-      {{description}}
+    <div class="status-container">
+      <div class="body1 mb-16">
+        Status: <b>{{ status }}</b>
+      </div>
+      <a :href="buttonLink" target="_blank">
+        <el-button class='secondary'>
+          Launch Pennsieve <svg-icon icon="icon-open" height="16" width="16" />
+        </el-button>
+      </a>
     </div>
-    <div class="body1 mb-16">
-      Status: <b>{{ status }}</b>
-    </div>
-    <a :href="buttonLink" target="_blank">
-      <el-button class='secondary'>
-        Launch Pennsieve <svg-icon icon="icon-open" height="16" width="16" />
-      </el-button>
-    </a>
   </el-card>
 </template>
 <script>
 export default {
-  name: 'RespositoryCard',
+  name: 'RepositoryCard',
   props: {
     width: {
       type: Number,
@@ -44,14 +57,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.centered {
-  text-align: center;
-}
 .image-container {
-  max-width: 75%;
   margin: auto;
   img {
+    height: 5rem;
     width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
   }
 }
 </style>

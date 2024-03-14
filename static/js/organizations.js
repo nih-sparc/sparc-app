@@ -1,5 +1,6 @@
 import sparcLogo from '@/assets/logo-sparc-wave-primary.svg'
 import rejoinLogo from '@/assets/rejoin.jpg'
+import precisionLogo from '@/assets/heal.png'
 
 const organizationsData = [
   {
@@ -11,6 +12,11 @@ const organizationsData = [
     name: 'RE-JOIN',
     id: process.env.REJOIN_ORG_ID,
     logo: rejoinLogo
+  },
+  {
+    name: 'HEAL PRECISION',
+    id: process.env.PRECISION_ORG_ID,
+    logo: precisionLogo
   }
 ]
 
@@ -21,11 +27,11 @@ export const getOrganizationInfo = id => {
 
 export const getOrganizationStatus = org => {
   if (org.isOwner)
-    return 'Owner Access'
+    return 'Owner'
   else if (org.isAdmin)
-    return 'Admin Access'
+    return 'Admin'
   else if (org.isGuest)
-    return 'Guest Access'
+    return 'Guest'
   else
-    return 'Read Access'
+    return 'Collaborator'
 }
