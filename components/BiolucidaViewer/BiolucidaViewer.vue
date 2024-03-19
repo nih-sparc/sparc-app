@@ -86,12 +86,42 @@ export default {
       default: () => {}
     },
   },
-
+  data() {
+    return {
+      webNeurolucidaLink: '',
+    }
+  },
+  async fetch() {
+    try {
+      const image_identifier = this.data.biolucida_image_id
+      const [
+        view_info,
+        image_info,
+      ] = await Promise.all([
+        biolucida.decodeViewParameter(this.viewId),
+        biolucida.getImageInfo(image_identifier),
+      ])
+      const BASE_URL = `blv:${process.env.BL_SERVER_URL}`
+      const queryParameters = `image_id=${image_identifier}&type=${view_info[1]}${view_info[2]}&filename=${image_info.name}`
+      const webNeurolucidaLink = BASE_URL + '/image_view?' + queryParameters
+      this.webNeurolucidaLink = webNeurolucidaLink
+    } catch (e) {
+      console.log(e)
+    }
+  },
   mounted() {
     window.addEventListener('message', this.receiveMessage)
   },
   beforeDestroy() {
     window.removeEventListener('message', this.receiveMessage)
+  },
+  computed: {
+    viewId() {
+      return this.data.share_link.replace(
+        process.env.BL_SHARE_LINK_PREFIX,
+        ''
+      )
+    },
   },
   methods: {
     launchViewer() {
@@ -102,7 +132,7 @@ export default {
         .fetchNeurolucida360Url({
           applicationRequest: 'NL360',
           userID: 'SPARCPortal',
-          sessionContext: this.data.web_neurolucida_link
+          sessionContext: this.webNeurolucidaLink
         })
         .then(response => {
           if (response.data.url) {
