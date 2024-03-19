@@ -186,28 +186,11 @@ const getAssociatedProjects = async (sparcAwardNumbers) => {
  * @param {Function} $axios
  * @returns {Object}
  */
-const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName, $axios) => {
-  const url = `${process.env.discover_api_host}/datasets/${datasetId}`
+const getDatasetDetails = async (datasetId, version, $axios) => {
+  const url = `${process.env.portal_api}/sim/dataset/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
-  if (userToken) {
-    datasetUrl += `?api_key=${userToken}`
-  }
 
-  const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
-
-  const datasetDetails =
-    (datasetTypeName == 'dataset' || datasetTypeName == 'scaffold' || datasetTypeName == 'computational model')
-      ? await $axios.$get(datasetUrl).catch((error) => { 
-          const status = pathOr('', ['data', 'status'], error.response)
-          if (status === 'UNPUBLISHED') {
-            const details = error.response.data
-            return {
-              isUnpublished: true,
-              ...details
-            }
-          }
-        })
-      : await $axios.$get(simulationUrl).catch((error) => { 
+  const datasetDetails = await $axios.$get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
             const details = error.response.data
@@ -275,7 +258,7 @@ export default {
 
   mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios, store, app, error }) {
+  async asyncData({ route, $axios, store, error }) {
     let tabsData = clone(tabs)
 
     const datasetId = pathOr('', ['params', 'datasetId'], route)
@@ -283,7 +266,6 @@ export default {
     const datasetFacetsData = await getDatasetFacetsData(route)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
-    const userToken = app.$cookies.get('user-token') || store.getters.cognitoUserToken
 
     const errorMessages = []
 
@@ -291,8 +273,6 @@ export default {
       getDatasetDetails(
         datasetId,
         route.params.version,
-        userToken,
-        datasetTypeName,
         $axios
       ),
       getDatasetVersions(datasetId, $axios),
