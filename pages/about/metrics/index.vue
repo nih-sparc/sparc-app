@@ -44,7 +44,7 @@ import {
   propEq,
   propOr
 } from 'ramda'
-import { getPreviousMonth } from '@/utils/common'
+import { getPreviousDate } from '@/utils/common'
 import ErrorMessages from '@/mixins/error-messages'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 
@@ -143,16 +143,18 @@ export default {
     Error
   },
 
-  async asyncData({ redirect, env, $axios, error }) {
-    const month = new Date().getMonth()
-    const year = new Date().getFullYear()
+  async asyncData({ $axios, error }) {
+    const currentMonth = new Date().getMonth() + 1
+    const currentYear = new Date().getFullYear()
+    // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
+    const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
     let metricsData = undefined
     try {
-      metricsData = await fetchMetrics($axios, month, year)
+      metricsData = await fetchMetrics($axios, lastMonthsDate.month, lastMonthsDate.year)
     } catch (e) {
-      const lastMonthsDate = getPreviousMonth()
-      metricsData = await fetchMetrics($axios, lastMonthsDate.month, lastMonthsDate.year).catch(() => {
-        error({ statusCode: 400, message: ErrorMessages.methods.metrics(), display: true, error: e} )
+      const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
+      metricsData = await fetchMetrics($axios, monthBeforeLastDate.month, monthBeforeLastDate.year).catch(() => {
+        error({ statusCode: 400, message: ErrorMessages.methods.metrics(), display: true, error: e } )
       })
     }
     return {

@@ -71,11 +71,9 @@ export const extractS3BucketName = uri => {
   return undefined
 }
 
-export const getPreviousMonth = () => {
-  const currentDate = new Date()
-  const currentMonth = currentDate.getMonth() + 1
+export const getPreviousDate = (currentMonth, currentYear) => {
   const previousMonth = (currentMonth === 1) ? 12 : currentMonth - 1
-  const previousYear = (currentMonth === 1) ? currentDate.getFullYear() - 1 : currentDate.getFullYear()
+  const previousYear = (currentMonth === 0) ? currentYear - 1 : currentYear
 
   return {
     year: previousYear,
