@@ -526,7 +526,9 @@ export default {
         const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
           items.push(
-            ...Array.from(biolucidaData.dataset_images, dataset_image => {
+            ...Array.from(biolucidaData.dataset_images.filter((obj, index) => {
+              return index === biolucidaData.dataset_images.findIndex(o => obj.image_id === o.image_id);
+            }), dataset_image => {
               let filePath = ""
               biolucida2DItems.forEach(biolucida2DItem => {
                 if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
