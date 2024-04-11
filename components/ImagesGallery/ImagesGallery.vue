@@ -808,6 +808,9 @@ export default {
           const name = response.name
           if (name) {
             this.$set(item, 'title', name.substring(0, name.lastIndexOf('.')))
+            if (name.lastIndexOf('.') === -1) {
+              this.$set(item, 'title', name)
+            }
           }
         },
         reason => {
