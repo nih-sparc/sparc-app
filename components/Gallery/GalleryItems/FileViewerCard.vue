@@ -104,7 +104,7 @@ export default {
   },
   computed: {
     isReady() {
-      return this.data.title && (this.thumbnail || this.useDefaultImg) && (this.data.link || this.data.userData)
+      return (this.thumbnail || this.useDefaultImg) && (this.data.link || this.data.userData)
     },
     imageHeight() {
       return this.showCardDetails ? this.height * 0.525 : this.height
