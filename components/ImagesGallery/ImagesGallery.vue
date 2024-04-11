@@ -782,8 +782,9 @@ export default {
       biolucida.getThumbnail(info.id).then(
         response => {
           let item = items.find(x => x.id === info.id)
-
-          this.$set(item, 'thumbnail', 'data:image/png;base64,' + response.data)
+          if (response.data) {
+            this.$set(item, 'thumbnail', 'data:image/png;base64,' + response.data)
+          }
         },
         reason => {
           if (
