@@ -30,6 +30,9 @@
         :is="metricsComponent"
         :metrics-data="metricsData"
       />
+      <div class="row my-32">
+        Last metrics update: {{ monthLastUpdate.toLocaleString('default', { month: 'long' }) }} {{ monthLastUpdate.getFullYear() }}
+      </div>
     </div>
   </div>
 </template>
@@ -149,16 +152,20 @@ export default {
     // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
     const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
     let metricsData = undefined
+    let monthLastUpdate
     try {
       metricsData = await fetchMetrics($axios, lastMonthsDate.month, lastMonthsDate.year)
+      monthLastUpdate = new Date(`${lastMonthsDate.month}/01/${lastMonthsDate.year}`)
     } catch (e) {
       const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
       metricsData = await fetchMetrics($axios, monthBeforeLastDate.month, monthBeforeLastDate.year).catch(() => {
         error({ statusCode: 400, message: ErrorMessages.methods.metrics(), display: true, error: e } )
       })
+      monthLastUpdate = new Date(`${monthBeforeLastDate.month}/01/${monthBeforeLastDate.year}`)
     }
     return {
-      metricsData
+      metricsData,
+      monthLastUpdate
     }
   },
 
