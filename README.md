@@ -1,7 +1,12 @@
 # SPARC WEB APPLICATION
+
 This is the repository for the SPARC-Portal Web Application. The application is build using [Nuxt.js](https://nuxtjs.org) and [Vue.js](https://vuejs.org/).
 
 It depends on the SPARC-API which can be found [here](https://github.com/nih-sparc/sparc-api) 
+
+## Active development is now on sparc-app-2
+
+This repository has been archived. All active development has been moved to [sparc-app-2](https://github.com/nih-sparc/sparc-app-2), which uses newer versions of Nuxt and Vue, 
 
 ## Build Setup
 
